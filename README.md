@@ -1,3 +1,5 @@
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://avatars.githubusercontent.com/u/178942928?v=4" width="50" alt="Consode Logo"></a></p>
+
 ## 10MG Frontend 
 
 10mg Pharm is a health tech e-commerce web application designed to facilitate the purchase of drugs and medications online. The platform will support a comprehensive end-to-end e-commerce process, including business onboarding, user and admin account management, product and order management, and a "Buy Now, Pay Later" (BNPL) credit facility. The BNPL facility, which includes credit scoring, voucher issuance, and repayment management, will provide customers with financial flexibility while ensuring secure and compliant transactions.:
