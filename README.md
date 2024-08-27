@@ -32,6 +32,34 @@ Layout documentation [https://nextui.org/docs/customization/layout](https://next
 
 Components documentation [https://nextui.org/docs/components/button](https://nextui.org/docs/components/button)
 
+#### Creating a PR
+- Switch to the main branch
+- Checkout to a new feature branch using the ticket name assigned on JIRA
+e.g if ticket name is TM-001 then that is the branch name
+```git checkout -b TM-001```
+- See [PULL_REQUEST_TEMPLATE.md](/.github/PULL_REQUEST_TEMPLATE.md.md) for guide on filling the Pull request template
+- If a feature branch exist for the current task you're working on, kindly branch out from that feature branch to create your branch
+E.g if we have a feature/epic-name all related ticket that belongs to the epic, their branch should also point to it when submiting PR
+
+#### Commit message
+Follow the commit message standared as outline below:
+```sh
+PATTERN="^(feat|fix|docs|style|refactor|test|chore)(\([a-z]+\))?: .{1,100}$"
+```
+###### Commit Message flags
+* feat - new feature or task implementation
+* fix - bug fix
+* docs - add update to readme or make some code documentation via comment only
+* style
+* refactor - minor rework on codebase or implementation improvement that affect one or less files (<= 5 files)
+* test - adding test
+* chore - major change to existing implementation that affect many files (>=6 files)
+
+
+e.g 
+```
+git commit -m 'feat: implement login flow'
+```
 
 ## 10MG Frontend Engr Team Agreement
 This section is dedicated for frontend engineers to align with the codebase team agreement as we prepare to contribute to the 10mg project.
