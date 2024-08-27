@@ -1,0 +1,15 @@
+import { IConfig } from "@/types";
+
+const config: IConfig = {
+    appEnv: process.env.NEXT_PUBLIC_APP_ENV as 'dev' | 'staging' | 'prod' | 'sandbox',
+    nodeEnv: process.env.NODE_ENV as 'dev' | 'prod' | 'test',
+    email: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: parseInt(process.env.EMAIL_SERVER_PORT as string, 10),
+        user: process.env.EMAIL_SERVER_USER,
+        pass: process.env.EMAIL_SERVER_PASSWORD,
+        from: process.env.EMAIL_FROM,
+    }
+}
+
+export default config;

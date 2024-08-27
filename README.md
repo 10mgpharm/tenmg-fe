@@ -30,6 +30,9 @@ Color documentation [https://nextui.org/docs/customization/colors](https://nextu
 Layout documentation [https://nextui.org/docs/customization/layout](https://nextui.org/docs/customization/layout)
 
 
+Components documentation [https://nextui.org/docs/components/button](https://nextui.org/docs/components/button)
+
+
 ## 10MG Frontend Engr Team Agreement
 This section is dedicated for frontend engineers to align with the codebase team agreement as we prepare to contribute to the 10mg project.
 

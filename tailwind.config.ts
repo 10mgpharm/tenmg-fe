@@ -114,12 +114,12 @@ const config: Config = {
                     primary: {
                         //... 50 to 900
                         foreground: "#FFFFFF",
-                        DEFAULT: "#006FEE",
+                        DEFAULT: "#1A70B8",
                     },
                     secondary: {
                         //... 50 to 900
                         foreground: "#FFFFFF",
-                        DEFAULT: "#006FEE",
+                        DEFAULT: "#D42E2F",
                     },
                 },
             },
