@@ -5,6 +5,7 @@ export default function ExampleComponent() {
     return (
         <main className="flex flex-col gap-5">
 
+            <div className='h-[400px] w-[500px] bg-blue-900'></div>
             <Card className="w-[200px] h-[400px] space-y-5 p-4" radius="lg">
                 <Skeleton className="rounded-lg">
                     <div className="h-24 rounded-lg bg-default-300"></div>
