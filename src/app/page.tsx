@@ -1,9 +1,9 @@
-import { ButtonList } from "@/theme/examples";
+import ExampleComponent from "@/theme/examples";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen">
-      <ButtonList />
+    <main className="min-h-screen flex w-full items-center justify-center">
+      <ExampleComponent />
     </main>
   );
 }
