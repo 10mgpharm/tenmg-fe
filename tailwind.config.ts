@@ -1,84 +1,130 @@
-import type { Config } from "tailwindcss"
-const { fontFamily } = require("tailwindcss/defaultTheme")
+import type { Config } from "tailwindcss";
+const { nextui } = require("@nextui-org/react");
 
-const config = {
-  darkMode: ["class"],
-  content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
-  prefix: "",
-  theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+const config: Config = {
+    content: [
+        "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    ],
+    theme: {
+        extend: {
+            backgroundImage: {
+                "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+                "gradient-conic":
+                    "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+            },
+        },
     },
-    extend: {
-      fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
-      },
-      colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+    darkMode: "class",
+    plugins: [nextui({
+        prefix: "tenmg",
+        addCommonColors: true,
+        defaultTheme: "light",
+        defaultExtendTheme: "light",
+        layout: {
+            dividerWeight: "1px", // h-divider the default height applied to the divider component
+            disabledOpacity: 0.5, // this value is applied as opacity-[value] when the component is disabled
+            fontSize: {
+                tiny: "0.75rem", // text-tiny
+                small: "0.875rem", // text-small
+                medium: "1rem", // text-medium
+                large: "1.125rem", // text-large
+            },
+            lineHeight: {
+                tiny: "1rem", // text-tiny
+                small: "1.25rem", // text-small
+                medium: "1.5rem", // text-medium
+                large: "1.75rem", // text-large
+            },
+            radius: {
+                small: "8px", // rounded-small
+                medium: "12px", // rounded-medium
+                large: "14px", // rounded-large
+            },
+            borderWidth: {
+                small: "1px", // border-small
+                medium: "2px", // border-medium (default)
+                large: "3px", // border-large
+            },
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+        themes: {
+            light: {
+                layout: {
+                    hoverOpacity: 0.8,
+                    boxShadow: {
+                        small:
+                            "0px 0px 5px 0px rgb(0 0 0 / 0.02), 0px 2px 10px 0px rgb(0 0 0 / 0.06), 0px 0px 1px 0px rgb(0 0 0 / 0.3)",
+                        medium:
+                            "0px 0px 15px 0px rgb(0 0 0 / 0.03), 0px 2px 30px 0px rgb(0 0 0 / 0.08), 0px 0px 1px 0px rgb(0 0 0 / 0.3)",
+                        large:
+                            "0px 0px 30px 0px rgb(0 0 0 / 0.04), 0px 30px 60px 0px rgb(0 0 0 / 0.12), 0px 0px 1px 0px rgb(0 0 0 / 0.3)",
+                    },
+                },
+                colors: {
+                    background: "#FFFFFF", // or DEFAULT
+                    foreground: "#ECEDEE", // or 50 to 900 DEFAULT
+                    primary: {
+                        50: "#E8F1F8",
+                        100: "#B8D3E9",
+                        200: "#96BDDE",
+                        300: "#669FCF",
+                        400: "#488DC6",
+                        500: "#1A70B8",
+                        600: "#1866A7",
+                        700: "#125083",
+                        800: "#0E3E65",
+                        900: "#0B2F4D",
+                        foreground: "#FFFFFF",
+                        DEFAULT: "#1A70B8",
+                    },
+                    secondary: {
+                        50: "#FBEAEA",
+                        100: "#F2BEBF",
+                        200: "#EB9F9F",
+                        300: "#E27374",
+                        400: "#DD5859",
+                        500: "#D42E2F",
+                        600: "#C12A2B",
+                        700: "#972121",
+                        800: "#75191A",
+                        900: "#591314",
+                        foreground: "#FFFFFF",
+                        DEFAULT: "#D42E2F",
+                    },
+                    // ... rest of the colors
+                }
+            },
+            dark: {
+                layout: {
+                    hoverOpacity: 0.9,
+                    boxShadow: {
+                        small: // shadow-small
+                            "0px 0px 5px 0px rgb(0 0 0 / 0.05), 0px 2px 10px 0px rgb(0 0 0 / 0.2), inset 0px 0px 1px 0px rgb(255 255 255 / 0.15)",
+                        medium: // shadow-medium
+                            "0px 0px 15px 0px rgb(0 0 0 / 0.06), 0px 2px 30px 0px rgb(0 0 0 / 0.22), inset 0px 0px 1px 0px rgb(255 255 255 / 0.15)",
+                        large: // shadow-large
+                            "0px 0px 30px 0px rgb(0 0 0 / 0.07), 0px 30px 60px 0px rgb(0 0 0 / 0.26), inset 0px 0px 1px 0px rgb(255 255 255 / 0.15)",
+                    },
+                },
+                colors: {
+                    background: "#000000", // or DEFAULT
+                    foreground: "#ECEDEE", // or 50 to 900 DEFAULT
+                    primary: {
+                        //... 50 to 900
+                        foreground: "#FFFFFF",
+                        DEFAULT: "#006FEE",
+                    },
+                    secondary: {
+                        //... 50 to 900
+                        foreground: "#FFFFFF",
+                        DEFAULT: "#006FEE",
+                    },
+                },
+            },
+            // ... custom themes
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
-    },
-  },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config
-
-export default config
+    })],
+};
+export default config;
