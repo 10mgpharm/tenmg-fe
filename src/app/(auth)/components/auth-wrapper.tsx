@@ -6,7 +6,7 @@ interface AuthWrapperProps {
 export default function AuthWrapper({ children }: AuthWrapperProps) {
   return (
     <>
-      <div className="min-h-screen md:flex w-full items-center justify-center">
+      <div className="min-h-screen md:flex w-full justify-center">
         <div
           style={{
             background:
