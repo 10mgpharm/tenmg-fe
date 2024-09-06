@@ -1,0 +1,23 @@
+<svg width="273" height="159" viewBox="0 0 273 159" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g opacity="0.2">
+<mask id="mask0_3088_21509" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="-28" y="-85" width="330" height="330">
+<rect width="330" height="330" transform="translate(-28 -85)" fill="url(#paint0_radial_3088_21509)"/>
+</mask>
+<g mask="url(#mask0_3088_21509)">
+<circle cx="137" cy="80" r="32.6562" stroke="#EAECF0" stroke-width="0.6875"/>
+<circle cx="137" cy="80" r="54.6562" stroke="#EAECF0" stroke-width="0.6875"/>
+<circle cx="137" cy="80" r="76.6562" stroke="#EAECF0" stroke-width="0.6875"/>
+<circle cx="137" cy="80" r="98.6562" stroke="#EAECF0" stroke-width="0.6875"/>
+<circle cx="137" cy="80" r="98.6562" stroke="#EAECF0" stroke-width="0.6875"/>
+<circle cx="137" cy="80" r="120.656" stroke="#EAECF0" stroke-width="0.6875"/>
+<circle cx="137" cy="80" r="142.656" stroke="#EAECF0" stroke-width="0.6875"/>
+<circle cx="137" cy="80" r="164.656" stroke="#EAECF0" stroke-width="0.6875"/>
+</g>
+</g>
+<defs>
+<radialGradient id="paint0_radial_3088_21509" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(165 165) rotate(90) scale(165 165)">
+<stop/>
+<stop offset="1" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>

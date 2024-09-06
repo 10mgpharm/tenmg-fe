@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/theme/provider";
+import { ChakraProvider } from '@chakra-ui/react'
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -26,7 +27,9 @@ export default function RootLayout({
         className={cn(fontSans.variable)}
       >
         <ThemeProvider>
-          {children}
+          <ChakraProvider>
+            {children}
+          </ChakraProvider>
         </ThemeProvider>
       </body>
     </html>

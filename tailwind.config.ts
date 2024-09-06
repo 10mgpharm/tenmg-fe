@@ -12,8 +12,7 @@ const config: Config = {
         extend: {
             backgroundImage: {
                 "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-                "gradient-conic":
-                    "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+                "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
             },
         },
     },
@@ -24,8 +23,8 @@ const config: Config = {
         defaultTheme: "light",
         defaultExtendTheme: "light",
         layout: {
-            dividerWeight: "1px", // h-divider the default height applied to the divider component
-            disabledOpacity: 0.5, // this value is applied as opacity-[value] when the component is disabled
+            dividerWeight: "1px",
+            disabledOpacity: 0.5,
             fontSize: {
                 tiny: "0.75rem", // text-tiny
                 small: "0.875rem", // text-small
@@ -107,7 +106,8 @@ const config: Config = {
                         foreground: "#FFFFFF",
                         DEFAULT: "#039855",
                     },
-                    // ... rest of the colors
+                    bgFrom: "#53389E",
+                    toColor: "#7F56D9"
                 }
             },
             dark: {
@@ -137,7 +137,6 @@ const config: Config = {
                     },
                 },
             },
-            // ... custom themes
         },
     })],
 };
