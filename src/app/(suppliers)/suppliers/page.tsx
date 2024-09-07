@@ -20,7 +20,7 @@ import StockChart from "../components/StockChart";
 import Orders from "../components/orders";
 import { useDisclosure } from "@chakra-ui/react";
 
-const options = [
+export const options = [
     {label: "Today", value: "Today"},
     {label: "This week", value: "This week"},
     {label: "Last week", value: "Last week"},

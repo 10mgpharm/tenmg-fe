@@ -23,7 +23,7 @@ import { usePathname } from 'next/navigation'
 const navigation = [
   { name: 'Dashboard', href: '/suppliers', icon: HomeIcon, current: true },
   { name: 'Orders', href: '/suppliers/orders', icon: BsCart2, current: false },
-  { name: 'Products', href: '#', icon: FiShoppingBag, current: false },
+  { name: 'Products', href: '/suppliers/products', icon: FiShoppingBag, current: false },
   { name: 'Insight', href: '#', icon: BsGraphUpArrow, current: false },
   { name: 'Wallet', href: '#', icon: CiWallet, current: false },
   { name: 'Message', href: '#', icon: BiMessageDetail, current: false },
