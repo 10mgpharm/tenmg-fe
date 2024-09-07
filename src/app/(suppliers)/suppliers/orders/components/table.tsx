@@ -1,12 +1,11 @@
-import { Dispatch, SetStateAction } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
+import Link from "next/link";
 import { classNames } from "@/utils";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsFN(onOpen: () => void) {
+export function ColumsOrderFN(onOpen: () => void) {
 
   return [
     columnHelper.accessor("createdAt", {
@@ -31,7 +30,6 @@ export function ColumsFN(onOpen: () => void) {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        //   mx="30px"
         >
           <p>Customer</p>
         </div>
@@ -60,7 +58,7 @@ export function ColumsFN(onOpen: () => void) {
       cell: (info) => {
         return (
           <div>
-           <p className={classNames(
+            <p className={classNames(
             info?.row?.original?.status === "Pending" 
             ? "bg-[#FFFAEB] text-[#F79009]" 
             : info?.row?.original?.status === "Cancelled" 
@@ -83,7 +81,7 @@ export function ColumsFN(onOpen: () => void) {
       ),
       cell: (info) => {
         return (
-          <div >
+          <div>
            <p>{info?.row?.original?.total}</p>
           </div>
         );
@@ -108,15 +106,9 @@ export function ColumsFN(onOpen: () => void) {
       cell: (info) => {
         return (
           <Flex justify={"center"}>
-            <Menu>
-                <MenuButton>
-                    <BsThreeDotsVertical className="w-5 h-auto"/>
-                </MenuButton>
-                <MenuList>
-                    <MenuItem>View Order</MenuItem>
-                    <MenuItem color={"red.500"}>Delete Order</MenuItem>
-                </MenuList>
-            </Menu>
+            <Link href={'/suppliers/orders/3066'} className="text-primary-500">
+                View
+            </Link>
           </Flex>
         );
       },
