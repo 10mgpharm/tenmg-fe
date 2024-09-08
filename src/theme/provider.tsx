@@ -2,11 +2,14 @@
 
 import * as React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
+import theme from "@/theme";
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     return (
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
             {children}
         </ChakraProvider>
     );
 }
+
+export default ThemeProvider;

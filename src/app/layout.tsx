@@ -3,7 +3,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/theme/provider";
+import ThemeProvider from "@/theme/provider";
 import config from "@/lib/config";
 import TenmgLogo from "@public/assets/images/tenmg_logo.png";
 import TenmgLogoThumbnailImage from "@public/assets/images/tenmg_logo.png";
@@ -64,7 +64,6 @@ export const metadata: Metadata = {
     },
   ],
 };
-
 
 export default function RootLayout({
   children,
