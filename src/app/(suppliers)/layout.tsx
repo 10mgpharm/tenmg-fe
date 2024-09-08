@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import TopNavBar from "./components/TopNavBar";
 import SideBar from "./components/SideBar";
 import Footer from "./components/Footer";
+import config from "@/lib/config";
+
+const appName = config.appName;
 
 export const metadata: Metadata = {
-  title: "Suppliers | 10MG",
-  description: "10MG Supplier dashboard",
+  title: `Suppliers | ${appName}`,
+  description: "10MG Supplier Dashboard",
 };
 
 export default function SupplierLayout({

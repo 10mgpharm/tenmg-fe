@@ -9,5 +9,7 @@ export interface EmailConfig {
 export interface IConfig {
     appEnv: 'dev' | 'staging' | 'prod' | 'sandbox';
     nodeEnv: 'dev' | 'prod' | 'test';
+    appName: string;
+    appUrl: string;
     email: EmailConfig;
 }
