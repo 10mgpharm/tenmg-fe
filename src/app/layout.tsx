@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google"
+import { Lato } from "next/font/google";
 import "./globals.css";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/theme/provider";
 import { ChakraProvider } from '@chakra-ui/react'
 
-const fontSans = FontSans({
+const fontSans = Lato({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+  weight: ["400", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
