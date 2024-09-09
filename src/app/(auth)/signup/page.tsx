@@ -21,7 +21,7 @@ const SignUpPharmacy = () => {
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
 
   return (
-    <AuthWrapper>
+    <AuthWrapper type="others">
       <section className="md:w-1/2 w-full">
         <Tabs
           aria-label="pharmacy"

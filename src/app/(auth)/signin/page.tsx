@@ -28,7 +28,7 @@ const SignIn = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <AuthWrapper>
+    <AuthWrapper type="others">
       <section className="md:w-1/2 px-6 md:px-12 lg:px-32 flex items-center">
         <article className="w-full">
           <Image
