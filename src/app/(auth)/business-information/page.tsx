@@ -1,15 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { Button, Link } from "@nextui-org/react";
 import Image from "next/image";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { FiEyeOff } from "react-icons/fi";
-import { IoEyeOutline } from "react-icons/io5";
-import { FcGoogle } from "react-icons/fc";
-import AuthWrapper from "../components/auth-wrapper";
-import SignUpField from "../components/signup-field";
 interface IFormInput {
   name: string;
   email: string;
@@ -19,8 +13,6 @@ interface IFormInput {
 }
 
 const BusinessInformation = () => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-
   const {
     register,
     formState: { errors },
@@ -28,8 +20,6 @@ const BusinessInformation = () => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
     <div className="min-h-screen md:flex w-full justify-center">

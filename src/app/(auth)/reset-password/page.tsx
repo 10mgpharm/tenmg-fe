@@ -6,7 +6,6 @@ import Image from "next/image";
 import React from "react";
 import AuthWrapper from "../components/auth-wrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { FaArrowLeft } from "react-icons/fa6";
 import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 

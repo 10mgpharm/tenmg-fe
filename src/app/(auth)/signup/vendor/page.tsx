@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useForm } from "react-hook-form";
 import AuthWrapper from "../../components/auth-wrapper";
 import SignUpField from "../../components/signup-field";
 

@@ -15,12 +15,7 @@ interface IFormInput {
 
 const Verification = () => {
   const [otp, setOtp] = useState<string>("");
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    watch,
-  } = useForm<IFormInput>();
+  const { handleSubmit } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
 
