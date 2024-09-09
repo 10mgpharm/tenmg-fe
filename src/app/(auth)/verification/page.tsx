@@ -69,6 +69,7 @@ const Verification = () => {
 
               <div className="my-8 flex flex-col gap-4">
                 <Button
+                  href="/business-information"
                   color="primary"
                   size="lg"
                   className="w-full cursor-pointer hover:bg-[#7B61FF]"
@@ -82,7 +83,7 @@ const Verification = () => {
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 mb-8">
               Didn&apos;t receive the email?
-              <Link href="/signup" className="text-primary-500 ml-1">
+              <Link role="button" className="text-primary-500 ml-1">
                 Click to resend
               </Link>
             </p>
