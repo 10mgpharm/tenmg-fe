@@ -1,11 +1,15 @@
+'use client'
+
 import * as React from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "@/theme";
 
-import { NextUIProvider } from "@nextui-org/react";
-
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     return (
-        <NextUIProvider>
+        <ChakraProvider theme={theme}>
             {children}
-        </NextUIProvider>
+        </ChakraProvider>
     );
 }
+
+export default ThemeProvider;

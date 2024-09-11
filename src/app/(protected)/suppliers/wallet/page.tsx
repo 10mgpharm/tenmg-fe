@@ -1,0 +1,97 @@
+"use client";
+
+import Image from "next/image"
+import { FaEye } from "react-icons/fa"
+
+import folder from '@/assets/Images/Group 3.svg';
+import drugImage from '@/assets/Images/Medicine--Streamline-Lagos 1.svg'
+import AddAccount from "./components/AddAccount";
+import { useDisclosure } from "@chakra-ui/react";
+import WithdrawFunds from "./components/WithdrawFunds";
+import OTPModal from "./components/OTPModal";
+import Link from "next/link";
+import Transaction from "./components/Transaction";
+
+const Wallet = () => {
+    let hasAccountNumber = true;
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { 
+        isOpen: isOpenWithdraw, 
+        onOpen: onOpenWithdraw,
+        onClose: onCloseWithdraw 
+    } = useDisclosure();
+    const { 
+        isOpen: isOpenOTP, 
+        onOpen: onOpenOTP,
+        onClose: onCloseOTP 
+    } = useDisclosure();
+  return (
+    <div className="p-8">
+        <div className="">
+            <h3 className="font-semibold text-xl text-gray-700 mb-4">Wallet</h3>
+            <div className="flex gap-5">
+                <div className="flex-1 bg-primary-50 pt-3 pl-5 rounded-lg flex justify-between">
+                    <div className="">
+                        <div className="mt-5 flex items-center gap-3">
+                            <p className="text-xl">Wallet balance</p>
+                            <FaEye className="w-5 h-5"/>
+                        </div>
+                        <p className="font-semibold text-2xl text-gray-700 mt-3">₦32,439,390.00</p>
+                        <button onClick={onOpenWithdraw} className="mt-8 bg-primary-500 px-5 py-2 text-white rounded-md">Withdraw Funds</button>
+                    </div>
+                    <Image src={drugImage} alt="" className="-ml-10"/>
+                </div>
+                {
+                    hasAccountNumber ? 
+                    <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
+                        <div className="flex items-center justify-between">
+                            <div className="p-1 rounded-full bg-white">
+                                <p className="text-gray-600 text-sm font-semibold">Chidi Victor</p>
+                            </div>
+                            <div className="p-1 rounded-full bg-white">
+                                <p className="text-gray-600 text-sm font-semibold">GT Bank</p>
+                            </div>
+                        </div>
+                        <div className="text-gray-100 mt-8">
+                            <p className="text-sm mb-2">Payout Account</p>
+                            <h2 className="text-xl font-semibold">12345***7890</h2>
+                        </div>
+                    </div>
+                    : 
+                    <div className="flex-1 flex flex-col justify-center bg-primary-50 p-5 rounded-lg">
+                        <div className="max-w-xs mx-auto text-center">
+                            <h2 className="text-xl font-medium">Add a bank account</h2>
+                            <p className="mt-2">Add a bank account to enable easy withdrawal of your funds</p>
+                            <button onClick={onOpen} className="mt-5 bg-primary-500 px-5 py-2 text-white rounded-md">Add Account</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div className="mt-5">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium">Transactions</h3>
+                    <Link href={"/suppliers/wallet/transactions"} className="border p-2 px-4 rounded-md">View All</Link>
+                </div>
+                {
+                    !hasAccountNumber &&
+                    <div className="mt-5 max-w-sm mx-auto">
+                        <div className="text-center py-12">
+                            <Image src={folder} alt=""className="mx-auto"/>
+                            <h3 className="font-semibold text-lg text-gray-700 mt-4">Nothing to show here yet</h3>
+                            <p className="text-gray-600">You don’t have any transactions yet. When you do, they’ll apper here.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div className="mt-5">
+                <Transaction/>
+            </div>
+        </div>
+        <AddAccount isOpen={isOpen} onClose={onClose}/>
+        <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} otpOpen={onOpenOTP} />
+        <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP}/>
+    </div>
+  )
+}
+
+export default Wallet
