@@ -8,9 +8,9 @@ import {
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import avatar from '../../../../assets/Images/Avatar.svg';
-import Logo from '../../../../assets/Images/10mg logomark Full color digital  1.svg'
-import { Badge, Divider } from "@nextui-org/react"
+import avatar from '@public/assets/Images/Avatar.svg';
+import Logo from '@public/assets/Images/10mg logomark Full color digital  1.svg'
+import { Badge } from "@chakra-ui/react";
 
 const TopNavBar = () => {
   return (

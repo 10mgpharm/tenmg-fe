@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Link } from "@nextui-org/react";
+import { Button } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -159,7 +159,7 @@ const BusinessInformation = () => {
 
             <div className="flex flex-col gap-4 mb-8">
               <Button
-                color="primary"
+                color="primary.500"
                 size="lg"
                 className="w-full cursor-pointer hover:bg-[#7B61FF]"
                 type="submit"
