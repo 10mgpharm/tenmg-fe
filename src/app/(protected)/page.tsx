@@ -5,7 +5,7 @@ import React from 'react'
 
 export default async function Page() {
     const session: Session | null = await getServerSession(authOptions);
-    if (!session?.user?.email) redirect('/auth/login');
+    if (!session?.user?.email) redirect('/auth/signin');
     return (
         <></>
     )

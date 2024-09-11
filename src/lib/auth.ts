@@ -58,28 +58,25 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
-
     signIn: async (params) => {
       if (!params.user?.email) {
         return false;
       }
-
       console.log('signIN ', { params })
+      // TODO: implement get by email and confirm if user proceed to login
       // try {
       //   const response = await requestClient().get('/user/email', { email });
-      //   const userExists = await this.getUserByEmail(email);
-
-      //   return !(!userExists?.id && !invite?.id);
+      //   const userInfo = await response.data;
+      //   return !(condition-here);
       // } catch (error) {
       //   console.error('Error checking if user exists or has an invite', error);
       //   return false;
       // }
-      // return AuthService.canLogin(params.user.email);
     },
   },
   pages: {
-    signIn: `/auth/login`,
-    error: `/auth/login`,
+    signIn: `/auth/signin`,
+    error: `/auth/signin`,
     verifyRequest: `/auth/verify-request`,
     signOut: `/auth/logout`,
   },
