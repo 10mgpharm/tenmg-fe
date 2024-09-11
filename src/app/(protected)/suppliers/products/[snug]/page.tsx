@@ -6,10 +6,10 @@ import { Divider, HStack, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import pill from '../../../../../assets/Images/Rectangle 19718.png';
 import { options } from '../../page';
-import StockChart from '@/app/(suppliers)/components/StockChart';
-import RevenueChart from '@/app/(suppliers)/components/RevenueChart';
+import StockChart from '@/app/(protected)/suppliers/components/StockChart';
+import RevenueChart from '@/app/(protected)/suppliers/components/RevenueChart';
 import { LucideClock4 } from 'lucide-react';
-import StackBarComponent from '@/app/(suppliers)/components/StackBarComponent';
+import StackBarComponent from '@/app/(protected)/suppliers/components/StackBarComponent';
 
 const ProductDetail = () => {
     const router = useRouter();

@@ -2,7 +2,7 @@ import { Checkbox } from '@chakra-ui/react'
 import { DateInput } from '@nextui-org/react'
 import { CalendarIcon } from 'lucide-react'
 import React from 'react'
-import EmptyCard from '../../components/EmptyCard'
+import EmptyCard from '../components/EmptyCard'
 
 const Insight = () => {
   return (

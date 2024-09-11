@@ -11,5 +11,6 @@ export interface IConfig {
     nodeEnv: 'dev' | 'prod' | 'test';
     appName: string;
     appUrl: string;
+    apiBaseUrl: string;
     email: EmailConfig;
 }

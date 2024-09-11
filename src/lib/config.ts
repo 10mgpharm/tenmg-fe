@@ -5,6 +5,7 @@ const config: IConfig = {
     nodeEnv: process.env.NODE_ENV as 'dev' | 'prod' | 'test',
     appName: process.env.NEXT_PUBLIC_APP_NAME ?? '10MG Health',
     appUrl: process.env.NEXT_PUBLIC_APP_URL ?? '',
+    apiBaseUrl: process.env.NEXT_PUBLIC_API_URL ?? '',
     email: {
         host: process.env.EMAIL_SERVER_HOST,
         port: parseInt(process.env.EMAIL_SERVER_PORT as string, 10),

@@ -3,10 +3,10 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
-import ThemeProvider from "@/theme/provider";
 import config from "@/lib/config";
 import TenmgLogo from "@public/assets/images/tenmg_logo.png";
 import TenmgLogoThumbnailImage from "@public/assets/images/tenmg_logo.png";
+import Provider from "./provider";
 
 const fontSans = Lato({
   subsets: ["latin"],
@@ -78,9 +78,9 @@ export default function RootLayout({
       <body
         className={cn(fontSans.variable)}
       >
-        <ThemeProvider>
+        <Provider>
           {children}
-        </ThemeProvider>
+        </Provider>
       </body>
     </html>
   );

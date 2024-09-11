@@ -1,0 +1,42 @@
+import axios, { AxiosRequestConfig } from 'axios';
+import Cookies from 'js-cookie';
+import config from './config';
+
+const apiBaseUrl = config.apiBaseUrl;
+
+interface RequestOptions extends AxiosRequestConfig {
+  token?: string;
+}
+
+const getHeaders = (queryParamToken?: string) => {
+  const auth = Cookies.get('auth') ? JSON.parse(Cookies.get('auth') as string) : {};
+  const { token, user } = auth;
+  const headers: Record<string, string> = {};
+
+  headers['Content-Type'] = 'application/json';
+
+  if (token || queryParamToken) {
+    const authToken = queryParamToken ? queryParamToken : token;
+    headers['Authorization'] = `Bearer ${authToken}`;
+  }
+
+  if (user) {
+    headers['User'] = `${user.firstName} ${user.lastName}`;
+  }
+
+  return headers;
+};
+
+const requestClient = (options: RequestOptions = {}) => {
+  const headers = getHeaders(options?.token);
+
+  const opts: RequestOptions = Object.assign({}, options, { headers });
+
+  return axios.create({
+    baseURL: `${apiBaseUrl}`,
+    timeout: 120000,
+    ...opts,
+  });
+};
+
+export default requestClient;

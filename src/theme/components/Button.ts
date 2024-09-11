@@ -13,7 +13,7 @@ const buttonTheme = {
     },
     variants: {
         solid: (props: { colorMode: string; }) => ({
-            bg: props.colorMode === 'dark' ? 'blue.300' : 'blue.500',
+            bg: props.colorMode === 'dark' ? 'primary.500' : 'primary.500',
             color: 'white',
             _hover: {
                 bg: props.colorMode === 'dark' ? 'blue.200' : 'blue.600',
