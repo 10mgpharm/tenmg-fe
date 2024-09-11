@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Box, Image, Heading, Text, FormControl, FormLabel, Input, Button, FormErrorMessage, InputGroup, InputRightElement, Link, IconButton } from "@chakra-ui/react";

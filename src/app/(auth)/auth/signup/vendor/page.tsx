@@ -1,10 +1,15 @@
-"use client";
-
 import React from "react";
 import AuthWrapper from "../../../components/AuthWrapper";
 import SignUpField from "../../../components/SignupField";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-const SignUpPharmacy = () => {
+const SignUpPharmacy = async () => {
+  const session = await getServerSession(authOptions);
+  if (session) {
+    redirect(`/`);
+  }
   return (
     <AuthWrapper type="others">
       <section className="md:w-1/2 w-full flex items-center">
