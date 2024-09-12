@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import TenmgLogo from "@public/assets/images/tenmg_logo.png";
+import TuyiiLogo from "@public/assets/images/tuyii_icon.png";
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 
@@ -10,13 +10,13 @@ const LoanHeader = () => {
       <FaArrowLeft />
       <div className="flex items-center gap-2">
         <Image
-          className="w-[37.5px]"
-          src={TenmgLogo}
+          className="w-[26.4px]"
+          src={TuyiiLogo}
           alt="tenmg logo"
-          width={37.5}
-          height={21}
+          width={26.4}
+          height={24}
         />
-        <p className="text-sm font-medium">Powered by 10MG Health</p>
+        <p className="text-sm font-medium">Tuyil Pharmaceutical Limtied</p>
       </div>
 
       <IoClose className="text-xl text-blue-500" />
