@@ -32,7 +32,7 @@ interface IFormInput {
   loanRepayment: string;
 }
 
-const Vendor = () => {
+const Loan = () => {
   const [sliderValue, setSliderValue] = useState<number>(1000000);
   const [isLoanRepayment, setIsLoanRepayment] = useState<boolean>(false);
   const [status, setStatus] = useState<
@@ -182,4 +182,4 @@ const Vendor = () => {
   );
 };
 
-export default Vendor;
+export default Loan;
