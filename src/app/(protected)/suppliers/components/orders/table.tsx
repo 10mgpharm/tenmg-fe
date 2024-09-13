@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
