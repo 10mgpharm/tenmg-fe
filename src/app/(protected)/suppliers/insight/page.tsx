@@ -1,5 +1,4 @@
 import { Checkbox } from '@chakra-ui/react'
-import { CalendarIcon } from 'lucide-react'
 import React from 'react'
 import EmptyCard from '../components/EmptyCard'
 
@@ -8,8 +7,7 @@ const Insight = () => {
     <div className='p-8 min-h-[calc(100vh-108px)]'>
         <h2 className='text-2xl font-semibold text-gray-700'>Insight</h2>
         <div className="flex items-center justify-between mt-4">
-              <div className="">
-                  {/* TODO: Check Date Input component */}
+            <div className="">
                 {/* <DateInput
                     className="bg-white border rounded-md placeholder:bg-white"
                     startContent={

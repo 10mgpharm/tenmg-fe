@@ -8,9 +8,8 @@ import {
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import avatar from '@public/assets/Images/Avatar.svg';
-import Logo from '@public/assets/Images/10mg logomark Full color digital  1.svg'
-import { Badge } from "@chakra-ui/react";
+import avatar from '@/assets/Images/Avatar.svg';
+import Logo from '@/assets/Images/appLogo.svg';
 
 const TopNavBar = () => {
   return (
@@ -26,12 +25,12 @@ const TopNavBar = () => {
           </div>
         </div>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <Badge content="1" color="danger">
+          {/* <Badge content="1" color="danger"> */}
             <button type="button" className="-m-2.5 p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500">
               <span className="sr-only">View notifications</span>
               <BellIcon aria-hidden="true" className="h-6 w-6" />
             </button>
-          </Badge>
+          {/* </Badge> */}
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">
               <span className="sr-only">Open user menu</span>

@@ -1,5 +1,4 @@
-import React from 'react'
-import { Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
 const data = [
     {
@@ -38,7 +37,6 @@ const StockChart = () => {
                 bottom: 5,
                 }}
             >
-                {/* <CartesianGrid strokeDasharray="3 3" /> */}
                 <XAxis dataKey={"name"}/>
                 <YAxis/>
                 <Bar barSize={50} dataKey={"uv"}>

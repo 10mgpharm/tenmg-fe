@@ -19,8 +19,8 @@ export default async function SupplierLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect('/auth/signin');
+  // const session = await getServerSession(authOptions);
+  // if (!session) redirect('/auth/signin');
 
   return(
     <>
