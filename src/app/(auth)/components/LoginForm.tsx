@@ -46,19 +46,17 @@ export default function LoginForm() {
             return (window.location.href = response.url);
         }
 
+        console.log(response.error)
+
         setErrorMessage(response.error);
     };
 
     const toggleVisibility = () => setIsVisible(!isVisible);
 
-    const clearError = useCallback(() => {
-        setErrorMessage(null);
-    }, []);
-
   return (
 
       <form onSubmit={handleSubmit(onSubmit)}>
-          <ErrorMessage error={errorMessage} onClose={clearError} />
+          {errorMessage && <ErrorMessage error={errorMessage} onClose={() => setErrorMessage(null)} />}
 
           <div className="flex flex-col gap-5 text-gray">
               <div className="flex flex-col gap-[6px]">

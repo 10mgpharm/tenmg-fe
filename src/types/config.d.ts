@@ -12,5 +12,6 @@ export interface IConfig {
     appName: string;
     appUrl: string;
     apiBaseUrl: string;
+    nextAuthSecret: string;
     email: EmailConfig;
 }
