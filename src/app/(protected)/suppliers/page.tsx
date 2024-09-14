@@ -1,12 +1,8 @@
 "use client";
 
-import { useState } from "react"
-import { CalendarIcon } from "lucide-react"
-import { DateInput } from "@nextui-org/react"
 import NoticeCard from "./components/NoticeCard"
 import OverviewCard from "./components/OverviewCard/OverviewCard"
 
-import EmptyCard from "./components/EmptyCard"
 import order from '../../../assets/Images/total order.svg'
 import completedOrder from '../../../assets/Images/target.svg'
 import totalProducts from '../../../assets/Images/products.svg'
@@ -39,7 +35,7 @@ const Supplier = () => {
             <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-2xl text-gray-600">Dashboard</h2>
                 <div className="">
-                    <DateInput
+                    {/* <DateInput
                         className="bg-white border rounded-md placeholder:bg-white"
                         // defaultValue={parseDate("2024-04-04")} 
                         // placeholderValue={new CalendarDate(1995, 11, 6)} 
@@ -49,7 +45,7 @@ const Supplier = () => {
                             <CalendarIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                             </>
                         }
-                    />
+                    /> */}
                 </div>
             </div>
             <div className="grid grid-cols-4 gap-4 mt-5">

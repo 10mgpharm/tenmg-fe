@@ -1,5 +1,4 @@
 import { Checkbox } from '@chakra-ui/react'
-import { DateInput } from '@nextui-org/react'
 import { CalendarIcon } from 'lucide-react'
 import React from 'react'
 import EmptyCard from '../components/EmptyCard'
@@ -10,14 +9,14 @@ const Insight = () => {
         <h2 className='text-2xl font-semibold text-gray-700'>Insight</h2>
         <div className="flex items-center justify-between mt-4">
             <div className="">
-                <DateInput
+                {/* <DateInput
                     className="bg-white border rounded-md placeholder:bg-white"
                     startContent={
                         <>
                         <CalendarIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                         </>
                     }
-                />
+                /> */}
             </div>
             <div className="flex items-center gap-2">
                 <Checkbox>
