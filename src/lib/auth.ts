@@ -37,10 +37,15 @@ export const authOptions: NextAuthOptions = {
             id: data.id,
             name: data.name,
             email: data.email,
+            active: data.active,
             image: null,
             emailVerifiedAt: data.emailVerifiedAt,
             token: accessToken.token,
             entityType: data.entityType,
+            businessName: data.businessName,
+            businessStatus: data.businessStatus,
+            owner: data.owner,
+            completeProfile: data.completeProfile,
           };
         } catch (error) {
           if (error instanceof Error) {
@@ -85,8 +90,16 @@ export const authOptions: NextAuthOptions = {
       if (params.user) {
         params.token.id = params.user.id;
         params.token.email = params.user.email;
-        params.token.entityType = params.user?.entityType;
+        params.token.active = params.user?.active;
         params.token.emailVerifiedAt = params.user?.emailVerifiedAt;
+
+        params.token.entityType = params.user?.entityType;
+        params.token.businessName = params.user?.businessName;
+        params.token.businessStatus = params.user?.businessStatus;
+
+        params.token.owner = params.user?.owner;
+        params.token.completeProfile = params.user?.completeProfile;
+        
         params.token.token = params.user?.token;
       }
       return params.token;

@@ -9,12 +9,16 @@ import OTPInput from "react-otp-input";
 import { FaArrowLeft } from "react-icons/fa6";
 import Link from "next/link";
 import { Box, Button } from "@chakra-ui/react";
+import { redirect, useSearchParams } from "next/navigation";
 
 interface IFormInput {
   verification: number;
 }
 
 const Verification = () => {
+  const searchParams = useSearchParams();
+  if (!searchParams?.get('token')) redirect('/auth/signup')
+  
   const [otp, setOtp] = useState<string>("");
   const { handleSubmit } = useForm<IFormInput>();
 

@@ -5,12 +5,17 @@ import { Metadata } from 'next';
 import { NextAuthUserSession } from '@/types';
 
 export const metadata: Metadata = {
-  title: 'Account Selection',
+  title: 'Home',
 };
 
 export default async function Page() {
   const session: NextAuthUserSession | null = await getServerSession(authOptions);
+
   if (!session?.user?.email) redirect('/auth/signin');
+
+  if (!session?.user?.emailVerifiedAt) redirect(`/auth/verification?token=${session?.user?.token}`);
+
+  if (!session?.user?.completeProfile) redirect(`/auth/business-information?token=${session?.user?.token}`);
 
   switch (session.user?.entityType) {
     case 'SUPPLIER':
