@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import React from "react";
 import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
@@ -15,7 +15,7 @@ interface IFormInput {
   verification: number;
 }
 
-const Verification = () => {
+const VerificationComponent = () => {
   const searchParams = useSearchParams();
   if (!searchParams?.get('token')) redirect('/auth/signup')
   
@@ -101,5 +101,11 @@ const Verification = () => {
     </AuthWrapper>
   );
 };
+
+const Verification = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <VerificationComponent />
+  </Suspense>
+);
 
 export default Verification;

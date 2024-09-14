@@ -2,7 +2,7 @@
 
 import { Button, Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text, Image as ChakraImage } from "@chakra-ui/react";
 import { redirect, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface IFormInput {
@@ -13,7 +13,7 @@ interface IFormInput {
   contactPosition: string;
 }
 
-const BusinessInformation = () => {
+const BusinessInformationComponent = () => {
   const searchParams = useSearchParams();
   if(!searchParams?.get('token')) redirect('/auth/signup')
 
@@ -156,5 +156,11 @@ const BusinessInformation = () => {
     </Flex>
   );
 };
+
+const BusinessInformation = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <BusinessInformationComponent />
+  </Suspense>
+);
 
 export default BusinessInformation;

@@ -53,7 +53,6 @@ export default function LoginForm() {
     const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-
       <form onSubmit={handleSubmit(onSubmit)}>
           {errorMessage && <ErrorMessage error={errorMessage} onClose={() => setErrorMessage(null)} />}
 
