@@ -13,9 +13,14 @@ export default async function Page() {
 
   if (!session?.user?.email) redirect('/auth/signin');
 
-  if (!session?.user?.emailVerifiedAt) redirect(`/auth/verification?token=${session?.user?.token}`);
+  if (session?.user?.account?.provider === 'google' && !session?.user?.completeProfile)
+    redirect(`/auth/business-information?token=${session?.user?.token}`);
 
-  if (!session?.user?.completeProfile) redirect(`/auth/business-information?token=${session?.user?.token}`);
+  if (!session?.user?.emailVerifiedAt)
+    redirect(`/auth/verification?token=${session?.user?.token}`);
+
+  if (!session?.user?.completeProfile)
+    redirect(`/auth/business-information?token=${session?.user?.token}`);
 
   switch (session.user?.entityType) {
     case 'SUPPLIER':

@@ -14,6 +14,11 @@ export enum BusinessType {
     CUSTOMER_PHARMACY = 'CUSTOMER_PHARMACY',
 }
 
+export interface Account {
+    providerAccountId: number | string;
+    type: 'oauth' | 'credentials';
+    provider: 'google' | 'credentials';
+}
 
 export interface User {
     id: string;
@@ -31,6 +36,7 @@ export interface User {
 
 export interface NextAuthUserSession extends Session {
     user: User & {
+        account: Account
         token?: string;
-    }
+    },
 }
