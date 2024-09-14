@@ -33,8 +33,9 @@ export default function LoginForm() {
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
-        const response: SignInResponse = await signIn('email', {
+        const response: SignInResponse = await signIn('credentials', {
             email: data.email,
+            password: data.password,
             callbackUrl: searchParams.get('callbackUrl') || `${window.location.origin}/`,
             redirect: false,
         });
@@ -152,6 +153,11 @@ export default function LoginForm() {
                   className="w-full cursor-pointer text-gray border"
                   leftIcon={<FcGoogle className="text-2xl" />}
                   isDisabled={isLoading}
+                  onClick={() =>
+                      signIn('google', {
+                          callbackUrl: searchParams.get('callbackUrl') || `${window.location.origin}/`,
+                      })
+                  }
               >
                   Sign in with Google
               </Button>
