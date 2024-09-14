@@ -19,7 +19,9 @@ interface IFormInput {
 
 export default function LoginForm() {
     const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string>(null);
+
+    const searchParams = useSearchParams();
+    const [errorMessage, setErrorMessage] = useState<string>(searchParams?.get('error') ?? null);
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -29,7 +31,6 @@ export default function LoginForm() {
     } = useForm<IFormInput>({
         mode: 'onChange',
     });
-    const searchParams = useSearchParams();
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
@@ -45,8 +46,6 @@ export default function LoginForm() {
         if (!response.error && response.ok && response.url) {
             return (window.location.href = response.url);
         }
-
-        console.log(response.error)
 
         setErrorMessage(response.error);
     };

@@ -70,12 +70,14 @@ export const authOptions: NextAuthOptions = {
           return false;
         }
 
+        console.log({ params })
+
         if (!params.user?.emailVerifiedAt) {
-          return `/auth/verification?token=${params.user?.token}`;
+          return params.user?.token ? `/auth/verification?token=${params.user?.token}` : false;
         }
         
         if (!params.user?.completeProfile) {
-          return `/auth/business-information?token=${params.user?.token}`;
+          return params.user?.token ? `/auth/business-information?token=${params.user?.token}` : false;
         }
 
         return true;
