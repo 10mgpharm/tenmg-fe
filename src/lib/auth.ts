@@ -71,8 +71,11 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (!params.user?.emailVerifiedAt) {
-          console.log('redirecting....');
           return `/auth/verification?token=${params.user?.token}`;
+        }
+        
+        if (!params.user?.completeProfile) {
+          return `/auth/business-information?token=${params.user?.token}`;
         }
 
         return true;
