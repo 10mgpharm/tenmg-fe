@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FiEyeOff } from "react-icons/fi";
@@ -155,7 +155,7 @@ export default function LoginForm() {
                       })
                   }
               >
-                  Sign in with Google
+                Sign in with Google
               </Button>
           </div>
       </form>

@@ -39,10 +39,10 @@ export default async function LoginPage() {
           
           <div className="text-center">
               <p className="text-gray-500 text-base font-normal leading-6 flex justify-center gap-1">
-                  Don&apos;t have an account?
-                  <Link href="/auth/signup" className="text-primary-500">
-                      Sign up
-                  </Link>
+                Don&apos;t have an account?
+                <Link href="/auth/signup" className="text-primary-500">
+                  Sign up
+                </Link>
               </p>
           </div>
         </article>
