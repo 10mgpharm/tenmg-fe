@@ -29,18 +29,15 @@ interface ErrorMessageProps {
 }
 
 export default function ErrorMessage({ error, onClose }: ErrorMessageProps) {
-    const [open, setOpen] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null | undefined>(error);
 
     useEffect(() => {
         if (error) {
-            setOpen(true);
             setErrorMessage(getErrorMessage(error));
         } else {
-            setOpen(false);
-            setErrorMessage(null);
+            (onClose && onClose());
         }
-    }, [error]);
+    }, [error, onClose]);
 
     return (
         <>

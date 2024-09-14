@@ -14,7 +14,6 @@ import {
 } from '@heroicons/react/24/outline'
 import { classNames } from '@/utils'
 import { BsCart2, BsGraphUpArrow } from "react-icons/bs";
-
 import { FiShoppingBag } from 'react-icons/fi'
 import { CiLogout, CiWallet } from 'react-icons/ci'
 import { BiMessageDetail } from 'react-icons/bi'

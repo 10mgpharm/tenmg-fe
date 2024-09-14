@@ -1,9 +1,13 @@
 "use client";
 
-import { Button, Link } from "@nextui-org/react";
-import Image from "next/image";
-import React from "react";
+import { NextAuthUserSession } from "@/types";
+import { Button, Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text, Image as ChakraImage } from "@chakra-ui/react";
+import { signOut, useSession } from "next-auth/react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { FaArrowLeft } from "react-icons/fa6";
+
 interface IFormInput {
   name: string;
   email: string;
@@ -12,7 +16,15 @@ interface IFormInput {
   contactPosition: string;
 }
 
-const BusinessInformation = () => {
+const BusinessInformationComponent = () => {
+  const router = useRouter();
+
+  const session = useSession();
+  const data = session.data as NextAuthUserSession;
+
+  const searchParams = useSearchParams();
+  if (!searchParams?.get('token')) redirect('/auth/signup')
+
   const {
     register,
     formState: { errors },
@@ -21,57 +33,70 @@ const BusinessInformation = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
 
+  const [name, setName] = useState<string>(null);
+
+  useEffect(() => {
+    if (data?.user) {
+      setName(data?.user?.name)
+    }
+  }, [data?.user])
+
   return (
-    <div className="min-h-screen md:flex w-full justify-center">
-      <div className="md:min-h-screen md:w-1/2 bg-[url('/assets/images/business_info_bg.png')] bg-cover bg-center bg-no-repeat"></div>
-      <section className="md:w-1/2 flex items-center px-6 md:px-12 lg:px-20 xl:px-32">
-        <section className="w-full">
-          <Image
+    <Flex minH="100vh" w="full" justifyContent="center">
+      {/* Left Image Background */}
+      <Flex
+        flex="1"
+        bgImage="url('/assets/images/business_info_bg.png')"
+        bgPos="center"
+        bgSize="cover"
+        bgRepeat="no-repeat"
+        display={["none", "none", "block"]}
+      />
+
+      {/* Right Form Section */}
+      <Flex flex="1" alignItems="center" px={["6", "12", "20", "32"]}>
+        <Flex direction="column" w="full">
+          <ChakraImage
             src="/assets/images/tenmg_logo.png"
-            className="md:mb-8"
             alt="tenmg"
-            width={75}
-            height={75}
+            mb={[6, 8]}
+            boxSize="75px"
           />
 
-          <div className="mb-8">
-            <h3 className="font-normal text-gray-900 text-4xl leading-[44px] tracking-tight mb-3">
+          {/* Heading */}
+          <Flex direction="column" mb={8}>
+            <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
               Business info
-            </h3>
+            </Text>
+            {name && <Text fontSize="lg" color="gray.500">
+              Hi <b>{name}</b>, Kindly provide us your business information.
+            </Text>}
+            {!name && <Text fontSize="lg" color="gray.500">
+            Kindly provide us your business information.
+            </Text>}
+          </Flex>
 
-            <p className="text-gray-500 text-base font-normal leading-6 text-left">
-              Kindly provide us your business information.
-            </p>
-          </div>
-
+          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5 text-gray mb-10">
-              <div className="flex flex-col gap-[6px]">
-                <label htmlFor="name">
-                  Business name
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
+            <Flex direction="column" gap={5} mb={10}>
+              {/* Business Name */}
+              <FormControl isInvalid={!!errors.name}>
+                <FormLabel htmlFor="name">Business name <Text as="span" color="red.500">*</Text></FormLabel>
+                <Input
                   id="name"
-                  className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
-                  type="text"
                   placeholder="Enter your business name"
                   {...register("name", {
                     required: "Business Name is required",
                   })}
                 />
-                {errors.name && (
-                  <span className="text-gray-500">{errors.name?.message}</span>
-                )}
-              </div>
-              <div className="flex flex-col gap-[6px]">
-                <label htmlFor="email">
-                  Business email
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
+                <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+              </FormControl>
+
+              {/* Business Email */}
+              <FormControl isInvalid={!!errors.email}>
+                <FormLabel htmlFor="email">Business email <Text as="span" color="red.500">*</Text></FormLabel>
+                <Input
                   id="email"
-                  className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
                   type="email"
                   placeholder="Enter your business email"
                   {...register("email", {
@@ -82,96 +107,92 @@ const BusinessInformation = () => {
                     },
                   })}
                 />
-                {errors.email && (
-                  <span className="text-gray-500">{errors.email?.message}</span>
-                )}
-              </div>
+                <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+              </FormControl>
 
-              <div className="flex flex-col gap-[6px]">
-                <label htmlFor="phone">
-                  Business phone number
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
+              {/* Business Phone Number */}
+              <FormControl isInvalid={!!errors.phone}>
+                <FormLabel htmlFor="phone">Business phone number <Text as="span" color="red.500">*</Text></FormLabel>
+                <Input
                   id="phone"
-                  className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
-                  type="text"
                   placeholder="Enter your business phone number"
                   {...register("phone", {
                     required: "Business phone number is required",
                   })}
                 />
-                {errors.phone && (
-                  <span className="text-gray-500">{errors.phone?.message}</span>
-                )}
-              </div>
+                <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
+              </FormControl>
 
-              <div className="flex flex-col gap-[6px]">
-                <label htmlFor="contactName">
-                  Contact person&apos;s name
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
+              {/* Contact Name */}
+              <FormControl isInvalid={!!errors.contactName}>
+                <FormLabel htmlFor="contactName">
+                  Contact person&apos;s name <Text as="span" color="red.500">*</Text>
+                </FormLabel>
+                <Input
                   id="contactName"
-                  className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
-                  type="text"
                   placeholder="Enter your contact person's name"
                   {...register("contactName", {
                     required: "Contact person's name is required",
                   })}
                 />
-                {errors.contactName && (
-                  <span className="text-gray-500">
-                    {errors.contactName?.message}
-                  </span>
-                )}
-              </div>
+                <FormErrorMessage>{errors.contactName?.message}</FormErrorMessage>
+              </FormControl>
 
-              <div className="flex flex-col gap-[6px]">
-                <label htmlFor="contactPosition">
-                  Position of contact person
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
+              {/* Contact Position */}
+              <FormControl isInvalid={!!errors.contactPosition}>
+                <FormLabel htmlFor="contactPosition">
+                  Position of contact person <Text as="span" color="red.500">*</Text>
+                </FormLabel>
+                <Input
                   id="contactPosition"
-                  className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
-                  type="text"
                   placeholder="Managing Director"
                   {...register("contactPosition", {
                     required: "Position of contact person is required",
                   })}
                 />
-                {errors.contactPosition && (
-                  <span className="text-gray-500">
-                    {errors.contactPosition?.message}
-                  </span>
-                )}
-              </div>
-            </div>
+                <FormErrorMessage>{errors.contactPosition?.message}</FormErrorMessage>
+              </FormControl>
+            </Flex>
 
-            <div className="mb-10 flex justify-between gap-2">
-              <input type="checkbox" id="remember" className="w-4 h-4" />
-              <p className="text-gray-500 text-base font-normal leading-6 text-left">
+            {/* Terms & Conditions */}
+            <Flex mb={10} alignItems="center" gap={2}>
+              <Checkbox id="remember" />
+              <Text color="gray.500" fontSize="lg">
                 I confirm that I have read and agree to 10 MG Pharmacy&apos;s
                 Terms & Conditions and Privacy Policy
-              </p>
-            </div>
+              </Text>
+            </Flex>
 
-            <div className="flex flex-col gap-4 mb-8">
-              <Button
-                color="primary"
-                size="lg"
-                className="w-full cursor-pointer hover:bg-[#7B61FF]"
-                type="submit"
-              >
+            {/* Submit Button */}
+            <Flex direction="column" gap={4} mb={8}>
+              <Button colorScheme="purple" size="lg" type="submit" w="full">
                 Proceed to dashboard
               </Button>
-            </div>
+            </Flex>
           </form>
-        </section>
-      </section>
-    </div>
+
+          <div className="text-center mb-3">
+            <Button
+              variant={'link'}
+              onClick={async () => {
+                await signOut();
+                router.back()
+              }}
+              className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
+            >
+              <FaArrowLeft /> Return to Sign Up
+            </Button>
+          </div>
+        </Flex>
+      </Flex>
+    </Flex>
   );
 };
+
+const BusinessInformation = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <BusinessInformationComponent />
+  </Suspense>
+);
 
 export default BusinessInformation;

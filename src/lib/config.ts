@@ -6,6 +6,7 @@ const config: IConfig = {
     appName: process.env.NEXT_PUBLIC_APP_NAME ?? '10MG Health',
     appUrl: process.env.NEXT_PUBLIC_APP_URL ?? '',
     apiBaseUrl: process.env.NEXT_PUBLIC_API_URL ?? '',
+    nextAuthSecret: process.env.NEXTAUTH_SECRET ?? '',
     email: {
         host: process.env.EMAIL_SERVER_HOST,
         port: parseInt(process.env.EMAIL_SERVER_PORT as string, 10),

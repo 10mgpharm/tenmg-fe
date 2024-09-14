@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Link } from "@nextui-org/react";
 import Image from "next/image";
 import React from "react";
-import AuthWrapper from "../../components/AuthWrapper";
+import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
+import { Button } from "@chakra-ui/react";
+import Link from "next/link";
 
 interface IFormInput {
   password: string;
@@ -57,7 +58,8 @@ const ForgotPassword = () => {
               </div>
               <Button
                 color="primary"
-                href="/signin"
+                as={Link}
+                href="/auth/signin"
                 size="lg"
                 className="w-full cursor-pointer hover:bg-[#7B61FF]"
                 type="submit"
@@ -161,7 +163,7 @@ const ForgotPassword = () => {
                 </div>
                 <div>
                   <Button
-                    color="primary"
+                    color="primary.500"
                     size="lg"
                     className="w-full cursor-pointer hover:bg-[#7B61FF]"
                     type="submit"
