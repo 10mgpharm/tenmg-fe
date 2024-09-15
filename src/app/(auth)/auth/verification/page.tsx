@@ -1,19 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Link } from "@nextui-org/react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import React from "react";
-import AuthWrapper from "../../components/AuthWrapper";
+import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import OTPInput from "react-otp-input";
 import { FaArrowLeft } from "react-icons/fa6";
+import { Button } from "@chakra-ui/react";
+import { redirect, useSearchParams } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
 
 interface IFormInput {
   verification: number;
 }
 
-const Verification = () => {
+const VerificationComponent = () => {
+  const session = useSession();
+  const data = session.data as NextAuthUserSession;
+
+  console.log('VerificationComponent', { data })
+
+  const searchParams = useSearchParams();
+  if (!searchParams?.get('token')) redirect('/auth/signup')
+  
   const [otp, setOtp] = useState<string>("");
   const { handleSubmit } = useForm<IFormInput>();
 
@@ -64,10 +75,8 @@ const Verification = () => {
 
               <div className="my-8 flex flex-col gap-4">
                 <Button
-                  href="/business-information"
-                  color="primary"
+                  variant={'solid'}
                   size="lg"
-                  className="w-full cursor-pointer hover:bg-[#7B61FF]"
                   type="submit"
                 >
                   Verify email
@@ -78,22 +87,32 @@ const Verification = () => {
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 mb-8">
               Didn&apos;t receive the email?
-              <Link role="button" className="text-primary-500 ml-1">
+              <Button variant={'link'} pl={2}>
                 Click to resend
-              </Link>
+              </Button>
             </p>
 
-            <Link
-              href="/signup"
+            <Button
+              variant={'link'}
+              onClick={async () => {
+                await signOut();
+                redirect('/auth/signup');
+              }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
               <FaArrowLeft /> Return to Sign Up
-            </Link>
+            </Button>
           </div>
         </article>
       </section>
     </AuthWrapper>
   );
 };
+
+const Verification = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <VerificationComponent />
+  </Suspense>
+);
 
 export default Verification;

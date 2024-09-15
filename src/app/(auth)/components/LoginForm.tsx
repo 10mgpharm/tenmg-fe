@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FiEyeOff } from "react-icons/fi";
@@ -19,7 +19,9 @@ interface IFormInput {
 
 export default function LoginForm() {
     const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string>(null);
+
+    const searchParams = useSearchParams();
+    const [errorMessage, setErrorMessage] = useState<string>(searchParams?.get('error') ?? null);
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -29,12 +31,12 @@ export default function LoginForm() {
     } = useForm<IFormInput>({
         mode: 'onChange',
     });
-    const searchParams = useSearchParams();
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
-        const response: SignInResponse = await signIn('email', {
+        const response: SignInResponse = await signIn('credentials', {
             email: data.email,
+            password: data.password,
             callbackUrl: searchParams.get('callbackUrl') || `${window.location.origin}/`,
             redirect: false,
         });
@@ -50,14 +52,9 @@ export default function LoginForm() {
 
     const toggleVisibility = () => setIsVisible(!isVisible);
 
-    const clearError = useCallback(() => {
-        setErrorMessage(null);
-    }, []);
-
   return (
-
       <form onSubmit={handleSubmit(onSubmit)}>
-          <ErrorMessage error={errorMessage} onClose={clearError} />
+          {errorMessage && <ErrorMessage error={errorMessage} onClose={() => setErrorMessage(null)} />}
 
           <div className="flex flex-col gap-5 text-gray">
               <div className="flex flex-col gap-[6px]">
@@ -152,8 +149,13 @@ export default function LoginForm() {
                   className="w-full cursor-pointer text-gray border"
                   leftIcon={<FcGoogle className="text-2xl" />}
                   isDisabled={isLoading}
+                  onClick={() =>
+                      signIn('google', {
+                          callbackUrl: searchParams.get('callbackUrl') || `${window.location.origin}/`,
+                      })
+                  }
               >
-                  Sign in with Google
+                Sign in with Google
               </Button>
           </div>
       </form>

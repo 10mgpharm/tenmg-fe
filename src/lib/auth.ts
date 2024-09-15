@@ -2,8 +2,11 @@ import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import requestClient from './requestClient';
+import config from './config';
+import { ResponseDto, User } from '@/types';
 
 export const authOptions: NextAuthOptions = {
+  secret: config.nextAuthSecret,
   session: {
     strategy: 'jwt',
     maxAge: 60 * 60 * 24, // 1hour,
@@ -24,21 +27,32 @@ export const authOptions: NextAuthOptions = {
           type: 'password',
         },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
           const { email, password } = credentials;
-          const response = await requestClient().post('/signin', { email, password });
-
-          console.log({ response })
+          const response = await requestClient().post('/auth/signin', { email, password });
+          const { data, accessToken }: ResponseDto<User> = response.data;
 
           return {
-            id: 'string',
-            name: 'string | null',
-            email: 'string | null',
-            image: 'string | null',
-          }
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            active: data.active,
+            image: null,
+            emailVerifiedAt: data.emailVerifiedAt,
+            token: accessToken.token,
+            entityType: data.entityType,
+            businessName: data.businessName,
+            businessStatus: data.businessStatus,
+            owner: data.owner,
+            completeProfile: data.completeProfile,
+          };
         } catch (error) {
-          console.error(error);
+          if (error instanceof Error) {
+            console.error(error.message);
+          } else {
+            console.error('An unknown error occurred');
+          }
           return null;
         }
       }
@@ -50,28 +64,74 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: async ({ session, token }: any) => {
-      if (token) {
-        session.user = { ...session.user, ...token.user };
-        session.account = token.account;
-      }
+    signIn: async (params: any) => {
+      try {
+        if (!params.user?.email) {
+          return false;
+        }
 
-      return session;
-    },
-    signIn: async (params) => {
-      if (!params.user?.email) {
+        if (params.account?.type === 'oauth' && params.account?.provider === 'google') {
+          const { email, email_verified } = params.profile;
+          if (!email_verified) return false; 
+
+          // check if user already exist
+          const response = await requestClient().get(`/auth/email?email=${email}`);
+          const { data: existingUser }: ResponseDto<User> = response.data;
+
+          if (!existingUser) {
+            params.user.isNewUser = true;
+            params.user.token = params.account?.access_token,
+            params.user.account = {
+              providerAccountId: params.account?.providerAccountId,
+              type: params.account?.type,
+              provider: params.account?.provider,
+            }
+          }
+
+          return true;
+        }
+
+        params.user.isNewUser = false;
+        params.user.account = {
+          providerAccountId: params.account?.providerAccountId,
+          type: params.account?.type,
+          provider: params.account?.provider,
+        }
+
+        return true;
+
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        } else {
+          console.error('Error checking if user exists or has an invite', error);
+        }
         return false;
       }
-      console.log('signIN ', { params })
-      // TODO: implement get by email and confirm if user proceed to login
-      // try {
-      //   const response = await requestClient().get('/user/email', { email });
-      //   const userInfo = await response.data;
-      //   return !(condition-here);
-      // } catch (error) {
-      //   console.error('Error checking if user exists or has an invite', error);
-      //   return false;
-      // }
+    },
+    async jwt(params: any) {
+      if (params.user) {
+        params.token.id = params.user.id;
+        params.token.email = params.user.email;
+        params.token.active = params.user?.active;
+        params.token.emailVerifiedAt = params.user?.emailVerifiedAt;
+
+        params.token.entityType = params.user?.entityType;
+        params.token.businessName = params.user?.businessName;
+        params.token.businessStatus = params.user?.businessStatus;
+
+        params.token.owner = params.user?.owner;
+        params.token.completeProfile = params.user?.completeProfile;
+        
+        params.token.token = params.user?.token;
+        params.token.account = params.user?.account;
+      }
+
+      return params.token;
+    },
+    async session(params: any) {
+      params.session.user = { ...params.token };
+      return params.session;
     },
   },
   pages: {
@@ -79,5 +139,6 @@ export const authOptions: NextAuthOptions = {
     error: `/auth/signin`,
     verifyRequest: `/auth/verify-request`,
     signOut: `/auth/logout`,
+    newUser: `/auth/business-information`
   },
 };

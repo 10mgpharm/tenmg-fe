@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sign In | 10MG",
+    title: "10MG Credit | Offers",
 };
 
 export default function SignInLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+    return <>{children}</>
 }

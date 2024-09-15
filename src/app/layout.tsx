@@ -71,12 +71,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className='light'>
+    <html lang="en" className='light' suppressHydrationWarning>
       <head>
         <link rel="icon" href={TenmgLogo.src} type="image/png" sizes="32x32" />
       </head>
       <body
         className={cn(fontSans.variable)}
+        suppressHydrationWarning
       >
         <Provider>
           {children}

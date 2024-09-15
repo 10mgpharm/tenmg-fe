@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Link } from "@nextui-org/react";
 import Image from "next/image";
 import React from "react";
-import AuthWrapper from "../../components/AuthWrapper";
+import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
+import Link from "next/link";
+import { Button } from "@chakra-ui/react";
 
 interface IFormInput {
   email: string;
@@ -69,7 +70,7 @@ const ForgotPassword = () => {
               </div>
               <div className="my-6">
                 <Button
-                  color="primary"
+                  color="primary.500"
                   size="lg"
                   className="w-full cursor-pointer hover:bg-[#7B61FF]"
                   type="submit"
@@ -81,7 +82,7 @@ const ForgotPassword = () => {
           </form>
           <div className="text-center">
             <Link
-              href="/signin"
+              href="/auth/signin"
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
               <FaArrowLeft /> Return to Log In

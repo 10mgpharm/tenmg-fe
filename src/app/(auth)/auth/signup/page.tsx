@@ -2,8 +2,6 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import AuthWrapper from "../../components/AuthWrapper";
-import SignUpField from "../../components/SignupField";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import SignupTab from "../../components/SignupTab";
 
 const SignUpPharmacy = async () => {

@@ -1,5 +1,4 @@
 import { Checkbox } from '@chakra-ui/react'
-import { CalendarIcon } from 'lucide-react'
 import React from 'react'
 import EmptyCard from '../components/EmptyCard'
 
