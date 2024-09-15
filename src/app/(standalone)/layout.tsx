@@ -5,7 +5,7 @@ export const metadata: Metadata = {
     title: "10MG Credit | 10MG",
 };
 
-export default function SignInLayout({
+export default function StandaloneLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
