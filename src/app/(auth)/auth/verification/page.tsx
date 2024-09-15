@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Link } from "@nextui-org/react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import React from "react";
-import AuthWrapper from "../../components/AuthWrapper";
+import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import OTPInput from "react-otp-input";
 import { FaArrowLeft } from "react-icons/fa6";
+import Link from "next/link";
+import { Box, Button } from "@chakra-ui/react";
+import { redirect, useSearchParams } from "next/navigation";
 
 interface IFormInput {
   verification: number;
 }
 
-const Verification = () => {
+const VerificationComponent = () => {
+  const searchParams = useSearchParams();
+  if (!searchParams?.get('token')) redirect('/auth/signup')
+  
   const [otp, setOtp] = useState<string>("");
   const { handleSubmit } = useForm<IFormInput>();
 
@@ -64,7 +69,8 @@ const Verification = () => {
 
               <div className="my-8 flex flex-col gap-4">
                 <Button
-                  href="/business-information"
+                  as={Link}
+                  href="/auth/business-information"
                   color="primary"
                   size="lg"
                   className="w-full cursor-pointer hover:bg-[#7B61FF]"
@@ -78,13 +84,13 @@ const Verification = () => {
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 mb-8">
               Didn&apos;t receive the email?
-              <Link role="button" className="text-primary-500 ml-1">
+              <Box as={Button} className="text-primary-500 ml-1">
                 Click to resend
-              </Link>
+              </Box>
             </p>
 
             <Link
-              href="/signup"
+              href="/auth/signup"
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
               <FaArrowLeft /> Return to Sign Up
@@ -95,5 +101,11 @@ const Verification = () => {
     </AuthWrapper>
   );
 };
+
+const Verification = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <VerificationComponent />
+  </Suspense>
+);
 
 export default Verification;

@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 import LoginForm from "../../components/LoginForm";
 import Link from "next/link";
 import AuthWrapper from "../../components/AuthWrapper";
@@ -33,7 +33,10 @@ export default async function LoginPage() {
               Please enter your details.
             </p>
           </div>
-          <LoginForm />
+
+          <Suspense fallback={<div>Loading...</div>}>
+            <LoginForm />
+          </Suspense>
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 flex justify-center gap-1">
               Don&apos;t have an account?

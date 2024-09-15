@@ -77,8 +77,6 @@ const Loan = () => {
 
             <Flex alignItems="center" justifyContent="center" flex={1}>
               <Flex alignItems="center">
-                {/* <TbCurrencyNaira size="24px" /> */}
-
                 <NumberInput
                   variant="unstyled"
                   value={format(sliderValue)}

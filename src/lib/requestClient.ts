@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
 import config from './config';
 
-const apiBaseUrl = config.apiBaseUrl;
+const apiBaseUrl = `${config.apiBaseUrl}/api/v1`;
 
 interface RequestOptions extends AxiosRequestConfig {
   token?: string;
@@ -32,11 +32,13 @@ const requestClient = (options: RequestOptions = {}) => {
 
   const opts: RequestOptions = Object.assign({}, options, { headers });
 
-  return axios.create({
+  const axiosInstance = axios.create({
     baseURL: `${apiBaseUrl}`,
     timeout: 120000,
     ...opts,
   });
+
+  return axiosInstance;
 };
 
 export default requestClient;

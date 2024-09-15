@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image"
 import { 
   Menu, 
@@ -10,9 +12,43 @@ import { BellIcon } from "@heroicons/react/24/outline";
 
 import avatar from '@/assets/Images/Avatar.svg';
 import Logo from '@/assets/Images/appLogo.svg';
-// import { Badge } from "@nextui-org/react"
+import { signOut, useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import { Tag } from "@chakra-ui/react";
 
 const TopNavBar = () => {
+  const session = useSession();
+  const data = session.data as NextAuthUserSession;
+
+  const renderBusinessType = (businessType: string) => {
+    switch (businessType) {
+      case 'VENDOR':
+        return (
+          <Tag size='sm' variant='solid' colorScheme='red'>
+            {businessType?.toLocaleLowerCase()}
+          </Tag>
+        )
+      case 'SUPPLIER':
+        return (
+          <Tag size='sm' variant='solid' colorScheme='green'>
+            {businessType?.toLocaleLowerCase()}
+          </Tag>
+        )
+      case 'ADMIN':
+        return (
+          <Tag size='sm' variant='solid' colorScheme='blue'>
+            {businessType?.toLocaleLowerCase()}
+          </Tag>
+        )
+      default:
+        return (
+          <Tag size='sm' variant='solid' colorScheme='red'>
+            {businessType?.toLocaleLowerCase()}
+          </Tag>
+        )
+    }
+  }
+
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm">
@@ -21,7 +57,7 @@ const TopNavBar = () => {
             <Image src={Logo} alt=''/>
           </div>
           <div className="">
-            <h4 className="text-gray-700 font-semibold">Good Afternoon, Maduka</h4>
+            <h4 className="text-gray-700 font-semibold">Good Afternoon, {data?.user.name}</h4>
             <p className="text-gray-400 text-sm">Monday, 20th May, 5:25pm</p>
           </div>
         </div>
@@ -38,15 +74,13 @@ const TopNavBar = () => {
               <Image src={avatar} alt=''/>
               <span className="hidden lg:flex lg:items-center">
                 <div className="text-left ml-4">
-                  <div className="flex">
-                  <span aria-hidden="true" className="text-sm font-semibold leading-6 text-gray-900">
-                    Adeola Joy
-                  </span>
-                  <span aria-hidden="true" className="text-sm font-semibold leading-6 text-gray-900">
-                    Supplier
-                  </span>
+                  <div className="flex gap-2">
+                    <span aria-hidden="true" className="text-sm font-semibold leading-6 text-gray-900">
+                        {data?.user.name}
+                    </span>
+                    {renderBusinessType(data?.user?.entityType)}
                   </div>
-                  <p className="text-gray-600 text-sm">Macroland Pharmaceuticals Ltd</p>
+                  <p className="text-gray-600 text-sm">{data?.user?.businessName}</p>
                 </div>
                 <ChevronDownIcon aria-hidden="true" className="ml-4 h-6 w-6 text-gray-600" />
               </span>
@@ -67,6 +101,7 @@ const TopNavBar = () => {
                 <a
                   href={'#'}
                   className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
+                  onClick={() => signOut()}
                 >
                   Log out
                 </a>

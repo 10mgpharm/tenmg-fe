@@ -6,6 +6,7 @@ import config from "@/lib/config";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
+import { NextAuthUserSession } from "@/types";
 
 const appName = config.appName;
 
@@ -19,8 +20,10 @@ export default async function SupplierLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const session = await getServerSession(authOptions);
-  // if (!session) redirect('/auth/signin');
+  const session: NextAuthUserSession = await getServerSession(authOptions);
+  if (!session) redirect('/auth/signin');
+
+  if (session.user?.entityType !== 'SUPPLIER') redirect('/');
 
   return(
     <>
