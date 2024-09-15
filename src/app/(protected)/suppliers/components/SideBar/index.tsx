@@ -26,7 +26,7 @@ const navigation = [
   { name: 'Insight', href: '/suppliers/insight', icon: BsGraphUpArrow, current: false },
   { name: 'Wallet', href: '/suppliers/wallet', icon: CiWallet, current: false },
   { name: 'Message', href: '/suppliers/messages', icon: BiMessageDetail, current: false },
-  { name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false },
+  { name: 'Settings', href: '/suppliers/settings', icon: Cog6ToothIcon, current: false },
 ]
 
 const SideBar = () => {

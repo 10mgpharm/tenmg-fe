@@ -55,7 +55,7 @@ const Message = () => {
                         </div>
                         <div className="my-4 px-4 relative">
                             <p className="text-gray-600 text-center">Yesterday at 9:29 PM</p>
-                            <div className="mt-5">
+                            <div className="mt-5 mb-28">
                                 {
                                     threads?.map((thread) => (
                                         <div key={thread.id} className={classNames(thread.sender ? "justify-end" : "justify-start", " flex mt-5")}>
@@ -79,7 +79,7 @@ const Message = () => {
                                     ))
                                 }
                             </div>
-                            <div className="fixed bottom-12 w-[600px] bg-[#F9FAFB] py-6">
+                            <div className="fixed bottom-12 w-[620px] bg-[#F9FAFB] py-6">
                                 <div className="border rounded-full w-full flex items-center bg-white justify-between p-2">
                                     <div className="flex items-center gap-2">
                                         <FaPaperclip className="h-5 w-6 text-gray-600"/>
