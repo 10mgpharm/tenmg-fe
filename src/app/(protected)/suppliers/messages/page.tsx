@@ -58,7 +58,7 @@ const Message = () => {
                             <div className="mt-5">
                                 {
                                     threads?.map((thread) => (
-                                        <div className={classNames(thread.sender ? "justify-end" : "justify-start", " flex mt-5")}>
+                                        <div key={thread.id} className={classNames(thread.sender ? "justify-end" : "justify-start", " flex mt-5")}>
                                             <div className="w-3/4" key={thread.id}>
                                                 <div className={classNames(
                                                     thread.sender ? 
