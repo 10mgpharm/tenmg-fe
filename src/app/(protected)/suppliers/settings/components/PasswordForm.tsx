@@ -13,12 +13,16 @@ import {
     InputGroup, 
     InputRightElement, 
     Switch, 
-    Text 
+    Text, 
+    useDisclosure
 } from '@chakra-ui/react'
+import OTPAuth from './OTPAuth';
 
 const PasswordForm = () => {
 
-    const [show, setShow] = useState<boolean>(false);
+    const [ show, setShow ] = useState<boolean>(false);
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
   return (
     <div className='max-w-2xl bg-white p-5 rounded-md'>
         <form className='space-y-5'>
@@ -74,9 +78,10 @@ const PasswordForm = () => {
                 <Button variant='outline' mr={3}>
                 Cancel
                 </Button>
-                <Button colorScheme='blue'>Save Changes</Button>
+                <Button onClick={onOpen} colorScheme='blue'>Save Changes</Button>
             </Flex>
         </HStack>
+        <OTPAuth isOpen={isOpen} onClose={onClose}/>
     </div>
   )
 }
