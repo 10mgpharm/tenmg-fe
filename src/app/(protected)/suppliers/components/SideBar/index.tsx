@@ -25,7 +25,7 @@ const navigation = [
   { name: 'Products', href: '/suppliers/products', icon: FiShoppingBag, current: false },
   { name: 'Insight', href: '/suppliers/insight', icon: BsGraphUpArrow, current: false },
   { name: 'Wallet', href: '/suppliers/wallet', icon: CiWallet, current: false },
-  { name: 'Message', href: '#', icon: BiMessageDetail, current: false },
+  { name: 'Message', href: '/suppliers/messages', icon: BiMessageDetail, current: false },
   { name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false },
 ]
 

@@ -39,6 +39,7 @@ import DeleteModal from "./components/DeleteModal";
 import RestockModal from "./components/RestockModal";
 import DeactiveModal from "./components/DeactiveModal";
 import Link from "next/link";
+import FilterDrawer from "./components/FilterDrawer";
 
 export const data = [
     {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
@@ -64,6 +65,7 @@ const Products = () => {
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
     const { isOpen: isOpenDeactivate, onClose: onCloseDeactivate, onOpen: onOpenDeactivate } = useDisclosure();
+    const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
 
     // const memoizedData = useMemo(() => data, [data]);
 
@@ -102,7 +104,7 @@ const Products = () => {
                         className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
                         />
                     </div>
-                    <div className="border border-gray-300 p-3 rounded-md flex items-center gap-2">
+                    <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 p-3 rounded-md flex items-center gap-2">
                         <CiFilter className="w-5 h-5" />
                         <p className="text-gray-500 font-medium">Filter</p>
                     </div>
@@ -203,6 +205,7 @@ const Products = () => {
         <DeleteModal isOpen={isOpen} onClose={onClose}/>
         <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock}/>
         <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate}/>
+        <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} />
     </div>
   )
 }
