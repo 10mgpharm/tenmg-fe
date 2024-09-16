@@ -7,15 +7,21 @@ import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import OTPInput from "react-otp-input";
 import { FaArrowLeft } from "react-icons/fa6";
-import Link from "next/link";
-import { Box, Button } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { redirect, useSearchParams } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
 
 interface IFormInput {
   verification: number;
 }
 
 const VerificationComponent = () => {
+  const session = useSession();
+  const data = session.data as NextAuthUserSession;
+
+  console.log('VerificationComponent', { data })
+
   const searchParams = useSearchParams();
   if (!searchParams?.get('token')) redirect('/auth/signup')
   
@@ -69,11 +75,8 @@ const VerificationComponent = () => {
 
               <div className="my-8 flex flex-col gap-4">
                 <Button
-                  as={Link}
-                  href="/auth/business-information"
-                  color="primary"
+                  variant={'solid'}
                   size="lg"
-                  className="w-full cursor-pointer hover:bg-[#7B61FF]"
                   type="submit"
                 >
                   Verify email
@@ -84,17 +87,21 @@ const VerificationComponent = () => {
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 mb-8">
               Didn&apos;t receive the email?
-              <Box as={Button} className="text-primary-500 ml-1">
+              <Button variant={'link'} pl={2}>
                 Click to resend
-              </Box>
+              </Button>
             </p>
 
-            <Link
-              href="/auth/signup"
+            <Button
+              variant={'link'}
+              onClick={async () => {
+                await signOut();
+                redirect('/auth/signup');
+              }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
               <FaArrowLeft /> Return to Sign Up
-            </Link>
+            </Button>
           </div>
         </article>
       </section>

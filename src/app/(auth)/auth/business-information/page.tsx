@@ -1,9 +1,12 @@
 "use client";
 
+import { NextAuthUserSession } from "@/types";
 import { Button, Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text, Image as ChakraImage } from "@chakra-ui/react";
-import { redirect, useSearchParams } from "next/navigation";
-import React, { Suspense } from "react";
+import { signOut, useSession } from "next-auth/react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { FaArrowLeft } from "react-icons/fa6";
 
 interface IFormInput {
   name: string;
@@ -14,8 +17,13 @@ interface IFormInput {
 }
 
 const BusinessInformationComponent = () => {
+  const router = useRouter();
+
+  const session = useSession();
+  const data = session.data as NextAuthUserSession;
+
   const searchParams = useSearchParams();
-  if(!searchParams?.get('token')) redirect('/auth/signup')
+  if (!searchParams?.get('token')) redirect('/auth/signup')
 
   const {
     register,
@@ -24,6 +32,14 @@ const BusinessInformationComponent = () => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+
+  const [name, setName] = useState<string>(null);
+
+  useEffect(() => {
+    if (data?.user) {
+      setName(data?.user?.name)
+    }
+  }, [data?.user])
 
   return (
     <Flex minH="100vh" w="full" justifyContent="center">
@@ -52,9 +68,12 @@ const BusinessInformationComponent = () => {
             <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
               Business info
             </Text>
-            <Text fontSize="lg" color="gray.500">
-              Kindly provide us your business information.
-            </Text>
+            {name && <Text fontSize="lg" color="gray.500">
+              Hi <b>{name}</b>, Kindly provide us your business information.
+            </Text>}
+            {!name && <Text fontSize="lg" color="gray.500">
+            Kindly provide us your business information.
+            </Text>}
           </Flex>
 
           {/* Form */}
@@ -151,6 +170,19 @@ const BusinessInformationComponent = () => {
               </Button>
             </Flex>
           </form>
+
+          <div className="text-center mb-3">
+            <Button
+              variant={'link'}
+              onClick={async () => {
+                await signOut();
+                router.back()
+              }}
+              className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
+            >
+              <FaArrowLeft /> Return to Sign Up
+            </Button>
+          </div>
         </Flex>
       </Flex>
     </Flex>

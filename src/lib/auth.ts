@@ -70,14 +70,32 @@ export const authOptions: NextAuthOptions = {
           return false;
         }
 
-        console.log({ params })
+        if (params.account?.type === 'oauth' && params.account?.provider === 'google') {
+          const { email, email_verified } = params.profile;
+          if (!email_verified) return false; 
 
-        if (!params.user?.emailVerifiedAt) {
-          return params.user?.token ? `/auth/verification?token=${params.user?.token}` : false;
+          // check if user already exist
+          const response = await requestClient().get(`/auth/email?email=${email}`);
+          const { data: existingUser }: ResponseDto<User> = response.data;
+
+          if (!existingUser) {
+            params.user.isNewUser = true;
+            params.user.token = params.account?.access_token,
+            params.user.account = {
+              providerAccountId: params.account?.providerAccountId,
+              type: params.account?.type,
+              provider: params.account?.provider,
+            }
+          }
+
+          return true;
         }
-        
-        if (!params.user?.completeProfile) {
-          return params.user?.token ? `/auth/business-information?token=${params.user?.token}` : false;
+
+        params.user.isNewUser = false;
+        params.user.account = {
+          providerAccountId: params.account?.providerAccountId,
+          type: params.account?.type,
+          provider: params.account?.provider,
         }
 
         return true;
@@ -106,7 +124,9 @@ export const authOptions: NextAuthOptions = {
         params.token.completeProfile = params.user?.completeProfile;
         
         params.token.token = params.user?.token;
+        params.token.account = params.user?.account;
       }
+
       return params.token;
     },
     async session(params: any) {
@@ -119,5 +139,6 @@ export const authOptions: NextAuthOptions = {
     error: `/auth/signin`,
     verifyRequest: `/auth/verify-request`,
     signOut: `/auth/logout`,
+    newUser: `/auth/business-information`
   },
 };

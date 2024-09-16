@@ -22,26 +22,25 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { TbCurrencyNaira } from "react-icons/tb";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import LoadingScreen from "./components/LoadingScreen";
-import SuccessScreen from "./components/SuccessScreen";
-import LoanProfile from "./components/LoanProfile";
+import LoadingScreen from "../components/LoadingScreen";
+import SuccessScreen from "../components/SuccessScreen";
+import LoanProfile from "../../components/LoanProfile";
 
 interface IFormInput {
   loanRepayment: string;
 }
 
-const Loan = () => {
+const ExternalLoanApplicationPage = () => {
   const [sliderValue, setSliderValue] = useState<number>(1000000);
   const [isLoanRepayment, setIsLoanRepayment] = useState<boolean>(false);
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "failed"
   >("idle");
 
-  const format = (val) => `₦` + val;
-  const parse = (val) => val.replace(/^\$/, "");
+  const format = (val: number) => `₦` + val;
+  const parse = (val: string): number => parseFloat(val.replace(/^\$/, ""));
 
   const {
     register,
@@ -182,4 +181,4 @@ const Loan = () => {
   );
 };
 
-export default Loan;
+export default ExternalLoanApplicationPage;
