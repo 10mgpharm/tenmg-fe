@@ -1,13 +1,23 @@
 import type { Metadata } from "next";
+import LoanLayout from "../components/LoanLayout";
+import LoanFooter from "../components/LoanFooter";
 
 export const metadata: Metadata = {
-    title: "10MG Credit | Offers",
+  title: "10MG Credit | Offers",
 };
 
-export default function SignInLayout({
-    children,
+export default function OffersLayout({
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return <>{children}</>
+  return (
+    <>
+      {" "}
+      <main className="bg-blue-50 min-h-screen flex justify-center items-center gap-4 flex-col">
+        <LoanLayout>{children}</LoanLayout>
+        <LoanFooter />
+      </main>
+    </>
+  );
 }
