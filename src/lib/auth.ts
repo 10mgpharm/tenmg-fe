@@ -66,17 +66,19 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     signIn: async (params: any) => {
       try {
-        if (!params.user?.email) {
-          return false;
-        }
+        if (!params.user?.email) return false;
 
+        // google login block completion block
         if (params.account?.type === 'oauth' && params.account?.provider === 'google') {
+
           const { email, email_verified } = params.profile;
           if (!email_verified) return false; 
 
-          // check if user already exist
-          const response = await requestClient().get(`/auth/email?email=${email}`);
-          const { data: existingUser }: ResponseDto<User> = response.data;
+          // check if user already exist and exchange token
+          const response = await requestClient({ token: params.account?.access_token })
+            .post(`/auth/google`, { email });
+          
+          const { data: existingUser, accessToken }: ResponseDto<User> = response.data;
 
           if (!existingUser) {
             params.user.isNewUser = true;
@@ -86,11 +88,26 @@ export const authOptions: NextAuthOptions = {
               type: params.account?.type,
               provider: params.account?.provider,
             }
+            return true;
+          } else {
+            params.user = {
+              id: existingUser.id,
+              name: existingUser.name,
+              email: existingUser.email,
+              active: existingUser.active,
+              image: null,
+              emailVerifiedAt: existingUser.emailVerifiedAt,
+              token: accessToken.token,
+              entityType: existingUser.entityType,
+              businessName: existingUser.businessName,
+              businessStatus: existingUser.businessStatus,
+              owner: existingUser.owner,
+              completeProfile: existingUser.completeProfile,
+            }
           }
-
-          return true;
         }
 
+        // email & password login completion block
         params.user.isNewUser = false;
         params.user.account = {
           providerAccountId: params.account?.providerAccountId,
