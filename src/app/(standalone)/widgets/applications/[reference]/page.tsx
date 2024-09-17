@@ -22,11 +22,11 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { TbCurrencyNaira } from "react-icons/tb";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import LoadingScreen from "../components/LoadingScreen";
 import SuccessScreen from "../components/SuccessScreen";
+import LoanProfile from "../../components/LoanProfile";
 
 interface IFormInput {
   loanRepayment: string;
@@ -66,13 +66,7 @@ const ExternalLoanApplicationPage = () => {
       {status === "idle" && (
         <>
           <section className="flex justify-between items-center w-full pb-8">
-            <div className="flex gap-3 items-center">
-              <Avatar bg="primary.500" name="Ahmed Olanrewaju" />
-              <div>
-                <h4 className="text-gray-700 text-xl">Ahmed Olanrewaju</h4>
-                <p className="text-gray-500 text-sm">ahmed@bubblespharm.com</p>
-              </div>
-            </div>
+            <LoanProfile />
             <IoMdInformationCircleOutline className="w-6 h-6" />
           </section>
           <section className="pb-8 flex flex-col gap-5 justify-center items-center">
@@ -82,8 +76,6 @@ const ExternalLoanApplicationPage = () => {
 
             <Flex alignItems="center" justifyContent="center" flex={1}>
               <Flex alignItems="center">
-                <TbCurrencyNaira size="24px" className="flex-1" />
-
                 <NumberInput
                   variant="unstyled"
                   value={format(sliderValue)}
@@ -139,7 +131,14 @@ const ExternalLoanApplicationPage = () => {
                 </FormErrorMessage>
               </FormControl>
               {isLoanRepayment && (
-                <Box bgColor="warning.100" p={4} borderRadius="md" my={6}>
+                <Box
+                  bgColor="warning.100"
+                  borderColor="warning.400"
+                  border="1px solid var(--tenmg-colors-warning-400)"
+                  p={4}
+                  borderRadius="md"
+                  my={6}
+                >
                   <Stack direction="column">
                     <Text fontSize="md" fontWeight="bold">
                       Interest rate: 25%
