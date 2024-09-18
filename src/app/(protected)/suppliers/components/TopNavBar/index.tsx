@@ -10,8 +10,8 @@ import Image from "next/image"
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import avatar from '@/assets/images/Avatar.svg';
-import Logo from '@/assets/images/appLogo.svg';
+import avatar from '@public/assets/images/Avatar.svg';
+import Logo from '@public/assets/images/appLogo.svg';
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Tag } from "@chakra-ui/react";

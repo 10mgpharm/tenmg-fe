@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import pills from '../../../../../assets/Images/pills.svg';
+import pills from '@public/assets/images/pills.svg';
 
 const EmptyOrder = () => {
   return (

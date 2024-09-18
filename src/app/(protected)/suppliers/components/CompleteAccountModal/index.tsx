@@ -12,11 +12,11 @@ import {
     Text,
 } from '@chakra-ui/react'
 
-import shield from '@/assets/images/sheild.svg';
-import products from '@/assets/images/product.svg';
-import inventory from '@/assets/images/inventory.svg';
-import withdrawal from '@/assets/images/walllet.svg';
-import insight from '@/assets/images/insight.svg';
+import shield from '@public/assets/images/sheild.svg';
+import products from '@public/assets/images/product.svg';
+import inventory from '@public/assets/images/inventory.svg';
+import withdrawal from '@public/assets/images/walllet.svg';
+import insight from '@public/assets/images/insight.svg';
 import Image from 'next/image';
 
 const CompleteAccountModal = ({ isOpen, onClose }: {isOpen: boolean, onClose: () => void}) => {

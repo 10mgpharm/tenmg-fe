@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Divider, HStack, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
-import pill from '../../../../../assets/Images/Rectangle 19718.png';
+import pill from '@public/assets/images/Rectangle 19718.png';
 import { options } from '../../page';
 import StockChart from '@/app/(protected)/suppliers/components/StockChart';
 import RevenueChart from '@/app/(protected)/suppliers/components/RevenueChart';

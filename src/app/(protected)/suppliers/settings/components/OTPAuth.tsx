@@ -10,7 +10,7 @@ import {
     Text,
   } from '@chakra-ui/react'
 import Image from 'next/image'
-import qr from '@/assets/images/QR Code.svg';
+import qr from '@public/assets/images/QR Code.svg';
 
 const OTPAuth = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {
   return (
