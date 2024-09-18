@@ -1,5 +1,5 @@
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react'
-import icon from '@/assets/Images/image 20.svg';
+import icon from '@/assets/images/image 20.svg';
 import Image from 'next/image';
 
 const DeleteModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {

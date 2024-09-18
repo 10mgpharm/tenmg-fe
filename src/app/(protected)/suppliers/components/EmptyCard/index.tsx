@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import file from '@/assets/Images/folders.svg'
+import file from '@/assets/images/folders.svg'
 
 const EmptyCard = () => {
   return (

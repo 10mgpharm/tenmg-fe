@@ -3,8 +3,8 @@
 import Image from "next/image"
 import { useState } from "react"
 
-import avatar from '@/assets/Images/Avatar.svg';
-import messageIcon from "@/assets/Images/message.svg"
+import avatar from '@/assets/images/Avatar.svg';
+import messageIcon from "@/assets/images/message.svg"
 import { classNames } from "@/utils";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaPaperclip } from "react-icons/fa6";

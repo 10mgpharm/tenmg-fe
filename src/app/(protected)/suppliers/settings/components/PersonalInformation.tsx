@@ -1,4 +1,4 @@
-import avatar from '@/assets/Images/Avatar.svg';
+import avatar from '@/assets/images/Avatar.svg';
 import { Button, Flex, FormControl, FormLabel, HStack, Input, Textarea } from '@chakra-ui/react';
 import Image from 'next/image';
 

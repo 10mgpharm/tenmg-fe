@@ -3,13 +3,13 @@
 import NoticeCard from "./components/NoticeCard"
 import OverviewCard from "./components/OverviewCard/OverviewCard"
 
-import order from '@/assets/Images/total order.svg'
-import completedOrder from '@/assets/Images/target.svg'
-import totalProducts from '@/assets/Images/products.svg'
-import totalPattern from '@/assets/Images/bgPattern.svg';
-import orderPattern from '@/assets/Images/orderPattern.svg';
-import completeOrder from '@/assets/Images/completePattern.svg';
-import productPattern from '@/assets/Images/productpatterns.svg';
+import order from '@/assets/images/total order.svg'
+import completedOrder from '@/assets/images/target.svg'
+import totalProducts from '@/assets/images/products.svg'
+import totalPattern from '@/assets/images/bgPattern.svg';
+import orderPattern from '@/assets/images/orderPattern.svg';
+import completeOrder from '@/assets/images/completePattern.svg';
+import productPattern from '@/assets/images/productpatterns.svg';
 import CompleteAccountModal from "./components/CompleteAccountModal"
 import RevenueChart from "./components/RevenueChart";
 import StockChart from "./components/StockChart";
