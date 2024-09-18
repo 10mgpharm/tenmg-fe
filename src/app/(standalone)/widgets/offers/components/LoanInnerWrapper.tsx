@@ -11,7 +11,6 @@ const LoanInnerWrapper = ({ headerIcon, heading, text }: InnerProps) => {
   return (
     <VStack spacing={10}>
       <Center mb={3}>{headerIcon}</Center>
-
       <Box>
         <Heading
           as="h3"

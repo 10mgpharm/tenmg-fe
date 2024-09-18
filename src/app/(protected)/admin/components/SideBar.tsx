@@ -13,21 +13,28 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { classNames } from '@/utils'
-import { BsCart2, BsGraphUpArrow } from "react-icons/bs";
+import { BsCart2 } from "react-icons/bs";
+import { RiPercentLine } from "react-icons/ri";
 import { FiShoppingBag } from 'react-icons/fi'
-import { CiLogout, CiWallet } from 'react-icons/ci'
+import { CiLogout } from 'react-icons/ci'
 import { BiMessageDetail } from 'react-icons/bi'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
+import { LuUsers, LuWallet } from 'react-icons/lu'
+import { FaBalanceScale } from 'react-icons/fa'
+import { GiSpanner } from "react-icons/gi";
 
 const navigation = [
-  { name: 'Dashboard', href: '/suppliers', icon: HomeIcon, current: true },
-  { name: 'Orders', href: '/suppliers/orders', icon: BsCart2, current: false },
-  { name: 'Products', href: '/suppliers/products', icon: FiShoppingBag, current: false },
-  { name: 'Insight', href: '/suppliers/insight', icon: BsGraphUpArrow, current: false },
-  { name: 'Wallet', href: '/suppliers/wallet', icon: CiWallet, current: false },
-  { name: 'Message', href: '/suppliers/messages', icon: BiMessageDetail, current: false },
-  { name: 'Settings', href: '/suppliers/settings', icon: Cog6ToothIcon, current: false },
+  { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
+  { name: 'Orders', href: '/admin/orders', icon: BsCart2, current: false },
+  { name: 'Products', href: '/admin/products', icon: FiShoppingBag, current: false },
+  { name: 'User Management', href: '/admin/usermanagement', icon: LuUsers, current: false },
+  { name: 'Wallet', href: '/admin/wallet', icon: LuWallet, current: false },
+  { name: 'Discount Code', href: '/admin/discountcode', icon: RiPercentLine, current: false },
+  { name: 'Loan Management', href: '/dashboard/loanmanagement', icon: FaBalanceScale, current: false },
+  { name: 'Message', href: '/admin/messages', icon: BiMessageDetail, current: false },
+  { name: 'Settings', href: '/admin/settings', icon: Cog6ToothIcon, current: false },
+  { name: 'System Setup', href: '/admin/systemsetup', icon: GiSpanner, current: false },
 ]
 
 const SideBar = () => {
