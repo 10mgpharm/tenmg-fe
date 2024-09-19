@@ -1,29 +1,47 @@
 "use client";
 
+import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
-import { Button, Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text, Image as ChakraImage } from "@chakra-ui/react";
+import {
+  Button,
+  Checkbox,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Text,
+  Image as ChakraImage,
+} from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
+import { AxiosError } from "axios";
 
 interface IFormInput {
-  name: string;
-  email: string;
-  phone: string;
-  contactName: string;
-  contactPosition: string;
+  businessName: string;
+  businessEmail: string;
+  businessPhone: string;
+  businessType?: string;
+  contactPersonName: string;
+  contactPersonDesignation: string;
 }
 
 const BusinessInformationComponent = () => {
   const router = useRouter();
 
   const session = useSession();
+  console.log("🚀 ~ BusinessInformationComponent ~ session:", session);
   const data = session.data as NextAuthUserSession;
 
   const searchParams = useSearchParams();
-  if (!searchParams?.get('token')) redirect('/auth/signup')
+  if (!searchParams?.get("token")) redirect("/auth/signup");
+
+  const token = searchParams.get("token");
+
+  const provider = data?.user?.account?.type;
 
   const {
     register,
@@ -31,15 +49,64 @@ const BusinessInformationComponent = () => {
     handleSubmit,
   } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      const response = await requestClient({ token: token }).post(
+        "/auth/signup/complete",
+        {
+          provider: provider,
+          // data?.businessType &&  businessType: data?.businessType || "",
+          name: data?.businessName,
+          termsAndConditions: true,
+          contactPhone: data?.businessPhone,
+          contactPerson: data?.contactPersonName,
+          contactPersonPosition: data?.contactPersonDesignation,
+        }
+      );
+
+      if (response.statusText === "success") {
+        router.push(`/`);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response) {
+          setErrorMessage(
+            `Sign up failed: ${
+              error.response.data.message || "Please try again later."
+            }`
+          );
+          console.error("Error response:", error.response.data);
+        } else if (error.request) {
+          setErrorMessage(
+            "Network error. Please check your connection and try again."
+          );
+          console.error("Network error:", error.request);
+        } else {
+          setErrorMessage("An unexpected error occurred. Please try again.");
+          console.error("Error:", error.message);
+        }
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+        console.error("Non-Axios error:", error);
+      }
+    }
+  };
 
   const [name, setName] = useState<string>(null);
+  const [errorMessage, setErrorMessage] = useState<string>(
+    searchParams?.get("error") ?? null
+  );
+
+  console.log(
+    "🚀 ~ BusinessInformationComponent ~ errorMessage:",
+    errorMessage
+  );
 
   useEffect(() => {
     if (data?.user) {
-      setName(data?.user?.name)
+      setName(data?.user?.name);
     }
-  }, [data?.user])
+  }, [data?.user]);
 
   return (
     <Flex minH="100vh" w="full" justifyContent="center">
@@ -68,38 +135,76 @@ const BusinessInformationComponent = () => {
             <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
               Business info
             </Text>
-            {name && <Text fontSize="lg" color="gray.500">
-              Hi <b>{name}</b>, Kindly provide us your business information.
-            </Text>}
-            {!name && <Text fontSize="lg" color="gray.500">
-            Kindly provide us your business information.
-            </Text>}
+            {name && (
+              <Text fontSize="lg" color="gray.500">
+                Hi <b>{name}</b>, Kindly provide us your business information.
+              </Text>
+            )}
+            {!name && (
+              <Text fontSize="lg" color="gray.500">
+                Kindly provide us your business information.
+              </Text>
+            )}
           </Flex>
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <Flex direction="column" gap={5} mb={10}>
               {/* Business Name */}
-              <FormControl isInvalid={!!errors.name}>
-                <FormLabel htmlFor="name">Business name <Text as="span" color="red.500">*</Text></FormLabel>
+              <FormControl isInvalid={!!errors.businessName}>
+                <FormLabel htmlFor="businessName">
+                  Business name{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
-                  id="name"
+                  id="businessName"
                   placeholder="Enter your business name"
-                  {...register("name", {
+                  {...register("businessName", {
                     required: "Business Name is required",
                   })}
                 />
-                <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.businessName?.message}
+                </FormErrorMessage>
               </FormControl>
 
+              {/* Business Type */}
+              {provider !== "credentials" && (
+                <FormControl isInvalid={!!errors.businessName}>
+                  <FormLabel htmlFor="businessType">
+                    Business type{" "}
+                    <Text as="span" color="red.500">
+                      *
+                    </Text>
+                  </FormLabel>
+                  <Input
+                    id="businessType"
+                    placeholder="Enter your business type"
+                    {...register("businessType", {
+                      required: "Business Type is required",
+                    })}
+                  />
+                  <FormErrorMessage>
+                    {errors.businessType?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
+
               {/* Business Email */}
-              <FormControl isInvalid={!!errors.email}>
-                <FormLabel htmlFor="email">Business email <Text as="span" color="red.500">*</Text></FormLabel>
+              <FormControl isInvalid={!!errors.businessEmail}>
+                <FormLabel htmlFor="businessEmail">
+                  Business email{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
-                  id="email"
+                  id="businessEmail"
                   type="email"
                   placeholder="Enter your business email"
-                  {...register("email", {
+                  {...register("businessEmail", {
                     required: "Business Email is required",
                     pattern: {
                       value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
@@ -107,50 +212,69 @@ const BusinessInformationComponent = () => {
                     },
                   })}
                 />
-                <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.businessEmail?.message}
+                </FormErrorMessage>
               </FormControl>
 
               {/* Business Phone Number */}
-              <FormControl isInvalid={!!errors.phone}>
-                <FormLabel htmlFor="phone">Business phone number <Text as="span" color="red.500">*</Text></FormLabel>
+              <FormControl isInvalid={!!errors.businessPhone}>
+                <FormLabel htmlFor="businessPhone">
+                  Business phone number{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
-                  id="phone"
+                  id="businessPhone"
                   placeholder="Enter your business phone number"
-                  {...register("phone", {
+                  {...register("businessPhone", {
                     required: "Business phone number is required",
                   })}
                 />
-                <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.businessPhone?.message}
+                </FormErrorMessage>
               </FormControl>
 
               {/* Contact Name */}
-              <FormControl isInvalid={!!errors.contactName}>
-                <FormLabel htmlFor="contactName">
-                  Contact person&apos;s name <Text as="span" color="red.500">*</Text>
+              <FormControl isInvalid={!!errors.contactPersonName}>
+                <FormLabel htmlFor="contactPersonName">
+                  Contact person&apos;s name{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
                 </FormLabel>
                 <Input
-                  id="contactName"
+                  id="contactPersonName"
                   placeholder="Enter your contact person's name"
-                  {...register("contactName", {
+                  {...register("contactPersonName", {
                     required: "Contact person's name is required",
                   })}
                 />
-                <FormErrorMessage>{errors.contactName?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.contactPersonName?.message}
+                </FormErrorMessage>
               </FormControl>
 
               {/* Contact Position */}
-              <FormControl isInvalid={!!errors.contactPosition}>
-                <FormLabel htmlFor="contactPosition">
-                  Position of contact person <Text as="span" color="red.500">*</Text>
+              <FormControl isInvalid={!!errors.contactPersonDesignation}>
+                <FormLabel htmlFor="contactPersonDesignation">
+                  Position of contact person{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
                 </FormLabel>
                 <Input
-                  id="contactPosition"
+                  id="contactPersonDesignation"
                   placeholder="Managing Director"
-                  {...register("contactPosition", {
+                  {...register("contactPersonDesignation", {
                     required: "Position of contact person is required",
                   })}
                 />
-                <FormErrorMessage>{errors.contactPosition?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.contactPersonDesignation?.message}
+                </FormErrorMessage>
               </FormControl>
             </Flex>
 
@@ -173,10 +297,10 @@ const BusinessInformationComponent = () => {
 
           <div className="text-center mb-3">
             <Button
-              variant={'link'}
+              variant={"link"}
               onClick={async () => {
                 await signOut();
-                router.back()
+                router.back();
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >

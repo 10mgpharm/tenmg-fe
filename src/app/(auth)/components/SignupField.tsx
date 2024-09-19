@@ -1,11 +1,32 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Box, Image, Heading, Text, FormControl, FormLabel, Input, Button, FormErrorMessage, InputGroup, InputRightElement, Link, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Heading,
+  Text,
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  FormErrorMessage,
+  InputGroup,
+  InputRightElement,
+  Link,
+  IconButton,
+} from "@chakra-ui/react";
 import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
+import { signIn, SignInResponse } from "next-auth/react";
+import { redirect, useSearchParams } from "next/navigation";
+import axios from "axios";
+import requestClient from "@/lib/requestClient";
+import { ResponseDto, User } from "@/types";
+import { useRouter } from "next/navigation";
+import ErrorMessage from "./ErrorMessage";
 
 interface SignUpFieldProps {
   title: "supplier" | "pharmacy" | "vendor";
@@ -19,11 +40,19 @@ interface IFormInput {
 }
 
 export default function SignUpField({ title }: SignUpFieldProps) {
+  const searchParams = useSearchParams();
+
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>(
+    searchParams?.get("error") ?? null
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
+
+  const router = useRouter();
 
   const {
     register,
@@ -31,10 +60,33 @@ export default function SignUpField({ title }: SignUpFieldProps) {
     handleSubmit,
     watch,
   } = useForm<IFormInput>({
-    mode: 'onChange'
+    mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setIsLoading(true);
+    const response: SignInResponse = await signIn("signup", {
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      businessType: "supplier",
+      passwordConfirmation: data.password,
+      termsAndConditions: true,
+      callbackUrl:
+        searchParams.get("callbackUrl") || `${window.location.origin}/`,
+      redirect: false,
+    });
+
+    setIsLoading(false);
+
+    if (!response.error && response.ok && response.url) {
+      return (window.location.href = response.url);
+    }
+
+    setErrorMessage(response.error);
+
+    // router.push(`/auth/verification?token=${accessToken?.token}`);
+  };
 
   return (
     <>
@@ -58,8 +110,8 @@ export default function SignUpField({ title }: SignUpFieldProps) {
             {title === "supplier"
               ? " Supplier"
               : title === "pharmacy"
-                ? " Pharmacy or Hospital"
-                : " Vendor"}
+              ? " Pharmacy or Hospital"
+              : " Vendor"}
           </Heading>
           <Text fontSize="lg" color="gray.500">
             Create an account for free.
@@ -67,10 +119,20 @@ export default function SignUpField({ title }: SignUpFieldProps) {
         </Box>
 
         <form onSubmit={handleSubmit(onSubmit)}>
+          {errorMessage && (
+            <ErrorMessage
+              error={errorMessage}
+              onClose={() => setErrorMessage(null)}
+            />
+          )}
+
           <Box mb={10}>
             <FormControl isInvalid={!!errors.name?.message} mb={5}>
               <FormLabel htmlFor="name">
-                Business name <Text as="span" color="red.500">*</Text>
+                Business name{" "}
+                <Text as="span" color="red.500">
+                  *
+                </Text>
               </FormLabel>
               <Input
                 id="name"
@@ -83,7 +145,10 @@ export default function SignUpField({ title }: SignUpFieldProps) {
 
             <FormControl isInvalid={!!errors.email?.message} mb={5}>
               <FormLabel htmlFor="email">
-                Business email <Text as="span" color="red.500">*</Text>
+                Business email{" "}
+                <Text as="span" color="red.500">
+                  *
+                </Text>
               </FormLabel>
               <Input
                 id="email"
@@ -102,7 +167,10 @@ export default function SignUpField({ title }: SignUpFieldProps) {
 
             <FormControl isInvalid={!!errors.password?.message} mb={5}>
               <FormLabel htmlFor="password">
-                Password <Text as="span" color="red.500">*</Text>
+                Password{" "}
+                <Text as="span" color="red.500">
+                  *
+                </Text>
               </FormLabel>
               <InputGroup>
                 <Input
@@ -119,20 +187,29 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                 />
                 <InputRightElement>
                   <IconButton
-                    variant={'ghost'}
-                    h='1.75rem' size='sm'
+                    variant={"ghost"}
+                    h="1.75rem"
+                    size="sm"
                     onClick={toggleVisibility}
-                    bgColor={'transparent'}
+                    bgColor={"transparent"}
                     _hover={{
-                      bg: 'transparent'
+                      bg: "transparent",
                     }}
-                    icon={isVisible ? (
-                      <FiEyeOff size={16} className="text-default-400 pointer-events-none text-gray" />
-                    ) : (
-                      <IoEyeOutline size={16} className="text-default-400 pointer-events-none text-gray" />
-                    )} aria-label={""}
-                  >
-                  </IconButton>
+                    icon={
+                      isVisible ? (
+                        <FiEyeOff
+                          size={16}
+                          className="text-default-400 pointer-events-none text-gray"
+                        />
+                      ) : (
+                        <IoEyeOutline
+                          size={16}
+                          className="text-default-400 pointer-events-none text-gray"
+                        />
+                      )
+                    }
+                    aria-label={""}
+                  ></IconButton>
                 </InputRightElement>
               </InputGroup>
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
@@ -140,7 +217,10 @@ export default function SignUpField({ title }: SignUpFieldProps) {
 
             <FormControl isInvalid={!!errors.confirmPassword?.message} mb={5}>
               <FormLabel htmlFor="confirmPassword">
-                Confirm Password <Text as="span" color="red.500">*</Text>
+                Confirm Password{" "}
+                <Text as="span" color="red.500">
+                  *
+                </Text>
               </FormLabel>
               <InputGroup>
                 <Input
@@ -150,38 +230,46 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                   {...register("confirmPassword", {
                     required: "Confirm Password is required",
                     validate: (val) =>
-                      watch("password") !== val ? "Your passwords do not match" : undefined,
+                      watch("password") !== val
+                        ? "Your passwords do not match"
+                        : undefined,
                   })}
                 />
                 <InputRightElement>
                   <IconButton
-                    variant={'ghost'}
-                    h='1.75rem' size='sm'
+                    variant={"ghost"}
+                    h="1.75rem"
+                    size="sm"
                     onClick={toggleConfirmVisibility}
-                    bgColor={'transparent'}
+                    bgColor={"transparent"}
                     _hover={{
-                      bg: 'transparent'
+                      bg: "transparent",
                     }}
-                    icon={isConfirmVisible ? (
-                      <FiEyeOff size={16} className="text-default-400 pointer-events-none text-gray" />
-                    ) : (
-                      <IoEyeOutline size={16} className="text-default-400 pointer-events-none text-gray" />
-                    )} aria-label={""}
-                  >
-                  </IconButton>
+                    icon={
+                      isConfirmVisible ? (
+                        <FiEyeOff
+                          size={16}
+                          className="text-default-400 pointer-events-none text-gray"
+                        />
+                      ) : (
+                        <IoEyeOutline
+                          size={16}
+                          className="text-default-400 pointer-events-none text-gray"
+                        />
+                      )
+                    }
+                    aria-label={""}
+                  ></IconButton>
                 </InputRightElement>
               </InputGroup>
-              <FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
+              <FormErrorMessage>
+                {errors.confirmPassword?.message}
+              </FormErrorMessage>
             </FormControl>
           </Box>
 
           <Box mb={8}>
-            <Button
-              colorScheme="purple"
-              size="lg"
-              w="full"
-              type="submit"
-            >
+            <Button colorScheme="purple" size="lg" w="full" type="submit">
               Create account
             </Button>
 
@@ -192,6 +280,13 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                 size="lg"
                 w="full"
                 mt={4}
+                onClick={() =>
+                  signIn("google", {
+                    callbackUrl:
+                      searchParams.get("callbackUrl") ||
+                      `${window.location.origin}/`,
+                  })
+                }
               >
                 Sign up with Google
               </Button>
@@ -206,14 +301,18 @@ export default function SignUpField({ title }: SignUpFieldProps) {
               Log in
             </Link>{" "}
             or{" "}
-            <Link href={`${title !== "vendor" ? "/auth/signup/vendor" : "/auth/signup"}`} color="primary.500">
+            <Link
+              href={`${
+                title !== "vendor" ? "/auth/signup/vendor" : "/auth/signup"
+              }`}
+              color="primary.500"
+            >
               Sign Up as a
               {title !== "vendor" ? " Vendor" : " Supplier or Pharmacy"}
             </Link>
           </Text>
         </Box>
       </Box>
-
     </>
   );
 }
