@@ -19,9 +19,9 @@ import {
  } from "@chakra-ui/react"
 import DashboardCard from "./components/DashboardCard"
 import salesIcon from '@public/assets/images/Emphasis.svg'
-import pharmIcon from '@public/assets/Images/Emphasis1.svg'
-import productIcon from '@public/assets/Images/Emphasis2.svg'
-import categoryIcon from '@public/assets/Images/Emphasis3.svg'
+import pharmIcon from '@public/assets/images/Emphasis1.svg'
+import productIcon from '@public/assets/images/Emphasis2.svg'
+import categoryIcon from '@public/assets/images/Emphasis3.svg'
 import Image from "next/image"
 import Link from "next/link"
 import { 
