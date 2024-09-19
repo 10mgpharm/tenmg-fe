@@ -29,7 +29,7 @@ import {
 } from "@tanstack/react-table";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-import pill1 from '@public/assets/images/Rectangle 19718.png';
+import pill1 from '@public/assets/images/Rectangle19718.png';
 import pill2 from '@public/assets/images/medicine-8287535_1280.webp';
 import { ColumsProductFN } from "./components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
