@@ -22,7 +22,6 @@ import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { signIn, SignInResponse } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
-import axios from "axios";
 import requestClient from "@/lib/requestClient";
 import { ResponseDto, User } from "@/types";
 import { useRouter } from "next/navigation";

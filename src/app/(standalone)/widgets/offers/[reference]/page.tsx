@@ -26,9 +26,7 @@ import { TbCurrencyNaira } from "react-icons/tb";
 import { CiBank } from "react-icons/ci";
 import { FiEyeOff } from "react-icons/fi";
 import { IoLockClosedOutline } from "react-icons/io5";
-import DeclineIcon from "/assets/images/declineIcon.svg";
-import DeclinedEmoji from "@public/assets/images/declinedEmoji.svg";
-import LoanInnerWrapper from "../components/LoanInnerWrapper";
+import LoanInnerWrapper from "../../components/LoanInnerWrapper";
 import { IoIosArrowForward } from "react-icons/io";
 
 const options = [
@@ -82,7 +80,7 @@ export default function ExternalCreditOffer() {
 
   return (
     <div>
-      {status === "" && (
+      {status === "idle" && (
         <VStack spacing={10}>
           <Flex justifyContent="center">
             <Badge
@@ -227,7 +225,7 @@ export default function ExternalCreditOffer() {
         </div>
       )}
 
-      {status === "idle" && (
+      {status === "" && (
         <Box w="full">
           <Box my={20}>
             <LoanInnerWrapper
