@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React from "react";
-import TuyiiLogo from "@public/assets/images/tuyii_icon.png";
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 

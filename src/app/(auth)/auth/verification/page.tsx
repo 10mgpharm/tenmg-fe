@@ -5,30 +5,57 @@ import Image from "next/image";
 import React from "react";
 import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
-import OTPInput from "react-otp-input";
+import OtpInput from "react-otp-input";
 import { FaArrowLeft } from "react-icons/fa6";
 import { Button } from "@chakra-ui/react";
 import { redirect, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
+import { useRouter } from "next/navigation";
 
 interface IFormInput {
-  verification: number;
+  verification: string;
 }
 
 const VerificationComponent = () => {
   const session = useSession();
+  console.log("🚀 ~ VerificationComponent ~ session:", session);
   const data = session.data as NextAuthUserSession;
 
-  console.log('VerificationComponent', { data })
+  console.log("VerificationComponent", session);
 
   const searchParams = useSearchParams();
-  if (!searchParams?.get('token')) redirect('/auth/signup')
-  
+  const router = useRouter();
+
+  if (!searchParams?.get("token")) redirect("/auth/signup");
+
   const [otp, setOtp] = useState<string>("");
   const { handleSubmit } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  const token = searchParams.get("token");
+
+  const onSubmit: SubmitHandler<IFormInput> = async () => {
+    const response = await requestClient({ token: token }).post(
+      "/auth/verify-email",
+      {
+        email: data?.user?.email || "",
+        otp: otp,
+      }
+    );
+
+    if (response.statusText === "success") {
+      router.push(`/auth/business-information?token=${token}`);
+    }
+  };
+
+  const resendOtp = async () => {
+    const response = await requestClient({ token: token }).post("/resend-otp", {
+      type: "SIGNUP_EMAIL_VERIFICATION",
+    });
+
+    console.log("🚀 ~ response ~ response:", response);
+  };
 
   return (
     <AuthWrapper type="others">
@@ -48,37 +75,35 @@ const VerificationComponent = () => {
             </h3>
 
             <p className="text-gray-500 text-base font-normal leading-6 text-left">
-              We sent a verification link to jude@terisapharmacy.com
+              We sent a verification link to{" "}
+              {data?.user?.email || "jude@terisapharmacy.com"}
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="text-gray">
-              <OTPInput
+              {/* TODO: add otp responsiveness*/}
+              <OtpInput
                 value={otp}
                 onChange={setOtp}
-                numInputs={4}
-                inputType="number"
+                numInputs={6}
                 renderInput={(props) => <input {...props} />}
                 containerStyle={{
                   gap: "12px",
                   justifyContent: "center",
                 }}
                 inputStyle={{
-                  width: "80px",
-                  height: "80px",
+                  width: "70px",
+                  height: "70px",
                   borderRadius: "8px",
                   border: "1px solid #E2E8F0",
-                  fontSize: "48px",
+                  fontSize: "24px",
+                  textTransform: "uppercase",
                 }}
               />
 
               <div className="my-8 flex flex-col gap-4">
-                <Button
-                  variant={'solid'}
-                  size="lg"
-                  type="submit"
-                >
+                <Button variant={"solid"} size="lg" type="submit">
                   Verify email
                 </Button>
               </div>
@@ -87,16 +112,16 @@ const VerificationComponent = () => {
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 mb-8">
               Didn&apos;t receive the email?
-              <Button variant={'link'} pl={2}>
+              <Button variant={"link"} pl={2} onClick={resendOtp}>
                 Click to resend
               </Button>
             </p>
 
             <Button
-              variant={'link'}
+              variant={"link"}
               onClick={async () => {
                 await signOut();
-                redirect('/auth/signup');
+                router.push("/auth/signup");
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >

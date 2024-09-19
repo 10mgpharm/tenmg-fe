@@ -1,14 +1,14 @@
-import { NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import requestClient from './requestClient';
-import config from './config';
-import { ResponseDto, User } from '@/types';
+import { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import requestClient from "./requestClient";
+import config from "./config";
+import { ResponseDto, User } from "@/types";
 
 export const authOptions: NextAuthOptions = {
   secret: config.nextAuthSecret,
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 60 * 60 * 24, // 1hour,
   },
   jwt: {
@@ -16,21 +16,43 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      type: 'credentials',
+      id: "signup",
+      name: "Sign Up",
       credentials: {
-        email: {
-          label: 'Email',
-          type: 'email',
+        name: { label: "Name", type: "text" },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+        passwordConfirmation: {
+          label: "Password Confirmation",
+          type: "password",
         },
-        password: {
-          label: 'Password',
-          type: 'password',
+        businessType: {
+          label: "Business Type",
+          type: "text",
+        },
+        termsAndConditions: {
+          label: "Terms and Conditions",
+          type: "boolean",
         },
       },
       async authorize(credentials) {
         try {
-          const { email, password } = credentials;
-          const response = await requestClient().post('/auth/signin', { email, password });
+          const {
+            name,
+            email,
+            password,
+            passwordConfirmation,
+            businessType,
+            termsAndConditions,
+          } = credentials;
+          const response = await requestClient().post("/auth/signup", {
+            name,
+            email,
+            password,
+            passwordConfirmation,
+            businessType,
+            termsAndConditions,
+          });
           const { data, accessToken }: ResponseDto<User> = response.data;
 
           return {
@@ -51,11 +73,56 @@ export const authOptions: NextAuthOptions = {
           if (error instanceof Error) {
             console.error(error.message);
           } else {
-            console.error('An unknown error occurred');
+            console.error("An unknown error occurred during sign up");
           }
           return null;
         }
-      }
+      },
+    }),
+    CredentialsProvider({
+      type: "credentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
+      },
+      async authorize(credentials) {
+        const { email, password } = credentials;
+        try {
+          const response = await requestClient().post("/auth/signin", {
+            email,
+            password,
+          });
+          const { data, accessToken }: ResponseDto<User> = response.data;
+
+          return {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            active: data.active,
+            image: null,
+            emailVerifiedAt: data.emailVerifiedAt,
+            token: accessToken.token,
+            entityType: data.entityType,
+            businessName: data.businessName,
+            businessStatus: data.businessStatus,
+            owner: data.owner,
+            completeProfile: data.completeProfile,
+          };
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error(error.message);
+          } else {
+            console.error("An unknown error occurred");
+          }
+          return null;
+        }
+      },
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -69,25 +136,29 @@ export const authOptions: NextAuthOptions = {
         if (!params.user?.email) return false;
 
         // google login block completion block
-        if (params.account?.type === 'oauth' && params.account?.provider === 'google') {
-
+        if (
+          params.account?.type === "oauth" &&
+          params.account?.provider === "google"
+        ) {
           const { email, email_verified } = params.profile;
-          if (!email_verified) return false; 
+          if (!email_verified) return false;
 
           // check if user already exist and exchange token
-          const response = await requestClient({ token: params.account?.access_token })
-            .post(`/auth/google`, { email });
-          
-          const { data: existingUser, accessToken }: ResponseDto<User> = response.data;
+          const response = await requestClient({
+            token: params.account?.access_token,
+          }).post(`/auth/google`, { email });
+
+          const { data: existingUser, accessToken }: ResponseDto<User> =
+            response.data;
 
           if (!existingUser) {
             params.user.isNewUser = true;
-            params.user.token = params.account?.access_token,
-            params.user.account = {
-              providerAccountId: params.account?.providerAccountId,
-              type: params.account?.type,
-              provider: params.account?.provider,
-            }
+            (params.user.token = params.account?.access_token),
+              (params.user.account = {
+                providerAccountId: params.account?.providerAccountId,
+                type: params.account?.type,
+                provider: params.account?.provider,
+              });
             return true;
           } else {
             params.user = {
@@ -103,7 +174,7 @@ export const authOptions: NextAuthOptions = {
               businessStatus: existingUser.businessStatus,
               owner: existingUser.owner,
               completeProfile: existingUser.completeProfile,
-            }
+            };
           }
         }
 
@@ -113,15 +184,17 @@ export const authOptions: NextAuthOptions = {
           providerAccountId: params.account?.providerAccountId,
           type: params.account?.type,
           provider: params.account?.provider,
-        }
+        };
 
         return true;
-
       } catch (error) {
         if (error instanceof Error) {
           console.error(error.message);
         } else {
-          console.error('Error checking if user exists or has an invite', error);
+          console.error(
+            "Error checking if user exists or has an invite",
+            error
+          );
         }
         return false;
       }
@@ -139,7 +212,7 @@ export const authOptions: NextAuthOptions = {
 
         params.token.owner = params.user?.owner;
         params.token.completeProfile = params.user?.completeProfile;
-        
+
         params.token.token = params.user?.token;
         params.token.account = params.user?.account;
       }
@@ -156,6 +229,6 @@ export const authOptions: NextAuthOptions = {
     error: `/auth/signin`,
     verifyRequest: `/auth/verify-request`,
     signOut: `/auth/logout`,
-    newUser: `/auth/business-information`
+    newUser: `/auth/business-information`,
   },
 };
