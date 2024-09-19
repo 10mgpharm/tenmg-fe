@@ -29,7 +29,6 @@ import DeclineIcon from "@public/assets/images/declineIcon.svg";
 import FeedbackIcon from "@public/assets/images/feedbackIcon.svg";
 import DeclinedEmoji from "@public/assets/images/declinedEmoji.svg";
 import GtBankLogo from "@public/assets/images/gtBankLogo.svg";
-import Image from "next/image";
 import LoanInnerWrapper from "../components/LoanInnerWrapper";
 import { IoIosArrowForward } from "react-icons/io";
 
@@ -233,7 +232,7 @@ export default function ExternalCreditOffer() {
         <Box w="full">
           <Box my={20}>
             <LoanInnerWrapper
-              headerIcon={<Image src={GtBankLogo} alt="" />}
+              headerIcon={<img src={GtBankLogo} alt="" />}
               heading="AHMED OLANREWAJU"
             />
             <Center>
@@ -263,7 +262,7 @@ export default function ExternalCreditOffer() {
         <div>
           <VStack spacing={10} my={20}>
             <LoanInnerWrapper
-              headerIcon={<Image src={DeclineIcon} alt="" />}
+              headerIcon={<img src={DeclineIcon} alt="" />}
               heading="Are You Sure You Want to Decline?"
               text="We noticed that you're about to decline this offer. Before you
               make your final decision, Would you like to reconsider, or do you
@@ -328,7 +327,7 @@ export default function ExternalCreditOffer() {
       {status === "declined" && (
         <div>
           <LoanInnerWrapper
-            headerIcon={<Image src={FeedbackIcon} alt="" />}
+            headerIcon={<img src={FeedbackIcon} alt="feedback" />}
             heading="We would love your feedback"
             text="Please tell us why you declined our loan offer. This would help us improve our services"
           />
@@ -355,7 +354,7 @@ export default function ExternalCreditOffer() {
       {status === "" && (
         <div className="my-24">
           <LoanInnerWrapper
-            headerIcon={<Image src={DeclinedEmoji} alt="" />}
+            headerIcon={<img src={DeclinedEmoji} alt="Declined Emoji" />}
             heading="We're Sorry We Couldn't Meet Your Needs"
             text="We regret that we weren’t able to fulfil your request this time. Rest assured, will do our best to always find a solution that works for you"
           />
