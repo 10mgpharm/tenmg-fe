@@ -1,8 +1,24 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { ColumsFN } from './table';
-import { ColumnOrderState, RowSelectionState, SortingState, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { 
+    ColumnOrderState, 
+    RowSelectionState, 
+    SortingState, 
+    flexRender, 
+    getCoreRowModel, 
+    getSortedRowModel, 
+    useReactTable 
+} from '@tanstack/react-table';
+import { 
+    Table, 
+    TableContainer, 
+    Tbody, 
+    Td, 
+    Th,
+    Thead, 
+    Tr 
+} from '@chakra-ui/react';
 
 const data = [
     {id: "#3066", customer: "Olivia Rhye", phone: "+234-708-934-9832", date: "Jan 6, 2024", status: "Pending", total: "#2,000", address: "42 Deji Olamiju Street, Gbagada"},

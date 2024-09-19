@@ -3,18 +3,17 @@ import {
     ModalOverlay,
     ModalContent,
     ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
     Button,
     Text,
   } from '@chakra-ui/react'
 import Image from 'next/image'
-import qr from '@/assets/Images/QR Code.svg';
+import qr from '@public/assets/images/QR Code.svg';
 
 const OTPAuth = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {
   return (
-    <Modal  isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
             <ModalHeader>Set up OTP Authenticator</ModalHeader>

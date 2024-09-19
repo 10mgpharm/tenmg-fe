@@ -133,9 +133,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     signIn: async (params: any) => {
       try {
-        if (!params.user?.email) {
-          return false;
-        }
+        if (!params.user?.email) return false;
 
         if (
           params.account?.type === "oauth" &&
