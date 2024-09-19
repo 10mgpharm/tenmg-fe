@@ -8,7 +8,7 @@ import {
     Text,
 } from '@chakra-ui/react'
 
-import success from '@/assets/Images/success.svg'
+import success from '@public/assets/images/success.svg'
 import Image from 'next/image'
 
 const SuccessModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {

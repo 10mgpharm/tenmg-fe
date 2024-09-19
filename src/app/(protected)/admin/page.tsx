@@ -18,10 +18,10 @@ import {
     HStack
  } from "@chakra-ui/react"
 import DashboardCard from "./components/DashboardCard"
-import salesIcon from '@/assets/Images/Emphasis.svg'
-import pharmIcon from '@/assets/Images/Emphasis (1).svg'
-import productIcon from '@/assets/Images/Emphasis (2).svg'
-import categoryIcon from '@/assets/Images/Emphasis (3).svg'
+import salesIcon from '@public/assets/images/Emphasis.svg'
+import pharmIcon from '@public/assets/Images/Emphasis (1).svg'
+import productIcon from '@public/assets/Images/Emphasis (2).svg'
+import categoryIcon from '@public/assets/Images/Emphasis (3).svg'
 import Image from "next/image"
 import Link from "next/link"
 import { 
@@ -36,7 +36,6 @@ import {
 import { ColumsFN } from "./components/table"
 import { useState } from "react"
 import { loanData, records } from "@/data/mockdata"
-
 
 const Admin = () => {
 

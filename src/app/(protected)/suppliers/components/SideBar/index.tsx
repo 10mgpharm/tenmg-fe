@@ -144,7 +144,7 @@ const SideBar = () => {
                     await signOut();
                     router.back()
                   }}
-                  className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:bg-red-50"
+                  className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm w-full font-semibold leading-6 text-red-500 hover:bg-red-50"
                 >
                   <CiLogout
                     aria-hidden="true"

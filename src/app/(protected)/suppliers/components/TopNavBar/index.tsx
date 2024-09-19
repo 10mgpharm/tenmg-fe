@@ -10,13 +10,16 @@ import Image from "next/image"
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import avatar from '@/assets/Images/Avatar.svg';
-import Logo from '@/assets/Images/appLogo.svg';
+import avatar from '@public/assets/images/Avatar.svg';
+import Logo from '@public/assets/images/appLogo.svg';
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Tag } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 
 const TopNavBar = () => {
+
+  const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;
 
@@ -98,13 +101,16 @@ const TopNavBar = () => {
                 </a>
               </MenuItem>
               <MenuItem>
-                <a
-                  href={'#'}
+                <button
+                 
                   className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
-                  onClick={() => signOut()}
+                  onClick={async () => {
+                    await signOut();
+                    router.back()
+                  }}
                 >
                   Log out
-                </a>
+                </button>
               </MenuItem>
             </MenuItems>
           </Menu>

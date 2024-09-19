@@ -7,7 +7,7 @@ import { ArrowLeftIcon } from '@heroicons/react/20/solid'
 import { FaRegCopy } from "react-icons/fa";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
-import pills from '../../../../../assets/Images/pillImage.png';
+import pills from '@public/assets/images/pillImage.png';
 import { useRouter } from 'next/navigation';
 
 const items = [
