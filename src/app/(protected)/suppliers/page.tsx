@@ -3,7 +3,7 @@
 import NoticeCard from "./components/NoticeCard"
 import OverviewCard from "./components/OverviewCard/OverviewCard"
 
-import order from '@public/assets/images/total order.svg'
+import order from '@public/assets/images/totalorder.svg'
 import completedOrder from '@public/assets/images/target.svg'
 import totalProducts from '@public/assets/images/products.svg'
 import totalPattern from '@public/assets/images/bgPattern.svg';
