@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
+import LoanFooter from "../components/LoanFooter";
 
 export const metadata: Metadata = {
-    title: "10MG Credit | Repayments",
+  title: "10MG Credit | Repayments",
 };
 
 export default function SignInLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return <>{children}</>
+  return (
+    <div className="bg-gray-300 min-h-screen flex justify-center items-center gap-4 flex-col">
+      {children}
+      <LoanFooter />
+    </div>
+  );
 }

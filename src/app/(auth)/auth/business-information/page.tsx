@@ -54,13 +54,12 @@ const BusinessInformationComponent = () => {
       const response = await requestClient({ token: token }).post(
         "/auth/signup/complete",
         {
-          provider: provider,
-          // data?.businessType &&  businessType: data?.businessType || "",
           name: data?.businessName,
-          termsAndConditions: true,
           contactPhone: data?.businessPhone,
           contactPerson: data?.contactPersonName,
           contactPersonPosition: data?.contactPersonDesignation,
+          termsAndConditions: true,
+          provider: provider,
         }
       );
 
