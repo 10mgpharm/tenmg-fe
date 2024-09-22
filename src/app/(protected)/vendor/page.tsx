@@ -19,7 +19,7 @@ const Vendor = () => {
           className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
           onClick={async () => {
             await signOut();
-            router.back();
+            router.push('/');
           }}
         >
           Log out
