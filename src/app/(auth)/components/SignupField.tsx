@@ -27,6 +27,7 @@ import { ResponseDto, User } from "@/types";
 import { useRouter } from "next/navigation";
 import ErrorMessage from "./ErrorMessage";
 import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
 interface SignUpFieldProps {
   title: "supplier" | "pharmacy" | "vendor";
@@ -95,6 +96,8 @@ export default function SignUpField({ title }: SignUpFieldProps) {
       toast.error(loginResponse.error);
     } catch (error) {
       setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
     }
   };
 
