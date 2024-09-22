@@ -26,6 +26,7 @@ import requestClient from "@/lib/requestClient";
 import { ResponseDto, User } from "@/types";
 import { useRouter } from "next/navigation";
 import ErrorMessage from "./ErrorMessage";
+import { toast } from "react-toastify";
 
 interface SignUpFieldProps {
   title: "supplier" | "pharmacy" | "vendor";
@@ -35,7 +36,7 @@ interface IFormInput {
   name: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  passwordConfirmation: string;
 }
 
 export default function SignUpField({ title }: SignUpFieldProps) {
@@ -63,28 +64,38 @@ export default function SignUpField({ title }: SignUpFieldProps) {
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setIsLoading(true);
-    const response: SignInResponse = await signIn("signup", {
-      email: data.email,
-      password: data.password,
-      name: data.name,
-      businessType: "supplier",
-      passwordConfirmation: data.password,
-      termsAndConditions: true,
-      callbackUrl:
-        searchParams.get("callbackUrl") || `${window.location.origin}/`,
-      redirect: false,
-    });
+    try {
+      setIsLoading(true);
 
-    setIsLoading(false);
+      const response = await requestClient().post("/auth/signup", {
+        ...data,
+        termsAndConditions: true,
+        businessType: title === 'pharmacy' ? 'customer_pharmacy' : title,
+      });
+      const { status, message }: ResponseDto<User> = response.data;
 
-    if (!response.error && response.ok && response.url) {
-      return (window.location.href = response.url);
+      if (status === 'error') {
+        setIsLoading(false);
+        return setErrorMessage(message);
+      }
+
+      // if signup successful, auto login so next-auth can handle proper redirection to otp screen
+      const loginResponse: SignInResponse = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        callbackUrl: searchParams.get('callbackUrl') || `${window.location.origin}/`,
+        redirect: false,
+      });
+
+      setIsLoading(false);
+
+      if (!loginResponse.error && loginResponse.ok && loginResponse.url) {
+        return (window.location.href = loginResponse.url);
+      }
+      toast.error(loginResponse.error);
+    } catch (error) {
+      setIsLoading(false);
     }
-
-    setErrorMessage(response.error);
-
-    // router.push(`/auth/verification?token=${accessToken?.token}`);
   };
 
   return (
@@ -138,6 +149,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                 placeholder="Enter your business name"
                 {...register("name", { required: "Business Name is required" })}
                 type="text"
+                isDisabled={isLoading}
               />
               <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
             </FormControl>
@@ -153,6 +165,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                 id="email"
                 type="email"
                 placeholder="Enter your business email"
+                isDisabled={isLoading}
                 {...register("email", {
                   required: "Business Email is required",
                   pattern: {
@@ -176,6 +189,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                   id="password"
                   type={isVisible ? "text" : "password"}
                   placeholder="Enter your password"
+                  isDisabled={isLoading}
                   {...register("password", {
                     required: "Password is required",
                     minLength: {
@@ -194,6 +208,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                     _hover={{
                       bg: "transparent",
                     }}
+                    isDisabled={isLoading}
                     icon={
                       isVisible ? (
                         <FiEyeOff
@@ -214,8 +229,8 @@ export default function SignUpField({ title }: SignUpFieldProps) {
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={!!errors.confirmPassword?.message} mb={5}>
-              <FormLabel htmlFor="confirmPassword">
+            <FormControl isInvalid={!!errors.passwordConfirmation?.message} mb={5}>
+              <FormLabel htmlFor="passwordConfirmation">
                 Confirm Password{" "}
                 <Text as="span" color="red.500">
                   *
@@ -223,10 +238,11 @@ export default function SignUpField({ title }: SignUpFieldProps) {
               </FormLabel>
               <InputGroup>
                 <Input
-                  id="confirmPassword"
+                  id="passwordConfirmation"
                   type={isConfirmVisible ? "text" : "password"}
+                  isDisabled={isLoading}
                   placeholder="Enter your password"
-                  {...register("confirmPassword", {
+                  {...register("passwordConfirmation", {
                     required: "Confirm Password is required",
                     validate: (val) =>
                       watch("password") !== val
@@ -236,6 +252,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                 />
                 <InputRightElement>
                   <IconButton
+                    isDisabled={isLoading}
                     variant={"ghost"}
                     h="1.75rem"
                     size="sm"
@@ -262,13 +279,13 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                 </InputRightElement>
               </InputGroup>
               <FormErrorMessage>
-                {errors.confirmPassword?.message}
+                {errors.passwordConfirmation?.message}
               </FormErrorMessage>
             </FormControl>
           </Box>
 
           <Box mb={8}>
-            <Button colorScheme="purple" size="lg" w="full" type="submit">
+            <Button size="lg" w="full" type="submit" isDisabled={isLoading} isLoading={isLoading}>
               Create account
             </Button>
 

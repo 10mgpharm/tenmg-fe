@@ -16,70 +16,6 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      id: "signup",
-      name: "Sign Up",
-      credentials: {
-        name: { label: "Name", type: "text" },
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-        passwordConfirmation: {
-          label: "Password Confirmation",
-          type: "password",
-        },
-        businessType: {
-          label: "Business Type",
-          type: "text",
-        },
-        termsAndConditions: {
-          label: "Terms and Conditions",
-          type: "boolean",
-        },
-      },
-      async authorize(credentials) {
-        try {
-          const {
-            name,
-            email,
-            password,
-            passwordConfirmation,
-            businessType,
-            termsAndConditions,
-          } = credentials;
-          const response = await requestClient().post("/auth/signup", {
-            name,
-            email,
-            password,
-            passwordConfirmation,
-            businessType,
-            termsAndConditions,
-          });
-          const { data, accessToken }: ResponseDto<User> = response.data;
-
-          return {
-            id: data.id,
-            name: data.name,
-            email: data.email,
-            active: data.active,
-            image: null,
-            emailVerifiedAt: data.emailVerifiedAt,
-            token: accessToken.token,
-            entityType: data.entityType,
-            businessName: data.businessName,
-            businessStatus: data.businessStatus,
-            owner: data.owner,
-            completeProfile: data.completeProfile,
-          };
-        } catch (error) {
-          if (error instanceof Error) {
-            console.error(error.message);
-          } else {
-            console.error("An unknown error occurred during sign up");
-          }
-          return null;
-        }
-      },
-    }),
-    CredentialsProvider({
       type: "credentials",
       credentials: {
         email: {
@@ -215,6 +151,11 @@ export const authOptions: NextAuthOptions = {
 
         params.token.token = params.user?.token;
         params.token.account = params.user?.account;
+      }
+
+      if (params?.trigger === "update") {
+        params.token.completeProfile = params?.session.user?.completeProfile;
+        params.token.emailVerifiedAt = params?.session.user?.emailVerifiedAt;
       }
 
       return params.token;
