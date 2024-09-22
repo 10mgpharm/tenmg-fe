@@ -75,7 +75,7 @@ const VerificationComponent = () => {
             </h3>
 
             <p className="text-gray-500 text-base font-normal leading-6 text-left">
-              We sent a verification link to{" "}
+              We sent a verification code to{" "}
               {data?.user?.email || "jude@terisapharmacy.com"}
             </p>
           </div>
@@ -88,23 +88,13 @@ const VerificationComponent = () => {
                 onChange={setOtp}
                 numInputs={6}
                 renderInput={(props) => <input {...props} />}
-                containerStyle={{
-                  gap: "12px",
-                  justifyContent: "center",
-                }}
-                inputStyle={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "8px",
-                  border: "1px solid #E2E8F0",
-                  fontSize: "24px",
-                  textTransform: "uppercase",
-                }}
+                containerStyle="justify-center gap-2 lg:gap-4"
+                inputStyle="!w-10 h-10 md:!w-12 md:w-12 lg:!w-[60px] lg:h-[60px] rounded-[8px] border border-[#E2E8F0] text-md uppercase"
               />
 
               <div className="my-8 flex flex-col gap-4">
                 <Button variant={"solid"} size="lg" type="submit">
-                  Verify email
+                  Verify Email
                 </Button>
               </div>
             </div>

@@ -33,7 +33,6 @@ const BusinessInformationComponent = () => {
   const router = useRouter();
 
   const session = useSession();
-  console.log("🚀 ~ BusinessInformationComponent ~ session:", session);
   const data = session.data as NextAuthUserSession;
 
   const searchParams = useSearchParams();
@@ -96,11 +95,6 @@ const BusinessInformationComponent = () => {
     searchParams?.get("error") ?? null
   );
 
-  console.log(
-    "🚀 ~ BusinessInformationComponent ~ errorMessage:",
-    errorMessage
-  );
-
   useEffect(() => {
     if (data?.user) {
       setName(data?.user?.name);
@@ -152,7 +146,7 @@ const BusinessInformationComponent = () => {
               {/* Business Name */}
               <FormControl isInvalid={!!errors.businessName}>
                 <FormLabel htmlFor="businessName">
-                  Business name{" "}
+                  Business Name{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -173,7 +167,7 @@ const BusinessInformationComponent = () => {
               {provider !== "credentials" && (
                 <FormControl isInvalid={!!errors.businessName}>
                   <FormLabel htmlFor="businessType">
-                    Business type{" "}
+                    Business Type{" "}
                     <Text as="span" color="red.500">
                       *
                     </Text>
@@ -194,7 +188,7 @@ const BusinessInformationComponent = () => {
               {/* Business Email */}
               <FormControl isInvalid={!!errors.businessEmail}>
                 <FormLabel htmlFor="businessEmail">
-                  Business email{" "}
+                  Business Email{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -219,16 +213,21 @@ const BusinessInformationComponent = () => {
               {/* Business Phone Number */}
               <FormControl isInvalid={!!errors.businessPhone}>
                 <FormLabel htmlFor="businessPhone">
-                  Business phone number{" "}
+                  Business Phone Number{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
                 </FormLabel>
                 <Input
                   id="businessPhone"
+                  type="tel"
                   placeholder="Enter your business phone number"
                   {...register("businessPhone", {
-                    required: "Business phone number is required",
+                    required: "Business Phone Number is required",
+                    pattern: {
+                      value: /^[0-9\W]+$/, // Regex for numbers and symbols only
+                      message: "Only numbers and symbols are allowed",
+                    },
                   })}
                 />
                 <FormErrorMessage>
@@ -239,14 +238,14 @@ const BusinessInformationComponent = () => {
               {/* Contact Name */}
               <FormControl isInvalid={!!errors.contactPersonName}>
                 <FormLabel htmlFor="contactPersonName">
-                  Contact person&apos;s name{" "}
+                  Contact Person&apos;s Name{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
                 </FormLabel>
                 <Input
                   id="contactPersonName"
-                  placeholder="Enter your contact person's name"
+                  placeholder="Enter your Contact Person's Name"
                   {...register("contactPersonName", {
                     required: "Contact person's name is required",
                   })}
@@ -259,7 +258,7 @@ const BusinessInformationComponent = () => {
               {/* Contact Position */}
               <FormControl isInvalid={!!errors.contactPersonDesignation}>
                 <FormLabel htmlFor="contactPersonDesignation">
-                  Position of contact person{" "}
+                  Position of Contact Person{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -268,7 +267,7 @@ const BusinessInformationComponent = () => {
                   id="contactPersonDesignation"
                   placeholder="Managing Director"
                   {...register("contactPersonDesignation", {
-                    required: "Position of contact person is required",
+                    required: "Position of Contact Person is required",
                   })}
                 />
                 <FormErrorMessage>
@@ -289,7 +288,7 @@ const BusinessInformationComponent = () => {
             {/* Submit Button */}
             <Flex direction="column" gap={4} mb={8}>
               <Button colorScheme="purple" size="lg" type="submit" w="full">
-                Proceed to dashboard
+                Proceed to Dashboard
               </Button>
             </Flex>
           </form>
