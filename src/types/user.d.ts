@@ -40,3 +40,7 @@ export interface NextAuthUserSession extends Session {
         token?: string;
     },
 }
+
+export interface EmailVerified {
+    emailVerifiedAt: string
+}

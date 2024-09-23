@@ -3,6 +3,7 @@ import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const StoreFront = () => {
   const session = useSession();
@@ -19,7 +20,7 @@ const StoreFront = () => {
           className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
           onClick={async () => {
             await signOut();
-            router.back();
+            router.push('/');
           }}
         >
           Log out

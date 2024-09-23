@@ -149,7 +149,7 @@ const SideBar = () => {
                 <button
                   onClick={async () => {
                     await signOut();
-                    router.back()
+                    router.push("/");
                   }}
                   className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:bg-red-50"
                 >
