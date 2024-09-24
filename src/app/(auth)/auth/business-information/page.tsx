@@ -295,6 +295,7 @@ const BusinessInformationComponent = () => {
                 type="submit"
                 w="full"
                 isDisabled={isLoading}
+                isLoading={isLoading}
                 loadingText="Submitting..."
               >
                 Proceed to dashboard
