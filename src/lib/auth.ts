@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
             name: data.name,
             email: data.email,
             active: data.active,
-            image: null,
+            image: data?.avatar,
             emailVerifiedAt: data.emailVerifiedAt,
             token: accessToken.token,
             entityType: data.entityType,
@@ -79,43 +79,34 @@ export const authOptions: NextAuthOptions = {
           const { email, email_verified } = params.profile;
           if (!email_verified) return false;
 
+          console.log('google signin', params);
+
           // check if user already exist and exchange token
           const response = await requestClient({
             token: params.account?.access_token,
-          }).post(`/auth/google`, { email });
+          }).post(`/auth/google`, { email, provider: params.account?.provider });
 
-          const { data: existingUser, accessToken }: ResponseDto<User> =
-            response.data;
+          const { data: existingUser, accessToken }: ResponseDto<User> = response.data;
 
-          if (!existingUser) {
-            params.user.isNewUser = true;
-            (params.user.token = params.account?.access_token),
-              (params.user.account = {
-                providerAccountId: params.account?.providerAccountId,
-                type: params.account?.type,
-                provider: params.account?.provider,
-              });
-            return true;
-          } else {
-            params.user = {
-              id: existingUser.id,
-              name: existingUser.name,
-              email: existingUser.email,
-              active: existingUser.active,
-              image: null,
-              emailVerifiedAt: existingUser.emailVerifiedAt,
-              token: accessToken.token,
-              entityType: existingUser.entityType,
-              businessName: existingUser.businessName,
-              businessStatus: existingUser.businessStatus,
-              owner: existingUser.owner,
-              completeProfile: existingUser.completeProfile,
-            };
-          }
+          params.user = {
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
+            active: existingUser.active,
+            image: existingUser?.avatar,
+            emailVerifiedAt: existingUser.emailVerifiedAt,
+            token: accessToken.token,
+            entityType: existingUser.entityType,
+            businessName: existingUser.businessName,
+            businessStatus: existingUser.businessStatus,
+            owner: existingUser.owner,
+            completeProfile: existingUser.completeProfile,
+          };
+
+          console.log('google signin', params.user)
         }
 
         // email & password login completion block
-        params.user.isNewUser = false;
         params.user.account = {
           providerAccountId: params.account?.providerAccountId,
           type: params.account?.type,
