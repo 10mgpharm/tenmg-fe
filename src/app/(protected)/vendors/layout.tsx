@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import TopNavBar from "../suppliers/components/TopNavBar";
-import SideBar from "../suppliers/components/SideBar";
+import SideBar from "./components/SideBar";
 import Footer from "../suppliers/components/Footer";
 import config from "@/lib/config";
 import { getServerSession } from "next-auth";

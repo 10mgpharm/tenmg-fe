@@ -118,7 +118,6 @@ const VerificationComponent = () => {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="text-gray">
-              {/* TODO: add otp responsiveness*/}
               <OtpInput
                 value={otp}
                 onChange={setOtp}
