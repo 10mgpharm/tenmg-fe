@@ -29,7 +29,7 @@ export default async function VendorLayout({
     <>
       <TopNavBar />
       <SideBar />
-      <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB] min-h-screen">
+      <main className="lg:pl-72 lg:pt-[98px] bg-[#FEFEFE] min-h-screen">
         {children}
         <Footer />
       </main>
