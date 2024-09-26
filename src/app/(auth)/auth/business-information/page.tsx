@@ -52,26 +52,24 @@ const BusinessInformationComponent = () => {
     handleSubmit,
   } = useForm<IFormInput>({
     defaultValues: {
-      businessType: null
+      businessType: null,
     },
-    mode: 'onSubmit'
+    mode: "onSubmit",
   });
-
 
   useEffect(() => {
     if (sessionData?.user) {
       setName(sessionData?.user?.name);
       setProvider(sessionData?.user?.account?.provider);
       // set this from session if exist
-      setValue('businessName', sessionData?.user?.businessName);
-      setValue('businessEmail', sessionData?.user?.email);
+      setValue("businessName", sessionData?.user?.businessName);
+      setValue("businessEmail", sessionData?.user?.email);
     }
   }, [sessionData?.user, setValue]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-
     try {
-      setIsLoading(true)
+      setIsLoading(true);
 
       const response = await requestClient({ token: token }).post(
         "/auth/signup/complete",
@@ -83,26 +81,25 @@ const BusinessInformationComponent = () => {
       );
 
       if (response.status === 200) {
-        await session.update({ 
+        await session.update({
           user: {
             ...sessionData,
             completeProfile: true,
-            emailVerifiedAt: sessionData?.user?.emailVerifiedAt
-          }
+            emailVerifiedAt: sessionData?.user?.emailVerifiedAt,
+          },
         });
 
-        setIsLoading(false)
+        setIsLoading(false);
 
         return router.push(`/`);
       }
 
-      setIsLoading(false)
-      toast.error(`Sign up failed: ${response.data.message}`)
-
+      setIsLoading(false);
+      toast.error(`Sign up failed: ${response.data.message}`);
     } catch (error) {
       setIsLoading(false);
       const errorMessage = handleServerErrorMessage(error);
-      toast.error(`Sign up failed: ${errorMessage}`)
+      toast.error(`Sign up failed: ${errorMessage}`);
     }
   };
 
@@ -133,12 +130,12 @@ const BusinessInformationComponent = () => {
             <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
               Business info
             </Text>
-            {name && provider === 'google' && (
+            {name && provider === "google" && (
               <Text fontSize="lg" color="gray.500">
                 Hi <b>{name}</b>, Kindly provide us your business information.
               </Text>
             )}
-            {provider !== 'google' && (
+            {provider !== "google" && (
               <Text fontSize="lg" color="gray.500">
                 Kindly complete your business information to proceed.
               </Text>
@@ -151,7 +148,7 @@ const BusinessInformationComponent = () => {
               {/* Business Name */}
               <FormControl isInvalid={!!errors.businessName}>
                 <FormLabel htmlFor="businessName">
-                  Business name{" "}
+                  Business Name{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -173,7 +170,7 @@ const BusinessInformationComponent = () => {
               {provider !== "credentials" && (
                 <FormControl isInvalid={!!errors.businessName}>
                   <FormLabel htmlFor="businessType">
-                    Business type{" "}
+                    Business Type{" "}
                     <Text as="span" color="red.500">
                       *
                     </Text>
@@ -195,7 +192,7 @@ const BusinessInformationComponent = () => {
               {/* Business Email */}
               <FormControl isInvalid={!!errors.businessEmail}>
                 <FormLabel htmlFor="businessEmail">
-                  Business email{" "}
+                  Business Email{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -242,7 +239,7 @@ const BusinessInformationComponent = () => {
               {/* Contact Name */}
               <FormControl isInvalid={!!errors.contactPersonName}>
                 <FormLabel htmlFor="contactPersonName">
-                  Contact person&apos;s name{" "}
+                  Contact Person&apos;s Name{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -299,7 +296,7 @@ const BusinessInformationComponent = () => {
                 w="full"
                 isDisabled={isLoading}
                 isLoading={isLoading}
-                loadingText='Submitting...'
+                loadingText="Submitting..."
               >
                 Proceed to dashboard
               </Button>

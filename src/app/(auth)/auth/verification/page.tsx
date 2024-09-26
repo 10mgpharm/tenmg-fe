@@ -63,7 +63,7 @@ const VerificationComponent = () => {
             ...sessionData,
             completeProfile: false,
             emailVerifiedAt: data?.emailVerifiedAt,
-          }
+          },
         });
 
         router.push(`/auth/business-information?token=${token}`);
@@ -93,7 +93,7 @@ const VerificationComponent = () => {
     if (sessionData?.user) {
       setEmail(sessionData?.user?.email);
     }
-  }, [sessionData])
+  }, [sessionData]);
   return (
     <AuthWrapper type="others">
       <section className="md:w-1/2 px-6 md:px-12 lg:px-32 flex items-center">
@@ -112,8 +112,7 @@ const VerificationComponent = () => {
             </h3>
 
             <p className="text-gray-500 text-base font-normal leading-6 text-left">
-              We sent a verification link to{" "}
-              {email}
+              We sent a verification code to {email}
             </p>
           </div>
 
@@ -125,18 +124,8 @@ const VerificationComponent = () => {
                 onChange={setOtp}
                 numInputs={6}
                 renderInput={(props) => <input {...props} />}
-                containerStyle={{
-                  gap: "12px",
-                  justifyContent: "center",
-                }}
-                inputStyle={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "8px",
-                  border: "1px solid #E2E8F0",
-                  fontSize: "24px",
-                  textTransform: "uppercase",
-                }}
+                containerStyle="justify-center gap-2 lg:gap-4"
+                inputStyle="!w-10 h-10 md:!w-12 md:w-12 lg:!w-[60px] lg:h-[60px] rounded-[8px] border border-[#E2E8F0] text-md uppercase"
               />
 
               <div className="my-8 flex flex-col gap-4">
@@ -146,7 +135,7 @@ const VerificationComponent = () => {
                   type="submit"
                   isDisabled={isLoading || isLoadingResend}
                   isLoading={isLoading || isLoadingResend}
-                  loadingText='Verifying...'
+                  loadingText="Verifying..."
                 >
                   Verify email
                 </Button>
@@ -156,7 +145,12 @@ const VerificationComponent = () => {
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 mb-8">
               Didn&apos;t receive the email?
-              <Button variant={"link"} pl={2} onClick={resendOtp} isDisabled={isLoadingResend}>
+              <Button
+                variant={"link"}
+                pl={2}
+                onClick={resendOtp}
+                isDisabled={isLoadingResend}
+              >
                 Click to resend
               </Button>
             </p>
