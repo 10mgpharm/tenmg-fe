@@ -12,15 +12,15 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
   return [
     columnHelper.accessor("name", {
       header: () => (
-        <div className="pl-6">
+        <div className="">
           <p>Product</p>
         </div>
       ),
       cell: (info) => (
-        <div className="pl-6 flex items-center gap-2">
+        <div className="flex items-center gap-2">
             <Image src={info?.row?.original?.image} alt="" className="w-10 h-10 rounded-full"/>
             <p className="font-semibold">
-                {info?.row?.original?.name} 
+              {info?.row?.original?.name} 
             </p>
         </div>
       ),
@@ -112,8 +112,12 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
                     </MenuItem>
                     <MenuItem>Edit Product</MenuItem>
                     <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
-                    <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
-                    <MenuItem onClick={() => onOpen()} color="red.500">Delete Order</MenuItem>
+                    {
+                      info?.row?.original?.status === "Active" ? 
+                      <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
+                      : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
+                    }
+                    <MenuItem onClick={() => onOpen()} color="red.500">Delete Product</MenuItem>
                 </MenuList>
             </Menu>
           </Flex>

@@ -1,5 +1,6 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Text } from '@chakra-ui/react'
 import AllOrders from './components/AllOrders'
+import SearchComponent from './components/SearchComponent'
 const data = [
     {id: "#3066", customer: "Olivia Rhye", phone: "+234-708-934-9832", date: "Jan 6, 2024", status: "Pending", total: "#2,000", address: "42 Deji Olamiju Street, Gbagada"},
     {id: "#3065", customer: "Phoenix Baker", phone: "+234-708-934-9832", date: "Jan 6, 2024", status: "Cancelled", total: "#6,000", address: "42 Deji Olamiju Street, Gbagada"},
@@ -19,11 +20,12 @@ const OrderUI = () => {
     const pendingOrder = data.filter((item) => item.status === "Pending");
     const unpaidOrder = data.filter((item) => item.status === "Unpaid");
     const cancelledOrder = data.filter((item) => item.status === "Cancelled");
+
   return (
     <div className='p-8 min-h-[calc(100vh-155px)]'>
-        <HStack mb={4}>
-            <Text fontWeight={"semibold"} fontSize={"large"}>Orders</Text>
-
+        <HStack justify={"space-between"} mb={4}>
+            <Text fontWeight={"semibold"} fontSize={"2xl"}>Orders</Text>
+            <SearchComponent placeholder='Search for a customer'/>
         </HStack>
         <Tabs variant={"unstyled"}>
             <TabList>
@@ -60,19 +62,19 @@ const OrderUI = () => {
             </TabList>
             <TabPanels>
                 <TabPanel px={0}>
-                    <AllOrders data={data} />
+                    <AllOrders data={data} type="all" />
                 </TabPanel>
                 <TabPanel>
-                    <AllOrders data={completedOrder} />
+                    <AllOrders data={completedOrder} type="completed" />
                 </TabPanel>
                 <TabPanel>
-                    <AllOrders data={pendingOrder} />
+                    <AllOrders data={pendingOrder} type="pending" />
                 </TabPanel>
                 <TabPanel>
-                    <AllOrders data={unpaidOrder} />
+                    <AllOrders data={unpaidOrder} type="unpaided"/>
                 </TabPanel>
                 <TabPanel>
-                    <AllOrders data={cancelledOrder} />
+                    <AllOrders data={cancelledOrder} type="cancelled" />
                 </TabPanel>
             </TabPanels>
         </Tabs>

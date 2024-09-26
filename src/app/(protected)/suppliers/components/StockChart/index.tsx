@@ -22,7 +22,15 @@ const data = [
 ];
 
 export const colors = ['#16B364', '#EAAA08', '#D42E2F'];
+
 const StockChart = () => {
+  const formatYAxisTick = (tickItem: any) => {
+    if (tickItem >= 1000) {
+      return `#${tickItem.toLocaleString()}`;
+    }
+    return tickItem;
+  };
+
   return (
     <div style={{ width: '100%', height: 350 }}>
         <ResponsiveContainer>
@@ -33,12 +41,12 @@ const StockChart = () => {
                 margin={{
                 top: 5,
                 right: 0,
-                left: 10,
+                left: 0,
                 bottom: 5,
                 }}
             >
                 <XAxis dataKey={"name"}/>
-                <YAxis/>
+                <YAxis tickFormatter={formatYAxisTick}/>
                 <Bar barSize={50} dataKey={"uv"}>
                 {data?.map((entry, index) => (
                     <Cell key={`cell-${index}`} name={entry.name} fill={colors[index % colors.length]} />
