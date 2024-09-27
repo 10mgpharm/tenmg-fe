@@ -1,45 +1,110 @@
 "use client";
 
+import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
-import { Button, Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text, Image as ChakraImage } from "@chakra-ui/react";
+import {
+  Button,
+  Checkbox,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Text,
+  Image as ChakraImage,
+} from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
+import { handleServerErrorMessage } from "@/utils";
+import { toast } from "react-toastify";
 
 interface IFormInput {
-  name: string;
-  email: string;
-  phone: string;
-  contactName: string;
-  contactPosition: string;
+  businessName: string;
+  businessEmail: string;
+  businessType?: string;
+  contactPhone: string;
+  contactPersonName: string;
+  contactPersonPosition: string;
 }
 
 const BusinessInformationComponent = () => {
   const router = useRouter();
 
-  const session = useSession();
-  const data = session.data as NextAuthUserSession;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [name, setName] = useState<string>(null);
+  const [provider, setProvider] = useState<string>(null);
 
   const searchParams = useSearchParams();
-  if (!searchParams?.get('token')) redirect('/auth/signup')
+
+  if (!searchParams?.get("token")) redirect("/auth/signup");
+  const token = searchParams.get("token");
+
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
 
   const {
     register,
     formState: { errors },
+    setValue,
     handleSubmit,
-  } = useForm<IFormInput>();
+  } = useForm<IFormInput>({
+    defaultValues: {
+      businessType: null
+    },
+    mode: 'onSubmit'
+  });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
-
-  const [name, setName] = useState<string>(null);
 
   useEffect(() => {
-    if (data?.user) {
-      setName(data?.user?.name)
+    if (sessionData?.user) {
+      setName(sessionData?.user?.name);
+      setProvider(sessionData?.user?.account?.provider);
+      // set this from session if exist
+      setValue('businessName', sessionData?.user?.businessName);
+      setValue('businessEmail', sessionData?.user?.email);
     }
-  }, [data?.user])
+  }, [sessionData?.user, setValue]);
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+
+    try {
+      setIsLoading(true)
+
+      const response = await requestClient({ token: token }).post(
+        "/auth/signup/complete",
+        {
+          ...data,
+          termsAndConditions: true,
+          provider: provider,
+        }
+      );
+
+      if (response.status === 200) {
+        await session.update({ 
+          user: {
+            ...sessionData,
+            completeProfile: true,
+            emailVerifiedAt: sessionData?.user?.emailVerifiedAt
+          }
+        });
+
+        setIsLoading(false)
+
+        return router.push(`/`);
+      }
+
+      setIsLoading(false)
+      toast.error(`Sign up failed: ${response.data.message}`)
+
+    } catch (error) {
+      setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(`Sign up failed: ${errorMessage}`)
+    }
+  };
 
   return (
     <Flex minH="100vh" w="full" justifyContent="center">
@@ -68,38 +133,79 @@ const BusinessInformationComponent = () => {
             <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
               Business info
             </Text>
-            {name && <Text fontSize="lg" color="gray.500">
-              Hi <b>{name}</b>, Kindly provide us your business information.
-            </Text>}
-            {!name && <Text fontSize="lg" color="gray.500">
-            Kindly provide us your business information.
-            </Text>}
+            {name && provider === 'google' && (
+              <Text fontSize="lg" color="gray.500">
+                Hi <b>{name}</b>, Kindly provide us your business information.
+              </Text>
+            )}
+            {provider !== 'google' && (
+              <Text fontSize="lg" color="gray.500">
+                Kindly complete your business information to proceed.
+              </Text>
+            )}
           </Flex>
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <Flex direction="column" gap={5} mb={10}>
               {/* Business Name */}
-              <FormControl isInvalid={!!errors.name}>
-                <FormLabel htmlFor="name">Business name <Text as="span" color="red.500">*</Text></FormLabel>
+              <FormControl isInvalid={!!errors.businessName}>
+                <FormLabel htmlFor="businessName">
+                  Business name{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
-                  id="name"
+                  id="businessName"
+                  isDisabled={isLoading}
                   placeholder="Enter your business name"
-                  {...register("name", {
+                  {...register("businessName", {
                     required: "Business Name is required",
                   })}
                 />
-                <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.businessName?.message}
+                </FormErrorMessage>
               </FormControl>
 
+              {/* Business Type */}
+              {provider !== "credentials" && (
+                <FormControl isInvalid={!!errors.businessName}>
+                  <FormLabel htmlFor="businessType">
+                    Business type{" "}
+                    <Text as="span" color="red.500">
+                      *
+                    </Text>
+                  </FormLabel>
+                  <Input
+                    id="businessType"
+                    placeholder="Enter your business type"
+                    isDisabled={isLoading}
+                    {...register("businessType", {
+                      required: "Business Type is required",
+                    })}
+                  />
+                  <FormErrorMessage>
+                    {errors.businessType?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
+
               {/* Business Email */}
-              <FormControl isInvalid={!!errors.email}>
-                <FormLabel htmlFor="email">Business email <Text as="span" color="red.500">*</Text></FormLabel>
+              <FormControl isInvalid={!!errors.businessEmail}>
+                <FormLabel htmlFor="businessEmail">
+                  Business email{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
-                  id="email"
+                  id="businessEmail"
                   type="email"
                   placeholder="Enter your business email"
-                  {...register("email", {
+                  isDisabled={isLoading}
+                  {...register("businessEmail", {
                     required: "Business Email is required",
                     pattern: {
                       value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
@@ -107,50 +213,72 @@ const BusinessInformationComponent = () => {
                     },
                   })}
                 />
-                <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.businessEmail?.message}
+                </FormErrorMessage>
               </FormControl>
 
               {/* Business Phone Number */}
-              <FormControl isInvalid={!!errors.phone}>
-                <FormLabel htmlFor="phone">Business phone number <Text as="span" color="red.500">*</Text></FormLabel>
+              <FormControl isInvalid={!!errors.contactPhone}>
+                <FormLabel htmlFor="contactPhone">
+                  Business phone number{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
-                  id="phone"
+                  id="contactPhone"
                   placeholder="Enter your business phone number"
-                  {...register("phone", {
+                  isDisabled={isLoading}
+                  {...register("contactPhone", {
                     required: "Business phone number is required",
                   })}
                 />
-                <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.contactPhone?.message}
+                </FormErrorMessage>
               </FormControl>
 
               {/* Contact Name */}
-              <FormControl isInvalid={!!errors.contactName}>
-                <FormLabel htmlFor="contactName">
-                  Contact person&apos;s name <Text as="span" color="red.500">*</Text>
+              <FormControl isInvalid={!!errors.contactPersonName}>
+                <FormLabel htmlFor="contactPersonName">
+                  Contact person&apos;s name{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
                 </FormLabel>
                 <Input
-                  id="contactName"
+                  id="contactPersonName"
                   placeholder="Enter your contact person's name"
-                  {...register("contactName", {
+                  isDisabled={isLoading}
+                  {...register("contactPersonName", {
                     required: "Contact person's name is required",
                   })}
                 />
-                <FormErrorMessage>{errors.contactName?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.contactPersonName?.message}
+                </FormErrorMessage>
               </FormControl>
 
               {/* Contact Position */}
-              <FormControl isInvalid={!!errors.contactPosition}>
-                <FormLabel htmlFor="contactPosition">
-                  Position of contact person <Text as="span" color="red.500">*</Text>
+              <FormControl isInvalid={!!errors.contactPersonPosition}>
+                <FormLabel htmlFor="contactPersonPosition">
+                  Position of contact person{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
                 </FormLabel>
                 <Input
-                  id="contactPosition"
+                  id="contactPersonPosition"
                   placeholder="Managing Director"
-                  {...register("contactPosition", {
+                  isDisabled={isLoading}
+                  {...register("contactPersonPosition", {
                     required: "Position of contact person is required",
                   })}
                 />
-                <FormErrorMessage>{errors.contactPosition?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.contactPersonPosition?.message}
+                </FormErrorMessage>
               </FormControl>
             </Flex>
 
@@ -165,7 +293,14 @@ const BusinessInformationComponent = () => {
 
             {/* Submit Button */}
             <Flex direction="column" gap={4} mb={8}>
-              <Button colorScheme="purple" size="lg" type="submit" w="full">
+              <Button
+                size="lg"
+                type="submit"
+                w="full"
+                isDisabled={isLoading}
+                isLoading={isLoading}
+                loadingText='Submitting...'
+              >
                 Proceed to dashboard
               </Button>
             </Flex>
@@ -173,10 +308,10 @@ const BusinessInformationComponent = () => {
 
           <div className="text-center mb-3">
             <Button
-              variant={'link'}
+              variant={"link"}
               onClick={async () => {
                 await signOut();
-                router.back()
+                router.push("/auth/signup");
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >

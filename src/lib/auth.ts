@@ -1,14 +1,14 @@
-import { NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import requestClient from './requestClient';
-import config from './config';
-import { ResponseDto, User } from '@/types';
+import { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import requestClient from "./requestClient";
+import config from "./config";
+import { ResponseDto, User } from "@/types";
 
 export const authOptions: NextAuthOptions = {
   secret: config.nextAuthSecret,
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 60 * 60 * 24, // 1hour,
   },
   jwt: {
@@ -16,21 +16,24 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      type: 'credentials',
+      type: "credentials",
       credentials: {
         email: {
-          label: 'Email',
-          type: 'email',
+          label: "Email",
+          type: "email",
         },
         password: {
-          label: 'Password',
-          type: 'password',
+          label: "Password",
+          type: "password",
         },
       },
       async authorize(credentials) {
+        const { email, password } = credentials;
         try {
-          const { email, password } = credentials;
-          const response = await requestClient().post('/auth/signin', { email, password });
+          const response = await requestClient().post("/auth/signin", {
+            email,
+            password,
+          });
           const { data, accessToken }: ResponseDto<User> = response.data;
 
           return {
@@ -38,7 +41,7 @@ export const authOptions: NextAuthOptions = {
             name: data.name,
             email: data.email,
             active: data.active,
-            image: null,
+            image: data?.avatar,
             emailVerifiedAt: data.emailVerifiedAt,
             token: accessToken.token,
             entityType: data.entityType,
@@ -51,11 +54,11 @@ export const authOptions: NextAuthOptions = {
           if (error instanceof Error) {
             console.error(error.message);
           } else {
-            console.error('An unknown error occurred');
+            console.error("An unknown error occurred");
           }
           return null;
         }
-      }
+      },
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -69,59 +72,56 @@ export const authOptions: NextAuthOptions = {
         if (!params.user?.email) return false;
 
         // google login block completion block
-        if (params.account?.type === 'oauth' && params.account?.provider === 'google') {
-
+        if (
+          params.account?.type === "oauth" &&
+          params.account?.provider === "google"
+        ) {
           const { email, email_verified } = params.profile;
-          if (!email_verified) return false; 
+          if (!email_verified) return false;
+
+          console.log('google signin', params);
 
           // check if user already exist and exchange token
-          const response = await requestClient({ token: params.account?.access_token })
-            .post(`/auth/google`, { email });
-          
+          const response = await requestClient({
+            token: params.account?.access_token,
+          }).post(`/auth/google`, { email, provider: params.account?.provider });
+
           const { data: existingUser, accessToken }: ResponseDto<User> = response.data;
 
-          if (!existingUser) {
-            params.user.isNewUser = true;
-            params.user.token = params.account?.access_token,
-            params.user.account = {
-              providerAccountId: params.account?.providerAccountId,
-              type: params.account?.type,
-              provider: params.account?.provider,
-            }
-            return true;
-          } else {
-            params.user = {
-              id: existingUser.id,
-              name: existingUser.name,
-              email: existingUser.email,
-              active: existingUser.active,
-              image: null,
-              emailVerifiedAt: existingUser.emailVerifiedAt,
-              token: accessToken.token,
-              entityType: existingUser.entityType,
-              businessName: existingUser.businessName,
-              businessStatus: existingUser.businessStatus,
-              owner: existingUser.owner,
-              completeProfile: existingUser.completeProfile,
-            }
-          }
+          params.user = {
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
+            active: existingUser.active,
+            image: existingUser?.avatar,
+            emailVerifiedAt: existingUser.emailVerifiedAt,
+            token: accessToken.token,
+            entityType: existingUser.entityType,
+            businessName: existingUser.businessName,
+            businessStatus: existingUser.businessStatus,
+            owner: existingUser.owner,
+            completeProfile: existingUser.completeProfile,
+          };
+
+          console.log('google signin', params.user)
         }
 
         // email & password login completion block
-        params.user.isNewUser = false;
         params.user.account = {
           providerAccountId: params.account?.providerAccountId,
           type: params.account?.type,
           provider: params.account?.provider,
-        }
+        };
 
         return true;
-
       } catch (error) {
         if (error instanceof Error) {
           console.error(error.message);
         } else {
-          console.error('Error checking if user exists or has an invite', error);
+          console.error(
+            "Error checking if user exists or has an invite",
+            error
+          );
         }
         return false;
       }
@@ -139,9 +139,14 @@ export const authOptions: NextAuthOptions = {
 
         params.token.owner = params.user?.owner;
         params.token.completeProfile = params.user?.completeProfile;
-        
+
         params.token.token = params.user?.token;
         params.token.account = params.user?.account;
+      }
+
+      if (params?.trigger === "update") {
+        params.token.completeProfile = params?.session.user?.completeProfile;
+        params.token.emailVerifiedAt = params?.session.user?.emailVerifiedAt;
       }
 
       return params.token;
@@ -156,6 +161,6 @@ export const authOptions: NextAuthOptions = {
     error: `/auth/signin`,
     verifyRequest: `/auth/verify-request`,
     signOut: `/auth/logout`,
-    newUser: `/auth/business-information`
+    newUser: `/auth/business-information`,
   },
 };

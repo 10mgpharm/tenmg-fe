@@ -4,7 +4,7 @@ import Image from "next/image"
 import { FaEye } from "react-icons/fa"
 
 import folder from '@public/assets/images/Group 3.svg';
-import drugImage from '@public/assets/images/Medicine--Streamline-Lagos 1.svg'
+import drugImage from '@public/assets/images/MedicineStreamline-Lagos1.svg'
 import AddAccount from "./components/AddAccount";
 import { useDisclosure } from "@chakra-ui/react";
 import WithdrawFunds from "./components/WithdrawFunds";

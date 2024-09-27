@@ -15,6 +15,7 @@ import {
   Link,
   NumberInput,
   Stack,
+  Image as ChakraImage,
   StackDivider,
   Text,
   VStack,
@@ -25,12 +26,7 @@ import { TbCurrencyNaira } from "react-icons/tb";
 import { CiBank } from "react-icons/ci";
 import { FiEyeOff } from "react-icons/fi";
 import { IoLockClosedOutline } from "react-icons/io5";
-import DeclineIcon from "@public/assets/images/declineIcon.svg";
-import FeedbackIcon from "@public/assets/images/feedbackIcon.svg";
-import DeclinedEmoji from "@public/assets/images/declinedEmoji.svg";
-import GtBankLogo from "@public/assets/images/gtBankLogo.svg";
-import Image from "next/image";
-import LoanInnerWrapper from "../components/LoanInnerWrapper";
+import LoanInnerWrapper from "../../components/LoanInnerWrapper";
 import { IoIosArrowForward } from "react-icons/io";
 
 const options = [
@@ -84,7 +80,7 @@ export default function ExternalCreditOffer() {
 
   return (
     <div>
-      {status === "" && (
+      {status === "idle" && (
         <VStack spacing={10}>
           <Flex justifyContent="center">
             <Badge
@@ -229,11 +225,13 @@ export default function ExternalCreditOffer() {
         </div>
       )}
 
-      {status === "idle" && (
+      {status === "" && (
         <Box w="full">
           <Box my={20}>
             <LoanInnerWrapper
-              headerIcon={<Image src={GtBankLogo} alt="" />}
+              headerIcon={
+                <ChakraImage src="/assets/images/gtBankLogo.svg" alt="" />
+              }
               heading="AHMED OLANREWAJU"
             />
             <Center>
@@ -263,7 +261,9 @@ export default function ExternalCreditOffer() {
         <div>
           <VStack spacing={10} my={20}>
             <LoanInnerWrapper
-              headerIcon={<Image src={DeclineIcon} alt="" />}
+              headerIcon={
+                <ChakraImage src="/assets/images/declineIcon.svg" alt="" />
+              }
               heading="Are You Sure You Want to Decline?"
               text="We noticed that you're about to decline this offer. Before you
               make your final decision, Would you like to reconsider, or do you
@@ -328,7 +328,12 @@ export default function ExternalCreditOffer() {
       {status === "declined" && (
         <div>
           <LoanInnerWrapper
-            headerIcon={<Image src={FeedbackIcon} alt="" />}
+            headerIcon={
+              <ChakraImage
+                src="/assets/images/feedbackIcon.svg"
+                alt="feedback"
+              />
+            }
             heading="We would love your feedback"
             text="Please tell us why you declined our loan offer. This would help us improve our services"
           />
@@ -355,7 +360,7 @@ export default function ExternalCreditOffer() {
       {status === "" && (
         <div className="my-24">
           <LoanInnerWrapper
-            headerIcon={<Image src={DeclinedEmoji} alt="" />}
+            headerIcon={<ChakraImage src="" alt="Declined Emoji" />}
             heading="We're Sorry We Couldn't Meet Your Needs"
             text="We regret that we weren’t able to fulfil your request this time. Rest assured, will do our best to always find a solution that works for you"
           />

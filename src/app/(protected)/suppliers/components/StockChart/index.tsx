@@ -35,15 +35,15 @@ const StockChart = () => {
     <div style={{ width: '100%', height: 350 }}>
         <ResponsiveContainer>
             <BarChart
-                width={500}
-                height={400}
-                data={data}
-                margin={{
-                top: 5,
-                right: 0,
-                left: 0,
-                bottom: 5,
-                }}
+              width={500}
+              height={400}
+              data={data}
+              margin={{
+              top: 5,
+              right: 0,
+              left: 0,
+              bottom: 5,
+              }}
             >
                 <XAxis dataKey={"name"}/>
                 <YAxis tickFormatter={formatYAxisTick}/>

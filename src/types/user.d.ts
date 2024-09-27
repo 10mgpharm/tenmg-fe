@@ -26,6 +26,7 @@ export interface User {
     email: string;
     phone?: string;
     active: boolean;
+    avatar?: string;
     owner: boolean;
     emailVerifiedAt: string;
     entityType: string;
@@ -39,4 +40,8 @@ export interface NextAuthUserSession extends Session {
         account: Account
         token?: string;
     },
+}
+
+export interface EmailVerified {
+    emailVerifiedAt: string
 }
