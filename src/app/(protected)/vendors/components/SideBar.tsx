@@ -1,32 +1,39 @@
 "use client";
 
-import { Flex, VStack, Text, Divider, HStack, Stack } from "@chakra-ui/layout";
-import { Icon } from "@chakra-ui/icon";
-import { FaUser } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { Text, Box } from "@chakra-ui/layout";
 import { LuFileText } from "react-icons/lu";
 import { MdPercent } from "react-icons/md";
 import { SlPeople } from "react-icons/sl";
-import { FaBalanceScale } from "react-icons/fa";
+import { FaBalanceScale, FaHamburger } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineSwapHorizontalCircle } from "react-icons/md";
 import receipt from "@public/assets/images/receipt.svg";
 import bullseye from "@public/assets/images/bullseye.svg";
 
-import Link from "next/link";
-// import HamurgerMenu from "./HamurgerMenu";
 import {
   Cog6ToothIcon,
   HomeIcon,
   XMarkIcon,
   ReceiptPercentIcon,
 } from "@heroicons/react/24/outline";
-import { useMediaQuery } from "@chakra-ui/media-query";
 import { classNames } from "@/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { GiBullseye } from "react-icons/gi";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  IconButton,
+} from "@chakra-ui/react";
+import { useBreakpointValue } from "@chakra-ui/react";
+import { RxHamburgerMenu } from "react-icons/rx";
 
-const navigation = [
+const navigationItems = [
   { name: "Dashboard", href: "/vendors", icon: HomeIcon, current: true },
   {
     name: "Customers Management",
@@ -36,7 +43,7 @@ const navigation = [
   },
 ];
 
-const creditScore = [
+const creditScoreItems = [
   {
     name: "Transaction History",
     href: "/vendors/transactions",
@@ -51,7 +58,7 @@ const creditScore = [
   },
 ];
 
-const loans = [
+const loanItems = [
   {
     name: "Loan Management",
     href: "/vendors/transactions",
@@ -78,7 +85,7 @@ const loans = [
   },
 ];
 
-const system = [
+const systemItems = [
   {
     name: "Audit Logs",
     href: "/vendors/audit-logs",
@@ -93,128 +100,123 @@ const system = [
   },
 ];
 
-const SideBar = () => {
-  const [isScreenBelow560] = useMediaQuery("(max-width : 560px)");
+const smVariant = { navigation: "drawer", navigationButton: true };
+const mdVariant = { navigation: "sidebar", navigationButton: false };
 
-  const router = useRouter();
+const SideBar = () => {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const variants = useBreakpointValue({ base: smVariant, md: mdVariant });
+
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
   const pathname = usePathname();
 
-  if (isScreenBelow560) {
-    return "<HamurgerMenu />";
-  } else {
-    return (
-      <div className="hidden lg:mt-[98px] lg:fixed lg:z-50 lg:flex lg:w-72 lg:flex-col h-[calc(100vh-98px)] py-12 px-6">
-        <VStack spacing={8} alignItems="left" w="100%">
-          <Stack>
-            {navigation.map((item, id) => {
-              const isActive = item.href === pathname;
-              return (
-                <Link key={id} passHref href={item.href}>
-                  <HStack
-                    spacing={3}
-                    w="100%"
-                    _hover={{ color: "primary.500" }}
-                    cursor="pointer"
-                    py={2}
-                  >
-                    <Icon
-                      as={item.icon}
-                      color={isActive ? "primary.500" : "gray.500"}
-                    />
-                    <Text color={isActive ? "primary.500" : "gray.500"}>
-                      {item.name}
-                    </Text>
-                  </HStack>
-                </Link>
-              );
-            })}
-          </Stack>
+  useEffect(() => {
+    setSidebarOpen(false); // Close sidebar on route change
+  }, [pathname]);
 
-          <Stack>
-            <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
-              CREDIT SCORE
-            </Text>
-            {creditScore.map((item, id) => {
-              const isActive = item.href === pathname;
-              return (
-                <Link key={id} passHref href={item.href}>
-                  <HStack
-                    spacing={3}
-                    w="100%"
-                    _hover={{ color: "primary.500" }}
-                    cursor="pointer"
-                    py={2}
-                  >
-                    <Icon
-                      as={item.icon}
-                      color={isActive ? "primary.500" : "gray.500"}
-                    />
-                    <Text color={isActive ? "primary.500" : "gray.500"}>
-                      {item.name}
-                    </Text>
-                  </HStack>
-                </Link>
-              );
-            })}
-          </Stack>
-          <Stack>
-            <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
-              LOANS
-            </Text>
-            {loans.map((item, id) => {
-              const isActive = item.href === pathname;
-              return (
-                <Link key={id} passHref href={item.href}>
-                  <HStack
-                    spacing={3}
-                    w="100%"
-                    _hover={{ color: "primary.500" }}
-                    cursor="pointer"
-                    py={2}
-                  >
-                    <Icon
-                      as={item.icon}
-                      color={isActive ? "primary.500" : "gray.500"}
-                    />
-                    <Text color={isActive ? "primary.500" : "gray.500"}>
-                      {item.name}
-                    </Text>
-                  </HStack>
-                </Link>
-              );
-            })}
-          </Stack>
-          <Stack>
-            <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
-              SYSTEM
-            </Text>
-            {system.map((item, id) => {
-              const isActive = item.href === pathname;
-              return (
-                <Link key={id} passHref href={item.href}>
-                  <HStack
-                    spacing={3}
-                    w="100%"
-                    _hover={{ color: "primary.500" }}
-                    cursor="pointer"
-                    py={2}
-                  >
-                    <Icon
-                      as={item.icon}
-                      color={isActive ? "primary.500" : "gray.500"}
-                    />
-                    <Text color={isActive ? "primary.500" : "gray.500"}>
-                      {item.name}
-                    </Text>
-                  </HStack>
-                </Link>
-              );
-            })}
-          </Stack>
-        </VStack>
-      </div>
-    );
-  }
+  return variants.navigation === "drawer" ? (
+    <>
+      <Box p={4}>
+        <IconButton
+          variant="outline"
+          aria-label="Menu"
+          icon={<RxHamburgerMenu />}
+          onClick={toggleSidebar}
+        />
+      </Box>
+
+      <Drawer isOpen={isSidebarOpen} placement="left" onClose={toggleSidebar}>
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerBody>
+              <SidebarContent pathname={pathname} />
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
+    </>
+  ) : (
+    <Box
+      display={{ base: "none", lg: "flex" }}
+      mt={{ lg: "98px" }}
+      position="fixed"
+      zIndex={50}
+      w="72"
+      h="calc(100vh - 98px)"
+    >
+      <SidebarContent pathname={pathname} />
+    </Box>
+  );
 };
 
 export default SideBar;
+
+const SidebarContent = ({ pathname }: { pathname: string }) => (
+  <Box className="flex grow flex-col gap-y-5 md:overflow-y-auto bg-white md:px-6 pb-4 pt-8 mt-4 md:border-r border-gray-200">
+    <nav className="flex flex-1 flex-col">
+      <ul role="list" className="flex flex-1 flex-col gap-y-7">
+        <RenderSection
+          title="NAVIGATION"
+          items={navigationItems}
+          pathname={pathname}
+        />
+        <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
+          CREDIT SCORE
+        </Text>
+        <RenderSection
+          title="CREDIT SCORE"
+          items={creditScoreItems}
+          pathname={pathname}
+        />
+        <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
+          LOANS
+        </Text>
+        <RenderSection title="LOANS" items={loanItems} pathname={pathname} />
+        <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
+          SYSTEM
+        </Text>
+        <RenderSection title="SYSTEM" items={systemItems} pathname={pathname} />
+      </ul>
+    </nav>
+  </Box>
+);
+
+const RenderSection = ({
+  title,
+  items,
+  pathname,
+}: {
+  title: string;
+  items: any[];
+  pathname: string;
+}) => (
+  <ul role="list" className="-mx-2 space-y-8">
+    {items.map((item) => {
+      const isActive = item.href === pathname;
+      return (
+        <li key={item.name}>
+          <a href={item.href} className={getNavItemClassNames(isActive)}>
+            <item.icon
+              aria-label={item.name}
+              className={
+                isActive
+                  ? "text-white bg-primary-500 rounded-full p-2 w-10 h-10"
+                  : "text-gray-500 h-6 w-6"
+              }
+            />
+            {item.name}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+);
+
+const getNavItemClassNames = (isActive: boolean) =>
+  classNames(
+    isActive ? "bg-primary-50 text-primary-500 p-0.5" : "text-gray-500 px-3",
+    "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
+  );
