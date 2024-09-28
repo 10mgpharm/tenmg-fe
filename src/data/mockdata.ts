@@ -58,3 +58,16 @@ export const productReviews = [
     {id: 1, image: avatar, title: "MedFERTIL FOR MEN TABLETS - (CARNITINE , MULTIVITAMINS)", subtitle: "Pentazocine (NEML 23.1)", content: "This Property is a true masterpiece that combines luxurious living with the beauty of its surroundings." },
     {id: 1, image: avatar, title: "MedFERTIL FOR MEN TABLETS - (CARNITINE , MULTIVITAMINS)", subtitle: "Pentazocine (NEML 23.1)", content: "This Property is a true masterpiece that combines luxurious living with the beauty of its surroundings." },
 ]
+
+export const UserData = [
+    {id: 1, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+    {id: 2, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 3, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Pending"},
+    {id: 4, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+    {id: 5, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 6, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Pending"},
+    {id: 7, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+    {id: 8, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 9, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 10, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+]

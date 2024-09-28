@@ -28,7 +28,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
   { name: 'Orders', href: '/admin/orders', icon: BsCart2, current: false },
   { name: 'Products', href: '/admin/products', icon: FiShoppingBag, current: false },
-  { name: 'User Management', href: '/admin/usermanagement', icon: LuUsers, current: false },
+  { name: 'User Management', href: '/admin/users', icon: LuUsers, current: false },
   { name: 'Wallet', href: '/admin/wallet', icon: LuWallet, current: false },
   { name: 'Discount Code', href: '/admin/discountcode', icon: RiPercentLine, current: false },
   { name: 'Loan Management', href: '/dashboard/loanmanagement', icon: FaBalanceScale, current: false },
