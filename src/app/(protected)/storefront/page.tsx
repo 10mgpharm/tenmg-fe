@@ -2,13 +2,11 @@
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Text } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 const StoreFront = () => {
   const session = useSession();
   const data = session.data as NextAuthUserSession;
-  const router = useRouter();
 
   return (
     <div className="p-8 flex justify-center items-center h-screen">
@@ -20,7 +18,7 @@ const StoreFront = () => {
           className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
           onClick={async () => {
             await signOut();
-            router.push('/');
+            redirect('/');
           }}
         >
           Log out

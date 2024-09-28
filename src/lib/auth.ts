@@ -70,21 +70,29 @@ export const authOptions: NextAuthOptions = {
     signIn: async (params: any) => {
       try {
         if (!params.user?.email) return false;
-
-        // google login block completion block
-        if (
-          params.account?.type === "oauth" &&
-          params.account?.provider === "google"
-        ) {
-          const { email, email_verified } = params.profile;
-          if (!email_verified) return false;
-
-          console.log('google signin', params);
-
+        return true;
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error);
+        } else {
+          console.error(
+            "Error checking if user exists",
+            error
+          );
+        }
+        return false;
+      }
+    },
+    async jwt(params: any) {
+      if (params?.trigger === "signIn") { 
+        if (params.account?.provider === "google") {
           // check if user already exist and exchange token
           const response = await requestClient({
             token: params.account?.access_token,
-          }).post(`/auth/google`, { email, provider: params.account?.provider });
+          }).post(`/auth/google`, {
+            email: params.profile.email,
+            provider: params.account?.provider,
+          });
 
           const { data: existingUser, accessToken }: ResponseDto<User> = response.data;
 
@@ -102,31 +110,9 @@ export const authOptions: NextAuthOptions = {
             owner: existingUser.owner,
             completeProfile: existingUser.completeProfile,
           };
-
-          console.log('google signin', params.user)
         }
-
-        // email & password login completion block
-        params.user.account = {
-          providerAccountId: params.account?.providerAccountId,
-          type: params.account?.type,
-          provider: params.account?.provider,
-        };
-
-        return true;
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error(
-            "Error checking if user exists or has an invite",
-            error
-          );
-        }
-        return false;
       }
-    },
-    async jwt(params: any) {
+
       if (params.user) {
         params.token.id = params.user.id;
         params.token.email = params.user.email;
@@ -141,7 +127,11 @@ export const authOptions: NextAuthOptions = {
         params.token.completeProfile = params.user?.completeProfile;
 
         params.token.token = params.user?.token;
-        params.token.account = params.user?.account;
+        params.token.account = {
+          providerAccountId: params.account?.providerAccountId,
+          type: params.account?.type,
+          provider: params.account?.provider,
+        };
       }
 
       if (params?.trigger === "update") {

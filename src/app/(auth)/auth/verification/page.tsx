@@ -165,7 +165,7 @@ const VerificationComponent = () => {
               variant={"link"}
               onClick={async () => {
                 await signOut();
-                router.push("/auth/signup");
+                redirect("/auth/signup");
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >

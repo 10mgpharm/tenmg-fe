@@ -17,7 +17,7 @@ import { BsCart2, BsGraphUpArrow } from "react-icons/bs";
 import { FiShoppingBag } from 'react-icons/fi'
 import { CiLogout, CiWallet } from 'react-icons/ci'
 import { BiMessageDetail } from 'react-icons/bi'
-import { usePathname, useRouter } from 'next/navigation'
+import { redirect, usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 
 const navigation = [
@@ -31,10 +31,9 @@ const navigation = [
 ]
 
 const SideBar = () => {
-
-  const router = useRouter();
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  
   return (
     <div>
       <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
@@ -142,7 +141,7 @@ const SideBar = () => {
                 <button
                   onClick={async () => {
                     await signOut();
-                    router.push("/");
+                    redirect("/");
                   }}
                   className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm w-full font-semibold leading-6 text-red-500 hover:bg-red-50"
                 >

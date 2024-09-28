@@ -15,11 +15,9 @@ import Logo from '@public/assets/images/appLogo.svg';
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Tag } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const TopNavBar = () => {
-
-  const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;
 
@@ -106,7 +104,7 @@ const TopNavBar = () => {
                   className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
                   onClick={async () => {
                     await signOut();
-                    router.push("/");
+                    redirect("/");
                   }}
                 >
                   Log out
