@@ -15,15 +15,15 @@ import AccountSetup from "./components/AccountSetup";
 
 const Settings = () => {
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <h2 className="font-semibold text-2xl text-gray-600">Settings</h2>
       <p className="text-sm font-normal text-gray-500">
         Manage all your personal information and account settings.
       </p>
-      <Divider my={5} border="1px solid gray.200" />
-      <div className="mt-4">
+      <Divider my={[2, 5]} border="1px solid gray.200" />
+      <div className="mt-2 md:mt-4">
         <Tabs variant={"unstyled"}>
-          <TabList>
+          <TabList overflow={"auto"}>
             <Tab
               _selected={{
                 color: "primary.500",
@@ -32,7 +32,9 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text>Personal Information</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>
+                  Personal Information
+                </Text>
               </div>
             </Tab>
             <Tab
@@ -43,7 +45,7 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text>Password</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>Password</Text>
               </div>
             </Tab>
             <Tab
@@ -54,7 +56,7 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text>Notification</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>Notification</Text>
               </div>
             </Tab>
             <Tab
@@ -65,7 +67,7 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text>License Upload</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>License Upload</Text>
               </div>
             </Tab>
             <Tab
@@ -76,7 +78,7 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text>Team Members</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>Team Members</Text>
               </div>
             </Tab>
             <Tab
@@ -87,7 +89,9 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text>API Key and Web-hooks</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>
+                  API Key and Web-hooks
+                </Text>
               </div>
             </Tab>
           </TabList>
