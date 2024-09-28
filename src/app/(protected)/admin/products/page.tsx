@@ -4,7 +4,6 @@ import { useState } from "react";
 import { CiFilter, CiSearch } from "react-icons/ci"
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
-import EmptyOrder from "../orders/components/EmptyOrder";
 import { 
     Checkbox,
     Flex, 
@@ -30,21 +29,20 @@ import {
 } from "@tanstack/react-table";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-import { ColumsProductFN } from "./components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
-import GridList from "./components/GridList";
 import { classNames } from "@/utils";
-import DeleteModal from "./components/DeleteModal";
-import RestockModal from "./components/RestockModal";
-import DeactiveModal from "./components/DeactiveModal";
 import Link from "next/link";
-import FilterDrawer from "./components/FilterDrawer";
-import Pagination from "../components/Pagination";
+import EmptyOrder from "../../suppliers/orders/components/EmptyOrder";
+import Pagination from "../../suppliers/components/Pagination";
+import GridList from "../../suppliers/products/components/GridList";
+import DeleteModal from "../../suppliers/products/components/DeleteModal";
+import RestockModal from "../../suppliers/products/components/RestockModal";
+import DeactiveModal from "../../suppliers/products/components/DeactiveModal";
+import FilterDrawer from "../../suppliers/products/components/FilterDrawer";
 import { productData } from "@/data/mockdata";
+import { ColumsProductFN } from "./components/table";
 
-
-const Products = () => {
-
+const Page = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -76,64 +74,63 @@ const Products = () => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
-
+    
   return (
     <div className="p-8">
         <div className="flex justify-between">
-            <div className="mb-5">
-                <h3 className="font-semibold text-2xl">
-                    Products
-                    <span className="font-light text-gray-600">(9/40)</span>
-                </h3>
-                <div className="flex items-center gap-3 mt-5">
-                    <div className="border border-gray-300 rounded-md flex items-center gap-3 p-3 w-[350px]">
-                        <CiSearch className="w-5 h-5" />
-                        <input 
-                        type="text" 
-                        placeholder="Search for a product" 
-                        className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
+            <h3 className="font-semibold text-2xl">Products</h3>
+            <div className="mb-4 flex items-center gap-3">
+                <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-[350px]">
+                    <CiSearch className="w-5 h-5 text-gray-700" />
+                    <input 
+                    type="text" 
+                    placeholder="Search for a product" 
+                    className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
+                    />
+                </div>
+                <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
+                    <CiFilter className="w-5 h-5 text-gray-700" />
+                    <p className="text-gray-500 font-medium">Filter</p>
+                </div>
+                <Link 
+                href={'/admin/products/new'} 
+                className="bg-primary-500 text-white p-2 px-5 rounded-md">
+                    Add Product
+                </Link>
+                <div className="flex items-center gap-2">
+                    <div 
+                    className={
+                        classNames(
+                        currentView === PRODUCTVIEW.LIST ? 
+                        "bg-primary-50 rounded-md border border-primary-500" 
+                        : "", 
+                        "cursor-pointer p-2")
+                    }
+                    onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
+                    >
+                        <IoListOutline 
+                        className={classNames(currentView === PRODUCTVIEW.LIST ?
+                        "text-primary-500" : 
+                        "text-gray-600", 
+                        " w-5 h-5")} 
                         />
                     </div>
-                    <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 p-3 rounded-md flex items-center gap-2">
-                        <CiFilter className="w-5 h-5" />
-                        <p className="text-gray-500 font-medium">Filter</p>
+                    <div className={
+                        classNames(
+                        currentView === PRODUCTVIEW.GRID ? 
+                        "bg-primary-50 rounded-md border border-primary-500" 
+                        : "", 
+                        "cursor-pointer p-2")
+                    } 
+                    onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
+                        <RxDashboard 
+                        className={classNames(currentView === PRODUCTVIEW.GRID ? 
+                            "text-primary-500" 
+                            : "text-gray-600", 
+                            " w-5 h-5")}
+                        />
                     </div>
                 </div>
-            </div>
-            <div className="flex items-center gap-4">
-                <div 
-                className={
-                    classNames(
-                    currentView === PRODUCTVIEW.LIST ? 
-                    "bg-primary-50 rounded-md border border-primary-500" 
-                    : "", 
-                    "cursor-pointer p-2")
-                }
-                onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
-                >
-                    <IoListOutline 
-                    className={classNames(currentView === PRODUCTVIEW.LIST ?
-                    "text-primary-500" : 
-                    "text-gray-600", 
-                    " w-5 h-5")} 
-                    />
-                </div>
-                <div className={
-                    classNames(
-                    currentView === PRODUCTVIEW.GRID ? 
-                    "bg-primary-50 rounded-md border border-primary-500" 
-                    : "", 
-                    "cursor-pointer p-2")
-                } 
-                onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
-                    <RxDashboard 
-                    className={classNames(currentView === PRODUCTVIEW.GRID ? 
-                        "text-primary-500" 
-                        : "text-gray-600", 
-                        " w-5 h-5")}
-                    />
-                </div>
-                <Link href={'/suppliers/products/new'} className="bg-primary-500 text-white p-2 px-5 rounded-md">Add Product</Link>
             </div>
         </div>
         <div className="">
@@ -229,4 +226,4 @@ const Products = () => {
   )
 }
 
-export default Products
+export default Page
