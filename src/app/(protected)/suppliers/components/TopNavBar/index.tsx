@@ -49,22 +49,33 @@ const TopNavBar = () => {
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm">
-        <div className="flex items-center gap-36">
-          <div className="flex h-16 shrink-0 items-center my-4 ml-12">
-            <Image src={Logo} alt="" />
+        <div className="flex items-center gap-8 md:gap-36">
+          <div className="flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
+            <Image
+              src={Logo}
+              alt=""
+              className="w-10 h-10 md:w-[75px] md:h-[75px]"
+              width={75}
+              height={75}
+            />
           </div>
-          <div className="">
+          <div className="hidden md:block text-xs md:text-base">
             <h4 className="text-gray-700 font-semibold">
               Good Afternoon, {data?.user.name}
             </h4>
-            <p className="text-gray-400 text-sm">Monday, 20th May, 5:25pm</p>
+            <p className="text-gray-400 md:text-sm">Monday, 20th May, 5:25pm</p>
           </div>
         </div>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
           {data?.user?.entityType === "VENDOR" && (
-            <FormControl display="flex" alignItems="center">
+            <FormControl display="flex" alignItems="center" gap={2}>
               <Switch id="test-mode" />
-              <FormLabel htmlFor="test-mode" mb="0" color="error">
+              <FormLabel
+                htmlFor="test-mode"
+                mb="0"
+                color="error.700"
+                fontSize={{ base: "xs", md: "sm" }}
+              >
                 Test Mode
               </FormLabel>
             </FormControl>
