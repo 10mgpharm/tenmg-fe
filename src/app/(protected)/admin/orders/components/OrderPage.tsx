@@ -1,6 +1,5 @@
 "use client";
 import { useState } from 'react'
-import EmptyOrder from './EmptyOrder'
 import { 
     ColumnOrderState, 
     RowSelectionState, 
@@ -10,12 +9,13 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from '@tanstack/react-table';
-import { ColumsOrderFN } from './table';
+import EmptyOrder from '@/app/(protected)/suppliers/orders/components/EmptyOrder';
 import { Flex, HStack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Pagination from '../../components/Pagination';
+import Pagination from '@/app/(protected)/suppliers/components/Pagination';
+import { ColumsOrderFN } from './table';
 
-const AllOrders = ({data, type}: {data: any, type: string}) => {
+const OrderPage = ({data, type}: {data: any, type: string}) => {
 
     const onOpen = () => {}
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -42,7 +42,8 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
-  return (
+
+    return (
     <div>
         {
             data?.length === 0 
@@ -105,4 +106,4 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
   )
 }
 
-export default AllOrders
+export default OrderPage

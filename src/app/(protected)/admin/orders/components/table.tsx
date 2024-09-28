@@ -8,10 +8,10 @@ const columnHelper = createColumnHelper<any>();
 export function ColumsOrderFN(onOpen: () => void) {
 
   return [
-    columnHelper.accessor("createdAt", {
+    columnHelper.accessor("id", {
       header: () => (
         <div className="pl-6">
-          <p>ID</p>
+          <p>S/N</p>
         </div>
       ),
       cell: (info) => (
@@ -36,20 +36,42 @@ export function ColumsOrderFN(onOpen: () => void) {
       ),
       cell: (info) => (
         <div>
-            <p>{info.row.original?.customer} </p>
-            <p>{info.row.original?.phone} </p>
+            <p>{info.row.original?.name} </p>
         </div>
       ),
     }),
-    columnHelper.accessor("products", {
+    columnHelper.accessor("orderId", {
       header: ({ column }) => (
-        <p>Date</p>
+        <p>OrderId</p>
       ),
       cell: (info) => (
        <div className="">
-        <p>{info.row.original?.date}</p>
+        <p>{info.row.original?.orderId}</p>
        </div>
       ),
+    }),
+    columnHelper.accessor("cost", {
+      header: ({ column }) => (
+        <p>Cost</p>
+      ),
+      cell: (info) => (
+       <div className="">
+        <p>{info.row.original?.cost}</p>
+       </div>
+      ),
+    }),
+    columnHelper.accessor("date", {
+        header: ({ column }) => (
+          <p>Date</p>
+        ),
+        cell: (info) => {
+          return (
+            <div>
+             <p>{info?.row?.original?.date}</p>
+             <p className="text-gray-500">{info?.row?.original?.time}</p>
+            </div>
+          );
+        },
     }),
     columnHelper.accessor("isPublic", {
       header: ({ column }) => (
@@ -63,53 +85,18 @@ export function ColumsOrderFN(onOpen: () => void) {
             ? "bg-[#FFFAEB] text-[#F79009]" 
             : info?.row?.original?.status === "Cancelled" 
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "Completed"
+            : info?.row?.original?.status === "Shipped"
             ? "text-[#027A48] bg-[#ECFDF3]"
-            : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
+            : info?.row?.original?.status === "Completed"
+            ? "text-blue-500 bg-blue-50"
+            : "text-gray-500", 
+            " max-w-min p-1 px-2 rounded-2xl text-sm"
             )}>
                 <span className="w-3 h-3 rounded-full"></span>
                 {" "}
                {info?.row?.original?.status}
             </p>
           </div>
-        );
-      },
-    }),
-    columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p>Total</p>
-      ),
-      cell: (info) => {
-        return (
-          <div>
-           <p>{info?.row?.original?.total}</p>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p>Delivery Address</p>
-      ),
-      cell: (info) => {
-        return (
-          <div>
-           <p>{info?.row?.original?.address}</p>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p className="-pl-10">Actions</p>
-      ),
-      cell: (info) => {
-        return (
-          <Flex>
-            <Link href={'/suppliers/orders/3066'} className="text-primary-500">
-                View
-            </Link>
-          </Flex>
         );
       },
     }),

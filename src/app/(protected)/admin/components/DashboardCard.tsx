@@ -7,21 +7,20 @@ const DashboardCard = (
 ) => {
   return (
     <div className="border rounded-md px-5 py-8 bg-white space-y-2">
-        <p className="text-gray-500">{title}</p>
+        <p className="text-gray-600 font-medium">{title}</p>
         <div className="flex items-center justify-between">
             <h2 className="font-semibold text-3xl">{amount}</h2>
-
         </div>
         <div className="flex items-center">
             <div className="flex items-center">
                 {
                     changeType === "INCREASE" ? 
-                    <FaArrowUp className="w-3.5 h-3.5 text-green-400"/>
+                    <FaArrowUp className="w-3.5 h-3.5 text-green-600"/>
                     : <FaArrowDown className="w-3.5 h-3.5 text-red-400"/>
                 }
-                <p className={classNames(changeType === "INCREASE" ? "text-green-400" : "text-red-400", " text-sm ml-1")}>{percentage}</p>
+                <p className={classNames(changeType === "INCREASE" ? "text-green-600" : "text-red-400", " text-sm ml-1")}>{percentage}</p>
             </div>
-            <p className="text-gray-400 text-sm ml-1.5">{timeStamp}</p>
+            <p className="text-gray-500 text-sm ml-1.5">{timeStamp}</p>
         </div>
     </div>
   )

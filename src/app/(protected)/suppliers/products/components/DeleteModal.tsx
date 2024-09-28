@@ -15,11 +15,11 @@ const DeleteModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) 
                 <div className="text-center mb-8">
                     <h3 className='text-xl font-semibold'>Delete Product</h3>
                     <p className='text-sm text-gray-500 mt-2'>Deleting this product will remove it permanently from your store. Are you sure?</p>
-                    <div className="flex flex-col gap-3 mt-8">
+                    <div className="flex flex-col gap-1 mt-8">
                         <button className='bg-red-600 text-white p-3 rounded-md'>
                             Yes, Delete Product
                         </button>
-                        <button className='cursor-pointer mt-2' onClick={() => onClose()}>Cancel</button>
+                        <button className='cursor-pointer mt-2 p-3 rounded-md border' onClick={() => onClose()}>Cancel</button>
                     </div>
                 </div>
             </ModalBody>

@@ -19,7 +19,7 @@ const GridList = ({data}: {data: any}) => {
             data?.map((item: any, index: number) => (
                 <div key={index} className="bg-white p-2 rounded-md relative">
                     <div className="absolute top-4 inset-x-4 flex items-center justify-between">
-                        <div className={classNames(item.status === "Active" ? "bg-green-50 text-green-500" : "bg-red-50 text-red-500" , ' max-w-max px-2 rounded-full')}>
+                        <div className={classNames(item.status === "Available" ? "bg-green-50 text-green-500" : "bg-red-50 text-red-500" , ' max-w-max px-2 rounded-full')}>
                             <Text fontSize={"13px"}>{item.status}</Text>
                         </div>
                         <Menu>

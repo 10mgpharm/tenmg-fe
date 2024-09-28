@@ -75,19 +75,19 @@ const SingleOrder = () => {
                         <Text justifySelf={"flex-end"}>NIL</Text>
                     </SimpleGrid>
                     <Flex justify={"space-between"} alignItems={"center"}>
-                        <Text fontWeight={"semibold"} fontSize={"large"}>Shipping Fee</Text>
+                        <Text fontWeight={"semibold"} fontSize={"large"}>Total</Text>
                         <Text fontWeight={"semibold"} fontSize={"large"}>₦1,300,000</Text>
                     </Flex>
                 </Stack>
                 <Stack gap={6} bg={"white"} p={5} borderRadius={"10px"}>
                     <Flex justify={"space-between"} alignItems={"center"}>
-                        <Text fontWeight={"semibold"} fontSize={"large"}>Payment Status</Text>
+                        <Text fontWeight={"semibold"} fontSize={"medium"}>Payment Status</Text>
                         <Box bg={"#ECFDF3"} px={2} color={"#027A48"} borderRadius={"20px"} maxW={"fit-content"}>
                             <Text fontSize={"13px"} borderRadius={"3xl"}>Paid</Text>
                         </Box>
                     </Flex> 
                     <Flex justify={"space-between"} alignItems={"center"}>
-                        <Text fontWeight={"semibold"} fontSize={"large"}>Payment Method</Text>
+                        <Text fontWeight={"semibold"} fontSize={"medium"}>Payment Method</Text>
                         <Text fontWeight={"semibold"} fontSize={"small"}>Debit Card</Text>
                     </Flex> 
                 </Stack>
