@@ -113,7 +113,7 @@ export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
                       :
                         <>
                         <MenuItem onClick={() => onOpenDeactivate()}>Approve</MenuItem>
-                        <MenuItem onClick={() => onOpenDeactivate()}>Diapprove</MenuItem>
+                        <MenuItem onClick={() => onOpenDeactivate()}>Disapprove</MenuItem>
                         </>
                     }
                     <MenuItem onClick={() => onOpen()} color="red.500">Delete</MenuItem>
