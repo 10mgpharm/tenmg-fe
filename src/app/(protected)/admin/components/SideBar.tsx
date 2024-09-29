@@ -18,7 +18,7 @@ import { RiPercentLine } from "react-icons/ri";
 import { FiShoppingBag } from 'react-icons/fi'
 import { CiLogout } from 'react-icons/ci'
 import { BiMessageDetail } from 'react-icons/bi'
-import { usePathname, useRouter } from 'next/navigation'
+import { redirect, usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import { LuUsers, LuWallet } from 'react-icons/lu'
 import { FaBalanceScale } from 'react-icons/fa'
@@ -39,8 +39,6 @@ const navigation = [
 ]
 
 const SideBar = () => {
-
-  const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false)
   return (
@@ -150,7 +148,7 @@ const SideBar = () => {
                 <button
                   onClick={async () => {
                     await signOut();
-                    router.push("/");
+                    redirect("/");
                   }}
                   className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:bg-red-50"
                 >

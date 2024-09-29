@@ -4,8 +4,8 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import config from "@/lib/config";
-import TenmgLogo from "@public/assets/images/tenmg_logo.png";
-import TenmgLogoThumbnailImage from "@public/assets/images/tenmg_logo.png";
+import TenmgLogo from "@public/icons/logo.svg";
+import TenmgLogoThumbnailImage from "@public/icons/logo.svg";
 import Provider from "./provider";
 
 const fontSans = Lato({

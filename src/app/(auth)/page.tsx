@@ -16,12 +16,9 @@ export default async function Page() {
   if (!session?.user?.email) redirect("/auth/signin");
 
   if (
-    session?.user?.account?.provider === "google" &&
-    !session?.user?.completeProfile
+    session?.user?.account?.provider === "credentials" &&
+    !session?.user?.emailVerifiedAt
   )
-    redirect(`/auth/business-information?token=${session?.user?.token}`);
-
-  if (!session?.user?.emailVerifiedAt)
     redirect(`/auth/verification?token=${session?.user?.token}`);
 
   if (!session?.user?.completeProfile)

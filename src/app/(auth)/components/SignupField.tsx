@@ -21,7 +21,7 @@ import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { signIn, SignInResponse } from "next-auth/react";
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import requestClient from "@/lib/requestClient";
 import { ResponseDto, User } from "@/types";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,7 @@ interface SignUpFieldProps {
 }
 
 interface IFormInput {
+  fullname: string;
   name: string;
   email: string;
   password: string;
@@ -105,7 +106,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
     <>
       <Box px={{ base: 6, md: 12, lg: 20, xl: 32 }}>
         <Image
-          src="/assets/images/tenmg_logo.png"
+          src={"/icons/logo.svg"}
           alt="tenmg"
           mb={{ md: 8 }}
           boxSize="75px"
@@ -141,6 +142,23 @@ export default function SignUpField({ title }: SignUpFieldProps) {
           )}
 
           <Box mb={10}>
+            <FormControl isInvalid={!!errors.fullname?.message} mb={5}>
+              <FormLabel htmlFor="fullname">
+                Get started with your name{" "}
+                <Text as="span" color="red.500">
+                  *
+                </Text>
+              </FormLabel>
+              <Input
+                id="fullname"
+                placeholder="Enter your name"
+                {...register("fullname", { required: "Your name is required" })}
+                type="text"
+                isDisabled={isLoading}
+              />
+              <FormErrorMessage>{errors.fullname?.message}</FormErrorMessage>
+            </FormControl>
+
             <FormControl isInvalid={!!errors.name?.message} mb={5}>
               <FormLabel htmlFor="name">
                 Business Name{" "}

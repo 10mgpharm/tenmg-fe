@@ -5,15 +5,14 @@ import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import avatar from "@public/assets/images/Avatar.svg";
-import Logo from "@public/assets/images/appLogo.svg";
+import avatar from '@public/assets/images/Avatar.svg';
+import Logo from '@public/icons/logo.svg';
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { FormControl, FormLabel, Switch, Tag } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const TopNavBar = () => {
-  const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;
 
@@ -131,7 +130,7 @@ const TopNavBar = () => {
                   className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
                   onClick={async () => {
                     await signOut();
-                    router.push("/");
+                    redirect("/");
                   }}
                 >
                   Log out
