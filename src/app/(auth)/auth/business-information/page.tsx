@@ -16,7 +16,7 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
@@ -49,6 +49,7 @@ const BusinessInformationComponent = () => {
     register,
     formState: { errors },
     setValue,
+    control,
     handleSubmit,
   } = useForm<IFormInput>({
     defaultValues: {
@@ -216,25 +217,39 @@ const BusinessInformationComponent = () => {
               </FormControl>
 
               {/* Business Phone Number */}
-              <FormControl isInvalid={!!errors.contactPhone}>
-                <FormLabel htmlFor="contactPhone">
-                  Business phone number{" "}
-                  <Text as="span" color="red.500">
-                    *
-                  </Text>
-                </FormLabel>
-                <Input
-                  id="contactPhone"
-                  placeholder="Enter your business phone number"
-                  isDisabled={isLoading}
-                  {...register("contactPhone", {
-                    required: "Business phone number is required",
-                  })}
-                />
-                <FormErrorMessage>
-                  {errors.contactPhone?.message}
-                </FormErrorMessage>
-              </FormControl>
+              <Controller
+                name="contactPhone"
+                control={control}
+                rules={{
+                  required: "Business phone number is required",
+                }}
+                render={({ field }) => (
+                  <FormControl isInvalid={!!errors.contactPhone}>
+                    <FormLabel htmlFor="contactPhone">
+                      Business Phone Number{" "}
+                      <Text as="span" color="red.500">
+                        *
+                      </Text>
+                    </FormLabel>
+                    <Input
+                      {...field}
+                      id="contactPhone"
+                      placeholder="Enter your business phone number"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const sanitizedValue = value.replace(
+                          /[^0-9!@#$%^&*()_+=\-[\]{};':"\\|,.<>/?]/g,
+                          ""
+                        );
+                        field.onChange(sanitizedValue);
+                      }}
+                    />
+                    <FormErrorMessage>
+                      {errors.contactPhone?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                )}
+              />
 
               {/* Contact Name */}
               <FormControl isInvalid={!!errors.contactPersonName}>
