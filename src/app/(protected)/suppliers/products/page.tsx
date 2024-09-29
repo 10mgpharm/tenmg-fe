@@ -6,6 +6,7 @@ import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import EmptyOrder from "../orders/components/EmptyOrder";
 import { 
+    Checkbox,
     Flex, 
     HStack, 
     Table, 
@@ -29,8 +30,6 @@ import {
 } from "@tanstack/react-table";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-import pill1 from '@public/assets/images/Rectangle19718.png';
-import pill2 from '@public/assets/images/medicine-8287535_1280.webp';
 import { ColumsProductFN } from "./components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
 import GridList from "./components/GridList";
@@ -40,18 +39,9 @@ import RestockModal from "./components/RestockModal";
 import DeactiveModal from "./components/DeactiveModal";
 import Link from "next/link";
 import FilterDrawer from "./components/FilterDrawer";
+import Pagination from "../components/Pagination";
+import { productData } from "@/data/mockdata";
 
-export const data = [
-    {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
-    {name: "Synthetic opioids", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Inactive', image: pill2},
-    {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
-    {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
-    {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
-    {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
-    {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
-    {name: "Global Pentazocine", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
-    {name: "Global Pentazocine", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Inactive', image: pill2},
-]
 
 const Products = () => {
 
@@ -70,7 +60,7 @@ const Products = () => {
     // const memoizedData = useMemo(() => data, [data]);
 
     const table = useReactTable({
-        data: data,
+        data: productData,
         columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate),
         onSortingChange: setSorting,
         state: {
@@ -148,7 +138,7 @@ const Products = () => {
         </div>
         <div className="">
         {
-            data?.length === 0 
+            productData?.length === 0 
             ? <EmptyOrder /> : 
             currentView === PRODUCTVIEW.LIST ?
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -156,6 +146,20 @@ const Products = () => {
                     <Thead bg={"#F2F4F7"}>
                     {table?.getHeaderGroups()?.map((headerGroup) => (
                         <Tr key={headerGroup.id}>
+                        <Th textTransform={"initial"} px="0px">
+                            <Checkbox
+                            _checked={{
+                                "& .chakra-checkbox__control": {
+                                background: "#1A70B8",
+                                // borderColor: "#D0D5DD",
+                                borderRadius: 5,
+                                },
+                            }}
+                            marginLeft={5}
+                            isChecked={table.getIsAllRowsSelected()}
+                            onChange={table.getToggleAllRowsSelectedHandler()}
+                            />
+                        </Th>
                         {headerGroup.headers?.map((header) => (
                             <Th
                             textTransform={"initial"}
@@ -176,6 +180,20 @@ const Products = () => {
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
                     {table?.getRowModel()?.rows?.map((row) => (
                         <Tr key={row.id}>
+                        <Td px="0px">
+                            <Checkbox
+                            _checked={{
+                                "& .chakra-checkbox__control": {
+                                background: "#1A70B8",
+                                // borderColor: "#D0D5DD",
+                                borderRadius: 5,
+                                },
+                            }}
+                            marginLeft={5}
+                            isChecked={row.getIsSelected()}
+                            onChange={row.getToggleSelectedHandler()}
+                            />
+                        </Td>
                         {row.getVisibleCells()?.map((cell) => (
                             <Td key={cell.id} px="0px">
                             {flexRender(
@@ -193,13 +211,14 @@ const Products = () => {
                         <FaChevronLeft className='text-gray-500' />
                         <Text className='text-gray-500'>Prev</Text>
                     </Flex>
+                    <Pagination />
                     <Flex alignItems={"center"} gap={2}>
                         <Text className='text-gray-500'>Next</Text>
                         <FaChevronRight className='text-gray-500' />
                     </Flex>
                 </HStack>
             </TableContainer>
-            : <GridList data={data}/>
+            : <GridList data={productData}/>
         }
         </div>
         <DeleteModal isOpen={isOpen} onClose={onClose}/>

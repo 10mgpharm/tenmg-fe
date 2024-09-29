@@ -17,7 +17,7 @@ const RestockModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void})
                     </FormControl>
                     <FormControl>
                         <FormLabel>Current Stock</FormLabel>
-                        <Input placeholder='0'/>
+                        <Input type='number' placeholder='0'/>
                     </FormControl>
                     <FormControl>
                         <FormLabel>Desired Quantity</FormLabel>
@@ -25,6 +25,7 @@ const RestockModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void})
                             <option value="">10</option>
                             <option value="">50</option>
                             <option value="">100</option>
+                            <option value="">1000</option>
                         </Select>
                     </FormControl>
                     <div className="flex flex-col gap-3 pt-5">

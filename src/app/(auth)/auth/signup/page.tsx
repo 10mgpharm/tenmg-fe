@@ -12,7 +12,7 @@ const SignUpPharmacy = async () => {
 
   return (
     <AuthWrapper type="others">
-      <section className="md:w-1/2 w-full min-h-screen">
+      <section className="h-full md:w-1/2 w-full">
         <SignupTab />
       </section>
     </AuthWrapper>

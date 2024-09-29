@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import TenmgLogo from "@public/assets/images/tenmg_logo.png";
+import TenmgLogo from "@public/icons/logo.svg";
 
 const LoanFooter = () => {
   return (

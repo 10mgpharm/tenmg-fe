@@ -44,7 +44,6 @@ interface IVendorDashboard {
 const Vendor = () => {
   const session = useSession();
   const data = session.data as NextAuthUserSession;
-  const router = useRouter();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 

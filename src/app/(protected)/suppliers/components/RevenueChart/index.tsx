@@ -47,6 +47,14 @@ const data = [
 ];
 
 const RevenueChart = () => {
+
+  const formatYAxisTick = (tickItem: any) => {
+    if (tickItem >= 1000) {
+      return `#${tickItem.toLocaleString()}`;
+    }
+    return tickItem;
+  };
+
   return (
     <div style={{ width: '100%', height: 350 }}>
       <ResponsiveContainer>
@@ -56,14 +64,14 @@ const RevenueChart = () => {
           data={data}
           margin={{
             top: 10,
-            right: 30,
+            right: 10,
             left: 0,
             bottom: 0,
           }}
         >
           {/* <CartesianGrid strokeDasharray="3 3" /> */}
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis tickFormatter={formatYAxisTick}/>
           <Tooltip />
           <Area type="monotone" dataKey="uv" stroke="#1A70B8" fill="#E8F1F8" />
         </AreaChart>
