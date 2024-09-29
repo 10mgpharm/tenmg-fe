@@ -120,7 +120,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
             <Flex flex="1" alignItems="center" px={["6", "12", "20", "32"]}>
                 <Flex direction="column" w="full">
                     <ChakraImage
-                        src="/assets/images/tenmg_logo.png"
+                        src="/icons/logo.svg"
                         alt="tenmg"
                         mb={[6, 8]}
                         boxSize="75px"

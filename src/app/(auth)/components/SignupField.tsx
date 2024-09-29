@@ -21,7 +21,7 @@ import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { signIn, SignInResponse } from "next-auth/react";
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import requestClient from "@/lib/requestClient";
 import { ResponseDto, User } from "@/types";
 import { useRouter } from "next/navigation";
@@ -105,7 +105,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
     <>
       <Box px={{ base: 6, md: 12, lg: 20, xl: 32 }}>
         <Image
-          src="/assets/images/tenmg_logo.png"
+          src={"/icons/logo.svg"}
           alt="tenmg"
           mb={{ md: 8 }}
           boxSize="75px"

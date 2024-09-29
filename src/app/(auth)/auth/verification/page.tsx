@@ -99,7 +99,7 @@ const VerificationComponent = () => {
       <section className="md:w-1/2 px-6 md:px-12 lg:px-32 flex items-center">
         <article className="w-full">
           <Image
-            src="/assets/images/tenmg_logo.png"
+            src="/icons/logo.svg"
             className="md:mb-8"
             alt="tenmg"
             width={75}
