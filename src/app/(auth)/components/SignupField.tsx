@@ -34,6 +34,7 @@ interface SignUpFieldProps {
 }
 
 interface IFormInput {
+  fullname: string;
   name: string;
   email: string;
   password: string;
@@ -114,9 +115,10 @@ export default function SignUpField({ title }: SignUpFieldProps) {
         <Box mb={8}>
           <Heading
             as="h3"
-            size="lg"
-            fontWeight="normal"
+            size="xl"
+            fontWeight="medium"
             mb={3}
+            lineHeight="44px"
             color="gray.900"
           >
             Sign Up as a
@@ -140,9 +142,26 @@ export default function SignUpField({ title }: SignUpFieldProps) {
           )}
 
           <Box mb={10}>
+            <FormControl isInvalid={!!errors.fullname?.message} mb={5}>
+              <FormLabel htmlFor="fullname">
+                Get started with your name{" "}
+                <Text as="span" color="red.500">
+                  *
+                </Text>
+              </FormLabel>
+              <Input
+                id="fullname"
+                placeholder="Enter your name"
+                {...register("fullname", { required: "Your name is required" })}
+                type="text"
+                isDisabled={isLoading}
+              />
+              <FormErrorMessage>{errors.fullname?.message}</FormErrorMessage>
+            </FormControl>
+
             <FormControl isInvalid={!!errors.name?.message} mb={5}>
               <FormLabel htmlFor="name">
-                Business name{" "}
+                Business Name{" "}
                 <Text as="span" color="red.500">
                   *
                 </Text>
@@ -159,7 +178,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
 
             <FormControl isInvalid={!!errors.email?.message} mb={5}>
               <FormLabel htmlFor="email">
-                Business email{" "}
+                Business Email{" "}
                 <Text as="span" color="red.500">
                   *
                 </Text>

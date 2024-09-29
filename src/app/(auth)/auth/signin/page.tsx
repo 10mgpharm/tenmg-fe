@@ -6,6 +6,7 @@ import React, { Suspense } from "react";
 import LoginForm from "@/app/(auth)/components/LoginForm";
 import Link from "next/link";
 import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
+import { Heading, Text } from "@chakra-ui/react";
 
 export default async function LoginPage() {
   const session = await getServerSession(authOptions);
@@ -14,7 +15,7 @@ export default async function LoginPage() {
   }
   return (
     <AuthWrapper type="others">
-      <section className="md:w-1/2 px-6 md:px-12 lg:px-32 flex items-center">
+      <section className="md:w-1/2 px-4 md:px-12 lg:px-32 flex items-center min-h-screen">
         <article className="w-full">
           <Image
             src="/icons/logo.svg"
@@ -25,12 +26,18 @@ export default async function LoginPage() {
           />
 
           <div className="mb-8">
-            <h3 className="font-normal text-gray-900 text-4xl leading-[44px] tracking-tight mb-3">
-              Welcome back
-            </h3>
-            <p className="text-gray-500 text-base font-normal leading-6 text-left">
+            <Heading
+              as="h3"
+              size="xl"
+              fontWeight="medium"
+              mb={3}
+              color="gray.900"
+            >
+              Welcome Back
+            </Heading>
+            <Text fontSize="lg" color="gray.500">
               Please enter your details.
-            </p>
+            </Text>
           </div>
 
           <Suspense fallback={<div>Loading...</div>}>

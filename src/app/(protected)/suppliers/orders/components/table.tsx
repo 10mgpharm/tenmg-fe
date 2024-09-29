@@ -93,7 +93,7 @@ export function ColumsOrderFN(onOpen: () => void) {
       ),
       cell: (info) => {
         return (
-          <div >
+          <div>
            <p>{info?.row?.original?.address}</p>
           </div>
         );
@@ -101,11 +101,11 @@ export function ColumsOrderFN(onOpen: () => void) {
     }),
     columnHelper.accessor("status", {
       header: ({ column }) => (
-        <p>Actions</p>
+        <p className="-pl-10">Actions</p>
       ),
       cell: (info) => {
         return (
-          <Flex justify={"center"}>
+          <Flex>
             <Link href={'/suppliers/orders/3066'} className="text-primary-500">
                 View
             </Link>

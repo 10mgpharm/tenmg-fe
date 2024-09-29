@@ -100,7 +100,7 @@ export function ColumsFN() {
       cell: (info) => {
         return (
           <div>
-            <Link href={'#'} className="text-primary-600"> View</Link>
+            <Link href={'#'} className="text-primary-600 font-medium"> View</Link>
           </div>
         );
       },

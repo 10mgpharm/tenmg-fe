@@ -57,7 +57,7 @@ const Orders = () => {
     <div className='bg-white p-5 rounded-md'>
         <div className="flex items-center justify-between mb-5">
             <h3 className='text-gray-600 font-semibold text-xl'>Orders</h3>
-            <Link href={'#'} className='border p-2 rounded-md'> 
+            <Link href={'/suppliers/orders'} className='border p-2 rounded-md'> 
                 <span className='text-gray-500 px-4'>View all</span>
             </Link>
         </div>

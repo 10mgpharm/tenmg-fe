@@ -4,16 +4,19 @@ interface AuthWrapperProps {
   children: React.ReactNode;
   type: "reset-password" | "others";
 }
-export default function AuthWrapper({ children, type }: AuthWrapperProps) {
+export default function AuthWrapper({
+  children,
+  type = "others",
+}: AuthWrapperProps) {
   return (
     <>
-      <div className="min-h-screen md:flex w-full justify-center">
+      <div className="min-h-screen md:flex w-full items-stretch">
         <div
           style={{
             background:
               "linear-gradient(151.09deg, rgba(255, 57, 83, 0.1) 0.44%, rgba(24, 73, 169, 0.05) 67.54%)",
           }}
-          className="md:min-h-screen md:w-1/2 flex justify-center items-center"
+          className="hidden md:w-1/2 md:flex justify-center items-center"
         >
           {type === "reset-password" ? (
             <Image

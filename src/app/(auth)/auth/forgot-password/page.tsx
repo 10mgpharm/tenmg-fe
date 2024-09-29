@@ -1,31 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import React from "react";
 import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
 import Link from "next/link";
-import { Button } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Text,
+} from "@chakra-ui/react";
+import { toast } from "react-toastify";
+import requestClient from "@/lib/requestClient";
+import { useRouter } from "next/navigation";
+import { handleServerErrorMessage } from "@/utils";
 
 interface IFormInput {
   email: string;
 }
 
 const ForgotPassword = () => {
-  const [otp, setOtp] = useState<string>("");
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      setIsLoading(true);
+
+      const response = await requestClient().post("/auth/forgot-password", {
+        email: data.email,
+      });
+
+      setIsLoading(false);
+
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+        router.push("/auth/reset-password");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
 
   return (
     <AuthWrapper type="others">
-      <section className="md:w-1/2 px-6 md:px-12 lg:px-32 flex items-center">
+      <section className="md:w-1/2 px-6 md:px-12 lg:px-32 flex items-center min-h-screen">
         <article className="w-full">
           <Image
             src="/icons/logo.svg"
@@ -47,6 +77,47 @@ const ForgotPassword = () => {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5 text-gray mb-">
+              <FormControl isInvalid={!!errors.email?.message} mb={5}>
+                <FormLabel htmlFor="email">
+                  Business Email{" "}
+                  <Text as="span" color="red.500">
+                    *
+                  </Text>
+                </FormLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your business email"
+                  isDisabled={isLoading}
+                  {...register("email", {
+                    required: "Business Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      message: "Invalid email address",
+                    },
+                  })}
+                />
+                <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+              </FormControl>
+
+              <Button
+                size="lg"
+                w="full"
+                type="submit"
+                isDisabled={isLoading}
+                isLoading={isLoading}
+              >
+                Reset Password
+              </Button>
+              <div className="text-center">
+                <Link
+                  href="/auth/signin"
+                  className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
+                >
+                  <FaArrowLeft /> Return to Log In
+                </Link>
+              </div>
+              {/*               
               <div className="flex flex-col gap-[6px]">
                 <label>
                   Business email
@@ -77,17 +148,9 @@ const ForgotPassword = () => {
                 >
                   Reset Password
                 </Button>
-              </div>
+              </div> */}
             </div>
           </form>
-          <div className="text-center">
-            <Link
-              href="/auth/signin"
-              className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
-            >
-              <FaArrowLeft /> Return to Log In
-            </Link>
-          </div>
         </article>
       </section>
     </AuthWrapper>

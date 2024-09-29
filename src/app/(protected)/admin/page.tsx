@@ -14,7 +14,6 @@ import {
     Th,
     Thead, 
     Tr, 
-    Button,
     HStack
  } from "@chakra-ui/react"
 import DashboardCard from "./components/DashboardCard"
@@ -66,9 +65,9 @@ const Admin = () => {
 
   return (
     <div className="p-8">
-        <Stack gap={6}>
+        <Stack gap={4}>
             <Text fontWeight={"semibold"} fontSize={"2xl"}>Dashboard</Text>
-            <SimpleGrid columns={[2, 4]} gap={5}>
+            <SimpleGrid columns={[2, 4]} gap={3}>
                 {
                     records.map((item) => (
                         <DashboardCard 
@@ -84,9 +83,9 @@ const Admin = () => {
             </SimpleGrid>
         </Stack>
         <Flex mt={6} gap={5}>
-            <Stack flex={1} bg={"white"} p={5} borderRadius={"10px"} border={"1px solid #EAECF0"}>
+            <Stack flex={1} bg={"white"} px={6} py={3} borderRadius={"10px"} border={"1px solid #EAECF0"}>
                 <Text fontWeight={"600"} mb={3} fontSize={"large"}>Store Statistics</Text>
-                <Stack gap={5}>
+                <Stack gap={4}>
                     <Flex justify={"space-between"}>
                         <Stack>
                             <Text color={"gray.500"}>Sales</Text>
@@ -119,7 +118,7 @@ const Admin = () => {
             </Stack>
             <Stack flex={1} bg={"white"} borderRadius={"10px"} border={"1px solid #EAECF0"}>
                 <Flex justify={"space-between"} px={5} py={3}>
-                    <Text fontWeight={"600"}>Store Statistics</Text>
+                    <Text fontWeight={"600"}>New Pharmacies</Text>
                     <Link href={'#'} className="text-primary-600 text-sm">View All</Link>
                 </Flex>
                 <Divider />
@@ -128,7 +127,7 @@ const Admin = () => {
                         <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
                         <Stack gap={0.5}>
                             <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.400"}>info@softeni.com</Text>
+                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
                         </Stack>
                     </Flex>
                     <Divider />
@@ -138,7 +137,7 @@ const Admin = () => {
                         <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
                         <Stack gap={0.5}>
                             <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.400"}>info@softeni.com</Text>
+                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
                         </Stack>
                     </Flex>
                     <Divider />
@@ -148,7 +147,7 @@ const Admin = () => {
                         <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
                         <Stack gap={0.5}>
                             <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.400"}>info@softeni.com</Text>
+                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
                         </Stack>
                     </Flex>
                     <Divider />
@@ -158,7 +157,7 @@ const Admin = () => {
                         <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
                         <Stack gap={0.5}>
                             <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.400"}>info@softeni.com</Text>
+                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
                         </Stack>
                     </Flex>
                     <Divider />
@@ -168,7 +167,7 @@ const Admin = () => {
         <Stack mt={8}>
             <HStack justify={"space-between"} mb={3}>
                 <Text fontSize={"xl"} fontWeight={"500"}>Loan Managment</Text>
-                <Button variant={"outline"} colorScheme={"gray"} fontSize={"14px"}>View all</Button>
+                <Link href={'/dashboard/loanmanagement'} className="text-gray-600 text-sm px-4 py-2 font-medium bg-white border border-[#D0D5DD] rounded-md">View all</Link>
             </HStack>
             <Stack bg={"white"}>
                 <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>

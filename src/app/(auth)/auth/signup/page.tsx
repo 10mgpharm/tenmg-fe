@@ -9,10 +9,10 @@ const SignUpPharmacy = async () => {
   if (session) {
     redirect(`/`);
   }
-  
+
   return (
     <AuthWrapper type="others">
-      <section className="md:w-1/2 w-full">
+      <section className="h-full md:w-1/2 w-full">
         <SignupTab />
       </section>
     </AuthWrapper>

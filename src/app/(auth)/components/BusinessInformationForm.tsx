@@ -138,7 +138,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                         )}
                         {provider !== 'google' && (
                             <Text fontSize="lg" color="gray.500">
-                                Kindly complete your business information to proceed.
+                                Hi <b>{name}</b>, Kindly complete your business information to proceed.
                             </Text>
                         )}
                     </Flex>
@@ -156,7 +156,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                                 </FormLabel>
                                 <Input
                                     id="businessName"
-                                    isDisabled={isLoading}
+                                    isDisabled={isLoading || provider === 'credentials'}
                                     placeholder="Enter your business name"
                                     {...register("businessName", {
                                         required: "Business Name is required",
@@ -210,7 +210,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                                     id="businessEmail"
                                     type="email"
                                     placeholder="Enter your business email"
-                                    isDisabled={isLoading}
+                                    isDisabled={isLoading || provider === 'credentials'}
                                     {...register("businessEmail", {
                                         required: "Business Email is required",
                                         pattern: {

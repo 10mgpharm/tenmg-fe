@@ -13,10 +13,9 @@ import {
 import { ColumsOrderFN } from './table';
 import { Flex, HStack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Pagination from '../../components/Pagination';
 
-
-
-const AllOrders = ({data}: {data: any}) => {
+const AllOrders = ({data, type}: {data: any, type: string}) => {
 
     const onOpen = () => {}
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -90,6 +89,11 @@ const AllOrders = ({data}: {data: any}) => {
                         <FaChevronLeft className='text-gray-500' />
                         <Text className='text-gray-500'>Prev</Text>
                     </Flex>
+                    {
+                        data?.length > 10 ? <Pagination />
+                        :  <span className="bg-primary-50 py-2 px-4 rounded-md text-primary-600 cursor-pointer">1</span>
+                    }
+                    {/* <Pagination /> */}
                     <Flex alignItems={"center"} gap={2}>
                         <Text className='text-gray-500'>Next</Text>
                         <FaChevronRight className='text-gray-500' />
