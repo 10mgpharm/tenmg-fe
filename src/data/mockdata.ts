@@ -58,3 +58,88 @@ export const productReviews = [
     {id: 1, image: avatar, title: "MedFERTIL FOR MEN TABLETS - (CARNITINE , MULTIVITAMINS)", subtitle: "Pentazocine (NEML 23.1)", content: "This Property is a true masterpiece that combines luxurious living with the beauty of its surroundings." },
     {id: 1, image: avatar, title: "MedFERTIL FOR MEN TABLETS - (CARNITINE , MULTIVITAMINS)", subtitle: "Pentazocine (NEML 23.1)", content: "This Property is a true masterpiece that combines luxurious living with the beauty of its surroundings." },
 ]
+
+export const UserData = [
+    {id: 1, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+    {id: 2, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 3, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Pending"},
+    {id: 4, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+    {id: 5, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 6, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Pending"},
+    {id: 7, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+    {id: 8, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 9, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Active"},
+    {id: 10, name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", supplier_id: "1CZ454M4621P07H", business_name: "Kfc pharmaceutical ltd", date: "24th July 2024", status: "Suspended"},
+]
+
+export const transactionData = [
+    {id: 1, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
+    {id: 2, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Pending"},
+    {id: 11, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Pending"},
+    {id: 12, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Completed"},
+    {id: 3, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
+    {id: 4, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 5, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 6, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 7, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 8, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
+    {id: 9, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
+    {id: 10, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History",  status: "Pending"},
+]
+
+export const discountData = [
+    {id: 1, title: "Paracetamol", discount_code: "CONSODE", value: "50%", status: "Active", method: "Code", used: 100},
+    {id: 2, title: "Paracetamol", discount_code: "CONSODE", value: "50%", status: "Active", method: "Automatic Discount", used: 100},
+    {id: 3, title: "Diclofenac", discount_code: "CONSODE", value: "50%", status: "Expired", method: "Code", used: 100},
+    {id: 4, title: "Paracetamol", discount_code: "HOLIDAY", value: "10%", status: "Active", method: "Code", used: 100},
+    {id: 5, title: "Paracetamol", discount_code: "CONSODE", value: "50%", status: "Active", method: "Automatic Discount", used: 100},
+    {id: 6, title: "Paracetamol", discount_code: "CHUDI", value: "50%", status: "Expired", method: "Code", used: 100},
+    {id: 7, title: "Diclofenac", discount_code: "CONSODE", value: "50%", status: "Active", method: "Code", used: 100},
+    {id: 8, title: "Paracetamol", discount_code: "CONSODE", value: "50%", status: "Active", method: "Code", used: 100},
+    {id: 9, title: "Paracetamol", discount_code: "CONSODE", value: "50%", status: "Expired", method: "Automatic Discount", used: 100},
+    {id: 10, title: "Diclofenac", discount_code: "CONSODE", value: "50%", status: "Expired", method: "Automatic Discount", used: 100},
+]
+
+export const LoanData = [
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Enabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Enabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Enabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Enabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Enabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Enabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Disabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Disabled"},
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", disburstment: "Pharm license.pdf", vendor: "Olivia Rhye", status: "Disabled"},
+]
+
+export const repaymentData = [
+    {name: "10MG-LN001", amount: "#1,300,000", date: "Aug 21, 2024", payment_date: "Aug 21, 2024", status: "Paid", loan_amount: "₦1,300,000"},   
+    {name: "10MG-LN001", amount: "#1,300,000", date: "Aug 21, 2024", payment_date: "Aug 21, 2024", status: "Paid", loan_amount: "₦1,300,000"},   
+    {name: "10MG-LN001", amount: "#1,300,000", date: "Aug 21, 2024", payment_date: "Aug 21, 2024", status: "Paid", loan_amount: "₦1,300,000"},   
+    {name: "10MG-LN001", amount: "#1,300,000", date: "Aug 21, 2024", payment_date: "Aug 21, 2024", status: "Paid", loan_amount: "₦1,300,000"},   
+    {name: "10MG-LN001", amount: "#1,300,000", date: "Aug 21, 2024", payment_date: "Aug 21, 2024", status: "Overdue", loan_amount: "₦1,300,000"},   
+    {name: "10MG-LN001", amount: "#1,300,000", date: "Aug 21, 2024", payment_date: "Aug 21, 2024", status: "Overdue", loan_amount: "₦1,300,000"},   
+]
+
+export const applicationData = [
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Approved", loan_amount: "₦1,300,000"},   
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Approved", loan_amount: "₦1,300,000"},   
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Awaiting Approval", loan_amount: "₦1,300,000"},   
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Rejected", loan_amount: "₦1,300,000"},   
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Awaiting Approval", loan_amount: "₦1,300,000"},   
+    {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Approved", loan_amount: "₦1,300,000"},   
+]
+
+export const LogsData = [
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Uploaded Document.pdf"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "New Account Registered"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Password Changed"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Payment via Credit Card"},
+    {timestamp: "2024-09-08   12:45:32", event: "Payment Processed", user: "Jude Bellingham", action: "Error 503: Service Unavailable"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Logged Out"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
+]
