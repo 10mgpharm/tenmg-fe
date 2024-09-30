@@ -23,6 +23,7 @@ import { signOut } from 'next-auth/react'
 import { LuUsers, LuWallet } from 'react-icons/lu'
 import { FaBalanceScale } from 'react-icons/fa'
 import { GiSpanner } from "react-icons/gi";
+import { MdMonitor } from 'react-icons/md'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
@@ -34,6 +35,7 @@ const navigation = [
   { name: 'Discount Code', href: '/admin/discount-code', icon: RiPercentLine, current: false },
   { name: 'Loan Management', href: '/admin/loan-management', icon: FaBalanceScale, current: false },
   { name: 'Message', href: '/admin/messages', icon: BiMessageDetail, current: false },
+  { name: 'Audit Log', href: '/admin/audit-logs', icon: MdMonitor, current: false },
   { name: 'Settings', href: '/admin/settings', icon: Cog6ToothIcon, current: false },
   { name: 'System Setup', href: '/admin/systemsetup', icon: GiSpanner, current: false },
 ]

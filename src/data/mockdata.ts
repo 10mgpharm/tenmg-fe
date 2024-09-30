@@ -129,3 +129,17 @@ export const applicationData = [
     {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Awaiting Approval", loan_amount: "₦1,300,000"},   
     {id: "10MG-LN001", name: "Olivia Rhye", amount: "#1,300,000", date: "Aug 21, 2024", status: "Approved", loan_amount: "₦1,300,000"},   
 ]
+
+export const LogsData = [
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Uploaded Document.pdf"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "New Account Registered"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Password Changed"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Payment via Credit Card"},
+    {timestamp: "2024-09-08   12:45:32", event: "Payment Processed", user: "Jude Bellingham", action: "Error 503: Service Unavailable"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Logged Out"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
+]

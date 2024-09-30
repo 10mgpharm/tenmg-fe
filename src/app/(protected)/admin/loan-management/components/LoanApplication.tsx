@@ -11,7 +11,8 @@ import {
     Text, 
     Th,
     Thead, 
-    Tr 
+    Tr, 
+    useDisclosure
 } from "@chakra-ui/react"
 import { 
     ColumnOrderState, 
@@ -28,10 +29,13 @@ import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 import { applicationData } from "@/data/mockdata";
+import CreateLoan from "./CreateLoan";
+import SuccessModal from "./SuccessModal";
 
 const LoanApplication = () => {
 
-    const onOpen = () => {}
+    const {isOpen, onOpen, onClose} = useDisclosure();
+    const {isOpen: isOpenSuccess, onOpen: onOpenSuccess, onClose: onCloseSuccess} = useDisclosure();
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -81,6 +85,7 @@ const LoanApplication = () => {
                 <Button 
                 h={"40px"}
                 px={4} 
+                onClick={onOpen}
                 className="border bg-white">
                     Create Application
                 </Button>
@@ -144,6 +149,8 @@ const LoanApplication = () => {
             </TableContainer>
         }
         </div>
+        <CreateLoan isOpen={isOpen} onClose={onClose} onOpenSuccess={onOpenSuccess} />
+        <SuccessModal isOpen={isOpenSuccess} onClose={onCloseSuccess}/>
     </div>
   )
 }
