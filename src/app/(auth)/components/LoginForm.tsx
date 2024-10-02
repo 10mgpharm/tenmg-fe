@@ -7,7 +7,7 @@ import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { signIn, SignInResponse } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Button,
   FormControl,
@@ -63,6 +63,8 @@ export default function LoginForm() {
   };
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const router = useRouter();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
