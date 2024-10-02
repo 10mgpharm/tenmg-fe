@@ -72,15 +72,8 @@ const VerificationComponent = () => {
           router.push(`/auth/business-information?token=${token}`);
         }
       } else {
-        const response = await requestClient().post("/auth/resend-otp", {
-          type: "RESET_PASSWORD_VERIFICATION",
-          otp: otp,
-        });
-        if (response.status === 200) {
-          Cookies.set("otp", otp, { expires: 1 });
-          toast.success(response?.data?.message);
-          router.push(`/auth/reset-password`);
-        }
+        Cookies.set("otp", otp, { expires: 1 });
+        router.push(`/auth/reset-password`);
         setIsLoadingResend(false);
       }
     } catch (error) {
@@ -108,8 +101,8 @@ const VerificationComponent = () => {
       }
     } else {
       const response = await requestClient().post("/auth/resend-otp", {
+        email: email,
         type: "RESET_PASSWORD_VERIFICATION",
-        otp: otp,
       });
       if (response.status === 200) {
         toast.success(response?.data?.message);

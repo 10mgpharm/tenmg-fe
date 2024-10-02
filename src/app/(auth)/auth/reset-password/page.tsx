@@ -23,6 +23,7 @@ import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { handleServerErrorMessage } from "@/utils";
 
 interface IFormInput {
   password: string;
@@ -58,14 +59,7 @@ const ResetPassword = () => {
     try {
       setIsLoading(true);
 
-      // const response = await requestClient().post("/auth/reset-password", {
-      //   email: email,
-      //   otp: otp,
-      //   password: data.password,
-      //   passwordConfirmation: data.passwordConfirmation,
-      // });
-
-      console.log({
+      const response = await requestClient().post("/auth/reset-password", {
         email: email,
         otp: otp,
         password: data.password,
@@ -74,12 +68,16 @@ const ResetPassword = () => {
 
       setIsLoading(false);
 
-      // if (response.status === 200) {
-      //   toast.success(response?.data?.message);
-      //   router.push("/auth/reset-password");
-      // }
+      if (response.status === 200) {
+        Cookies.remove("email");
+        Cookies.remove("otp");
+        toast.success(response?.data?.message);
+        router.push("/");
+      }
     } catch (error) {
       setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
       console.error(error);
     }
   };
