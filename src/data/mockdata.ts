@@ -42,16 +42,16 @@ export const adminOrderData = [
 ]
 
 export const productData = [
-    {name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Low', image: pill1},
-    {name: "Synthetic opioids",  wieght: "930mg", price: "#2,600", category: "Injection", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Available', image: pill2},
-    {name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Tablet",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Low', image: pill1},
-    {name: "Global Pentazocine", wieght: "500mg", price: "#2,600", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
-    {name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
-    {name: "Global Pentazocine", wieght: "10mg",  price: "#2,600", category: "Injection", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
-    {name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
-    {name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Low', image: pill1},
-    {name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Tablet",  inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Available', image: pill2},
-    {name: "Global Pentazocine", wieght: "90mg",  price: "#2,600", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Available', image: pill2},
+    {id: 1, name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Low', image: pill1},
+    {id: 2, name: "Synthetic opioids",  wieght: "930mg", price: "#2,600", category: "Injection", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Available', image: pill2},
+    {id: 3, name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Tablet",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Low', image: pill1},
+    {id: 4, name: "Global Pentazocine", wieght: "500mg", price: "#2,600", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
+    {id: 5, name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
+    {id: 6, name: "Global Pentazocine", wieght: "10mg",  price: "#2,600", category: "Injection", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
+    {id: 7, name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Available', image: pill1},
+    {id: 8, name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Low', image: pill1},
+    {id: 9, name: "Global Pentazocine", wieght: "100mg", price: "#2,600", category: "Tablet",  inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Available', image: pill2},
+    {id: 10, name: "Global Pentazocine", wieght: "90mg",  price: "#2,600", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Available', image: pill2},
 ]
 
 export const productData2 = [
