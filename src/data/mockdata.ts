@@ -54,6 +54,19 @@ export const productData = [
     {name: "Global Pentazocine", wieght: "90mg",  price: "#2,600", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Available', image: pill2},
 ]
 
+export const productData2 = [
+    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Synthetic opioids",  category: "Injection", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Inactive', image: pill2},
+    {name: "Global Pentazocine", category: "Tablet",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Inactive', image: pill1},
+    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Inactive', image: pill1},
+    {name: "Global Pentazocine", category: "Injection", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Tablet",  inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'In Stock', image: pill2},
+    {name: "Global Pentazocine", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'In Stock', image: pill2},
+]
+
 export const productReviews = [
     {id: 1, image: avatar, title: "MedFERTIL FOR MEN TABLETS - (CARNITINE , MULTIVITAMINS)", subtitle: "Pentazocine (NEML 23.1)", content: "This Property is a true masterpiece that combines luxurious living with the beauty of its surroundings." },
     {id: 1, image: avatar, title: "MedFERTIL FOR MEN TABLETS - (CARNITINE , MULTIVITAMINS)", subtitle: "Pentazocine (NEML 23.1)", content: "This Property is a true masterpiece that combines luxurious living with the beauty of its surroundings." },
