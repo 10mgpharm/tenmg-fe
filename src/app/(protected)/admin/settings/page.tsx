@@ -1,5 +1,8 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react"
 import GeneralSettings from "./components/GeneralSettings"
+import APIManagement from "./components/APIManagement"
+import Notifications from "./components/Notifications"
+import Members from "./components/Members"
 
 const Page = () => {
   return (
@@ -17,13 +20,13 @@ const Page = () => {
                     <GeneralSettings />
                 </TabPanel>
                 <TabPanel>
-                <p>two!</p>
+                    <APIManagement />
                 </TabPanel>
                 <TabPanel>
-                <p>three!</p>
+                    <Notifications />
                 </TabPanel>
                 <TabPanel>
-                <p>three!</p>
+                    <Members />
                 </TabPanel>
             </TabPanels>
         </Tabs>
