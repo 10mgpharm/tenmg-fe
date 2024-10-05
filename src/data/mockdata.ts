@@ -156,3 +156,34 @@ export const LogsData = [
     {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
     {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
 ]
+
+export const APIData = [
+    {id: 1, vendors: "Tonia Pharmaceuticals", reference_id: "0COPF-240816-J7QKV", status: "Live"},
+    {id: 2, vendors: "10mg Pharmaceuticals", reference_id: "0COPF-240816-J7QKV", status: "Live"},
+    {id: 3, vendors: "Tonia Pharmaceuticals", reference_id: "0COPF-240816-J7QKV", status: "Test"},
+    {id: 4, vendors: "Francis Health Consult, Lokoja", reference_id: "0COPF-240816-J7QKV", status: "Live"},
+    {id: 5, vendors: "Tonia Pharmaceuticals", reference_id: "0COPF-240816-J7QKV", status: "Live"},
+    {id: 6, vendors: "Tonia Pharmaceuticals", reference_id: "0COPF-240816-J7QKV", status: "Test"},
+    {id: 7, vendors: "Tonia Pharmaceuticals", reference_id: "4KDJU-230907-LQ0OD", status: "Live"},
+    {id: 8, vendors: "Tonia Pharmaceuticals", reference_id: "0COPF-240816-J7QKV", status: "Test"},
+    {id: 9, vendors: "Tonia Pharmaceuticals", reference_id: "0COPF-240816-J7QKV", status: "Live"},
+]
+
+export const MemberData = [
+    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+    {email: "johnajayi@lendsqr.com", status: "Invited", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+    {email: "johnajayi@lendsqr.com", status: "Invited", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+    {email: "johnajayi@lendsqr.com", status: "Removed", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Business Analyst"},
+    {email: "johnajayi@lendsqr.com", status: "Removed", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+]
+
+export const activityData = [
+    {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
+    {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
+    {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
+    {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
+]
