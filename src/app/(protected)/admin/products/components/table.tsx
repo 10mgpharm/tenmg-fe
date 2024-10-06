@@ -10,6 +10,20 @@ const columnHelper = createColumnHelper<any>();
 export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, onOpenDeactivate: () => void) {
 
   return [
+    columnHelper.accessor("id", {
+      header: () => (
+        <div className="px-6">
+          <p>S/N</p>
+        </div>
+      ),
+      cell: (info) => (
+        <div className="px-6">
+          <p className="font-medium">
+            {info?.row?.original?.id} 
+          </p>
+        </div>
+      ),
+    }),
     columnHelper.accessor("name", {
       header: () => (
         <div className="">
@@ -36,42 +50,6 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
           </div>
         );
       },
-    }),
-    // columnHelper.accessor("inventory", {
-    //   header: ({ column }) => (
-    //     <div
-    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //     >
-    //       <p>Inventory</p>
-    //     </div>
-    //   ),
-    //   cell: (info) => (
-    //     <div>
-    //         <p className={classNames(
-    //         info?.row?.original?.inventory === "Low stock" 
-    //         ? "bg-[#FFFAEB] text-[#F79009]" 
-    //         : info?.row?.original?.inventory === "Out of stock" 
-    //         ? "bg-[#FEF3F2] text-[#B42318]" 
-    //         : info?.row?.original?.inventory === "In stock"
-    //         ? "text-[#027A48] bg-[#ECFDF3]"
-    //         : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
-    //         )}>
-    //             <span className="w-3 h-3 rounded-full"></span>
-    //             {" "}
-    //            {info?.row?.original?.inventory}
-    //         </p>
-    //     </div>
-    //   ),
-    // }),
-    columnHelper.accessor("quantity", {
-      header: ({ column }) => (
-        <p className="px-5">Stock</p>
-      ),
-      cell: (info) => (
-       <div className="px-5">
-        <p className="font-medium">{info.row.original?.quantity}</p>
-       </div>
-      ),
     }),
     columnHelper.accessor("weight", {
       header: ({ column }) => (
@@ -103,6 +81,16 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
        </div>
       ),
     }),
+    columnHelper.accessor("quantity", {
+      header: ({ column }) => (
+        <p className="px-5">Stock</p>
+      ),
+      cell: (info) => (
+       <div className="px-5">
+        <p className="font-medium">{info.row.original?.quantity}</p>
+       </div>
+      ),
+    }),
     columnHelper.accessor("status", {
       header: ({ column }) => (
         <p>Status</p>
@@ -117,7 +105,7 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
             )}>
-                <span className="w-3 h-3 rounded-full"></span>
+                <span className="w-3 h-3 rounded-full">•</span>
                 {" "}
                {info?.row?.original?.status}
             </p>
@@ -138,16 +126,16 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
                 </MenuButton>
                 <MenuList>
                     <MenuItem>
-                        <Link href={'/admin/products/global-pentazocine'}>View Product</Link>
+                        <Link href={'/admin/products/global-pentazocine'}>View Details</Link>
                     </MenuItem>
                     <MenuItem>Edit Product</MenuItem>
-                    <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
+                    <MenuItem onClick={() => onOpenRestock()}>Flag</MenuItem>
                     {
-                      info?.row?.original?.status === "Active" ? 
+                      info?.row?.original?.status === "Available" ? 
                       <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
                       : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
                     }
-                    <MenuItem onClick={() => onOpen()} color="red.500">Delete Product</MenuItem>
+                    <MenuItem onClick={() => onOpen()} color="red.500">Remove Product</MenuItem>
                 </MenuList>
             </Menu>
           </Flex>

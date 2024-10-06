@@ -40,7 +40,7 @@ import DeactiveModal from "./components/DeactiveModal";
 import Link from "next/link";
 import FilterDrawer from "./components/FilterDrawer";
 import Pagination from "../components/Pagination";
-import { productData } from "@/data/mockdata";
+import { productData2 } from "@/data/mockdata";
 
 
 const Products = () => {
@@ -60,7 +60,7 @@ const Products = () => {
     // const memoizedData = useMemo(() => data, [data]);
 
     const table = useReactTable({
-        data: productData,
+        data: productData2,
         columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate),
         onSortingChange: setSorting,
         state: {
@@ -138,7 +138,7 @@ const Products = () => {
         </div>
         <div className="">
         {
-            productData?.length === 0 
+            productData2?.length === 0 
             ? <EmptyOrder /> : 
             currentView === PRODUCTVIEW.LIST ?
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -218,7 +218,7 @@ const Products = () => {
                     </Flex>
                 </HStack>
             </TableContainer>
-            : <GridList data={productData}/>
+            : <GridList data={productData2}/>
         }
         </div>
         <DeleteModal isOpen={isOpen} onClose={onClose}/>
