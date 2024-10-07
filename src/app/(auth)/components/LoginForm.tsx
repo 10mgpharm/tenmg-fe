@@ -7,7 +7,7 @@ import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { signIn, SignInResponse } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Button,
   FormControl,
@@ -64,6 +64,8 @@ export default function LoginForm() {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  const router = useRouter();
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {errorMessage && (
@@ -95,7 +97,7 @@ export default function LoginForm() {
             {...register("email", {
               required: "Email is required",
               pattern: {
-                value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                value: /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
                 message: "Invalid email address",
               },
             })}

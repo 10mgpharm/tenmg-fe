@@ -15,6 +15,7 @@ import requestClient from "@/lib/requestClient";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
+import Cookies from "js-cookie";
 
 interface IFormInput {
   verification: string;
@@ -27,8 +28,9 @@ const VerificationComponent = () => {
   const sessionData = session.data as NextAuthUserSession;
 
   const searchParams = useSearchParams();
-  if (!searchParams?.get("token")) redirect("/auth/signup");
+  // if (!searchParams?.get("token")) redirect("/auth/signup");
 
+  const sessionEmail = Cookies.get("email");
   const [otp, setOtp] = useState<string>("");
   const { handleSubmit } = useForm<IFormInput>();
 
@@ -43,30 +45,36 @@ const VerificationComponent = () => {
     try {
       setIsLoading(true);
 
-      const response = await requestClient({ token: token }).post(
-        "/auth/verify-email",
-        {
-          email,
-          otp: otp,
+      if (sessionData?.user) {
+        const response = await requestClient({ token: token }).post(
+          "/auth/verify-email",
+          {
+            email,
+            otp: otp,
+          }
+        );
+
+        const { data }: ResponseDto<EmailVerified> = response.data;
+
+        setIsLoading(false);
+
+        if (response.status === 200) {
+          toast.success(response?.data?.message);
+
+          await session.update({
+            user: {
+              ...sessionData,
+              completeProfile: false,
+              emailVerifiedAt: data?.emailVerifiedAt,
+            },
+          });
+
+          router.push(`/auth/business-information?token=${token}`);
         }
-      );
-
-      const { data }: ResponseDto<EmailVerified> = response.data;
-
-      setIsLoading(false);
-
-      if (response.status === 200) {
-        toast.success(response?.data?.message);
-
-        await session.update({
-          user: {
-            ...sessionData,
-            completeProfile: false,
-            emailVerifiedAt: data?.emailVerifiedAt,
-          },
-        });
-
-        router.push(`/auth/business-information?token=${token}`);
+      } else {
+        Cookies.set("otp", otp, { expires: 1 });
+        router.push(`/auth/reset-password`);
+        setIsLoadingResend(false);
       }
     } catch (error) {
       setIsLoading(false);
@@ -78,22 +86,38 @@ const VerificationComponent = () => {
   const resendOtp = async () => {
     setIsLoadingResend(true);
 
-    const response = await requestClient({ token: token }).post("/resend-otp", {
-      type: "SIGNUP_EMAIL_VERIFICATION",
-    });
+    if (sessionData?.user) {
+      const response = await requestClient({ token: token }).post(
+        "/resend-otp",
+        {
+          type: "SIGNUP_EMAIL_VERIFICATION",
+        }
+      );
 
-    setIsLoadingResend(false);
+      setIsLoadingResend(false);
 
-    if (response.status === 200) {
-      toast.success(response?.data?.message);
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+      }
+    } else {
+      const response = await requestClient().post("/auth/resend-otp", {
+        email: email,
+        type: "RESET_PASSWORD_VERIFICATION",
+      });
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+      }
+      setIsLoadingResend(false);
     }
   };
 
   useEffect(() => {
     if (sessionData?.user) {
       setEmail(sessionData?.user?.email);
+    } else {
+      setEmail(sessionEmail);
     }
-  }, [sessionData]);
+  }, [sessionData, sessionEmail]);
   return (
     <AuthWrapper type="others">
       <section className="md:w-1/2 px-6 md:px-12 lg:px-32 flex items-center">

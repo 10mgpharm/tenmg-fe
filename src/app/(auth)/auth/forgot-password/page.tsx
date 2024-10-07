@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import requestClient from "@/lib/requestClient";
 import { useRouter } from "next/navigation";
 import { handleServerErrorMessage } from "@/utils";
+import Cookies from "js-cookie";
 
 interface IFormInput {
   email: string;
@@ -44,8 +45,9 @@ const ForgotPassword = () => {
       setIsLoading(false);
 
       if (response.status === 200) {
+        Cookies.set("email", data.email, { expires: 1 });
         toast.success(response?.data?.message);
-        router.push("/auth/reset-password");
+        router.push("/auth/verification");
       }
     } catch (error) {
       setIsLoading(false);

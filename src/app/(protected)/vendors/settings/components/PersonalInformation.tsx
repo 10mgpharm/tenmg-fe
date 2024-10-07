@@ -1,9 +1,14 @@
-import avatar from "@public/assets/images/Avatar.svg";
+"use client";
+
+import { MdOutlineEmail } from "react-icons/md";
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Button,
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   HStack,
   Input,
@@ -11,23 +16,66 @@ import {
   InputLeftElement,
   Textarea,
 } from "@chakra-ui/react";
-import Image from "next/image";
-import { MdOutlineEmail } from "react-icons/md";
+import requestClient from "@/lib/requestClient";
+import { ResponseDto, User } from "@/types";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
-const PersonalInformation = () => {
+interface IFormInput {
+  name: string;
+  email: string;
+  contactName: string;
+  contactPhone: string;
+  businessAddress: string;
+  position: string;
+}
+
+const PersonalInformation = ({ user }: { user: User }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    watch,
+  } = useForm<IFormInput>({
+    mode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      setIsLoading(true);
+
+      const response = await requestClient().post("/auth/signup", {});
+      const { status, message }: ResponseDto<User> = response.data;
+    } catch (error) {
+      setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  };
+
   return (
     <>
       <Divider mb={[2, 5]} border="1px solid gray.200" />
       <div className="p-2 md:p-5 rounded-md bg-white md:max-w-5xl">
-        <form className="space-y-5 mt-2 md:mt-5 mb-3 md:mb-8">
+        <form
+          className="space-y-5 mt-2 md:mt-5 mb-3 md:mb-8"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl>
+            <FormControl isInvalid={!!errors.name?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Business Name
               </FormLabel>
-              <Input placeholder="Enter business name" />
+              <Input
+                placeholder="Enter business name"
+                defaultValue={user?.businessName}
+              />
             </FormControl>
-            <FormControl>
+
+            <FormControl isInvalid={!!errors.contactName?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Contact Person&apos;s Name
               </FormLabel>
@@ -35,7 +83,7 @@ const PersonalInformation = () => {
             </FormControl>
           </HStack>
           <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl>
+            <FormControl isInvalid={!!errors.email?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Business Email
               </FormLabel>
@@ -46,11 +94,21 @@ const PersonalInformation = () => {
                 <Input
                   type="email"
                   placeholder="Enter business email"
+                  defaultValue={user?.email}
                   pl={10}
+                  {...register("email", {
+                    required: "Business Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      message: "Invalid email address",
+                    },
+                  })}
                 />
               </InputGroup>
+              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl>
+
+            <FormControl isInvalid={!!errors.contactPhone?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Contact Phone Number
               </FormLabel>
@@ -58,13 +116,14 @@ const PersonalInformation = () => {
             </FormControl>
           </HStack>
           <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl>
+            <FormControl isInvalid={!!errors.businessAddress?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Business Address
               </FormLabel>
               <Textarea placeholder="Enter here" />
             </FormControl>
-            <FormControl>
+
+            <FormControl isInvalid={!!errors.position?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Position
               </FormLabel>
