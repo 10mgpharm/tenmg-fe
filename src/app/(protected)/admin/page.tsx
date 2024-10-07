@@ -167,7 +167,7 @@ const Admin = () => {
         <Stack mt={8}>
             <HStack justify={"space-between"} mb={3}>
                 <Text fontSize={"xl"} fontWeight={"500"}>Loan Managment</Text>
-                <Link href={'/dashboard/loanmanagement'} className="text-gray-600 text-sm px-4 py-2 font-medium bg-white border border-[#D0D5DD] rounded-md">View all</Link>
+                <Link href={'/dashboard/loans'} className="text-gray-600 text-sm px-4 py-2 font-medium bg-white border border-[#D0D5DD] rounded-md">View all</Link>
             </HStack>
             <Stack bg={"white"}>
                 <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>

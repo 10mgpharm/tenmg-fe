@@ -23,19 +23,16 @@ export default async function AdminLayout({
   const session: NextAuthUserSession = await getServerSession(authOptions);
 //   if (!session) redirect('/auth/signin');
 
-
-  console.log(session)
-
 //   if (session.user?.entityType !== 'ADMIN') redirect('/');
 
   return(
     <>
-        <TopNavBar />
-        <SideBar />
-        <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB] min-h-screen">
-          {children}
-          <Footer />
-        </main>
+      <TopNavBar />
+      <SideBar />
+      <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB] min-h-screen">
+        {children}
+        <Footer />
+      </main>
     </>
   );
 }

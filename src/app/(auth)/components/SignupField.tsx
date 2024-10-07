@@ -72,20 +72,21 @@ export default function SignUpField({ title }: SignUpFieldProps) {
       const response = await requestClient().post("/auth/signup", {
         ...data,
         termsAndConditions: true,
-        businessType: title === 'pharmacy' ? 'customer_pharmacy' : title,
+        businessType: title === "pharmacy" ? "customer_pharmacy" : title,
       });
       const { status, message }: ResponseDto<User> = response.data;
 
-      if (status === 'error') {
+      if (status === "error") {
         setIsLoading(false);
         return setErrorMessage(message);
       }
 
       // if signup successful, auto login so next-auth can handle proper redirection to otp screen
-      const loginResponse: SignInResponse = await signIn('credentials', {
+      const loginResponse: SignInResponse = await signIn("credentials", {
         email: data.email,
         password: data.password,
-        callbackUrl: searchParams.get('callbackUrl') || `${window.location.origin}/`,
+        callbackUrl:
+          searchParams.get("callbackUrl") || `${window.location.origin}/`,
         redirect: false,
       });
 
@@ -161,7 +162,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
 
             <FormControl isInvalid={!!errors.name?.message} mb={5}>
               <FormLabel htmlFor="name">
-                Business Name{" "}
+                Business Name
                 <Text as="span" color="red.500">
                   *
                 </Text>
@@ -178,7 +179,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
 
             <FormControl isInvalid={!!errors.email?.message} mb={5}>
               <FormLabel htmlFor="email">
-                Business Email{" "}
+                Business Email
                 <Text as="span" color="red.500">
                   *
                 </Text>
@@ -201,7 +202,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
 
             <FormControl isInvalid={!!errors.password?.message} mb={5}>
               <FormLabel htmlFor="password">
-                Password{" "}
+                Password
                 <Text as="span" color="red.500">
                   *
                 </Text>
@@ -251,9 +252,12 @@ export default function SignUpField({ title }: SignUpFieldProps) {
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={!!errors.passwordConfirmation?.message} mb={5}>
+            <FormControl
+              isInvalid={!!errors.passwordConfirmation?.message}
+              mb={5}
+            >
               <FormLabel htmlFor="passwordConfirmation">
-                Confirm Password{" "}
+                Confirm Password
                 <Text as="span" color="red.500">
                   *
                 </Text>
@@ -307,7 +311,13 @@ export default function SignUpField({ title }: SignUpFieldProps) {
           </Box>
 
           <Box mb={8}>
-            <Button size="lg" w="full" type="submit" isDisabled={isLoading} isLoading={isLoading}>
+            <Button
+              size="lg"
+              w="full"
+              type="submit"
+              isDisabled={isLoading}
+              isLoading={isLoading}
+            >
               Create account
             </Button>
 

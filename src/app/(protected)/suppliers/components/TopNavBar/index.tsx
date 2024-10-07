@@ -6,7 +6,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 
 import avatar from '@public/assets/images/Avatar.svg';
-import Logo from '@public/icons/logo.svg';
+import Logo from '@public/assets/images/10mg logo.svg';
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { FormControl, FormLabel, Switch, Tag } from "@chakra-ui/react";
@@ -53,7 +53,7 @@ const TopNavBar = () => {
             <Image
               src={Logo}
               alt=""
-              className="w-10 h-10 md:w-[75px] md:h-[75px]"
+              className="w-10 h-10 md:w-[160px] md:h-auto"
               width={75}
               height={75}
             />

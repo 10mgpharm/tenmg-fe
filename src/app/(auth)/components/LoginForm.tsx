@@ -7,9 +7,11 @@ import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { signIn, SignInResponse } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Button,
+  FormControl,
+  FormLabel,
   IconButton,
   Input,
   InputGroup,
@@ -62,6 +64,8 @@ export default function LoginForm() {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  const router = useRouter();
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {errorMessage && (
@@ -72,13 +76,16 @@ export default function LoginForm() {
       )}
 
       <div className="flex flex-col gap-5 text-gray">
-        <div className="flex flex-col gap-[6px]">
-          <label>
+        <FormControl isInvalid={!!errors.email?.message} mb={5}>
+          <FormLabel htmlFor="email">
             Business Email
-            <span className="text-red-500">*</span>
-          </label>
+            <Text as="span" color="red.500">
+              *
+            </Text>
+          </FormLabel>
           <Input
             errorBorderColor="red.300"
+            id="email"
             isInvalid={!!errors.email?.message}
             className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
             _focus={{
@@ -100,14 +107,18 @@ export default function LoginForm() {
               {errors.email?.message}
             </Text>
           )}
-        </div>
-        <div className="flex flex-col gap-[6px]">
-          <label>
+        </FormControl>
+
+        <FormControl isInvalid={!!errors.password?.message} mb={5}>
+          <FormLabel htmlFor="password">
             Password
-            <span className="text-red-500">*</span>
-          </label>
+            <Text as="span" color="red.500">
+              *
+            </Text>
+          </FormLabel>
           <InputGroup size="md">
             <Input
+              id="password"
               errorBorderColor="red.300"
               isInvalid={!!errors.password?.message}
               className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
@@ -150,14 +161,14 @@ export default function LoginForm() {
               Password is required
             </Text>
           )}
-        </div>
+        </FormControl>
 
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
             <input type="checkbox" id="remember" className="w-4 h-4" />
             <label htmlFor="remember">Remember me</label>
           </div>
-          <Link href="#" className="text-primary">
+          <Link href="/auth/forgot-password" className="text-primary">
             Forgot password?
           </Link>
         </div>
