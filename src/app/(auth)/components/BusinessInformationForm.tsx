@@ -32,8 +32,6 @@ interface IFormInput {
 }
 
 export default function BusinessInformationForm({ sessionData }: { sessionData: NextAuthUserSession }) {
-    const session = useSession();
-
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [name, setName] = useState<string>(null);
     const [provider, setProvider] = useState<string>(null);
