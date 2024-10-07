@@ -19,6 +19,7 @@ import { User } from "@/types";
 
 import { useEffect, useState } from "react";
 import ApiKeys from "./components/ApiKeys";
+import TeamMembers from "./components/TeamMembers";
 
 const Settings = () => {
   const [user, setUser] = useState<User>({} as User);
@@ -128,7 +129,7 @@ const Settings = () => {
               <AccountSetup />
             </TabPanel>
             <TabPanel>
-              <AccountSetup />
+              <TeamMembers />
             </TabPanel>
             <TabPanel>
               <ApiKeys />

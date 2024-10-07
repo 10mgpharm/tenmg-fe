@@ -170,16 +170,16 @@ export const APIData = [
 ]
 
 export const MemberData = [
-    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-    {email: "johnajayi@lendsqr.com", status: "Invited", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-    {email: "johnajayi@lendsqr.com", status: "Invited", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-    {email: "johnajayi@lendsqr.com", status: "Removed", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-    {email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Business Analyst"},
-    {email: "johnajayi@lendsqr.com", status: "Removed", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
-]
+  {id: 1, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+  {id: 2, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+  {id: 3, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Invited", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+  {id: 4, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Invited", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+  {id: 5, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Removed", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+  {id: 6, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+  {id: 7, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+  {id: 8, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Accepted", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Business Analyst"},
+  {id: 9, image: avatar, name: "Adeola Oluwafumilayo Joy", email: "johnajayi@lendsqr.com", status: "Removed", invited_by: "Ahmed Olarewaju", date: "2023-09-25 @ 08:15 PM", role: "Admin"},
+];
 
 export const activityData = [
     {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},

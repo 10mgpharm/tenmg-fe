@@ -5,8 +5,8 @@ import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import avatar from '@public/assets/images/Avatar.svg';
-import Logo from '@public/assets/images/10mg logo.svg';
+import avatar from "@public/assets/images/Avatar.svg";
+import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { FormControl, FormLabel, Switch, Tag } from "@chakra-ui/react";
@@ -47,7 +47,7 @@ const TopNavBar = () => {
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
-      <div className="flex justify-between shadow-sm">
+      <div className="flex justify-between shadow-sm lg:pr-12">
         <div className="flex items-center gap-8 md:gap-36">
           <div className="flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
             <Image
