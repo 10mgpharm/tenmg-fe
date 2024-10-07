@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Tabs,
   TabList,
@@ -12,8 +14,23 @@ import PersonalInformation from "./components/PersonalInformation";
 import PasswordForm from "./components/PasswordForm";
 import Notifications from "./components/Notifications";
 import AccountSetup from "./components/AccountSetup";
+import { useSession } from "next-auth/react";
+import { User } from "@/types";
+
+import { useEffect, useState } from "react";
 
 const Settings = () => {
+  const [user, setUser] = useState<User>({} as User);
+
+  const session = useSession();
+  const sessionData = session?.data?.user as User;
+
+  useEffect(() => {
+    setUser(sessionData);
+  }, [sessionData]);
+
+  console.log(user);
+
   return (
     <div className="p-4 md:p-8">
       <h2 className="font-semibold text-2xl text-gray-600">Settings</h2>
@@ -98,7 +115,7 @@ const Settings = () => {
 
           <TabPanels>
             <TabPanel px={0}>
-              <PersonalInformation />
+              <PersonalInformation user={user} />
             </TabPanel>
             <TabPanel>
               <PasswordForm />
