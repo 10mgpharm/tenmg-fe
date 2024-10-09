@@ -1,9 +1,7 @@
 'use client';
 
 import AuthWrapper from '@/app/(auth)/components/AuthWrapper';
-import ForgotPasswordEmailVerify from '@/app/(auth)/components/ForgotPasswordEmailVerify';
 import requestClient from '@/lib/requestClient';
-import { EmailVerified, ResponseDto } from '@/types';
 import { handleServerErrorMessage } from '@/utils';
 import { Button } from '@chakra-ui/react';
 import { signOut } from 'next-auth/react';
