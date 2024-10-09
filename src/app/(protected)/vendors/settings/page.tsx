@@ -18,6 +18,7 @@ import { useSession } from "next-auth/react";
 import { User } from "@/types";
 
 import { useEffect, useState } from "react";
+import ApiKeys from "./components/ApiKeys";
 
 const Settings = () => {
   const [user, setUser] = useState<User>({} as User);
@@ -125,6 +126,12 @@ const Settings = () => {
             </TabPanel>
             <TabPanel>
               <AccountSetup />
+            </TabPanel>
+            <TabPanel>
+              <AccountSetup />
+            </TabPanel>
+            <TabPanel>
+              <ApiKeys />
             </TabPanel>
           </TabPanels>
         </Tabs>
