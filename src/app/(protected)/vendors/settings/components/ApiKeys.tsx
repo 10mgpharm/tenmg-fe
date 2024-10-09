@@ -1,32 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa6";
 import {
   Box,
   Button,
   Divider,
   Flex,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   HStack,
   Icon,
   Input,
-  InputGroup,
-  InputRightElement,
   Stack,
-  Switch,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
-import OTPAuth from "./OTPAuth";
 import { SubmitHandler, useForm } from "react-hook-form";
-import requestClient from "@/lib/requestClient";
-import { toast } from "react-toastify";
-import { NextAuthUserSession, ResponseDto } from "@/types";
-import { useSession } from "next-auth/react";
 import { LuCopy } from "react-icons/lu";
 import { IoTrashOutline } from "react-icons/io5";
 
@@ -39,64 +26,19 @@ interface IFormInput {
 
 interface IKeyWrapperProps {
   onSubmit: any;
-  isLoading: boolean;
   keyType: string;
 }
 
 const ApiKeys = () => {
-  const [currentPasswordShow, setCurrentPasswordShow] =
-    useState<boolean>(false);
-  const [confirmPasswordShow, setConfirmPasswordShow] =
-    useState<boolean>(false);
-  const [newPasswordShow, setNewPasswordShow] = useState<boolean>(false);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const { isOpen, onClose, onOpen } = useDisclosure();
-
-  const session = useSession();
-  const sessionData = session.data as NextAuthUserSession;
-  const token = sessionData?.user?.token;
-
-  console.log(token);
 
   const {
-    register,
     formState: { errors },
     handleSubmit,
-    watch,
-    reset,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    try {
-      setIsLoading(true);
-
-      const response = await requestClient({ token: token }).patch(
-        "/account/settings/password",
-        {
-          currentPassword: data.currentPassword,
-          newPassword: data.newPassword,
-          newPasswordConfirmation: data.passwordConfirmation,
-        }
-      );
-
-      setIsLoading(false);
-
-      if (response.status === 200) {
-        toast.success(response?.data?.message);
-        reset({
-          currentPassword: "",
-          newPassword: "",
-          passwordConfirmation: "",
-        });
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
     console.log(data);
   };
 
@@ -105,13 +47,11 @@ const ApiKeys = () => {
       <KeyWrapper
         onSubmit={handleSubmit(onSubmit)}
         keyType={"Test Key"}
-        isLoading={isLoading}
+       
       />
-
       <KeyWrapper
         onSubmit={handleSubmit(onSubmit)}
         keyType={"Live Key"}
-        isLoading={isLoading}
       />
     </div>
   );
@@ -119,7 +59,7 @@ const ApiKeys = () => {
 
 export default ApiKeys;
 
-function KeyWrapper({ onSubmit, isLoading, keyType }: IKeyWrapperProps) {
+function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
   return (
     <Box bg={"gray.200"} rounded={"2xl"} shadow={"md"}>
       <Box p={5}>
@@ -147,10 +87,14 @@ function KeyWrapper({ onSubmit, isLoading, keyType }: IKeyWrapperProps) {
                 <Box flex={1}>
                   <Input
                     size={"lg"}
+                    color={"gray.500"}
                     type="text"
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    readOnly
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
                 </Box>
                 <Box>
@@ -174,10 +118,14 @@ function KeyWrapper({ onSubmit, isLoading, keyType }: IKeyWrapperProps) {
                 <Box flex={1}>
                   <Input
                     size={"lg"}
+                    color={"gray.500"}
                     type="text"
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    readOnly
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
                 </Box>
                 <Box>
@@ -200,9 +148,13 @@ function KeyWrapper({ onSubmit, isLoading, keyType }: IKeyWrapperProps) {
                   <Input
                     size={"lg"}
                     type="text"
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    readOnly
+                    color={"gray.500"}
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
                 </Box>
                 <Box>
@@ -234,10 +186,15 @@ function KeyWrapper({ onSubmit, isLoading, keyType }: IKeyWrapperProps) {
                   <Input
                     size={"lg"}
                     type="text"
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    color={"gray.500"}
+                    readOnly
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
+
                 </Box>
                 <Box>
                   <Button
@@ -263,7 +220,7 @@ function KeyWrapper({ onSubmit, isLoading, keyType }: IKeyWrapperProps) {
           </Stack>
           <HStack justify={"right"} mt={8}>
             <Flex>
-              <Button type="submit" colorScheme="blue" isDisabled={isLoading}>
+              <Button type="submit" colorScheme="blue">
                 Save Changes
               </Button>
             </Flex>
