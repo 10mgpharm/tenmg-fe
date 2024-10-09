@@ -262,7 +262,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                   </FormControl>
                 )}
               />
-              ;{/* Contact Name */}
+              {/* Contact Name */}
               <FormControl isInvalid={!!errors.contactPersonName}>
                 <FormLabel htmlFor="contactPersonName">
                   Contact person&apos;s name{" "}
