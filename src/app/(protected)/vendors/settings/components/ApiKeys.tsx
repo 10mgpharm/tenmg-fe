@@ -1,32 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa6";
 import {
   Box,
   Button,
   Divider,
   Flex,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   HStack,
   Icon,
   Input,
-  InputGroup,
-  InputRightElement,
   Stack,
-  Switch,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
-import OTPAuth from "./OTPAuth";
 import { SubmitHandler, useForm } from "react-hook-form";
-import requestClient from "@/lib/requestClient";
-import { toast } from "react-toastify";
-import { NextAuthUserSession, ResponseDto } from "@/types";
-import { useSession } from "next-auth/react";
 import { LuCopy } from "react-icons/lu";
 import { IoTrashOutline } from "react-icons/io5";
 
@@ -44,13 +31,9 @@ interface IKeyWrapperProps {
 
 const ApiKeys = () => {
 
-
   const {
-    register,
     formState: { errors },
     handleSubmit,
-    watch,
-    reset,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
@@ -104,11 +87,14 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                 <Box flex={1}>
                   <Input
                     size={"lg"}
+                    color={"gray.500"}
                     type="text"
                     readOnly
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
                 </Box>
                 <Box>
@@ -132,11 +118,14 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                 <Box flex={1}>
                   <Input
                     size={"lg"}
+                    color={"gray.500"}
                     type="text"
                     readOnly
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
                 </Box>
                 <Box>
@@ -160,9 +149,12 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                     size={"lg"}
                     type="text"
                     readOnly
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    color={"gray.500"}
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
                 </Box>
                 <Box>
@@ -194,11 +186,15 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                   <Input
                     size={"lg"}
                     type="text"
+                    color={"gray.500"}
                     readOnly
-                    // value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    placeholder="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
+                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
                     maxW="3xl"
+                    _focus={{
+                      color: "gray.800",
+                    }}
                   />
+
                 </Box>
                 <Box>
                   <Button
