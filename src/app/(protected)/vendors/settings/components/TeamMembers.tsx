@@ -18,7 +18,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ColumnOrderState,
   RowSelectionState,
@@ -31,8 +31,12 @@ import {
 import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
 import { MemberData } from "@/data/mockdata";
 import { ColumnsMemberFN } from "./table";
+import Pagination from "@/app/(protected)/suppliers/components/Pagination";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import InviteMember from "@/app/(protected)/admin/settings/components/InviteMember";
+import requestClient from "@/lib/requestClient";
 
-const Members = () => {
+const Members = ({allMembersData}: {allMembersData: any}) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const {
     onOpen: onOpenRole,
@@ -50,6 +54,8 @@ const Members = () => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   // const memoizedData = useMemo(() => data, [data]);
+
+  console.log(allMembersData)
 
   const table = useReactTable({
     data: MemberData,
@@ -112,15 +118,14 @@ const Members = () => {
                     ))}
                   </Tr>
                 ))}
-                <Tr >
-                  <Td py={4} w={"full"}>
+                <Tr>
+                  <Td py={4} w={"full"} colSpan={5}>
                   <Flex justifyContent={"space-between"} alignItems={"center"}>
-                  <Button variant={"outline"} color={"gray.500"}>
-                   
+                  <Button variant={"outline"} color={"gray.500"} leftIcon={<FaArrowLeft />}>
                     Previous
                   </Button>
-                  <Button variant={"outline"} color={"gray.500"}>
-                  
+                  <Pagination />
+                  <Button variant={"outline"} color={"gray.500"} rightIcon={<FaArrowRight />}>
                     Next
                   </Button>
                   </Flex>
@@ -131,9 +136,8 @@ const Members = () => {
           </TableContainer>
         )}
       </div>
-      {/* <InviteMember onClose={onClose} isOpen={isOpen} />
-      <CreateRole isOpen={isOpenRole} onClose={onCloseRole} />
-      <ConfirmModal isOpen={isOpenRemove} onClose={onCloseRemove} /> */}
+      <InviteMember onClose={onClose} isOpen={isOpen} accountType="vendor" />
+     
     </div>
   );
 };
