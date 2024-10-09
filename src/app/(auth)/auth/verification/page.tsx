@@ -51,6 +51,7 @@ const VerificationComponent = () => {
           {
             email,
             otp: otp,
+            type: "SIGNUP_EMAIL_VERIFICATION",
           }
         );
 
