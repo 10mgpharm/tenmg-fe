@@ -12,6 +12,7 @@ import {
   Input,
   Text,
   Image as ChakraImage,
+  Link,
 } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
@@ -91,7 +92,7 @@ export default function BusinessInformationForm({
 
       if (response.status === 200) {
         toast.success(
-          `You have successfully compeleted Sign up process. Redirect to Login....`
+          `You have successfully completed Sign up process. Redirect to Login....`
         );
 
         setTimeout(async () => {
@@ -268,7 +269,7 @@ export default function BusinessInformationForm({
                   </FormControl>
                 )}
               />
-              ;{/* Contact Name */}
+              {/* Contact Name */}
               <FormControl isInvalid={!!errors.contactPersonName}>
                 <FormLabel htmlFor="contactPersonName">
                   Contact person&apos;s name{" "}
@@ -313,9 +314,9 @@ export default function BusinessInformationForm({
             {/* Terms & Conditions */}
             <Flex mb={10} alignItems="center" gap={2}>
               <Checkbox id="remember" />
-              <Text color="gray.500" fontSize="lg">
+              <Text color="gray.500" fontSize="md">
                 I confirm that I have read and agree to 10 MG Pharmacy&apos;s
-                Terms & Conditions and Privacy Policy
+                <Link href="#" color={"blue.500"}>Terms & Conditions</Link> and  <Link href="#" color={"blue.500"}>Privacy Policy</Link>
               </Text>
             </Flex>
 
