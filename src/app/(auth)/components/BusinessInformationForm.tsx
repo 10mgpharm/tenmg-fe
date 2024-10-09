@@ -14,7 +14,7 @@ import {
   Image as ChakraImage,
   Link,
 } from "@chakra-ui/react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -32,16 +32,10 @@ interface IFormInput {
   contactPersonPosition: string;
 }
 
-export default function BusinessInformationForm({
-  sessionData,
-}: {
-  sessionData: NextAuthUserSession;
-}) {
-  const session = useSession();
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [name, setName] = useState<string>(null);
-  const [provider, setProvider] = useState<string>(null);
+export default function BusinessInformationForm({ sessionData }: { sessionData: NextAuthUserSession }) {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [name, setName] = useState<string>(null);
+    const [provider, setProvider] = useState<string>(null);
 
   const searchParams = useSearchParams();
 
