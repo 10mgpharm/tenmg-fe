@@ -21,7 +21,7 @@ import {
 import Link from "next/link";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import { handleServerErrorMessage } from "@/utils";
 
@@ -31,6 +31,10 @@ interface IFormInput {
 }
 
 const ResetPassword = () => {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  if (!token) redirect('/auth/forgot-password');
+
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState<boolean>(false);
   const [isPasswordReset, setIsPasswordReset] = useState<boolean>(false); // change to true after the password reset is successful
@@ -59,9 +63,7 @@ const ResetPassword = () => {
     try {
       setIsLoading(true);
 
-      const response = await requestClient().post("/auth/reset-password", {
-        email: email,
-        otp: otp,
+      const response = await requestClient({ token }).post("/auth/reset-password", {
         password: data.password,
         passwordConfirmation: data.passwordConfirmation,
       });
@@ -69,16 +71,17 @@ const ResetPassword = () => {
       setIsLoading(false);
 
       if (response.status === 200) {
-        Cookies.remove("email");
-        Cookies.remove("otp");
         toast.success(response?.data?.message);
-        router.push("/");
+
+        setTimeout(async () => {
+          // signout so user can login with the newly created account
+          router.push("/");
+        }, 5000);
       }
     } catch (error) {
       setIsLoading(false);
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
-      console.error(error);
     }
   };
 

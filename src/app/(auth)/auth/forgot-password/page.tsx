@@ -20,6 +20,7 @@ import requestClient from "@/lib/requestClient";
 import { useRouter } from "next/navigation";
 import { handleServerErrorMessage } from "@/utils";
 import Cookies from "js-cookie";
+import { ResponseDto, User } from "@/types";
 
 interface IFormInput {
   email: string;
@@ -41,17 +42,18 @@ const ForgotPassword = () => {
       const response = await requestClient().post("/auth/forgot-password", {
         email: data.email,
       });
+      const { data: user, accessToken }: ResponseDto<User> = response.data;
 
       setIsLoading(false);
 
       if (response.status === 200) {
-        Cookies.set("email", data.email, { expires: 1 });
         toast.success(response?.data?.message);
-        router.push("/auth/verification");
+        router.push(`/auth/forgot-password/verification?token=${accessToken?.token}&email=${user.email}`);
       }
     } catch (error) {
       setIsLoading(false);
-      console.error(error);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.success(errorMessage);
     }
   };
 
