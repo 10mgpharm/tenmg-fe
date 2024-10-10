@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import React from "react";
 import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
@@ -349,4 +349,11 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+
+const ResetPasswordPage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <ResetPassword />
+  </Suspense>
+);
+
+export default ResetPasswordPage;
