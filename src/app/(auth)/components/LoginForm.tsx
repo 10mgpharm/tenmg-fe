@@ -7,7 +7,7 @@ import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { signIn, SignInResponse } from "next-auth/react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Button,
   FormControl,
@@ -63,8 +63,6 @@ export default function LoginForm() {
   };
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-
-  const router = useRouter();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -166,10 +164,10 @@ export default function LoginForm() {
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
             <input type="checkbox" id="remember" className="w-4 h-4" />
-            <label htmlFor="remember">Remember me</label>
+            <label htmlFor="remember">Remember Me</label>
           </div>
           <Link href="/auth/forgot-password" className="text-primary">
-            Forgot password?
+            Forgot Password?
           </Link>
         </div>
       </div>
