@@ -181,7 +181,7 @@ export default function LoginForm() {
           isLoading={isLoading}
           loadingText="Submitting"
         >
-          Sign in
+          Sign In
         </Button>
         <Button
           variant={"outline"}
@@ -197,7 +197,7 @@ export default function LoginForm() {
             })
           }
         >
-          Sign in with Google
+          Sign In with Google
         </Button>
       </div>
     </form>

@@ -38,8 +38,8 @@ const InviteMember = ({
   isOpen: boolean;
   onClose: () => void;
   accountType?: "vendor";
-  onSubmit: SubmitHandler<IFormInput>;
-  isLoading: boolean;
+  onSubmit?: SubmitHandler<IFormInput>;
+  isLoading?: boolean;
 }) => {
   const {
     register,
