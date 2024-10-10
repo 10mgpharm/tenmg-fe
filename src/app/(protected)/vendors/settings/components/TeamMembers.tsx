@@ -35,8 +35,23 @@ import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import InviteMember from "@/app/(protected)/admin/settings/components/InviteMember";
 import requestClient from "@/lib/requestClient";
+import { SubmitHandler } from "react-hook-form";
+import { handleServerErrorMessage } from "@/utils";
+import { toast } from "react-toastify";
 
-const Members = ({allMembersData}: {allMembersData: any}) => {
+interface IFormInput {
+  name: string;
+  email: string;
+  role: "admin" | "member" | "support";
+}
+
+const Members = ({
+  allMembersData,
+  fetchTeamMembers,
+}: {
+  allMembersData: [];
+  fetchTeamMembers: () => void;
+}) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const {
     onOpen: onOpenRole,
@@ -52,10 +67,11 @@ const Members = ({allMembersData}: {allMembersData: any}) => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // const memoizedData = useMemo(() => data, [data]);
 
-  console.log(allMembersData)
+  console.log(allMembersData);
 
   const table = useReactTable({
     data: MemberData,
@@ -74,6 +90,32 @@ const Members = ({allMembersData}: {allMembersData: any}) => {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      setIsLoading(true);
+
+      const response = await requestClient().post(
+        "/vendor/business/settings/invite",
+        {
+          name: data.name,
+          email: data.email,
+          role: data.role,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+        fetchTeamMembers();
+        onClose();
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <div>
@@ -120,15 +162,26 @@ const Members = ({allMembersData}: {allMembersData: any}) => {
                 ))}
                 <Tr>
                   <Td py={4} w={"full"} colSpan={5}>
-                  <Flex justifyContent={"space-between"} alignItems={"center"}>
-                  <Button variant={"outline"} color={"gray.500"} leftIcon={<FaArrowLeft />}>
-                    Previous
-                  </Button>
-                  <Pagination />
-                  <Button variant={"outline"} color={"gray.500"} rightIcon={<FaArrowRight />}>
-                    Next
-                  </Button>
-                  </Flex>
+                    <Flex
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                    >
+                      <Button
+                        variant={"outline"}
+                        color={"gray.500"}
+                        leftIcon={<FaArrowLeft />}
+                      >
+                        Previous
+                      </Button>
+                      <Pagination />
+                      <Button
+                        variant={"outline"}
+                        color={"gray.500"}
+                        rightIcon={<FaArrowRight />}
+                      >
+                        Next
+                      </Button>
+                    </Flex>
                   </Td>
                 </Tr>
               </Tbody>
@@ -136,8 +189,12 @@ const Members = ({allMembersData}: {allMembersData: any}) => {
           </TableContainer>
         )}
       </div>
-      <InviteMember onClose={onClose} isOpen={isOpen} accountType="vendor" />
-     
+      <InviteMember
+        onClose={onClose}
+        isOpen={isOpen}
+        accountType="vendor"
+        // onSubmit={onSubmit}
+      />
     </div>
   );
 };
