@@ -32,10 +32,14 @@ interface IFormInput {
   contactPersonPosition: string;
 }
 
-export default function BusinessInformationForm({ sessionData }: { sessionData: NextAuthUserSession }) {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [name, setName] = useState<string>(null);
-    const [provider, setProvider] = useState<string>(null);
+export default function BusinessInformationForm({
+  sessionData,
+}: {
+  sessionData: NextAuthUserSession;
+}) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [name, setName] = useState<string>(null);
+  const [provider, setProvider] = useState<string>(null);
 
   const searchParams = useSearchParams();
 
@@ -310,7 +314,14 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
               <Checkbox id="remember" />
               <Text color="gray.500" fontSize="md">
                 I confirm that I have read and agree to 10 MG Pharmacy&apos;s
-                <Link href="#" color={"blue.500"}>Terms & Conditions</Link> and  <Link href="#" color={"blue.500"}>Privacy Policy</Link>
+                <Link href="#" color={"blue.500"}>
+                  {" "}
+                  Terms & Conditions
+                </Link>{" "}
+                and{" "}
+                <Link href="#" color={"blue.500"}>
+                  Privacy Policy
+                </Link>
               </Text>
             </Flex>
 

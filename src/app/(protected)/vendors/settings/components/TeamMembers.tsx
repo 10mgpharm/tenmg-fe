@@ -1,13 +1,7 @@
-"use client";
 import {
   Button,
   Flex,
   HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Stack,
-  Text,
   Table,
   TableContainer,
   Tbody,
@@ -18,7 +12,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   ColumnOrderState,
   RowSelectionState,
@@ -35,43 +29,31 @@ import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import InviteMember from "@/app/(protected)/admin/settings/components/InviteMember";
 import requestClient from "@/lib/requestClient";
-import { SubmitHandler } from "react-hook-form";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
+import { SubmitHandler } from "react-hook-form";
 
 interface IFormInput {
-  name: string;
+  fullName: string;
   email: string;
-  role: "admin" | "member" | "support";
+  role: "admin" | "operator" | "support";
 }
 
 const Members = ({
   allMembersData,
   fetchTeamMembers,
+  token,
 }: {
   allMembersData: [];
   fetchTeamMembers: () => void;
+  token: string
 }) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const {
-    onOpen: onOpenRole,
-    onClose: onCloseRole,
-    isOpen: isOpenRole,
-  } = useDisclosure();
-  const {
-    onOpen: onOpenRemove,
-    onClose: onCloseRemove,
-    isOpen: isOpenRemove,
-  } = useDisclosure();
+  const { onOpen: onOpenRemove } = useDisclosure();
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // const memoizedData = useMemo(() => data, [data]);
-
-  console.log(allMembersData);
 
   const table = useReactTable({
     data: MemberData,
@@ -79,63 +61,53 @@ const Members = ({
     onSortingChange: setSorting,
     state: {
       sorting,
-      columnVisibility,
       columnOrder,
       rowSelection,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    console.log(data);
     try {
       setIsLoading(true);
-
-      const response = await requestClient().post(
+      const response = await requestClient({token: token}).post(
         "/vendor/business/settings/invite",
-        {
-          name: data.name,
-          email: data.email,
-          role: data.role,
-        }
+        data
       );
-
       if (response.status === 200) {
         toast.success(response?.data?.message);
         fetchTeamMembers();
         onClose();
-        setIsLoading(false);
       }
     } catch (error) {
       setIsLoading(false);
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
+      toast.error(handleServerErrorMessage(error));
     }
   };
 
   return (
     <div>
-      <HStack justify={"flex-end"}>
-        <Button onClick={onOpen} fontSize={"15px"} h={"38px"} px={3}>
-          <Plus className="w-5 h-auto mr-1" />
-          Add Team Member
+      <HStack justify="flex-end">
+        <Button onClick={onOpen} fontSize="15px" h="38px" px={3}>
+          <Plus className="w-5 h-auto mr-1" /> Add Team Member
         </Button>
       </HStack>
       <div className="mt-5">
         {MemberData?.length === 0 ? (
           <EmptyOrder />
         ) : (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+          <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
             <Table>
-              <Thead bg={"blue.50"}>
+              <Thead bg="blue.50">
                 {table?.getHeaderGroups()?.map((headerGroup) => (
                   <Tr key={headerGroup.id}>
                     {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="12px" key={header.id}>
+                      <Th textTransform="initial" px="12px" key={header.id}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -147,7 +119,7 @@ const Members = ({
                   </Tr>
                 ))}
               </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+              <Tbody bg="white" color="#606060" fontSize="14px">
                 {table?.getRowModel()?.rows?.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells()?.map((cell) => (
@@ -161,22 +133,19 @@ const Members = ({
                   </Tr>
                 ))}
                 <Tr>
-                  <Td py={4} w={"full"} colSpan={5}>
-                    <Flex
-                      justifyContent={"space-between"}
-                      alignItems={"center"}
-                    >
+                  <Td py={4} w="full" colSpan={5}>
+                    <Flex justifyContent="space-between" alignItems="center">
                       <Button
-                        variant={"outline"}
-                        color={"gray.500"}
+                        variant="outline"
+                        color="gray.500"
                         leftIcon={<FaArrowLeft />}
                       >
                         Previous
                       </Button>
                       <Pagination />
                       <Button
-                        variant={"outline"}
-                        color={"gray.500"}
+                        variant="outline"
+                        color="gray.500"
                         rightIcon={<FaArrowRight />}
                       >
                         Next
@@ -193,7 +162,8 @@ const Members = ({
         onClose={onClose}
         isOpen={isOpen}
         accountType="vendor"
-        // onSubmit={onSubmit}
+        isLoading={isLoading}
+        onSubmit={onSubmit}
       />
     </div>
   );

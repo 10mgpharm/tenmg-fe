@@ -150,7 +150,11 @@ const Settings = () => {
               <AccountSetup />
             </TabPanel>
             <TabPanel>
-              <TeamMembers allMembersData={allMembersData} />
+              <TeamMembers
+                allMembersData={allMembersData}
+                fetchTeamMembers={fetchTeamMembers}
+                token={token}
+              />
             </TabPanel>
             <TabPanel>
               <ApiKeys />
