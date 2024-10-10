@@ -71,7 +71,7 @@ const ForgotPassword = () => {
 
           <div className="mb-8">
             <h3 className="font-normal text-gray-900 text-4xl leading-[44px] tracking-tight mb-3">
-              Forgotten password?
+              Forgot Password?
             </h3>
 
             <p className="text-gray-500 text-base font-normal leading-6 text-left">
@@ -116,7 +116,7 @@ const ForgotPassword = () => {
               <div className="text-center">
                 <Link
                   href="/auth/signin"
-                  className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
+                  className="text-medium font-normal leading-6 flex justify-center items-center gap-2 text-primary hover:underline"
                 >
                   <FaArrowLeft /> Return to Log In
                 </Link>

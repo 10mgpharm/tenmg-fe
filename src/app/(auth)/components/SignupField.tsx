@@ -145,7 +145,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
           <Box mb={10}>
             <FormControl isInvalid={!!errors.fullname?.message} mb={5}>
               <FormLabel htmlFor="fullname">
-                Get started with your name{" "}
+                Full Name{" "}
                 <Text as="span" color="red.500">
                   *
                 </Text>
@@ -318,7 +318,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
               isDisabled={isLoading}
               isLoading={isLoading}
             >
-              Create account
+              Create Account
             </Button>
 
             {title !== "vendor" && (
@@ -336,7 +336,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                   })
                 }
               >
-                Sign up with Google
+                Sign Up with Google
               </Button>
             )}
           </Box>
@@ -346,7 +346,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
           <Text color="gray.500">
             Already have an account?{" "}
             <Link href="/auth/signin" color="primary.500">
-              Log in
+              Log In
             </Link>{" "}
             or{" "}
             <Link

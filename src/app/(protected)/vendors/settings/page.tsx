@@ -15,22 +15,44 @@ import PasswordForm from "./components/PasswordForm";
 import Notifications from "./components/Notifications";
 import AccountSetup from "./components/AccountSetup";
 import { useSession } from "next-auth/react";
-import { User } from "@/types";
+import { NextAuthUserSession, User } from "@/types";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ApiKeys from "./components/ApiKeys";
+import TeamMembers from "./components/TeamMembers";
+import requestClient from "@/lib/requestClient";
 
 const Settings = () => {
   const [user, setUser] = useState<User>({} as User);
 
   const session = useSession();
   const sessionData = session?.data?.user as User;
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
 
   useEffect(() => {
     setUser(sessionData);
   }, [sessionData]);
 
-  console.log(user);
+  const [allMembersData, setAllMembersData] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fetchTeamMembers = useCallback(async () => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        "/vendor/business/settings/invite"
+      );
+      if (response.status === 200) {
+        setAllMembersData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchTeamMembers();
+  }, [fetchTeamMembers]);
 
   return (
     <div className="p-4 md:p-8">
@@ -128,7 +150,11 @@ const Settings = () => {
               <AccountSetup />
             </TabPanel>
             <TabPanel>
-              <AccountSetup />
+              <TeamMembers
+                allMembersData={allMembersData}
+                fetchTeamMembers={fetchTeamMembers}
+                token={token}
+              />
             </TabPanel>
             <TabPanel>
               <ApiKeys />

@@ -48,8 +48,6 @@ const PasswordForm = () => {
   const sessionData = session.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  console.log(token);
-
   const {
     register,
     formState: { errors },
@@ -87,7 +85,6 @@ const PasswordForm = () => {
       setIsLoading(false);
       console.error(error);
     }
-    console.log(data);
   };
 
   return (

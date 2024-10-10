@@ -104,6 +104,7 @@ const ForgetPasswordEmailVerification = () => {
                             <OTPInput
                                 value={otp}
                                 onChange={setOtp}
+                                placeholder='TF0B6S'
                                 numInputs={6}
                                 renderInput={(props) => <input {...props} />}
                                 containerStyle="justify-center gap-2 lg:gap-4"
@@ -140,8 +141,8 @@ const ForgetPasswordEmailVerification = () => {
                         <Button
                             variant={"link"}
                             onClick={async () => {
-                                await signOut();
-                                redirect("/auth/signup");
+                                await signOut({ callbackUrl: "/auth/signin" });
+                                router.push("/")
                             }}
                             className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
                         >

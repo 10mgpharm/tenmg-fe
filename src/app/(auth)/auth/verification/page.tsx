@@ -146,6 +146,7 @@ const VerificationComponent = () => {
               <OtpInput
                 value={otp}
                 onChange={setOtp}
+                 placeholder='TF0B6S'
                 numInputs={6}
                 renderInput={(props) => <input {...props} />}
                 containerStyle="justify-center gap-2 lg:gap-4"

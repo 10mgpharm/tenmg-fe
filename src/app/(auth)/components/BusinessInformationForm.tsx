@@ -15,7 +15,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { signOut } from "next-auth/react";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect, useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -32,12 +32,17 @@ interface IFormInput {
   contactPersonPosition: string;
 }
 
-export default function BusinessInformationForm({ sessionData }: { sessionData: NextAuthUserSession }) {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [name, setName] = useState<string>(null);
-    const [provider, setProvider] = useState<string>(null);
+export default function BusinessInformationForm({
+  sessionData,
+}: {
+  sessionData: NextAuthUserSession;
+}) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [name, setName] = useState<string>(null);
+  const [provider, setProvider] = useState<string>(null);
 
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   if (!searchParams?.get("token")) redirect("/auth/signup");
   const token = searchParams.get("token");
@@ -149,7 +154,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
               {/* Business Name */}
               <FormControl isInvalid={!!errors.businessName}>
                 <FormLabel htmlFor="businessName">
-                  Business name{" "}
+                  Business Name{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -170,7 +175,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
               {provider !== "credentials" && (
                 <FormControl isInvalid={!!errors.businessType}>
                   <FormLabel htmlFor="businessType">
-                    Business type{" "}
+                    Business Type{" "}
                     <Text as="span" color="red.500">
                       *
                     </Text>
@@ -180,7 +185,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                     rules={{
                       required: {
                         value: true,
-                        message: "Business type is required",
+                        message: "Business Type is required",
                       },
                     }}
                     name={`businessType`}
@@ -207,7 +212,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
               {/* Business Email */}
               <FormControl isInvalid={!!errors.businessEmail}>
                 <FormLabel htmlFor="businessEmail">
-                  Business email{" "}
+                  Business Email{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -234,7 +239,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                 name="contactPhone"
                 control={control}
                 rules={{
-                  required: "Business phone number is required",
+                  required: "Business Phone Number is required",
                 }}
                 render={({ field }) => (
                   <FormControl isInvalid={!!errors.contactPhone}>
@@ -266,7 +271,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
               {/* Contact Name */}
               <FormControl isInvalid={!!errors.contactPersonName}>
                 <FormLabel htmlFor="contactPersonName">
-                  Contact person&apos;s name{" "}
+                  Contact Person&apos;s Name{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -276,7 +281,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                   placeholder="Enter your contact person's name"
                   isDisabled={isLoading}
                   {...register("contactPersonName", {
-                    required: "Contact person's name is required",
+                    required: "Contact Person's Name is required",
                   })}
                 />
                 <FormErrorMessage>
@@ -286,7 +291,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
               {/* Contact Position */}
               <FormControl isInvalid={!!errors.contactPersonPosition}>
                 <FormLabel htmlFor="contactPersonPosition">
-                  Position of contact person{" "}
+                  Position of Contact Person{" "}
                   <Text as="span" color="red.500">
                     *
                   </Text>
@@ -296,7 +301,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
                   placeholder="Managing Director"
                   isDisabled={isLoading}
                   {...register("contactPersonPosition", {
-                    required: "Position of contact person is required",
+                    required: "Position of Contact Person is required",
                   })}
                 />
                 <FormErrorMessage>
@@ -309,8 +314,15 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
             <Flex mb={10} alignItems="center" gap={2}>
               <Checkbox id="remember" />
               <Text color="gray.500" fontSize="md">
-                I confirm that I have read and agree to 10 MG Pharmacy&apos;s
-                <Link href="#" color={"blue.500"}>Terms & Conditions</Link> and  <Link href="#" color={"blue.500"}>Privacy Policy</Link>
+                I confirm that I have read and agree to 10 MG&apos;s
+                <Link href="#" color={"blue.500"}>
+                  {" "}
+                  Terms & Conditions
+                </Link>{" "}
+                and{" "}
+                <Link href="#" color={"blue.500"}>
+                  Privacy Policy
+                </Link>
               </Text>
             </Flex>
 
@@ -333,8 +345,7 @@ export default function BusinessInformationForm({ sessionData }: { sessionData: 
             <Button
               variant={"link"}
               onClick={async () => {
-                await signOut();
-                redirect("/auth/signup");
+                await signOut({ callbackUrl: "/auth/signup" });
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
