@@ -39,7 +39,7 @@ export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
     }),
     columnHelper.accessor("supplier_id", {
       header: ({ column }) => (
-        <p className="">Stock</p>
+        <p className="">Supplier&apos;s ID</p>
       ),
       cell: (info) => (
        <div className="">
@@ -79,10 +79,9 @@ export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
             ? "bg-[#FEF3F2] text-[#B42318]" 
             : info?.row?.original?.status === "Active"
             ? "text-[#027A48] bg-[#ECFDF3]"
-            : "text-yellow-500 bg-yellow-50", " max-w-min p-1 px-2 rounded-2xl text-sm"
+            : "text-yellow-500 bg-yellow-50", " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full"></span>
-                {" "}
+                {"• "}
                {info?.row?.original?.status}
             </p>
           </div>

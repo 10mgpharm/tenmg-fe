@@ -37,7 +37,7 @@ const navigation = [
   { name: 'Message', href: '/admin/messages', icon: BiMessageDetail, current: false },
   { name: 'Audit Log', href: '/admin/audit-logs', icon: MdMonitor, current: false },
   { name: 'Settings', href: '/admin/settings', icon: Cog6ToothIcon, current: false },
-  { name: 'System Setup', href: '/admin/systemsetup', icon: GiSpanner, current: false },
+  { name: 'System Setup', href: '/admin/system-setup', icon: GiSpanner, current: false },
 ]
 
 const SideBar = () => {

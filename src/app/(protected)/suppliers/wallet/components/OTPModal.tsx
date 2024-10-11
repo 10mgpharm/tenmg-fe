@@ -29,6 +29,7 @@ const OTPModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) =>
                 value={otp}
                 onChange={setOtp}
                 numInputs={4}
+                inputType='number'
                 containerStyle={{display:"flex", gap: "12px", justifyContent: "center"}}
                 // renderSeparator={<span>-</span>}
                 inputStyle={{width: "70px", height: "70px", padding: "5px", border: "1px solid #EAECF0", borderRadius: "5px", fontSize: "24px", fontWeight: "bold"}}

@@ -96,7 +96,10 @@ const Members = () => {
         <div className="mt-5">
         {
             MemberData?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder 
+            heading={`No Member Yet`} 
+            content={`You currently have no member added. All members will appear here.`} 
+            /> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>

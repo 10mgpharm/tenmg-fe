@@ -43,7 +43,10 @@ const UserTable = ({data, type}: {data: any, type: string}) => {
     <div className="">
         {
             data?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder 
+            heading={`No User Yet`} 
+            content={`You currently have no user. All users will appear here.`}
+            /> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
@@ -109,17 +112,7 @@ const UserTable = ({data, type}: {data: any, type: string}) => {
                     ))}
                     </Tbody>
                 </Table>
-                <HStack mt={5} justify={"space-between"}>
-                    <Flex alignItems={"center"} gap={2}>
-                        <FaChevronLeft className='text-gray-500' />
-                        <Text className='text-gray-500'>Prev</Text>
-                    </Flex>
-                    <Pagination />
-                    <Flex alignItems={"center"} gap={2}>
-                        <Text className='text-gray-500'>Next</Text>
-                        <FaChevronRight className='text-gray-500' />
-                    </Flex>
-                </HStack>
+                <Pagination />
             </TableContainer>
         }
     </div>

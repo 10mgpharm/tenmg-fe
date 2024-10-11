@@ -40,7 +40,7 @@ export function ColumsLoanFN(onOpen: () => void) {
     }),
     columnHelper.accessor("amount", {
       header: ({ column }) => (
-        <p>Amount</p>
+        <p>Loan Amount</p>
       ),
       cell: (info) => (
        <div className="">
@@ -50,7 +50,7 @@ export function ColumsLoanFN(onOpen: () => void) {
     }),
     columnHelper.accessor("date", {
         header: ({ column }) => (
-          <p>Date</p>
+          <p>Date Created</p>
         ),
         cell: (info) => {
           return (
@@ -63,7 +63,7 @@ export function ColumsLoanFN(onOpen: () => void) {
     }),
     columnHelper.accessor("disburstment", {
         header: ({ column }) => (
-          <p>Cost</p>
+          <p>Disbursement Status</p>
         ),
         cell: (info) => (
          <div className="">
@@ -83,7 +83,7 @@ export function ColumsLoanFN(onOpen: () => void) {
     }),
     columnHelper.accessor("isPublic", {
       header: ({ column }) => (
-        <p>Status</p>
+        <p>Repayment Status</p>
       ),
       cell: (info) => {
         return (
@@ -96,11 +96,11 @@ export function ColumsLoanFN(onOpen: () => void) {
             : info?.row?.original?.status === "Enabled"
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", 
-            " max-w-min p-1 px-2 rounded-2xl text-sm"
+            " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full">•</span>
-                {" "}
-               {info?.row?.original?.status}
+              <span className="rounded-full text-[1.2rem]">•</span>
+              {" "}
+              {info?.row?.original?.status}
             </p>
           </div>
         );

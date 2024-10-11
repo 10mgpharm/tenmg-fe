@@ -8,7 +8,7 @@ export function ColumsRepaymentFN(onOpen: () => void) {
     columnHelper.accessor("id", {
       header: () => (
         <div className="pl-6">
-          <p>Loan ID</p>
+          <p>Repayment ID</p>
         </div>
       ),
       cell: (info) => (
@@ -48,22 +48,22 @@ export function ColumsRepaymentFN(onOpen: () => void) {
     }),
     columnHelper.accessor("status", {
       header: ({ column }) => (
-        <p>Status</p>
+        <p>Repayment Status</p>
       ),
       cell: (info) => {
         return (
-          <div>
+          <div className="flex">
             <p className={classNames(
             info?.row?.original?.status === "Overdue" 
             ? "bg-[#FFFAEB] text-[#F79009]" 
             : info?.row?.original?.status === "Paid"
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", 
-            " max-w-min p-1 px-2 rounded-2xl text-sm"
+            " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full">•</span>
-                {" "}
-               {info?.row?.original?.status}
+              <span className="rounded-full text-[1.2rem]">•</span>
+              {" "}
+              {info?.row?.original?.status}
             </p>
           </div>
         );

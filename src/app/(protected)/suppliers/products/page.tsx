@@ -83,7 +83,7 @@ const Products = () => {
             <div className="mb-5">
                 <h3 className="font-semibold text-2xl">
                     Products
-                    <span className="font-light text-gray-600">(9/40)</span>
+                    <span className="font-light text-gray-600">(10/10)</span>
                 </h3>
                 <div className="flex items-center gap-3 mt-5">
                     <div className="border border-gray-300 rounded-md flex items-center gap-3 p-3 w-[350px]">
@@ -139,7 +139,10 @@ const Products = () => {
         <div className="">
         {
             productData2?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder 
+            heading={`No Product Yet`} 
+            content={`You currently have no product. All products will appear here.`}
+            /> : 
             currentView === PRODUCTVIEW.LIST ?
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
@@ -206,17 +209,7 @@ const Products = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <HStack mt={5} justify={"space-between"}>
-                    <Flex alignItems={"center"} gap={2}>
-                        <FaChevronLeft className='text-gray-500' />
-                        <Text className='text-gray-500'>Prev</Text>
-                    </Flex>
-                    <Pagination />
-                    <Flex alignItems={"center"} gap={2}>
-                        <Text className='text-gray-500'>Next</Text>
-                        <FaChevronRight className='text-gray-500' />
-                    </Flex>
-                </HStack>
+                <Pagination />
             </TableContainer>
             : <GridList data={productData2}/>
         }
