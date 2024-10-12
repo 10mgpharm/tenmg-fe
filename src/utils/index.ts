@@ -26,3 +26,16 @@ export const handleServerErrorMessage = (errorResponse: any) => {
     }
     return 'Unhandled Exception: Contact the business administrator'
 }
+
+export const convertLetterCase = (text: string) => {
+    if (!text) return text;
+
+    if (text.includes(' ')) {
+        return text
+            .split(' ')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    }
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+    
+}

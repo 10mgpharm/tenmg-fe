@@ -9,20 +9,23 @@ import avatar from "@public/assets/images/Avatar.svg";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { FormControl, FormLabel, Switch, Tag } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
+import { Badge, FormControl, FormLabel, Switch, Tag, TagLabel } from "@chakra-ui/react";
+import { redirect, useRouter } from "next/navigation";
+import { convertLetterCase } from "@/utils";
 
 const TopNavBar = () => {
   const session = useSession();
   const data = session.data as NextAuthUserSession;
+
+  const router = useRouter();
 
   console.log(data?.user)
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
       case "VENDOR":
         return (
-          <Tag size="sm" variant="solid" colorScheme="red">
-            {businessType?.toLocaleLowerCase()}
+          <Tag size="sm" ml="1" borderRadius={"full"} color={"green.500"} bgColor={"green.50"}>
+            <TagLabel>{convertLetterCase(businessType)}</TagLabel> 
           </Tag>
         );
       case "SUPPLIER":
@@ -48,7 +51,7 @@ const TopNavBar = () => {
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
-      <div className="flex justify-between shadow-sm lg:pr-12">
+      <div className="flex justify-between shadow-sm lg:pr-8">
         <div className="flex items-center gap-8 md:gap-36">
           <div className="flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
             <Image
@@ -68,7 +71,7 @@ const TopNavBar = () => {
         </div>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
           {data?.user?.entityType === "VENDOR" && (
-            <FormControl display="flex" alignItems="center" gap={2}>
+            <FormControl display="flex" alignItems="center" w={"auto"} gap={2}>
               <Switch id="test-mode" />
               <FormLabel
                 htmlFor="test-mode"
@@ -131,7 +134,7 @@ const TopNavBar = () => {
                   className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
                   onClick={async () => {
                     await signOut();
-                    redirect("/");
+                    router.push("/");
                   }}
                 >
                   Log out
