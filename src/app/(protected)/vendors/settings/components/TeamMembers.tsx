@@ -48,6 +48,7 @@ const Members = ({
   fetchTeamMembers: () => void;
   token: string
 }) => {
+
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { onOpen: onOpenRemove } = useDisclosure();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -56,7 +57,7 @@ const Members = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const table = useReactTable({
-    data: MemberData,
+    data: allMembersData,
     columns: ColumnsMemberFN(onOpenRemove),
     onSortingChange: setSorting,
     state: {
@@ -72,11 +73,10 @@ const Members = ({
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
     try {
       setIsLoading(true);
       const response = await requestClient({token: token}).post(
-        "/vendor/business/settings/invite",
+        "/vendor/settings/invite",
         data
       );
       if (response.status === 200) {
@@ -98,7 +98,7 @@ const Members = ({
         </Button>
       </HStack>
       <div className="mt-5">
-        {MemberData?.length === 0 ? (
+        {allMembersData?.length === 0 ? (
           <EmptyOrder />
         ) : (
           <TableContainer border="1px solid #F9FAFB" borderRadius="10px">

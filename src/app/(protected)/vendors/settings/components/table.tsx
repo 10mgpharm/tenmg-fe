@@ -1,9 +1,9 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Icon } from "@chakra-ui/react";
-import { classNames } from "@/utils";
+import { classNames, convertLetterCase } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import Image from "next/image";
-import Link from "next/link";
+// import Image from "next/image";
+// import Link from "next/link";
 import { IoTrashOutline } from "react-icons/io5";
 import { LuPen } from "react-icons/lu";
 
@@ -23,18 +23,20 @@ export function ColumnsMemberFN(
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
-          <Image
+          {/* <Image
             src={info?.row?.original?.image}
             alt=""
             className="w-10 h-10 rounded-full"
-          />
-          <p className="font-medium">{info?.row?.original?.name}</p>
+          /> */}
+          <p className="font-medium">{info?.row?.original?.fullName}</p>
         </div>
       ),
     }),
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Status</p>,
       cell: (info) => {
+        const status = convertLetterCase(info?.row?.original?.status)
+       
         return (
           <div>
             <p
@@ -43,13 +45,14 @@ export function ColumnsMemberFN(
                   ? "bg-[#FEF3F2] text-[#B42318]"
                   : info?.row?.original?.status === "Accepted"
                   ? "text-[#027A48] bg-[#ECFDF3]"
-                  : info?.row?.original?.status === "Invited"
+                  : info?.row?.original?.status === "INVITED"
                   ? "text-blue-500 bg-blue-50"
                   : "text-gray-500",
-                " max-w-min p-0.5 px-3 rounded-2xl text-sm"
+                " max-w-min p-1 px-2 rounded-2xl text-xs font-medium"
               )}
             >
-              {info?.row?.original?.status}
+               {"• "}
+              {status}
             </p>
           </div>
         );
@@ -60,7 +63,7 @@ export function ColumnsMemberFN(
       header: ({ column }) => <p className="px-5">Role</p>,
       cell: (info) => (
         <div className="px-5">
-          <p className="font-medium">{info.row.original?.role}</p>
+          <p className="font-medium">{convertLetterCase(info.row.original?.role)}</p>
         </div>
       ),
     }),

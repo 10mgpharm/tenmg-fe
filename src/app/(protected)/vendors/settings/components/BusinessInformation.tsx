@@ -1,7 +1,7 @@
 "use client";
 
 import { MdOutlineEmail } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Button,
@@ -31,23 +31,39 @@ interface IFormInput {
   position: string;
 }
 
-const PersonalInformation = ({ user }: { user: User }) => {
+const BusinessInformation = ({ user }: { user: User }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
     watch,
   } = useForm<IFormInput>({
     mode: "onChange",
+    defaultValues: {
+      name: '',
+      email: '',
+      // contactName: user?.contactName,
+      // contactPhone: user?.contactPhone,
+      // businessAddress: user?.businessAddress,
+      // position: user?.position,
+    },
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  useEffect(() => {
+    setValue("name", user?.businessName);
+    setValue("email", user?.email);
+  }, [setValue, user?.businessName, user?.email]);
+
+  const onSubmit: SubmitHandler<IFormInput> = async (value) => {
     try {
       setIsLoading(true);
 
-      const response = await requestClient().post("/auth/signup", {});
+      const response = await requestClient().post("/auth/signup", {
+        ...value,
+      });
       const { status, message }: ResponseDto<User> = response.data;
     } catch (error) {
       setIsLoading(false);
@@ -69,10 +85,7 @@ const PersonalInformation = ({ user }: { user: User }) => {
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Business Name
               </FormLabel>
-              <Input
-                placeholder="Enter business name"
-                defaultValue={user?.businessName}
-              />
+              <Input placeholder="Enter business name" {...register("name")} />
             </FormControl>
 
             <FormControl isInvalid={!!errors.contactName?.message}>
@@ -94,7 +107,6 @@ const PersonalInformation = ({ user }: { user: User }) => {
                 <Input
                   type="email"
                   placeholder="Enter business email"
-                  defaultValue={user?.email}
                   pl={10}
                   {...register("email", {
                     required: "Business Email is required",
@@ -120,14 +132,14 @@ const PersonalInformation = ({ user }: { user: User }) => {
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Business Address
               </FormLabel>
-              <Textarea placeholder="Enter here" />
+              <Input type="text" placeholder="Enter position" />
             </FormControl>
 
             <FormControl isInvalid={!!errors.position?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Position
               </FormLabel>
-              <Textarea placeholder="Enter here" />
+              <Input type="text" placeholder="Enter position" />
             </FormControl>
           </HStack>
           <HStack
@@ -139,7 +151,14 @@ const PersonalInformation = ({ user }: { user: User }) => {
               <Button variant="outline" mr={3}>
                 Cancel
               </Button>
-              <Button colorScheme="blue">Save Changes</Button>
+              <Button
+                colorScheme="blue"
+                type="submit"
+                isLoading={isLoading}
+                isDisabled={isLoading}
+              >
+                Save Changes
+              </Button>
             </Flex>
           </HStack>
         </form>
@@ -148,4 +167,4 @@ const PersonalInformation = ({ user }: { user: User }) => {
   );
 };
 
-export default PersonalInformation;
+export default BusinessInformation;

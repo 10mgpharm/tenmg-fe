@@ -183,8 +183,8 @@ const VerificationComponent = () => {
             <Button
               variant={"link"}
               onClick={async () => {
-                await signOut();
-                redirect("/auth/signup");
+                await signOut({ callbackUrl: "/auth/signup" });
+                router.push("/")
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
