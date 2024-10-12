@@ -48,6 +48,7 @@ const Members = ({
   fetchTeamMembers: () => void;
   token: string
 }) => {
+
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { onOpen: onOpenRemove } = useDisclosure();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -56,7 +57,7 @@ const Members = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const table = useReactTable({
-    data: MemberData,
+    data: allMembersData,
     columns: ColumnsMemberFN(onOpenRemove),
     onSortingChange: setSorting,
     state: {
@@ -72,11 +73,10 @@ const Members = ({
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
     try {
       setIsLoading(true);
       const response = await requestClient({token: token}).post(
-        "/vendor/business/settings/invite",
+        "/vendor/settings/invite",
         data
       );
       if (response.status === 200) {
@@ -137,23 +137,23 @@ const Members = ({
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={5}>
-                    <Flex justifyContent="space-between" alignItems="center">
+                    {/* <Flex justifyContent="space-between" alignItems="center">
                       <Button
                         variant="outline"
                         color="gray.500"
                         leftIcon={<FaArrowLeft />}
                       >
                         Previous
-                      </Button>
+                      </Button> */}
                       <Pagination />
-                      <Button
+                      {/* <Button
                         variant="outline"
                         color="gray.500"
                         rightIcon={<FaArrowRight />}
                       >
                         Next
                       </Button>
-                    </Flex>
+                    </Flex> */}
                   </Td>
                 </Tr>
               </Tbody>

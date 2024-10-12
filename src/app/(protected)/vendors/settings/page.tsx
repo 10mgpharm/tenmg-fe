@@ -10,7 +10,7 @@ import {
   Text,
   Divider,
 } from "@chakra-ui/react";
-import PersonalInformation from "./components/PersonalInformation";
+import BusinessInformation from "./components/BusinessInformation";
 import PasswordForm from "./components/PasswordForm";
 import Notifications from "./components/Notifications";
 import AccountSetup from "./components/AccountSetup";
@@ -21,6 +21,7 @@ import { useCallback, useEffect, useState } from "react";
 import ApiKeys from "./components/ApiKeys";
 import TeamMembers from "./components/TeamMembers";
 import requestClient from "@/lib/requestClient";
+import GeneralSettings from "./components/GeneralSettings";
 
 const Settings = () => {
   const [user, setUser] = useState<User>({} as User);
@@ -40,7 +41,7 @@ const Settings = () => {
   const fetchTeamMembers = useCallback(async () => {
     try {
       const response = await requestClient({ token: token }).get(
-        "/vendor/business/settings/invite"
+        "/vendor/settings/invite"
       );
       if (response.status === 200) {
         setAllMembersData(response.data.data);
@@ -73,7 +74,7 @@ const Settings = () => {
             >
               <div className="flex items-center gap-3">
                 <Text fontSize={{ base: "xs", md: "sm" }}>
-                  Personal Information
+                  General Settings
                 </Text>
               </div>
             </Tab>
@@ -85,7 +86,7 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text fontSize={{ base: "xs", md: "sm" }}>Password</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>Business Information</Text>
               </div>
             </Tab>
             <Tab
@@ -138,10 +139,11 @@ const Settings = () => {
 
           <TabPanels>
             <TabPanel px={0}>
-              <PersonalInformation user={user} />
+              <GeneralSettings />
             </TabPanel>
             <TabPanel>
-              <PasswordForm />
+            <BusinessInformation user={user} />
+              {/* <PasswordForm /> */}
             </TabPanel>
             <TabPanel>
               <Notifications />

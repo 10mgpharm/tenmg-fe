@@ -10,12 +10,17 @@ import {
   HStack,
   Icon,
   Input,
+  InputGroup,
+  InputRightElement,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { set, SubmitHandler, useForm } from "react-hook-form";
 import { LuCopy } from "react-icons/lu";
 import { IoTrashOutline } from "react-icons/io5";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface IFormInput {
   clientId: string;
@@ -27,19 +32,47 @@ interface IFormInput {
 interface IKeyWrapperProps {
   onSubmit: any;
   keyType: string;
+  copyToClipboard: (value: string) => void;
+  register: any;
+  getValues: any;
 }
 
-const ApiKeys = () => {
+const apiData: IFormInput = {
+  clientId: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
+  clientSecret: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
+  webhookUrl: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
+  callbackUrl: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
+};
 
+const ApiKeys = () => {
   const {
     formState: { errors },
     handleSubmit,
+    register,
+    getValues,
   } = useForm<IFormInput>({
     mode: "onChange",
+    defaultValues: {
+      clientId: apiData.clientId,
+      clientSecret: apiData.clientSecret,
+      webhookUrl: apiData.webhookUrl,
+      callbackUrl: apiData.callbackUrl,
+    },
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     console.log(data);
+  };
+
+  const copyToClipboard = (value: string) => {
+    navigator.clipboard
+      .writeText(value)
+      .then(() => {
+        toast.success("Copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
   };
 
   return (
@@ -47,11 +80,16 @@ const ApiKeys = () => {
       <KeyWrapper
         onSubmit={handleSubmit(onSubmit)}
         keyType={"Test Key"}
-       
+        copyToClipboard={copyToClipboard}
+        register={register}
+        getValues={getValues}
       />
       <KeyWrapper
         onSubmit={handleSubmit(onSubmit)}
         keyType={"Live Key"}
+        copyToClipboard={copyToClipboard}
+        register={register}
+        getValues={getValues}
       />
     </div>
   );
@@ -59,7 +97,12 @@ const ApiKeys = () => {
 
 export default ApiKeys;
 
-function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
+function KeyWrapper({ onSubmit, keyType, copyToClipboard, register, getValues }: IKeyWrapperProps) {
+  const [showClientId, setShowClientId] = useState(false);
+  const [showClientSecret, setShowClientSecret] = useState(false);
+  const [showWebhookUrl, setShowWebhookUrl] = useState(false);
+  const [showCallbackUrl, setShowCallbackUrl] = useState(false);
+
   return (
     <Box bg={"gray.200"} rounded={"2xl"} shadow={"md"}>
       <Box p={5}>
@@ -69,8 +112,8 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
         <Text as={"p"} fontSize={"sm"} color={"gray.500"}>
           Securely manage these sensitive keys. Do not share them with anyone.
           If you suspect that one of your secret keys has been compromised, you
-          should create a new key, update your code, then the delete the
-          compromised key.
+          should create a new key, update your code, then delete the compromised
+          key.
         </Text>
       </Box>
 
@@ -85,17 +128,33 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                 gap={6}
               >
                 <Box flex={1}>
-                  <Input
-                    size={"lg"}
-                    color={"gray.500"}
-                    type="text"
-                    readOnly
-                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    maxW="3xl"
-                    _focus={{
-                      color: "gray.800",
-                    }}
-                  />
+                  <InputGroup size={"lg"}>
+                    <Input
+                      type={showClientId ? "text" : "password"}
+                      id="password"
+                      size={"lg"}
+                      color={"gray.500"}
+                      readOnly
+                      {...register("clientId")}
+                      maxW="3xl"
+                      _focus={{
+                        color: "gray.800",
+                      }}
+                    />
+                    <InputRightElement>
+                      {showClientId ? (
+                        <FaEye
+                          onClick={() => setShowClientId(!showClientId)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      ) : (
+                        <FaEyeSlash
+                          onClick={() => setShowClientId(!showClientId)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      )}
+                    </InputRightElement>
+                  </InputGroup>
                 </Box>
                 <Box>
                   <Button
@@ -103,6 +162,7 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                     variant="outline"
                     color={"gray.500"}
                     px={3}
+                    onClick={() => copyToClipboard(getValues("clientId"))}
                   >
                     Copy
                   </Button>
@@ -116,17 +176,33 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
               <FormLabel w={"30%"}>Client Secret</FormLabel>
               <Flex w={"70%"} gap={6}>
                 <Box flex={1}>
-                  <Input
-                    size={"lg"}
-                    color={"gray.500"}
-                    type="text"
-                    readOnly
-                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    maxW="3xl"
-                    _focus={{
-                      color: "gray.800",
-                    }}
-                  />
+                  <InputGroup size={"lg"}>
+                    <Input
+                      type={showClientSecret ? "text" : "password"}
+                      id="password"
+                      size={"lg"}
+                      color={"gray.500"}
+                      readOnly
+                      {...register("clientSecret")}
+                      maxW="3xl"
+                      _focus={{
+                        color: "gray.800",
+                      }}
+                    />
+                    <InputRightElement>
+                      {showClientSecret ? (
+                        <FaEye
+                          onClick={() => setShowClientSecret(!showClientSecret)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      ) : (
+                        <FaEyeSlash
+                          onClick={() => setShowClientSecret(!showClientSecret)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      )}
+                    </InputRightElement>
+                  </InputGroup>
                 </Box>
                 <Box>
                   <Button
@@ -134,6 +210,7 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                     variant="outline"
                     color={"gray.500"}
                     px={3}
+                    onClick={() => copyToClipboard(getValues("clientSecret"))}
                   >
                     Copy
                   </Button>
@@ -145,17 +222,33 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
               <FormLabel w={"25%"}>Webhook URL</FormLabel>
               <Flex w={"75%"} gap={6} alignItems={"center"}>
                 <Box flex={1}>
-                  <Input
-                    size={"lg"}
-                    type="text"
-                    readOnly
-                    color={"gray.500"}
-                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    maxW="3xl"
-                    _focus={{
-                      color: "gray.800",
-                    }}
-                  />
+                  <InputGroup size={"lg"}>
+                    <Input
+                      type={showWebhookUrl ? "text" : "password"}
+                      id="password"
+                      size={"lg"}
+                      color={"gray.500"}
+                      readOnly
+                      {...register("webhookUrl")}
+                      maxW="3xl"
+                      _focus={{
+                        color: "gray.800",
+                      }}
+                    />
+                    <InputRightElement>
+                      {showWebhookUrl ? (
+                        <FaEye
+                          onClick={() => setShowWebhookUrl(!showWebhookUrl)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      ) : (
+                        <FaEyeSlash
+                          onClick={() => setShowWebhookUrl(!showWebhookUrl)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      )}
+                    </InputRightElement>
+                  </InputGroup>
                 </Box>
                 <Box>
                   <Button
@@ -163,6 +256,7 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                     variant="outline"
                     color={"gray.500"}
                     px={3}
+                    onClick={() => copyToClipboard(getValues("webhookUrl"))}
                   >
                     Copy
                   </Button>
@@ -183,18 +277,33 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
               <FormLabel w={"25%"}>Callback URL</FormLabel>
               <Flex w={"75%"} gap={6} alignItems={"center"}>
                 <Box flex={1}>
-                  <Input
-                    size={"lg"}
-                    type="text"
-                    color={"gray.500"}
-                    readOnly
-                    value="sk_live_Y2xlcmsub2VyZFkYS5jYSQ"
-                    maxW="3xl"
-                    _focus={{
-                      color: "gray.800",
-                    }}
-                  />
-
+                  <InputGroup size={"lg"}>
+                    <Input
+                      type={showCallbackUrl ? "text" : "password"}
+                      id="password"
+                      size={"lg"}
+                      color={"gray.500"}
+                      readOnly
+                      {...register("callbackUrl")}
+                      maxW="3xl"
+                      _focus={{
+                        color: "gray.800",
+                      }}
+                    />
+                    <InputRightElement>
+                      {showCallbackUrl ? (
+                        <FaEye
+                          onClick={() => setShowCallbackUrl(!showCallbackUrl)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      ) : (
+                        <FaEyeSlash
+                          onClick={() => setShowCallbackUrl(!showCallbackUrl)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      )}
+                    </InputRightElement>
+                  </InputGroup>
                 </Box>
                 <Box>
                   <Button
@@ -202,6 +311,7 @@ function KeyWrapper({ onSubmit, keyType }: IKeyWrapperProps) {
                     variant="outline"
                     color={"gray.500"}
                     px={3}
+                    onClick={() => copyToClipboard(getValues("callbackUrl"))}
                   >
                     Copy
                   </Button>
