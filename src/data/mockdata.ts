@@ -187,3 +187,12 @@ export const activityData = [
     {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
     {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
 ]
+
+export const customersManagementData = [
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024",  status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Suspended"},
+]
