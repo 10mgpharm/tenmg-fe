@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
-
 interface IFormInput {
     name: string;
     email: string;
@@ -43,6 +42,7 @@ const GeneralSettings = () => {
     } = useDisclosure();
     const [isLoading, setIsLoading] = useState(false);
     const [isLoading2FA, setIsLoading2FA] = useState(false);
+    const [qrcode, setQrcode] = useState<string>('');
 
     const session = useSession();
     const sessionData = session.data as NextAuthUserSession;
@@ -99,25 +99,48 @@ const GeneralSettings = () => {
     },[sessionData, setValue])
 
     const SETUP_2FA = async () => {
-        onOpen2fa();
-        // try {
-        //     setIsLoading2FA(true)
-        //     const response = await requestClient({token: sessionData.user.token}).get(
-        //         "/account/settings/2fa/setup"
-        //     )
-        //     console.log(response);
-        //     setIsLoading2FA(false);
-        //     if(response.status === 200){
-        //         onOpen2fa()
-        //     }
-        // } catch (error) {
-        //     setIsLoading2FA(false);
-        //     const errorMessage = handleServerErrorMessage(error);
-        //     toast.error(errorMessage);
-        // }
+        try {
+            setIsLoading2FA(true)
+            const response = await requestClient({token: sessionData.user.token}).get(
+                "/account/2fa/setup"
+            )
+            console.log(response);
+            setIsLoading2FA(false);
+            if(response.status === 200){
+                setQrcode(response.data?.data);
+                onOpen2fa()
+            }
+        } catch (error) {
+            setIsLoading2FA(false);
+            const errorMessage = handleServerErrorMessage(error);
+            toast.error(errorMessage);
+        }
     }
-    console.log(sessionData);
-  return (
+
+    const RESEND_2FA = async () => {
+        // onOpen2fa();
+        try {
+            setIsLoading2FA(true)
+            const response = await requestClient({token: sessionData.user.token}).post(
+                "/account/2fa/reset",
+                {
+                    "otp": "1H1DP1",
+                    "password": "password"
+                }
+            )
+            console.log(response);
+            setIsLoading2FA(false);
+            if(response.status === 200){
+                onOpen2fa()
+            }
+        } catch (error) {
+            setIsLoading2FA(false);
+            const errorMessage = handleServerErrorMessage(error);
+            toast.error(errorMessage);
+        }
+    }
+
+    return (
     <div>
         <form onSubmit={handleSubmit(onSubmit)}>
             <HStack justify={"space-between"}>
@@ -200,7 +223,6 @@ const GeneralSettings = () => {
                 <Text fontWeight={600} fontSize={"1rem"}>Security</Text>
                 <Text fontSize={"14px"} color={"gray.500"}>Manage your password and 2FA</Text>
             </Stack>
-            <Button fontSize={"15px"} h={"38px"} px={3} py={1}>Save Changes</Button>
         </HStack>
         <Box className="bg-white p-4 rounded-md border mt-5">
             <HStack justify={"space-between"}>
@@ -236,7 +258,13 @@ const GeneralSettings = () => {
             </HStack>
         </Box>
         <ChangePassword onClose={onClose} isOpen={isOpen} />
-        <TwoFactorAuth isOpen={isOpen2FA} onClose={onClose2FA} onOpenEnable2fa={onOpenEnable2fa}/>
+        <TwoFactorAuth 
+        isOpen={isOpen2FA} 
+        onClose={onClose2FA} 
+        onOpenEnable2fa={onOpenEnable2fa} 
+        data={qrcode}
+        token={sessionData?.user.token}
+        />
         <EnabledTwoFactor isOpen={isOpenEnable2FA} onClose={onCloseEnable2FA}/>
     </div>
   )

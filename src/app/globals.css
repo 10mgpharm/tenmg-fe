@@ -19,3 +19,6 @@ body {
     scrollbar-width: none;  /* Firefox */
 }
 }
+.enable-2fa svg{
+  margin: 0px auto;
+}
