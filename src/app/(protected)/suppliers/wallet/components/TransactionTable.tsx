@@ -44,7 +44,10 @@ const TransactionTable = ({data}: {data: any}) => {
     <div>
       {
             data?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder 
+            heading={`No Transactions Yet`} 
+            content={`You currently have no transaction. All transactions will appear here.`} 
+            /> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>

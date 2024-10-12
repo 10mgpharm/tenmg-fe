@@ -45,7 +45,10 @@ const APIManagement = () => {
     <div>
     {
         APIData?.length === 0 
-        ? <EmptyOrder /> : 
+        ? <EmptyOrder 
+        heading={`No API Yet`} 
+        content={`You currently have no API yet. All APIs will appear here.`} 
+        /> : 
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
                 <Thead bg={"#F2F4F7"}>

@@ -80,7 +80,7 @@ const Page = () => {
         <div className="flex justify-between">
             <h3 className="font-semibold text-2xl">Products</h3>
             <div className="mb-4 flex items-center gap-3">
-                <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-[350px]">
+                <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-[300px]">
                     <CiSearch className="w-5 h-5 text-gray-700" />
                     <input 
                     type="text" 
@@ -136,7 +136,10 @@ const Page = () => {
         <div className="">
         {
             productData?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder 
+                heading={`No Product Yet`} 
+                content={`You currently have no product. All products will appear here.`}
+            /> : 
             currentView === PRODUCTVIEW.LIST ?
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
@@ -203,17 +206,7 @@ const Page = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <HStack mt={5} justify={"space-between"}>
-                    <Flex alignItems={"center"} gap={2}>
-                        <FaChevronLeft className='text-gray-500' />
-                        <Text className='text-gray-500'>Prev</Text>
-                    </Flex>
-                    <Pagination />
-                    <Flex alignItems={"center"} gap={2}>
-                        <Text className='text-gray-500'>Next</Text>
-                        <FaChevronRight className='text-gray-500' />
-                    </Flex>
-                </HStack>
+                <Pagination /> 
             </TableContainer>
             : <GridList data={productData}/>
         }

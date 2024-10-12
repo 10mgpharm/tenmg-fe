@@ -112,9 +112,10 @@ export const authOptions: NextAuthOptions = {
           };
         }
       }
-
+      console.log(params?.user, "user")
       if (params.user) {
         params.token.id = params.user.id;
+        params.token.name = params.user.name;
         params.token.email = params.user.email;
         params.token.active = params.user?.active;
         params.token.emailVerifiedAt = params.user?.emailVerifiedAt;
@@ -135,8 +136,11 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (params?.trigger === "update") {
+        console.log(params?.session, "session")
         params.token.completeProfile = params?.session.user?.completeProfile;
         params.token.emailVerifiedAt = params?.session.user?.emailVerifiedAt;
+        params.token.name = params?.session.user?.name;
+        params.token.email = params?.session.user?.email;
       }
 
       return params.token;

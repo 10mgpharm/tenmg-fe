@@ -48,7 +48,7 @@ const Users = () => {
                     <CiSearch className="w-5 h-5 text-gray-700" />
                     <input 
                     type="text" 
-                    placeholder="Search for a product" 
+                    placeholder="Search for a user" 
                     className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
                     />
                     <Menu>
