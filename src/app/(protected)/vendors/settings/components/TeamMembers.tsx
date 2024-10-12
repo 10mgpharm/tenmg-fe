@@ -137,23 +137,23 @@ const Members = ({
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={5}>
-                    <Flex justifyContent="space-between" alignItems="center">
+                    {/* <Flex justifyContent="space-between" alignItems="center">
                       <Button
                         variant="outline"
                         color="gray.500"
                         leftIcon={<FaArrowLeft />}
                       >
                         Previous
-                      </Button>
+                      </Button> */}
                       <Pagination />
-                      <Button
+                      {/* <Button
                         variant="outline"
                         color="gray.500"
                         rightIcon={<FaArrowRight />}
                       >
                         Next
                       </Button>
-                    </Flex>
+                    </Flex> */}
                   </Td>
                 </Tr>
               </Tbody>
