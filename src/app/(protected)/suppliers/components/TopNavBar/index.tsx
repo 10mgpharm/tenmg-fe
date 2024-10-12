@@ -19,6 +19,7 @@ const TopNavBar = () => {
 
   const router = useRouter();
 
+  console.log(data?.user)
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
       case "VENDOR":

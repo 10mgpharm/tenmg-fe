@@ -72,7 +72,7 @@ const LoanOffer = () => {
         <div className="mt-5">
         {
             applicationData?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder heading={`No Loan Offer Yet`} content={`You currently have no loan offer. All loan offers will appear here.`}/> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
@@ -110,20 +110,7 @@ const LoanOffer = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <HStack mt={5} justify={"space-between"}>
-                    <Flex alignItems={"center"} gap={2}>
-                        <FaChevronLeft className='text-gray-500' />
-                        <Text className='text-gray-500'>Prev</Text>
-                    </Flex>
-                    {
-                        applicationData?.length > 10 ? <Pagination />
-                        :  <span className="bg-primary-50 py-2 px-4 rounded-md text-primary-600 cursor-pointer">1</span>
-                    }
-                    <Flex alignItems={"center"} gap={2}>
-                        <Text className='text-gray-500'>Next</Text>
-                        <FaChevronRight className='text-gray-500' />
-                    </Flex>
-                </HStack>
+               <Pagination />
             </TableContainer>
         }
         </div>
