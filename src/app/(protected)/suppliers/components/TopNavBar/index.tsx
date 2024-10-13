@@ -18,8 +18,7 @@ const TopNavBar = () => {
   const data = session.data as NextAuthUserSession;
 
   const router = useRouter();
-
-  console.log(data?.user)
+  
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
       case "VENDOR":

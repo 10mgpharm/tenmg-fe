@@ -5,8 +5,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
-export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => void) {
-
+export function ColumsVendorFN(onOpen: () => void, onOpenDeactivate: () => void) {
   return [
     columnHelper.accessor("id", {
       header: () => (
@@ -37,7 +36,7 @@ export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => voi
     }),
     columnHelper.accessor("supplier_id", {
       header: ({ column }) => (
-        <p className="">Supplier&apos;s ID</p>
+        <p className="">Vendor&apos;s ID</p>
       ),
       cell: (info) => (
        <div className="">

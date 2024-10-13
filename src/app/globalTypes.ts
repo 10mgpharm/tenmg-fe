@@ -8,3 +8,13 @@ export enum STEPS {
     ESSENTIAL = "essential",
     INVENTORY = "inventory",
 }
+
+export enum SETUPTYPE {
+    TYPE = "type",
+    CATEGORIES = "categories",
+    BRANDS = "brands",
+    STRENGTH="strength",
+    PRESENTATION = "presentation",
+    PACKAGE="package"
+}
+  

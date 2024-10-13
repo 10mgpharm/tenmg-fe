@@ -27,7 +27,7 @@ import { FaChevronDown } from 'react-icons/fa6'
 import { MdFilterList } from 'react-icons/md'
 import AddNewDrawer from './components/AddNewDrawer'
 import { UserData } from '@/data/mockdata'
-import UserTable from './components/UserTable'
+import SupplierTab from './components/SupplierTab'
 
 const Users = () => {
 
@@ -106,13 +106,13 @@ const Users = () => {
             </TabList>
             <TabPanels>
                 <TabPanel px={0}>
-                    <UserTable data={suppiers} type="suppliers" />
+                    <SupplierTab data={suppiers} type="suppliers" />
                 </TabPanel>
                 <TabPanel>
-                    <UserTable data={pharmacies} type="pharmacies" />
+                    <SupplierTab data={pharmacies} type="pharmacies" />
                 </TabPanel>
                 <TabPanel>
-                    <UserTable data={vendors} type="vendors" />
+                    <SupplierTab data={vendors} type="vendors" />
                 </TabPanel>
             </TabPanels>
         </Tabs>

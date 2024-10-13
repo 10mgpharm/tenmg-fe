@@ -1,14 +1,31 @@
 "use client";
-
 import Pagination from '@/app/(protected)/suppliers/components/Pagination'
 import EmptyOrder from '@/app/(protected)/suppliers/orders/components/EmptyOrder'
-import { Flex, HStack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react'
-import { ColumnOrderState, RowSelectionState, SortingState, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { 
+    Table, 
+    TableContainer, 
+    Tbody, 
+    Td,
+    Th, 
+    Thead, 
+    Tr, 
+    useDisclosure 
+} from '@chakra-ui/react'
+import { 
+    ColumnOrderState, 
+    RowSelectionState, 
+    SortingState, 
+    flexRender, 
+    getCoreRowModel, 
+    getSortedRowModel, 
+    useReactTable 
+} from '@tanstack/react-table'
 import React, { useState } from 'react'
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
-import { ColumsUserFN } from './table';
+import { ColumsSupplierFN } from './table';
+import { ColumsVendorFN } from './VendorTable';
+import { ColumsPharmFN } from './PharmacyTable';
 
-const UserTable = ({data, type}: {data: any, type: string}) => {
+const SupplierTab = ({data, type}: {data: any, type: string}) => {
 
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
@@ -16,14 +33,20 @@ const UserTable = ({data, type}: {data: any, type: string}) => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const { isOpen: isOpenDeactivate, 
+    const { 
+        isOpen: isOpenDeactivate, 
         onOpen: onOpenDeactivate, 
         onClose: onCloseDeactivate 
     } = useDisclosure();
+    const renderedColumn =  type === "vendor" 
+                            ?  ColumsVendorFN(onOpen, onOpenDeactivate)
+                            : type === "pharmacies"
+                            ? ColumsPharmFN(onOpen, onOpenDeactivate) 
+                            : ColumsSupplierFN(onOpen, onOpenDeactivate)
 
     const table = useReactTable({
         data: data,
-        columns: ColumsUserFN(onOpen, onOpenDeactivate),
+        columns: renderedColumn,
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -52,20 +75,6 @@ const UserTable = ({data, type}: {data: any, type: string}) => {
                     <Thead bg={"#F2F4F7"}>
                     {table?.getHeaderGroups()?.map((headerGroup) => (
                         <Tr key={headerGroup.id}>
-                        {/* <Th textTransform={"initial"} px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                // borderColor: "#D0D5DD",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={table.getIsAllRowsSelected()}
-                            onChange={table.getToggleAllRowsSelectedHandler()}
-                            />
-                        </Th> */}
                         {headerGroup.headers?.map((header) => (
                             <Th
                             textTransform={"initial"}
@@ -86,20 +95,6 @@ const UserTable = ({data, type}: {data: any, type: string}) => {
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
                     {table?.getRowModel()?.rows?.map((row) => (
                         <Tr key={row.id}>
-                        {/* <Td px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                // borderColor: "#D0D5DD",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={row.getIsSelected()}
-                            onChange={row.getToggleSelectedHandler()}
-                            />
-                        </Td> */}
                         {row.getVisibleCells()?.map((cell) => (
                             <Td key={cell.id} px="6px">
                             {flexRender(
@@ -119,4 +114,4 @@ const UserTable = ({data, type}: {data: any, type: string}) => {
   )
 }
 
-export default UserTable
+export default SupplierTab;
