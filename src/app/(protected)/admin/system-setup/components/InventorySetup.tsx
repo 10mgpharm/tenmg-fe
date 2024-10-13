@@ -2,7 +2,7 @@ import { Button, Flex, FormControl, FormLabel, HStack, Input, Stack } from "@cha
 
 const InventorySetup = () => {
   return (
-    <Stack bg={"white"} p={5} rounded={"md"} flex={1}>
+    <Stack bg={"white"} p={5} rounded={"md"} flex={1} shadow={"sm"}>
         <form className="space-y-5">
             <FormControl>
                 <FormLabel color={"gray.600"} fontSize={"15px"} fontWeight={500}>Set Low Stock Alert</FormLabel>

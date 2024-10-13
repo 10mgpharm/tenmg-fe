@@ -29,7 +29,7 @@ const SetUpOptions = ({data}: any) => {
   };
 
   return (
-    <Stack flex={1} p={5} bg={"white"} rounded={"small"}>
+    <Stack flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
       <Stack gap={5}>
         {
           data?.map((item: any, index: number) => (
