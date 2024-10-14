@@ -46,7 +46,10 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
     <div>
         {
             data?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder 
+            heading={`No Order Yet`} 
+            content={`You currently have no order. All orders will appear here.`} 
+            /> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
@@ -84,21 +87,7 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
                     ))}
                     </Tbody>
                 </Table>
-                <HStack mt={5} justify={"space-between"}>
-                    <Flex alignItems={"center"} gap={2}>
-                        <FaChevronLeft className='text-gray-500' />
-                        <Text className='text-gray-500'>Prev</Text>
-                    </Flex>
-                    {
-                        data?.length > 10 ? <Pagination />
-                        :  <span className="bg-primary-50 py-2 px-4 rounded-md text-primary-600 cursor-pointer">1</span>
-                    }
-                    {/* <Pagination /> */}
-                    <Flex alignItems={"center"} gap={2}>
-                        <Text className='text-gray-500'>Next</Text>
-                        <FaChevronRight className='text-gray-500' />
-                    </Flex>
-                </HStack>
+                <Pagination />
             </TableContainer>
         }
     </div>

@@ -131,7 +131,10 @@ const Page = () => {
             <div className="mt-5">
         {
             repaymentData?.length === 0 
-            ? <EmptyOrder /> : 
+            ? <EmptyOrder 
+            heading={`No repayment history Yet`} 
+            content={`You currently have no repayment history. All repayment history will appear here.`}
+            /> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>

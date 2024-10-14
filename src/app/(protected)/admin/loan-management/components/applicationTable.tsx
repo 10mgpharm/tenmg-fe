@@ -70,11 +70,11 @@ export function ColumsApplicationFN(onOpen: () => void) {
             : info?.row?.original?.status === "Rejected"
             ? "text-red-500 bg-red-50"
             : "text-gray-500", 
-            " max-w-min p-1 px-2 rounded-2xl text-sm"
+            " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full">•</span>
-                {" "}
-               {info?.row?.original?.status}
+              <span className="rounded-full text-[1.2rem]">•</span>
+              {" "}
+              {info?.row?.original?.status}
             </p>
           </div>
         );

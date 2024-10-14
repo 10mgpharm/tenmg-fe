@@ -117,7 +117,10 @@ const MemberPage = () => {
                 <Stack>
                 {
                     activityData?.length === 0 
-                    ? <EmptyOrder /> : 
+                    ? <EmptyOrder 
+                    heading={`No Activity Yet`} 
+                    content={`You currently have no activity. All activities will appear here.`} 
+                    /> : 
                     <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                         <Table>
                             <Thead bg={"#E8F1F8"}>

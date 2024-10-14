@@ -82,9 +82,9 @@ export function ColumsFN() {
             ? "bg-[#FEF3F2] text-[#B42318]" 
             : info?.row?.original?.status === "Enabled"
             ? "text-[#027A48] bg-[#ECFDF3]"
-            : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
+            : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full"></span>
+                <span className="text-[1.2rem] rounded-full">•</span>
                 {" "}
                 {info?.row?.original?.status}
             </p>

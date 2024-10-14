@@ -31,7 +31,7 @@ export function ColumsOrderFN(onOpen: () => void) {
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          <p>Customer</p>
+          <p>Customer Name</p>
         </div>
       ),
       cell: (info) => (
@@ -42,7 +42,7 @@ export function ColumsOrderFN(onOpen: () => void) {
     }),
     columnHelper.accessor("orderId", {
       header: ({ column }) => (
-        <p>OrderId</p>
+        <p>Order ID</p>
       ),
       cell: (info) => (
        <div className="">
@@ -90,9 +90,9 @@ export function ColumsOrderFN(onOpen: () => void) {
             : info?.row?.original?.status === "Completed"
             ? "text-blue-500 bg-blue-50"
             : "text-gray-500", 
-            " max-w-min p-1 px-2 rounded-2xl text-sm"
+            " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full"></span>
+                <span className="rounded-full text-[1.2rem]">•</span>
                 {" "}
                {info?.row?.original?.status}
             </p>

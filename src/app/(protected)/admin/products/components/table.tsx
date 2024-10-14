@@ -103,11 +103,11 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
             ? "bg-[#FEF3F2] text-[#B42318]" 
             : info?.row?.original?.status === "Available"
             ? "text-[#027A48] bg-[#ECFDF3]"
-            : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
+            : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full">•</span>
-                {" "}
-               {info?.row?.original?.status}
+              <span className="rounded-full text-[1.2rem]">•</span>
+              {" "}
+              {info?.row?.original?.status}
             </p>
           </div>
         );

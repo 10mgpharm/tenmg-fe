@@ -98,8 +98,11 @@ const Members = ({
         </Button>
       </HStack>
       <div className="mt-5">
-        {allMembersData?.length === 0 ? (
-          <EmptyOrder />
+        {MemberData?.length === 0 ? (
+          <EmptyOrder 
+          heading={`No Member Yet`} 
+          content={`You currently have no member added. All members will appear here.`} 
+          />
         ) : (
           <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
             <Table>
@@ -134,23 +137,23 @@ const Members = ({
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={5}>
-                    <Flex justifyContent="space-between" alignItems="center">
+                    {/* <Flex justifyContent="space-between" alignItems="center">
                       <Button
                         variant="outline"
                         color="gray.500"
                         leftIcon={<FaArrowLeft />}
                       >
                         Previous
-                      </Button>
+                      </Button> */}
                       <Pagination />
-                      <Button
+                      {/* <Button
                         variant="outline"
                         color="gray.500"
                         rightIcon={<FaArrowRight />}
                       >
                         Next
                       </Button>
-                    </Flex>
+                    </Flex> */}
                   </Td>
                 </Tr>
               </Tbody>
