@@ -42,7 +42,7 @@ export const AdjustableImage = forwardRef<HTMLCanvasElement, Props>(
 
     useLayoutEffect(() => {
       drawImage();
-    }, [src, brightness, saturation, hue, contrast, drawImage]);
+    }, [src, brightness, saturation, hue, contrast]);
 
     return (
       <>
