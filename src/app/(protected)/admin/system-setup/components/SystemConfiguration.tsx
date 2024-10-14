@@ -81,7 +81,7 @@ const SystemConfiguration = () => {
   return (
     <Stack>
       <Text fontSize={"1rem"} fontWeight={700} color={"gray.700"}>System Configuration</Text>
-      <SimpleGrid bg={"white"} p={5} rounded={"lg"} columns={[2, 6, 8]} spacing="10px" shadow={"sm"} w={"100%"}>
+      <SimpleGrid bg={"white"} p={5} rounded={"lg"} columns={[2, 3, 6]} spacing="10px" shadow={"sm"} w={"100%"}>
         <Center
           as="button"
           {...dropZoneStyle}
