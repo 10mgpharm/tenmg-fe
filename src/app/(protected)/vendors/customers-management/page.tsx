@@ -113,14 +113,16 @@ const CustomersManagment = () => {
             Upload Bulk Customers
           </Button>
           <Button as={Link} href={"/vendors/customers-management/new"}>
-          Create Customer
+            Create Customer
           </Button>
-          
         </div>
       </div>
       <div className="">
         {customersManagementData?.length === 0 ? (
-          <EmptyOrder />
+          <EmptyOrder
+            heading={`No Customer Management Yet`}
+            content={`You currently have no repayment history. All repayment history will appear here.`}
+          />
         ) : (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
@@ -161,23 +163,23 @@ const CustomersManagment = () => {
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={6}>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      <Button
+                    {/* <Flex justifyContent="space-between" alignItems="center"> */}
+                      {/* <Button
                         variant="outline"
                         color="gray.500"
                         leftIcon={<FaArrowLeft />}
                       >
                         Previous
-                      </Button>
+                      </Button> */}
                       <Pagination />
-                      <Button
+                      {/* <Button
                         variant="outline"
                         color="gray.500"
                         rightIcon={<FaArrowRight />}
                       >
                         Next
-                      </Button>
-                    </Flex>
+                      </Button> */}
+                    {/* </Flex> */}
                   </Td>
                 </Tr>
               </Tbody>
@@ -185,7 +187,7 @@ const CustomersManagment = () => {
           </TableContainer>
         )}
       </div>
-      <UploadModel  isOpen={isOpen} onClose={onClose} />
+      <UploadModel isOpen={isOpen} onClose={onClose} />
       {/* <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock} />
       <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate} />
       <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} /> */}
