@@ -34,7 +34,6 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 interface CustomDateInputProps {
   value?: string;
   onClick?: () => void;
-  className?: string; // Optional className prop
 }
 
 const CustomDateInput = forwardRef<HTMLInputElement, CustomDateInputProps>(
