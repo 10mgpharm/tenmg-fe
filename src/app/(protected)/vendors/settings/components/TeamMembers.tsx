@@ -32,6 +32,7 @@ import requestClient from "@/lib/requestClient";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
 import { SubmitHandler } from "react-hook-form";
+import DeleteModal from "../../components/DeleteModal";
 
 interface IFormInput {
   fullName: string;
@@ -46,11 +47,10 @@ const Members = ({
 }: {
   allMembersData: [];
   fetchTeamMembers: () => void;
-  token: string
+  token: string;
 }) => {
-
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const { onOpen: onOpenRemove } = useDisclosure();
+  const { onOpen: onOpenRemove, onClose: onCloseRemove, isOpen: isOpenRemove } = useDisclosure();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -75,7 +75,7 @@ const Members = ({
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       setIsLoading(true);
-      const response = await requestClient({token: token}).post(
+      const response = await requestClient({ token: token }).post(
         "/vendor/settings/invite",
         data
       );
@@ -99,9 +99,9 @@ const Members = ({
       </HStack>
       <div className="mt-5">
         {MemberData?.length === 0 ? (
-          <EmptyOrder 
-          heading={`No Member Yet`} 
-          content={`You currently have no member added. All members will appear here.`} 
+          <EmptyOrder
+            heading={`No Member Yet`}
+            content={`You currently have no member added. All members will appear here.`}
           />
         ) : (
           <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
@@ -137,23 +137,9 @@ const Members = ({
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={5}>
-                    {/* <Flex justifyContent="space-between" alignItems="center">
-                      <Button
-                        variant="outline"
-                        color="gray.500"
-                        leftIcon={<FaArrowLeft />}
-                      >
-                        Previous
-                      </Button> */}
+                    {allMembersData && allMembersData.length > 6 && (
                       <Pagination />
-                      {/* <Button
-                        variant="outline"
-                        color="gray.500"
-                        rightIcon={<FaArrowRight />}
-                      >
-                        Next
-                      </Button>
-                    </Flex> */}
+                    )}
                   </Td>
                 </Tr>
               </Tbody>
@@ -168,6 +154,7 @@ const Members = ({
         isLoading={isLoading}
         onSubmit={onSubmit}
       />
+      <DeleteModal onClose={onCloseRemove} isOpen={isOpenRemove} title="Team Member" />
     </div>
   );
 };
