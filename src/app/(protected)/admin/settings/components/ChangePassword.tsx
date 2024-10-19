@@ -52,7 +52,7 @@ const ChangePassword = (
     try {
      setIsLoading(true);
      const response = await requestClient({token: data.user.token}).patch(
-      "account/settings/password",
+      "account/password",
       {
         ...value
       }
