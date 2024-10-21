@@ -1,5 +1,8 @@
 
-const NoticeCard = ({setOpen}: {setOpen: () => void}) => {
+const NoticeCard = ({setOpen, isVisible}: {setOpen: () => void, isVisible?: boolean}) => {
+
+  if (!isVisible) return null;
+
   return (
     <div className='rounded-lg p-5 bg-[#082552]'>
         <h2 className='text-3xl font-semibold text-white'>Complete your account setup to access all features</h2>
