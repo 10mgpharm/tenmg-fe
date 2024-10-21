@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { IoCloudDoneOutline } from "react-icons/io5"
 import { Center, FormControl, FormLabel, Input, useToast } from "@chakra-ui/react"
+import DateComponent from "../../products/components/DateComponent";
 
 const AccountSetup = () => {
 
     const toast = useToast();
     const [iconFile, setIconFile] = useState<string>("");
+    const [startDate, setStartDate] = useState<Date | null>(null);
 
     const onLoadImage = (event: any) => {
         if (!event.target.files) return;
@@ -34,7 +36,7 @@ const AccountSetup = () => {
             </FormControl>
             <FormControl>
                 <FormLabel>Expiry Date</FormLabel>
-                <Input type='date' placeholder='Enter date'/>
+                <DateComponent startDate={startDate} setStartDate={setStartDate}/>
             </FormControl>
             <div className="mb-8">
                 <p className="font-medium text-gray-800 mb-3">CAC Document</p>

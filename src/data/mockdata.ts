@@ -86,18 +86,18 @@ export const UserData = [
 ]
 
 export const transactionData = [
-    {id: 1, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
-    {id: 2, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Pending"},
-    {id: 11, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Pending"},
-    {id: 12, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Completed"},
-    {id: 3, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
-    {id: 4, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 5, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 6, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 7, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 8, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
-    {id: 9, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
-    {id: 10, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History",  status: "Pending"},
+    {id: 1, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
+    {id: 2, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Pending"},
+    {id: 11,transaction_type: "payout",  name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Pending"},
+    {id: 12,transaction_type: "payout",  name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Completed"},
+    {id: 3, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
+    {id: 4, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 5, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 6, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 7, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 8, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
+    {id: 9, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
+    {id: 10,transaction_type: "payout",  name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History",  status: "Pending"},
 ]
 
 export const discountData = [

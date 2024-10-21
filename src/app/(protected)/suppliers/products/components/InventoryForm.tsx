@@ -11,13 +11,16 @@ import {
     useDisclosure
 } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import SuccessModal from "./SuccessModal";
+import "react-datepicker/dist/react-datepicker.css";
+import DateComponent from "./DateComponent";
 
 const InventoryForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>}) => {
 
     const router = useRouter();
+    const [startDate, setStartDate] = useState<Date | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
@@ -48,7 +51,7 @@ const InventoryForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' 
                 </FormControl>
                 <FormControl>
                     <FormLabel color={"gray.600"}>Expiration Date Proximity</FormLabel>
-                    <Input type="date" />
+                    <DateComponent startDate={startDate} setStartDate={setStartDate} />
                 </FormControl>
                 <FormControl display='flex' alignItems='center'>
                     <Switch id='email-alerts' mr={3}/>
