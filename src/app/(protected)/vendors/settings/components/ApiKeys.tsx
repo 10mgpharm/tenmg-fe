@@ -14,6 +14,7 @@ import {
   InputRightElement,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { set, SubmitHandler, useForm } from "react-hook-form";
 import { LuCopy } from "react-icons/lu";
@@ -21,6 +22,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import DeleteModal from "../../components/DeleteModal";
 
 interface IFormInput {
   clientId: string;
@@ -35,6 +37,7 @@ interface IKeyWrapperProps {
   copyToClipboard: (value: string) => void;
   register: any;
   getValues: any;
+  onOpen: () => void;
 }
 
 const apiData: IFormInput = {
@@ -45,6 +48,13 @@ const apiData: IFormInput = {
 };
 
 const ApiKeys = () => {
+  const { onOpen, onClose, isOpen } = useDisclosure();
+  const {
+    onOpen: onOpenRemove,
+    onClose: onCloseRemove,
+    isOpen: isOpenRemove,
+  } = useDisclosure();
+
   const {
     formState: { errors },
     handleSubmit,
@@ -83,6 +93,7 @@ const ApiKeys = () => {
         copyToClipboard={copyToClipboard}
         register={register}
         getValues={getValues}
+        onOpen={onOpen}
       />
       <KeyWrapper
         onSubmit={handleSubmit(onSubmit)}
@@ -90,14 +101,24 @@ const ApiKeys = () => {
         copyToClipboard={copyToClipboard}
         register={register}
         getValues={getValues}
+        onOpen={onOpen}
       />
+
+      <DeleteModal isOpen={isOpen} onClose={onClose} title={"Key"} />
     </div>
   );
 };
 
 export default ApiKeys;
 
-function KeyWrapper({ onSubmit, keyType, copyToClipboard, register, getValues }: IKeyWrapperProps) {
+function KeyWrapper({
+  onSubmit,
+  keyType,
+  copyToClipboard,
+  register,
+  getValues,
+  onOpen,
+}: IKeyWrapperProps) {
   const [showClientId, setShowClientId] = useState(false);
   const [showClientSecret, setShowClientSecret] = useState(false);
   const [showWebhookUrl, setShowWebhookUrl] = useState(false);
@@ -268,6 +289,7 @@ function KeyWrapper({ onSubmit, keyType, copyToClipboard, register, getValues }:
                     h={6}
                     color="red.500"
                     cursor={"pointer"}
+                    onClick={() => onOpen()}
                   />
                 </Box>
               </Flex>
@@ -323,6 +345,7 @@ function KeyWrapper({ onSubmit, keyType, copyToClipboard, register, getValues }:
                     h={6}
                     color="red.500"
                     cursor={"pointer"}
+                    onClick={() => onOpen()}
                   />
                 </Box>
               </Flex>
