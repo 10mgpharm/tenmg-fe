@@ -3,7 +3,7 @@ import { classNames } from "@/utils";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsCompletedFN(onOpen: () => void, onOpenDeactivate: () => void) {
+export function ColumsHistoryFN(onOpen: () => void, onOpenDeactivate: () => void) {
 
   return [
     columnHelper.accessor("name", {
@@ -17,16 +17,6 @@ export function ColumsCompletedFN(onOpen: () => void, onOpenDeactivate: () => vo
           </div>
         );
       },
-    }),
-    columnHelper.accessor("transaction_type", {
-      header: ({ column }) => (
-        <p className="">Transaction Type</p>
-      ),
-      cell: (info) => (
-       <div className="">
-        <p className="font-medium capitalize">{info.row.original?.transaction_type}</p>
-       </div>
-      ),
     }),
     columnHelper.accessor("amount", {
       header: ({ column }) => (
@@ -64,7 +54,7 @@ export function ColumsCompletedFN(onOpen: () => void, onOpenDeactivate: () => vo
             )}>
               <span className="rounded-full text-[1.2rem]">•</span>
               {" "}
-               {info?.row?.original?.status}
+              {info?.row?.original?.status}
             </p>
           </div>
         );

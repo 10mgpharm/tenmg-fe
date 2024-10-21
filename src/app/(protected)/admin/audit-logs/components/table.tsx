@@ -44,7 +44,7 @@ export function ColumsLogFN() {
     }),
     columnHelper.accessor("action", {
       header: ({ column }) => (
-        <p>Actions</p>
+        <p>Action</p>
       ),
       cell: (info) => {
         return (

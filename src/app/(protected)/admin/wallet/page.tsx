@@ -108,7 +108,7 @@ const Page = () => {
                     <WalletTable data={completed} type="completed" />
                 </TabPanel>
                 <TabPanel>
-                    <WalletTable data={history} type="completed" />
+                    <WalletTable data={history} type="history" />
                 </TabPanel>
             </TabPanels>
         </Tabs>
