@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, forwardRef } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   FormControl,
   FormLabel,
@@ -22,6 +22,7 @@ import { NextAuthUserSession, ResponseDto, User } from "@/types";
 import { useSession } from "next-auth/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import DateComponent from "@/app/(protected)/suppliers/products/components/DateComponent";
 
 interface IFormInput {
   licenseNumber: string;
@@ -30,24 +31,6 @@ interface IFormInput {
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
-
-interface CustomDateInputProps {
-  value?: string;
-  onClick?: () => void;
-}
-
-const CustomDateInput = forwardRef<HTMLInputElement, CustomDateInputProps>(
-  ({ value, onClick }, ref) => (
-    <InputGroup onClick={onClick} cursor="pointer" w={"100%"}>
-      <Input readOnly value={value} ref={ref} w={"100%"} />
-      <InputRightElement pointerEvents="none">
-        <Icon as={IoCalendarOutline} color="gray.500" />
-      </InputRightElement>
-    </InputGroup>
-  )
-);
-
-CustomDateInput.displayName = 'CustomDateInput';
 
 const LicenseUpload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -75,10 +58,6 @@ const LicenseUpload = () => {
     }
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const droppedFile = event.dataTransfer.files?.[0];
@@ -96,10 +75,6 @@ const LicenseUpload = () => {
     }
   };
 
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
-
   const onSubmit = async (value: IFormInput) => {
     console.log("Form Data:", value);
 
@@ -107,7 +82,7 @@ const LicenseUpload = () => {
     formData.append("licenseNumber", value.licenseNumber);
     formData.append(
       "date",
-      selectedDate ? selectedDate.toString().split("T")[0] : ""
+      value.date ? value.date.toString().split("T")[0] : ""
     );
     if (value.cacDocument) {
       formData.append("cacDocument", value.cacDocument);
@@ -138,13 +113,14 @@ const LicenseUpload = () => {
     }
   };
 
-  console.log(selectedDate);
+  // console.log(selectedDate);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    control,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
@@ -172,57 +148,76 @@ const LicenseUpload = () => {
         {/* Expiry Date */}
         <FormControl isInvalid={!!errors.date}>
           <FormLabel>Expiry Date</FormLabel>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date: Date | null) => setSelectedDate(date)}
-            dateFormat="dd/MM/yyyy"
-            customInput={<CustomDateInput />}
-            wrapperClassName="w-full"
+          <Controller
+            name="date"
+            control={control}
+            rules={{ required: "Expiry date is required" }}
+            render={({ field }) => (
+              <DateComponent
+                startDate={field.value}
+                setStartDate={field.onChange}
+              />
+            )}
           />
 
           <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
         </FormControl>
 
         {/* CAC Document Upload */}
-        <Box className="mb-8">
-          <Text fontWeight="medium" mb={3}>
-            CAC Document
-          </Text>
-          <Box
-            className="border relative p-4 rounded-md"
-            onClick={handleClick}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            cursor="pointer"
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept=".pdf, .doc, .docx"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <Box display="flex" flexDirection="column" gap={2}>
-              <Box bg="gray.50" p={2} rounded="full" mx="auto" mb={4}>
-                <IoCloudDoneOutline className="w-6 h-6 text-gray-700" />
+        <FormControl isInvalid={!!errors.cacDocument} className="mb-8">
+          <FormLabel>CAC Document</FormLabel>
+          <Controller
+            name="cacDocument"
+            control={control}
+            rules={{
+              required: "CAC Document is required",
+            }}
+            render={({ field }) => (
+              <Box
+                className="border relative p-4 rounded-md"
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  handleDrop(e);
+                  field.onChange(e.dataTransfer.files?.[0]);
+                }}
+                cursor="pointer"
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept=".pdf, .doc, .docx"
+                  onChange={(e) => {
+                    handleFileChange(e);
+                    field.onChange(e.target.files?.[0]);
+                  }}
+                  className="hidden"
+                />
+                <Box display="flex" flexDirection="column" gap={2}>
+                  <Box bg="gray.50" p={2} rounded="full" mx="auto" mb={4}>
+                    <IoCloudDoneOutline className="w-6 h-6 text-gray-700" />
+                  </Box>
+                  <Text fontSize="sm" textAlign="center">
+                    <span className="font-semibold text-primary-500">
+                      Click to upload
+                    </span>{" "}
+                    or drag and drop
+                  </Text>
+                  <Text fontSize="xs" color="gray.500" textAlign="center">
+                    PDF, DOC or DOCX. Maximum size of 10MB (max. 800x400px)
+                  </Text>
+                  {file && (
+                    <Text fontSize="sm" color="gray.500">
+                      Selected file: {field.value?.name}
+                    </Text>
+                  )}
+                </Box>
               </Box>
-              <Text fontSize="sm" textAlign="center">
-                <span className="font-semibold text-primary-500">
-                  Click to upload
-                </span>{" "}
-                or drag and drop
-              </Text>
-              <Text fontSize="xs" color="gray.500" textAlign="center">
-                PDF, DOC or DOCX. Maximum size of 10MB (max. 800x400px)
-              </Text>
-              {file && (
-                <Text fontSize="sm" color="gray.500">
-                  Selected file: {file.name}
-                </Text>
-              )}
-            </Box>
-          </Box>
-        </Box>
+            )}
+          />
+
+          <FormErrorMessage>{errors.cacDocument?.message}</FormErrorMessage>
+        </FormControl>
 
         {/* Submit Button */}
         <Button
