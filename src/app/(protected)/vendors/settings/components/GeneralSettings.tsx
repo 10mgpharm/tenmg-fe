@@ -177,7 +177,7 @@ const GeneralSettings = () => {
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
-                    value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
                     message: "Invalid email address",
                   },
                 })}
@@ -218,16 +218,6 @@ const GeneralSettings = () => {
             Manage your password and 2FA
           </Text>
         </Stack>
-
-        <Button
-          fontSize={"15px"}
-          h={"38px"}
-          px={3}
-          py={1}
-          loadingText="Submitting..."
-        >
-          Save Changes
-        </Button>
       </HStack>
 
       <Box className="bg-white p-4 rounded-md border mt-5">

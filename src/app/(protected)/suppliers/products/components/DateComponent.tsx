@@ -12,6 +12,7 @@ const DateComponent = ({startDate, setStartDate}: DateProps) => {
     <DatePicker 
       placeholderText='MM/DD/YYYY'
       selected={startDate} 
+      minDate={new Date()}
       showIcon
       icon={
         <FiCalendar className="w-5 h-5 text-gray-600" />
