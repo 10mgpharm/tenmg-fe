@@ -13,7 +13,6 @@ import {
 import BusinessInformation from "./components/BusinessInformation";
 import PasswordForm from "./components/PasswordForm";
 import Notifications from "./components/Notifications";
-import AccountSetup from "./components/AccountSetup";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, User } from "@/types";
 
@@ -22,6 +21,7 @@ import ApiKeys from "./components/ApiKeys";
 import TeamMembers from "./components/TeamMembers";
 import requestClient from "@/lib/requestClient";
 import GeneralSettings from "./components/GeneralSettings";
+import LicenseUpload from "./components/LicenseUpload";
 
 const Settings = () => {
   const [user, setUser] = useState<User>({} as User);
@@ -137,6 +137,8 @@ const Settings = () => {
             </Tab>
           </TabList>
 
+          <Divider my={[2, 5]} border="1px solid gray.200" />
+
           <TabPanels>
             <TabPanel px={0}>
               <GeneralSettings />
@@ -149,7 +151,7 @@ const Settings = () => {
               <Notifications />
             </TabPanel>
             <TabPanel>
-              <AccountSetup />
+              <LicenseUpload />
             </TabPanel>
             <TabPanel>
               <TeamMembers

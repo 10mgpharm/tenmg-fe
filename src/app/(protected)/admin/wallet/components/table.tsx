@@ -31,7 +31,7 @@ export function ColumsFN(onOpen: () => void, onOpenPayout: () => void) {
     }),
     columnHelper.accessor("weight", {
       header: ({ column }) => (
-        <p className="">Date Due</p>
+        <p className="">Date</p>
       ),
       cell: (info) => (
        <div className="">

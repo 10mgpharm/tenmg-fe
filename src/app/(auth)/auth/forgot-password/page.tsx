@@ -96,7 +96,7 @@ const ForgotPassword = () => {
                   {...register("email", {
                     required: "Business Email is required",
                     pattern: {
-                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
                       message: "Invalid email address",
                     },
                   })}
@@ -121,38 +121,6 @@ const ForgotPassword = () => {
                   <FaArrowLeft /> Return to Log In
                 </Link>
               </div>
-              {/*               
-              <div className="flex flex-col gap-[6px]">
-                <label>
-                  Business email
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
-                  className="p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
-                  type="text"
-                  placeholder="Enter your email"
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                      message: "Invalid email address",
-                    },
-                  })}
-                />
-                {errors.email && (
-                  <span className="text-gray-500">{errors.email?.message}</span>
-                )}
-              </div>
-              <div className="my-6">
-                <Button
-                  color="primary.500"
-                  size="lg"
-                  className="w-full cursor-pointer hover:bg-[#7B61FF]"
-                  type="submit"
-                >
-                  Reset Password
-                </Button>
-              </div> */}
             </div>
           </form>
         </article>

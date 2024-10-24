@@ -11,8 +11,6 @@ const columnHelper = createColumnHelper<any>();
 
 export function ColumnsMemberFN(
   onOpen: () => void,
-  onOpenRestock?: () => void,
-  onOpenDeactivate?: () => void
 ) {
   return [
     columnHelper.accessor("name", {
@@ -75,12 +73,12 @@ export function ColumnsMemberFN(
         </div>
       ),
     }),
-    columnHelper.accessor("status", {
+    columnHelper.accessor("action", {
       header: ({ column }) => <p></p>,
       cell: (info) => {
         return (
           <Flex justify={"center"} alignItems={"center"} gap={8}>
-            <Icon as={IoTrashOutline} w={6} h={6} cursor={"pointer"} />
+            <Icon as={IoTrashOutline} w={6} h={6} cursor={"pointer"} onClick={() => onOpen()}/>
             <Icon as={LuPen} w={5} h={5} cursor={"pointer"} />
           </Flex>
         );

@@ -26,6 +26,7 @@ import { ColumsFN } from './table';
 import TransactionDetails from './TransactionDetail';
 import InitiatePayout from './InitiatePayout';
 import { ColumsCompletedFN } from './CompletedTable';
+import { ColumsHistoryFN } from './HistoryTable';
 
 const WalletTable = ({data, type}: {data: any, type: string}) => {
 
@@ -41,10 +42,14 @@ const WalletTable = ({data, type}: {data: any, type: string}) => {
         onClose: onClosePayout 
     } = useDisclosure();
     
-    const memorizedData = type === "awaiting" ? ColumsFN(onOpen, onOpenPayout) : ColumsCompletedFN(onOpen, onOpenPayout);
+    const selectColumn = type === "completed"
+                        ? ColumsCompletedFN(onOpen, onOpenPayout)
+                        : type === "history"
+                        ? ColumsHistoryFN(onOpen, onOpenPayout)
+                        : ColumsFN(onOpen, onOpenPayout);
     const table = useReactTable({
         data: data,
-        columns: memorizedData,
+        columns: selectColumn,
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -61,7 +66,7 @@ const WalletTable = ({data, type}: {data: any, type: string}) => {
     });
 
   return (
-    <div className="">
+    <div>
         {
             data?.length === 0 
             ? <EmptyOrder 
@@ -73,19 +78,22 @@ const WalletTable = ({data, type}: {data: any, type: string}) => {
                     <Thead bg={"#F2F4F7"}>
                     {table?.getHeaderGroups()?.map((headerGroup) => (
                         <Tr key={headerGroup.id}>
-                        <Th textTransform={"initial"} px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={table.getIsAllRowsSelected()}
-                            onChange={table.getToggleAllRowsSelectedHandler()}
-                            />
-                        </Th>
+                            {
+                                type === "awaiting" &&
+                                <Th width={"40px"} textTransform={"initial"} px="0px">
+                                    <Checkbox
+                                    _checked={{
+                                        "& .chakra-checkbox__control": {
+                                        background: "#1A70B8",
+                                        borderRadius: 5,
+                                        },
+                                    }}
+                                    marginLeft={5}
+                                    isChecked={table.getIsAllRowsSelected()}
+                                    onChange={table.getToggleAllRowsSelectedHandler()}
+                                    />
+                                </Th>
+                            }
                         {headerGroup.headers?.map((header) => (
                             <Th
                             textTransform={"initial"}
@@ -106,20 +114,22 @@ const WalletTable = ({data, type}: {data: any, type: string}) => {
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
                     {table?.getRowModel()?.rows?.map((row) => (
                         <Tr key={row.id}>
-                        <Td px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                // borderColor: "#D0D5DD",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={row.getIsSelected()}
-                            onChange={row.getToggleSelectedHandler()}
-                            />
-                        </Td>
+                        {
+                            type === "awaiting" && 
+                            <Td px="0px" maxW={"40px"}>
+                                <Checkbox
+                                _checked={{
+                                    "& .chakra-checkbox__control": {
+                                    background: "#1A70B8",
+                                    borderRadius: 5,
+                                    },
+                                }}
+                                marginLeft={5}
+                                isChecked={row.getIsSelected()}
+                                onChange={row.getToggleSelectedHandler()}
+                                />
+                            </Td>
+                        }
                         {row.getVisibleCells()?.map((cell) => (
                             <Td key={cell.id} px="6px">
                             {flexRender(

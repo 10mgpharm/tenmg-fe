@@ -8,12 +8,15 @@ interface RequestOptions extends AxiosRequestConfig {
   token?: string;
 }
 
-const getHeaders = (queryParamToken?: string) => {
+const getHeaders = (queryParamToken?: string, contentType?: string) => {
   const auth = Cookies.get('auth') ? JSON.parse(Cookies.get('auth') as string) : {};
   const { token, user } = auth;
   const headers: Record<string, string> = {};
 
-  headers['Content-Type'] = 'application/json';
+  if (contentType) {
+    headers["Content-Type"] = contentType;
+  }
+  // headers['Content-Type'] = 'application/json';
 
   if (token || queryParamToken) {
     const authToken = queryParamToken ? queryParamToken : token;
@@ -28,7 +31,7 @@ const getHeaders = (queryParamToken?: string) => {
 };
 
 const requestClient = (options: RequestOptions = {}) => {
-  const headers = getHeaders(options?.token);
+  const headers = getHeaders(options?.token, options?.headers?.['Content-Type']);
 
   const opts: RequestOptions = Object.assign({}, options, { headers });
 

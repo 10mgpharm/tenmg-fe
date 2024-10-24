@@ -19,6 +19,7 @@ import {
   chakra,
 } from "@chakra-ui/react";
 import Image from "next/image";
+import { useState } from "react";
 import shape from "@public/assets/images/Rectangle.svg";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -49,6 +50,8 @@ const InviteMember = ({
     mode: "onBlur",
   });
 
+  const [isDetails, setIsDetails] = useState(true);
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
       <DrawerOverlay />
@@ -77,7 +80,7 @@ const InviteMember = ({
                 {...register("email", {
                   required: "Email is Required",
                   pattern: {
-                    value: /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
                     message: "Invalid Email Address",
                   },
                 })}
@@ -87,32 +90,39 @@ const InviteMember = ({
             <FormControl mb={10}>
               <FormLabel>Roles</FormLabel>
               <Flex alignItems={"center"} gap={10}>
-                <Select {...register("role", { required: true })}>
+                <Select {...register("role", { required: true })} w={"70%"}>
                   <option value="admin">Admin</option>
                   <option value="operator">Operator</option>
                   <option value="support">Support</option>
                 </Select>
-                <chakra.span className="text-primary-600 text-sm">
-                  Hide Ride Details
-                </chakra.span>
+                {/* <chakra.span
+                  className="text-primary-600 text-sm cursor-pointer"
+                  w={"30%"}
+                  onClick={() => setIsDetails(!isDetails)}
+                >
+                  {isDetails ? "Hide Role Details" : "Show Role Details"}
+                </chakra.span> */}
               </Flex>
             </FormControl>
 
-            <Box p={4} rounded={"md"} bg={"gray.100"}>
-              <Text fontWeight={500} fontSize={"15px"} mb={1}>
-                Role&apos;s Permission
-              </Text>
-              <ul className="list-disc px-4 text-sm">
-                <li>API Management: Create, Edit, Delete</li>
-                <li>
-                  User Management: Invite, Deactivate, Activate, Assign roles
-                </li>
-                <li>
-                  Monitoring and Analytics: Generate Analytics, View API Usage
-                  reports
-                </li>
-              </ul>
-            </Box>
+            {/* {isDetails && (
+              <Box p={4} rounded={"md"} bg={"gray.100"}>
+                <Text fontWeight={500} fontSize={"15px"} mb={1}>
+                  Role&apos;s Permission
+                </Text>
+                <ul className="list-disc px-4 text-sm">
+                  <li>API Management: Create, Edit, Delete</li>
+                  <li>
+                    User Management: Invite, Deactivate, Activate, Assign roles
+                  </li>
+                  <li>
+                    Monitoring and Analytics: Generate Analytics, View API Usage
+                    reports
+                  </li>
+                </ul>
+              </Box>
+            )} */}
+
             <HStack maxW="300px" ml="auto" gap={3} mt={6}>
               <Button onClick={onClose} variant="outline">
                 Cancel
