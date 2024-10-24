@@ -141,7 +141,6 @@ export const authOptions: NextAuthOptions = {
         params.token.emailVerifiedAt = params?.session.user?.emailVerifiedAt;
         params.token.name = params?.session.user?.name;
         params.token.email = params?.session.user?.email;
-        return {...params.token}
       }
 
       return params.token;
