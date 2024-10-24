@@ -63,8 +63,9 @@ const VerificationComponent = () => {
           toast.success(response?.data?.message);
 
           await session.update({
+            ...sessionData,
             user: {
-              ...sessionData,
+              ...sessionData.user,
               completeProfile: false,
               emailVerifiedAt: data?.emailVerifiedAt,
             },
