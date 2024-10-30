@@ -1,10 +1,13 @@
 "use client";
 
+import requestClient from "@/lib/requestClient";
+import { handleServerErrorMessage } from "@/utils";
 import {
   Button,
   Center,
   Divider,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   HStack,
   Input,
@@ -16,12 +19,25 @@ import {
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
+
+interface IFormInput {
+  name: string;
+  email: string;
+  phone: string;
+}
 
 const CreateCustomer = () => {
   const toast = useToast();
   const router = useRouter();
   const [iconFile, setIconFile] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
 
   const onLoadImage = (event: any) => {
     if (!event.target.files) return;
@@ -40,6 +56,35 @@ const CreateCustomer = () => {
     }
   };
 
+  const onSubmit: SubmitHandler<IFormInput> = async (value) => {
+    try {
+      setIsLoading(true);
+
+      const response = await requestClient({
+        token: sessionData.user.token,
+      }).post("/vendor/customers", {
+        ...value,
+      });
+      if (response.status === 201) {
+        toast(response.data.message);
+        router.push("/vendors/customers-management");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast(errorMessage);
+    }
+  };
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<IFormInput>({
+    mode: "onChange",
+  });
+
   return (
     <div className="p-3 md:p-8 bg-gray-25">
       <div>
@@ -54,25 +99,58 @@ const CreateCustomer = () => {
           <Text>Back</Text>
         </HStack>
 
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
           <HStack gap={6} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl>
-              <FormLabel>Full Name</FormLabel>
-              <Input placeholder="" />
+            <FormControl isInvalid={!!errors.name?.message}>
+              <FormLabel>
+                Full Name
+                <Text as="span" color="red.500">
+                  *
+                </Text>
+              </FormLabel>
+              <Input
+                placeholder="Jude Bellingham"
+                {...register("name", {
+                  required: "Full Name is required",
+                })}
+              />
+              <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl>
-              <FormLabel>Email Address</FormLabel>
-              <Input placeholder="" />
+            <FormControl isInvalid={!!errors.email?.message}>
+              <FormLabel>
+                Email Address
+                <Text as="span" color="red.500">
+                  *
+                </Text>
+              </FormLabel>
+              <Input
+                placeholder="judebellingham@gmail.com"
+                {...register("email", {
+                  required: "Email Address is required",
+                })}
+              />
+              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
           </HStack>
           <HStack gap={6} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl>
-              <FormLabel>Phone Number</FormLabel>
-              <Input placeholder="" />
+            <FormControl isInvalid={!!errors.phone?.message}>
+              <FormLabel>
+                Phone Number
+                <Text as="span" color="red.500">
+                  *
+                </Text>
+              </FormLabel>
+              <Input
+                placeholder="08092389823"
+                {...register("phone", {
+                  required: "Phone Number is required",
+                })}
+              />
+              <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
             </FormControl>
             <FormControl>
-              <FormLabel>External Reference No</FormLabel>
-              <Input placeholder="" />
+              <FormLabel>External Reference ID</FormLabel>
+              <Input placeholder="08092389823" />
             </FormControl>
           </HStack>
           <Divider />
@@ -128,10 +206,17 @@ const CreateCustomer = () => {
               </div>
             </Center>
           </div>
+          <div className="flex gap-4 justify-center mt-5 mb-6">
+            <Button
+              variant="solid"
+              type="submit"
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              loadingText="Submitting">
+              Save Customer
+            </Button>
+          </div>
         </form>
-        <div className="flex gap-4 justify-center mt-5 mb-6">
-          <Button variant="solid">Save Customer</Button>
-        </div>
       </div>
     </div>
   );

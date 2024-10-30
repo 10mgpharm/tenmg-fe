@@ -13,7 +13,7 @@ export function ColumnsCustomerFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="pl-6">{info.row.original?.id}</p>
+          <p className="pl-6">{info.row.original?.identifier}</p>
         </div>
       ),
     }),
@@ -47,7 +47,7 @@ export function ColumnsCustomerFN() {
       header: ({ column }) => <p>Date Created</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.dateCreated}</p>
+          <p>{info.row.original?.createdAt}</p>
         </div>
       ),
     }),
@@ -58,13 +58,13 @@ export function ColumnsCustomerFN() {
       cell: (info) => (
         <div>
           <p  className={classNames(
-               info?.row?.original?.status === "Active"
+               info?.row?.original?.active === 1
                   ? "text-[#027A48] bg-[#ECFDF3]"
-                  : info?.row?.original?.status === "Suspended"
+                  : info?.row?.original?.active === "0"
                   ? "bg-[#FEF3F2] text-[#B42318]"
                   : "text-gray-500",
                 " max-w-min p-1 px-2 rounded-2xl text-xs font-medium items-center justify-center flex gap-1"
-              )}> <span className="rounded-full text-[1.2rem]">•</span>{info.row.original?.status}</p>
+              )}> <span className="rounded-full text-[1.2rem]">•</span>{info.row.original?.active === 1 ? "Active" : "Suspended"}</p>
         </div>
       ),
     }),
