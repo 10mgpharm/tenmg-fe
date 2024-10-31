@@ -56,8 +56,6 @@ const Settings = () => {
     "apiKeys",
   ];
 
-
-
   const fetchTeamMembers = useCallback(async () => {
     try {
       const response = await requestClient({ token: token }).get(
@@ -78,8 +76,6 @@ const Settings = () => {
   useEffect(() => {
     fetchTeamMembers();
   }, [fetchTeamMembers]);
-
-
 
   useEffect(() => {
     if (tab) {
@@ -190,7 +186,6 @@ const Settings = () => {
             </TabPanel>
             <TabPanel>
               <BusinessInformation user={user} />
-              {/* <PasswordForm /> */}
             </TabPanel>
             <TabPanel>
               <Notifications />
