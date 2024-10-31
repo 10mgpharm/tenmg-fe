@@ -15,7 +15,7 @@ import PasswordForm from "./components/PasswordForm";
 import Notifications from "./components/Notifications";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, User } from "@/types";
-
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import ApiKeys from "./components/ApiKeys";
 import TeamMembers from "./components/TeamMembers";
@@ -25,18 +25,36 @@ import LicenseUpload from "./components/LicenseUpload";
 
 const Settings = () => {
   const [user, setUser] = useState<User>({} as User);
+  const [allMembersData, setAllMembersData] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [tabIndex, setTabIndex] = useState(0);
 
   const session = useSession();
   const sessionData = session?.data?.user as User;
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
 
-  useEffect(() => {
-    setUser(sessionData);
-  }, [sessionData]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const tab = searchParams.get("tab");
 
-  const [allMembersData, setAllMembersData] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const tabNameToIndex: { [key: string]: number } = {
+    settings: 0,
+    businessInfo: 1,
+    notification: 2,
+    licenseUpload: 3,
+    teamMembers: 4,
+    apiKeys: 5,
+  };
+  const indexToTabName = [
+    "settings",
+    "businessInfo",
+    "notification",
+    "licenseUpload",
+    "teamMembers",
+    "apiKeys",
+  ];
 
   const fetchTeamMembers = useCallback(async () => {
     try {
@@ -52,8 +70,29 @@ const Settings = () => {
   }, [token]);
 
   useEffect(() => {
+    setUser(sessionData);
+  }, [sessionData]);
+
+  useEffect(() => {
     fetchTeamMembers();
   }, [fetchTeamMembers]);
+
+  useEffect(() => {
+    if (tab) {
+      const index = tabNameToIndex[tab];
+      if (index !== undefined) {
+        setTabIndex(index);
+      }
+    }
+  }, [tab]);
+
+  const handleTabsChange = (index: number) => {
+    setTabIndex(index);
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.set("tab", indexToTabName[index]);
+    const newUrl = `${pathname}?${params.toString()}`;
+    router.push(newUrl);
+  };
 
   return (
     <div className="p-4 md:p-8">
@@ -63,7 +102,7 @@ const Settings = () => {
       </p>
       <Divider my={[2, 5]} border="1px solid gray.200" />
       <div className="mt-2 md:mt-4">
-        <Tabs variant={"unstyled"}>
+        <Tabs variant={"unstyled"} index={tabIndex} onChange={handleTabsChange}>
           <TabList overflow={"auto"}>
             <Tab
               _selected={{
@@ -86,7 +125,9 @@ const Settings = () => {
               }}
             >
               <div className="flex items-center gap-3">
-                <Text fontSize={{ base: "xs", md: "sm" }}>Business Information</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }}>
+                  Business Information
+                </Text>
               </div>
             </Tab>
             <Tab
@@ -144,8 +185,7 @@ const Settings = () => {
               <GeneralSettings />
             </TabPanel>
             <TabPanel>
-            <BusinessInformation user={user} />
-              {/* <PasswordForm /> */}
+              <BusinessInformation user={user} />
             </TabPanel>
             <TabPanel>
               <Notifications />
