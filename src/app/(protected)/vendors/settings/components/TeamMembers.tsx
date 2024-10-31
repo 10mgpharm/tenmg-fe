@@ -22,8 +22,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
-import { MemberData } from "@/data/mockdata";
+// import { MemberData } from "@/data/mockdata";
 import { ColumnsMemberFN } from "./table";
 import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
@@ -33,6 +32,7 @@ import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
 import { SubmitHandler } from "react-hook-form";
 import DeleteModal from "../../components/DeleteModal";
+import EmptyResult from "../../components/EmptyResult";
 
 interface IFormInput {
   fullName: string;
@@ -98,8 +98,8 @@ const Members = ({
         </Button>
       </HStack>
       <div className="mt-5">
-        {MemberData?.length === 0 ? (
-          <EmptyOrder
+        {allMembersData?.length === 0 ? (
+          <EmptyResult
             heading={`No Member Yet`}
             content={`You currently have no member added. All members will appear here.`}
           />
