@@ -345,7 +345,25 @@ export default function BusinessInformationForm({
             <Button
               variant={"link"}
               onClick={async () => {
-                await signOut({ callbackUrl: "/auth/signup" });
+                sessionData.user?.entityType === "VENDOR"
+                  ? await signOut({
+                      callbackUrl: `/auth/signup/vendor?name=${sessionData?.user?.name}&businessName=${sessionData?.user?.businessName}`,
+                    })
+                  : await signOut({
+                      callbackUrl: `/auth/signup?name=${
+                        sessionData?.user?.name
+                      }&email=${sessionData?.user?.email}&businessName=${
+                        sessionData?.user?.businessName
+                      }&tab=${
+                        sessionData?.user?.entityType === "SUPPLIER"
+                          ? "supplier"
+                          : "pharmacy"
+                      }&activeTab=${
+                        sessionData?.user?.entityType === "SUPPLIER"
+                          ? "supplier"
+                          : "pharmacy"
+                      }`,
+                    });
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
