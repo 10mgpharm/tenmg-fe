@@ -2,6 +2,7 @@
 import Pagination from '@/app/(protected)/suppliers/components/Pagination'
 import EmptyOrder from '@/app/(protected)/suppliers/orders/components/EmptyOrder'
 import { 
+    Stack,
     Table, 
     TableContainer, 
     Tbody, 
@@ -20,12 +21,19 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from '@tanstack/react-table'
-import React, { useState } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { ColumsSupplierFN } from './table';
 import { ColumsVendorFN } from './VendorTable';
 import { ColumsPharmFN } from './PharmacyTable';
+import { MemberDataProp } from '@/types';
+import { FaSpinner } from 'react-icons/fa6';
 
-const SupplierTab = ({data, type}: {data: any, type: string}) => {
+type FetchTeamUser = (type: string) => Promise<any>; 
+
+const SupplierTab = (
+    {data, type, isLoading, setPageCount, fetchTeamUser}: 
+    {data: MemberDataProp, type: string, isLoading: boolean, setPageCount: Dispatch<SetStateAction<number>>, fetchTeamUser:any}
+) => {
 
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
@@ -38,6 +46,10 @@ const SupplierTab = ({data, type}: {data: any, type: string}) => {
         onOpen: onOpenDeactivate, 
         onClose: onCloseDeactivate 
     } = useDisclosure();
+
+    const records = useMemo(() => data?.data, [data?.data, type]);
+
+    console.log(data)
     const renderedColumn =  type === "vendor" 
                             ?  ColumsVendorFN(onOpen, onOpenDeactivate)
                             : type === "pharmacies"
@@ -45,7 +57,7 @@ const SupplierTab = ({data, type}: {data: any, type: string}) => {
                             : ColumsSupplierFN(onOpen, onOpenDeactivate)
 
     const table = useReactTable({
-        data: data,
+        data: records,
         columns: renderedColumn,
         onSortingChange: setSorting,
         state: {
@@ -65,7 +77,11 @@ const SupplierTab = ({data, type}: {data: any, type: string}) => {
   return (
     <div className="">
         {
-            data?.length === 0 
+            isLoading ? 
+            <Stack mt={"10rem"}>
+                <FaSpinner className='animate-spin w-6 h-6 mx-auto'/>
+            </Stack> :
+            records?.length === 0 
             ? <EmptyOrder 
             heading={`No User Yet`} 
             content={`You currently have no user. All users will appear here.`}
@@ -73,13 +89,13 @@ const SupplierTab = ({data, type}: {data: any, type: string}) => {
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
-                    {table?.getHeaderGroups()?.map((headerGroup) => (
-                        <Tr key={headerGroup.id}>
-                        {headerGroup.headers?.map((header) => (
+                    {table?.getHeaderGroups()?.map((headerGroup, index) => (
+                        <Tr key={index}>
+                        {headerGroup.headers?.map((header, index) => (
                             <Th
                             textTransform={"initial"}
                             px="6px"
-                            key={header.id}
+                            key={index}
                             >
                             {header.isPlaceholder
                                 ? null
@@ -93,10 +109,10 @@ const SupplierTab = ({data, type}: {data: any, type: string}) => {
                     ))}
                     </Thead>
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {table?.getRowModel()?.rows?.map((row) => (
-                        <Tr key={row.id}>
-                        {row.getVisibleCells()?.map((cell) => (
-                            <Td key={cell.id} px="6px">
+                    {records && table?.getRowModel()?.rows?.map((row, index) => (
+                        <Tr key={index}>
+                        {row.getVisibleCells()?.map((cell, index) => (
+                            <Td key={index} px="6px">
                             {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
@@ -107,7 +123,7 @@ const SupplierTab = ({data, type}: {data: any, type: string}) => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                <Pagination meta={data?.meta} setPageCount={setPageCount} actionFn={fetchTeamUser}/>
             </TableContainer>
         }
     </div>

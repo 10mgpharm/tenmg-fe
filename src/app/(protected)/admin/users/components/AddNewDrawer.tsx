@@ -18,6 +18,7 @@ import shape from '@public/assets/images/shapes.svg';
 import Image from 'next/image';
 
 const AddNewDrawer = ({isOpen, onClose, type}: {isOpen: boolean, onClose: () => void, type: string}) => {
+  
   return (
     <Drawer
         isOpen={isOpen}

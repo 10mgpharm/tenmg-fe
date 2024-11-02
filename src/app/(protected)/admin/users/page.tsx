@@ -1,8 +1,6 @@
 "use client"
 import { 
     Checkbox,
-    Flex,
-    HStack,
     Menu,
     MenuButton, 
     MenuItem, 
@@ -11,15 +9,8 @@ import {
     TabList,
     TabPanel,
     TabPanels,
-    Table,
-    TableContainer,
     Tabs,
-    Tbody,
-    Td,
     Text,
-    Th,
-    Thead,
-    Tr,
     useDisclosure, 
 } from '@chakra-ui/react'
 import { CiSearch } from 'react-icons/ci'
@@ -28,6 +19,12 @@ import { MdFilterList } from 'react-icons/md'
 import AddNewDrawer from './components/AddNewDrawer'
 import { UserData } from '@/data/mockdata'
 import SupplierTab from './components/SupplierTab'
+import { useSession } from 'next-auth/react'
+import { MemberDataProp, NextAuthUserSession } from '@/types'
+import { useCallback, useEffect, useState } from 'react'
+import requestClient from '@/lib/requestClient'
+import { usePaginate } from '@/lib/paginate'
+import Pagination from '../../suppliers/components/Pagination'
 
 const Users = () => {
 
@@ -35,9 +32,70 @@ const Users = () => {
     const {isOpen: isOpenPharm, onClose: onClosePharm, onOpen: onOpenPharm } = useDisclosure();
     const {isOpen: isOpenVendor, onClose: onCloseVendor, onOpen: onOpenVendor } = useDisclosure();
 
-    const suppiers = UserData.slice(0, 10);
-    const pharmacies = UserData.slice(0, 5);
-    const vendors = UserData.slice(0, 4);
+    const session = useSession();
+    // const [type, setType] = useState<'Supplier' | 'Vendor' | 'Pharmacies'>('Supplier')
+    const sessionToken = session?.data as NextAuthUserSession;
+    const token = sessionToken?.user?.token;
+    const [data, setData] = useState<MemberDataProp>();
+    const [supplierData, setSupplierData] = useState<MemberDataProp>();
+    const [vendorData, setVendorData] = useState<MemberDataProp>();
+    const [pharmData, setPharmData] = useState<MemberDataProp>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [pageCount, setPageCount] = useState<number>(1);
+    const [pageLimit, setPageLimit] = useState<number>(10);
+    const [total, setTotal] = useState<any>('');
+
+    const fetchTeamUser = useCallback(async (type: string) => {
+        try {
+        setIsLoading(true);    
+        const response = await requestClient({ token: token }).get(
+            `/admin/users?page=${pageCount}&type=${type}&email=`
+        );
+        if (response.status === 200) {
+            setIsLoading(false);
+            if(type === "Supplier"){
+                setSupplierData(response.data.data);
+                setData(response.data.data);
+                setTotal(response.data?.meta)
+            }else if(type === "Vendor"){
+                setVendorData(response.data.data)
+                setTotal(response.data?.meta)
+            }else if(type === "Pharmacies"){
+                setPharmData(response.data.data)
+                setTotal(response.data?.meta)
+            }
+        }
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+        }
+    }, [token, pageCount]);
+
+    useEffect(() => {
+        if(!token) return;
+        fetchTeamUser('Supplier');
+        fetchTeamUser('Pharmacies');
+        fetchTeamUser('Vendor');
+    }, [fetchTeamUser, token]);
+
+    const handleTabsChange = (index: number) => {
+       if(index === 1){
+            setData(pharmData);
+        }else if(index === 2){
+           setData(vendorData);
+       }else{
+            setData(supplierData);
+       }
+    }
+    const { getPaginationInfo } = usePaginate({
+        page: pageCount,
+        total: total?.total,
+        limit: pageLimit,
+    });
+
+    // console.log(getPaginationInfo)
+    // console.log(data)
     
     return (
     <div className='p-8'>
@@ -83,36 +141,60 @@ const Users = () => {
                 </Menu>
             </div>
         </div>
-        <Tabs variant={"unstyled"}>
+        <Tabs onChange={handleTabsChange} variant={"unstyled"}>
             <TabList>
                 <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                     <div className='flex items-center gap-3'>
                         <Text>Suppliers</Text>
-                        <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>{suppiers?.length}</p>
+                        <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            {supplierData?.meta.total || 0}
+                        </p>
                     </div>
                 </Tab>
                 <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                     <div className='flex items-center gap-3'>
                         <Text>Pharmacies</Text>
-                        <p className='bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm'>{pharmacies?.length}</p>
+                        <p className='bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            {pharmData?.meta.total || 0}
+                        </p>
                     </div>
                 </Tab>
                 <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                     <div className='flex items-center gap-3'>
                         <Text>Vendors</Text>
-                        <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>{vendors?.length}</p>
+                        <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            {vendorData?.meta.total || 0}
+                        </p>
                     </div>
                 </Tab>
             </TabList>
             <TabPanels>
                 <TabPanel px={0}>
-                    <SupplierTab data={suppiers} type="suppliers" />
+                    <SupplierTab 
+                    isLoading={isLoading} 
+                    data={data} 
+                    type="Suppliers" 
+                    setPageCount={setPageCount}
+                    fetchTeamUser={() => fetchTeamUser("Supplier")}
+                    />
                 </TabPanel>
                 <TabPanel>
-                    <SupplierTab data={pharmacies} type="pharmacies" />
+                    <SupplierTab 
+                    isLoading={isLoading} 
+                    data={data} 
+                    type="Pharmacies" 
+                    setPageCount={setPageCount}
+                    fetchTeamUser={() => fetchTeamUser("Pharmacies")}
+                    />
                 </TabPanel>
                 <TabPanel>
-                    <SupplierTab data={vendors} type="vendors" />
+                    <SupplierTab 
+                    isLoading={isLoading}  
+                    data={data} 
+                    type="Vendors" 
+                    setPageCount={setPageCount}
+                    fetchTeamUser={() => fetchTeamUser("Vendor")}
+                    />
                 </TabPanel>
             </TabPanels>
         </Tabs>
