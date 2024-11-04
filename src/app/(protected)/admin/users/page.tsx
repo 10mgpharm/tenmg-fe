@@ -17,23 +17,21 @@ import { CiSearch } from 'react-icons/ci'
 import { FaChevronDown } from 'react-icons/fa6'
 import { MdFilterList } from 'react-icons/md'
 import AddNewDrawer from './components/AddNewDrawer'
-import { UserData } from '@/data/mockdata'
 import SupplierTab from './components/SupplierTab'
 import { useSession } from 'next-auth/react'
 import { MemberDataProp, NextAuthUserSession } from '@/types'
 import { useCallback, useEffect, useState } from 'react'
 import requestClient from '@/lib/requestClient'
 import { usePaginate } from '@/lib/paginate'
-import Pagination from '../../suppliers/components/Pagination'
 
 const Users = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [type, setType]= useState<'supplier' | 'vendor' | 'pharmacy'>("supplier")
     const {isOpen: isOpenPharm, onClose: onClosePharm, onOpen: onOpenPharm } = useDisclosure();
     const {isOpen: isOpenVendor, onClose: onCloseVendor, onOpen: onOpenVendor } = useDisclosure();
 
     const session = useSession();
-    // const [type, setType] = useState<'Supplier' | 'Vendor' | 'Pharmacies'>('Supplier')
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
     const [data, setData] = useState<MemberDataProp>();
@@ -81,10 +79,13 @@ const Users = () => {
 
     const handleTabsChange = (index: number) => {
        if(index === 1){
+            // setPageCount(1);
             setData(pharmData);
         }else if(index === 2){
-           setData(vendorData);
+            // setPageCount(1);
+            setData(vendorData);
        }else{
+            // setPageCount(1);
             setData(supplierData);
        }
     }
@@ -93,9 +94,6 @@ const Users = () => {
         total: total?.total,
         limit: pageLimit,
     });
-
-    // console.log(getPaginationInfo)
-    // console.log(data)
     
     return (
     <div className='p-8'>
@@ -134,9 +132,27 @@ const Users = () => {
                         </div>
                     </MenuButton>
                     <MenuList>
-                        <MenuItem onClick={onOpen}>Supplier</MenuItem>
-                        <MenuItem onClick={onOpenPharm}>Pharmacy</MenuItem>
-                        <MenuItem onClick={onOpenVendor}>Vendor</MenuItem>
+                        <MenuItem 
+                        onClick={() => {
+                            setType("supplier")
+                            onOpen()
+                        }}>
+                            Supplier
+                        </MenuItem>
+                        <MenuItem 
+                        onClick={() => {
+                            setType("pharmacy")
+                            onOpenPharm()
+                        }}>
+                            Pharmacy
+                        </MenuItem>
+                        <MenuItem 
+                        onClick={() => {
+                            setType("vendor")
+                            onOpenVendor()
+                        }}>
+                            Vendor
+                        </MenuItem>
                     </MenuList>
                 </Menu>
             </div>
@@ -175,7 +191,6 @@ const Users = () => {
                     data={data} 
                     type="Suppliers" 
                     setPageCount={setPageCount}
-                    fetchTeamUser={() => fetchTeamUser("Supplier")}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -184,7 +199,6 @@ const Users = () => {
                     data={data} 
                     type="Pharmacies" 
                     setPageCount={setPageCount}
-                    fetchTeamUser={() => fetchTeamUser("Pharmacies")}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -193,14 +207,23 @@ const Users = () => {
                     data={data} 
                     type="Vendors" 
                     setPageCount={setPageCount}
-                    fetchTeamUser={() => fetchTeamUser("Vendor")}
                     />
                 </TabPanel>
             </TabPanels>
         </Tabs>
-        <AddNewDrawer isOpen={isOpen} onClose={onClose} type='supplier'/>
-        <AddNewDrawer isOpen={isOpenPharm} onClose={onClosePharm} type='pharmacy'/>
-        <AddNewDrawer isOpen={isOpenVendor} onClose={onCloseVendor} type='vendor'/>
+        <AddNewDrawer 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        type={type}/>
+        <AddNewDrawer 
+        isOpen={isOpenPharm} 
+        onClose={onClosePharm} 
+        type={type}
+        />
+        <AddNewDrawer 
+        isOpen={isOpenVendor} 
+        onClose={onCloseVendor} 
+        type={type}/>
     </div>
   )
 }

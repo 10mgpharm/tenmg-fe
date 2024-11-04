@@ -10,7 +10,7 @@ const Insight = () => {
             </div>
             <div className="flex items-center gap-2">
                 <Checkbox>
-                    <span className='text-primary-500 underline'>Auto refresh</span>
+                    <span className='text-primary-500 underline'>Auto Refresh</span>
                 </Checkbox>
             </div>
         </div>
@@ -24,7 +24,7 @@ const Insight = () => {
                 <EmptyCard/>
             </div>
             <div className="flex-1 bg-white p-5 rounded-md">
-                <h3 className="text-gray-600 font-semibold text-lg">Best selling products</h3>
+                <h3 className="text-gray-600 font-semibold text-lg">Best Selling Products</h3>
                 <EmptyCard/>
             </div>
         </div>

@@ -110,7 +110,7 @@ const LoanRepayment = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                {/* <Pagination /> */}
             </TableContainer>
         }
         </div>

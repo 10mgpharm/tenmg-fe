@@ -134,7 +134,7 @@ const LoanApplication = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                {/* <Pagination /> */}
             </TableContainer>
         }
         </div>

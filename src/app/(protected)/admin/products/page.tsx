@@ -206,7 +206,7 @@ const Page = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination /> 
+                {/* <Pagination />  */}
             </TableContainer>
             : <GridList data={productData}/>
         }

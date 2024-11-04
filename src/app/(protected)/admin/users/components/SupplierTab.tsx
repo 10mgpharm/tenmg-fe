@@ -28,11 +28,9 @@ import { ColumsPharmFN } from './PharmacyTable';
 import { MemberDataProp } from '@/types';
 import { FaSpinner } from 'react-icons/fa6';
 
-type FetchTeamUser = (type: string) => Promise<any>; 
-
 const SupplierTab = (
-    {data, type, isLoading, setPageCount, fetchTeamUser}: 
-    {data: MemberDataProp, type: string, isLoading: boolean, setPageCount: Dispatch<SetStateAction<number>>, fetchTeamUser:any}
+    {data, type, isLoading, setPageCount}: 
+    {data: MemberDataProp, type: string, isLoading: boolean, setPageCount: Dispatch<SetStateAction<number>>}
 ) => {
 
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -49,7 +47,6 @@ const SupplierTab = (
 
     const records = useMemo(() => data?.data, [data?.data, type]);
 
-    console.log(data)
     const renderedColumn =  type === "vendor" 
                             ?  ColumsVendorFN(onOpen, onOpenDeactivate)
                             : type === "pharmacies"
@@ -123,7 +120,7 @@ const SupplierTab = (
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination meta={data?.meta} setPageCount={setPageCount} actionFn={fetchTeamUser}/>
+                <Pagination meta={data?.meta} setPageCount={setPageCount}/>
             </TableContainer>
         }
     </div>

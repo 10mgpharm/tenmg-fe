@@ -1,20 +1,16 @@
-import { MetaDataProp } from "@/types";
 import { classNames } from "@/utils";
 import { Button, HStack, Text } from "@chakra-ui/react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { Dispatch, SetStateAction } from "react";
 
-const Pagination = ({meta, setPageCount, actionFn}: {meta: any, setPageCount: Dispatch<SetStateAction<number>>, actionFn: any}) => {
-  console.log(meta);
+const Pagination = ({meta, setPageCount}: {meta: any, setPageCount: Dispatch<SetStateAction<number>>}) => {
+
   const paginateList = meta?.links?.slice(1, -1);
   const lastItem = meta?.links?.at(-1);
   const firstItem = meta?.links?.at(0);
-  console.log(lastItem);
 
-  const handlePageChange = async (page: string) => {
-    const formatPage = Number(page);
-    setPageCount(formatPage);
-    // actionFn();
+  const handlePageChange = async (page: number) => {
+    setPageCount(page);
   }
   return (
     <HStack mt={5} justify={"space-between"}>
@@ -27,8 +23,12 @@ const Pagination = ({meta, setPageCount, actionFn}: {meta: any, setPageCount: Di
       display={"flex"} 
       alignItems={"center"} 
       gap={2}
-      disabled={!firstItem?.isActive}
-      cursor={!firstItem?.isActive ? "not-allowed": "pointer"}
+      disabled={!firstItem?.url}
+      cursor={!firstItem?.url ? "not-allowed": "pointer"}
+      onClick={() => {
+        if(!firstItem?.url) return;
+        handlePageChange(meta?.currentPage - 1)}
+      }
       >
         <ArrowLeft className='text-gray-500 w-4 h-auto' />
         <Text className='text-gray-500 text-sm font-medium'>Previous</Text>
@@ -37,9 +37,13 @@ const Pagination = ({meta, setPageCount, actionFn}: {meta: any, setPageCount: Di
         {
           paginateList?.map((item: any, index: number) => (
             <li 
-            onClick={() => handlePageChange(item.label)} 
+            onClick={() => handlePageChange(Number(item.label))} 
             key={index} 
-            className={classNames(item.active ? "text-primary-600 bg-primary-50" : "text-gray-500 ", "  py-1.5 px-3 rounded-md cursor-pointer")}>
+            className={classNames(
+              item.active ? 
+              "text-primary-600 bg-primary-50" : 
+              "text-gray-500", 
+              "  py-1.5 px-3 rounded-md cursor-pointer")}>
               {item.label}
             </li>
           ))
@@ -54,8 +58,12 @@ const Pagination = ({meta, setPageCount, actionFn}: {meta: any, setPageCount: Di
       display={"flex"} 
       alignItems={"center"} 
       gap={1.5}
-      disabled={!lastItem?.isActive}
-      cursor={!lastItem?.isActive ? "not-allowed": "pointer"}
+      disabled={!lastItem?.url}
+      onClick={() => {
+        if(!lastItem?.url) return;
+        handlePageChange(meta?.currentPage + 1)}
+      }
+      cursor={!lastItem?.url ? "not-allowed": "pointer"}
       >
           <Text className='text-gray-500 text-sm font-medium'>Next</Text>
           <ArrowRight className='text-gray-500 w-4 h-auto' />
