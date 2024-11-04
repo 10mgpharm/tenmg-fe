@@ -45,7 +45,7 @@ const SupplierTab = (
         onClose: onCloseDeactivate 
     } = useDisclosure();
 
-    const records = useMemo(() => data?.data, [data?.data, type]);
+    const records = useMemo(() => data?.data, [data?.data]);
 
     const renderedColumn =  type === "vendor" 
                             ?  ColumsVendorFN(onOpen, onOpenDeactivate)
