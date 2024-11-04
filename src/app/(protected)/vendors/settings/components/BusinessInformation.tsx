@@ -25,7 +25,7 @@ import { useSession } from "next-auth/react";
 
 interface IFormInput {
   businessName: string;
-  email: string;
+  contactEmail: string;
   contactPerson: string;
   contactPhone: string;
   businessAddress: string;
@@ -48,7 +48,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
     mode: "onChange",
     defaultValues: {
       businessName: "",
-      email: "",
+      contactEmail: "",
       // contactName: user?.contactName,
       // contactPhone: user?.contactPhone,
       // businessAddress: user?.businessAddress,
@@ -58,7 +58,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
 
   useEffect(() => {
     setValue("businessName", user?.businessName);
-    setValue("email", user?.email);
+    setValue("contactEmail", user?.email);
   }, [setValue, user?.businessName, user?.email]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
@@ -123,7 +123,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
           </FormControl>
         </HStack>
         <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-          <FormControl isInvalid={!!errors.email?.message}>
+          <FormControl isInvalid={!!errors.contactEmail?.message}>
             <FormLabel fontSize={"sm"} fontWeight={"medium"}>
               Business Email
             </FormLabel>
@@ -135,7 +135,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 type="email"
                 placeholder="Enter business email"
                 pl={10}
-                {...register("email", {
+                {...register("contactEmail", {
                   required: "Business Email is required",
                   pattern: {
                     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
@@ -144,7 +144,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 })}
               />
             </InputGroup>
-            <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors.contactEmail?.message}</FormErrorMessage>
           </FormControl>
 
           <FormControl isInvalid={!!errors.contactPhone?.message}>

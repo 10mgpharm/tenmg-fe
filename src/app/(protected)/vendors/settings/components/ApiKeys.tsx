@@ -18,8 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { set, SubmitHandler, useForm } from "react-hook-form";
 import { LuCopy } from "react-icons/lu";
-import { IoTrashOutline } from "react-icons/io5";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { IoKey, IoTrashOutline } from "react-icons/io5";
+import { FaEye, FaEyeSlash, FaKey } from "react-icons/fa6";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import DeleteModal from "../../components/DeleteModal";
@@ -27,8 +27,8 @@ import DeleteModal from "../../components/DeleteModal";
 interface IFormInput {
   clientId: string;
   clientSecret: string;
-  webhookUrl: string;
-  callbackUrl: string;
+  webhookUrl?: string;
+  callbackUrl?: string;
 }
 
 interface IKeyWrapperProps {
@@ -43,8 +43,6 @@ interface IKeyWrapperProps {
 const apiData: IFormInput = {
   clientId: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
   clientSecret: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
-  webhookUrl: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
-  callbackUrl: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
 };
 
 const ApiKeys = () => {
@@ -65,8 +63,6 @@ const ApiKeys = () => {
     defaultValues: {
       clientId: apiData.clientId,
       clientSecret: apiData.clientSecret,
-      webhookUrl: apiData.webhookUrl,
-      callbackUrl: apiData.callbackUrl,
     },
   });
 
@@ -177,7 +173,7 @@ function KeyWrapper({
                     </InputRightElement>
                   </InputGroup>
                 </Box>
-                <Box>
+                <Flex gap={2}>
                   <Button
                     leftIcon={<LuCopy />}
                     variant="outline"
@@ -187,7 +183,16 @@ function KeyWrapper({
                   >
                     Copy
                   </Button>
-                </Box>
+                  <Button
+                    leftIcon={<FaKey />}
+                    variant="solid"
+                    bg={"green.500"}
+                    _hover={{ bg: "green.300" }}
+                    px={3}
+                  >
+                    Generate
+                  </Button>
+                </Flex>
               </Flex>
             </FormControl>
 
@@ -225,7 +230,7 @@ function KeyWrapper({
                     </InputRightElement>
                   </InputGroup>
                 </Box>
-                <Box>
+                <Flex gap={2}>
                   <Button
                     leftIcon={<LuCopy />}
                     variant="outline"
@@ -235,10 +240,20 @@ function KeyWrapper({
                   >
                     Copy
                   </Button>
-                </Box>
+                  <Button
+                    leftIcon={<FaKey />}
+                    variant="solid"
+                    bg={"green.500"}
+                    _hover={{ bg: "green.300" }}
+                    px={3}
+                  >
+                    Generate
+                  </Button>
+                </Flex>
               </Flex>
             </FormControl>
 
+            {/* Webhook URL */}
             <FormControl display={"flex"}>
               <FormLabel w={"25%"}>Webhook URL</FormLabel>
               <Flex w={"75%"} gap={6} alignItems={"center"}>
@@ -249,8 +264,8 @@ function KeyWrapper({
                       id="password"
                       size={"lg"}
                       color={"gray.500"}
-                      readOnly
                       {...register("webhookUrl")}
+                      placeholder="https://10mg.com/api/webhooks/event"
                       maxW="3xl"
                       _focus={{
                         color: "gray.800",
@@ -295,6 +310,7 @@ function KeyWrapper({
               </Flex>
             </FormControl>
 
+            {/* Callback URL */}
             <FormControl display={"flex"}>
               <FormLabel w={"25%"}>Callback URL</FormLabel>
               <Flex w={"75%"} gap={6} alignItems={"center"}>
@@ -305,8 +321,8 @@ function KeyWrapper({
                       id="password"
                       size={"lg"}
                       color={"gray.500"}
-                      readOnly
                       {...register("callbackUrl")}
+                      placeholder="https://10mg.com/api/callbacks/complete"
                       maxW="3xl"
                       _focus={{
                         color: "gray.800",
