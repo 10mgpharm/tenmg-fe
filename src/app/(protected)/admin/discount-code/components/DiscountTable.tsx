@@ -87,7 +87,7 @@ const DiscountTable = ({data}: any) => {
                 ))}
                 </Tbody>
             </Table>
-            <Pagination />
+            {/* <Pagination /> */}
         </TableContainer>
     }
     </div>

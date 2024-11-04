@@ -29,31 +29,31 @@ export function ColumsMemberFN(onOpen: () => void) {
         cell: (info) => (
          <div>
           <p className={classNames( 
-              info?.row?.original?.status === "Removed" 
+              info?.row?.original?.active === 0 
               ? "bg-[#FEF3F2] text-[#B42318]" 
-              : info?.row?.original?.status === "Accepted"
+              : info?.row?.original?.active === 1
               ? "text-[#027A48] bg-[#ECFDF3]"
-              : info?.row?.original?.status === "Invited"
+              : info?.row?.original?.active === "Invited"
               ? "text-blue-500 bg-blue-50"
               : "text-gray-500", 
               " max-w-min p-0.5 px-3 rounded-2xl text-sm"
               )}>
-                 {info?.row?.original?.status}
+                {info?.row?.original?.active === 1 ? "Accepted" : info?.row.original.active === 0 ? "Removed": "Invited" }
               </p>
          </div>
         ),
       }),
-    columnHelper.accessor("invited_by", {
+    columnHelper.accessor("name", {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          <p>Invited By</p>
+          <p>Name</p>
         </div>
       ),
       cell: (info) => (
         <div>
-            <p>{info.row.original?.invited_by} </p>
+            <p>{info.row.original?.name} </p>
         </div>
       ),
     }),
@@ -74,7 +74,7 @@ export function ColumsMemberFN(onOpen: () => void) {
       cell: (info) => {
         return (
           <div>
-            <p>{info.row.original?.role}</p>
+            <p className="capitalize">{info.row.original?.role}</p>
           </div>
         );
       },

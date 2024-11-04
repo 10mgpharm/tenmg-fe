@@ -46,3 +46,32 @@ export interface NextAuthUserSession extends Session {
 export interface EmailVerified {
     emailVerifiedAt: string
 }
+
+export interface AdminMemers {
+    businessName: string;
+    dateJoined: string;
+    email: string;
+    id: number;
+    name: string;
+    status: number;
+    // supplier_id: string;
+}
+
+export interface MetaDataProp {
+    currentpage: number;
+    from: number;
+    lastPage: number;
+    links: any;
+    path: string;
+    perPage: number;
+    to: number;
+    total: number;
+}
+
+export interface MemberDataProp {
+    data: AdminMemers[];
+    links: any;
+    meta: MetaDataProp;
+    message: string;
+    status: string;
+}

@@ -110,7 +110,7 @@ const LoanOffer = () => {
                     ))}
                     </Tbody>
                 </Table>
-               <Pagination />
+               {/* <Pagination /> */}
             </TableContainer>
         }
         </div>

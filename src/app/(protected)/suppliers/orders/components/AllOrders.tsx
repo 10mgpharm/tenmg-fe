@@ -87,7 +87,7 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                {/* <Pagination /> */}
             </TableContainer>
         }
     </div>

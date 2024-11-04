@@ -62,14 +62,14 @@ const Page = () => {
             />
             <OverviewCard 
             title="Total Payouts to Suppliers"
-            value="#2,300"
+            value="₦2,300"
             fromColor="from-[#DC6803]"
             toColor="to-[#DC6803]"
             image={orderPattern}
             />
             <OverviewCard 
             title="Wallet Balance"
-            value="50,000"
+            value="₦50,000"
             fromColor="from-[#E31B54]"
             toColor="to-[#E31B54]"
             image={productPattern}

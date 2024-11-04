@@ -72,6 +72,8 @@ const Members = ({
     getSortedRowModel: getSortedRowModel(),
   });
 
+  console.log(allMembersData);
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       setIsLoading(true);
@@ -136,11 +138,11 @@ const Members = ({
                   </Tr>
                 ))}
                 <Tr>
-                  <Td py={4} w="full" colSpan={5}>
+                  {/* <Td py={4} w="full" colSpan={5}>
                     {allMembersData && allMembersData.length > 6 && (
-                      <Pagination />
+                      <Pagination/>
                     )}
-                  </Td>
+                  </Td> */}
                 </Tr>
               </Tbody>
             </Table>

@@ -3,6 +3,7 @@ import GeneralSettings from "./components/GeneralSettings"
 import APIManagement from "./components/APIManagement"
 import Notifications from "./components/Notifications"
 import Members from "./components/Members"
+import BusinessInformation from "./components/BusinessInformation"
 
 const Page = () => {
   return (
@@ -11,6 +12,7 @@ const Page = () => {
         <Tabs>
             <TabList>
                 <Tab>General Settings</Tab>
+                <Tab>Business Information</Tab>
                 <Tab>API Management</Tab>
                 <Tab>Notification</Tab>
                 <Tab>Member</Tab>
@@ -18,6 +20,9 @@ const Page = () => {
             <TabPanels>
                 <TabPanel>
                     <GeneralSettings />
+                </TabPanel>
+                <TabPanel>
+                    <BusinessInformation />
                 </TabPanel>
                 <TabPanel>
                     <APIManagement />

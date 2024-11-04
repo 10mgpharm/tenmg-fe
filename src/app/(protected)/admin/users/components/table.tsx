@@ -3,8 +3,10 @@ import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { classNames } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
+import { convertDate } from "@/utils/formatDate";
+import { AdminMemers } from "@/types";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<AdminMemers>();
 export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => void) {
 
   return [
@@ -29,39 +31,39 @@ export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => voi
       cell: (info) => {
         return (
           <div>
-           <p>{info?.row?.original?.name}</p>
+           <p className="font-medium">{info?.row?.original?.name}</p>
            <p>{info?.row?.original?.email}</p>
           </div>
         );
       },
     }),
-    columnHelper.accessor("supplier_id", {
-      header: ({ column }) => (
-        <p className="">Supplier&apos;s ID</p>
-      ),
-      cell: (info) => (
-       <div className="">
-        <p className="font-medium">{info.row.original?.supplier_id}</p>
-       </div>
-      ),
-    }),
-    columnHelper.accessor("weight", {
+    // columnHelper.accessor("supplier_id", {
+    //   header: ({ column }) => (
+    //     <p className="">Supplier&apos;s ID</p>
+    //   ),
+    //   cell: (info) => (
+    //    <div className="">
+    //     <p className="font-medium">{info?.row?.original?.supplier_id}</p>
+    //    </div>
+    //   ),
+    // }),
+    columnHelper.accessor("businessName", {
       header: ({ column }) => (
         <p className="">Business Name</p>
       ),
       cell: (info) => (
        <div className="">
-        <p className="font-medium">{info.row.original?.business_name}</p>
+        <p className="font-medium">{info?.row?.original?.businessName}</p>
        </div>
       ),
     }),
-    columnHelper.accessor("date", {
+    columnHelper.accessor("dateJoined", {
       header: ({ column }) => (
         <p className="">Date Joined</p>
       ),
       cell: (info) => (
        <div className="">
-        <p className="font-medium">{info.row.original?.date}</p>
+        <p className="font-medium">{convertDate(info?.row?.original?.dateJoined)}</p>
        </div>
       ),
     }),
@@ -73,14 +75,14 @@ export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => voi
         return (
           <div>
             <p className={classNames(
-            info?.row?.original?.status === "Suspended" 
+            info?.row?.original?.status === 2 
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "Active"
+            : info?.row?.original?.status === 1
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-yellow-500 bg-yellow-50", " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
                 {"• "}
-               {info?.row?.original?.status}
+               {info?.row?.original?.status === 1 ?  "Active" : info?.row?.original?.status === 2 ? "Suspended" : "Invited"}
             </p>
           </div>
         );
@@ -103,9 +105,9 @@ export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => voi
                     </MenuItem>
                     <MenuItem>Login as user</MenuItem>
                     {
-                      info?.row?.original?.status === "Suspended" ? 
+                      info?.row?.original?.status === 0 ? 
                       <MenuItem onClick={() => onOpenDeactivate()}>Unsuspend User</MenuItem>
-                      : info?.row?.original?.status === "Active" ?
+                      : info?.row?.original?.status === 1 ?
                       <MenuItem onClick={() => onOpenDeactivate()}>Suspend User</MenuItem>
                       :
                         <>
