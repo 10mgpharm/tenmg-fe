@@ -114,7 +114,7 @@ const Members = () => {
         try {
           setIsLoading(true);
           const response = await requestClient({token: token}).post(
-            "/admin/settings/invite/team-members",
+            "/admin/settings/invite",
             data
           );
           if (response.status === 200) {
