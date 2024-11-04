@@ -18,9 +18,9 @@ import {
   } from '@chakra-ui/react'
 
 import shape from '@public/assets/images/shapes.svg';
-import { SignInResponse, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -31,7 +31,7 @@ interface IFormInput {
   // businessType: string;
 }
 
-const AddNewDrawer = ({isOpen, onClose, type}: {isOpen: boolean, onClose: () => void, type: string}) => {
+const AddNewDrawer = ({isOpen, onClose, type, fetchTeamUser}: {isOpen: boolean, onClose: () => void, type: string, fetchTeamUser: any}) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
@@ -43,15 +43,10 @@ const AddNewDrawer = ({isOpen, onClose, type}: {isOpen: boolean, onClose: () => 
     register,
     formState: { errors, isValid },
     handleSubmit,
-    setValue,
     getValues
   } = useForm<IFormInput>({
     mode: "onChange",
   });
-
-  // useEffect(() => {
-  //   setValue("businessType", type);
-  // },[type])
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const formData = {
@@ -67,10 +62,13 @@ const AddNewDrawer = ({isOpen, onClose, type}: {isOpen: boolean, onClose: () => 
       );
       if (response.status === 200) {
         toast.success(response?.data?.message);
-        // fetchTeamMembers();
-        // fetchTeamUser('Supplier');
-        // fetchTeamUser('Pharmacies');
-        // fetchTeamUser('Vendor');
+        if(type === 'pharmacy'){
+          fetchTeamUser('Pharmacies', 1);
+          }else if(type === 'vendor'){
+            fetchTeamUser('Vendor', 1);
+          }else{
+          fetchTeamUser('Supplier', 1);
+        }
         onClose();
       }
     } catch (error) {
@@ -78,8 +76,6 @@ const AddNewDrawer = ({isOpen, onClose, type}: {isOpen: boolean, onClose: () => 
       toast.error(handleServerErrorMessage(error));
     }
   };
-
-  console.log(getValues());
 
   return (
     <Drawer
@@ -138,7 +134,12 @@ const AddNewDrawer = ({isOpen, onClose, type}: {isOpen: boolean, onClose: () => 
               </FormControl>
               <HStack gap={4} mt={6}>
                 <Button variant={"outline"}>Cancel</Button>
-                <Button type='submit' className='bg-primary-600 text-white w-[65%]'>Add {type}</Button>
+                <Button 
+                type='submit' 
+                isLoading={isLoading} 
+                className='bg-primary-600 text-white w-[65%]'>
+                  Add {type}
+                </Button>
               </HStack>
             </form>
           </DrawerBody>

@@ -18,11 +18,11 @@ import { FaChevronDown } from 'react-icons/fa6'
 import { MdFilterList } from 'react-icons/md'
 import AddNewDrawer from './components/AddNewDrawer'
 import SupplierTab from './components/SupplierTab'
-import { useSession } from 'next-auth/react'
-import { MemberDataProp, NextAuthUserSession } from '@/types'
-import { useCallback, useEffect, useState } from 'react'
-import requestClient from '@/lib/requestClient'
-import { usePaginate } from '@/lib/paginate'
+import { useSession } from 'next-auth/react';
+import { MemberDataProp, NextAuthUserSession } from '@/types';
+import { useCallback, useEffect, useState } from 'react';
+import requestClient from '@/lib/requestClient';
+import { usePaginate } from '@/lib/paginate';
 
 const Users = () => {
 
@@ -44,7 +44,7 @@ const Users = () => {
     const [pageLimit, setPageLimit] = useState<number>(10);
     const [total, setTotal] = useState<any>('');
 
-    const fetchTeamUser = useCallback(async (type: string) => {
+    const fetchTeamUser = useCallback(async (type: string, pageCount: number) => {
         try {
         setIsLoading(true);    
         const response = await requestClient({ token: token }).get(
@@ -72,28 +72,25 @@ const Users = () => {
 
     useEffect(() => {
         if(!token) return;
-        fetchTeamUser('Supplier');
-        fetchTeamUser('Pharmacies');
-        fetchTeamUser('Vendor');
-    }, [fetchTeamUser, token]);
+        fetchTeamUser('Supplier', pageCount);
+        fetchTeamUser('Pharmacies', pageCount);
+        fetchTeamUser('Vendor', pageCount);
+    }, [fetchTeamUser, token, pageCount]);
 
     const handleTabsChange = (index: number) => {
        if(index === 1){
-            // setPageCount(1);
-            setData(pharmData);
+            fetchTeamUser('Pharmacies', 1);
         }else if(index === 2){
-            // setPageCount(1);
-            setData(vendorData);
+            fetchTeamUser('Vendor', 1);
        }else{
-            // setPageCount(1);
-            setData(supplierData);
+            fetchTeamUser('Supplier', 1);
        }
     }
-    const { getPaginationInfo } = usePaginate({
-        page: pageCount,
-        total: total?.total,
-        limit: pageLimit,
-    });
+    // const { getPaginationInfo } = usePaginate({
+    //     page: pageCount,
+    //     total: total?.total,
+    //     limit: pageLimit,
+    // });
     
     return (
     <div className='p-8'>
@@ -214,16 +211,21 @@ const Users = () => {
         <AddNewDrawer 
         isOpen={isOpen} 
         onClose={onClose} 
-        type={type}/>
+        type={type}
+        fetchTeamUser={fetchTeamUser}
+        />
         <AddNewDrawer 
         isOpen={isOpenPharm} 
         onClose={onClosePharm} 
         type={type}
+        fetchTeamUser={fetchTeamUser}
         />
         <AddNewDrawer 
         isOpen={isOpenVendor} 
         onClose={onCloseVendor} 
-        type={type}/>
+        type={type}
+        fetchTeamUser={fetchTeamUser}
+        />
     </div>
   )
 }
