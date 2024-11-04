@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Box,
@@ -31,6 +31,7 @@ import { handleServerErrorMessage } from "@/utils";
 
 interface SignUpFieldProps {
   title: "supplier" | "pharmacy" | "vendor";
+  tabIndex?: number;
 }
 
 interface IFormInput {
@@ -41,7 +42,7 @@ interface IFormInput {
   passwordConfirmation: string;
 }
 
-export default function SignUpField({ title }: SignUpFieldProps) {
+export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
   const searchParams = useSearchParams();
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -55,15 +56,43 @@ export default function SignUpField({ title }: SignUpFieldProps) {
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
 
   const router = useRouter();
+  const nameParams = searchParams.get("name");
+  const emailParams = searchParams.get("email");
+  const businessNameParams = searchParams.get("businessName");
+  const tab = searchParams.get("activeTab");
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
     watch,
   } = useForm<IFormInput>({
+    defaultValues: {
+      fullname: "",
+      name: "",
+      email: "",
+    },
     mode: "onChange",
   });
+
+  const titleTabs =
+    tabIndex === 0 ? "supplier" : tabIndex === 1 ? "pharmacy" : 0;
+
+  useEffect(() => {
+    if (nameParams && emailParams && businessNameParams) {
+      // set this from session if exist
+      if (tab === titleTabs) {
+        setValue("fullname", nameParams);
+        setValue("name", businessNameParams);
+        setValue("email", emailParams);
+      } else {
+        setValue("fullname", "");
+        setValue("name", "");
+        setValue("email", "");
+      }
+    }
+  }, [nameParams, emailParams, businessNameParams, setValue, tab, titleTabs]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
@@ -192,7 +221,7 @@ export default function SignUpField({ title }: SignUpFieldProps) {
                 {...register("email", {
                   required: "Business Email is required",
                   pattern: {
-                    value: /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
                     message: "Invalid email address",
                   },
                 })}

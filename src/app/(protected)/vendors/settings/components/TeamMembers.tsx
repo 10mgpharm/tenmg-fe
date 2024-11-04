@@ -22,8 +22,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
-import { MemberData } from "@/data/mockdata";
+// import { MemberData } from "@/data/mockdata";
 import { ColumnsMemberFN } from "./table";
 import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
@@ -32,6 +31,8 @@ import requestClient from "@/lib/requestClient";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
 import { SubmitHandler } from "react-hook-form";
+import DeleteModal from "../../components/DeleteModal";
+import EmptyResult from "../../components/EmptyResult";
 
 interface IFormInput {
   fullName: string;
@@ -46,11 +47,10 @@ const Members = ({
 }: {
   allMembersData: [];
   fetchTeamMembers: () => void;
-  token: string
+  token: string;
 }) => {
-
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const { onOpen: onOpenRemove } = useDisclosure();
+  const { onOpen: onOpenRemove, onClose: onCloseRemove, isOpen: isOpenRemove } = useDisclosure();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -72,10 +72,12 @@ const Members = ({
     getSortedRowModel: getSortedRowModel(),
   });
 
+  console.log(allMembersData);
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       setIsLoading(true);
-      const response = await requestClient({token: token}).post(
+      const response = await requestClient({ token: token }).post(
         "/vendor/settings/invite",
         data
       );
@@ -98,10 +100,10 @@ const Members = ({
         </Button>
       </HStack>
       <div className="mt-5">
-        {MemberData?.length === 0 ? (
-          <EmptyOrder 
-          heading={`No Member Yet`} 
-          content={`You currently have no member added. All members will appear here.`} 
+        {allMembersData?.length === 0 ? (
+          <EmptyResult
+            heading={`No Member Yet`}
+            content={`You currently have no member added. All members will appear here.`}
           />
         ) : (
           <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
@@ -136,9 +138,11 @@ const Members = ({
                   </Tr>
                 ))}
                 <Tr>
-                  <Td py={4} w="full" colSpan={5}>
-                    {/* <Pagination /> */}
-                  </Td>
+                  {/* <Td py={4} w="full" colSpan={5}>
+                    {allMembersData && allMembersData.length > 6 && (
+                      <Pagination/>
+                    )}
+                  </Td> */}
                 </Tr>
               </Tbody>
             </Table>
@@ -152,6 +156,7 @@ const Members = ({
         isLoading={isLoading}
         onSubmit={onSubmit}
       />
+      <DeleteModal onClose={onCloseRemove} isOpen={isOpenRemove} title="Team Member" />
     </div>
   );
 };

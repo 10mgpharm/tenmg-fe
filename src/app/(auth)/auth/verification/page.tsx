@@ -63,8 +63,9 @@ const VerificationComponent = () => {
           toast.success(response?.data?.message);
 
           await session.update({
+            ...sessionData,
             user: {
-              ...sessionData,
+              ...sessionData.user,
               completeProfile: false,
               emailVerifiedAt: data?.emailVerifiedAt,
             },
@@ -184,7 +185,7 @@ const VerificationComponent = () => {
               variant={"link"}
               onClick={async () => {
                 await signOut({ callbackUrl: "/auth/signup" });
-                router.push("/")
+                router.back();
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >

@@ -23,6 +23,7 @@ import OverviewCard from "./components/OverviewCard";
 import SideCard from "./components/SideCard";
 import { ArrowDown } from "lucide-react";
 import EmptyCard from "../suppliers/components/EmptyCard";
+import CompleteAccountModal from "../suppliers/components/CompleteAccountModal";
 
 export const options = [
   { label: "12 months", value: "Today" },
@@ -56,9 +57,19 @@ const Vendor = () => {
     balance: 0,
   };
 
+  console.log(data);
+
   return (
     <div className="p-8">
-      <NoticeCard setOpen={onOpen} />
+      <NoticeCard
+        setOpen={onOpen}
+        isVisible={
+          data?.user?.businessStatus === "PENDING_VERIFICATION" ||
+          data?.user?.businessStatus === "AWAITING_APPROVAL"
+        }
+      />
+
+      {/* <NoticeCard setOpen={onOpen} /> */}
       <Flex
         justifyContent="space-between"
         mt={4}
@@ -162,6 +173,7 @@ const Vendor = () => {
           </Card>
         </Stack>
       </Flex>
+      <CompleteAccountModal isOpen={isOpen} onClose={onClose} />
     </div>
   );
 };

@@ -22,6 +22,8 @@ import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import ChangePassword from "@/app/(protected)/admin/settings/components/ChangePassword";
+import TwoFactorAuth from "@/app/(protected)/admin/settings/components/TwoFactorAuth";
+import EnabledTwoFactor from "@/app/(protected)/admin/settings/components/EnabledTwoFactor";
 
 interface IFormInput {
   name: string;
@@ -32,12 +34,17 @@ const GeneralSettings = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
     isOpen: isOpen2FA,
+    onClose: onClose2FA,
+    onOpen: onOpen2fa,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEnable2FA,
     onClose: onCloseEnable2FA,
     onOpen: onOpenEnable2fa,
   } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2FA, setIsLoading2FA] = useState(false);
-
+  const [qrcode, setQrcode] = useState<string>("");
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
@@ -46,15 +53,16 @@ const GeneralSettings = () => {
       setIsLoading(true);
       const response = await requestClient({
         token: sessionData.user.token,
-      }).post("/vendor/settings/profile", {
+      }).patch("account/profile", {
         ...value,
       });
       const { data }: ResponseDto<User> = response.data;
-      console.log(response);
+      console.log(data.name);
       if (response.status === 200) {
         toast.success(response.data.message);
         setIsLoading(false);
         await session.update({
+          ...sessionData,
           user: {
             ...sessionData.user,
             name: data.name,
@@ -92,24 +100,23 @@ const GeneralSettings = () => {
   }, [sessionData, setValue]);
 
   const SETUP_2FA = async () => {
-    onOpen();
-    // try {
-    //     setIsLoading2FA(true)
-    //     const response = await requestClient({token: sessionData.user.token}).get(
-    //         "/account/settings/2fa/setup"
-    //     )
-    //     console.log(response);
-    //     setIsLoading2FA(false);
-    //     if(response.status === 200){
-    //         onOpen2fa()
-    //     }
-    // } catch (error) {
-    //     setIsLoading2FA(false);
-    //     const errorMessage = handleServerErrorMessage(error);
-    //     toast.error(errorMessage);
-    // }
+    try {
+      setIsLoading2FA(true);
+      const response = await requestClient({
+        token: sessionData.user.token,
+      }).get("/account/2fa/setup");
+      console.log(response);
+      setIsLoading2FA(false);
+      if (response.status === 200) {
+        setQrcode(response.data?.data);
+        onOpen2fa();
+      }
+    } catch (error) {
+      setIsLoading2FA(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
   };
-  console.log(sessionData);
 
   return (
     <div>
@@ -170,7 +177,7 @@ const GeneralSettings = () => {
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
-                    value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
                     message: "Invalid email address",
                   },
                 })}
@@ -211,16 +218,6 @@ const GeneralSettings = () => {
             Manage your password and 2FA
           </Text>
         </Stack>
-
-        <Button
-          fontSize={"15px"}
-          h={"38px"}
-          px={3}
-          py={1}
-          loadingText="Submitting..."
-        >
-          Save Changes
-        </Button>
       </HStack>
 
       <Box className="bg-white p-4 rounded-md border mt-5">
@@ -235,14 +232,11 @@ const GeneralSettings = () => {
           </Stack>
 
           <Button
-            isLoading={isLoading2FA}
-            loadingText="Submitting..."
-            onClick={SETUP_2FA}
+            onClick={onOpen}
             variant={"outline"}
             color={"gray.500"}
             fontSize={"15px"}
             h={"38px"}
-            isDisabled={isLoading2FA}
             px={3}
           >
             Change Password
@@ -260,17 +254,29 @@ const GeneralSettings = () => {
               your account.
             </Text>
           </Stack>
-          <Switch
-            size="lg"
-            onChange={(e) => {
-              if (e.target.checked) {
-                onOpenEnable2fa();
-              }
-            }}
-          ></Switch>
+          <Button
+            isLoading={isLoading2FA}
+            loadingText="Submitting..."
+            onClick={SETUP_2FA}
+            variant={"outline"}
+            fontSize={"15px"}
+            h={"38px"}
+            isDisabled={isLoading2FA}
+            px={3}
+          >
+            Setup 2FA
+          </Button>
         </HStack>
       </Box>
       <ChangePassword onClose={onClose} isOpen={isOpen} />
+      <TwoFactorAuth
+        isOpen={isOpen2FA}
+        onClose={onClose2FA}
+        onOpenEnable2fa={onOpenEnable2fa}
+        data={qrcode}
+        token={sessionData?.user.token}
+      />
+      <EnabledTwoFactor isOpen={isOpenEnable2FA} onClose={onCloseEnable2FA} />
     </div>
   );
 };
