@@ -18,9 +18,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import {
+  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -51,13 +54,18 @@ interface CustomerData {
 
 const CustomersManagment = () => {
   const [loading, setLoading] = useState(true);
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [allCustomersData, setAllCustomersData] = useState<CustomerData | null>(
     null
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filteredData, setFilteredData] = useState(allCustomersData || null);
   const [searchTerms, setSearchTerms] = useState<string>("");
+  const [globalFilter, setGlobalFilter] = useState<any>([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [filtering, setFiltering] = useState<string>("");
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -83,15 +91,14 @@ const CustomersManagment = () => {
   // const memoizedData = useMemo(() => data, [data]);
 
   const fetchCustomers = useCallback(
-    async (page = 1) => {
+    async (page: number) => {
       setLoading(true);
       try {
         const response = await requestClient({ token: token }).get(
-          `/vendor/customers?page=${page}`
+          `/vendor/customers?page=${page + 1}`
         );
         if (response.status === 200) {
           setAllCustomersData(response.data.data);
-          setCurrentPage(response.data.data.currentPage);
         }
         setLoading(false);
       } catch (error) {
@@ -103,40 +110,34 @@ const CustomersManagment = () => {
   );
 
   useEffect(() => {
-    fetchCustomers(currentPage);
-  }, [fetchCustomers, currentPage]);
+    fetchCustomers(pagination.pageIndex);
+  }, [fetchCustomers, pagination.pageIndex]);
 
-  const handleSearch = () => {
-
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerms(e.target.value);
     // setFilteredData()
-  }
+  };
 
-  const handleNextPage = useCallback(() => {
-    if (allCustomersData?.nextPageUrl) {
-      setCurrentPage((prevPage) => prevPage + 1);
-    }
-  }, [allCustomersData]);
-
-  const handlePrevPage = useCallback(() => {
-    if (allCustomersData?.prevPageUrl) {
-      setCurrentPage((prevPage) => prevPage - 1);
-    }
-  }, [allCustomersData]);
-
-  const tableData = useMemo(
-    () => allCustomersData?.data || [],
-    [allCustomersData?.data]
+  const tableData: CustomerData = useMemo(
+    () => allCustomersData,
+    [allCustomersData]
   );
 
   const table = useReactTable({
-    data: tableData,
+    data: tableData?.data,
     columns: ColumnsCustomerFN(),
-    onSortingChange: setSorting,
     state: {
-      sorting,
+      globalFilter,
+      // pagination,
     },
+    onGlobalFilterChange: setGlobalFilter,
+    // onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(),
+    // manualPagination: true, 
+    // pageCount: tableData ? tableData?.lastPage : -1,
+    // rowCount: tableData?.perPage,
   });
 
   return (
@@ -145,7 +146,10 @@ const CustomersManagment = () => {
       <div className="flex justify-between">
         <div className="mb-5">
           <div className="flex items-center gap-3 mt-5">
-           <SearchInput placeholder="Search for a user" searchTerms={searchTerms} onChange={(e) => setSearchTerms(e.target.value)}/>
+            <SearchInput
+              placeholder="Search for a Customer"
+              onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+            />
             <div
               onClick={onOpenFilter}
               className="border cursor-pointer border-gray-300 p-3 rounded-md flex items-center gap-2"
@@ -214,12 +218,7 @@ const CustomersManagment = () => {
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={6}>
-                    <Pagination
-                      handlePrevious={handlePrevPage}
-                      handleNext={handleNextPage}
-                      allTableData={allCustomersData}
-                      onPageChange={(page) => fetchCustomers(page)}
-                    />
+                    <Pagination table={table} />
                   </Td>
                 </Tr>
               </Tbody>
