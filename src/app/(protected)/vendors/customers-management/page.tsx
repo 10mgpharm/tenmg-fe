@@ -39,6 +39,7 @@ import DeactiveModal from "../../suppliers/products/components/DeactiveModal";
 import UploadModel from "./components/UploadModel";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 import { NextAuthUserSession } from "@/types";
 import SearchInput from "../components/SearchInput";
 
@@ -54,18 +55,14 @@ interface CustomerData {
 
 const CustomersManagment = () => {
   const [loading, setLoading] = useState(true);
+  const [isUploadLoading, setIsUploadLoading] = useState<Boolean>(false);
   const [allCustomersData, setAllCustomersData] = useState<CustomerData | null>(
     null
   );
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [filteredData, setFilteredData] = useState(allCustomersData || null);
-  const [searchTerms, setSearchTerms] = useState<string>("");
   const [globalFilter, setGlobalFilter] = useState<any>([]);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [filtering, setFiltering] = useState<string>("");
+  const [pageCount, setPageCount] = useState<number>(1);
+  const [pageLimit, setPageLimit] = useState<number>(10);
+  const [total, setTotal] = useState<any>("");
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -90,33 +87,78 @@ const CustomersManagment = () => {
 
   // const memoizedData = useMemo(() => data, [data]);
 
-  const fetchCustomers = useCallback(
-    async (page: number) => {
-      setLoading(true);
-      try {
-        const response = await requestClient({ token: token }).get(
-          `/vendor/customers?page=${page + 1}`
-        );
-        if (response.status === 200) {
-          setAllCustomersData(response.data.data);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
+  const fetchCustomers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/vendor/customers?page=${pageCount}`
+      );
+      if (response.status === 200) {
+        setAllCustomersData(response.data.data);
+        setTotal(response.data.data.total);
       }
-    },
-    [token]
-  );
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token]);
+
+  const handleDownloadCustomer = useCallback(async () => {
+    try {
+      const response = await requestClient({
+        token: token,
+        responseType: "blob",
+      }).get(`/vendor/customers/export`);
+      if (response.status === 200) {
+        const contentType = response.headers["content-type"];
+        const contentDisposition = response.headers["content-disposition"];
+        let fileName = "customers.xlsx";
+
+        if (contentDisposition) {
+          const fileNameMatch =
+            contentDisposition.match(/filename="?([^"]+)"?/);
+          if (fileNameMatch && fileNameMatch[1]) {
+            fileName = fileNameMatch[1];
+          }
+        }
+
+        // Create a blob from the response data
+        const blob = new Blob([response.data], { type: contentType });
+
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary anchor element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName; // Use the extracted file name
+
+        // Append the anchor to the body and trigger the click event
+        document.body.appendChild(a);
+        a.click();
+
+        // Clean up
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error("Error downloading the file:", response.statusText);
+        alert("Failed to download the file. Please try again later.");
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token]);
 
   useEffect(() => {
-    fetchCustomers(pagination.pageIndex);
-  }, [fetchCustomers, pagination.pageIndex]);
+    fetchCustomers();
+  }, [fetchCustomers]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerms(e.target.value);
-    // setFilteredData()
-  };
+  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchTerms(e.target.value);
+  //   // setFilteredData()
+  // };
 
   const tableData: CustomerData = useMemo(
     () => allCustomersData,
@@ -135,7 +177,7 @@ const CustomersManagment = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     // getPaginationRowModel: getPaginationRowModel(),
-    // manualPagination: true, 
+    // manualPagination: true,
     // pageCount: tableData ? tableData?.lastPage : -1,
     // rowCount: tableData?.perPage,
   });
@@ -218,7 +260,7 @@ const CustomersManagment = () => {
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={6}>
-                    <Pagination table={table} />
+                    {/* <Pagination table={table} /> */}
                   </Td>
                 </Tr>
               </Tbody>
@@ -226,7 +268,11 @@ const CustomersManagment = () => {
           </TableContainer>
         )}
       </div>
-      <UploadModel isOpen={isOpen} onClose={onClose} />
+      <UploadModel
+        isOpen={isOpen}
+        onClose={onClose}
+        handleDownload={handleDownloadCustomer}
+      />
       {/* <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock} /> */}
       <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate} />
       <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} />

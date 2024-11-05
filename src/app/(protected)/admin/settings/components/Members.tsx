@@ -18,7 +18,7 @@ import {
     useDisclosure
 } from "@chakra-ui/react"
 import { Plus, Search } from "lucide-react"
-import { useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { 
     ColumnOrderState, 
     RowSelectionState, 
@@ -34,6 +34,18 @@ import { ColumsMemberFN } from "../tables/memberTable";
 import InviteMember from "./InviteMember";
 import CreateRole from "./CreateRole";
 import ConfirmModal from "./ConfirmModal";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession, User } from "@/types";
+import { SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
+
+interface IFormInput {
+    fullName: string;
+    email: string;
+    role: "admin" | "operator" | "support";
+}
 
 const Members = () => {
 
@@ -53,10 +65,35 @@ const Members = () => {
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    // const memoizedData = useMemo(() => data, [data]);
+    const session = useSession();
+    // const sessionData = session?.data?.user as User;
+    const sessionToken = session?.data as NextAuthUserSession;
+    const token = sessionToken?.user?.token;
+    const [allMembersData, setAllMembersData] = useState<any>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const fetchTeamMembers = useCallback(async () => {
+        try {
+        const response = await requestClient({ token: token }).get(
+            "/admin/settings/invite/team-members"
+        );
+        if (response.status === 200) {
+            setAllMembersData(response.data.data);
+        }
+        } catch (error) {
+        console.error(error);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if(!token) return;
+        fetchTeamMembers();
+    }, [fetchTeamMembers, token]);
+
+    const memoizedData = useMemo(() => allMembersData, [allMembersData]);
 
     const table = useReactTable({
-        data: MemberData,
+        data: memoizedData,
         columns: ColumsMemberFN(onOpenRemove),
         onSortingChange: setSorting,
         state: {
@@ -72,6 +109,24 @@ const Members = () => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
+
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+        try {
+          setIsLoading(true);
+          const response = await requestClient({token: token}).post(
+            "/admin/settings/invite",
+            data
+          );
+          if (response.status === 200) {
+            toast.success(response?.data?.message);
+            fetchTeamMembers();
+            onClose();
+          }
+        } catch (error) {
+          setIsLoading(false);
+          toast.error(handleServerErrorMessage(error));
+        }
+    };
 
   return (
     <div>
@@ -140,7 +195,7 @@ const Members = () => {
             </TableContainer>
         }
         </div>
-        <InviteMember onClose={onClose} isOpen={isOpen}/>
+        <InviteMember onClose={onClose} isOpen={isOpen} onSubmit={onSubmit} isLoading={isLoading}/>
         <CreateRole isOpen={isOpenRole} onClose={onCloseRole} />
         <ConfirmModal isOpen={isOpenRemove} onClose={onCloseRemove}/>
     </div>

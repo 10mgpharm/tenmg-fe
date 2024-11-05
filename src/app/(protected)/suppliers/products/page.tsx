@@ -209,7 +209,7 @@ const Products = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                {/* <Pagination /> */}
             </TableContainer>
             : <GridList data={productData2}/>
         }

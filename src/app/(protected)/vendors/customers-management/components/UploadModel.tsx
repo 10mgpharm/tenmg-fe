@@ -21,6 +21,10 @@ import React, { useState, useRef } from "react";
 import { FiUploadCloud } from "react-icons/fi";
 import { CiFileOn } from "react-icons/ci";
 import { FaFileAlt } from "react-icons/fa";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
 
 interface UploadProgressProps {
   fileName: string;
@@ -31,12 +35,20 @@ interface UploadProgressProps {
 const UploadModel = ({
   isOpen,
   onClose,
+  handleDownload,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  handleDownload: () => void;
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadLoading, setIsUploadLoading] = useState<Boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -64,6 +76,37 @@ const UploadModel = ({
   const fileName = "Customer Batch One.pdf"; // Replace with dynamic value if needed
   const fileSize = "200 KB"; // Replace with dynamic value if needed
 
+  const handleUploadCustomers = async () => {
+    setIsUploadLoading(true);
+    try {
+      const response = await requestClient({
+        token: token,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const totalLength = progressEvent.total;
+          if (totalLength !== undefined) {
+            const progress = Math.round(
+              (progressEvent.loaded * 100) / totalLength
+            );
+            setUploadProgress(progress);
+          }
+        },
+      }).post(`/vendor/customers/import`);
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setIsUploadLoading(false);
+      } else {
+        console.error("Error uploading the file:");
+        toast.error("Failed to upload the file. Please try again later.");
+      }
+    } catch (error) {
+      console.error(error);
+      setIsUploadLoading(false);
+    }
+  };
+
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose} size={"xl"}>
       <ModalOverlay />
@@ -72,7 +115,7 @@ const UploadModel = ({
         <ModalCloseButton />
         <ModalBody>
           <form className="space-y-5 mb-6 ">
-            {!file ? (
+            {!isUploadLoading ? (
               <div className="mb-8 ">
                 <div
                   className="border border-dashed relative p-4 rounded-md"
@@ -118,7 +161,7 @@ const UploadModel = ({
                   top="0"
                   left="0"
                   height="100%"
-                  width={`${uploadPercentage}%`}
+                  width={`${uploadProgress}%`}
                   backgroundColor="#EDF2F7"
                   borderRadius="md"
                   zIndex={1}
@@ -139,14 +182,14 @@ const UploadModel = ({
                     <Box ml="3">
                       <Text fontSize="md">{fileName}</Text>
                       <Text fontSize="sm" color="gray.500">
-                        {fileSize} - {uploadPercentage}% uploaded
+                        {fileSize} - {uploadProgress}% uploaded
                       </Text>
                     </Box>
                   </Flex>
 
                   {/* Circular Progress */}
                   <CircularProgress
-                    value={uploadPercentage}
+                    value={uploadProgress}
                     size="30px"
                     color="blue.500"
                   />
@@ -162,25 +205,33 @@ const UploadModel = ({
                   </Box>{" "}
                   Bulk Customer Upload Template.xls
                 </p>
-                <Button variant="outline" color="primary.500" size={"sm"}>
+                <Button
+                  variant="outline"
+                  color="primary.500"
+                  size={"sm"}
+                  onClick={handleDownload}
+                >
                   Download Template
                 </Button>
               </div>
               <p className="text-xs mb-2">Supports only xls file</p>
               <p className="text-xs">Maximum size of 1MB</p>
             </div>
-
-            {file ? (
-              <Flex justifyContent={"center"} w={"full"}>
+            <Flex justifyContent={"center"} w={"full"}>
+              {!file ? (
                 <Button variant="outline" color="gray.500" onClick={onClose}>
                   Done
                 </Button>
-              </Flex>
-            ) : (
-              <Button variant="outline" color="primary.500" >
-                Upload
-              </Button>
-            )}
+              ) : (
+                <Button
+                  variant="outline"
+                  color="primary.500"
+                  onClick={handleUploadCustomers}
+                >
+                  Upload
+                </Button>
+              )}
+            </Flex>
           </form>
         </ModalBody>
       </ModalContent>
