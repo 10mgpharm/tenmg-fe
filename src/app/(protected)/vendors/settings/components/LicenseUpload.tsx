@@ -10,9 +10,6 @@ import {
   Button,
   Box,
   Text,
-  InputGroup,
-  InputRightElement,
-  Icon,
 } from "@chakra-ui/react";
 import { IoCalendarOutline, IoCloudDoneOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
@@ -20,13 +17,11 @@ import { handleServerErrorMessage } from "@/utils";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession, ResponseDto, User } from "@/types";
 import { useSession } from "next-auth/react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import DateComponent from "@/app/(protected)/suppliers/products/components/DateComponent";
 
 interface IFormInput {
   licenseNumber: string;
-  date: Date | null;
+  expiryDate: Date | null;
   cacDocument: File | null;
 }
 
@@ -34,7 +29,6 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 
 const LicenseUpload = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -78,12 +72,12 @@ const LicenseUpload = () => {
   const onSubmit = async (value: IFormInput) => {
     console.log("Form Data:", value);
 
+    const date = new Date(value.expiryDate);
+    const formattedDate = date.toISOString().split("T")[0];
+
     const formData = new FormData();
     formData.append("licenseNumber", value.licenseNumber);
-    formData.append(
-      "date",
-      value.date ? value.date.toString().split("T")[0] : ""
-    );
+    formData.append("expiryDate", formattedDate);
     if (value.cacDocument) {
       formData.append("cacDocument", value.cacDocument);
     } else {
@@ -102,6 +96,12 @@ const LicenseUpload = () => {
       console.log(response);
       if (response.status === 200) {
         toast.success(response.data.message);
+          await session.update({
+          user: {
+            ...sessionData.user,
+           businessStatus: "AWAITING_APPROVAL"
+          },
+        });
         setIsLoading(false);
       } else {
         toast.error(`License upload failed: ${response.data.message}`);
@@ -146,10 +146,10 @@ const LicenseUpload = () => {
         </FormControl>
 
         {/* Expiry Date */}
-        <FormControl isInvalid={!!errors.date}>
+        <FormControl isInvalid={!!errors.expiryDate}>
           <FormLabel>Expiry Date</FormLabel>
           <Controller
-            name="date"
+            name="expiryDate"
             control={control}
             rules={{ required: "Expiry date is required" }}
             render={({ field }) => (
@@ -160,7 +160,7 @@ const LicenseUpload = () => {
             )}
           />
 
-          <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
+          <FormErrorMessage>{errors.expiryDate?.message}</FormErrorMessage>
         </FormControl>
 
         {/* CAC Document Upload */}

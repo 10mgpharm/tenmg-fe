@@ -6,13 +6,14 @@ import { FiCalendar } from "react-icons/fi";
 interface DateProps {
   startDate: Date | null;
   setStartDate: Dispatch<SetStateAction<Date | null>>;
+  isMinDate?: boolean
 }
-const DateComponent = ({startDate, setStartDate}: DateProps) => {
+const DateComponent = ({isMinDate, startDate, setStartDate}: DateProps) => {
   return (
     <DatePicker 
       placeholderText='MM/DD/YYYY'
       selected={startDate} 
-      minDate={new Date()}
+      minDate={!isMinDate && new Date()}
       showIcon
       icon={
         <FiCalendar className="w-5 h-5 text-gray-600" />

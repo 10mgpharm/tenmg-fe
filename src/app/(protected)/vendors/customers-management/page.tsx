@@ -30,39 +30,24 @@ import {
 
 import { ColumnsCustomerFN } from "./components/table";
 import Link from "next/link";
-import FilterDrawer from "../../suppliers/products/components/FilterDrawer";
+import FilterDrawer from "./components/FilterDrawer";
 import Pagination from "../../suppliers/components/Pagination";
-// import { customersManagementData } from "@/data/mockdata";
-import EmptyOrder from "../../suppliers/orders/components/EmptyOrder";
-import DeleteModal from "../../suppliers/products/components/DeleteModal";
-import DeactiveModal from "../../suppliers/products/components/DeactiveModal";
 import UploadModel from "./components/UploadModel";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import { NextAuthUserSession } from "@/types";
+import { CustomerDataProp, NextAuthUserSession } from "@/types";
+import { saveAs } from "file-saver";
+import { createXlsxTemplate } from "@/utils/createXlsxTemplate";
 import SearchInput from "../components/SearchInput";
+import EmptyResult from "../components/EmptyResult";
 
-interface CustomerData {
-  currentPage: number;
-  data: any[];
-  total: number;
-  perPage: number;
-  lastPage: number;
-  nextPageUrl: string | null;
-  prevPageUrl: string | null;
-}
-
-const CustomersManagment = () => {
+const CustomerManagement = () => {
   const [loading, setLoading] = useState(true);
-  const [isUploadLoading, setIsUploadLoading] = useState<Boolean>(false);
-  const [allCustomersData, setAllCustomersData] = useState<CustomerData | null>(
-    null
-  );
+  const [allCustomersData, setAllCustomersData] =
+    useState<CustomerDataProp | null>(null);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
   const [pageCount, setPageCount] = useState<number>(1);
-  const [pageLimit, setPageLimit] = useState<number>(10);
-  const [total, setTotal] = useState<any>("");
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -70,22 +55,10 @@ const CustomersManagment = () => {
 
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
-    isOpen: isOpenRestock,
-    onClose: onCloseRestock,
-    onOpen: onOpenRestock,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenDeactivate,
-    onClose: onCloseDeactivate,
-    onOpen: onOpenDeactivate,
-  } = useDisclosure();
-  const {
     isOpen: isOpenFilter,
     onClose: onCloseFilter,
     onOpen: onOpenFilter,
   } = useDisclosure();
-
-  // const memoizedData = useMemo(() => data, [data]);
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
@@ -95,61 +68,77 @@ const CustomersManagment = () => {
       );
       if (response.status === 200) {
         setAllCustomersData(response.data.data);
-        setTotal(response.data.data.total);
       }
       setLoading(false);
     } catch (error) {
       console.error(error);
       setLoading(false);
     }
-  }, [token]);
+  }, [token, pageCount]);
 
-  const handleDownloadCustomer = useCallback(async () => {
-    try {
-      const response = await requestClient({
-        token: token,
-        responseType: "blob",
-      }).get(`/vendor/customers/export`);
-      if (response.status === 200) {
-        const contentType = response.headers["content-type"];
-        const contentDisposition = response.headers["content-disposition"];
-        let fileName = "customers.xlsx";
+  // const handleDownloadCustomer = useCallback(async () => {
+  //   try {
+  //     const response = await requestClient({
+  //       token: token,
+  //       responseType: "blob",
+  //     }).get(`/vendor/customers/export`);
+  //     if (response.status === 200) {
+  //       const contentType = response.headers["content-type"];
+  //       const contentDisposition = response.headers["content-disposition"];
+  //       let fileName = "customers.xlsx";
 
-        if (contentDisposition) {
-          const fileNameMatch =
-            contentDisposition.match(/filename="?([^"]+)"?/);
-          if (fileNameMatch && fileNameMatch[1]) {
-            fileName = fileNameMatch[1];
-          }
-        }
+  //       if (contentDisposition) {
+  //         const fileNameMatch =
+  //           contentDisposition.match(/filename="?([^"]+)"?/);
+  //         if (fileNameMatch && fileNameMatch[1]) {
+  //           fileName = fileNameMatch[1];
+  //         }
+  //       }
 
-        // Create a blob from the response data
-        const blob = new Blob([response.data], { type: contentType });
+  //       // Create a blob from the response data
+  //       const blob = new Blob([response.data], { type: contentType });
 
-        // Create a URL for the blob
-        const url = window.URL.createObjectURL(blob);
+  //       // Create a URL for the blob
+  //       const url = window.URL.createObjectURL(blob);
 
-        // Create a temporary anchor element to trigger the download
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName; // Use the extracted file name
+  //       // Create a temporary anchor element to trigger the download
+  //       const a = document.createElement("a");
+  //       a.href = url;
+  //       a.download = fileName; // Use the extracted file name
 
-        // Append the anchor to the body and trigger the click event
-        document.body.appendChild(a);
-        a.click();
+  //       // Append the anchor to the body and trigger the click event
+  //       document.body.appendChild(a);
+  //       a.click();
 
-        // Clean up
-        a.remove();
-        window.URL.revokeObjectURL(url);
-      } else {
-        console.error("Error downloading the file:", response.statusText);
-        alert("Failed to download the file. Please try again later.");
-      }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [token]);
+  //       // Clean up
+  //       a.remove();
+  //       window.URL.revokeObjectURL(url);
+  //     } else {
+  //       console.error("Error downloading the file:", response.statusText);
+  //       alert("Failed to download the file. Please try again later.");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     setLoading(false);
+  //   }
+  // }, [token]);
+
+  const handleDownloadTemplate = useCallback(() => {
+    const headerMappings = [
+      { key: "vendor_code", header: "Vendor Code" },
+      { key: "name", header: "Name" },
+      { key: "email", header: "Email" },
+      { key: "identifier", header: "Identifier" },
+      { key: "active", header: "Active" },
+    ];
+
+    const templateBlob = createXlsxTemplate(
+      headerMappings,
+      "Vendor Customer Template"
+    );
+
+    saveAs(templateBlob, "Bulk Customer Upload Template.xlsx");
+  }, []);
 
   useEffect(() => {
     fetchCustomers();
@@ -160,26 +149,43 @@ const CustomersManagment = () => {
   //   // setFilteredData()
   // };
 
-  const tableData: CustomerData = useMemo(
+  const handleToggle = useCallback(
+    async (id: number) => {
+      try {
+        const response = await requestClient({
+          token: token,
+        }).patch(`/vendor/customers/${id}`);
+        if (response.status === 200) {
+          toast.success(`Customer status has been updated.`);
+          fetchCustomers(); // Refetch data to reflect the changes
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to update the customer status.");
+      }
+    },
+    [token, fetchCustomers]
+  );
+
+  const tableData: CustomerDataProp = useMemo(
     () => allCustomersData,
     [allCustomersData]
   );
 
+  const columns = useMemo(
+    () => ColumnsCustomerFN(handleToggle),
+    [handleToggle]
+  );
+
   const table = useReactTable({
-    data: tableData?.data,
-    columns: ColumnsCustomerFN(),
+    data: tableData ? tableData?.data : [],
+    columns: columns,
     state: {
       globalFilter,
-      // pagination,
     },
     onGlobalFilterChange: setGlobalFilter,
-    // onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
-    // manualPagination: true,
-    // pageCount: tableData ? tableData?.lastPage : -1,
-    // rowCount: tableData?.perPage,
   });
 
   return (
@@ -215,10 +221,10 @@ const CustomersManagment = () => {
           <Flex justify="center" align="center" height="200px">
             <Spinner size="xl" />
           </Flex>
-        ) : allCustomersData?.data?.length === 0 ? (
-          <EmptyOrder
+        ) : tableData && tableData?.data?.length === 0 ? (
+          <EmptyResult
             heading={`Nothing to show here yet`}
-            content={`You don’t have any customer yet. When you do, they’ll apper here.`}
+            content={`You don’t have any customer yet. When you do, they’ll appear here.`}
           />
         ) : (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -260,7 +266,7 @@ const CustomersManagment = () => {
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={6}>
-                    {/* <Pagination table={table} /> */}
+                    <Pagination meta={tableData} setPageCount={setPageCount} />
                   </Td>
                 </Tr>
               </Tbody>
@@ -271,13 +277,11 @@ const CustomersManagment = () => {
       <UploadModel
         isOpen={isOpen}
         onClose={onClose}
-        handleDownload={handleDownloadCustomer}
+        handleDownload={handleDownloadTemplate}
       />
-      {/* <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock} /> */}
-      <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate} />
       <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} />
     </div>
   );
 };
 
-export default CustomersManagment;
+export default CustomerManagement;

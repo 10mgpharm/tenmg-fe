@@ -77,32 +77,47 @@ const UploadModel = ({
   const fileSize = "200 KB"; // Replace with dynamic value if needed
 
   const handleUploadCustomers = async () => {
+    if (!file) {
+      toast.error("Please select a file to upload.");
+      return;
+    }
     setIsUploadLoading(true);
+    setUploadProgress(0);
     try {
-      const response = await requestClient({
-        token: token,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          const totalLength = progressEvent.total;
-          if (totalLength !== undefined) {
-            const progress = Math.round(
-              (progressEvent.loaded * 100) / totalLength
-            );
-            setUploadProgress(progress);
-          }
-        },
-      }).post(`/vendor/customers/import`);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const axiosInstance = requestClient({ token });
+
+      const response = await axiosInstance.post(
+        `/vendor/customers/import`,
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const totalLength = progressEvent.total;
+            if (totalLength !== undefined) {
+              const progress = Math.round(
+                (progressEvent.loaded * 100) / totalLength
+              );
+              setUploadProgress(progress);
+            }
+          },
+        }
+      );
+
       if (response.status === 200) {
         toast.success(response.data.message);
+        setFile(null); // Reset the file after successful upload
+        setUploadProgress(0);
         setIsUploadLoading(false);
       } else {
         console.error("Error uploading the file:");
         toast.error("Failed to upload the file. Please try again later.");
+        setIsUploadLoading(false);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error uploading the file:", error);
+      toast.error("Failed to upload the file. Please try again later.");
       setIsUploadLoading(false);
     }
   };
