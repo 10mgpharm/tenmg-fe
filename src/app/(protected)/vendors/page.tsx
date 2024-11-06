@@ -1,4 +1,5 @@
 "use client";
+
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import {
@@ -23,7 +24,7 @@ import OverviewCard from "./components/OverviewCard";
 import SideCard from "./components/SideCard";
 import { ArrowDown } from "lucide-react";
 import EmptyCard from "../suppliers/components/EmptyCard";
-import CompleteAccountModal from "../suppliers/components/CompleteAccountModal";
+import CompleteAccountModal from "./components/CompleteAccountModal";
 
 export const options = [
   { label: "12 months", value: "Today" },
@@ -67,6 +68,7 @@ const Vendor = () => {
           data?.user?.businessStatus === "PENDING_VERIFICATION" ||
           data?.user?.businessStatus === "AWAITING_APPROVAL"
         }
+        status={data?.user?.businessStatus}
       />
 
       {/* <NoticeCard setOpen={onOpen} /> */}

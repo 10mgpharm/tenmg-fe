@@ -52,7 +52,7 @@ const creditScoreItems = [
   },
   {
     name: "Credit Score",
-    href: "/vendors/customers-management",
+    href: "/vendors/credit-score",
     icon: MdPercent,
     current: false,
   },
