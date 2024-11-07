@@ -68,8 +68,8 @@ const Pagination = ({meta, setPageCount}: {meta: any, setPageCount: Dispatch<Set
           <Text className='text-gray-500 text-sm font-medium'>Next</Text>
           <ArrowRight className='text-gray-500 w-4 h-auto' />
       </Button>
-  </HStack>
-  )
-}
+    </HStack>
+  );
+};
 
-export default Pagination
+export default Pagination;

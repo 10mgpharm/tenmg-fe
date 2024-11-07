@@ -28,7 +28,7 @@ const VerificationComponent = () => {
   const sessionData = session.data as NextAuthUserSession;
 
   const searchParams = useSearchParams();
-  // if (!searchParams?.get("token")) redirect("/auth/signup");
+  if (!searchParams?.get("token")) redirect("/auth/signup");
 
   const sessionEmail = Cookies.get("email");
   const [otp, setOtp] = useState<string>("");
