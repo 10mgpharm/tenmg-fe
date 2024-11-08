@@ -2,13 +2,11 @@
 import { useState } from "react";
 import { 
     Button, 
-    Flex, 
-    HStack, 
+    Flex,  
     Table, 
     TableContainer, 
     Tbody, 
     Td, 
-    Text, 
     Th,
     Thead, 
     Tr 
@@ -23,7 +21,6 @@ import {
     useReactTable 
 } from '@tanstack/react-table';
 import OverviewCard from "../../wallet/components/OverviewCard";
-
 import totalPattern from '@public/assets/images/bgPattern.svg';
 import orderPattern from '@public/assets/images/orderPattern.svg';
 import productPattern from '@public/assets/images/productpatterns.svg';
@@ -36,6 +33,8 @@ import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 const LoanManagement = () => {
 
     const onOpen = () => {}
+
+    const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -60,6 +59,16 @@ const LoanManagement = () => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
+
+    const meta = {
+        meta: {
+            links: [
+                {label: 'Previous', active: false},
+                {label: 1, active: true}
+            ]
+        }
+    }
+
   return (
     <div className="">
         <div className="grid grid-cols-4 gap-4 mt-5">
@@ -143,7 +152,10 @@ const LoanManagement = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                <Pagination 
+                meta={meta}
+                setPageCount={setPageCount}
+                />
             </TableContainer>
         }
         </div>
