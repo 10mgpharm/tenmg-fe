@@ -81,90 +81,95 @@ const SystemConfiguration = () => {
   return (
     <Stack>
       <Text fontSize={"1rem"} fontWeight={700} color={"gray.700"}>System Configuration</Text>
-      <SimpleGrid bg={"white"} p={5} rounded={"lg"} columns={[2, 3, 6]} spacing="10px" shadow={"sm"} w={"100%"}>
-        <Center
-          as="button"
-          {...dropZoneStyle}
-          flexDir={"column"}
-          pos={"relative"}
-          overflow={"hidden"}
-        >
-          <input
-            type="file"
-            id="image_uploads"
-            name="image_uploads"
-            onChange={onLoadImage}
-            multiple
-            accept=".jpg, .jpeg, .png, .webp, .avif"
-            style={{
-              opacity: "0",
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              cursor: "pointer",
-            }}
-          />
-          <VStack opacity={file ? 0 : 1}>
-            <Text opacity={0.5}>Drag Image here</Text>
-            <Text my="6px" className="underline text-primary-600">Select images</Text>
-          </VStack>
-        </Center>
-        {imageSrcs?.map((e, index: number) => (
-          <Flex
-            h={"140px"}
-            w="100%"
-            mt="10px"
-            borderRadius="10px"
-            pos={"relative"}
-            key={index}
-          >
-            {/* <Flex
-              pos={"absolute"}
-              w="100%"
-              h="100%"
-              bg="#00000013"
-              borderRadius={"10px"}
-            /> */}
+
+        <Stack bg={"white"} p={5} rounded={"lg"} gap={2} shadow={"sm"}>
+          <Text fontSize={"13px"} fontWeight={600} color={"gray.600"}>Store Front Image ({imageSrcs?.length}/10)</Text>
+          <SimpleGrid columns={[2, 3, 6]} spacing="10px" w={"100%"}>
             <Center
-              h={"140px"}
-              w="100%"
+              as="button"
+              {...dropZoneStyle}
+              flexDir={"column"}
               pos={"relative"}
-              alignItems={"center"}
+              overflow={"hidden"}
             >
-              <Image
-                src={e}
-                alt=""
-                width={400}
-                height={400}
-                className="object-cover rounded-md h-[140px] w-full"
+              <input
+                type="file"
+                id="image_uploads"
+                name="image_uploads"
+                onChange={onLoadImage}
+                multiple
+                accept=".jpg, .jpeg, .png, .webp, .avif"
+                style={{
+                  opacity: "0",
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                }}
               />
-              <Flex 
-              gap={2}
-              bg={"white"}
-              p={1}
-              rounded={"md"}
-              pos={"absolute"}
-              right={3}
-              top={2}
-              >
-                <PiNotePencil 
-                cursor={"pointer"}
-                onClick={() => {
-                  onSelectImgToEdit(e);
-                  // setImgToEditUrl(e);
-                }}
-                className="w-4 h-auto" />
-                <X 
-                cursor={"pointer"}
-                onClick={() => {
-                  REMOVE_IMAGES(e);
-                }}
-                className="w-4 h-auto text-red-600"/>
-              </Flex>
+              <VStack opacity={file ? 0 : 1}>
+                <Text fontSize={"14px"}>Drag Image Here</Text>
+                <Text>Or</Text>
+                <Text className="underline text-primary-600 text-[14px]">Select Images</Text>
+              </VStack>
             </Center>
-          </Flex>
-        ))}
-      </SimpleGrid>
+            {imageSrcs?.map((e, index: number) => (
+              <Flex
+                h={"140px"}
+                w="100%"
+                // mt="10px"
+                borderRadius="10px"
+                pos={"relative"}
+                key={index}
+              >
+                {/* <Flex
+                  pos={"absolute"}
+                  w="100%"
+                  h="100%"
+                  bg="#00000013"
+                  borderRadius={"10px"}
+                /> */}
+                <Center
+                  h={"140px"}
+                  w="100%"
+                  pos={"relative"}
+                  alignItems={"center"}
+                >
+                  <Image
+                    src={e}
+                    alt=""
+                    width={400}
+                    height={400}
+                    className="object-cover rounded-md h-[140px] w-full"
+                  />
+                  <Flex 
+                  gap={2}
+                  bg={"white"}
+                  p={1}
+                  rounded={"md"}
+                  pos={"absolute"}
+                  right={3}
+                  top={2}
+                  >
+                    <PiNotePencil 
+                    cursor={"pointer"}
+                    onClick={() => {
+                      onSelectImgToEdit(e);
+                      // setImgToEditUrl(e);
+                    }}
+                    className="w-4 h-auto" />
+                    <X 
+                    cursor={"pointer"}
+                    onClick={() => {
+                      REMOVE_IMAGES(e);
+                    }}
+                    className="w-4 h-auto text-red-600"/>
+                  </Flex>
+                </Center>
+              </Flex>
+            ))}
+          </SimpleGrid>
+        </Stack>
       <HStack mt={4} justify={"space-between"} bg={"white"} p={5} rounded={"lg"} shadow={"sm"}>
         <Text fontWeight={700} fontSize={"1rem"} color={"gray.700"}>Set FAQs</Text>
         <Button onClick={onOpenQuestion} h={"34px"} variant={"outline"} px={2} fontSize={"14px"} color={"gray.600"}>
@@ -225,7 +230,7 @@ export const useStyles = () => {
       borderColor: "gray.400",
       fontSize: "12px",
       fontWeight: "500",
-      mt: "15px",
+      // mt: "15px",
     },
   }
 }

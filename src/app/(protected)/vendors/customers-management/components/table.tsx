@@ -2,6 +2,7 @@ import { CustomerData } from "@/types";
 import { classNames } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
+import Link from "next/link";
 
 const columnHelper = createColumnHelper<CustomerData>();
 
@@ -84,7 +85,7 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
       cell: (info) => {
         return (
           <div className="flex gap-4">
-            <p className="text-primary font-medium">View</p>
+            <Link href={`/vendors/${info.row.original?.id}`} className="text-primary font-medium">View</Link>
             <p
               className="cursor-pointer"
               onClick={() => handleToggle(info.row.original?.id)}
