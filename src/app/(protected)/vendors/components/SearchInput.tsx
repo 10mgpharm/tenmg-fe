@@ -4,7 +4,7 @@ import { CiSearch } from "react-icons/ci";
 interface Props {
   placeholder: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string;
+  value?: string;
 }
 
 const SearchInput = ({ placeholder, onChange, value }: Props) => {
