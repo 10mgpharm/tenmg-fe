@@ -83,6 +83,8 @@ export interface CustomerData {
   email: string;
   phone: string;
   active: 1;
+  lastEvaluationHistory: any;
+  businessId: number;
   createdAt: string;
 }
 

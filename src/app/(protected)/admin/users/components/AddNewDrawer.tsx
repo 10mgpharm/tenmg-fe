@@ -2,21 +2,20 @@ import requestClient from '@/lib/requestClient';
 import { NextAuthUserSession } from '@/types';
 import { handleServerErrorMessage } from '@/utils';
 import {
-    Drawer,
-    DrawerBody,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
-    FormControl,
-    FormLabel,
-    Input,
-    chakra,
-    HStack,
-    Button
-  } from '@chakra-ui/react'
-
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
+  chakra,
+  HStack,
+  Button
+} from '@chakra-ui/react'
 import shape from '@public/assets/images/shapes.svg';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -24,21 +23,22 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-
 interface IFormInput {
   businessName: string;
   businessEmail: string;
   // businessType: string;
 }
 
-const AddNewDrawer = ({isOpen, onClose, type, fetchTeamUser}: {isOpen: boolean, onClose: () => void, type: string, fetchTeamUser: any}) => {
+const AddNewDrawer = (
+  {isOpen, onClose, type, fetchTeamUser}: 
+  {isOpen: boolean, onClose: () => void, type: string, fetchTeamUser: any}
+) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
 
-  console.log(type)
   const {
     register,
     formState: { errors, isValid },
