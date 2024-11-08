@@ -41,13 +41,25 @@ import { saveAs } from "file-saver";
 import { createXlsxTemplate } from "@/utils/createXlsxTemplate";
 import SearchInput from "../components/SearchInput";
 import EmptyResult from "../components/EmptyResult";
+import { useDebouncedValue } from "@/utils/debounce";
+
+interface IFormInput {
+  endDate?: Date | null;
+  startDate?: Date | null;
+  status?: string;
+}
 
 const CustomerManagement = () => {
   const [loading, setLoading] = useState(true);
   const [allCustomersData, setAllCustomersData] =
     useState<CustomerDataProp | null>(null);
-  const [globalFilter, setGlobalFilter] = useState<any>([]);
   const [pageCount, setPageCount] = useState<number>(1);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -62,10 +74,23 @@ const CustomerManagement = () => {
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
+    let query = `/vendor/customers?page=${pageCount}`;
+
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
+    }
+    if (status) {
+      query += `&status=${status}`;
+    }
+    if (createdAtStart) {
+      query += `&createdAtStart=${createdAtStart.toISOString().split("T")[0]}`;
+    }
+    if (createdAtEnd) {
+      query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+    }
+
     try {
-      const response = await requestClient({ token: token }).get(
-        `/vendor/customers?page=${pageCount}`
-      );
+      const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
         setAllCustomersData(response.data.data);
       }
@@ -74,7 +99,7 @@ const CustomerManagement = () => {
       console.error(error);
       setLoading(false);
     }
-  }, [token, pageCount]);
+  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
   // const handleDownloadCustomer = useCallback(async () => {
   //   try {
@@ -123,31 +148,9 @@ const CustomerManagement = () => {
   //   }
   // }, [token]);
 
-  const handleDownloadTemplate = useCallback(() => {
-    const headerMappings = [
-      { key: "vendor_code", header: "Vendor Code" },
-      { key: "name", header: "Name" },
-      { key: "email", header: "Email" },
-      { key: "identifier", header: "Identifier" },
-      { key: "active", header: "Active" },
-    ];
-
-    const templateBlob = createXlsxTemplate(
-      headerMappings,
-      "Vendor Customer Template"
-    );
-
-    saveAs(templateBlob, "Bulk Customer Upload Template.xlsx");
-  }, []);
-
   useEffect(() => {
     fetchCustomers();
   }, [fetchCustomers]);
-
-  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchTerms(e.target.value);
-  //   // setFilteredData()
-  // };
 
   const handleToggle = useCallback(
     async (id: number) => {
@@ -167,6 +170,36 @@ const CustomerManagement = () => {
     [token, fetchCustomers]
   );
 
+  const handleDownloadTemplate = useCallback(() => {
+    const headerMappings = [
+      { key: "vendor_code", header: "Vendor Code" },
+      { key: "name", header: "Name" },
+      { key: "email", header: "Email" },
+      { key: "identifier", header: "Identifier" },
+      { key: "active", header: "Active" },
+    ];
+
+    const templateBlob = createXlsxTemplate(
+      headerMappings,
+      "Vendor Customer Template"
+    );
+
+    saveAs(templateBlob, "Bulk Customer Upload Template.xlsx");
+  }, []);
+
+  const applyFilters = (filters: IFormInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
+  };
+
   const tableData: CustomerDataProp = useMemo(
     () => allCustomersData,
     [allCustomersData]
@@ -183,6 +216,7 @@ const CustomerManagement = () => {
     state: {
       globalFilter,
     },
+    manualFiltering: true,
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -196,7 +230,8 @@ const CustomerManagement = () => {
           <div className="flex items-center gap-3 mt-5">
             <SearchInput
               placeholder="Search for a Customer"
-              onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
             />
             <div
               onClick={onOpenFilter}
@@ -279,7 +314,12 @@ const CustomerManagement = () => {
         onClose={onClose}
         handleDownload={handleDownloadTemplate}
       />
-      <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} />
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+      />
     </div>
   );
 };

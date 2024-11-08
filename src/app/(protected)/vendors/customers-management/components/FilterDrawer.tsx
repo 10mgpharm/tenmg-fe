@@ -12,30 +12,49 @@ import {
   Stack,
   FormLabel,
   FormControl,
+  Select,
 } from "@chakra-ui/react";
 import { Controller, useForm } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
 import { FaCalendar } from "react-icons/fa6";
 
 interface IFormInput {
-  date: Date | null;
+  endDate?: Date | null;
+  startDate?: Date | null;
+  status?: string;
 }
 
 const FilterDrawer = ({
   isOpen,
   onClose,
+  applyFilters,
+  clearFilters,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  applyFilters: (filters: IFormInput) => void;
+  clearFilters: () => void;
 }) => {
   const {
-    register,
     handleSubmit,
-    formState: { errors },
+    formState: {},
     control,
+    getValues,
+    reset,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
+
+  const onSubmit = (data: IFormInput) => {
+    applyFilters(data);
+    onClose();
+  };
+
+  const handleClearFilters = () => {
+    reset();
+    clearFilters();
+    onClose();
+  };
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
@@ -53,15 +72,43 @@ const FilterDrawer = ({
         <DrawerBody>
           <Stack mt={5}>
             <FormControl>
-              <FormLabel>Date</FormLabel>
+              <FormLabel>Status</FormLabel>
               <Controller
-                name="date"
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select {...field} placeholder="Select Status">
+                    <option value="active">Active</option>
+                    <option value="inactive">Suspended</option>
+                  </Select>
+                )}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>From</FormLabel>
+              <Controller
+                name="startDate"
                 control={control}
                 render={({ field }) => (
                   <DateComponent
                     startDate={field.value}
                     setStartDate={field.onChange}
                     isMinDate
+                  />
+                )}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>To</FormLabel>
+              <Controller
+                name="endDate"
+                control={control}
+                render={({ field }) => (
+                  <DateComponent
+                    startDate={field.value}
+                    setStartDate={field.onChange}
+                    isMinDate
+                    minDate={getValues("startDate")}
                   />
                 )}
               />
@@ -73,7 +120,12 @@ const FilterDrawer = ({
           <Button variant="outline" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button colorScheme="blue">Apply</Button>
+          <Button variant="outline" mr={3} onClick={handleClearFilters}>
+            Clear Filters
+          </Button>
+          <Button colorScheme="blue" onClick={handleSubmit(onSubmit)}>
+            Apply
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
