@@ -52,7 +52,7 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
             <Text fontSize={"14px"} color={"gray.600"}>Back</Text>
         </Flex>
         <Flex justify={"space-between"} align={"center"} mt={4}>
-            <div>
+            <div className="max-w-lg">
                 <h3 className="font-semibold text-xl">Customer Reference No. </h3>
                 <p className="text-sm text-gray-500 mt-1">
                     This provides a detailed breakdown of the customer’s evaluation reference, credit score, purchase and credit patterns.
@@ -60,11 +60,11 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
             </div>
             <Flex gap={2} align={"center"}>
                 <Button variant={"outline"} h={'34px'}>Download Transaction</Button>
-                <Link href={`/vendors/transactions-history/${params.id}/records`} className="bg-primary-600 text-white px-4 py-1.5 text-sm font-medium rounded-md">View Transaction History</Link>
+                <Link href={`/vendors/transactions-history/${params.id}/records`} className="bg-primary-600 text-white px-4 py-2 text-sm font-medium rounded-md">View Transaction History</Link>
             </Flex>
         </Flex>
-        <div className="grid grid-cols-5 gap-5 mt-5">
-            <div className="col-span-1">
+        <div className="grid grid-cols-6 gap-5 mt-5">
+            <div className="col-span-2">
                 <div className="space-y-7">
                     <div className="border rounded-md">
                         <div className="border-t-md p-4 bg-gray-100">

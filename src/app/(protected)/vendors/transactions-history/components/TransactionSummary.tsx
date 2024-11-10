@@ -4,7 +4,7 @@ const TransactionSummary = () => {
   return (
     <div className="border p-5 rounded-md">
         <p className="font-medium mb-4">Transaction Summary</p>
-        <div className="flex gap-24">
+        <div className="flex gap-10">
             <div className="space-y-5">
                 <div className="">
                     <p className="text-sm mb-1">First Day in Transaction:</p>
