@@ -1,6 +1,6 @@
 "use client";
 import requestClient from "@/lib/requestClient";
-import { CustomerData, NextAuthUserSession } from "@/types";
+import { CustomerData, NextAuthUserSession, TransactionHistoryData } from "@/types";
 import { convertDate } from "@/utils/formatDate";
 import { 
     Flex, 
@@ -12,11 +12,9 @@ import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
-    TableCaption,
     TableContainer,
     Input,
     useDisclosure,
@@ -25,14 +23,15 @@ import { ArrowLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import UploadHistoryModal from "../customers-management/components/UploadHistoryModal";
+import UploadHistoryModal from "../components/UploadHistoryModal";
+import Link from "next/link";
 
 const Page = ({params} : {params : {id: string}}) => {
 
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [customersData, setCustomersData] = useState<CustomerData | null>(null);
-    const [tnxHistoryData, setTnxHistorysData] = useState<CustomerData | null>(null);
+    const [tnxHistoryData, setTnxHistorysData] = useState<TransactionHistoryData[] | null>(null);
     const { isOpen, onClose, onOpen } = useDisclosure();
 
     const session = useSession();
@@ -72,11 +71,12 @@ const Page = ({params} : {params : {id: string}}) => {
     }, [token, params.id]);
 
     useEffect(() => {
+        if(!token) return;
         fetchCustomers();  
         fetchCustomerTnx()
-    }, [fetchCustomers]);
+    }, [fetchCustomers, token]);
 
-    console.log(tnxHistoryData);
+    console.log(tnxHistoryData)
 
   return (
     <div className="p-5">
@@ -86,7 +86,7 @@ const Page = ({params} : {params : {id: string}}) => {
                 <Text fontSize={"14px"} color={"gray.600"}>Back</Text>
             </Flex>
             <div className="mt-4">
-                <h3 className="font-semibold text-xl">Evaluation Reference No. {customersData?.identifier}</h3>
+                <h3 className="font-semibold text-xl">Customer Reference No. {customersData?.identifier}</h3>
                 <p className="text-sm text-gray-500 mt-1">
                     This provides a detailed breakdown of the customer’s evaluation reference, credit score, purchase and credit patterns.
                 </p>
@@ -133,12 +133,12 @@ const Page = ({params} : {params : {id: string}}) => {
                 </SimpleGrid>
             </div>
             {
-                customersData?.lastEvaluationHistory ? 
+                tnxHistoryData?.length > 0 ? 
                 <div className="border shadow-sm rounded-md mt-5 px-4">
                     <p className="font-medium text-gray-700 mt-3">Transaction History Evaluations</p>
                     <div className="flex items-center justify-between my-3">
                         <Input placeholder="Search..." width={"320px"}/>
-                        <button className="py-2 px-3 rounded-md text-white bg-primary-600">
+                        <button onClick={onOpen} className="py-2 px-3 rounded-md text-white bg-primary-600">
                             Upload Document
                         </button>
                     </div>
@@ -154,20 +154,36 @@ const Page = ({params} : {params : {id: string}}) => {
                             </Tr>
                             </Thead>
                             <Tbody>
-                                <Tr>
-                                    <Td>
-                                        <Stack gap={0.5}>
-                                            <Text fontSize={"12px"} fontWeight={600}>{customersData?.identifier}</Text>
-                                            <Text fontSize={"14px"}>{convertDate(customersData?.lastEvaluationHistory?.createdAt)}</Text>
-                                        </Stack>
-                                    </Td>
-                                    <Td fontSize={"14px"}>{customersData?.lastEvaluationHistory?.source}</Td>
-                                    <Td fontSize={"14px"}>{customersData?.lastEvaluationHistory?.fileFormat}</Td>
-                                    <Td fontSize={"14px"}>{customersData?.lastEvaluationHistory?.status}</Td>
-                                    <Td fontSize={"14px"}>
-                                        <Text>View Details</Text>
-                                    </Td>
-                                </Tr>
+                                {
+                                    tnxHistoryData?.map((item: TransactionHistoryData) => {
+                                        const evaluation = JSON.parse(item?.evaluationResult)
+                                        return(
+                                        <Tr key={item.id}>
+                                            <Td>
+                                                <Stack gap={0.5}>
+                                                    <Text fontSize={"12px"} fontWeight={600}>{customersData?.identifier}</Text>
+                                                    <Text fontSize={"14px"}>{convertDate(item?.createdAt)}</Text>
+                                                </Stack>
+                                            </Td>
+                                            <Td fontSize={"14px"}>{item?.source}</Td>
+                                            <Td fontSize={"14px"}>{item?.fileFormat}</Td>
+                                            <Td fontSize={"14px"}>
+                                                {
+                                                item?.status === "PENDING" ? 
+                                                <Tag size={"sm"} colorScheme={"orange"}>{item?.status}</Tag>
+                                                : <Tag size={"sm"} colorScheme={"green"}>{item?.status}</Tag>
+                                                }
+                                            </Td>
+                                            <Td fontSize={"14px"}>
+                                                <Link 
+                                                href={`/vendors/transactions-history/${params.id}?evaluationId=${item?.id}`} 
+                                                className="text-primary-600 font-medium">
+                                                    View Details
+                                                </Link>
+                                            </Td>
+                                        </Tr>
+                                    )})
+                                }
                             </Tbody>
                         </Table>
                     </TableContainer>
@@ -193,6 +209,8 @@ const Page = ({params} : {params : {id: string}}) => {
         <UploadHistoryModal 
         isOpen={isOpen}
         onClose={onClose}
+        fetchCustomerTnx={fetchCustomerTnx}
+        id={params.id}
         />
     </div>
   )

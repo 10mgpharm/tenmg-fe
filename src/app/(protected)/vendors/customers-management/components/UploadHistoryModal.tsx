@@ -1,10 +1,38 @@
-import { Box, Button, CircularProgress, Flex, Icon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react"
+import requestClient from "@/lib/requestClient";
+import { NextAuthUserSession } from "@/types";
+import { 
+Box, 
+Button, 
+CircularProgress, 
+Flex, 
+FormControl, 
+FormLabel, 
+Icon, 
+Input, 
+Modal, 
+ModalBody, 
+ModalCloseButton,
+ModalContent, 
+ModalHeader, 
+ModalOverlay, 
+Text 
+} from "@chakra-ui/react"
+import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { CiFileOn } from "react-icons/ci"
 import { FiUploadCloud } from "react-icons/fi"
+import { toast } from "react-toastify";
 
-const UploadHistoryModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {
+interface IFormInput {
+  customerId: string;
+}
 
+const UploadHistoryModal = ({isOpen, onClose, fetchCustomerTnx, id}: {isOpen: boolean, onClose: () => void, fetchCustomerTnx: () => void; id: string }) => {
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadLoading, setIsUploadLoading] = useState<Boolean>(false);
@@ -32,17 +60,82 @@ const UploadHistoryModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => 
     fileInputRef.current?.click();
   };
 
-  const fileName = "Customer Batch One.pdf"; // Replace with dynamic value if needed
+  const handleTnxHistoryUpload = async () => {
+    if (!file) {
+      toast.error("Please select a file to upload.");
+      return;
+    }
+    setIsUploadLoading(true);
+    setUploadProgress(0);
+    try {
+      const formData = new FormData();
+      formData.append("customerId", id);
+      formData.append("file", file);
+
+      const axiosInstance = requestClient({ token });
+
+      const response = await axiosInstance.post(
+        `/vendor/txn_history/upload_and_evaluate`,
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const totalLength = progressEvent.total;
+            if (totalLength !== undefined) {
+              const progress = Math.round(
+                (progressEvent.loaded * 100) / totalLength
+              );
+              setUploadProgress(progress);
+            }
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setFile(null); // Reset the file after successful upload
+        setUploadProgress(0);
+        fetchCustomerTnx();
+        setIsUploadLoading(false);
+      } else {
+        console.error("Error uploading the file:");
+        toast.error("Failed to upload the file. Please try again later.");
+        setIsUploadLoading(false);
+      }
+    } catch (error) {
+      console.error("Error uploading the file:", error);
+      toast.error("Failed to upload the file. Please try again later.");
+      setIsUploadLoading(false);
+    }
+  };
+
+
+  const fileName = "Transactions Batch One.pdf"; // Replace with dynamic value if needed
   const fileSize = "200 KB"; // Replace with dynamic value if needed
 
   return (
-    <Modal isCentered isOpen={isOpen} onClose={onClose} size={"xl"}>
+    <Modal isCentered isOpen={isOpen} onClose={onClose} size={"lg"}>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>Upload CSV</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
         <form className="space-y-5 mb-6 ">
+          {/* <FormControl>
+            <FormLabel>Customer by Name or ID</FormLabel>
+            <Input 
+            type="text" 
+            placeholder="Eg. Jude Bellingham or MG-10932023"
+            id='customerId'
+            errorBorderColor="red.300"
+            isInvalid={!!errors.customerId}
+            _focus={{
+                border: !!errors.customerId ? "red.300" : "border-gray-300",
+              }}
+              {...register("customerId", {
+                required: true,
+              })}
+            />
+          </FormControl> */}
           {!isUploadLoading ? (
             <div className="mb-8 ">
               <div
@@ -66,9 +159,6 @@ const UploadHistoryModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => 
                   </div>
                   <p className="text-center">Select a CSV File to upload</p>
                   <p className="text-sm font-normal text-center">
-                    {/* <span className="font-semibold text-primary-500">
-                    Click to upload
-                  </span>{" "} */}
                     or drag and drop
                   </p>
                 </div>
@@ -124,37 +214,17 @@ const UploadHistoryModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => 
               </Flex>
             </Box>
           )}
-
-          <div className="border border-dashed relative p-4 rounded-md bg-warning-50 border-warning-300 mb-8">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-primary-500 font-semibold flex items-center gap-2 mb-2">
-                <Box p={2} bg={"blue.100"} borderRadius={"full"}>
-                  <Icon as={CiFileOn} boxSize={6} color="blue.500" />
-                </Box>{" "}
-                Bulk Customer Upload Template.xls
-              </p>
-              <Button
-                variant="outline"
-                color="primary.500"
-                size={"sm"}
-                // onClick={handleDownload}
-              >
-                Download Template
-              </Button>
-            </div>
-            <p className="text-xs mb-2">Supports only xls file</p>
-            <p className="text-xs">Maximum size of 1MB</p>
-          </div>
           <Flex justifyContent={"center"} w={"full"}>
             {!file ? (
-              <Button variant="outline" color="gray.500" onClick={onClose}>
+              <Button variant="outline" w={"full"} color="gray.500" onClick={onClose}>
                 Done
               </Button>
             ) : (
               <Button
-                variant="outline"
-                color="primary.500"
-                // onClick={handleUploadCustomers}
+                bg="primary.500"
+                color={"white"}
+                width={"100%"}
+                onClick={handleTnxHistoryUpload}
               >
                 Upload
               </Button>

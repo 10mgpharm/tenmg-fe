@@ -4,7 +4,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 const data = [
   {
     name: 'Mon',
-    uv: 4000,
+    uv: 40,
     pv: 2400,
     amt: 2400,
   },

@@ -3,7 +3,10 @@ import { Button, HStack, Text } from "@chakra-ui/react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { Dispatch, SetStateAction } from "react";
 
-const Pagination = ({meta, setPageCount}: {meta: any, setPageCount: Dispatch<SetStateAction<number>>}) => {
+const Pagination = (
+  {meta, setPageCount}: 
+  {meta: any, setPageCount: Dispatch<SetStateAction<number>>}
+) => {
 
   const paginateList = meta?.links?.slice(1, -1);
   const lastItem = meta?.links?.at(-1);
@@ -12,6 +15,7 @@ const Pagination = ({meta, setPageCount}: {meta: any, setPageCount: Dispatch<Set
   const handlePageChange = async (page: number) => {
     setPageCount(page);
   }
+
   return (
     <HStack mt={5} justify={"space-between"}>
       <Button 
