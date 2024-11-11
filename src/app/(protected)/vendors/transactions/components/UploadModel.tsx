@@ -225,12 +225,13 @@ const UploadModel = ({
             </div>
             <Flex justifyContent={"center"} w={"full"}>
               {!file ? (
-                <Button variant="solid" colorScheme="blue" onClick={onClose}>
+                <Button variant="outline" color="gray.500" onClick={onClose}>
                   Done
                 </Button>
               ) : (
                 <Button
-                  variant="outline"
+                  variant="solid"
+                  colorScheme="blue"
                   onClick={handleUploadCustomers}
                   isLoading={isUploadLoading}
                   loadingText="Uploading"

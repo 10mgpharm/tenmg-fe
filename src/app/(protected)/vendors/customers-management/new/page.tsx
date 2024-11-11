@@ -11,10 +11,7 @@ import {
   FormLabel,
   HStack,
   Input,
-  Select,
   Text,
-  Textarea,
-  useToast,
 } from "@chakra-ui/react";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
@@ -23,6 +20,7 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 interface IFormInput {
   name: string;
@@ -31,7 +29,6 @@ interface IFormInput {
 }
 
 const CreateCustomer = () => {
-  const toast = useToast();
   const router = useRouter();
   const [iconFile, setIconFile] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -63,17 +60,18 @@ const CreateCustomer = () => {
       const response = await requestClient({
         token: sessionData.user.token,
       }).post("/vendor/customers", {
+        vendorId: sessionData?.user?.id,
         ...value,
       });
       if (response.status === 201) {
-        toast(response.data.message);
+        toast.success("Customer Added Successfully");
         router.push("/vendors/customers-management");
         setIsLoading(false);
       }
     } catch (error) {
       setIsLoading(false);
       const errorMessage = handleServerErrorMessage(error);
-      toast(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
@@ -212,7 +210,8 @@ const CreateCustomer = () => {
               type="submit"
               isDisabled={isLoading}
               isLoading={isLoading}
-              loadingText="Submitting">
+              loadingText="Submitting"
+            >
               Save Customer
             </Button>
           </div>
