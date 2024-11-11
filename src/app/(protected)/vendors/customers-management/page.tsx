@@ -1,9 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter, CiSearch } from "react-icons/ci";
-import { IoListOutline } from "react-icons/io5";
-import { RxDashboard } from "react-icons/rx";
+import { CiFilter } from "react-icons/ci";
 import {
   Button,
   Flex,
@@ -18,13 +16,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import {
-  ColumnFiltersState,
-  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -172,11 +166,11 @@ const CustomerManagement = () => {
 
   const handleDownloadTemplate = useCallback(() => {
     const headerMappings = [
-      { key: "vendor_code", header: "Vendor Code" },
-      { key: "name", header: "Name" },
-      { key: "email", header: "Email" },
-      { key: "identifier", header: "Identifier" },
-      { key: "active", header: "Active" },
+      { key: "vendor_code", header: "vendor_code" },
+      { key: "name", header: "name" },
+      { key: "email", header: "email" },
+      { key: "phone", header: "phone" },
+      { key: "active", header: "active" },
     ];
 
     const templateBlob = createXlsxTemplate(
@@ -184,7 +178,7 @@ const CustomerManagement = () => {
       "Vendor Customer Template"
     );
 
-    saveAs(templateBlob, "Bulk Customer Upload Template.xlsx");
+    saveAs(templateBlob, "vendor_customer_uploads.xlsx");
   }, []);
 
   const applyFilters = (filters: IFormInput) => {
@@ -313,6 +307,7 @@ const CustomerManagement = () => {
         isOpen={isOpen}
         onClose={onClose}
         handleDownload={handleDownloadTemplate}
+        reloadCustomers={fetchCustomers}
       />
       <FilterDrawer
         isOpen={isOpenFilter}

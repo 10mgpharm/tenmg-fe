@@ -59,7 +59,7 @@ const creditScoreItems = [
 const loanItems = [
   {
     name: "Loan Management",
-    href: "/vendors/transactions",
+    href: "/vendors/loan",
     icon: FaBalanceScale,
     current: false,
   },
