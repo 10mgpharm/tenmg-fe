@@ -39,14 +39,7 @@ const CreateCustomer = () => {
   const onLoadImage = (event: any) => {
     if (!event.target.files) return;
     if (event.target.files[0].size >= 5 * 1024 * 1024)
-      return toast({
-        title: "Warning",
-        status: "warning",
-        description:
-          "A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB.",
-        duration: 2000,
-        position: "bottom",
-      });
+      return toast.warning("A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB.");
     const inputFile = event.target.files[0];
     if (event?.target?.files?.length > 0) {
       setIconFile(URL.createObjectURL(inputFile));

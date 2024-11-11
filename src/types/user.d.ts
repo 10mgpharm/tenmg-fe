@@ -97,3 +97,45 @@ export interface CustomerDataProp {
   nextPageUrl: string | null;
   prevPageUrl: string | null;
 }
+
+export interface LoanData {
+  id: number;
+  businessId: number;
+  createdAt: string;
+  customerId: number;
+  durationInMonths: string;
+  identifier: string;
+  interestAmount: string;
+  interestRate: number;
+  requestedAmount: string;
+  source: string;
+  status: string;
+  totalAmount: string;
+  updatedAt: string;
+}
+
+export interface LoanDataProp {
+  currentPage: number;
+  data: LoanData[];
+  total: number;
+  perPage: number;
+  lastPage: number;
+  nextPageUrl: string | null;
+  prevPageUrl: string | null;
+}
+
+
+export interface TransactionHistoryData {
+  businessId: number;
+  createdAt: string;
+  customerId: number;
+  createdAtId: number;
+  evaluationResult: any;
+  fileFormat: string;
+  id: number;
+  identifier: number;
+  source: string;
+  status: string;
+  transactionFileId: number;
+  updatedAt: string;
+}

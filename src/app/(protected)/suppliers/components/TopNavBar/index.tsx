@@ -48,6 +48,8 @@ const TopNavBar = () => {
     }
   };
 
+  // console.log(data)
+
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">

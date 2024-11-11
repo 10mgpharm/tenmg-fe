@@ -1,17 +1,17 @@
-import { CustomerData } from "@/types";
+import { CustomerData, LoanData } from "@/types";
 import { classNames } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
 
-const columnHelper = createColumnHelper<CustomerData>();
+const columnHelper = createColumnHelper<LoanData>();
 
-export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
+export function ColumnsLoanApplicationFN() {
   return [
     columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
-          <p>Reference ID</p>
+          <p>Application ID</p>
         </div>
       ),
       cell: (info) => (
@@ -20,7 +20,7 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
         </div>
       ),
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("id", {
       header: () => (
         <div>
           <p>Customer Name</p>
@@ -28,18 +28,18 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
       ),
       cell: (info) => (
         <div>
-          <p className="font-bold">{info.row.original?.name} </p>
+          <p className="font-bold">{info.row.original?.customerId} </p>
         </div>
       ),
     }),
 
     // Contact Information
 
-    columnHelper.accessor("email", {
-      header: () => <p>Contact Information</p>,
+    columnHelper.accessor("source", {
+      header: () => <p>Loan Amount</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.email}</p>
+          <p>{info.row.original?.requestedAmount?.toLocaleString()}</p>
         </div>
       ),
     }),
@@ -56,23 +56,23 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
     }),
 
     // Status
-    columnHelper.accessor("active", {
-      header: () => <p>Account Status</p>,
+    columnHelper.accessor("status", {
+      header: () => <p>Loan Status</p>,
       cell: (info) => (
         <div>
           <p
             className={classNames(
-              info?.row?.original?.active === 1
+              info?.row?.original?.status === "APPROVED"
                 ? "text-[#027A48] bg-[#ECFDF3]"
-                : info?.row?.original?.active === "0"
-                ? "bg-[#FEF3F2] text-[#B42318]"
+                : info?.row?.original?.status === "PENDING"
+                ? "bg-[#FEF3F2] text-[#eaa640]"
                 : "text-gray-500",
               " max-w-min p-1 px-2 rounded-2xl text-xs font-medium items-center justify-center flex gap-1"
             )}
           >
             {" "}
             <span className="rounded-full text-[1.2rem]">•</span>
-            {info.row.original?.active === 1 ? "Active" : "Suspended"}
+            {info.row.original?.status}
           </p>
         </div>
       ),
@@ -85,13 +85,15 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
       cell: (info) => {
         return (
           <div className="flex gap-4">
-            <Link href={`/vendors/customers-management/${info.row.original?.id}`} className="text-primary font-medium">View</Link>
-            <p
-              className="cursor-pointer"
-              onClick={() => handleToggle(info.row.original?.id)}
-            >
-              {info.row.original?.active === 1 ? "Suspend" : "Activate"}
-            </p>
+            <Link href={`/vendors/loan-applications/${info.row.original?.customerId}`} className="text-primary font-medium">View</Link>
+            {
+                info.row.original?.status === "PENDING" &&
+                <div className="flex items-center gap-4">
+                    <p className="cursor-pointer text-primary-600 font-medium">Edit</p>
+                    <p className="cursor-pointer text-primary-600 font-medium">Approve</p>
+                </div>
+
+            }
           </div>
         );
       },
