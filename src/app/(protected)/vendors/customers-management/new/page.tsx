@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import UploadFile from "../../components/UploadFile";
 
@@ -42,6 +42,7 @@ const CreateCustomer = () => {
     formState: { errors },
     handleSubmit,
     setValue,
+    control,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
@@ -134,21 +135,37 @@ const CreateCustomer = () => {
             </FormControl>
           </HStack>
           <HStack gap={6} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl isInvalid={!!errors.phone?.message}>
-              <FormLabel>
-                Phone Number
-                <Text as="span" color="red.500">
-                  *
-                </Text>
-              </FormLabel>
-              <Input
-                placeholder="08092389823"
-                {...register("phone", {
-                  required: "Phone Number is required",
-                })}
-              />
-              <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
-            </FormControl>
+            <Controller
+              name="phone"
+              control={control}
+              rules={{
+                required: "Phone Number is required",
+              }}
+              render={({ field }) => (
+                <FormControl isInvalid={!!errors.phone}>
+                  <FormLabel htmlFor="phone">
+                    Phone Number
+                    <Text as="span" color="red.500">
+                      *
+                    </Text>
+                  </FormLabel>
+                  <Input
+                    {...field}
+                    id="phone"
+                    placeholder="Enter your phone number"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const sanitizedValue = value.replace(
+                        /[^0-9!@#$%^&*()_+=\-[\]{};':"\\|,.<>/?]/g,
+                        ""
+                      );
+                      field.onChange(sanitizedValue);
+                    }}
+                  />
+                  <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
+                </FormControl>
+              )}
+            />
             <FormControl>
               <FormLabel>External Reference ID</FormLabel>
               <Input placeholder="Reference ID" {...register("referenceId")} />
