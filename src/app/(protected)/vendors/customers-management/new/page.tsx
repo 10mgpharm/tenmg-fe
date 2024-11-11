@@ -18,82 +18,81 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { IoCloudDoneOutline } from "react-icons/io5";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import UploadFile from "../../components/UploadFile";
 
 interface IFormInput {
   name: string;
   email: string;
   phone: string;
+  referenceId?: string;
+  file?: File | null;
 }
 
 const CreateCustomer = () => {
   const router = useRouter();
-  const [iconFile, setIconFile] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
-  const onLoadImage = (event: any) => {
-    if (!event.target.files) return;
-    if (event.target.files[0].size >= 5 * 1024 * 1024)
-      return toast({
-        title: "Warning",
-        status: "warning",
-        description:
-          "A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB.",
-        duration: 2000,
-        position: "bottom",
-      });
-    const inputFile = event.target.files[0];
-    if (event?.target?.files?.length > 0) {
-      setIconFile(URL.createObjectURL(inputFile));
-    }
-  };
-
-  const onSubmit: SubmitHandler<IFormInput> = async (value) => {
-    try {
-      setIsLoading(true);
-
-      const response = await requestClient({
-        token: sessionData.user.token,
-      }).post("/vendor/customers", {
-        vendorId: sessionData?.user?.id,
-        ...value,
-      });
-      if (response.status === 201) {
-        toast.success("Customer Added Successfully");
-        router.push("/vendors/customers-management");
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-    }
-  };
-
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
+
+  const onSubmit = async (value: IFormInput) => {
+    const formData = new FormData();
+    formData.append("email", value.email);
+    formData.append("vendorId", sessionData?.user?.id);
+    formData.append("name", value.name);
+    formData.append("phone", value.phone);
+    if (value.referenceId) {
+      formData.append("referenceId", value.referenceId);
+    }
+    if (value.file) {
+      formData.append("file", value.file);
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await requestClient({
+        token: sessionData.user.token,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }).post("/vendor/customers", formData);
+
+      if (response.status === 201) {
+        toast.success("Customer Added Successfully");
+        router.push("/vendors/customers-management");
+      } else {
+        toast.error(`Failed to Add Customer: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(`Failed to Add Customer: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="p-3 md:p-8 bg-gray-25">
       <div>
         <h3 className="font-semibold text-2xl pb-2">Create Customer</h3>
         <p className="text-gray-500">
-          Enter customers personal details and information.
+          Enter customer&apos;s personal details and information.
         </p>
       </div>
       <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <HStack onClick={() => router.back()} cursor={"pointer"} pb={6}>
-          <ArrowLeftIcon className="w-5- h-5" />
+          <ArrowLeftIcon className="w-5 h-5" />
           <Text>Back</Text>
         </HStack>
 
@@ -125,6 +124,10 @@ const CreateCustomer = () => {
                 placeholder="judebellingham@gmail.com"
                 {...register("email", {
                   required: "Email Address is required",
+                  pattern: {
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                    message: "Invalid email address",
+                  },
                 })}
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
@@ -148,7 +151,7 @@ const CreateCustomer = () => {
             </FormControl>
             <FormControl>
               <FormLabel>External Reference ID</FormLabel>
-              <Input placeholder="08092389823" />
+              <Input placeholder="Reference ID" {...register("referenceId")} />
             </FormControl>
           </HStack>
           <Divider />
@@ -162,7 +165,7 @@ const CreateCustomer = () => {
             </span>
             <Center
               mt={3}
-              as="button"
+              as="div" // Changed from "button" to "div" to prevent form submission
               py={4}
               border={"1px solid rgb(238, 238, 238)"}
               w={"full"}
@@ -171,37 +174,12 @@ const CreateCustomer = () => {
               pos={"relative"}
               overflow={"hidden"}
             >
-              <input
-                type="file"
-                id="image_uploads"
-                name="image"
-                onChange={onLoadImage}
-                accept=".csv, .json, .xls, xlsx"
-                style={{
-                  opacity: "0",
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  cursor: "pointer",
-                }}
+              <UploadFile
+                onUpload={(file) => setValue("file", file)}
+                accept=".csv, .xlsx, .xls"
+                uploadLabel="Click to upload customer data or drag and drop here"
+                uploadSuccessMessage="Customer data uploaded successfully!"
               />
-              <div className="flex flex-col gap-2 cursor-pointer">
-                <div className="bg-gray-50 p-2 rounded-full mx-auto max-w-max mb-4">
-                  <IoCloudDoneOutline className="w-6 h-6 text-gray-700" />
-                </div>
-                <p className="text-sm font-normal text-center">
-                  <span className="font-semibold text-primary-500">
-                    Click to upload
-                  </span>{" "}
-                  or drag and drop
-                </p>
-                <p className="text-gray-500 text-center">
-                  Excel, CSV or JSON
-                  <span className="text-sm ml-1">
-                    (Max size 5MB, 800x400px)
-                  </span>
-                </p>
-              </div>
             </Center>
           </div>
           <div className="flex gap-4 justify-center mt-5 mb-6">
