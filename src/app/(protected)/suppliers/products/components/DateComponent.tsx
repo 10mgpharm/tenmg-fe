@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FiCalendar } from "react-icons/fi";
@@ -19,6 +19,7 @@ const DateComponent = ({
     <DatePicker
       placeholderText="MM/DD/YYYY"
       selected={startDate}
+      toggleCalendarOnIconClick
       minDate={!isMinDate ? new Date() : minDate}
       showIcon
       icon={<FiCalendar className="w-5 h-5 text-gray-600" />}
