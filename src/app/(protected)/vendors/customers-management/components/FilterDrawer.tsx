@@ -53,7 +53,6 @@ const FilterDrawer = ({
   const handleClearFilters = () => {
     reset();
     clearFilters();
-    onClose();
   };
 
   return (
@@ -77,7 +76,10 @@ const FilterDrawer = ({
                 name="status"
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} placeholder="Select Status">
+                  <Select {...field}>
+                    <option value="" disabled style={{ color: "gray" }}>
+                      Select Status
+                    </option>
                     <option value="active">Active</option>
                     <option value="inactive">Suspended</option>
                   </Select>

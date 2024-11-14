@@ -182,7 +182,7 @@ const CreateCustomer = () => {
             </span>
             <Center
               mt={3}
-              as="div" // Changed from "button" to "div" to prevent form submission
+              as="div"
               py={4}
               border={"1px solid rgb(238, 238, 238)"}
               w={"full"}
