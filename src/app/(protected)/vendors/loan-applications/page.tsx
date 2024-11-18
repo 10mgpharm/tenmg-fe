@@ -30,9 +30,12 @@ import {
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/components/Pagination";
 import { ColumnsLoanApplicationFN } from "./components/table";
+import { IFilterInput } from "../customers-management/page";
+import FilterDrawer from "../customers-management/components/FilterDrawer";
 
 const LoanApplication = () => {
 
+  const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [loanApplication, setLoanApplication] = useState<LoanData[]>();
@@ -64,10 +67,10 @@ const LoanApplication = () => {
       query += `&status=${status}`;
     }
     if (createdAtStart) {
-      query += `&createdAtStart=${createdAtStart.toISOString().split("T")[0]}`;
+      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
     }
     if (createdAtEnd) {
-      query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
     }
 
     try {
@@ -91,6 +94,19 @@ const LoanApplication = () => {
     if(!token) return;
     fetchLoanApplication();
   }, [fetchLoanApplication, token]);
+
+  const applyFilters = (filters: IFilterInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
+  };
 
   const table = useReactTable({
     data: tableData ? tableData : [],
@@ -196,6 +212,12 @@ const LoanApplication = () => {
       isOpen={isOpen} 
       onClose={onClose}
       fetchLoanApplication={fetchLoanApplication}
+      />
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
       />
     </div>
   )

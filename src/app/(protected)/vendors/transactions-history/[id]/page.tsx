@@ -1,5 +1,5 @@
 "use client";
-import { Button, Flex, Text } from "@chakra-ui/react"
+import { Button, Flex, Text, useDisclosure } from "@chakra-ui/react"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -11,12 +11,14 @@ import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, TransactionHistoryData } from "@/types";
+import BreakdownRecords from "../components/BreakdownRecord";
 
 const SingleTransactionPage = ({params}: {params: {id: string}}) => {
     const router = useRouter();
     const session = useSession();
 
     const [loading, setLoading] = useState(true);
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const sessionData = session?.data as NextAuthUserSession;
     const [tnxHistoryData, setTnxHistorysData] = useState<TransactionHistoryData[] | null>(null);
     const token = sessionData?.user?.token;
@@ -96,7 +98,7 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
                     <div className="p-4 border rounded-md">
                         <h4 className="font-medium mb-2">Result breakdown</h4>
                         <p className="text-gray-500 mb-4 text-sm">This outlines the breakdown of how the user score was computed</p>
-                        <button className="border-primary-600 border text-primary-500 font-medium bg-transparent p-2 w-full rounded-md mb-5">View Breakdown</button>
+                        <button onClick={onOpen} className="border-primary-600 border text-primary-500 font-medium bg-transparent p-2 w-full rounded-md mb-5">View Breakdown</button>
                     </div>
                 </div>
             </div>
@@ -164,6 +166,7 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
                 </div>
                 <TransactionSummary />
                 <Records />
+                <BreakdownRecords isOpen={isOpen} onClose={onClose} />
             </div>
         </div>
     </div>
