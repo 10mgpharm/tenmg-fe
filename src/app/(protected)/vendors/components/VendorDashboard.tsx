@@ -79,8 +79,19 @@ const vendorData: IVendorData = {
 
 const VendorDashboard: React.FC = () => {
   const timePeriods = ["12 months", "30 days", "7 days", "24 hours"] as const;
+  const balanceTimePeriods = [
+    "12 months",
+    "3 months",
+    "30 days",
+    "7 days",
+    "24 hours",
+  ] as const;
+
   const [selectedPeriod, setSelectedPeriod] =
     useState<(typeof timePeriods)[number]>("12 months");
+
+  const [selectedBalancePeriod, setSelectedBalancedPeriod] =
+    useState<(typeof balanceTimePeriods)[number]>("12 months");
 
   const data: IVendorDashboard = vendorData[selectedPeriod];
 
@@ -145,7 +156,7 @@ const VendorDashboard: React.FC = () => {
     labels: donutLabels,
     legend: {
       position: "bottom",
-      show: false
+      show: false,
     },
     colors: ["#7086FD", "#6FD195", "#FFAE4C"],
     dataLabels: {
@@ -161,7 +172,7 @@ const VendorDashboard: React.FC = () => {
   };
 
   return (
-    <Box maxW="1200px" mx="auto" mt={5}>
+    <Box mx="auto" mt={5}>
       {/* <Flex>
         <Stack>
           <h2 className="font-semibold text-2xl text-gray-600">
@@ -229,22 +240,30 @@ const VendorDashboard: React.FC = () => {
             <OverviewCard
               title="Total Customers"
               value={data.totalCustomers.toLocaleString()}
+              percentageFooter={2.5}
+              increasePercentage={false}
             />
             <OverviewCard
               title="Applications"
               value={data.applications.toLocaleString()}
+              percentageFooter={2.2}
+              increasePercentage={true}
+              isPending
+              pendingValue={200}
             />
             <OverviewCard
               title="Credit Voucher"
               value={data.creditVoucher}
               type="currency"
+              percentageFooter={2.5}
+              increasePercentage={false}
             />
           </Grid>
 
           {/* Balance Card */}
           <Box borderRadius="lg" p={6} borderWidth="1px" bg={"white"}>
-            <Flex justifyContent="space-between" alignItems="center">
-              <Box>
+            <Flex justifyContent="space-between" alignItems="center" pb={5}>
+              <Stack gap={4} flex={1}>
                 <Text>Your balance</Text>
                 <Text fontSize="4xl" fontWeight="semibold">
                   {data.balance.toLocaleString("en-NG", {
@@ -252,7 +271,35 @@ const VendorDashboard: React.FC = () => {
                     currency: "NGN",
                   })}
                 </Text>
-              </Box>
+                <Tabs
+                  isFitted
+                  variant="unstyled"
+                  onChange={(index) =>
+                    setSelectedBalancedPeriod(balanceTimePeriods[index])
+                  }
+                >
+                  <TabList width="80%">
+                    {balanceTimePeriods.map((period) => (
+                      <Tab
+                        key={period}
+                        _selected={{
+                          bg: "primary.50",
+                          color: "primary.500",
+                          rounded: "md",
+                          fontWeight: "bold",
+                        }}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        px={4}
+                        py={2}
+                        flex="auto"
+                      >
+                        {period}
+                      </Tab>
+                    ))}
+                  </TabList>
+                </Tabs>
+              </Stack>
               <Box>
                 <Flex gap={2} alignItems="center">
                   <Badge bgColor="#FF9C66" p={1} rounded="lg" />
@@ -264,6 +311,7 @@ const VendorDashboard: React.FC = () => {
                 </Flex>
               </Box>
             </Flex>
+
             <Box mt={4}>
               {/* Column Bar Chart */}
               <ChartComponent
