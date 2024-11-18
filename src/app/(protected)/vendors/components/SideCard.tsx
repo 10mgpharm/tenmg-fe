@@ -8,7 +8,7 @@ const SideCard = ({
   color,
 }: {
   title: string;
-  value: number;
+  value: string;
   footer?: React.ReactNode;
   color: string;
 }) => {

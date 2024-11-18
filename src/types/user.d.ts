@@ -5,7 +5,7 @@ export enum BusinessStatus {
   VERIFIED = "VERIFIED",
   SUSPENDED = "SUSPENDED",
   BANNED = "BANNED",
-  AWAITING_APPROVAL = "AWAITING_APPROVAL",
+  PENDING_APPROVAL = "PENDING_APPROVAL",
 }
 
 export enum BusinessType {
