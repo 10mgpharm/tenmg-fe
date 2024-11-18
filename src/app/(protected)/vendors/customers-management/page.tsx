@@ -95,53 +95,6 @@ const CustomerManagement = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
-  // const handleDownloadCustomer = useCallback(async () => {
-  //   try {
-  //     const response = await requestClient({
-  //       token: token,
-  //       responseType: "blob",
-  //     }).get(`/vendor/customers/export`);
-  //     if (response.status === 200) {
-  //       const contentType = response.headers["content-type"];
-  //       const contentDisposition = response.headers["content-disposition"];
-  //       let fileName = "customers.xlsx";
-
-  //       if (contentDisposition) {
-  //         const fileNameMatch =
-  //           contentDisposition.match(/filename="?([^"]+)"?/);
-  //         if (fileNameMatch && fileNameMatch[1]) {
-  //           fileName = fileNameMatch[1];
-  //         }
-  //       }
-
-  //       // Create a blob from the response data
-  //       const blob = new Blob([response.data], { type: contentType });
-
-  //       // Create a URL for the blob
-  //       const url = window.URL.createObjectURL(blob);
-
-  //       // Create a temporary anchor element to trigger the download
-  //       const a = document.createElement("a");
-  //       a.href = url;
-  //       a.download = fileName; // Use the extracted file name
-
-  //       // Append the anchor to the body and trigger the click event
-  //       document.body.appendChild(a);
-  //       a.click();
-
-  //       // Clean up
-  //       a.remove();
-  //       window.URL.revokeObjectURL(url);
-  //     } else {
-  //       console.error("Error downloading the file:", response.statusText);
-  //       alert("Failed to download the file. Please try again later.");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     setLoading(false);
-  //   }
-  // }, [token]);
-
   useEffect(() => {
     fetchCustomers();
   }, [fetchCustomers]);
@@ -154,7 +107,7 @@ const CustomerManagement = () => {
         }).patch(`/vendor/customers/${id}`);
         if (response.status === 200) {
           toast.success(`Customer status has been updated.`);
-          fetchCustomers(); // Refetch data to reflect the changes
+          fetchCustomers();
         }
       } catch (error) {
         console.error(error);
@@ -250,12 +203,7 @@ const CustomerManagement = () => {
           <Flex justify="center" align="center" height="200px">
             <Spinner size="xl" />
           </Flex>
-        ) : tableData && tableData?.data?.length === 0 ? (
-          <EmptyResult
-            heading={`Nothing to show here yet`}
-            content={`You don’t have any customer yet. When you do, they’ll appear here.`}
-          />
-        ) : (
+        ) : tableData && tableData?.data?.length !== 0 ? (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
               <Thead bg={"blue.50"}>
@@ -301,6 +249,11 @@ const CustomerManagement = () => {
               </Tbody>
             </Table>
           </TableContainer>
+        ) : (
+          <EmptyResult
+            heading={`Nothing to show here yet`}
+            content={`You don’t have any customer yet. When you do, they’ll appear here.`}
+          />
         )}
       </div>
       <UploadModel

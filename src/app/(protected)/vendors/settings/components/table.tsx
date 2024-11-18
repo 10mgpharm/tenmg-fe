@@ -2,8 +2,6 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Icon } from "@chakra-ui/react";
 import { classNames, convertLetterCase } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
-// import Image from "next/image";
-// import Link from "next/link";
 import { IoTrashOutline } from "react-icons/io5";
 import { LuPen } from "react-icons/lu";
 
@@ -21,11 +19,6 @@ export function ColumnsMemberFN(
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
-          {/* <Image
-            src={info?.row?.original?.image}
-            alt=""
-            className="w-10 h-10 rounded-full"
-          /> */}
           <p className="font-medium">{info?.row?.original?.fullName}</p>
         </div>
       ),

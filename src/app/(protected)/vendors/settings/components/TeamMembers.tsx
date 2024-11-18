@@ -22,7 +22,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-// import { MemberData } from "@/data/mockdata";
 import { ColumnsMemberFN } from "./table";
 import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
