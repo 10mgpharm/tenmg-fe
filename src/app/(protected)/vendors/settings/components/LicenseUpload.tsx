@@ -92,7 +92,6 @@ const LicenseUpload = () => {
           "Content-Type": "multipart/form-data",
         },
       }).post("/vendor/settings/license", formData);
-      // const { data }: ResponseDto<User> = response.data;
       console.log(response);
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -112,8 +111,6 @@ const LicenseUpload = () => {
       toast.error(`License upload failed: ${errorMessage}`);
     }
   };
-
-  // console.log(selectedDate);
 
   const {
     register,

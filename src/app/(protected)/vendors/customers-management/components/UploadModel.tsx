@@ -114,7 +114,7 @@ const UploadModel = ({
     <Modal isCentered isOpen={isOpen} onClose={onClose} size={"xl"}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Upload CSV</ModalHeader>
+        <ModalHeader>Upload Bulk Customer File</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form className="space-y-5 mb-6">
@@ -139,7 +139,9 @@ const UploadModel = ({
                     <div className="bg-gray-50 p-2 rounded-full mx-auto max-w-max mb-4">
                       <FiUploadCloud className="w-6 h-6 text-gray-700" />
                     </div>
-                    <p className="text-center">Select a CSV File to upload</p>
+                    <p className="text-center">
+                      Select a XLS/XLSX File to upload
+                    </p>
                     <p className="text-sm font-normal text-center">
                       or drag and drop
                     </p>
