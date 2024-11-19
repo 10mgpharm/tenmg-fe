@@ -76,7 +76,7 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
     
         const newRecords = [...data, values];
         setData(newRecords);
-
+        
         //clear the input fields
         setValue("type.category", "");
         setValue("type.package", "");
