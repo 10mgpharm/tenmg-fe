@@ -37,7 +37,7 @@ import SearchInput from "../components/SearchInput";
 import EmptyResult from "../components/EmptyResult";
 import { useDebouncedValue } from "@/utils/debounce";
 
-interface IFormInput {
+export interface IFilterInput {
   endDate?: Date | null;
   startDate?: Date | null;
   status?: string;
@@ -134,7 +134,7 @@ const CustomerManagement = () => {
     saveAs(templateBlob, "vendor_customer_uploads.xlsx");
   }, []);
 
-  const applyFilters = (filters: IFormInput) => {
+  const applyFilters = (filters: IFilterInput) => {
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
