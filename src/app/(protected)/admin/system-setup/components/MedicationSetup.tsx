@@ -1,8 +1,8 @@
 "use client";
 
 import { SETUPTYPE } from "@/app/globalTypes";
-import {  Button, Flex, HStack, Stack, Tag, TagCloseButton, TagLabel, Text } from "@chakra-ui/react"
-import { ChangeEvent, KeyboardEvent, useState } from "react";
+import {  Flex, Stack, Text } from "@chakra-ui/react"
+import { useState } from "react";
 import { boolean } from "yup";
 import SetUpOptions from "./SetUpOptions";
 import InventorySetup from "./InventorySetup";
@@ -59,11 +59,11 @@ const MedicationSetup = () => {
     switch (setupType) {
       case "MEDICATION":
         return (
-         <SetUpOptions data={medicationTypeSetup}/>
+         <SetUpOptions data={medicationTypeSetup} type="Brand"/>
         );
       case "ESSENTIAL":
         return (
-          <SetUpOptions data={essentailSetup}/>
+          <SetUpOptions data={essentailSetup} type="Category"/>
         );
       case "INVENTORY":
         return (
@@ -75,30 +75,30 @@ const MedicationSetup = () => {
   return (
    <Stack className="max-w-5xl">
       <Text fontSize={"1rem"} fontWeight={700} color={"gray.700"}>Medication Setup</Text>
-      <Text color={"gray.500"} fontSize={"small"}>Placeholder goes here</Text>
+      <Text color={"gray.500"} fontSize={"small"}>Perform system related medication setup here</Text>
       <Flex mt={5} gap={8}>
         <Stack gap={4}>
             <Text 
             cursor={"pointer"}
             fontWeight={currentView === "MEDICATION" ? 600 : 500} 
-            color={currentView === "MEDICATION" ? "gray.700" : "gray.500"} 
+            color={currentView === "MEDICATION" ? "blue.600" : "gray.500"} 
             onClick={() => setCurrentView("MEDICATION")}>
-              Setup Medication Type
+              Brand Setup
             </Text>
             <Text 
               cursor={"pointer"}
               fontWeight={currentView === "ESSENTIAL" ? 600 : 500} 
-              color={currentView === "ESSENTIAL" ? "gray.700" : "gray.500"} 
+              color={currentView === "ESSENTIAL" ? "blue.600" : "gray.500"} 
               onClick={() => setCurrentView("ESSENTIAL")}
               >
-                Setup Essentials
+                Categories
               </Text>
             <Text 
             cursor={"pointer"}
             fontWeight={currentView === "INVENTORY" ? 600 : 500} 
-            color={currentView === "INVENTORY" ? "gray.700" : "gray.500"}
+            color={currentView === "INVENTORY" ? "blue.600" : "gray.500"}
             onClick={() => setCurrentView("INVENTORY")}>
-              Setup Inventory
+              Medication Type
             </Text>
         </Stack>
         {renderMedicationSetup(currentView)}

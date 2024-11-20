@@ -1,4 +1,9 @@
+"use client";
+import requestClient from "@/lib/requestClient";
+import { NextAuthUserSession } from "@/types";
 import { Button, Divider, Switch } from "@chakra-ui/react"
+import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
 
 const notifications = [
     {title: "Goods Expiration", desc: "Get notified about expiration of goods."},
@@ -8,7 +13,38 @@ const notifications = [
     {title: "New Message", desc: "Get notified when you have a new message from a supplier."},
     {title: "New User", desc: "Get notified about new vendor, pharmacy or supplier."},
 ]
+
 const Notifications = () => {
+
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+    const [loading, setLoading] = useState<boolean>(false);
+    const [notificationData, setNotificationData] = useState([]);
+
+    const fetchNotifications = useCallback(async () => {
+        setLoading(true);
+        try {
+        const response = await requestClient({ token: token }).get(
+            `/admin/settings/notification`
+        );
+        if (response.status === 200) {
+            setNotificationData(response.data.data);
+        }
+        setLoading(false);
+        } catch (error) {
+        console.error(error);
+        setLoading(false);
+        }
+    }, [token]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchNotifications();
+  },[fetchNotifications, token]);
+
+  console.log(notificationData);
+
   return (
     <div>
         <div className="space-y-4">
