@@ -36,6 +36,10 @@ const VerificationComponent = () => {
 
   const token = searchParams.get("token");
 
+  const action = searchParams.get("action") || "signup";
+
+  const from = searchParams.get("from") || `/auth/${action}`;
+
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingResend, setIsLoadingResend] = useState(false);
 
@@ -147,7 +151,7 @@ const VerificationComponent = () => {
               <OtpInput
                 value={otp}
                 onChange={setOtp}
-                 placeholder='TF0B6S'
+                placeholder="TF0B6S"
                 numInputs={6}
                 renderInput={(props) => <input {...props} />}
                 containerStyle="justify-center gap-2 lg:gap-4"
@@ -184,12 +188,13 @@ const VerificationComponent = () => {
             <Button
               variant={"link"}
               onClick={async () => {
-                await signOut({ callbackUrl: "/auth/signup" });
-                router.back();
+                await signOut({ callbackUrl: from });
+                router.push(from);
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
-              <FaArrowLeft /> Return to Sign Up
+              <FaArrowLeft /> Return to
+              {action === "signup" ? " Sign Up" : " Sign In"}
             </Button>
           </div>
         </article>
