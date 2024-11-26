@@ -13,10 +13,12 @@ import { useState } from "react";
 import { ColumsTransactionFN } from "./table";
 import EmptyOrder from "../../orders/components/EmptyOrder";
 import { Table,TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import Pagination from "../../components/Pagination";
 
 const TransactionTable = ({data}: {data: any}) => {
 
     const onOpen = () => {}
+    const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -39,6 +41,16 @@ const TransactionTable = ({data}: {data: any}) => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
+
+    const meta = {
+        meta: {
+            links: [
+                {label: 'Previous', active: false},
+                {label: 1, active: true}
+            ]
+        }
+    }
+
 
   return (
     <div>
@@ -85,6 +97,7 @@ const TransactionTable = ({data}: {data: any}) => {
                     ))}
                     </Tbody>
                 </Table>
+                <Pagination meta={meta} setPageCount={setPageCount}/>
             </TableContainer>
         }  
     </div>

@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, onOpenDeactivate: () => void) {
+export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, onOpenDeactivate: () => void, onOpenActivate: () => void) {
 
   return [
     columnHelper.accessor("name", {
@@ -83,7 +83,7 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
             <p className={classNames(
             info?.row?.original?.status === "Inactive" 
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "In Stock"
+            : info?.row?.original?.status === "Active"
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
             )}>
@@ -113,9 +113,9 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
                     <MenuItem>Edit Product</MenuItem>
                     <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
                     {
-                      info?.row?.original?.status === "In Stock" ? 
+                      info?.row?.original?.status === "Active" ? 
                       <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
-                      : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
+                      : <MenuItem onClick={() => onOpenActivate()}>Activate Product</MenuItem>
                     }
                     <MenuItem onClick={() => onOpen()} color="red.500">Delete Product</MenuItem>
                 </MenuList>
