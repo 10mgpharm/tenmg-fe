@@ -57,7 +57,8 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
 
   const router = useRouter();
   const nameParams = searchParams.get("name");
-  const emailParams = searchParams.get("email");
+  const mail = searchParams.get("email");
+  const emailParams = mail ? mail.replace(/ /g, "+") : null;
   const businessNameParams = searchParams.get("businessName");
   const tab = searchParams.get("activeTab");
 

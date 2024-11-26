@@ -36,7 +36,7 @@ const VerificationComponent = () => {
 
   const token = searchParams.get("token");
 
-  const action = searchParams.get("action") || "signup";
+  const action = searchParams.get("action") || "signin";
 
   const from = searchParams.get("from") || `/auth/${action}`;
 
@@ -44,6 +44,35 @@ const VerificationComponent = () => {
   const [isLoadingResend, setIsLoadingResend] = useState(false);
 
   const [email, setEmail] = useState<string>(null);
+
+  const handleNavigation = async () => {
+    if (action === "signup") {
+      if (sessionData?.user?.entityType === "VENDOR") {
+        await signOut({
+          callbackUrl: `/auth/signup/vendor?name=${sessionData?.user?.name}&businessName=${sessionData?.user?.businessName}`,
+        });
+      } else {
+        await signOut({
+          callbackUrl: `/auth/signup?name=${sessionData?.user?.name}&email=${
+            sessionData?.user?.email
+          }&businessName=${sessionData?.user?.businessName}&tab=${
+            sessionData?.user?.entityType === "SUPPLIER"
+              ? "supplier"
+              : "pharmacy"
+          }&activeTab=${
+            sessionData?.user?.entityType === "SUPPLIER"
+              ? "supplier"
+              : "pharmacy"
+          }`,
+        });
+      }
+    } else {
+      await signOut({
+        callbackUrl: `/auth/signin/`,
+      });
+      router.back();
+    }
+  };
 
   const onSubmit: SubmitHandler<IFormInput> = async () => {
     try {
@@ -187,10 +216,7 @@ const VerificationComponent = () => {
 
             <Button
               variant={"link"}
-              onClick={async () => {
-                await signOut({ callbackUrl: from });
-                router.push(from);
-              }}
+              onClick={handleNavigation}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
               <FaArrowLeft /> Return to
