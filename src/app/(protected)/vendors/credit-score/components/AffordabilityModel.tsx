@@ -23,7 +23,6 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { FiTrash } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";

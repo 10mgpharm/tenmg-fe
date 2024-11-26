@@ -1,25 +1,13 @@
 import {
-  Box,
   Button,
-  CircularProgress,
   Flex,
-  Icon,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
   Stack,
   Text,
-  HStack,
-  VStack,
-  Input,
-  IconButton,
-  FormControl,
-  FormErrorMessage,
-  InputGroup,
-  InputLeftElement,
   Tabs,
   TabList,
   Tab,
@@ -27,12 +15,9 @@ import {
   TabPanel,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { FiTrash } from "react-icons/fi";
+import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
-import { IoTrashOutline } from "react-icons/io5";
+
 
 interface BusinessLogicModalProps {
   isOpen: boolean;
