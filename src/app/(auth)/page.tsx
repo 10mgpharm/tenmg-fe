@@ -14,7 +14,7 @@ export default async function Page() {
   const headersList = headers();
   const referer = headersList.get('referer');
 
-  let action = 'signup';
+  let action = 'signin';
   if (referer && referer.includes('/auth/signin')) {
     action = 'signin';
   } else if (referer && referer.includes('/auth/signup')) {

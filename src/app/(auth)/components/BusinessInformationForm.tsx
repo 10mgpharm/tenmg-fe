@@ -44,7 +44,7 @@ export default function BusinessInformationForm({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  if (!searchParams?.get("token")) redirect("/auth/signup");
+  if (!searchParams?.get("token")) redirect("/auth/signin");
   const token = searchParams.get("token");
 
   const action = searchParams.get("action") || "signup";
@@ -109,6 +109,35 @@ export default function BusinessInformationForm({
       setIsLoading(false);
       const errorMessage = handleServerErrorMessage(error);
       toast.error(`Sign up failed: ${errorMessage}`);
+    }
+  };
+
+  const handleNavigation = async () => {
+    if (action === "signup") {
+      if (sessionData?.user?.entityType === "VENDOR") {
+        await signOut({
+          callbackUrl: `/auth/signup/vendor?name=${sessionData?.user?.name}&businessName=${sessionData?.user?.businessName}`,
+        });
+      } else {
+        await signOut({
+          callbackUrl: `/auth/signup?name=${sessionData?.user?.name}&email=${
+            sessionData?.user?.email
+          }&businessName=${sessionData?.user?.businessName}&tab=${
+            sessionData?.user?.entityType === "SUPPLIER"
+              ? "supplier"
+              : "pharmacy"
+          }&activeTab=${
+            sessionData?.user?.entityType === "SUPPLIER"
+              ? "supplier"
+              : "pharmacy"
+          }`,
+        });
+      }
+    } else {
+      await signOut({
+        callbackUrl: `/auth/signin/`,
+      });
+      router.back();
     }
   };
 
@@ -348,31 +377,10 @@ export default function BusinessInformationForm({
           <div className="text-center mb-3">
             <Button
               variant={"link"}
-              onClick={async () => {
-                sessionData.user?.entityType === "VENDOR"
-                  ? await signOut({
-                      callbackUrl: `/auth/signup/vendor?name=${sessionData?.user?.name}&businessName=${sessionData?.user?.businessName}`,
-                    })
-                  : await signOut({
-                      callbackUrl: `/auth/signup?name=${
-                        sessionData?.user?.name
-                      }&email=${sessionData?.user?.email}&businessName=${
-                        sessionData?.user?.businessName
-                      }&tab=${
-                        sessionData?.user?.entityType === "SUPPLIER"
-                          ? "supplier"
-                          : "pharmacy"
-                      }&activeTab=${
-                        sessionData?.user?.entityType === "SUPPLIER"
-                          ? "supplier"
-                          : "pharmacy"
-                      }`,
-                    });
-                router.back();
-              }}
+              onClick={handleNavigation}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
-              <FaArrowLeft /> Return to 
+              <FaArrowLeft /> Return to
               {action === "signup" ? " Sign Up" : " Sign In"}
             </Button>
           </div>

@@ -196,3 +196,12 @@ export const customersManagementData = [
     {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Active"},
     {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Suspended"},
 ]
+
+export const creditScoreData = [
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "650", percentage: "70%", status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "830",percentage: "20%",  status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "250", percentage: "40%", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "623", percentage: "59%", status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "234", percentage: "29%", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "300", percentage: "86%", status: "Suspended"},
+]
