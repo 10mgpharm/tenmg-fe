@@ -39,7 +39,8 @@ const Pagination = (
       </Button>
       <ul className="flex items-center gap-3">
         {
-          paginateList?.map((item: any, index: number) => (
+          paginateList ?
+          (paginateList?.map((item: any, index: number) => (
             <li 
             onClick={() => handlePageChange(Number(item.label))} 
             key={index} 
@@ -50,7 +51,8 @@ const Pagination = (
               "  py-1.5 px-3 rounded-md cursor-pointer")}>
               {item.label}
             </li>
-          ))
+          )))
+          : <li className="py-1.5 px-3 rounded-md cursor-pointer text-primary-500 bg-blue-50">1</li>
         }
       </ul>
       <Button 

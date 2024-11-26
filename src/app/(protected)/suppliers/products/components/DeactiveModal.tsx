@@ -16,7 +16,7 @@ const DeactiveModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}
                     There is no fee for reactivating a product.
                     </p>
                     <div className="flex flex-col gap-3 mt-8">
-                        <button className='bg-orange-600 text-white p-3 rounded-md'>
+                        <button className='bg-primary-600 text-white p-3 rounded-md'>
                             Deactivate
                         </button>
                         <button className='cursor-pointer mt-2' onClick={() => onClose()}>Cancel</button>

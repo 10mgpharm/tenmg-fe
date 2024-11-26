@@ -1,3 +1,4 @@
+"use client";
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from '@chakra-ui/react'
 import TransactionTable from './TransactionTable';
 

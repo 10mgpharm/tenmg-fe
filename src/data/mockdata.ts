@@ -55,16 +55,16 @@ export const productData = [
 ]
 
 export const productData2 = [
-    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
     {name: "Synthetic opioids",  category: "Injection", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Inactive', image: pill2},
     {name: "Global Pentazocine", category: "Tablet",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Inactive', image: pill1},
-    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
     {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Inactive', image: pill1},
-    {name: "Global Pentazocine", category: "Injection", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
-    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
-    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
-    {name: "Global Pentazocine", category: "Tablet",  inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'In Stock', image: pill2},
-    {name: "Global Pentazocine", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'In Stock', image: pill2},
+    {name: "Global Pentazocine", category: "Injection", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
+    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
+    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
+    {name: "Global Pentazocine", category: "Tablet",  inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Active', image: pill2},
+    {name: "Global Pentazocine", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Inactive', image: pill2},
 ]
 
 export const productReviews = [
