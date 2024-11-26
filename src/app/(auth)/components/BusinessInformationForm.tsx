@@ -47,6 +47,10 @@ export default function BusinessInformationForm({
   if (!searchParams?.get("token")) redirect("/auth/signup");
   const token = searchParams.get("token");
 
+  const action = searchParams.get("action") || "signup";
+
+  const from = searchParams.get("from") || `/auth/${action}`;
+
   const {
     control,
     register,
@@ -364,10 +368,12 @@ export default function BusinessInformationForm({
                           : "pharmacy"
                       }`,
                     });
+                router.back();
               }}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
-              <FaArrowLeft /> Return to Sign Up
+              <FaArrowLeft /> Return to 
+              {action === "signup" ? " Sign Up" : " Sign In"}
             </Button>
           </div>
         </Flex>
