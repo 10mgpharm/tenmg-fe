@@ -18,13 +18,9 @@ import {
 } from "@chakra-ui/react";
 import OverviewCard from "./OverviewCard";
 import SideCard from "./SideCard";
-import EmptyCard from "../../suppliers/components/EmptyCard";
 import { ArrowDown } from "lucide-react";
-
 import { ApexOptions } from "apexcharts";
-import dynamic from "next/dynamic";
 import ChartComponent from "./ChartComponent";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export interface IVendorDashboard {
   totalCustomers: number;
@@ -141,19 +137,21 @@ const VendorDashboard: React.FC = () => {
   const series = [
     {
       name: "Credit Repayment",
-      data: [50, 60, 55, 70, 69, 80, 90, 101, 135, 155, 168, 182],
+      data: [86, 97, 102, 89, 90, 70, 87, 89, 100, 89, 98, 101],
     },
     {
       name: "Outgoing Loan",
-      data: [30, 40, 35, 50, 49, 60, 70, 91, 125, 145, 164, 175],
+      data: [78, 87, 98, 78, 80, 60, 78, 91, 105, 78, 89, 96],
     },
   ];
 
-  const donutSeries = [60, 25, 15]; // Replace with actual data
-  const donutLabels = ["Successful Calls", "Errors", "Drop-off/Cancellations"];
+  const reportSeries = [10, 46, 82]; // Replace with actual data
+  const reportLabels = ["Successful Calls", "Errors", "Drop-off/Cancellations"];
+
+  const reportTotal = reportSeries.reduce((a, b) => a + b, 0);
 
   const donutOptions: ApexOptions = {
-    labels: donutLabels,
+    labels: reportLabels,
     legend: {
       position: "bottom",
       show: false,
@@ -166,6 +164,15 @@ const VendorDashboard: React.FC = () => {
       pie: {
         donut: {
           size: "45%",
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              showAlways: true,
+              label: "",
+              formatter: () => reportTotal.toString(),
+            },
+          },
         },
       },
     },
@@ -173,30 +180,6 @@ const VendorDashboard: React.FC = () => {
 
   return (
     <Box mx="auto" mt={5}>
-      {/* <Flex>
-        <Stack>
-          <h2 className="font-semibold text-2xl text-gray-600">
-            Welcome back, Adeola
-          </h2>
-          <p className="text-sm font-normal text-gray-500">
-            Keep track of vendors and their security ratings.
-          </p>
-        </Stack>
-        <Tabs
-          isFitted
-          variant="enclosed"
-          onChange={(index) => setSelectedPeriod(timePeriods[index])}
-        >
-          <TabList mb="1em">
-            {timePeriods.map((period) => (
-              <Tab key={period} fontWeight="bold">
-                {period}
-              </Tab>
-            ))}
-          </TabList>
-        </Tabs>
-      </Flex> */}
-
       {/* Main Content */}
       <Flex
         justifyContent="space-between"
@@ -206,12 +189,12 @@ const VendorDashboard: React.FC = () => {
       >
         {/* Left Side */}
         <Stack w={{ base: "100%", md: "70%" }} gap={6}>
-          <Flex justifyContent={"space-between"}>
+          <Flex justifyContent="space-between">
             <Stack flex={1}>
-              <Text fontWeight="medium" fontSize={"3xl"}>
+              <Text fontWeight="medium" fontSize="3xl">
                 Welcome back, Adeola
               </Text>
-              <Text fontSize={"sm"} color={"#667085"}>
+              <Text fontSize="sm" color="#667085">
                 Keep track of vendors and their security ratings.
               </Text>
             </Stack>
@@ -222,12 +205,18 @@ const VendorDashboard: React.FC = () => {
               onChange={(index) => setSelectedPeriod(timePeriods[index])}
               flex={1}
             >
-              <TabList mb="1em" rounded={"md"} bg={"white"} shadow={"sm"}>
-                {timePeriods.map((period) => (
+              <TabList mb="1em" rounded="lg" bg="white" boxShadow="sm">
+                {timePeriods.map((period, i) => (
                   <Tab
                     key={period}
                     _selected={{ bg: "gray.100" }}
-                    fontSize={"sm"}
+                    _hover={{
+                      bg: "gray.100",
+                    }}
+                    borderStartRadius={i === 0 && "md"}
+                    borderEndRadius={i === timePeriods.length - 1 && "md"}
+                    borderWidth="1px"
+                    fontSize="sm"
                   >
                     {period}
                   </Tab>
@@ -263,8 +252,8 @@ const VendorDashboard: React.FC = () => {
           {/* Balance Card */}
           <Box borderRadius="lg" p={6} borderWidth="1px" bg={"white"}>
             <Flex justifyContent="space-between" alignItems="center" pb={5}>
-              <Stack gap={4} flex={1}>
-                <Text>Your balance</Text>
+              <Stack gap={3} flex={1} mt={2}>
+                <Text color="gray.500">Your Balance</Text>
                 <Text fontSize="4xl" fontWeight="semibold">
                   {data.balance.toLocaleString("en-NG", {
                     style: "currency",
@@ -353,13 +342,13 @@ const VendorDashboard: React.FC = () => {
           />
           {/* Account Linking Report */}
           <Box borderRadius="lg" p={6} borderWidth="1px" bg={"white"}>
-            <Text fontSize="md" fontWeight="medium" textAlign="center" mb={4}>
+            <Text fontSize="lg" fontWeight="semibold" mb={4}>
               Account Linking Report
             </Text>
             {/* Donut Chart */}
             <ChartComponent
               options={donutOptions}
-              series={donutSeries}
+              series={reportSeries}
               type="donut"
               width="100%"
               height={200}
