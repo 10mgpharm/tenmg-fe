@@ -139,3 +139,16 @@ export interface TransactionHistoryData {
   transactionFileId: number;
   updatedAt: string;
 }
+
+export interface CustomerRecords {
+  id: number;
+  identifier: string;
+  name: string;
+  avatarId: number;
+  email: string;
+  phone: string;
+  active: number;
+  businessId: number;
+  createdAt: string;
+  updateddAt: string;
+}
