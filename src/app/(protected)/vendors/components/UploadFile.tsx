@@ -89,7 +89,12 @@ const UploadFile: React.FC<FileUploadProps> = ({
               </>
             ) : (
               <>
-                <p className="text-center">Select a File to upload</p>
+                <p className="text-sm font-normal text-center">
+                  <span className="text-primary-500">
+                    Click to upload
+                  </span>{" "}
+                  or drag and drop
+                </p>
                 <p className="text-sm font-normal text-center">{uploadLabel}</p>
               </>
             )}
