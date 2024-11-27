@@ -119,11 +119,10 @@ const CustomerManagement = () => {
 
   const handleDownloadTemplate = useCallback(() => {
     const headerMappings = [
-      { key: "vendor_code", header: "vendor_code" },
-      { key: "name", header: "name" },
-      { key: "email", header: "email" },
-      { key: "phone", header: "phone" },
-      { key: "active", header: "active" },
+      { key: "name", header: "Name" },
+      { key: "email", header: "Email" },
+      { key: "phone", header: "Phone" },
+      { key: "active", header: "Active" },
     ];
 
     const templateBlob = createXlsxTemplate(

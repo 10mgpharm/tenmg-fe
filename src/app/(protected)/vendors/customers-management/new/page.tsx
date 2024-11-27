@@ -21,6 +21,7 @@ import { NextAuthUserSession } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import UploadFile from "../../components/UploadFile";
+import PhoneNumberInput from "../../components/PhoneNumberInput";
 
 interface IFormInput {
   name: string;
@@ -110,6 +111,10 @@ const CreateCustomer = () => {
                 placeholder="Jude Bellingham"
                 {...register("name", {
                   required: "Full Name is required",
+                  pattern: {
+                    value: /^[a-zA-Z\s]+$/,
+                    message: "Enter a Valid Name",
+                  },
                 })}
               />
               <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
@@ -135,36 +140,13 @@ const CreateCustomer = () => {
             </FormControl>
           </HStack>
           <HStack gap={6} flexDirection={{ base: "column", md: "row" }}>
-            <Controller
+            <PhoneNumberInput
               name="phone"
+              label="Phone Number"
               control={control}
-              rules={{
-                required: "Phone Number is required",
-              }}
-              render={({ field }) => (
-                <FormControl isInvalid={!!errors.phone}>
-                  <FormLabel htmlFor="phone">
-                    Phone Number
-                    <Text as="span" color="red.500">
-                      *
-                    </Text>
-                  </FormLabel>
-                  <Input
-                    {...field}
-                    id="phone"
-                    placeholder="Enter your phone number"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const sanitizedValue = value.replace(
-                        /[^0-9!@#$%^&*()_+=\-[\]{};':"\\|,.<>/?]/g,
-                        ""
-                      );
-                      field.onChange(sanitizedValue);
-                    }}
-                  />
-                  <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
-                </FormControl>
-              )}
+              errors={errors}
+              isRequired={true}
+              placeholder="08092389823"
             />
             <FormControl>
               <FormLabel>External Reference ID</FormLabel>
@@ -194,7 +176,7 @@ const CreateCustomer = () => {
               <UploadFile
                 onUpload={(file) => setValue("file", file)}
                 accept=".csv, .xlsx, .xls"
-                uploadLabel="Click to upload customer data or drag and drop here"
+                uploadLabel="Excel, CSV, or JSON (max. 800x400px)"
                 uploadSuccessMessage="Customer data uploaded successfully!"
               />
             </Center>

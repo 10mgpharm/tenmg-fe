@@ -116,7 +116,7 @@ export default function BusinessInformationForm({
     if (action === "signup") {
       if (sessionData?.user?.entityType === "VENDOR") {
         await signOut({
-          callbackUrl: `/auth/signup/vendor?name=${sessionData?.user?.name}&businessName=${sessionData?.user?.businessName}`,
+          callbackUrl: `/auth/signup/vendor?name=${sessionData?.user?.name}&email=${sessionData?.user?.email}&businessName=${sessionData?.user?.businessName}&activeTab=vendor`,
         });
       } else {
         await signOut({
