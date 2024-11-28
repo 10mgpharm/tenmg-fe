@@ -78,7 +78,7 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
   });
 
   const titleTabs =
-    tabIndex === 0 ? "supplier" : tabIndex === 1 ? "pharmacy" : 0;
+    tabIndex === 0 ? "supplier" : tabIndex === 1 ? "pharmacy" : "vendor";
 
   useEffect(() => {
     if (nameParams && emailParams && businessNameParams) {

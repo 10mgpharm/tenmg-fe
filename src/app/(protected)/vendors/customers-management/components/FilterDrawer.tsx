@@ -51,7 +51,11 @@ const FilterDrawer = ({
   };
 
   const handleClearFilters = () => {
-    reset();
+    reset({
+      status: "",
+      startDate: null,
+      endDate: null,
+    });
     clearFilters();
   };
 
@@ -75,6 +79,7 @@ const FilterDrawer = ({
               <Controller
                 name="status"
                 control={control}
+                defaultValue=""
                 render={({ field }) => (
                   <Select {...field}>
                     <option value="" disabled style={{ color: "gray" }}>
