@@ -7,8 +7,12 @@ import { convertDate } from "@/utils/formatDate";
 import { AdminMemers } from "@/types";
 
 const columnHelper = createColumnHelper<AdminMemers>();
-export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => void) {
-
+export function ColumsSupplierFN(
+  onOpen: () => void, 
+  onOpenDeactivate: () => void, 
+  pageIndex: number, 
+  pageSize: number
+) {
   return [
     columnHelper.accessor("id", {
       header: () => (
@@ -16,13 +20,15 @@ export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => voi
           <p>S/N</p>
         </div>
       ),
-      cell: (info) => (
+      cell: (info) => {
+        const serialNumber = pageIndex > 1 ? (pageIndex - 1) * pageSize + info?.row.index + 1 : info?.row.index + 1;
+        return(
         <div className="pl-6">
             <p className="font-medium">
-              {info?.row?.index + 1} 
+              {serialNumber} 
             </p>
         </div>
-      ),
+      )},
     }),
     columnHelper.accessor("name", {
       header: ({ column }) => (

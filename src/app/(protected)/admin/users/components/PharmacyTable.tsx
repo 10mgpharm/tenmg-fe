@@ -6,7 +6,12 @@ import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsPharmFN(onOpen: () => void, onOpenDeactivate: () => void) {
+export function ColumsPharmFN(
+  onOpen: () => void, 
+  onOpenDeactivate: () => void,
+  pageIndex: number, 
+  pageSize: number
+) {
 
   return [
     columnHelper.accessor("id", {
@@ -15,13 +20,15 @@ export function ColumsPharmFN(onOpen: () => void, onOpenDeactivate: () => void) 
           <p>S/N</p>
         </div>
       ),
-      cell: (info) => (
+      cell: (info) => {
+        const serialNumber = pageIndex > 1 ? (pageIndex - 1) * pageSize + info?.row.index + 1 : info?.row.index + 1;
+        return(
         <div className="pl-6">
             <p className="font-medium">
-              {info?.row?.original?.id} 
+              {serialNumber} 
             </p>
         </div>
-      ),
+      )},
     }),
     columnHelper.accessor("name", {
       header: ({ column }) => (

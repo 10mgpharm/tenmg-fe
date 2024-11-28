@@ -187,6 +187,7 @@ const Users = () => {
                     isLoading={isLoading} 
                     data={data} 
                     type="Suppliers" 
+                    pageCount={pageCount}
                     setPageCount={setPageCount}
                     />
                 </TabPanel>
@@ -195,6 +196,7 @@ const Users = () => {
                     isLoading={isLoading} 
                     data={data} 
                     type="Pharmacies" 
+                    pageCount={pageCount}
                     setPageCount={setPageCount}
                     />
                 </TabPanel>
@@ -203,6 +205,7 @@ const Users = () => {
                     isLoading={isLoading}  
                     data={data} 
                     type="Vendors" 
+                    pageCount={pageCount}
                     setPageCount={setPageCount}
                     />
                 </TabPanel>
