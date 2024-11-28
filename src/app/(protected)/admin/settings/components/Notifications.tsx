@@ -1,18 +1,11 @@
 "use client";
 import requestClient from "@/lib/requestClient";
-import { NextAuthUserSession } from "@/types";
+import { NextAuthUserSession, NotificationProps, NotificationResponseData } from "@/types";
+import { handleServerErrorMessage } from "@/utils";
 import { Button, Divider, Switch } from "@chakra-ui/react"
 import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
-
-const notifications = [
-    {title: "Goods Expiration", desc: "Get notified about expiration of goods."},
-    {title: "New Medication", desc: "Get notified when a supplier include new types of medication, brand, category etc."},
-    {title: "Shopping List", desc: "Get notified when a pharmacy add product to shopping list."},
-    {title: "Order Payment Confirmation", desc: "Get notified of your commission when an order is paid for."},
-    {title: "New Message", desc: "Get notified when you have a new message from a supplier."},
-    {title: "New User", desc: "Get notified about new vendor, pharmacy or supplier."},
-]
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Notifications = () => {
 
@@ -20,13 +13,13 @@ const Notifications = () => {
     const sessionData = session?.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
     const [loading, setLoading] = useState<boolean>(false);
-    const [notificationData, setNotificationData] = useState([]);
+    const [notificationData, setNotificationData] = useState<NotificationResponseData>();
 
     const fetchNotifications = useCallback(async () => {
         setLoading(true);
         try {
         const response = await requestClient({ token: token }).get(
-            `/admin/settings/notification`
+            `/account/notifications`
         );
         if (response.status === 200) {
             setNotificationData(response.data.data);
@@ -43,7 +36,22 @@ const Notifications = () => {
     fetchNotifications();
   },[fetchNotifications, token]);
 
-  console.log(notificationData);
+  const SubscribeToNotification = async(id: number) => {
+    if(id){
+        try {
+            const response = await requestClient({ token: token }).patch(
+                `/account/notifications/${id}/subscription`
+            );
+            console.log(response)
+            if(response.status === 200){
+                toast.success(response.data?.message)
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        }
+    }
+  }
 
   return (
     <div>
@@ -54,23 +62,27 @@ const Notifications = () => {
         </div>
         <div className="py-5">
             {
-                notifications?.map((item, index) => (
-                    <div key={index} className="border p-4 rounded-md flex items-center justify-between mb-5">
+                notificationData?.data?.map((item: NotificationProps) => (
+                    <div key={item?.id} className="border p-4 rounded-md flex items-center justify-between mb-5">
                         <div className="max-w-xl">
-                            <h3 className="font-medium text-gray-700">{item.title}</h3>
-                            <p className="text-sm text-gray-500">{item.desc}</p>
+                            <h3 className="font-medium text-gray-700">{item?.name}</h3>
+                            <p className="text-sm text-gray-500">{item?.description}</p>
                         </div>
-                        <Switch size={"lg"}/>
+                        <Switch 
+                        size={"lg"} 
+                        defaultChecked={item?.isSubscribed} 
+                        onChange={() => SubscribeToNotification(item.id)}
+                        />
                     </div>
                 ))
             }
         </div>
-        <div className="flex justify-end">
+        {/* <div className="flex justify-end">
             <div className="flex items-center gap-3">
                 <Button variant={"outline"}>Discard</Button>
                 <Button bg={"blue.700"}>Save Changes</Button>
             </div>
-        </div>
+        </div> */}
     </div>
   )
 }
