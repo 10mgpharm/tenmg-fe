@@ -2,10 +2,13 @@
 
 import { SETUPTYPE } from "@/app/globalTypes";
 import {  Flex, Stack, Text } from "@chakra-ui/react"
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { boolean } from "yup";
 import SetUpOptions from "./SetUpOptions";
-import InventorySetup from "./InventorySetup";
+import MedicationTypes from "./MedicationTypes";
+import { useSession } from "next-auth/react";
+import { MedicationData, MedicationResponseData, NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
 
 export const setupOptions = [
   {
@@ -53,11 +56,36 @@ const essentailSetup = [
 
 const MedicationSetup = () => {
 
-  const [currentView, setCurrentView] = useState("MEDICATION")
+  const [medicationData, setMedicationData] = useState<MedicationResponseData>();
+  const [currentView, setCurrentView] = useState<string>("BRAND");
+
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
+
+  const fetchingMedicationTypes = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/medication-types`
+      );
+      if(response.status === 200){
+        setMedicationData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  },[token]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingMedicationTypes();
+  }, [token, fetchingMedicationTypes]);
+
+  console.log(medicationData);
   
   const renderMedicationSetup = (setupType: string) => {
     switch (setupType) {
-      case "MEDICATION":
+      case "BRAND":
         return (
          <SetUpOptions data={medicationTypeSetup} type="Brand"/>
         );
@@ -65,9 +93,11 @@ const MedicationSetup = () => {
         return (
           <SetUpOptions data={essentailSetup} type="Category"/>
         );
-      case "INVENTORY":
+      case "MEDICATION":
         return (
-          <InventorySetup/>
+          <MedicationTypes 
+          data={medicationData?.data} 
+          fetchingMedicationTypes={fetchingMedicationTypes}/>
         );
     }
   };
@@ -80,9 +110,9 @@ const MedicationSetup = () => {
         <Stack gap={4}>
             <Text 
             cursor={"pointer"}
-            fontWeight={currentView === "MEDICATION" ? 600 : 500} 
-            color={currentView === "MEDICATION" ? "blue.600" : "gray.500"} 
-            onClick={() => setCurrentView("MEDICATION")}>
+            fontWeight={currentView === "BRAND" ? 600 : 500} 
+            color={currentView === "BRAND" ? "blue.600" : "gray.500"} 
+            onClick={() => setCurrentView("BRAND")}>
               Brand Setup
             </Text>
             <Text 
@@ -95,9 +125,9 @@ const MedicationSetup = () => {
               </Text>
             <Text 
             cursor={"pointer"}
-            fontWeight={currentView === "INVENTORY" ? 600 : 500} 
-            color={currentView === "INVENTORY" ? "blue.600" : "gray.500"}
-            onClick={() => setCurrentView("INVENTORY")}>
+            fontWeight={currentView === "MEDICATION" ? 600 : 500} 
+            color={currentView === "MEDICATION" ? "blue.600" : "gray.500"}
+            onClick={() => setCurrentView("MEDICATION")}>
               Medication Type
             </Text>
         </Stack>

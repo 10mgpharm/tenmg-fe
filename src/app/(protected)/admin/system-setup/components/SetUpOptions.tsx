@@ -97,12 +97,6 @@ const SetUpOptions = ({data, type}: {data: any, type: "Brand" | "Category"}) => 
           </Tbody>
         </Table>
       </TableContainer>
-      <Flex mt={10} mb={8} justify={"flex-end"}>
-        <HStack>
-          <Button h={"40px"} variant={"outline"}>Cancel</Button>
-          <Button h={"40px"}>Save</Button>
-        </HStack>
-      </Flex>
       <AddNewBrands isOpen={isOpen} onClose={onClose} type={type}/>
       <EditBrands isOpen={isEditOpen} onClose={onEditClose} type={type} />
     </Stack>

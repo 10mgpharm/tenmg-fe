@@ -152,3 +152,18 @@ export interface CustomerRecords {
   createdAt: string;
   updateddAt: string;
 }
+
+
+export interface MedicationData {
+  id: number;
+  active: boolean;
+  name: string;
+  slug: string;
+  status: string;
+}
+
+export interface MedicationResponseData {
+  data: MedicationData[];
+  links: any;
+  meta: MetaDataProp;
+}
