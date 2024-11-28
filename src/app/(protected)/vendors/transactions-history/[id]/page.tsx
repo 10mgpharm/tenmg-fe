@@ -130,11 +130,11 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
                                 <h3 className="font-semibold">Credit Score</h3>
                                 <div className="space-y-1.5">
                                     <p className="text-sm text-gray-500">Score Category</p>
-                                    <p className="text-lg font-semibold text-gray-700">Category A</p>
+                                    <p className="text-xl font-semibold text-gray-800">Category A</p>
                                 </div>
                                 <div className="space-y-1.5">
                                     <p className="text-sm text-gray-500">Score Value</p>
-                                    <p className="text-lg font-semibold text-gray-700">855/950</p>
+                                    <p className="text-xl font-semibold text-gray-800">855/950</p>
                                 </div>
                             </div>
                             <div style={{ width: 140, height: 140 }}>

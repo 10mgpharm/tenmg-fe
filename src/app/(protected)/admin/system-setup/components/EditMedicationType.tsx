@@ -25,23 +25,17 @@ import {
     Thead,
     Tr
 } from "@chakra-ui/react";
-import Image from "next/image";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import shape from "@public/assets/images/Rectangle 43.svg";
+import { MedicationTypeProp, defaultRecords } from "./AddMedicationType";
 import requestClient from "@/lib/requestClient";
-import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { MedicationData, NextAuthUserSession } from "@/types";
+import Image from "next/image";
+import shape from "@public/assets/images/Rectangle 43.svg";
 
-export interface MedicationTypeProp {
-    category: string;
-    strength: string;
-    value: number | null;
-    presentation: string;
-    package: string
-}
 interface IFormInput {
     name: string;
     status: string;
@@ -49,39 +43,38 @@ interface IFormInput {
     // type: MedicationTypeProp;
 }
 
-export const defaultRecords = [
-    {category: "Syrup", strength: "ML", value: 200, presentation: "Bottle", package: "200ML per bottle"},
-    {category: "Tablet", strength: "MG", value: 100, presentation: "Sachet", package: "1x10 tablets"},
-]
-
-const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void}) => {
+const EditMedicationType = (
+    { isOpen, onClose , medication, fetchingMedicationTypes}: 
+    { isOpen: boolean; onClose: () => void; medication: MedicationData; fetchingMedicationTypes: () => void}) => {
 
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [data, setData] = useState<MedicationTypeProp[]>(defaultRecords);
-
     const {
         register,
         formState: { errors, isValid },
         handleSubmit,
         control,
+        reset,
     } = useForm<IFormInput>({
         mode: "onChange",
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        console.log(data)
         setIsLoading(true)
         try {
-            const response = await requestClient({token: token}).post(
-                "/admin/settings/medication-types",
+            const response = await requestClient({token: token}).patch(
+                `/admin/settings/medication-types/${medication?.id}`,
                 data
             )
-            console.log(response);
             if(response.status === 200){
+                toast.success(response.data?.message);
+                fetchingMedicationTypes()
                 setIsLoading(false);
+                reset();
+                onClose();
             }
         } catch (error) {
             setIsLoading(false);
@@ -90,33 +83,12 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
         }
     };
 
-    // const addVariant = () => {
-    //     const values = {
-    //         category: getValues('type.category'),
-    //         package: getValues('type.package'),
-    //         presentation: getValues('type.presentation'),
-    //         strength: getValues('type.strength'),
-    //         value: getValues('type.value'),
-    //     };
-    
-    //     const newRecords = [...data, values];
-    //     setData(newRecords);
-        
-    //     //clear the input fields
-    //     setValue("type.category", "");
-    //     setValue("type.package", "");
-    //     setValue("type.presentation", "");
-    //     setValue("type.strength", "");
-    //     setValue("type.value", null);
-    // }
-
-
-    return (
+  return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"xl"}>
     <DrawerOverlay />
     <DrawerContent>
       <DrawerCloseButton />
-      <DrawerHeader className="capitalize">Add Medication Type</DrawerHeader>
+      <DrawerHeader className="capitalize">Edit Medication Type</DrawerHeader>
       <DrawerBody>
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.name?.message}>
@@ -124,6 +96,7 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
                 <Input
                     type={"text"}
                     placeholder=""
+                    defaultValue={medication?.name}
                     {...register("name", {
                     required: "Name is required",
                     })}
@@ -137,6 +110,7 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
             <FormControl mt={5} isInvalid={!!errors.status?.message}>
                 <FormLabel>Status</FormLabel>
                 <Select  
+                    defaultValue={medication?.status}
                     {...register("status", {
                     required: "Status is required",
                     })} 
@@ -154,6 +128,7 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
             <FormControl mt={5} display='flex' gap={2} alignItems='center'>
                 <Controller
                     name="isActive"
+                    defaultValue={medication?.active ? "true": "false"}
                     control={control}
                     render={({ field }) => <Switch {...field} />}
                 />
@@ -272,7 +247,7 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
                     loadingText="Submitting..."
                     className="bg-primary-500 text-white"
                 >
-                    Add Medication Type
+                    Save Changes
                 </Button>
                 </Flex>
             </HStack>
@@ -286,4 +261,4 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
   )
 }
 
-export default AddMedicationType
+export default EditMedicationType

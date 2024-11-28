@@ -148,3 +148,30 @@ export interface TransactionHistoryDataProps {
   nextPageUrl: string | null;
   prevPageUrl: string | null;
 }
+export interface CustomerRecords {
+  id: number;
+  identifier: string;
+  name: string;
+  avatarId: number;
+  email: string;
+  phone: string;
+  active: number;
+  businessId: number;
+  createdAt: string;
+  updateddAt: string;
+}
+
+
+export interface MedicationData {
+  id: number;
+  active: boolean;
+  name: string;
+  slug: string;
+  status: string;
+}
+
+export interface MedicationResponseData {
+  data: MedicationData[];
+  links: any;
+  meta: MetaDataProp;
+}
