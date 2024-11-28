@@ -124,11 +124,10 @@ export interface LoanDataProp {
   prevPageUrl: string | null;
 }
 
-
 export interface TransactionHistoryData {
   businessId: number;
   createdAt: string;
-  customerId: number;
+  customer: CustomerData;
   createdAtId: number;
   evaluationResult: any;
   fileFormat: string;
@@ -138,4 +137,14 @@ export interface TransactionHistoryData {
   status: string;
   transactionFileId: number;
   updatedAt: string;
+}
+
+export interface TransactionHistoryDataProps {
+  currentPage: number;
+  data: TransactionHistoryData[];
+  total: number;
+  perPage: number;
+  lastPage: number;
+  nextPageUrl: string | null;
+  prevPageUrl: string | null;
 }

@@ -8,13 +8,27 @@ const Pagination = (
   {meta: any, setPageCount: Dispatch<SetStateAction<number>>}
 ) => {
 
-  const paginateList = meta?.links?.slice(1, -1);
-  const lastItem = meta?.links?.at(-1);
-  const firstItem = meta?.links?.at(0);
+  const isArrayFormat = Array.isArray(meta?.links);
+  
+  const paginateList = isArrayFormat
+    ? meta?.links?.slice(1, -1) 
+    : Array.from({ length: (meta?.last?.match(/page=(\d+)/)?.[1] || 1) }, (_, i) => ({
+        label: (i + 1).toString(),
+        url: meta?.first?.replace(/page=\d+/, `page=${i + 1}`),
+        active: meta?.currentPage === i + 1
+      }));
+
+  const firstItem = isArrayFormat
+    ? meta?.links?.[0]
+    : { url: meta?.prev, label: "Previous" };
+  
+  const lastItem = isArrayFormat
+    ? meta?.links?.at(-1)
+    : { url: meta?.next, label: "Next" };
 
   const handlePageChange = async (page: number) => {
     setPageCount(page);
-  }
+  };
 
   return (
     <HStack mt={5} justify={"space-between"}>
