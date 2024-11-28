@@ -19,7 +19,7 @@ export function ColumsSupplierFN(onOpen: () => void, onOpenDeactivate: () => voi
       cell: (info) => (
         <div className="pl-6">
             <p className="font-medium">
-              {info?.row?.original?.id} 
+              {info?.row?.index + 1} 
             </p>
         </div>
       ),
