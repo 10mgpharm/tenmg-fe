@@ -26,7 +26,7 @@ import { ColumnsCustomerFN } from "./components/table";
 import Link from "next/link";
 import FilterDrawer from "./components/FilterDrawer";
 import Pagination from "../../suppliers/components/Pagination";
-import UploadModel from "./components/UploadModel";
+import UploadModel from "../components/UploadModel";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
@@ -259,7 +259,9 @@ const CustomerManagement = () => {
         isOpen={isOpen}
         onClose={onClose}
         handleDownload={handleDownloadTemplate}
-        reloadCustomers={fetchCustomers}
+        reloadData={fetchCustomers}
+        isDownloadTemplate={true}
+        uploadEndpoint="/vendor/customers/import"
       />
       <FilterDrawer
         isOpen={isOpenFilter}

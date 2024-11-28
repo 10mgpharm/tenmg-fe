@@ -188,8 +188,12 @@ const VendorDashboard: React.FC = () => {
         flexDirection={{ base: "column", md: "row" }}
       >
         {/* Left Side */}
-        <Stack w={{ base: "100%", md: "70%" }} gap={6}>
-          <Flex justifyContent="space-between">
+        <Stack
+          w={{ base: "100%", md: "70%" }}
+          gap={6}
+          justifyContent="space-between"
+        >
+          <Flex justifyContent="space-between" direction={{base: "column", md: "row"}} gap={4}>
             <Stack flex={1}>
               <Text fontWeight="medium" fontSize="3xl">
                 Welcome back, Adeola
@@ -301,7 +305,7 @@ const VendorDashboard: React.FC = () => {
               </Box>
             </Flex>
 
-            <Box mt={4}>
+            <Box>
               {/* Column Bar Chart */}
               <ChartComponent
                 options={options}
@@ -315,7 +319,7 @@ const VendorDashboard: React.FC = () => {
         </Stack>
 
         {/* Right Side */}
-        <Stack w={{ base: "100%", md: "30%" }} gap={4}>
+        <Stack w={{ base: "100%", md: "30%" }} gap={4}  justifyContent={{base: "normal", xl: "space-between"}}>
           {/* Transaction History Evaluations */}
           <SideCard
             title="Transaction History Evaluations"
@@ -341,7 +345,7 @@ const VendorDashboard: React.FC = () => {
             }
           />
           {/* Account Linking Report */}
-          <Box borderRadius="lg" p={6} borderWidth="1px" bg={"white"}>
+          <Stack borderRadius="lg" p={6} borderWidth="1px" bg={"white"} gap={5}>
             <Text fontSize="lg" fontWeight="semibold" mb={4}>
               Account Linking Report
             </Text>
@@ -367,7 +371,7 @@ const VendorDashboard: React.FC = () => {
                 <Text>Drop-off/Cancellations</Text>
               </Flex>
             </Box>
-          </Box>
+          </Stack>
         </Stack>
       </Flex>
     </Box>

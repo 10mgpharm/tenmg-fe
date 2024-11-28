@@ -11,12 +11,12 @@ export function ColumnsTnxHistoryFN() {
     columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
-          <p>Application ID</p>
+          <p>Evaluation Reference</p>
         </div>
       ),
       cell: (info) => (
         <div className="pl-6">
-          <p>{info.row.original?.identifier}</p>
+          <p>{info.row.original?.identifier ? info.row.original?.identifier : "None"}</p>
           <p>{convertDate(info.row.original?.createdAt || null)}</p>
         </div>
       ),
@@ -24,12 +24,13 @@ export function ColumnsTnxHistoryFN() {
     columnHelper.accessor("id", {
       header: () => (
         <div>
-          <p>Customer Name</p>
+          <p>Customer</p>
         </div>
       ),
       cell: (info) => (
         <div>
-          <p className="font-bold">{info.row.original?.customerId} </p>
+          <p className="font-bold">{info.row.original?.customer?.name} </p>
+          <p className="">{info.row.original?.customer?.email} </p>
         </div>
       ),
     }),
@@ -37,20 +38,20 @@ export function ColumnsTnxHistoryFN() {
       header: () => <p>Document Source</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.source}</p>
+          <p className="font-bold">{info.row.original?.fileFormat}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("createdAt", {
-      header: () => <p>Date Format</p>,
-      cell: (info) => (
-        <div>
-          <p>{info.row.original?.fileFormat}</p>
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("createdAt", {
+    //   header: () => <p>Date Format</p>,
+    //   cell: (info) => (
+    //     <div>
+    //       <p>{info.row.original?.fileFormat}</p>
+    //     </div>
+    //   ),
+    // }),
     columnHelper.accessor("status", {
-      header: () => <p>Amount Status</p>,
+      header: () => <p>Account Status</p>,
       cell: (info) => (
         <div>
           <p
@@ -70,13 +71,13 @@ export function ColumnsTnxHistoryFN() {
         </div>
       ),
     }),
-    columnHelper.accessor("id", {
+    columnHelper.accessor("createdAtId", {
       header: () => <p>Actions</p>,
       cell: (info) => {
         return (
           <div className="flex gap-4">
             <Link 
-            href={`/vendors/transactions-history/${info.row.original?.customerId}`} 
+            href={`/vendors/transactions-history/${info.row.original?.customer?.id}`} 
             className="text-primary font-medium">
                 View
             </Link>
