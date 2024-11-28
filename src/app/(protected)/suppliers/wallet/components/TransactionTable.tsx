@@ -104,4 +104,4 @@ const TransactionTable = ({data}: {data: any}) => {
   )
 }
 
-export default TransactionTable
+export default TransactionTable;

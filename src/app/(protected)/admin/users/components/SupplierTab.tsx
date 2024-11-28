@@ -29,8 +29,8 @@ import { MemberDataProp } from '@/types';
 import { FaSpinner } from 'react-icons/fa6';
 
 const SupplierTab = (
-    {data, type, isLoading, setPageCount}: 
-    {data: MemberDataProp, type: string, isLoading: boolean, setPageCount: Dispatch<SetStateAction<number>>}
+    {data, type, isLoading, setPageCount, pageCount}: 
+    {data: MemberDataProp, type: string, isLoading: boolean, setPageCount: Dispatch<SetStateAction<number>>; pageCount: number},
 ) => {
 
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -48,10 +48,10 @@ const SupplierTab = (
     const records = useMemo(() => data?.data, [data?.data]);
 
     const renderedColumn =  type === "vendor" 
-                            ?  ColumsVendorFN(onOpen, onOpenDeactivate)
+                            ?  ColumsVendorFN(onOpen, onOpenDeactivate, pageCount, 15)
                             : type === "pharmacies"
-                            ? ColumsPharmFN(onOpen, onOpenDeactivate) 
-                            : ColumsSupplierFN(onOpen, onOpenDeactivate)
+                            ? ColumsPharmFN(onOpen, onOpenDeactivate, pageCount, 15) 
+                            : ColumsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
 
     const table = useReactTable({
         data: records,

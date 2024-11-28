@@ -18,7 +18,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyResult from "../components/EmptyResult";
 import { useSession } from "next-auth/react";
-import { LoanData, NextAuthUserSession } from "@/types";
+import { CustomerRecords, LoanData, NextAuthUserSession } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import CreateLoan from "./components/CreateLoan";
@@ -32,6 +32,7 @@ import Pagination from "../../suppliers/components/Pagination";
 import { ColumnsLoanApplicationFN } from "./components/table";
 import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../customers-management/components/FilterDrawer";
+import SendApplicationLink from "./components/SendApplicationLink";
 
 const LoanApplication = () => {
 
@@ -39,11 +40,17 @@ const LoanApplication = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [loanApplication, setLoanApplication] = useState<LoanData[]>();
+  const [allCustomers, setAllCustomers] = useState<CustomerRecords[]>();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
     isOpen: isOpenFilter,
     onClose: onCloseFilter,
     onOpen: onOpenFilter,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenSend,
+    onClose: onCloseSend,
+    onOpen: onOpenSend,
   } = useDisclosure();
 
   const session = useSession();
@@ -85,6 +92,20 @@ const LoanApplication = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
+
+  const fetchAllCustomers = useCallback(async() => {
+    setLoading(true)
+    try {
+      const response = await requestClient({ token: token}).get('/vendor/customers/get-all');
+      if(response.status === 200){
+        setAllCustomers(response.data.data)
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  },[token])
+
   const tableData = useMemo(
     () => loanApplication,
     [loanApplication]
@@ -93,7 +114,8 @@ const LoanApplication = () => {
   useEffect(() => {
     if(!token) return;
     fetchLoanApplication();
-  }, [fetchLoanApplication, token]);
+    fetchAllCustomers();
+  }, [fetchLoanApplication, fetchAllCustomers, token]);
 
   const applyFilters = (filters: IFilterInput) => {
     setCreatedAtStart(filters.startDate);
@@ -120,6 +142,8 @@ const LoanApplication = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  console.log(allCustomers)
+
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Loan Application</h3>
@@ -141,7 +165,7 @@ const LoanApplication = () => {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="outline" color="primary.500" as={Link} href={"/vendors/customers-management/new"}>
+          <Button onClick={onOpenSend} variant="outline" color="primary.500">
             Send Application Link
           </Button>
           <Button onClick={onOpen}>
@@ -211,6 +235,7 @@ const LoanApplication = () => {
       <CreateLoan 
       isOpen={isOpen} 
       onClose={onClose}
+      customers={allCustomers}
       fetchLoanApplication={fetchLoanApplication}
       />
       <FilterDrawer
@@ -218,6 +243,12 @@ const LoanApplication = () => {
         onClose={onCloseFilter}
         applyFilters={applyFilters}
         clearFilters={clearFilters}
+      />
+      <SendApplicationLink 
+      isOpen={isOpenSend} 
+      onClose={onCloseSend}
+      customers={allCustomers}
+      fetchLoanApplication={fetchLoanApplication}
       />
     </div>
   )

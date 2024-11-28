@@ -5,7 +5,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
-export function ColumsVendorFN(onOpen: () => void, onOpenDeactivate: () => void) {
+export function ColumsVendorFN(
+  onOpen: () => void, 
+  onOpenDeactivate: () => void,
+  pageIndex: number, 
+  pageSize: number
+) {
   return [
     columnHelper.accessor("id", {
       header: () => (
@@ -13,13 +18,15 @@ export function ColumsVendorFN(onOpen: () => void, onOpenDeactivate: () => void)
           <p>S/N</p>
         </div>
       ),
-      cell: (info) => (
+      cell: (info) => {
+        const serialNumber = pageIndex > 1 ? (pageIndex - 1) * pageSize + info?.row.index + 1 : info?.row.index + 1;
+        return(
         <div className="pl-6">
             <p className="font-medium">
-              {info?.row?.original?.id} 
+              {serialNumber} 
             </p>
         </div>
-      ),
+      )},
     }),
     columnHelper.accessor("name", {
       header: ({ column }) => (
