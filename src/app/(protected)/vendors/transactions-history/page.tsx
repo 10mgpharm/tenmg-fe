@@ -1,70 +1,100 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import SearchInput from '../components/SearchInput'
-import { CiFilter } from 'react-icons/ci'
-import { Button, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react'
-import requestClient from '@/lib/requestClient';
-import { NextAuthUserSession, TransactionHistoryData } from '@/types';
-import { useSession } from 'next-auth/react';
-import EmptyResult from '../components/EmptyResult';
-import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
-import Pagination from '../../suppliers/components/Pagination';
-import { ColumnsTnxHistoryFN } from './components/table';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import SearchInput from "../components/SearchInput";
+import { CiFilter } from "react-icons/ci";
+import {
+  Button,
+  Flex,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+} from "@chakra-ui/react";
+import requestClient from "@/lib/requestClient";
+import {
+  NextAuthUserSession,
+  TransactionHistoryData,
+  TransactionHistoryDataProps,
+} from "@/types";
+import { useSession } from "next-auth/react";
+import EmptyResult from "../components/EmptyResult";
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import Pagination from "../../suppliers/components/Pagination";
+import { ColumnsTnxHistoryFN } from "./components/table";
+import UploadModel from "../components/UploadModel";
 
 const TransactionHistory = () => {
-
   const [loading, setLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [pageCount, setPageCount] = useState<number>(1);
-  const [tnxHistoryData, setTnxHistorysData] = useState<TransactionHistoryData[] | null>(null);
+  const [tnxHistoryData, setTnxHistoryData] = useState<
+    TransactionHistoryDataProps | null
+  >(null);
 
   const session = useSession();
-  const sessionData = session?.data as NextAuthUserSession;
+  const sessionData = session.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  const fetchCustomerTnx = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await requestClient({ token: token }).get(
-        `/vendor/txn_history/${13}`
-      );
-      if (response.status === 200) {
-        setTnxHistorysData(response.data.data);
+  const fetchCustomerTnx = useCallback(
+    async (page = 1) => {
+      setLoading(true);
+      try {
+        const response = await requestClient({ token }).get(
+          `/vendor/txn_history/get-all-txn?page=${page}`
+        );
+        if (response.status === 200) {
+          setTnxHistoryData(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    fetchCustomerTnx();
-  },[fetchCustomerTnx])
-
-  const tableData: TransactionHistoryData[] = useMemo(
-    () => tnxHistoryData,
-    [tnxHistoryData]
+    },
+    [token]
   );
 
+  useEffect(() => {
+    fetchCustomerTnx(pageCount);
+  }, [fetchCustomerTnx, pageCount]);
+
+  const tableData = useMemo(() => tnxHistoryData?.data || [], [tnxHistoryData]);
+
+  const columns = useMemo(() => ColumnsTnxHistoryFN(), []);
+
   const table = useReactTable({
-    data: tableData ? tableData : [],
-    columns: ColumnsTnxHistoryFN(),
+    data: tableData ? tableData?.data : [],
+    columns,
     state: {
       globalFilter,
     },
-    manualFiltering: true,
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  console.log(tnxHistoryData)
-  
+  const customerNames = useMemo(() => {
+    if (tableData.length > 0) {
+      const names = tableData.map((item) => item.customer.name);
+      return Array.from(new Set(names));
+    }
+    return [];
+  }, [tableData]);
+
   return (
-    <div className='p-8'>
-      <h3 className="font-semibold text-2xl">Transaction History</h3>
+    <div className="p-8">
+      <h3 className="font-semibold text-2xl">Transaction Evaluations</h3>
       <div className="flex justify-between">
         <div className="mb-5">
           <div className="flex items-center gap-3 mt-5">
@@ -83,34 +113,32 @@ const TransactionHistory = () => {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Button onClick={onOpen}>
-          Evaluate Transaction History
-          </Button>
+          <Button onClick={onOpen}>Evaluate Transaction History</Button>
         </div>
       </div>
-      <div className="">
+      <div>
         {loading ? (
           <Flex justify="center" align="center" height="200px">
             <Spinner size="xl" />
           </Flex>
-        ) : tableData && tableData?.length === 0 ? (
+        ) : tableData.length === 0 ? (
           <EmptyResult
-            heading={`Nothing to show here yet`}
-            content={`You don’t have any customer yet. When you do, they’ll appear here.`}
+            heading="Nothing to show here yet"
+            content="You don’t have any transaction history yet. When you do, they’ll appear here."
           />
         ) : (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+          <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
             <Table>
-              <Thead bg={"blue.50"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
+              <Thead bg="blue.50">
+                {table.getHeaderGroups().map((headerGroup) => (
                   <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
+                    {headerGroup.headers.map((header) => (
                       <Th
-                        textTransform={"initial"}
+                        textTransform="initial"
                         px="0px"
                         key={header.id}
-                        color={"primary.500"}
-                        fontWeight={"500"}
+                        color="primary.500"
+                        fontWeight="500"
                       >
                         {header.isPlaceholder
                           ? null
@@ -123,10 +151,10 @@ const TransactionHistory = () => {
                   </Tr>
                 ))}
               </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
+              <Tbody bg="white" color="#606060" fontSize="14px">
+                {table.getRowModel().rows.map((row) => (
                   <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
+                    {row.getVisibleCells().map((cell) => (
                       <Td key={cell.id} px="0px">
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -137,8 +165,8 @@ const TransactionHistory = () => {
                   </Tr>
                 ))}
                 <Tr>
-                  <Td py={4} w="full" colSpan={6}>
-                    <Pagination meta={tableData} setPageCount={setPageCount} />
+                  <Td py={4} w="full" colSpan={columns.length}>
+                    <Pagination meta={tnxHistoryData} setPageCount={setPageCount} />
                   </Td>
                 </Tr>
               </Tbody>
@@ -146,8 +174,18 @@ const TransactionHistory = () => {
           </TableContainer>
         )}
       </div>
-    </div>
-  )
-}
 
-export default TransactionHistory
+      <UploadModel
+        isOpen={isOpen}
+        onClose={onClose}
+        isDownloadTemplate={false}
+        uploadEndpoint="/vendor/txn_history/upload_and_evaluate"
+        isSearch
+        searchTitle="Customer by Name or ID"
+        searchData={customerNames}
+      />
+    </div>
+  );
+};
+
+export default TransactionHistory;

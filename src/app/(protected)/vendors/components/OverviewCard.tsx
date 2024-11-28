@@ -35,7 +35,11 @@ const OverviewCard = ({
       <CardHeader p={0} fontSize="md" fontWeight="medium">
         {title}
       </CardHeader>
-      <CardBody p={0} fontSize="4xl" fontWeight="semibold">
+      <CardBody
+        p={0}
+        fontSize={{ base: "x-large", md: "2xl", lg: "4xl" }}
+        fontWeight="semibold"
+      >
         <Flex gap={2} alignItems="center">
           {type === "currency" ? `₦${value}` : value}
           {isPending && (
