@@ -22,7 +22,6 @@ import { useSession } from 'next-auth/react';
 import { MemberDataProp, NextAuthUserSession } from '@/types';
 import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
-import { usePaginate } from '@/lib/paginate';
 
 const Users = () => {
 
@@ -34,14 +33,16 @@ const Users = () => {
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
-    const [data, setData] = useState<MemberDataProp>();
-    const [supplierData, setSupplierData] = useState<MemberDataProp>();
-    const [vendorData, setVendorData] = useState<MemberDataProp>();
-    const [pharmData, setPharmData] = useState<MemberDataProp>();
+    const [supplierData, setSupplierData] = useState<MemberDataProp | null>();
+    const [vendorData, setVendorData] = useState<MemberDataProp | null>();
+    const [pharmData, setPharmData] = useState<MemberDataProp | null>();
+    const [supplierCount, setSupplierCount] = useState<MemberDataProp>();
+    const [vendorCount, setVendorCount] = useState<MemberDataProp>();
+    const [pharmCount, setPharmCount] = useState<MemberDataProp>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [pageCount, setPageCount] = useState<number>(1);
-    const [pageLimit, setPageLimit] = useState<number>(10);
+    // const [pageLimit, setPageLimit] = useState<number>(10);
     const [total, setTotal] = useState<any>('');
 
     const fetchTeamUser = useCallback(async (type: string, pageCount: number) => {
@@ -53,22 +54,24 @@ const Users = () => {
         if (response.status === 200) {
             setIsLoading(false);
             if(type === "Supplier"){
+                setSupplierCount(response.data.data);
                 setSupplierData(response.data.data);
-                setData(response.data.data);
-                setTotal(response.data?.meta)
+                setTotal(response.data?.meta);
             }else if(type === "Vendor"){
-                setVendorData(response.data.data)
-                setTotal(response.data?.meta)
+                setVendorCount(response.data.data)
+                setVendorData(response.data.data);
+                setTotal(response.data?.meta);
             }else if(type === "Pharmacies"){
-                setPharmData(response.data.data)
-                setTotal(response.data?.meta)
+                setPharmCount(response.data.data);
+                setPharmData(response.data.data);
+                setTotal(response.data?.meta);
             }
         }
         } catch (error) {
             setIsLoading(false);
             console.error(error);
         }
-    }, [token, pageCount]);
+    }, [token, pageCount, type]);
 
     useEffect(() => {
         if(!token) return;
@@ -78,12 +81,19 @@ const Users = () => {
     }, [fetchTeamUser, token, pageCount]);
 
     const handleTabsChange = (index: number) => {
+        setPageCount(1);
        if(index === 1){
             fetchTeamUser('Pharmacies', 1);
+            setVendorData(null);
+            setSupplierData(null);
         }else if(index === 2){
             fetchTeamUser('Vendor', 1);
+            setSupplierData(null);
+            setPharmData(null);
        }else{
             fetchTeamUser('Supplier', 1);
+            setVendorData(null);
+            setPharmData(null);
        }
     }
     // const { getPaginationInfo } = usePaginate({
@@ -160,7 +170,7 @@ const Users = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Suppliers</Text>
                         <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {supplierData?.meta.total || 0}
+                            {supplierCount?.meta.total || 0}
                         </p>
                     </div>
                 </Tab>
@@ -168,7 +178,7 @@ const Users = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Pharmacies</Text>
                         <p className='bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {pharmData?.meta.total || 0}
+                            {pharmCount?.meta.total || 0}
                         </p>
                     </div>
                 </Tab>
@@ -176,7 +186,7 @@ const Users = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Vendors</Text>
                         <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {vendorData?.meta.total || 0}
+                            {vendorCount?.meta.total || 0}
                         </p>
                     </div>
                 </Tab>
@@ -185,7 +195,7 @@ const Users = () => {
                 <TabPanel px={0}>
                     <SupplierTab 
                     isLoading={isLoading} 
-                    data={data} 
+                    data={supplierData} 
                     type="Suppliers" 
                     pageCount={pageCount}
                     setPageCount={setPageCount}
@@ -194,7 +204,7 @@ const Users = () => {
                 <TabPanel>
                     <SupplierTab 
                     isLoading={isLoading} 
-                    data={data} 
+                    data={pharmData} 
                     type="Pharmacies" 
                     pageCount={pageCount}
                     setPageCount={setPageCount}
@@ -203,7 +213,7 @@ const Users = () => {
                 <TabPanel>
                     <SupplierTab 
                     isLoading={isLoading}  
-                    data={data} 
+                    data={vendorData} 
                     type="Vendors" 
                     pageCount={pageCount}
                     setPageCount={setPageCount}
