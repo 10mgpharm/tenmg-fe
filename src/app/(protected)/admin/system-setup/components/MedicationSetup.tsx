@@ -4,11 +4,11 @@ import { SETUPTYPE } from "@/app/globalTypes";
 import {  Flex, Stack, Text } from "@chakra-ui/react"
 import { useCallback, useEffect, useState } from "react";
 import { boolean } from "yup";
-import SetUpOptions from "./SetUpOptions";
 import MedicationTypes from "./MedicationTypes";
 import { useSession } from "next-auth/react";
-import { MedicationData, MedicationResponseData, NextAuthUserSession } from "@/types";
+import { MedicationResponseData, NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
+import BrandSetup from "./BrandSetup";
 
 export const setupOptions = [
   {
@@ -56,6 +56,8 @@ const essentailSetup = [
 
 const MedicationSetup = () => {
 
+  const [brandData, setBrandData] = useState<MedicationResponseData>();
+  const [categoryData, setCategoryData] = useState<MedicationResponseData>();
   const [medicationData, setMedicationData] = useState<MedicationResponseData>();
   const [currentView, setCurrentView] = useState<string>("BRAND");
 
@@ -76,20 +78,56 @@ const MedicationSetup = () => {
     }
   },[token]);
 
+  const fetchingBrandTypes = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/brands`
+      );
+      if(response.status === 200){
+        setBrandData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  },[token]);
+
+  const fetchingCategoriesTypes = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/categories`
+      );
+      if(response.status === 200){
+        setCategoryData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  },[token]);
+
   useEffect(() => {
     if(!token) return;
     fetchingMedicationTypes();
-  }, [token, fetchingMedicationTypes]);
+    fetchingBrandTypes();
+    fetchingCategoriesTypes();
+  }, [token, fetchingMedicationTypes, fetchingBrandTypes, fetchingCategoriesTypes]);
   
   const renderMedicationSetup = (setupType: string) => {
     switch (setupType) {
       case "BRAND":
         return (
-         <SetUpOptions data={medicationTypeSetup} type="Brand"/>
+         <BrandSetup 
+         data={brandData?.data} 
+         type="Brand"
+         refetchingTypes={fetchingBrandTypes}
+         />
         );
       case "ESSENTIAL":
         return (
-          <SetUpOptions data={essentailSetup} type="Category"/>
+          <BrandSetup 
+          data={categoryData.data} 
+          type="Category"
+          refetchingTypes={fetchingCategoriesTypes}
+          />
         );
       case "MEDICATION":
         return (
@@ -99,6 +137,8 @@ const MedicationSetup = () => {
         );
     }
   };
+
+  console.log(brandData);
 
   return (
    <Stack className="max-w-5xl">

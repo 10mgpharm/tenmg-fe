@@ -9,7 +9,6 @@ import {
   Stack, 
   Table, 
   TableContainer, 
-  Tag, 
   Tbody, 
   Td, 
   Th, 
@@ -18,33 +17,37 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import { Search } from "lucide-react";
-import AddMedicationType from "./AddMedicationType";
-import { MedicationData } from "@/types";
-import EditMedicationType from "./EditMedicationType";
 import { useState } from "react";
+import AddNewBrands from "./AddNewBrands";
+import EditBrands from "./EditBrands";
+import { MedicationData } from "@/types";
 import DeleteMedication from "./DeleteMedication";
 
-const MedicationTypes = (
-  {data, fetchingMedicationTypes}: 
-  {data: MedicationData[], fetchingMedicationTypes: () => void}
+const BrandSetup = (
+  {data, type, refetchingTypes}: 
+  {data: MedicationData[], type: "Brand" | "Category", refetchingTypes: () => void}
 ) => {
 
-    const { isOpen, onClose, onOpen } = useDisclosure();
-    const { 
-      isOpen: isEditOpen, 
-      onClose: onEditClose, 
-      onOpen: onEditOpen 
-    } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { 
+    isOpen: isEditOpen, 
+    onClose: onEditClose, 
+    onOpen: onEditOpen 
+  } = useDisclosure();
     const { 
       isOpen: isDeleteOpen, 
       onClose: onDeleteClose, 
       onOpen: onDeleteOpen 
     } = useDisclosure();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [selectedId, setSelectedId] = useState<number>();
+  const [selectedItem, setSelectedItem] = useState<MedicationData>();
+  
+  // const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setInputValue(e.target.value);
+  // };
 
-    const [selectedId, setSelectedId] = useState<number>();
-    const [selectedItem, setSelectedItem] = useState<MedicationData>();
-
-    return (
+  return (
     <Stack flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
       <Flex justify={"space-between"}>
         <InputGroup size='md' width={"20rem"}>
@@ -57,7 +60,7 @@ const MedicationTypes = (
             placeholder='Search for a user'
           />
         </InputGroup>
-        <Button h="38px" onClick={onOpen} bg={"primary.500"}>Add Medication Type</Button>
+        <Button h="38px" onClick={onOpen} bg={"primary.500"}>Add New {type}</Button>
       </Flex>
       <TableContainer mt={5}>
         <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
@@ -65,7 +68,7 @@ const MedicationTypes = (
             <Tr color={"primary.500"} roundedTop={"md"}>
               <Th>Date Created</Th>
               <Th>Name</Th>
-              <Th>Variations</Th>
+              <Th>Active</Th>
               <Th>Status</Th>
               <Th>Action</Th>
             </Tr>
@@ -74,30 +77,30 @@ const MedicationTypes = (
             {
               data?.map((item: MedicationData) => (
                 <Tr key={item.id}>
-                  <Td>14-10-2024</Td>
-                  <Td>{item.name}</Td>
-                  <Td>
-                    <Tag colorScheme={"yellow"} size={"sm"}>View Variation</Tag>
-                  </Td>
-                  <Td className="text-sm">{item.status}</Td>
-                  <Td>
+                  <Td fontSize={"14px"}>14-10-2024</Td>
+                  <Td fontSize={"14px"}>{item.name}</Td>
+                  <Td fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
+                  <Td fontSize={"14px"}>{item.status}</Td>
+                  <Td fontSize={"14px"}>
                     <Flex gap={2}>
                       <Button 
                       onClick={() => {
-                        setSelectedItem(item)
-                        onEditOpen()
+                        setSelectedItem(item);
+                        onEditOpen();
                       }} 
-                      variant={"unstyled"}
+                      fontSize={"14px"} 
+                      variant={"unstyled"} 
                       color={"gray.500"}>
                         Edit
                       </Button>
                       <Button 
                       variant="unstyled" 
+                      fontSize={"14px"} 
                       color={"red.600"}
                       onClick={() => {
                         setSelectedId(item.id)
-                        onDeleteOpen()
-                      }} 
+                        onDeleteOpen();
+                      }}
                       >
                         Delete
                       </Button>
@@ -109,25 +112,28 @@ const MedicationTypes = (
           </Tbody>
         </Table>
       </TableContainer>
-      <AddMedicationType 
-      isOpen={isOpen} 
-      onClose={onClose}
+      <AddNewBrands 
+      isOpen={isOpen}
+      onClose={onClose} 
+      type={type}
+      refetchingTypes={refetchingTypes}
       />
-      <EditMedicationType 
+      <EditBrands 
       isOpen={isEditOpen} 
       onClose={onEditClose} 
-      medication={selectedItem}
-      fetchingMedicationTypes={fetchingMedicationTypes}
+      brand={selectedItem}
+      type={type} 
+      refetchingTypes={refetchingTypes}
       />
       <DeleteMedication 
       isOpen={isDeleteOpen}
       onClose={onDeleteClose}
       id={selectedId}
-      title="Medication"
-      refetch={fetchingMedicationTypes}
+      title="Brand"
+      refetch={refetchingTypes}
       />
     </Stack>
   )
 }
 
-export default MedicationTypes;
+export default BrandSetup;

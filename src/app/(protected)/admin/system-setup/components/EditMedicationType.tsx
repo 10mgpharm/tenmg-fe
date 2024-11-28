@@ -57,6 +57,7 @@ const EditMedicationType = (
         formState: { errors, isValid },
         handleSubmit,
         control,
+        reset,
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -71,7 +72,8 @@ const EditMedicationType = (
             if(response.status === 200){
                 toast.success(response.data?.message);
                 fetchingMedicationTypes()
-                setIsLoading(true);
+                setIsLoading(false);
+                reset();
                 onClose();
             }
         } catch (error) {

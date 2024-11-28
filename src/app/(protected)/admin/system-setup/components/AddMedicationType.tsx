@@ -81,7 +81,7 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
             )
             console.log(response);
             if(response.status === 200){
-                setIsLoading(true);
+                setIsLoading(false);
             }
         } catch (error) {
             setIsLoading(false);

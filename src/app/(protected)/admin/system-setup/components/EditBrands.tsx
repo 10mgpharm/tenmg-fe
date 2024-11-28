@@ -18,32 +18,74 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import shape from "@public/assets/images/Rectangle 43.svg";
+import { MedicationData, NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
+import { useSession } from "next-auth/react";
 
 interface IFormInput {
-    name: string;
-    status: string;
-    createdBy: string;
+  name: string;
+  status: string;
+  isActive: string;
+  createdBy: string;
 }
 
-const EditBrands = ({ isOpen, onClose, type}: { isOpen: boolean; onClose: () => void; type: "Brand" | "Category"}) => {
+const EditBrands = (
+  { isOpen, onClose, type, brand, refetchingTypes}: 
+  { isOpen: boolean; onClose: () => void; type: "Brand" | "Category", brand: MedicationData, refetchingTypes: () => void}
+) => {
 
-    const [isLoading, setIsLoading] = useState(false);
-    const {
-        register,
-        formState: { errors, isValid },
-        handleSubmit,
-    } = useForm<IFormInput>({
-        mode: "onChange",
-        defaultValues: {
-            name: "",
-            status: "",
-            createdBy: "",
-        },
-    });
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+      register,
+      formState: { errors, isValid },
+      handleSubmit,
+      control,
+      reset,
+  } = useForm<IFormInput>({
+      mode: "onChange",
+      defaultValues: {
+        name: brand?.name,
+        status: brand?.status,
+        isActive: brand?.status,
+        createdBy: "",
+      },
+  });
 
-    const onSubmit = async () => {};
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setIsLoading(true)
+    try {
+        let response;
+        if(type === "Brand"){
+          response = await requestClient({token: token}).patch(
+              `/admin/settings/brands/${brand?.id}`,
+              data
+          )
+        }else if(type === "Category"){
+          response = await requestClient({token: token}).patch(
+            `/admin/settings/categories/${brand?.id}`,
+            data
+        )
+        }
+        if(response.status === 200){
+            toast.success(response.data?.message);
+            refetchingTypes();
+            setIsLoading(false);
+            reset();
+            onClose();
+        }
+    } catch (error) {
+        setIsLoading(false);
+        console.error(error);
+        toast.error(handleServerErrorMessage(error));
+    }
+  };
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
@@ -58,6 +100,7 @@ const EditBrands = ({ isOpen, onClose, type}: { isOpen: boolean; onClose: () => 
               <Input
                 type={"text"}
                 placeholder=""
+                defaultValue={brand?.name}
                 {...register("name", {
                   required: "Name is required",
                 })}
@@ -70,10 +113,14 @@ const EditBrands = ({ isOpen, onClose, type}: { isOpen: boolean; onClose: () => 
           </FormControl>
           <FormControl mt={5} isInvalid={!!errors.status?.message}>
             <FormLabel>Status</FormLabel>
-            <Select>
-              <option value="">Published</option>
-              <option value="">Draft</option>
-              <option value="">Pending Review</option>
+            <Select  
+              defaultValue={brand?.status}
+              {...register("status", {
+              required: "Status is required",
+              })} 
+              placeholder="select status">
+              <option value="APPROVED">Approved</option>
+              <option value="PENDING">Pending</option>
             </Select>
             {errors.status && (
               <Text as={"span"} className="text-red-500 text-sm">
@@ -97,8 +144,13 @@ const EditBrands = ({ isOpen, onClose, type}: { isOpen: boolean; onClose: () => 
             )}
           </FormControl>
           <FormControl mt={5} display='flex' gap={2} alignItems='center'>
-              <Switch id='email-alerts' />
-              <FormLabel htmlFor='email-alerts' mb='0'>
+              <Controller
+                name="isActive"
+                control={control}
+                defaultValue={brand?.active ? "true": "false"}
+                render={({ field }) => <Switch {...field} />}
+                />
+              <FormLabel htmlFor='isActive' mb='0'>
                   Active
               </FormLabel>
           </FormControl>
