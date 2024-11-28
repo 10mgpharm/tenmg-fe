@@ -2,7 +2,6 @@
 import { 
   Button, 
   Flex, 
-  HStack, 
   Icon, 
   Input, 
   InputGroup, 
@@ -23,8 +22,12 @@ import AddMedicationType from "./AddMedicationType";
 import { MedicationData } from "@/types";
 import EditMedicationType from "./EditMedicationType";
 import { useState } from "react";
+import DeleteMedication from "./DeleteMedication";
 
-const MedicationTypes = ({data, fetchingMedicationTypes}: {data: MedicationData[], fetchingMedicationTypes: () => void}) => {
+const MedicationTypes = (
+  {data, fetchingMedicationTypes}: 
+  {data: MedicationData[], fetchingMedicationTypes: () => void}
+) => {
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { 
@@ -32,7 +35,13 @@ const MedicationTypes = ({data, fetchingMedicationTypes}: {data: MedicationData[
       onClose: onEditClose, 
       onOpen: onEditOpen 
     } = useDisclosure();
+    const { 
+      isOpen: isDeleteOpen, 
+      onClose: onDeleteClose, 
+      onOpen: onDeleteOpen 
+    } = useDisclosure();
 
+    const [selectedId, setSelectedId] = useState<number>();
     const [selectedItem, setSelectedItem] = useState<MedicationData>();
 
     return (
@@ -82,7 +91,16 @@ const MedicationTypes = ({data, fetchingMedicationTypes}: {data: MedicationData[
                       color={"gray.500"}>
                         Edit
                       </Button>
-                      <Button variant="unstyled" color={"red.600"}>Delete</Button>
+                      <Button 
+                      variant="unstyled" 
+                      color={"red.600"}
+                      onClick={() => {
+                        setSelectedId(item.id)
+                        onDeleteOpen()
+                      }} 
+                      >
+                        Delete
+                      </Button>
                     </Flex>
                   </Td>
                 </Tr>
@@ -91,11 +109,20 @@ const MedicationTypes = ({data, fetchingMedicationTypes}: {data: MedicationData[
           </Tbody>
         </Table>
       </TableContainer>
-      <AddMedicationType isOpen={isOpen} onClose={onClose}/>
+      <AddMedicationType 
+      isOpen={isOpen} 
+      onClose={onClose}
+      />
       <EditMedicationType 
       isOpen={isEditOpen} 
       onClose={onEditClose} 
       medication={selectedItem}
+      fetchingMedicationTypes={fetchingMedicationTypes}
+      />
+      <DeleteMedication 
+      isOpen={isDeleteOpen}
+      onClose={onDeleteClose}
+      id={selectedId}
       fetchingMedicationTypes={fetchingMedicationTypes}
       />
     </Stack>

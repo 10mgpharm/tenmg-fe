@@ -80,8 +80,6 @@ const MedicationSetup = () => {
     if(!token) return;
     fetchingMedicationTypes();
   }, [token, fetchingMedicationTypes]);
-
-  console.log(medicationData);
   
   const renderMedicationSetup = (setupType: string) => {
     switch (setupType) {

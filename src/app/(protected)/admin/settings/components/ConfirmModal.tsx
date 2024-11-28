@@ -21,7 +21,7 @@ const ConfirmModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void})
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                <Text fontWeight={"semibold"} textAlign={"center"} fontSize={"x-large"}>Remove Memeber</Text>
+                <Text fontWeight={"semibold"} textAlign={"center"} fontSize={"x-large"}>Remove Member</Text>
                 <Text color={"gray.500"} textAlign={"center"} mt={2}>Are your sure you want to remove this member.</Text>
                 <div className="my-6 flex flex-col gap-2">
                     <button className='bg-red-500 text-white p-3 rounded-md'>Yes, Remove</button>
