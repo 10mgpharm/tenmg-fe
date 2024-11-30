@@ -21,7 +21,7 @@ interface IFormInput {
 
 const SendApplicationLink = (
     {isOpen, onClose, customers, fetchLoanApplication}: 
-    {isOpen: boolean, onClose: () => void; customers: CustomerRecords[], fetchLoanApplication: () => void}
+    {isOpen: boolean, onClose: () => void; customers: CustomerRecords[], fetchLoanApplication?: () => void}
 ) => {
 
     const session = useSession();
