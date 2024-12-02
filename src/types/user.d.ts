@@ -175,3 +175,21 @@ export interface MedicationResponseData {
   links: any;
   meta: MetaDataProp;
 }
+
+export interface NotificationProps {
+  id: number;
+  name: string;
+  description: string;
+  isAdmin: boolean;
+  isSupplier: boolean;
+  isPharmacy: boolean;
+  isSubscribed: boolean;
+  isVendor: boolean;
+  active: boolean;
+}
+
+export interface NotificationResponseData {
+  data: NotificationProps[];
+  links: any;
+  meta: MetaDataProp;
+}
