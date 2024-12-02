@@ -147,6 +147,7 @@ export interface TransactionHistoryDataProps {
   lastPage: number;
   nextPageUrl: string | null;
   prevPageUrl: string | null;
+  meta: any
 }
 export interface CustomerRecords {
   id: number;
