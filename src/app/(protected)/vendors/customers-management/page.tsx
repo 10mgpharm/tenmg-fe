@@ -24,7 +24,7 @@ import {
 
 import { ColumnsCustomerFN } from "./components/table";
 import Link from "next/link";
-import FilterDrawer from "./components/FilterDrawer";
+import FilterDrawer from "../components/FilterDrawer";
 import Pagination from "../../suppliers/components/Pagination";
 import UploadModel from "../components/UploadModel";
 import requestClient from "@/lib/requestClient";
@@ -145,6 +145,12 @@ const CustomerManagement = () => {
     setStatus("");
     setGlobalFilter("");
   };
+
+  const filterOptions = [
+    { option: "Active", value: "active" },
+    { option: "Suspended", value: "inactive" },
+  ];
+
 
   const tableData: CustomerDataProp = useMemo(
     () => allCustomersData,
@@ -268,6 +274,7 @@ const CustomerManagement = () => {
         onClose={onCloseFilter}
         applyFilters={applyFilters}
         clearFilters={clearFilters}
+        filterOptions={filterOptions}
       />
     </div>
   );

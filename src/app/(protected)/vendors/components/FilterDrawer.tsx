@@ -24,16 +24,23 @@ interface IFormInput {
   status?: string;
 }
 
+interface FilterOptions {
+  option: string;
+  value: string;
+}
+
 const FilterDrawer = ({
   isOpen,
   onClose,
   applyFilters,
   clearFilters,
+  filterOptions
 }: {
   isOpen: boolean;
   onClose: () => void;
   applyFilters: (filters: IFormInput) => void;
   clearFilters: () => void;
+  filterOptions?: FilterOptions[]
 }) => {
   const {
     handleSubmit,
@@ -85,8 +92,11 @@ const FilterDrawer = ({
                     <option value="" disabled style={{ color: "gray" }}>
                       Select Status
                     </option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Suspended</option>
+                    {filterOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.option}
+                      </option>
+                    ))}
                   </Select>
                 )}
               />
