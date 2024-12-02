@@ -4,8 +4,9 @@ import { classNames } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Image from "next/image";
 import Link from "next/link";
+import { ProductDataProps } from "@/types";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<ProductDataProps>();
 
 export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, onOpenDeactivate: () => void) {
 
@@ -57,7 +58,7 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
       ),
       cell: (info) => (
        <div className="px-5">
-        <p className="font-medium">{info.row.original?.wieght}</p>
+        <p className="font-medium">{info.row.original?.weight}</p>
        </div>
       ),
     }),

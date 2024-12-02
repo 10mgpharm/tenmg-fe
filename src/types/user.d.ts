@@ -194,3 +194,21 @@ export interface NotificationResponseData {
   links: any;
   meta: MetaDataProp;
 }
+
+
+export interface ProductDataProps {
+  id: number;
+  name: string;
+  image: string;
+  brand: string;
+  weight: string;
+  category: string;
+  price: string;
+  quantity: string;
+  status: string;
+}
+export interface ProductResponseData {
+  data: ProductDataProps[];
+  links: any;
+  meta: MetaDataProp;
+}

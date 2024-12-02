@@ -73,6 +73,7 @@ const AddNewBrands = (
         setIsLoading(false);
         refetchingTypes();
         reset();
+        onClose();
       }
     } catch (error) {
       setIsLoading(false);

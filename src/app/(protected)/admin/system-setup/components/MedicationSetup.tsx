@@ -43,17 +43,6 @@ export const setupOptions = [
   },
 ];
 
-const medicationTypeSetup = [
-  {type: "Setup Medication Type", options: [{id: 1, name: "Medication One"}, {id: 2, name: "Medication Two"}]},
-  {type: "Categories", options: [{id: 3, name: "Milligrams"}, {id: 4, name: "Microgram"}, { id: 5, name: "Grams"}]},
-  {type: "Brands", options: [{id: 6, name: "6"}, {id: 7, name: "10"}, {id: 8, name: "20"}]},
-]
-const essentailSetup = [
-  {type: "Measurement", options: [{id: 1, name: "Medication One"}, {id: 2, name: "Medication Two"}]},
-  {type: "Presentation", options: [{id: 3, name: "Milligrams"}, {id: 4, name: "Microgram"}, { id: 5, name: "Grams"}]},
-  {type: "Package Per Roll", options: [{id: 6, name: "6"}, {id: 7, name: "10"}, {id: 8, name: "20"}]},
-]
-
 const MedicationSetup = () => {
 
   const [brandData, setBrandData] = useState<MedicationResponseData>();

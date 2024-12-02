@@ -54,7 +54,10 @@ export const defaultRecords = [
     {category: "Tablet", strength: "MG", value: 100, presentation: "Sachet", package: "1x10 tablets"},
 ]
 
-const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void}) => {
+const AddMedicationType = (
+    { isOpen, onClose, fetchingMedicationTypes }: 
+    { isOpen: boolean; onClose: () => void; fetchingMedicationTypes: () => void;}
+) => {
 
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
@@ -82,6 +85,8 @@ const AddMedicationType = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =
             console.log(response);
             if(response.status === 200){
                 setIsLoading(false);
+                fetchingMedicationTypes();
+                onClose();
             }
         } catch (error) {
             setIsLoading(false);
