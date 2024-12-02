@@ -16,7 +16,7 @@ export function ColumnsTnxHistoryFN() {
       ),
       cell: (info) => (
         <div className="pl-6">
-          <p>{info.row.original?.identifier ? info.row.original?.identifier : "None"}</p>
+          <p>{info.row.original?.identifier || "None"}</p>
           <p>{convertDate(info.row.original?.createdAt || null)}</p>
         </div>
       ),
@@ -38,7 +38,7 @@ export function ColumnsTnxHistoryFN() {
       header: () => <p>Document Source</p>,
       cell: (info) => (
         <div>
-          <p className="font-bold">{info.row.original?.fileFormat}</p>
+          <p>{info.row.original?.fileFormat}</p>
         </div>
       ),
     }),
@@ -76,10 +76,11 @@ export function ColumnsTnxHistoryFN() {
       cell: (info) => {
         return (
           <div className="flex gap-4">
-            <Link 
-            href={`/vendors/transactions-history/${info.row.original?.customer?.id}`} 
-            className="text-primary font-medium">
-                View
+            <Link
+              href={`/vendors/transactions-history/${info.row.original?.customer?.id}`}
+              className="text-primary font-medium"
+            >
+              View
             </Link>
           </div>
         );
