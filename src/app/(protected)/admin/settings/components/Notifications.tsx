@@ -31,12 +31,12 @@ const Notifications = () => {
         }
     }, [token]);
 
-  useEffect(() => {
-    if(!token) return;
-    fetchNotifications();
-  },[fetchNotifications, token]);
+    useEffect(() => {
+        if(!token) return;
+        fetchNotifications();
+    },[fetchNotifications, token]);
 
-  const SubscribeToNotification = async(id: number) => {
+    const SubscribeToNotification = async(id: number) => {
     if(id){
         try {
             const response = await requestClient({ token: token }).patch(

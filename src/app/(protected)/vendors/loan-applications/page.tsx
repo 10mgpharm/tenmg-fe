@@ -142,7 +142,7 @@ const LoanApplication = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  console.log(allCustomers)
+  // console.log(allCustomers)
 
   return (
     <div className="p-8">
