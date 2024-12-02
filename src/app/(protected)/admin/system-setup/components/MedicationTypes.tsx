@@ -112,6 +112,7 @@ const MedicationTypes = (
       <AddMedicationType 
       isOpen={isOpen} 
       onClose={onClose}
+      fetchingMedicationTypes={fetchingMedicationTypes}
       />
       <EditMedicationType 
       isOpen={isEditOpen} 
