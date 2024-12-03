@@ -119,10 +119,10 @@ const CustomerManagement = () => {
 
   const handleDownloadTemplate = useCallback(() => {
     const headerMappings = [
-      { key: "name", header: "Name" },
-      { key: "email", header: "Email" },
-      { key: "phone", header: "Phone" },
-      { key: "reference", header: "Reference" },
+      { key: "name", header: "NAME" },
+      { key: "email", header: "EMAIL" },
+      { key: "phone", header: "PHONE" },
+      { key: "reference", header: "REFERENCE" },
     ];
 
     const bodyMappings = [
