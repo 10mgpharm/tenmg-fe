@@ -122,22 +122,22 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
         return (
         <Flex justify={"center"}>
             <Menu>
-                <MenuButton>
-                    <BsThreeDotsVertical className="w-5 h-auto"/>
-                </MenuButton>
-                <MenuList>
-                    <MenuItem>
-                        <Link href={'/admin/products/global-pentazocine'}>View Details</Link>
-                    </MenuItem>
-                    <MenuItem>Edit Product</MenuItem>
-                    <MenuItem onClick={() => onOpenRestock()}>Flag</MenuItem>
-                    {
-                      info?.row?.original?.status === "Available" ? 
-                      <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
-                      : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
-                    }
-                    <MenuItem onClick={() => onOpen()} color="red.500">Remove Product</MenuItem>
-                </MenuList>
+              <MenuButton>
+                  <BsThreeDotsVertical className="w-5 h-auto"/>
+              </MenuButton>
+              <MenuList>
+                  <MenuItem>
+                    <Link href={'/admin/products/global-pentazocine'}>View Details</Link>
+                  </MenuItem>
+                  <MenuItem>Edit Product</MenuItem>
+                  <MenuItem onClick={() => onOpenRestock()}>Flag</MenuItem>
+                  {
+                    info?.row?.original?.status === "Available" ? 
+                    <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
+                    : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
+                  }
+                  <MenuItem onClick={() => onOpen()} color="red.500">Remove Product</MenuItem>
+              </MenuList>
             </Menu>
           </Flex>
         );
