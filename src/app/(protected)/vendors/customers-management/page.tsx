@@ -122,12 +122,18 @@ const CustomerManagement = () => {
       { key: "name", header: "Name" },
       { key: "email", header: "Email" },
       { key: "phone", header: "Phone" },
-      { key: "active", header: "Active" },
+      { key: "reference", header: "Reference" },
+    ];
+
+    const bodyMappings = [
+      { name: "John Doe", email: "john.doe@example.com", phone: "9067636443", reference: "REF123" },
+      { name: "Jane Smith", email: "jane.smith@example.com", phone: "9076543210", reference: "REF456" },
     ];
 
     const templateBlob = createXlsxTemplate(
       headerMappings,
-      "Vendor Customer Template"
+      "Vendor Customer Template", 
+      bodyMappings
     );
 
     saveAs(templateBlob, "vendor_customer_uploads.xlsx");
