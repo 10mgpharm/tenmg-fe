@@ -32,29 +32,76 @@ import {
 import Pagination from "../../suppliers/components/Pagination";
 import { ColumnsTnxHistoryFN } from "./components/table";
 import UploadModel from "../components/UploadModel";
+import { useDebouncedValue } from "@/utils/debounce";
+import { IFilterInput } from "../customers-management/page";
+import FilterDrawer from "../components/FilterDrawer";
 
 const TransactionHistory = () => {
   const [loading, setLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [pageCount, setPageCount] = useState<number>(1);
-  const [tnxHistoryData, setTnxHistoryData] = useState<
-    TransactionHistoryDataProps | null
-  >(null);
+  const [status, setStatus] = useState<string>("");
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [tnxHistoryData, setTnxHistoryData] =
+    useState<TransactionHistoryDataProps | null>(null);
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
+  const applyFilters = (filters: IFilterInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
+  };
+
+  const filterOptions = [
+    { option: "Done", value: "done" },
+    { option: "Pending", value: "pending" },
+  ];
+
   const fetchCustomerTnx = useCallback(
     async (page = 1) => {
       setLoading(true);
+
+      let query = `/vendor/txn_history/get-all-txn?page=${page}`;
+
+      if (debouncedSearch) {
+        query += `&search=${debouncedSearch}`;
+      }
+      if (status) {
+        query += `&status=${status}`;
+      }
+      if (createdAtStart) {
+        query += `&createdAtStart=${
+          createdAtStart.toISOString().split("T")[0]
+        }`;
+      }
+      if (createdAtEnd) {
+        query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+      }
+
       try {
-        const response = await requestClient({ token }).get(
-          `/vendor/txn_history/get-all-txn?page=${page}`
-        );
+        const response = await requestClient({ token }).get(query);
         if (response.status === 200) {
-          setTnxHistoryData(response.data);
+          setTnxHistoryData(response.data.data);
         }
       } catch (error) {
         console.error(error);
@@ -62,7 +109,7 @@ const TransactionHistory = () => {
         setLoading(false);
       }
     },
-    [token]
+    [token, debouncedSearch, status, createdAtStart, createdAtEnd]
   );
 
   useEffect(() => {
@@ -74,11 +121,12 @@ const TransactionHistory = () => {
   const columns = useMemo(() => ColumnsTnxHistoryFN(), []);
 
   const table = useReactTable({
-    data: tableData ? tableData?.data : [],
+    data: tableData ? tableData : [],
     columns,
     state: {
       globalFilter,
     },
+    manualFiltering: true,
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -86,11 +134,13 @@ const TransactionHistory = () => {
 
   const customerNames = useMemo(() => {
     if (tableData.length > 0) {
-      const names = tableData.map((item) => item.customer.name);
+      const names = tableData.map((item) => item.customer?.name);
       return Array.from(new Set(names));
     }
     return [];
   }, [tableData]);
+
+  const tablePagination = useMemo(() => tnxHistoryData?.meta || [], [tnxHistoryData]);
 
   return (
     <div className="p-8">
@@ -104,7 +154,7 @@ const TransactionHistory = () => {
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
             <div
-              // onClick={onOpenFilter}
+              onClick={onOpenFilter}
               className="border cursor-pointer border-gray-300 p-3 rounded-md flex items-center gap-2"
             >
               <CiFilter className="w-5 h-5" />
@@ -166,7 +216,10 @@ const TransactionHistory = () => {
                 ))}
                 <Tr>
                   <Td py={4} w="full" colSpan={columns.length}>
-                    <Pagination meta={tnxHistoryData} setPageCount={setPageCount} />
+                    <Pagination
+                      meta={tablePagination}
+                      setPageCount={setPageCount}
+                    />
                   </Td>
                 </Tr>
               </Tbody>
@@ -183,6 +236,13 @@ const TransactionHistory = () => {
         isSearch
         searchTitle="Customer by Name or ID"
         searchData={customerNames}
+      />
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
       />
     </div>
   );

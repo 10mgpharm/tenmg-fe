@@ -31,7 +31,7 @@ import {
 import Pagination from "../../suppliers/components/Pagination";
 import { ColumnsLoanApplicationFN } from "./components/table";
 import { IFilterInput } from "../customers-management/page";
-import FilterDrawer from "../customers-management/components/FilterDrawer";
+import FilterDrawer from "../components/FilterDrawer";
 import SendApplicationLink from "./components/SendApplicationLink";
 
 const LoanApplication = () => {
