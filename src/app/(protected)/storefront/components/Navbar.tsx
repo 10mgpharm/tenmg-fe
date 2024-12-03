@@ -2,12 +2,6 @@
 
 import { useState } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
   Menu,
   MenuButton,
   MenuItem,
@@ -17,10 +11,6 @@ import {
   HStack,
   Icon,
   Stack,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
   VStack,
   IconButton,
   Button,
@@ -42,7 +32,6 @@ import SearchModal from "./SearchModal";
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
   const router = useRouter();
