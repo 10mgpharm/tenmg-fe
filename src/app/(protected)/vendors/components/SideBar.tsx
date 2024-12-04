@@ -18,15 +18,13 @@ import {
   ReceiptPercentIcon,
 } from "@heroicons/react/24/outline";
 import { classNames } from "@/utils";
-import { usePathname, useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { GiBullseye } from "react-icons/gi";
 import {
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerHeader,
   DrawerOverlay,
   IconButton,
 } from "@chakra-ui/react";
@@ -46,13 +44,13 @@ const navigationItems = [
 const creditScoreItems = [
   {
     name: "Transaction History",
-    href: "/vendors/transactions",
+    href: "/vendors/transactions-history",
     icon: LuFileText,
     current: false,
   },
   {
     name: "Credit Score",
-    href: "/vendors/customers-management",
+    href: "/vendors/credit-score",
     icon: MdPercent,
     current: false,
   },
@@ -61,7 +59,7 @@ const creditScoreItems = [
 const loanItems = [
   {
     name: "Loan Management",
-    href: "/vendors/transactions",
+    href: "/vendors/loan",
     icon: FaBalanceScale,
     current: false,
   },
@@ -155,7 +153,7 @@ const SideBar = () => {
 export default SideBar;
 
 const SidebarContent = ({ pathname }: { pathname: string }) => (
-  <Box className="flex grow flex-col gap-y-5 md:overflow-y-auto bg-white md:px-6 pb-4 pt-8 mt-4 md:border-r border-gray-200">
+  <Box className="flex grow flex-col gap-y-5 md:overflow-y-auto bg-white md:px-6 pb-4 pt-8 md:border-r border-gray-200">
     <nav className="flex flex-1 flex-col">
       <ul role="list" className="flex flex-1 flex-col gap-y-7">
         <RenderSection

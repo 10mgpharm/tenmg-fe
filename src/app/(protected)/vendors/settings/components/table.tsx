@@ -2,8 +2,6 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Icon } from "@chakra-ui/react";
 import { classNames, convertLetterCase } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
-// import Image from "next/image";
-// import Link from "next/link";
 import { IoTrashOutline } from "react-icons/io5";
 import { LuPen } from "react-icons/lu";
 
@@ -11,8 +9,6 @@ const columnHelper = createColumnHelper<any>();
 
 export function ColumnsMemberFN(
   onOpen: () => void,
-  onOpenRestock?: () => void,
-  onOpenDeactivate?: () => void
 ) {
   return [
     columnHelper.accessor("name", {
@@ -23,11 +19,6 @@ export function ColumnsMemberFN(
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
-          {/* <Image
-            src={info?.row?.original?.image}
-            alt=""
-            className="w-10 h-10 rounded-full"
-          /> */}
           <p className="font-medium">{info?.row?.original?.fullName}</p>
         </div>
       ),
@@ -75,12 +66,12 @@ export function ColumnsMemberFN(
         </div>
       ),
     }),
-    columnHelper.accessor("status", {
+    columnHelper.accessor("action", {
       header: ({ column }) => <p></p>,
       cell: (info) => {
         return (
           <Flex justify={"center"} alignItems={"center"} gap={8}>
-            <Icon as={IoTrashOutline} w={6} h={6} cursor={"pointer"} />
+            <Icon as={IoTrashOutline} w={6} h={6} cursor={"pointer"} onClick={() => onOpen()}/>
             <Icon as={LuPen} w={5} h={5} cursor={"pointer"} />
           </Flex>
         );

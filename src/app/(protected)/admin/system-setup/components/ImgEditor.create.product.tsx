@@ -8,7 +8,6 @@ import { Navigation } from "./ImgEditorUtils/Navigation";
 import cn from "classnames";
 import "context-filter-polyfill";
 import { scaleDownImage } from "@/utils/scaleDownImage";
-// import { COLORS } from "@/constants/theme/lightDarkTheme";
 
 interface ImgEditorProps {
   UPLOAD_PRODUCT_IMAGES(files: File[]): Promise<void>;
@@ -77,7 +76,6 @@ const ImgEditor = ({ UPLOAD_PRODUCT_IMAGES, inputRef, onUpload, onLoadImage, set
       const canvas = cropper.getCanvas();
       const base64String = canvas?.toDataURL().replace(/^data:\w+\/\w+;base64,/, "");
       const file: File = base64toFile(base64String as string, filename, mimeType);
-      // console.log(file);
 
       // IF IMAGE SIZE IS BIGGGER THAN 4MB SCALE IT DOWN,
       if (file?.size >= 4 * 1024 * 1024) {
@@ -95,10 +93,6 @@ const ImgEditor = ({ UPLOAD_PRODUCT_IMAGES, inputRef, onUpload, onLoadImage, set
         <Cropper
           src={image}
           ref={cropperRef}
-          // minHeight={1024}
-          // minWidth={1024}
-          // maxHeight={1024}
-          // maxWidth={1024}
           style={{
             width: "100%",
             height: 400,

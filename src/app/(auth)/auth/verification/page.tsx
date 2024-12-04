@@ -28,7 +28,7 @@ const VerificationComponent = () => {
   const sessionData = session.data as NextAuthUserSession;
 
   const searchParams = useSearchParams();
-  // if (!searchParams?.get("token")) redirect("/auth/signup");
+  if (!searchParams?.get("token")) redirect("/auth/signup");
 
   const sessionEmail = Cookies.get("email");
   const [otp, setOtp] = useState<string>("");
@@ -36,10 +36,43 @@ const VerificationComponent = () => {
 
   const token = searchParams.get("token");
 
+  const action = searchParams.get("action") || "signin";
+
+  const from = searchParams.get("from") || `/auth/${action}`;
+
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingResend, setIsLoadingResend] = useState(false);
 
   const [email, setEmail] = useState<string>(null);
+
+  const handleNavigation = async () => {
+    if (action === "signup") {
+      if (sessionData?.user?.entityType === "VENDOR") {
+        await signOut({
+          callbackUrl: `/auth/signup/vendor?name=${sessionData?.user?.name}&email=${sessionData?.user?.email}&businessName=${sessionData?.user?.businessName}&activeTab=vendor`,
+        });
+      } else {
+        await signOut({
+          callbackUrl: `/auth/signup?name=${sessionData?.user?.name}&email=${
+            sessionData?.user?.email
+          }&businessName=${sessionData?.user?.businessName}&tab=${
+            sessionData?.user?.entityType === "SUPPLIER"
+              ? "supplier"
+              : "pharmacy"
+          }&activeTab=${
+            sessionData?.user?.entityType === "SUPPLIER"
+              ? "supplier"
+              : "pharmacy"
+          }`,
+        });
+      }
+    } else {
+      await signOut({
+        callbackUrl: `/auth/signin/`,
+      });
+      router.back();
+    }
+  };
 
   const onSubmit: SubmitHandler<IFormInput> = async () => {
     try {
@@ -63,8 +96,9 @@ const VerificationComponent = () => {
           toast.success(response?.data?.message);
 
           await session.update({
+            ...sessionData,
             user: {
-              ...sessionData,
+              ...sessionData.user,
               completeProfile: false,
               emailVerifiedAt: data?.emailVerifiedAt,
             },
@@ -146,7 +180,7 @@ const VerificationComponent = () => {
               <OtpInput
                 value={otp}
                 onChange={setOtp}
-                 placeholder='TF0B6S'
+                placeholder="TF0B6S"
                 numInputs={6}
                 renderInput={(props) => <input {...props} />}
                 containerStyle="justify-center gap-2 lg:gap-4"
@@ -182,13 +216,11 @@ const VerificationComponent = () => {
 
             <Button
               variant={"link"}
-              onClick={async () => {
-                await signOut({ callbackUrl: "/auth/signup" });
-                router.push("/")
-              }}
+              onClick={handleNavigation}
               className="text-gray-500 text-medium font-normal leading-6 flex justify-center items-center gap-2"
             >
-              <FaArrowLeft /> Return to Sign Up
+              <FaArrowLeft /> Return to
+              {action === "signup" ? " Sign Up" : " Sign In"}
             </Button>
           </div>
         </article>

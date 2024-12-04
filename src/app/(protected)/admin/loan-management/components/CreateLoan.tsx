@@ -50,18 +50,18 @@ const CreateLoan = (
                     </Select>
                 </FormControl>
                 <HStack mt={5} justify={"end"}>
-                    <Flex gap={3}>
-                        <Button w={"120px"} onClick={onClose} variant={"outline"}>Cancel</Button>
-                        <Button 
-                        w={"120px"}
-                        onClick={() => {
-                            onClose()
-                            onOpenSuccess()
-                        }} 
-                        className='bg-primary-500 text-white'>
-                            Apply for Loan
-                        </Button>
-                    </Flex>
+                  <Flex gap={3}>
+                    <Button w={"120px"} onClick={onClose} variant={"outline"}>Cancel</Button>
+                    <Button 
+                    w={"120px"}
+                    onClick={() => {
+                        onClose()
+                        onOpenSuccess()
+                    }} 
+                    className='bg-primary-500 text-white'>
+                        Apply for Loan
+                    </Button>
+                  </Flex>
                 </HStack>
             </form>
           </DrawerBody>

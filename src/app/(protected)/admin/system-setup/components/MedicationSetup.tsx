@@ -1,11 +1,14 @@
 "use client";
 
 import { SETUPTYPE } from "@/app/globalTypes";
-import {  Button, Flex, HStack, Stack, Tag, TagCloseButton, TagLabel, Text } from "@chakra-ui/react"
-import { ChangeEvent, KeyboardEvent, useState } from "react";
+import {  Flex, Stack, Text } from "@chakra-ui/react"
+import { useCallback, useEffect, useState } from "react";
 import { boolean } from "yup";
-import SetUpOptions from "./SetUpOptions";
-import InventorySetup from "./InventorySetup";
+import MedicationTypes from "./MedicationTypes";
+import { useSession } from "next-auth/react";
+import { MedicationResponseData, NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
+import BrandSetup from "./BrandSetup";
 
 export const setupOptions = [
   {
@@ -40,65 +43,119 @@ export const setupOptions = [
   },
 ];
 
-const medicationTypeSetup = [
-  {type: "Setup Medication Type", options: [{id: 1, name: "Medication One"}, {id: 2, name: "Medication Two"}]},
-  {type: "Categories", options: [{id: 3, name: "Milligrams"}, {id: 4, name: "Microgram"}, { id: 5, name: "Grams"}]},
-  {type: "Brands", options: [{id: 6, name: "6"}, {id: 7, name: "10"}, {id: 8, name: "20"}]},
-]
-const essentailSetup = [
-  {type: "Measurement", options: [{id: 1, name: "Medication One"}, {id: 2, name: "Medication Two"}]},
-  {type: "Presentation", options: [{id: 3, name: "Milligrams"}, {id: 4, name: "Microgram"}, { id: 5, name: "Grams"}]},
-  {type: "Package Per Roll", options: [{id: 6, name: "6"}, {id: 7, name: "10"}, {id: 8, name: "20"}]},
-]
-
 const MedicationSetup = () => {
 
-  const [currentView, setCurrentView] = useState("MEDICATION")
+  const [brandData, setBrandData] = useState<MedicationResponseData>();
+  const [categoryData, setCategoryData] = useState<MedicationResponseData>();
+  const [medicationData, setMedicationData] = useState<MedicationResponseData>();
+  const [currentView, setCurrentView] = useState<string>("BRAND");
+
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
+
+  const fetchingMedicationTypes = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/medication-types`
+      );
+      if(response.status === 200){
+        setMedicationData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  },[token]);
+
+  const fetchingBrandTypes = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/brands`
+      );
+      if(response.status === 200){
+        setBrandData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  },[token]);
+
+  const fetchingCategoriesTypes = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/categories`
+      );
+      if(response.status === 200){
+        setCategoryData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  },[token]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingMedicationTypes();
+    fetchingBrandTypes();
+    fetchingCategoriesTypes();
+  }, [token, fetchingMedicationTypes, fetchingBrandTypes, fetchingCategoriesTypes]);
   
   const renderMedicationSetup = (setupType: string) => {
     switch (setupType) {
-      case "MEDICATION":
+      case "BRAND":
         return (
-         <SetUpOptions data={medicationTypeSetup}/>
+         <BrandSetup 
+         data={brandData?.data} 
+         type="Brand"
+         refetchingTypes={fetchingBrandTypes}
+         />
         );
       case "ESSENTIAL":
         return (
-          <SetUpOptions data={essentailSetup}/>
+          <BrandSetup 
+          data={categoryData.data} 
+          type="Category"
+          refetchingTypes={fetchingCategoriesTypes}
+          />
         );
-      case "INVENTORY":
+      case "MEDICATION":
         return (
-          <InventorySetup/>
+          <MedicationTypes 
+          data={medicationData?.data} 
+          fetchingMedicationTypes={fetchingMedicationTypes}/>
         );
     }
   };
 
+  console.log(brandData);
+
   return (
    <Stack className="max-w-5xl">
       <Text fontSize={"1rem"} fontWeight={700} color={"gray.700"}>Medication Setup</Text>
-      <Text color={"gray.500"} fontSize={"small"}>Placeholder goes here</Text>
+      <Text color={"gray.500"} fontSize={"small"}>Perform system related medication setup here</Text>
       <Flex mt={5} gap={8}>
         <Stack gap={4}>
             <Text 
             cursor={"pointer"}
-            fontWeight={currentView === "MEDICATION" ? 600 : 500} 
-            color={currentView === "MEDICATION" ? "gray.700" : "gray.500"} 
-            onClick={() => setCurrentView("MEDICATION")}>
-              Setup Medication Type
+            fontWeight={currentView === "BRAND" ? 600 : 500} 
+            color={currentView === "BRAND" ? "blue.600" : "gray.500"} 
+            onClick={() => setCurrentView("BRAND")}>
+              Brand Setup
             </Text>
             <Text 
               cursor={"pointer"}
               fontWeight={currentView === "ESSENTIAL" ? 600 : 500} 
-              color={currentView === "ESSENTIAL" ? "gray.700" : "gray.500"} 
+              color={currentView === "ESSENTIAL" ? "blue.600" : "gray.500"} 
               onClick={() => setCurrentView("ESSENTIAL")}
               >
-                Setup Essentials
+                Categories
               </Text>
             <Text 
             cursor={"pointer"}
-            fontWeight={currentView === "INVENTORY" ? 600 : 500} 
-            color={currentView === "INVENTORY" ? "gray.700" : "gray.500"}
-            onClick={() => setCurrentView("INVENTORY")}>
-              Setup Inventory
+            fontWeight={currentView === "MEDICATION" ? 600 : 500} 
+            color={currentView === "MEDICATION" ? "blue.600" : "gray.500"}
+            onClick={() => setCurrentView("MEDICATION")}>
+              Medication Type
             </Text>
         </Stack>
         {renderMedicationSetup(currentView)}

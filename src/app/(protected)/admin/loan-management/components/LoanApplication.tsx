@@ -23,24 +23,40 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from '@tanstack/react-table';
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ColumsApplicationFN } from "./applicationTable";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
 import Pagination from "@/app/(protected)/suppliers/components/Pagination";
 import { applicationData } from "@/data/mockdata";
 import CreateLoan from "./CreateLoan";
 import SuccessModal from "./SuccessModal";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import {  NextAuthUserSession } from "@/types";
 
 const LoanApplication = () => {
 
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
     const {isOpen, onOpen, onClose} = useDisclosure();
-    const {isOpen: isOpenSuccess, onOpen: onOpenSuccess, onClose: onCloseSuccess} = useDisclosure();
+    const {
+        isOpen: isOpenSuccess, 
+        onOpen: onOpenSuccess, 
+        onClose: onCloseSuccess
+    } = useDisclosure();
+    const {
+        isOpen: isOpenSend, 
+        onOpen: onOpenSend, 
+        onClose: onCloseSend
+    } = useDisclosure();
+    const [loading, setLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    // const memoizedData = useMemo(() => data, [data]);
+    // const memoizedData = useMemo(() => data, [data])
 
     const table = useReactTable({
         data: applicationData,
@@ -134,12 +150,18 @@ const LoanApplication = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                {/* <Pagination /> */}
             </TableContainer>
         }
         </div>
-        <CreateLoan isOpen={isOpen} onClose={onClose} onOpenSuccess={onOpenSuccess} />
-        <SuccessModal isOpen={isOpenSuccess} onClose={onCloseSuccess}/>
+        <CreateLoan 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        onOpenSuccess={onOpenSuccess} />
+        <SuccessModal 
+        isOpen={isOpenSuccess} 
+        onClose={onCloseSuccess}
+        />
     </div>
   )
 }

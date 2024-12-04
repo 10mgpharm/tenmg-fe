@@ -55,16 +55,16 @@ export const productData = [
 ]
 
 export const productData2 = [
-    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
     {name: "Synthetic opioids",  category: "Injection", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Inactive', image: pill2},
     {name: "Global Pentazocine", category: "Tablet",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Inactive', image: pill1},
-    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
+    {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
     {name: "Global Pentazocine", category: "Syrup",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Inactive', image: pill1},
-    {name: "Global Pentazocine", category: "Injection", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
-    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
-    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'In Stock', image: pill1},
-    {name: "Global Pentazocine", category: "Tablet",  inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'In Stock', image: pill2},
-    {name: "Global Pentazocine", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'In Stock', image: pill2},
+    {name: "Global Pentazocine", category: "Injection", inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
+    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
+    {name: "Global Pentazocine", category: "Injection",  inventory: "In stock", quantity: 100, brand: "Pentazocine (NEML 23.1)", status: 'Active', image: pill1},
+    {name: "Global Pentazocine", category: "Tablet",  inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Active', image: pill2},
+    {name: "Global Pentazocine", category: "Tablet", inventory: "Out of stock", quantity: 0, brand: "Morpent (NEML 23.1)", status: 'Inactive', image: pill2},
 ]
 
 export const productReviews = [
@@ -86,18 +86,18 @@ export const UserData = [
 ]
 
 export const transactionData = [
-    {id: 1, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
-    {id: 2, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Pending"},
-    {id: 11, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Pending"},
-    {id: 12, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Completed"},
-    {id: 3, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
-    {id: 4, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 5, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 6, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 7, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
-    {id: 8, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
-    {id: 9, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
-    {id: 10, name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History",  status: "Pending"},
+    {id: 1, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
+    {id: 2, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Pending"},
+    {id: 11,transaction_type: "payout",  name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Pending"},
+    {id: 12,transaction_type: "payout",  name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting",  status: "Completed"},
+    {id: 3, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Awaiting", status: "Completed"},
+    {id: 4, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 5, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 6, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 7, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "Completed", status: "Successful"},
+    {id: 8, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
+    {id: 9, transaction_type: "payout", name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History", status: "Completed"},
+    {id: 10,transaction_type: "payout",  name: "Chidi Victor", amount: "1000", date: "Jan 6 2024", type: "History",  status: "Pending"},
 ]
 
 export const discountData = [
@@ -186,4 +186,22 @@ export const activityData = [
     {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
     {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
     {type: "event type", description: "Description here", timestamp: "Sep 23, 2023 @ 12:30:54 PM"},
+]
+
+export const customersManagementData = [
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024",  status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", dateCreated: "July 24, 2024", status: "Suspended"},
+]
+
+export const creditScoreData = [
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "650", percentage: "70%", status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "830",percentage: "20%",  status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "250", percentage: "40%", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "623", percentage: "59%", status: "Suspended"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "234", percentage: "29%", status: "Active"},
+    {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "300", percentage: "86%", status: "Suspended"},
 ]

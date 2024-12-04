@@ -1,18 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CiFilter, CiSearch } from "react-icons/ci"
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { 
-    Checkbox,
     Flex, 
-    HStack, 
+    Spinner, 
     Table, 
     TableContainer, 
     Tbody, 
     Td, 
-    Text, 
     Th, 
     Thead, 
     Tr, 
@@ -27,7 +25,6 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import { PRODUCTVIEW } from "@/app/globalTypes";
 import { classNames } from "@/utils";
@@ -41,24 +38,54 @@ import DeactiveModal from "../../suppliers/products/components/DeactiveModal";
 import FilterDrawer from "../../suppliers/products/components/FilterDrawer";
 import { productData } from "@/data/mockdata";
 import { ColumsProductFN } from "./components/table";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession, ProductResponseData } from "@/types";
 
 const Page = () => {
+
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+    const [loading, setLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
+    
     const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+    const [products, setProducts] = useState<ProductResponseData>();
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
     const { isOpen: isOpenDeactivate, onClose: onCloseDeactivate, onOpen: onOpenDeactivate } = useDisclosure();
     const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
 
-    // const memoizedData = useMemo(() => data, [data]);
+    const fetchProducts = useCallback(async () => {
+        setLoading(true);
+        try {
+        const response = await requestClient({ token: token }).get(
+            `/admin/settings/products`
+        );
+        if (response.status === 200) {
+            setProducts(response.data.data);
+        }
+        setLoading(false);
+        } catch (error) {
+        console.error(error);
+        setLoading(false);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if(!token) return;
+        fetchProducts();
+    },[fetchProducts, token]);
+
+    const memoizedData = useMemo(() => products?.data, [products?.data]);
 
     const table = useReactTable({
-        data: productData,
+        data: memoizedData,
         columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate),
         onSortingChange: setSorting,
         state: {
@@ -74,6 +101,8 @@ const Page = () => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
+
+    console.log(products);
     
   return (
     <div className="p-8">
@@ -135,80 +164,87 @@ const Page = () => {
         </div>
         <div className="">
         {
-            productData?.length === 0 
+            loading ? (
+                <Flex justify="center" align="center" height="200px">
+                  <Spinner size="xl" />
+                </Flex>
+            ) :
+            products?.data?.length === 0 
             ? <EmptyOrder 
                 heading={`No Product Yet`} 
                 content={`You currently have no product. All products will appear here.`}
             /> : 
-            currentView === PRODUCTVIEW.LIST ?
-            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-                <Table>
-                    <Thead bg={"#F2F4F7"}>
-                    {table?.getHeaderGroups()?.map((headerGroup) => (
-                        <Tr key={headerGroup.id}>
-                        {/* <Th textTransform={"initial"} px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                // borderColor: "#D0D5DD",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={table.getIsAllRowsSelected()}
-                            onChange={table.getToggleAllRowsSelectedHandler()}
-                            />
-                        </Th> */}
-                        {headerGroup.headers?.map((header) => (
-                            <Th
-                            textTransform={"initial"}
-                            px="0px"
-                            key={header.id}
-                            >
-                            {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
+            products?.data?.length > 0 && (
+            currentView === PRODUCTVIEW.LIST ? (
+                <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                    <Table>
+                        <Thead bg={"#F2F4F7"}>
+                        {table?.getHeaderGroups()?.map((headerGroup) => (
+                            <Tr key={headerGroup.id}>
+                            {/* <Th textTransform={"initial"} px="0px">
+                                <Checkbox
+                                _checked={{
+                                    "& .chakra-checkbox__control": {
+                                    background: "#1A70B8",
+                                    // borderColor: "#D0D5DD",
+                                    borderRadius: 5,
+                                    },
+                                }}
+                                marginLeft={5}
+                                isChecked={table.getIsAllRowsSelected()}
+                                onChange={table.getToggleAllRowsSelectedHandler()}
+                                />
+                            </Th> */}
+                            {headerGroup.headers?.map((header) => (
+                                <Th
+                                textTransform={"initial"}
+                                px="0px"
+                                key={header.id}
+                                >
+                                {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                    )}
+                                </Th>
+                            ))}
+                            </Tr>
+                        ))}
+                        </Thead>
+                        <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                        {products?.data && table?.getRowModel()?.rows?.map((row) => (
+                            <Tr key={row.id}>
+                            {/* <Td px="0px">
+                                <Checkbox
+                                _checked={{
+                                    "& .chakra-checkbox__control": {
+                                    background: "#1A70B8",
+                                    // borderColor: "#D0D5DD",
+                                    borderRadius: 5,
+                                    },
+                                }}
+                                marginLeft={5}
+                                isChecked={row.getIsSelected()}
+                                onChange={row.getToggleSelectedHandler()}
+                                />
+                            </Td> */}
+                            {row.getVisibleCells()?.map((cell) => (
+                                <Td key={cell.id} px="0px">
+                                {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext()
                                 )}
-                            </Th>
+                                </Td>
+                            ))}
+                            </Tr>
                         ))}
-                        </Tr>
-                    ))}
-                    </Thead>
-                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {table?.getRowModel()?.rows?.map((row) => (
-                        <Tr key={row.id}>
-                        {/* <Td px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                // borderColor: "#D0D5DD",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={row.getIsSelected()}
-                            onChange={row.getToggleSelectedHandler()}
-                            />
-                        </Td> */}
-                        {row.getVisibleCells()?.map((cell) => (
-                            <Td key={cell.id} px="0px">
-                            {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                            )}
-                            </Td>
-                        ))}
-                        </Tr>
-                    ))}
-                    </Tbody>
-                </Table>
-                <Pagination /> 
-            </TableContainer>
-            : <GridList data={productData}/>
+                        </Tbody>
+                    </Table>
+                    {/* <Pagination />  */}
+                </TableContainer>
+            )
+            : <GridList data={productData}/>)
         }
         </div>
         <DeleteModal isOpen={isOpen} onClose={onClose}/>

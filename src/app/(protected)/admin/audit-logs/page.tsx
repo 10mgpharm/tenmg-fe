@@ -103,7 +103,7 @@ const Page = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                {/* <Pagination /> */}
             </TableContainer>
         }
         </div>

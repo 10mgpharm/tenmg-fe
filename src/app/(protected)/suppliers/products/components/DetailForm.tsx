@@ -1,22 +1,40 @@
 "use client";
 
+import { IFormInput } from "@/app/(protected)/admin/products/new/page";
+import { MedicationData } from "@/types";
+import { convertArray } from "@/utils/convertSelectArray";
 import { 
     Center,
     FormControl, 
     FormLabel, 
     HStack,  
-    Input, 
-    Select, 
+    Input,  
     Text, 
     Textarea, 
     useToast
 } from "@chakra-ui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { Control, Controller, FieldErrors, FieldValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
+import Select from 'react-select';
 
-const DetailForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>}) => {
+interface IChildComponentProps {
+    register: UseFormRegister<IFormInput>;
+    control: Control<IFormInput>;
+    errors: FieldErrors<FieldValues>;
+    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>; 
+    brands: MedicationData[];
+    medications: MedicationData[]; 
+    categories: MedicationData[];
+    setValue: UseFormSetValue<IFormInput>;
+}
+  
+
+const DetailForm: React.FC<IChildComponentProps> = (
+    {setSteps, brands, medications, categories, errors, control, register, setValue}
+) => {
 
     const toast = useToast();
     const router = useRouter();
@@ -33,6 +51,7 @@ const DetailForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' | '
             position: "bottom"
         })
         const inputFile = event.target.files[0];
+        setValue("thumbnailFile", inputFile);
         if (event?.target?.files?.length > 0) {
             setIconFile(URL.createObjectURL(inputFile));
         }
@@ -51,32 +70,89 @@ const DetailForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' | '
         </div>
         <h3 className="font-semibold text-xl text-gray-700 my-5">Add Product</h3>
         <form className="space-y-5">
-            <FormControl>
+            <FormControl isInvalid={!!errors.medicationTypeName}>
                 <FormLabel>Select Medication</FormLabel>
-                <Select>
-                    <option value=""></option>
-                </Select>
+                <Controller
+                    name="medicationTypeName"
+                    control={control}
+                    render={({ field }) => {
+                    return(
+                        <Select 
+                        classNamePrefix="select"
+                        isClearable={true}
+                        isSearchable={true}
+                        {...field}
+                        name="medicationTypeName"
+                        options={convertArray(medications)} 
+                    />
+                    )}}
+                />
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={!!errors.name}>
                 <FormLabel>Product Name</FormLabel>
-                <Input placeholder=""/>
+                <Input 
+                id="name"
+                placeholder="" 
+                type="text"
+                isInvalid={!!errors.name}
+                _focus={{
+                    border: !!errors.name ? "red.300" : "border-gray-300",
+                }}
+                {...register("name", {
+                    required: true,
+                })}
+                />
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={!!errors.description}>
                 <FormLabel>Product Description</FormLabel>
-                <Textarea placeholder="Enter a description"/>
+                <Textarea 
+                id="description"
+                placeholder="Enter a description"
+                isInvalid={!!errors.description}
+                _focus={{
+                    border: !!errors.description ? "red.300" : "border-gray-300",
+                }}
+                {...register("description", {
+                    required: true,
+                })}
+                />
             </FormControl>
             <HStack>
-                <FormControl>
+                <FormControl isInvalid={!!errors.brandName}>
                     <FormLabel>Brand</FormLabel>
-                    <Select>
-                        <option value=""></option>
-                    </Select>
+                    <Controller
+                    name="brandName"
+                    control={control}
+                    render={({ field }) => {
+                    return(
+                        <Select 
+                        classNamePrefix="select"
+                        isClearable={true}
+                        isSearchable={true}
+                        {...field}
+                        name="brandName"
+                        options={convertArray(brands)} 
+                    />
+                    )}}
+                    />
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!errors.categoryName}>
                     <FormLabel>Category</FormLabel>
-                    <Select>
-                        <option value=""></option>
-                    </Select>
+                    <Controller
+                    name="categoryName"
+                    control={control}
+                    render={({ field }) => {
+                    return(
+                        <Select 
+                        classNamePrefix="select"
+                        isClearable={true}
+                        isSearchable={true}
+                        {...field}
+                        name="categoryName"
+                        options={convertArray(categories)} 
+                    />
+                    )}}
+                    />
                 </FormControl>
             </HStack>
             <div className="mb-8">
@@ -120,6 +196,10 @@ const DetailForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' | '
                         </p>
                     </div>
                 </Center>
+                {
+                    iconFile &&
+                    <img src={iconFile} alt="" className="w-10 h-10 mt-3 rounded-sm" />
+                }
             </div>
         </form>
         <div className="flex gap-4 justify-end mt-5 mb-6">

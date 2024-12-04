@@ -11,13 +11,13 @@ import {
     useReactTable 
 } from '@tanstack/react-table';
 import { ColumsOrderFN } from './table';
-import { Flex, HStack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import Pagination from '../../components/Pagination';
 
 const AllOrders = ({data, type}: {data: any, type: string}) => {
 
     const onOpen = () => {}
+    const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -42,7 +42,16 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
-  return (
+
+    const meta = {
+        meta: {
+            links: [
+                {label: 'Previous', active: false},
+                {label: 1, active: true}
+            ]
+        }
+    }
+    return (
     <div>
         {
             data?.length === 0 
@@ -87,7 +96,7 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                <Pagination meta={meta} setPageCount={setPageCount}/>
             </TableContainer>
         }
     </div>

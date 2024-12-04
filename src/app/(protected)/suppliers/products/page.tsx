@@ -28,7 +28,6 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import { ColumsProductFN } from "./components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
@@ -41,10 +40,11 @@ import Link from "next/link";
 import FilterDrawer from "./components/FilterDrawer";
 import Pagination from "../components/Pagination";
 import { productData2 } from "@/data/mockdata";
-
+import ModalWrapper from "../components/ModalWrapper";
 
 const Products = () => {
 
+    const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -54,6 +54,7 @@ const Products = () => {
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
+    const { isOpen: isOpenActivate, onClose: onCloseActivate, onOpen: onOpenActivate } = useDisclosure();
     const { isOpen: isOpenDeactivate, onClose: onCloseDeactivate, onOpen: onOpenDeactivate } = useDisclosure();
     const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
 
@@ -61,7 +62,7 @@ const Products = () => {
 
     const table = useReactTable({
         data: productData2,
-        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate),
+        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate),
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -76,6 +77,15 @@ const Products = () => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
+
+    const meta = {
+        meta: {
+            links: [
+                {label: 'Previous', active: false},
+                {label: 1, active: true}
+            ]
+        }
+    }
 
   return (
     <div className="p-8">
@@ -209,14 +219,49 @@ const Products = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination />
+                <Pagination meta={meta} setPageCount={setPageCount}/>
             </TableContainer>
             : <GridList data={productData2}/>
         }
         </div>
         <DeleteModal isOpen={isOpen} onClose={onClose}/>
         <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock}/>
-        <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate}/>
+        <ModalWrapper
+        isOpen={isOpenDeactivate} 
+        onClose={onCloseDeactivate}
+        title="Deactivate Product"
+        >
+            <div className="mb-8">
+                <p className='leading-6 text-gray-500 mt-2'>
+                You are about to deactivate Global Pentazocine, once deactivated, this product will not appear in your public shop.
+                There is no fee for reactivating a product.
+                </p>
+                <div className="flex flex-col gap-3 mt-8">
+                    <button className='bg-primary-600 text-white p-3 rounded-md'>
+                        Deactivate
+                    </button>
+                    <button className='cursor-pointer mt-2' onClick={onCloseDeactivate}>Cancel</button>
+                </div>
+            </div>
+        </ModalWrapper>
+        <ModalWrapper
+        isOpen={isOpenActivate} 
+        onClose={onCloseActivate}
+        title="Activate Product"
+        >
+            <div className="mb-8">
+                <p className='leading-6 text-gray-500 mt-2'>
+                You are about to activate Global Pentazocine, once activated, this product will not appear in your public shop.
+                There is no fee for activating a product.
+                </p>
+                <div className="flex flex-col gap-3 mt-8">
+                    <button className='bg-primary-600 text-white p-3 rounded-md'>
+                        Activate
+                    </button>
+                    <button className='cursor-pointer mt-2' onClick={onCloseActivate}>Cancel</button>
+                </div>
+            </div>
+        </ModalWrapper>
         <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} />
     </div>
   )

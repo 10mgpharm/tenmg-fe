@@ -61,7 +61,7 @@ const SideBar = () => {
                   <li>
                       <ul role="list" className="-mx-2 space-y-6">
                           {navigation.map((item) => {
-                          const isActive = item.href === pathname;
+                          const isActive = pathname.includes(item.href);
                           return(
                             <li key={item.name}>
                                 <a
@@ -112,7 +112,9 @@ const SideBar = () => {
               <li>
                 <ul role="list" className="-mx-2 space-y-8">
                   {navigation.map((item) => {
-                  const isActive = item.href === pathname;
+                  const isActive = pathname === item.href;
+                  // const isActive = pathname.includes(item.href);
+                  // let isActive = new RegExp(`^${item.href.replace(/\d+/g, '\\d+')}.*$`).test(pathname);
                   return(
                     <li key={item.name}>
                       <a
