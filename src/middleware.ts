@@ -29,11 +29,9 @@ export async function middleware(request: NextRequest) {
     const allowedPrefix = allowedRoutes[entityType];
 
     if (allowedPrefix && !pathname.startsWith(allowedPrefix)) {
-      console.log(`Redirecting ${entityType} to their allowed route: ${allowedPrefix}`);
       return NextResponse.redirect(new URL(allowedPrefix, request.url));
     }
   } else {
-    console.log('No user is logged in');
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 

@@ -77,7 +77,6 @@ const AffordabilityModel = ({
 
   const onSubmit = async (data: FormValues) => {
     try {
-      console.log("Submitted Data:", data);
       toast.success("Affordability criteria saved successfully.");
       if (reloadCustomers) reloadCustomers();
       reset();

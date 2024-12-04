@@ -57,7 +57,7 @@ const GeneralSettings = () => {
         ...value,
       });
       const { data }: ResponseDto<User> = response.data;
-      console.log(data.name);
+
       if (response.status === 200) {
         toast.success(response.data.message);
         setIsLoading(false);
@@ -105,7 +105,7 @@ const GeneralSettings = () => {
       const response = await requestClient({
         token: sessionData.user.token,
       }).get("/account/2fa/setup");
-      console.log(response);
+
       setIsLoading2FA(false);
       if (response.status === 200) {
         setQrcode(response.data?.data);

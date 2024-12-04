@@ -69,7 +69,6 @@ const BusinessLogicModal = ({ isOpen, onClose }: BusinessLogicModalProps) => {
   });
 
   const onSubmit = async (data: FormValues) => {
-    console.log("Submitted Data:", data);
     toast.success("Business Logic Criteria saved successfully!");
   };
 

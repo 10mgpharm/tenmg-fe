@@ -45,8 +45,6 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
         fetchCustomerTnx()
     }, [fetchCustomerTnx, token]);
 
-    console.log(tnxHistoryData)
-
     return (
     <div className="p-8">
         <Flex cursor={"pointer"} onClick={() => router.back()} align={"center"} gap={2}>

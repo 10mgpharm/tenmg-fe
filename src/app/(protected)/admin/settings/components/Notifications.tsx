@@ -42,7 +42,6 @@ const Notifications = () => {
             const response = await requestClient({ token: token }).patch(
                 `/account/notifications/${id}/subscription`
             );
-            console.log(response)
             if(response.status === 200){
                 toast.success(response.data?.message)
             }

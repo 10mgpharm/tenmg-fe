@@ -112,7 +112,6 @@ export const authOptions: NextAuthOptions = {
           };
         }
       }
-      console.log(params?.user, "user")
       if (params.user) {
         params.token.id = params.user.id;
         params.token.name = params.user.name;
@@ -136,7 +135,6 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (params?.trigger === "update") {
-        console.log(params?.session, "session")
         params.token.completeProfile = params?.session.user?.completeProfile;
         params.token.emailVerifiedAt = params?.session.user?.emailVerifiedAt;
         params.token.name = params?.session.user?.name;
