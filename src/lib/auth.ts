@@ -9,10 +9,10 @@ export const authOptions: NextAuthOptions = {
   secret: config.nextAuthSecret,
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24, // 1hour,
+    maxAge: 60 * 60, // 1hour,
   },
   jwt: {
-    maxAge: 60 * 60 * 24, // 1hour,
+    maxAge: 60 * 60, // 1hour,
   },
   providers: [
     CredentialsProvider({
