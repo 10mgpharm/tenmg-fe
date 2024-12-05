@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
 import Footer from "./components/Footer";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const appName = config.appName;
 
@@ -19,8 +21,8 @@ export default async function StorefrontLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session: NextAuthUserSession = await getServerSession(authOptions);
-  if (!session) redirect("/auth/signin");
+//   const session: NextAuthUserSession = await getServerSession(authOptions);
+//   if (!session) redirect("/auth/signin");
 
   return (
     <div className="max-w-screen-2xl mx-auto">
