@@ -61,6 +61,7 @@ const GeneralSettings = () => {
             toast.success(response.data.message);
             setIsLoading(false);
             await session.update({
+                ...sessionData,
                 user: {
                     ...sessionData.user,
                     name:data.name,

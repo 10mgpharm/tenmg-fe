@@ -14,7 +14,7 @@ import {
   Image as ChakraImage,
   Link,
 } from "@chakra-ui/react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { redirect, useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -22,6 +22,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
 import CustomRadio from "./CustomRadio";
+import { cn } from "@/lib/utils";
 
 interface IFormInput {
   businessName: string;
@@ -36,7 +37,8 @@ export default function BusinessInformationForm({
   sessionData,
 }: {
   sessionData: NextAuthUserSession;
-}) {
+  }) {
+  const session = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>(null);
   const [provider, setProvider] = useState<string>(null);
@@ -44,7 +46,7 @@ export default function BusinessInformationForm({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  if (!searchParams?.get("token")) redirect("/auth/signin");
+  if (!searchParams?.get("token")) router.replace("/auth/signin");
   const token = searchParams.get("token");
 
   const action = searchParams.get("action") || "signup";
@@ -91,6 +93,8 @@ export default function BusinessInformationForm({
         }
       );
 
+      console.log({ response, sessionData })
+
       setIsLoading(false);
 
       if (response.status === 200) {
@@ -98,14 +102,21 @@ export default function BusinessInformationForm({
           `You have successfully completed Sign up process. Redirect to Login....`
         );
 
-        setTimeout(async () => {
-          // signout so user can login with the newly created account
-          await signOut();
-        }, 5000);
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            completeProfile: true,
+          },
+        });
+        router.replace('/');
+
       } else {
         toast.error(`Sign up failed: ${response.data.message}`);
       }
     } catch (error) {
+      console.log({ error });
+
       setIsLoading(false);
       const errorMessage = handleServerErrorMessage(error);
       toast.error(`Sign up failed: ${errorMessage}`);
@@ -199,6 +210,7 @@ export default function BusinessInformationForm({
                   {...register("businessName", {
                     required: "Business Name is required",
                   })}
+                  className={cn(isLoading || provider === "credentials" && '!bg-gray-300 !text-black')}
                 />
                 <FormErrorMessage>
                   {errors.businessName?.message}
@@ -262,6 +274,7 @@ export default function BusinessInformationForm({
                       message: "Invalid email address",
                     },
                   })}
+                  className={cn(isLoading || provider === "credentials" && '!bg-gray-300 !text-black')}
                 />
                 <FormErrorMessage>
                   {errors.businessEmail?.message}
