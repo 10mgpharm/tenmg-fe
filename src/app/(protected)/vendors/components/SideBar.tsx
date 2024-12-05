@@ -43,7 +43,7 @@ const navigationItems = [
 
 const creditScoreItems = [
   {
-    name: "Transaction History",
+    name: "Transaction Evaluation",
     href: "/vendors/transactions-history",
     icon: LuFileText,
     current: false,
