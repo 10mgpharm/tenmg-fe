@@ -20,19 +20,19 @@ import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 
-interface UploadModelProps {
+interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   handleDownload: () => void;
   reloadCustomers: () => void; // Function to reload customer data in the parent component
 }
 
-const UploadModel = ({
+const UploadModal = ({
   isOpen,
   onClose,
   handleDownload,
   reloadCustomers,
-}: UploadModelProps) => {
+}: UploadModalProps) => {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadLoading, setIsUploadLoading] = useState<boolean>(false);
@@ -247,4 +247,4 @@ const UploadModel = ({
   );
 };
 
-export default UploadModel;
+export default UploadModal;

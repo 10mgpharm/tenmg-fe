@@ -26,7 +26,6 @@ import { ColumnsCustomerFN } from "./components/table";
 import Link from "next/link";
 import FilterDrawer from "../components/FilterDrawer";
 import Pagination from "../../suppliers/components/Pagination";
-import UploadModel from "../components/UploadModel";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
@@ -36,6 +35,7 @@ import { createXlsxTemplate } from "@/utils/createXlsxTemplate";
 import SearchInput from "../components/SearchInput";
 import EmptyResult from "../components/EmptyResult";
 import { useDebouncedValue } from "@/utils/debounce";
+import UploadModal from "../components/UploadModal";
 
 export interface IFilterInput {
   endDate?: Date | null;
@@ -267,7 +267,7 @@ const CustomerManagement = () => {
           />
         )}
       </div>
-      <UploadModel
+      <UploadModal
         isOpen={isOpen}
         onClose={onClose}
         handleDownload={handleDownloadTemplate}

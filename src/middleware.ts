@@ -10,10 +10,8 @@ export const config = {
 };
 
 export async function middleware(request: NextRequest) {
-
   // Retrieve the JWT token
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET }) as NextAuthUserSessionWithToken;
-  console.log('middleware => ', { url: request.url, token });
 
   if (token) {
     const {
