@@ -33,10 +33,10 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
-            <Image src={info?.row?.original?.image} alt="" className="w-10 h-10 rounded-full"/>
-            <p className="font-medium">
-              {info?.row?.original?.name} 
-            </p>
+          <Image src={info?.row?.original?.image} alt="" className="w-10 h-10 rounded-full"/>
+          <p className="font-medium">
+            {info?.row?.original?.name} 
+          </p>
         </div>
       ),
     }),
