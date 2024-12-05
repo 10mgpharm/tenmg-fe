@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, forwardRef } from "react";
+import React, { useState, useRef, forwardRef, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   FormControl,
@@ -10,19 +10,29 @@ import {
   Button,
   Box,
   Text,
+  Flex,
 } from "@chakra-ui/react";
-import { IoCalendarOutline, IoCloudDoneOutline } from "react-icons/io5";
+import { IoCloudDoneOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import requestClient from "@/lib/requestClient";
-import { NextAuthUserSession, ResponseDto, User } from "@/types";
+import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import DateComponent from "@/app/(protected)/suppliers/products/components/DateComponent";
+import { BusinessStatus } from "@/constants";
+import moment from "moment";
 
 interface IFormInput {
   licenseNumber: string;
   expiryDate: Date | null;
   cacDocument: File | null;
+}
+
+type BusinessLicense = {
+  expiryDate: string;
+  licenseFile: string;
+  licenseNumber: string;
+  licenseVerificationStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
@@ -35,6 +45,8 @@ const LicenseUpload = () => {
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
+
+  const [businessLicense, setBusinessLisense] = useState<BusinessLicense>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
@@ -92,12 +104,25 @@ const LicenseUpload = () => {
       }).post("/vendor/settings/license", formData);
       if (response.status === 200) {
         toast.success(response.data.message);
-          await session.update({
+
+        // update session here
+        await session.update({
+          ...sessionData,
           user: {
             ...sessionData.user,
-           businessStatus: "AWAITING_APPROVAL"
+           businessStatus: BusinessStatus.PENDING_APPROVAL 
           },
         });
+
+        const { expiryDate, licenseFile, licenseNumber, licenseVerificationStatus } = response.data?.data;
+        
+        setBusinessLisense({
+          expiryDate,
+          licenseFile,
+          licenseNumber,
+          licenseVerificationStatus,
+        });
+
         setIsLoading(false);
       } else {
         toast.error(`License upload failed: ${response.data.message}`);
@@ -119,7 +144,76 @@ const LicenseUpload = () => {
     mode: "onChange",
   });
 
+  // handle fetch license
+  useEffect(() => {
+    const fetchLicense = async () => {
+      setIsLoading(true);
+      try {
+        const response = await requestClient({
+          token: sessionData.user.token,
+        }).get("/vendor/settings/license");
+        setIsLoading(false);
+
+        if (response.status === 200) {
+          const { expiryDate, licenseFile, licenseNumber, licenseVerificationStatus } = response.data?.data;
+          setBusinessLisense({
+            expiryDate,
+            licenseFile,
+            licenseNumber,
+            licenseVerificationStatus,
+          });
+        }
+      } catch (error) {
+        setIsLoading(false);
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(`License fetch failed: ${errorMessage}`);
+      }
+    };
+    if (sessionData?.user?.token) fetchLicense();
+  }, [sessionData?.user?.token]);
+
+  if (sessionData?.user?.businessStatus === BusinessStatus.PENDING_APPROVAL) {
+    return (
+      <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5">
+        <Text className="text-left text-sm font-medium text-red-500">
+          Your business CAC and License has been updated. Please check back later for the approval status.
+        </Text>
+        {/* preview with document link  */}
+        {isLoading && (
+          <Flex direction={'column'} gap={5} className="animate-pulse">
+            <Text className="text-left text-sm font-medium text-gray-500 w-full h-5">
+              &nbspc;
+            </Text>
+            <Text className="text-left text-sm font-medium text-gray-500 w-full h-5">
+              &nbspc;
+            </Text>
+            <Text className="text-left text-sm font-medium text-gray-500 w-9/12 h-5">
+              &nbspc;
+            </Text>
+          </Flex>
+        )}
+        {!isLoading && (
+          <Flex direction={'column'} gap={5}>
+            <Text className="text-left text-sm font-medium text-gray-500">
+              CAC Document:
+              <a target="_blank" href={businessLicense?.licenseFile} className="font-bold cursor-pointer underline">
+                View Document
+              </a>
+            </Text>
+            <Text className="text-left text-sm font-medium text-gray-500">
+              License Number: <span className="font-bold">{businessLicense?.licenseNumber}</span>
+            </Text>
+            <Text className="text-left text-sm font-medium text-gray-500">
+              Expiry Date: <span className="font-bold">{businessLicense?.expiryDate ? moment(businessLicense?.expiryDate)?.format('MMMM Do YYYY') : 'N/A'}</span>
+            </Text>
+          </Flex>
+        )}
+      </Box>
+    )
+  }
+
   return (
+    <>
     <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200">
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -226,6 +320,7 @@ const LicenseUpload = () => {
         </Button>
       </form>
     </Box>
+    </>
   );
 };
 

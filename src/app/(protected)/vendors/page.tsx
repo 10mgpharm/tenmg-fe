@@ -9,7 +9,11 @@ const Vendor = async () => {
   const data: NextAuthUserSession | null = await getServerSession(authOptions);
   return (
     <div className="p-8">
-      {data?.user?.businessStatus === BusinessStatus.PENDING_VERIFICATION ? (
+      {[
+        BusinessStatus.PENDING_VERIFICATION,
+        BusinessStatus.PENDING_APPROVAL,
+      ].includes(data?.user?.businessStatus) ?
+        (
         <EmptyStateDashboard />
       ) : (
         <VendorDashboard />

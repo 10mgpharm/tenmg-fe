@@ -97,7 +97,7 @@ export default function BusinessInformationForm({
 
       if (response.status === 200) {
         toast.success(
-          `You have successfully completed Sign up process. Redirect to Login....`
+          `You have successfully completed sign up process. Redirect to Dashboard....`
         );
 
         await session.update({
