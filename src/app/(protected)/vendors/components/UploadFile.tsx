@@ -34,7 +34,7 @@ const UploadFile: React.FC<FileUploadProps> = ({
       } else {
         setFile(selectedFile);
         onUpload(selectedFile);
-        toast.success(uploadSuccessMessage);
+        toast.info(uploadSuccessMessage);
       }
     }
   };
@@ -53,7 +53,7 @@ const UploadFile: React.FC<FileUploadProps> = ({
       } else {
         setFile(droppedFile);
         onUpload(droppedFile);
-        toast.success(uploadSuccessMessage);
+        toast.info(uploadSuccessMessage);
       }
     }
   };
