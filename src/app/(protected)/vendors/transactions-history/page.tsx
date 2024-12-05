@@ -173,8 +173,8 @@ const TransactionHistory = () => {
           </Flex>
         ) : tableData.length === 0 ? (
           <EmptyResult
-            heading="Nothing to show here yet"
-            content="You don’t have any transaction history yet. When you do, they’ll appear here."
+            heading="No record available"
+            content=""
           />
         ) : (
           <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
