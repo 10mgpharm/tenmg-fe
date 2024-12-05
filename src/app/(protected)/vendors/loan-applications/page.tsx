@@ -142,8 +142,6 @@ const LoanApplication = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  // console.log(allCustomers)
-
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Loan Application</h3>

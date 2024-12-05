@@ -127,8 +127,6 @@ const MedicationSetup = () => {
     }
   };
 
-  console.log(brandData);
-
   return (
    <Stack className="max-w-5xl">
       <Text fontSize={"1rem"} fontWeight={700} color={"gray.700"}>Medication Setup</Text>

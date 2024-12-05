@@ -71,8 +71,6 @@ const Members = ({
     getSortedRowModel: getSortedRowModel(),
   });
 
-  console.log(allMembersData);
-
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       setIsLoading(true);

@@ -77,7 +77,7 @@ export function ColumnsTnxHistoryFN() {
         return (
           <div className="flex gap-4">
             <Link
-              href={`/vendors/transactions-history/${info.row.original?.customer?.id}`}
+              href={`/vendors/transactions-history/${info.row.original?.id}`}
               className="text-primary font-medium"
             >
               View

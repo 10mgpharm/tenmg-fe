@@ -11,13 +11,13 @@ const AddProducts = () => {
 
     switch (steps) {
         case 'details':
-            return <DetailForm setSteps={setSteps}/>
+            // TODO: fix this form error
+            // return <DetailForm setSteps={setSteps}/>
         case 'essentials':
             return <EssentialForm setSteps={setSteps}/>
         case 'inventory':
             return <InventoryForm setSteps={setSteps}/>
         default:
-            console.log('Fruit not recognized.');
             break;
     }
   return (

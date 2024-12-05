@@ -32,8 +32,6 @@ export default function SignupTab() {
     window.history.replaceState(null, "", newUrl);
   };
 
-  console.log(tabIndex)
-
   return (
     <Tabs
       variant="unstyled"

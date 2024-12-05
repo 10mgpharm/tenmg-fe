@@ -113,8 +113,9 @@ const TransactionHistory = () => {
   );
 
   useEffect(() => {
+    if(!token) return
     fetchCustomerTnx(pageCount);
-  }, [fetchCustomerTnx, pageCount]);
+  }, [fetchCustomerTnx, pageCount, token]);
 
   const tableData = useMemo(() => tnxHistoryData?.data || [], [tnxHistoryData]);
 
