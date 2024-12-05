@@ -186,13 +186,16 @@ const VendorDashboard = () => {
     },
   };
 
+  const isVisible = sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
+
   return (
     <>
-      <NoticeCard
-        setOpen={onOpen}
-        isVisible={!Object.values(BusinessStatus).includes(BusinessStatus.VERIFIED)}
-        status={sessionData?.user?.businessStatus}
-      />
+      {isVisible && (
+        <NoticeCard
+          setOpen={onOpen}
+          status={sessionData?.user?.businessStatus}
+        />
+      )}
 
       <Box mx="auto" mt={5}>
         {/* Main Content */}

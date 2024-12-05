@@ -24,6 +24,7 @@ import SideCard from "./SideCard";
 import { ArrowDown } from "lucide-react";
 import EmptyCard from "../../suppliers/components/EmptyCard";
 import CompleteAccountModal from "./CompleteAccountModal";
+import { BusinessStatus } from "@/constants";
 
 interface IVendorDashboard {
   totalCustomers: number;
@@ -36,7 +37,7 @@ interface IVendorDashboard {
 
 const EmptyStateDashboard = () => {
   const session = useSession();
-  const data = session.data as NextAuthUserSession;
+  const sessionData = session.data as NextAuthUserSession;
 
   const vendorData: IVendorDashboard = {
     totalCustomers: 0,
@@ -48,18 +49,14 @@ const EmptyStateDashboard = () => {
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
       <NoticeCard
         setOpen={onOpen}
-        isVisible={
-          data?.user?.businessStatus === "PENDING_VERIFICATION" ||
-          data?.user?.businessStatus === "PENDING_APPROVAL"
-        }
-        status={data?.user?.businessStatus}
+        status={sessionData?.user?.businessStatus}
       />
 
-      {/* <NoticeCard setOpen={onOpen} /> */}
       <Flex
         justifyContent="space-between"
         mt={4}
