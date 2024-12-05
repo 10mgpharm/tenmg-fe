@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(allowedPrefix, request.url));
     }
   } else {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return NextResponse.redirect(new URL('/auth/signin', request.url));
   }
 
   return NextResponse.next();
