@@ -122,8 +122,6 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
 
       setIsLoading(false);
 
-      console.log('signup callback loginResponse', loginResponse);
-
       if (!loginResponse.error && loginResponse.ok && loginResponse.url) {
         return (window.location.href = loginResponse.url);
       }

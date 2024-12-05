@@ -15,7 +15,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { signOut, useSession } from "next-auth/react";
-import { redirect, useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -93,8 +93,6 @@ export default function BusinessInformationForm({
         }
       );
 
-      console.log({ response, sessionData })
-
       setIsLoading(false);
 
       if (response.status === 200) {
@@ -115,8 +113,6 @@ export default function BusinessInformationForm({
         toast.error(`Sign up failed: ${response.data.message}`);
       }
     } catch (error) {
-      console.log({ error });
-
       setIsLoading(false);
       const errorMessage = handleServerErrorMessage(error);
       toast.error(`Sign up failed: ${errorMessage}`);
