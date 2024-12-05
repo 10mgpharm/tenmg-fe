@@ -12,6 +12,7 @@ import { NextAuthUserSession } from "@/types";
 import { Badge, FormControl, FormLabel, Switch, Tag, TagLabel } from "@chakra-ui/react";
 import { redirect, useRouter } from "next/navigation";
 import { convertLetterCase } from "@/utils";
+import GreetingComponent from "./GreetingComponent";
 
 const TopNavBar = () => {
   const session = useSession();
@@ -61,12 +62,7 @@ const TopNavBar = () => {
               height={75}
             />
           </div>
-          <div className="hidden md:block text-xs md:text-base">
-            <h4 className="text-gray-700 font-semibold">
-              Good Afternoon, {data?.user.name}
-            </h4>
-            <p className="text-gray-400 md:text-sm">Monday, 20th May, 5:25pm</p>
-          </div>
+          <GreetingComponent />
         </div>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
           {data?.user?.entityType === "VENDOR" && (

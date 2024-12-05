@@ -1,20 +1,6 @@
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
-
-export enum BusinessStatus {
-  PENDING_VERIFICATION = "PENDING_VERIFICATION",
-  VERIFIED = "VERIFIED",
-  SUSPENDED = "SUSPENDED",
-  BANNED = "BANNED",
-  PENDING_APPROVAL = "PENDING_APPROVAL",
-}
-
-export enum BusinessType {
-  VENDOR = "VENDOR",
-  SUPPLIER = "SUPPLIER",
-  ADMIN = "ADMIN",
-  CUSTOMER_PHARMACY = "CUSTOMER_PHARMACY",
-}
+import { BusinessStatus } from "../constants/enum";
 
 export interface Account {
   providerAccountId: number | string;
