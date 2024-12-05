@@ -10,18 +10,24 @@ interface HeaderMapping {
 /**
  * Generates an XLSX template with the given headers and returns it as a Blob.
  * @param headerMappings - An array of objects mapping data keys to display names.
+ * @param bodyRows - Optional array of objects to populate the rows under the headers.
  * @param sheetName - The name of the worksheet.
  * @returns A Blob representing the generated XLSX file.
  */
 export function createXlsxTemplate(
   headerMappings: HeaderMapping[],
-  sheetName: string = 'Template'
+  sheetName: string = 'Template',
+  bodyRows: Record<string, any>[] = []
 ): Blob {
   // Extract display names for the header row
   const headers = headerMappings.map((mapping) => mapping.header);
 
+  const rows = bodyRows.map((row) =>
+    headerMappings.map((mapping) => row[mapping.key] || "")
+  );
+
   // Define the worksheet data with headers
-  const data = [headers];
+  const data = [headers, ...rows];
 
   // Create a new workbook and worksheet
   const worksheet = XLSX.utils.aoa_to_sheet(data);

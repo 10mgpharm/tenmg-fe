@@ -76,8 +76,6 @@ const Page = ({params} : {params : {id: string}}) => {
         fetchCustomerTnx()
     }, [fetchCustomers, token]);
 
-    console.log(tnxHistoryData)
-
   return (
     <div className="p-5">
         <div className="border rounded-lg shadow-sm bg-white p-4">

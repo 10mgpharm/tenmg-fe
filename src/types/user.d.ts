@@ -1,4 +1,5 @@
 import { Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 export enum BusinessStatus {
   PENDING_VERIFICATION = "PENDING_VERIFICATION",
@@ -211,4 +212,24 @@ export interface ProductResponseData {
   data: ProductDataProps[];
   links: any;
   meta: MetaDataProp;
+}
+
+interface NextAuthUserSessionWithToken extends JWT {
+    name: string;
+    email: string;
+    picture: string;
+    sub: string;
+    id: number;
+    active: boolean;
+    emailVerifiedAt: string;
+    entityType: string;
+    businessName: string;
+    businessStatus: string;
+    owner: boolean;
+    completeProfile: boolean;
+    token: string;
+    account: Account;
+    iat: number;
+    exp: number;
+    jti: string;
 }

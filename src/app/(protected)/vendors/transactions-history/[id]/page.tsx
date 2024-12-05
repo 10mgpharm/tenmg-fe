@@ -27,7 +27,7 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
         setLoading(true);
         try {
           const response = await requestClient({ token: token }).get(
-            `/vendor/txn_history/${params.id}`
+            `vendor/txn_history/creditscore-breakdown/${params.id}`
           );
           if (response.status === 200) {
             setTnxHistorysData(response.data.data);
@@ -44,8 +44,6 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
         // fetchCustomers();  
         fetchCustomerTnx()
     }, [fetchCustomerTnx, token]);
-
-    console.log(tnxHistoryData)
 
     return (
     <div className="p-8">

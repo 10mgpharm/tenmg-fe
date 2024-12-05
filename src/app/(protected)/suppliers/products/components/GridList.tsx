@@ -24,18 +24,20 @@ const GridList = ({data}: {data: any}) => {
                         </div>
                         <Menu>
                             <MenuButton>
-                            <div className="bg-white rounded-full p-1.5">
-                                <BsThreeDotsVertical className='w-5 h-5'/>
-                            </div>
+                                <BsThreeDotsVertical className="w-5 h-auto"/>
                             </MenuButton>
                             <MenuList dir='rtl'>
                                 <MenuItem>
-                                    <Link href={'/suppliers/products/global-pentazocine'}>View Product</Link>
+                                    <Link href={'/admin/products/global-pentazocine'}>View Details</Link>
                                 </MenuItem>
                                 <MenuItem>Edit Product</MenuItem>
-                                <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
-                                <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
-                                <MenuItem onClick={() => onOpen()} color="red.500">Delete Order</MenuItem>
+                                <MenuItem onClick={() => onOpenRestock()}>Flag</MenuItem>
+                                {
+                                    data?.status === "Available" ? 
+                                    <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
+                                    : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
+                                }
+                                <MenuItem onClick={() => onOpen()} color="red.500">Remove Product</MenuItem>
                             </MenuList>
                         </Menu>
                     </div>

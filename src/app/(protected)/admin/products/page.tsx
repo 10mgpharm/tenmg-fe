@@ -101,8 +101,6 @@ const Page = () => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
-
-    console.log(products);
     
   return (
     <div className="p-8">

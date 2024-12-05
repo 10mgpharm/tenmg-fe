@@ -75,14 +75,12 @@ const AddMedicationType = (
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        console.log(data)
         setIsLoading(true)
         try {
             const response = await requestClient({token: token}).post(
                 "/admin/settings/medication-types",
                 data
             )
-            console.log(response);
             if(response.status === 200){
                 setIsLoading(false);
                 fetchingMedicationTypes();

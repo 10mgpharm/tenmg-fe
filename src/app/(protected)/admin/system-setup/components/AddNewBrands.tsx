@@ -53,7 +53,6 @@ const AddNewBrands = (
   });
 
   const onSubmit: SubmitHandler<IFormInput>  = async (data) => {
-    console.log(data)
     setIsLoading(true)
     try {
       let response;
@@ -68,7 +67,6 @@ const AddNewBrands = (
           data
         )
       }
-      console.log(response);
       if(response.status === 200){
         setIsLoading(false);
         refetchingTypes();

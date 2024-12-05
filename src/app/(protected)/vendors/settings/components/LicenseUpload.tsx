@@ -70,8 +70,6 @@ const LicenseUpload = () => {
   };
 
   const onSubmit = async (value: IFormInput) => {
-    console.log("Form Data:", value);
-
     const date = new Date(value.expiryDate);
     const formattedDate = date.toISOString().split("T")[0];
 
@@ -92,7 +90,6 @@ const LicenseUpload = () => {
           "Content-Type": "multipart/form-data",
         },
       }).post("/vendor/settings/license", formData);
-      console.log(response);
       if (response.status === 200) {
         toast.success(response.data.message);
           await session.update({

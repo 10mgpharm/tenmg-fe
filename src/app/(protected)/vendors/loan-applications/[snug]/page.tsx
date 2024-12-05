@@ -88,8 +88,6 @@ const Page = ({params}: {params: {snug: string}}) => {
         fetchLoanApplicationById(params.snug);
     }, [fetchLoanApplicationById, token]);
 
-    console.log(data)
-
   return (
     <div className="p-8">
         <Flex cursor={"pointer"} gap={2} onClick={() => router.back()}>
