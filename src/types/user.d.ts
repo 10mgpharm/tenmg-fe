@@ -70,6 +70,7 @@ export interface CustomerData {
   email: string;
   phone: string;
   active: 1;
+  reference: string;
   lastEvaluationHistory: any;
   businessId: number;
   createdAt: string;
@@ -122,6 +123,7 @@ export interface TransactionHistoryData {
   identifier: number;
   source: string;
   status: string;
+  reference: string;
   transactionFileId: number;
   updatedAt: string;
 }

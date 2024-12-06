@@ -148,7 +148,7 @@ const CreateCustomer = () => {
               placeholder="08092389823"
             />
             <FormControl>
-              <FormLabel>External Reference ID</FormLabel>
+              <FormLabel>External Reference ID (Optional)</FormLabel>
               <Input placeholder="Reference ID" {...register("referenceId")} />
             </FormControl>
           </HStack>
@@ -175,7 +175,7 @@ const CreateCustomer = () => {
               <UploadFile
                 onUpload={(file) => setValue("file", file)}
                 accept=".csv, .xlsx, .xls"
-                uploadLabel="Excel, CSV, or JSON (max. 800x400px)"
+                uploadLabel="Excel, CSV, or JSON "
                 uploadSuccessMessage="Customer transaction history file added"
               />
             </Center>

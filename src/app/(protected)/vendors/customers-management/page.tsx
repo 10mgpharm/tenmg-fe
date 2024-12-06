@@ -122,7 +122,7 @@ const CustomerManagement = () => {
       { key: "name", header: "NAME" },
       { key: "email", header: "EMAIL" },
       { key: "phone", header: "PHONE" },
-      { key: "reference", header: "REFERENCE" },
+      { key: "reference", header: "REFERENCE (optional)" },
     ];
 
     const bodyMappings = [

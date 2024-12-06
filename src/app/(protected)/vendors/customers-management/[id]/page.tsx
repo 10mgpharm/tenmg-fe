@@ -108,8 +108,8 @@ const Page = ({params} : {params : {id: string}}) => {
                     </GridItem>
                     <GridItem justifySelf={"center"}>
                         <Stack gap={0.5}>
-                            <Text fontSize={"14px"} color={"gray.600"}>Reference ID</Text>
-                            <Text pl={"20px"} fontWeight={"medium"}>{customersData?.businessId}</Text>
+                            <Text fontSize={"14px"} color={"gray.600"}>External Reference ID</Text>
+                            <Text pl={"20px"} fontWeight={"medium"}>{customersData?.reference || ""}</Text>
                         </Stack>
                     </GridItem>
                     <GridItem justifySelf={"center"}>
