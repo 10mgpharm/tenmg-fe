@@ -181,20 +181,20 @@ const LicenseUpload = () => {
         {/* preview with document link  */}
         {isLoading && (
           <Flex direction={'column'} gap={5} className="animate-pulse">
-            <Text className="text-left text-sm font-medium text-gray-500 w-full h-5">
-              &nbspc;
+            <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-full h-5">
+              {' '}
             </Text>
-            <Text className="text-left text-sm font-medium text-gray-500 w-full h-5">
-              &nbspc;
+            <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-full h-5">
+              {' '}
             </Text>
-            <Text className="text-left text-sm font-medium text-gray-500 w-9/12 h-5">
-              &nbspc;
+            <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-9/12 h-5">
+              {' '}
             </Text>
           </Flex>
         )}
         {!isLoading && (
           <Flex direction={'column'} gap={5}>
-            <Text className="text-left text-sm font-medium text-gray-500">
+            <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500">
               CAC Document:
               <a target="_blank" href={businessLicense?.licenseFile} className="font-bold cursor-pointer underline">
                 View Document
