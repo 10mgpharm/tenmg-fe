@@ -11,7 +11,7 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
     columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
-          <p>Reference ID</p>
+          <p>External Reference ID</p>
         </div>
       ),
       cell: (info) => (
