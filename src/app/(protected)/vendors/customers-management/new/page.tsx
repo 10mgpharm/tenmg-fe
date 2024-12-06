@@ -54,7 +54,7 @@ const CreateCustomer = () => {
     formData.append("name", value.name);
     formData.append("phone", value.phone);
     if (value.referenceId) {
-      formData.append("referenceId", value.referenceId);
+      formData.append("reference", value.referenceId);
     }
     if (value.file) {
       formData.append("file", value.file);
@@ -148,7 +148,7 @@ const CreateCustomer = () => {
               placeholder="08092389823"
             />
             <FormControl>
-              <FormLabel>External Reference ID</FormLabel>
+              <FormLabel>External Reference ID (Optional)</FormLabel>
               <Input placeholder="Reference ID" {...register("referenceId")} />
             </FormControl>
           </HStack>
@@ -175,7 +175,7 @@ const CreateCustomer = () => {
               <UploadFile
                 onUpload={(file) => setValue("file", file)}
                 accept=".csv, .xlsx, .xls"
-                uploadLabel="Excel, CSV, or JSON (max. 800x400px)"
+                uploadLabel="Excel, CSV, or JSON (Maximum size: 5MB)"
                 uploadSuccessMessage="Customer transaction history file added"
               />
             </Center>

@@ -15,8 +15,6 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { Controller, useForm } from "react-hook-form";
-import { FaSearch } from "react-icons/fa";
-import { FaCalendar } from "react-icons/fa6";
 
 interface IFormInput {
   endDate?: Date | null;
@@ -92,7 +90,7 @@ const FilterDrawer = ({
                     <option value="" disabled style={{ color: "gray" }}>
                       Select Status
                     </option>
-                    {filterOptions.map((option) => (
+                    {filterOptions?.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.option}
                       </option>

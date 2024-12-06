@@ -45,6 +45,9 @@ export const setupOptions = [
 
 const MedicationSetup = () => {
 
+  const [brandLoading, setBrandLoading] = useState(false);
+  const [categoryLoading, setCateogryLoading] = useState(false);
+  const [medicationLoading, setMedicationLoading] = useState(false);
   const [brandData, setBrandData] = useState<MedicationResponseData>();
   const [categoryData, setCategoryData] = useState<MedicationResponseData>();
   const [medicationData, setMedicationData] = useState<MedicationResponseData>();
@@ -55,41 +58,50 @@ const MedicationSetup = () => {
   const token = sessionToken?.user?.token;
 
   const fetchingMedicationTypes = useCallback(async() => {
+    setMedicationLoading(true)
     try {
       const response = await requestClient({ token: token }).get(
         `/admin/settings/medication-types`
       );
       if(response.status === 200){
         setMedicationData(response.data.data);
+        setMedicationLoading(false)
       }
     } catch (error) {
       console.error(error)
+      setMedicationLoading(false)
     }
   },[token]);
 
   const fetchingBrandTypes = useCallback(async() => {
+    setBrandLoading(true)
     try {
       const response = await requestClient({ token: token }).get(
         `/admin/settings/brands`
       );
       if(response.status === 200){
         setBrandData(response.data.data);
+        setBrandLoading(false);
       }
     } catch (error) {
       console.error(error)
+      setBrandLoading(false);
     }
   },[token]);
 
   const fetchingCategoriesTypes = useCallback(async() => {
+    setCateogryLoading(true)
     try {
       const response = await requestClient({ token: token }).get(
         `/admin/settings/categories`
       );
       if(response.status === 200){
         setCategoryData(response.data.data);
+        setCateogryLoading(false)
       }
     } catch (error) {
       console.error(error)
+      setCateogryLoading(false)
     }
   },[token]);
 
@@ -107,6 +119,7 @@ const MedicationSetup = () => {
          <BrandSetup 
          data={brandData?.data} 
          type="Brand"
+         loading={brandLoading}
          refetchingTypes={fetchingBrandTypes}
          />
         );
@@ -115,6 +128,7 @@ const MedicationSetup = () => {
           <BrandSetup 
           data={categoryData.data} 
           type="Category"
+          loading={categoryLoading}
           refetchingTypes={fetchingCategoriesTypes}
           />
         );
@@ -122,6 +136,7 @@ const MedicationSetup = () => {
         return (
           <MedicationTypes 
           data={medicationData?.data} 
+          loading={medicationLoading}
           fetchingMedicationTypes={fetchingMedicationTypes}/>
         );
     }

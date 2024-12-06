@@ -70,6 +70,7 @@ export interface CustomerData {
   email: string;
   phone: string;
   active: 1;
+  reference: string;
   lastEvaluationHistory: any;
   businessId: number;
   createdAt: string;
@@ -85,11 +86,23 @@ export interface CustomerDataProp {
   prevPageUrl: string | null;
 }
 
+export interface singleCustomerData {
+  id: number;
+  name: string;
+  avatar: string | null;
+  email: string;
+  phone: string;
+  identifier: string;
+  businessId: number;
+  active: number;
+  updatedAt: string;
+  createdAt: string;
+}
 export interface LoanData {
   id: number;
   businessId: number;
   createdAt: string;
-  customerId: number;
+  customer: singleCustomerData;
   durationInMonths: string;
   identifier: string;
   interestAmount: string;
