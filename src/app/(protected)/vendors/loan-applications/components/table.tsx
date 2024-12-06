@@ -1,4 +1,4 @@
-import { CustomerData, LoanData } from "@/types";
+import { LoanData } from "@/types";
 import { classNames } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -28,7 +28,7 @@ export function ColumnsLoanApplicationFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-bold">{info.row.original?.customerId} </p>
+          <p className="font-bold">{info.row.original?.customer?.name} </p>
         </div>
       ),
     }),
@@ -85,14 +85,13 @@ export function ColumnsLoanApplicationFN() {
       cell: (info) => {
         return (
           <div className="flex gap-4">
-            <Link href={`/vendors/loan-applications/${info.row.original?.customerId}`} className="text-primary font-medium">View</Link>
+            <Link href={`/vendors/loan-applications/${info.row.original?.customer?.id}`} className="text-primary font-medium">View</Link>
             {
-                info.row.original?.status === "PENDING" &&
-                <div className="flex items-center gap-4">
-                    <p className="cursor-pointer text-primary-600 font-medium">Edit</p>
-                    <p className="cursor-pointer text-primary-600 font-medium">Approve</p>
-                </div>
-
+              info.row.original?.status === "PENDING" &&
+              <div className="flex items-center gap-4">
+                <p className="cursor-pointer text-primary-600 font-medium">Edit</p>
+                <p className="cursor-pointer text-primary-600 font-medium">Approve</p>
+              </div>
             }
           </div>
         );

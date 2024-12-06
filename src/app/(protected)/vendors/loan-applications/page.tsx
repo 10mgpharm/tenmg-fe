@@ -4,7 +4,6 @@ import SearchInput from "../components/SearchInput"
 import { 
   Button, 
   Flex, 
-  Link, 
   Spinner, 
   Table, 
   TableContainer, 
@@ -18,7 +17,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyResult from "../components/EmptyResult";
 import { useSession } from "next-auth/react";
-import { CustomerRecords, LoanData, NextAuthUserSession } from "@/types";
+import { CustomerRecords, LoanDataProp, NextAuthUserSession } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import CreateLoan from "./components/CreateLoan";
@@ -39,7 +38,7 @@ const LoanApplication = () => {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
-  const [loanApplication, setLoanApplication] = useState<LoanData[]>();
+  const [loanApplication, setLoanApplication] = useState<LoanDataProp>();
   const [allCustomers, setAllCustomers] = useState<CustomerRecords[]>();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
@@ -107,8 +106,8 @@ const LoanApplication = () => {
   },[token])
 
   const tableData = useMemo(
-    () => loanApplication,
-    [loanApplication]
+    () => loanApplication?.data,
+    [loanApplication?.data]
   );
 
   useEffect(() => {
@@ -141,6 +140,11 @@ const LoanApplication = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  const filterOptions = [
+    { option: "Active", value: "active" },
+    { option: "Suspended", value: "inactive" },
+  ];
 
   return (
     <div className="p-8">
@@ -241,6 +245,7 @@ const LoanApplication = () => {
         onClose={onCloseFilter}
         applyFilters={applyFilters}
         clearFilters={clearFilters}
+        filterOptions={filterOptions}
       />
       <SendApplicationLink 
       isOpen={isOpenSend} 
