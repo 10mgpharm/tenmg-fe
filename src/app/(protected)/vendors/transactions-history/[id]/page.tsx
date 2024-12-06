@@ -95,29 +95,24 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
                             </div>
                         </div>
                     </div>
-                    <div className="p-4 border rounded-md">
-                        <h4 className="font-medium mb-2">Result breakdown</h4>
-                        <p className="text-gray-500 mb-4 text-sm">This outlines the breakdown of how the user score was computed</p>
-                        <button onClick={onOpen} className="border-primary-600 border text-primary-500 font-medium bg-transparent p-2 w-full rounded-md mb-5">View Breakdown</button>
-                    </div>
                 </div>
             </div>
             <div className="col-span-4 space-y-5">
                 <div className="flex gap-5">
                     <div className="flex-1 space-y-2.5">
-                        <div className="border rounded-md p-5">
+                        <div className="border rounded-md p-6">
                             <div className="space-y-2">
                                 <p className="text-gray-500">Average Transaction Volume</p>
                                 <h2 className="text-2xl font-semibold">₦161,060</h2>
                             </div>
                         </div>
-                        <div className="border rounded-md p-5">
+                        <div className="border rounded-md p-6">
                             <div className="space-y-2">
                                 <p className="text-gray-500">Total Transactions Volume</p>
                                 <h2 className="text-2xl font-semibold">₦161,060</h2>
                             </div>
                         </div>
-                        <div className="border rounded-md p-5">
+                        <div className="border rounded-md p-6">
                             <div className="space-y-2">
                                 <p className="text-gray-500">Total Months in Transaction History</p>
                                 <h2 className="text-2xl font-semibold">6 Months</h2>
@@ -164,7 +159,18 @@ const SingleTransactionPage = ({params}: {params: {id: string}}) => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="col-span-6">
                 <TransactionSummary />
+            </div>
+            <div className="col-span-2">
+                <div className="p-4 border rounded-md">
+                    <h4 className="font-medium mb-2">Result Breakdown</h4>
+                    <p className="text-gray-500 mb-4 text-sm">This outlines the breakdown of how the user score was computed</p>
+                    <button onClick={onOpen} className="border-primary-600 border text-primary-500 font-medium bg-transparent p-2 w-full rounded-md mb-5">View Breakdown</button>
+                </div>
+            </div>
+            <div className="col-span-4">
                 <Records />
                 <BreakdownRecords isOpen={isOpen} onClose={onClose} />
             </div>

@@ -22,10 +22,11 @@ import AddNewBrands from "./AddNewBrands";
 import EditBrands from "./EditBrands";
 import { MedicationData } from "@/types";
 import DeleteMedication from "./DeleteMedication";
+import Loader from "../../components/Loader";
 
 const BrandSetup = (
-  {data, type, refetchingTypes}: 
-  {data: MedicationData[], type: "Brand" | "Category", refetchingTypes: () => void}
+  {data, type, refetchingTypes, loading}: 
+  {data: MedicationData[], type: "Brand" | "Category", refetchingTypes: () => void, loading: boolean}
 ) => {
 
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -34,11 +35,12 @@ const BrandSetup = (
     onClose: onEditClose, 
     onOpen: onEditOpen 
   } = useDisclosure();
-    const { 
-      isOpen: isDeleteOpen, 
-      onClose: onDeleteClose, 
-      onOpen: onDeleteOpen 
-    } = useDisclosure();
+  const { 
+    isOpen: isDeleteOpen, 
+    onClose: onDeleteClose, 
+    onOpen: onDeleteOpen 
+  } = useDisclosure();
+
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedId, setSelectedId] = useState<number>();
   const [selectedItem, setSelectedItem] = useState<MedicationData>();
@@ -75,6 +77,9 @@ const BrandSetup = (
           </Thead>
           <Tbody>
             {
+              loading ? 
+              <Loader />
+              :
               data?.map((item: MedicationData) => (
                 <Tr key={item.id}>
                   <Td fontSize={"14px"}>14-10-2024</Td>
