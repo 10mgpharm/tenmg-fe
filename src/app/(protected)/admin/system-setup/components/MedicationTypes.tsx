@@ -23,28 +23,29 @@ import { MedicationData } from "@/types";
 import EditMedicationType from "./EditMedicationType";
 import { useState } from "react";
 import DeleteMedication from "./DeleteMedication";
+import Loader from "../../components/Loader";
 
 const MedicationTypes = (
-  {data, fetchingMedicationTypes}: 
-  {data: MedicationData[], fetchingMedicationTypes: () => void}
+  {data, fetchingMedicationTypes, loading}: 
+  {data: MedicationData[], fetchingMedicationTypes: () => void, loading: boolean}
 ) => {
 
-    const { isOpen, onClose, onOpen } = useDisclosure();
-    const { 
-      isOpen: isEditOpen, 
-      onClose: onEditClose, 
-      onOpen: onEditOpen 
-    } = useDisclosure();
-    const { 
-      isOpen: isDeleteOpen, 
-      onClose: onDeleteClose, 
-      onOpen: onDeleteOpen 
-    } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { 
+    isOpen: isEditOpen, 
+    onClose: onEditClose, 
+    onOpen: onEditOpen 
+  } = useDisclosure();
+  const { 
+    isOpen: isDeleteOpen, 
+    onClose: onDeleteClose, 
+    onOpen: onDeleteOpen 
+  } = useDisclosure();
 
-    const [selectedId, setSelectedId] = useState<number>();
-    const [selectedItem, setSelectedItem] = useState<MedicationData>();
+  const [selectedId, setSelectedId] = useState<number>();
+  const [selectedItem, setSelectedItem] = useState<MedicationData>();
 
-    return (
+  return (
     <Stack flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
       <Flex justify={"space-between"}>
         <InputGroup size='md' width={"20rem"}>
@@ -72,6 +73,7 @@ const MedicationTypes = (
           </Thead>
           <Tbody>
             {
+              loading ? <Loader /> :
               data?.map((item: MedicationData) => (
                 <Tr key={item.id}>
                   <Td>14-10-2024</Td>
