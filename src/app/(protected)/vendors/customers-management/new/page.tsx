@@ -54,7 +54,7 @@ const CreateCustomer = () => {
     formData.append("name", value.name);
     formData.append("phone", value.phone);
     if (value.referenceId) {
-      formData.append("referenceId", value.referenceId);
+      formData.append("reference", value.referenceId);
     }
     if (value.file) {
       formData.append("file", value.file);
