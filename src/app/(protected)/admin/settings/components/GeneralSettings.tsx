@@ -61,6 +61,7 @@ const GeneralSettings = () => {
             toast.success(response.data.message);
             setIsLoading(false);
             await session.update({
+                ...sessionData,
                 user: {
                     ...sessionData.user,
                     name:data.name,
@@ -103,7 +104,6 @@ const GeneralSettings = () => {
             const response = await requestClient({token: sessionData.user.token}).get(
                 "/account/2fa/setup"
             )
-            console.log(response);
             setIsLoading2FA(false);
             if(response.status === 200){
                 setQrcode(response.data?.data);
@@ -127,7 +127,6 @@ const GeneralSettings = () => {
                     "password": "password"
                 }
             )
-            console.log(response);
             setIsLoading2FA(false);
             if(response.status === 200){
                 onOpen2fa()

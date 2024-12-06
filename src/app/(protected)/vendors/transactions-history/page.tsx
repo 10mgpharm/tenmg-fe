@@ -31,7 +31,7 @@ import {
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/components/Pagination";
 import { ColumnsTnxHistoryFN } from "./components/table";
-import UploadModel from "../components/UploadModel";
+import UploadModal from "../components/UploadModal";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../components/FilterDrawer";
@@ -229,7 +229,7 @@ const TransactionHistory = () => {
         )}
       </div>
 
-      <UploadModel
+      <UploadModal
         isOpen={isOpen}
         onClose={onClose}
         isDownloadTemplate={false}

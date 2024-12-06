@@ -26,7 +26,6 @@ import { ColumnsCustomerFN } from "./components/table";
 import Link from "next/link";
 import FilterDrawer from "../components/FilterDrawer";
 import Pagination from "../../suppliers/components/Pagination";
-import UploadModel from "../components/UploadModel";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
@@ -36,6 +35,7 @@ import { createXlsxTemplate } from "@/utils/createXlsxTemplate";
 import SearchInput from "../components/SearchInput";
 import EmptyResult from "../components/EmptyResult";
 import { useDebouncedValue } from "@/utils/debounce";
+import UploadModal from "../components/UploadModal";
 
 export interface IFilterInput {
   endDate?: Date | null;
@@ -119,15 +119,21 @@ const CustomerManagement = () => {
 
   const handleDownloadTemplate = useCallback(() => {
     const headerMappings = [
-      { key: "name", header: "Name" },
-      { key: "email", header: "Email" },
-      { key: "phone", header: "Phone" },
-      { key: "active", header: "Active" },
+      { key: "name", header: "NAME" },
+      { key: "email", header: "EMAIL" },
+      { key: "phone", header: "PHONE" },
+      { key: "reference", header: "REFERENCE" },
+    ];
+
+    const bodyMappings = [
+      { name: "John Doe", email: "john.doe@example.com", phone: "9067636443", reference: "REF123" },
+      { name: "Jane Smith", email: "jane.smith@example.com", phone: "9076543210", reference: "REF456" },
     ];
 
     const templateBlob = createXlsxTemplate(
       headerMappings,
-      "Vendor Customer Template"
+      "Vendor Customer Template", 
+      bodyMappings
     );
 
     saveAs(templateBlob, "vendor_customer_uploads.xlsx");
@@ -261,7 +267,7 @@ const CustomerManagement = () => {
           />
         )}
       </div>
-      <UploadModel
+      <UploadModal
         isOpen={isOpen}
         onClose={onClose}
         handleDownload={handleDownloadTemplate}

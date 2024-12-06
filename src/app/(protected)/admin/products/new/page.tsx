@@ -93,7 +93,6 @@ const AddProducts = () => {
         mode: "onChange",
     });
 
-    console.log(getValues());
     const onSubmit: SubmitHandler<IFormInput> = async (record) => {}
 
     switch (steps) {
@@ -113,7 +112,6 @@ const AddProducts = () => {
         case 'inventory':
             return <InventoryForm setSteps={setSteps}/>
         default:
-            console.log('not recognized.');
             break;
     }
   return (

@@ -25,7 +25,6 @@ import {
 import { ColumnsTransactionFN } from "./components/table";
 import FilterDrawer from "./components/FilterDrawer";
 import Pagination from "../../suppliers/components/Pagination";
-import UploadModel from "./components/UploadModel";
 import SearchInput from "../components/SearchInput";
 import EmptyResult from "../components/EmptyResult";
 

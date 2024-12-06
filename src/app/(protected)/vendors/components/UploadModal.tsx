@@ -1,3 +1,4 @@
+"use client";
 import {
   Box,
   Button,
@@ -25,8 +26,9 @@ import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Controller, useForm } from "react-hook-form";
+import { handleServerErrorMessage } from "@/utils";
 
-interface UploadModelProps {
+interface UploadModalProps {
   isOpen: boolean;
   isDownloadTemplate?: boolean;
   uploadEndpoint: string;
@@ -41,7 +43,7 @@ interface UploadModelProps {
   reloadData?: () => void;
 }
 
-const UploadModel = ({
+const UploadModal = ({
   isOpen,
   onClose,
   handleDownload,
@@ -54,7 +56,7 @@ const UploadModel = ({
   isSearch = false,
   searchTitle = "Customer by Name or ID",
   searchData = [],
-}: UploadModelProps) => {
+}: UploadModalProps) => {
   const [isUploadLoading, setIsUploadLoading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -128,8 +130,8 @@ const UploadModel = ({
         toast.error("Failed to upload the file. Please try again later.");
       }
     } catch (error) {
-      console.error("Error uploading the file:", error);
-      toast.error("Failed to upload the file. Please try again later.");
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
     } finally {
       setIsUploadLoading(false);
     }
@@ -372,4 +374,4 @@ const UploadModel = ({
   );
 };
 
-export default UploadModel;
+export default UploadModal;

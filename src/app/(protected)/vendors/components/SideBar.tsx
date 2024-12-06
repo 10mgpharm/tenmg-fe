@@ -5,16 +5,12 @@ import { Text, Box } from "@chakra-ui/layout";
 import { LuFileText } from "react-icons/lu";
 import { MdPercent } from "react-icons/md";
 import { SlPeople } from "react-icons/sl";
-import { FaBalanceScale, FaHamburger } from "react-icons/fa";
+import { FaBalanceScale } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineSwapHorizontalCircle } from "react-icons/md";
-import receipt from "@public/assets/images/receipt.svg";
-import bullseye from "@public/assets/images/bullseye.svg";
 
 import {
-  Cog6ToothIcon,
   HomeIcon,
-  XMarkIcon,
   ReceiptPercentIcon,
 } from "@heroicons/react/24/outline";
 import { classNames } from "@/utils";
@@ -30,6 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { useBreakpointValue } from "@chakra-ui/react";
 import { RxHamburgerMenu } from "react-icons/rx";
+import Link from "next/link";
 
 const navigationItems = [
   { name: "Dashboard", href: "/vendors", icon: HomeIcon, current: true },
@@ -196,7 +193,7 @@ const RenderSection = ({
       const isActive = item.href === pathname;
       return (
         <li key={item.name}>
-          <a href={item.href} className={getNavItemClassNames(isActive)}>
+          <Link href={item.href} className={getNavItemClassNames(isActive)}>
             <item.icon
               aria-label={item.name}
               className={
@@ -206,7 +203,7 @@ const RenderSection = ({
               }
             />
             {item.name}
-          </a>
+          </Link>
         </li>
       );
     })}

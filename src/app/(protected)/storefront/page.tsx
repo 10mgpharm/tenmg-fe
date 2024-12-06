@@ -9,7 +9,7 @@ const StoreFront = () => {
   const data = session.data as NextAuthUserSession;
 
   return (
-    <div className="p-8 flex justify-center items-center h-screen">
+    <div className="p-8 flex justify-center items-center">
       <div>
         <Text color="gray.700" fontSize="xl">
           Welcome {data?.user?.name}

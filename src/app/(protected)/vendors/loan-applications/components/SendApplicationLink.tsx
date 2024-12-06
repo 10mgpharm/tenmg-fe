@@ -38,7 +38,6 @@ const SendApplicationLink = (
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (record) => {
-        console.log(record)
         const data = String(record.customerId.value);
         try {
           setIsLoading(true);
@@ -46,7 +45,7 @@ const SendApplicationLink = (
             "/vendor/loan-applications/apply",
             {"customerId": data}
           );
-          console.log(response);
+            
           if (response.status === 200) {
             toast.success(response?.data?.message);
             fetchLoanApplication()

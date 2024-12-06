@@ -7,20 +7,24 @@ import {
   Grid,
   Tabs,
   TabList,
-  TabPanels,
   Tab,
-  TabPanel,
   Box,
   Text,
   Badge,
   Button,
   Icon,
+  useDisclosure,
 } from "@chakra-ui/react";
 import OverviewCard from "./OverviewCard";
 import SideCard from "./SideCard";
 import { ArrowDown } from "lucide-react";
 import { ApexOptions } from "apexcharts";
 import ChartComponent from "./ChartComponent";
+import NoticeCard from "../../suppliers/components/NoticeCard";
+import CompleteAccountModal from "./CompleteAccountModal";
+import { NextAuthUserSession } from "@/types";
+import { useSession } from "next-auth/react";
+import { BusinessStatus } from "@/constants/enum";
 
 export interface IVendorDashboard {
   totalCustomers: number;
@@ -73,7 +77,11 @@ const vendorData: IVendorData = {
   },
 };
 
-const VendorDashboard: React.FC = () => {
+const VendorDashboard = () => {
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const timePeriods = ["12 months", "30 days", "7 days", "24 hours"] as const;
   const balanceTimePeriods = [
     "12 months",
@@ -178,203 +186,215 @@ const VendorDashboard: React.FC = () => {
     },
   };
 
+  const isVisible = sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
+
   return (
-    <Box mx="auto" mt={5}>
-      {/* Main Content */}
-      <Flex
-        justifyContent="space-between"
-        w="100%"
-        gap={5}
-        flexDirection={{ base: "column", md: "row" }}
-      >
-        {/* Left Side */}
-        <Stack
-          w={{ base: "100%", md: "70%" }}
-          gap={6}
+    <>
+      {isVisible && (
+        <NoticeCard
+          setOpen={onOpen}
+          status={sessionData?.user?.businessStatus}
+        />
+      )}
+
+      <Box mx="auto" mt={5}>
+        {/* Main Content */}
+        <Flex
           justifyContent="space-between"
+          w="100%"
+          gap={5}
+          flexDirection={{ base: "column", md: "row" }}
         >
-          <Flex justifyContent="space-between" direction={{base: "column", md: "row"}} gap={4}>
-            <Stack flex={1}>
-              <Text fontWeight="medium" fontSize="3xl">
-                Welcome back, Adeola
-              </Text>
-              <Text fontSize="sm" color="#667085">
-                Keep track of vendors and their security ratings.
-              </Text>
-            </Stack>
-            {/* Time Period Tabs */}
-            <Tabs
-              isFitted
-              variant="unstyled"
-              onChange={(index) => setSelectedPeriod(timePeriods[index])}
-              flex={1}
-            >
-              <TabList mb="1em" rounded="lg" bg="white" boxShadow="sm">
-                {timePeriods.map((period, i) => (
-                  <Tab
-                    key={period}
-                    _selected={{ bg: "gray.100" }}
-                    _hover={{
-                      bg: "gray.100",
-                    }}
-                    borderStartRadius={i === 0 && "md"}
-                    borderEndRadius={i === timePeriods.length - 1 && "md"}
-                    borderWidth="1px"
-                    fontSize="sm"
-                  >
-                    {period}
-                  </Tab>
-                ))}
-              </TabList>
-            </Tabs>
-          </Flex>
-          {/* Overview Cards */}
-          <Grid templateColumns="repeat(3, 1fr)" gap={5}>
-            <OverviewCard
-              title="Total Customers"
-              value={data.totalCustomers.toLocaleString()}
-              percentageFooter={2.5}
-              increasePercentage={false}
-            />
-            <OverviewCard
-              title="Applications"
-              value={data.applications.toLocaleString()}
-              percentageFooter={2.2}
-              increasePercentage={true}
-              isPending
-              pendingValue={200}
-            />
-            <OverviewCard
-              title="Credit Voucher"
-              value={data.creditVoucher}
-              type="currency"
-              percentageFooter={2.5}
-              increasePercentage={false}
-            />
-          </Grid>
-
-          {/* Balance Card */}
-          <Box borderRadius="lg" p={6} borderWidth="1px" bg={"white"}>
-            <Flex justifyContent="space-between" alignItems="center" pb={5}>
-              <Stack gap={3} flex={1} mt={2}>
-                <Text color="gray.500">Your Balance</Text>
-                <Text fontSize="4xl" fontWeight="semibold">
-                  {data.balance.toLocaleString("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })}
+          {/* Left Side */}
+          <Stack
+            w={{ base: "100%", md: "70%" }}
+            gap={6}
+            justifyContent="space-between"
+          >
+            <Flex justifyContent="space-between" direction={{ base: "column", md: "row" }} gap={4}>
+              <Stack flex={1}>
+                <Text fontWeight="medium" fontSize="3xl">
+                  Welcome back, Adeola
                 </Text>
-                <Tabs
-                  isFitted
-                  variant="unstyled"
-                  onChange={(index) =>
-                    setSelectedBalancedPeriod(balanceTimePeriods[index])
-                  }
-                >
-                  <TabList width="80%">
-                    {balanceTimePeriods.map((period) => (
-                      <Tab
-                        key={period}
-                        _selected={{
-                          bg: "primary.50",
-                          color: "primary.500",
-                          rounded: "md",
-                          fontWeight: "bold",
-                        }}
-                        fontSize="sm"
-                        fontWeight="medium"
-                        px={4}
-                        py={2}
-                        flex="auto"
-                      >
-                        {period}
-                      </Tab>
-                    ))}
-                  </TabList>
-                </Tabs>
+                <Text fontSize="sm" color="#667085">
+                  Keep track of vendors and their security ratings.
+                </Text>
               </Stack>
-              <Box>
-                <Flex gap={2} alignItems="center">
-                  <Badge bgColor="#FF9C66" p={1} rounded="lg" />
-                  <Text>Outgoing Loan</Text>
-                </Flex>
-                <Flex gap={2} alignItems="center" mt={2}>
-                  <Badge bgColor="#84CAFF" p={1} rounded="lg" />
-                  <Text>Credit Repayment</Text>
-                </Flex>
-              </Box>
+              {/* Time Period Tabs */}
+              <Tabs
+                isFitted
+                variant="unstyled"
+                onChange={(index) => setSelectedPeriod(timePeriods[index])}
+                flex={1}
+              >
+                <TabList mb="1em" rounded="lg" bg="white" boxShadow="sm">
+                  {timePeriods.map((period, i) => (
+                    <Tab
+                      key={period}
+                      _selected={{ bg: "gray.100" }}
+                      _hover={{
+                        bg: "gray.100",
+                      }}
+                      borderStartRadius={i === 0 && "md"}
+                      borderEndRadius={i === timePeriods.length - 1 && "md"}
+                      borderWidth="1px"
+                      fontSize="sm"
+                    >
+                      {period}
+                    </Tab>
+                  ))}
+                </TabList>
+              </Tabs>
             </Flex>
-
-            <Box>
-              {/* Column Bar Chart */}
-              <ChartComponent
-                options={options}
-                series={series}
-                type="bar"
-                width={"100%"}
-                height={320}
+            {/* Overview Cards */}
+            <Grid templateColumns="repeat(3, 1fr)" gap={5}>
+              <OverviewCard
+                title="Total Customers"
+                value={data.totalCustomers.toLocaleString()}
+                percentageFooter={2.5}
+                increasePercentage={false}
               />
-            </Box>
-          </Box>
-        </Stack>
+              <OverviewCard
+                title="Applications"
+                value={data.applications.toLocaleString()}
+                percentageFooter={2.2}
+                increasePercentage={true}
+                isPending
+                pendingValue={200}
+              />
+              <OverviewCard
+                title="Credit Voucher"
+                value={data.creditVoucher}
+                type="currency"
+                percentageFooter={2.5}
+                increasePercentage={false}
+              />
+            </Grid>
 
-        {/* Right Side */}
-        <Stack w={{ base: "100%", md: "30%" }} gap={4}  justifyContent={{base: "normal", xl: "space-between"}}>
-          {/* Transaction History Evaluations */}
-          <SideCard
-            title="Transaction History Evaluations"
-            value={data.txnHistoryEval.toLocaleString()}
-            color="primary.50"
-            footer={
-              <Button rounded="lg" w="full" fontSize="sm" py={2} px={6}>
-                View Transaction History Evaluations
-              </Button>
-            }
-          />
-          {/* API Calls */}
-          <SideCard
-            title="API Calls"
-            value={data.apiCalls.toLocaleString()}
-            color="orange.100"
-            footer={
-              <Flex alignItems="center" gap={1}>
-                <Icon as={ArrowDown} color="red.500" />
-                <Text color="red.500">2.5%</Text>
-                <Text fontSize="sm">vs last 7 days</Text>
+            {/* Balance Card */}
+            <Box borderRadius="lg" p={6} borderWidth="1px" bg={"white"}>
+              <Flex justifyContent="space-between" alignItems="center" pb={5}>
+                <Stack gap={3} flex={1} mt={2}>
+                  <Text color="gray.500">Your Balance</Text>
+                  <Text fontSize="4xl" fontWeight="semibold">
+                    {data.balance.toLocaleString("en-NG", {
+                      style: "currency",
+                      currency: "NGN",
+                    })}
+                  </Text>
+                  <Tabs
+                    isFitted
+                    variant="unstyled"
+                    onChange={(index) =>
+                      setSelectedBalancedPeriod(balanceTimePeriods[index])
+                    }
+                  >
+                    <TabList width="80%">
+                      {balanceTimePeriods.map((period) => (
+                        <Tab
+                          key={period}
+                          _selected={{
+                            bg: "primary.50",
+                            color: "primary.500",
+                            rounded: "md",
+                            fontWeight: "bold",
+                          }}
+                          fontSize="sm"
+                          fontWeight="medium"
+                          px={4}
+                          py={2}
+                          flex="auto"
+                        >
+                          {period}
+                        </Tab>
+                      ))}
+                    </TabList>
+                  </Tabs>
+                </Stack>
+                <Box>
+                  <Flex gap={2} alignItems="center">
+                    <Badge bgColor="#FF9C66" p={1} rounded="lg" />
+                    <Text>Outgoing Loan</Text>
+                  </Flex>
+                  <Flex gap={2} alignItems="center" mt={2}>
+                    <Badge bgColor="#84CAFF" p={1} rounded="lg" />
+                    <Text>Credit Repayment</Text>
+                  </Flex>
+                </Box>
               </Flex>
-            }
-          />
-          {/* Account Linking Report */}
-          <Stack borderRadius="lg" p={6} borderWidth="1px" bg={"white"} gap={5}>
-            <Text fontSize="lg" fontWeight="semibold" mb={4}>
-              Account Linking Report
-            </Text>
-            {/* Donut Chart */}
-            <ChartComponent
-              options={donutOptions}
-              series={reportSeries}
-              type="donut"
-              width="100%"
-              height={200}
-            />
-            <Box mt={4}>
-              <Flex gap={2} alignItems="center">
-                <Badge bgColor="#7086FD" p={1} rounded="lg" />
-                <Text>Successful Calls</Text>
-              </Flex>
-              <Flex gap={2} alignItems="center" mt={2}>
-                <Badge bgColor="#6FD195" p={1} rounded="lg" />
-                <Text>Errors</Text>
-              </Flex>
-              <Flex gap={2} alignItems="center" mt={2}>
-                <Badge bgColor="#FFAE4C" p={1} rounded="lg" />
-                <Text>Drop-off/Cancellations</Text>
-              </Flex>
+
+              <Box>
+                {/* Column Bar Chart */}
+                <ChartComponent
+                  options={options}
+                  series={series}
+                  type="bar"
+                  width={"100%"}
+                  height={320}
+                />
+              </Box>
             </Box>
           </Stack>
-        </Stack>
-      </Flex>
-    </Box>
+
+          {/* Right Side */}
+          <Stack w={{ base: "100%", md: "30%" }} gap={4} justifyContent={{ base: "normal", xl: "space-between" }}>
+            {/* Transaction History Evaluations */}
+            <SideCard
+              title="Transaction History Evaluations"
+              value={data.txnHistoryEval.toLocaleString()}
+              color="primary.50"
+              footer={
+                <Button rounded="lg" w="full" fontSize="sm" py={2} px={6}>
+                  View Transaction History Evaluations
+                </Button>
+              }
+            />
+            {/* API Calls */}
+            <SideCard
+              title="API Calls"
+              value={data.apiCalls.toLocaleString()}
+              color="orange.100"
+              footer={
+                <Flex alignItems="center" gap={1}>
+                  <Icon as={ArrowDown} color="red.500" />
+                  <Text color="red.500">2.5%</Text>
+                  <Text fontSize="sm">vs last 7 days</Text>
+                </Flex>
+              }
+            />
+            {/* Account Linking Report */}
+            <Stack borderRadius="lg" p={6} borderWidth="1px" bg={"white"} gap={5}>
+              <Text fontSize="lg" fontWeight="semibold" mb={4}>
+                Account Linking Report
+              </Text>
+              {/* Donut Chart */}
+              <ChartComponent
+                options={donutOptions}
+                series={reportSeries}
+                type="donut"
+                width="100%"
+                height={200}
+              />
+              <Box mt={4}>
+                <Flex gap={2} alignItems="center">
+                  <Badge bgColor="#7086FD" p={1} rounded="lg" />
+                  <Text>Successful Calls</Text>
+                </Flex>
+                <Flex gap={2} alignItems="center" mt={2}>
+                  <Badge bgColor="#6FD195" p={1} rounded="lg" />
+                  <Text>Errors</Text>
+                </Flex>
+                <Flex gap={2} alignItems="center" mt={2}>
+                  <Badge bgColor="#FFAE4C" p={1} rounded="lg" />
+                  <Text>Drop-off/Cancellations</Text>
+                </Flex>
+              </Box>
+            </Stack>
+          </Stack>
+        </Flex>
+      </Box>
+      <CompleteAccountModal isOpen={isOpen} onClose={onClose} />
+    </>
   );
 };
 

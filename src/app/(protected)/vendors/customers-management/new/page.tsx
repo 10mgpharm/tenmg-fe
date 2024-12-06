@@ -51,7 +51,6 @@ const CreateCustomer = () => {
   const onSubmit = async (value: IFormInput) => {
     const formData = new FormData();
     formData.append("email", value.email);
-    formData.append("vendorId", sessionData?.user?.id);
     formData.append("name", value.name);
     formData.append("phone", value.phone);
     if (value.referenceId) {
@@ -177,7 +176,7 @@ const CreateCustomer = () => {
                 onUpload={(file) => setValue("file", file)}
                 accept=".csv, .xlsx, .xls"
                 uploadLabel="Excel, CSV, or JSON (max. 800x400px)"
-                uploadSuccessMessage="Customer data uploaded successfully!"
+                uploadSuccessMessage="Customer transaction history file added"
               />
             </Center>
           </div>
