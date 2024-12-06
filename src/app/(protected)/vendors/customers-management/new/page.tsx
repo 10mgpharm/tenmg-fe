@@ -175,7 +175,7 @@ const CreateCustomer = () => {
               <UploadFile
                 onUpload={(file) => setValue("file", file)}
                 accept=".csv, .xlsx, .xls"
-                uploadLabel="Excel, CSV, or JSON "
+                uploadLabel="Excel, CSV, or JSON (Maximum size: 5MB)"
                 uploadSuccessMessage="Customer transaction history file added"
               />
             </Center>

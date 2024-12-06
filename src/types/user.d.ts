@@ -135,7 +135,6 @@ export interface TransactionHistoryData {
   identifier: number;
   source: string;
   status: string;
-  reference: string;
   transactionFileId: number;
   updatedAt: string;
 }
