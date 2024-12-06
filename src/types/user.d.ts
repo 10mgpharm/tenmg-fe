@@ -70,6 +70,7 @@ export interface CustomerData {
   email: string;
   phone: string;
   active: 1;
+  reference: string;
   lastEvaluationHistory: any;
   businessId: number;
   createdAt: string;

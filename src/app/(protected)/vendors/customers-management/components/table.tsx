@@ -64,7 +64,7 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
             className={classNames(
               info?.row?.original?.active === 1
                 ? "text-[#027A48] bg-[#ECFDF3]"
-                : info?.row?.original?.active === "0"
+                : info?.row?.original?.active === 0
                 ? "bg-[#FEF3F2] text-[#B42318]"
                 : "text-gray-500",
               " max-w-min p-1 px-2 rounded-2xl text-xs font-medium items-center justify-center flex gap-1"
@@ -85,9 +85,21 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
       cell: (info) => {
         return (
           <div className="flex gap-4">
-            <Link href={`/vendors/customers-management/${info.row.original?.id}`} className="text-primary font-medium">View</Link>
+            <Link
+              href={`/vendors/customers-management/${info.row.original?.id}`}
+              className="text-primary font-medium"
+            >
+              View
+            </Link>
             <p
-              className="cursor-pointer"
+              className={classNames(
+                info?.row?.original?.active === 1
+                  ? "text-[#B42318] "
+                  : info?.row?.original?.active === 0
+                  ? "text-[#027A48]"
+                  : "text-gray-500",
+                "cursor-pointer"
+              )}
               onClick={() => handleToggle(info.row.original?.id)}
             >
               {info.row.original?.active === 1 ? "Suspend" : "Activate"}
