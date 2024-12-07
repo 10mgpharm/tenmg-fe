@@ -173,7 +173,7 @@ export default function BusinessInformationForm({
           {/* Heading */}
           <Flex direction="column" mb={8}>
             <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
-            Business Information
+              Business info
             </Text>
             {name && provider === "google" && (
               <Text fontSize="lg" color="gray.500">
@@ -359,6 +359,7 @@ export default function BusinessInformationForm({
             </Flex>
 
             {/* Terms & Conditions */}
+
             <FormControl isInvalid={!!errors.termsAndConditions}>
               <Flex mb={10} alignItems="center" gap={2}>
                 <Checkbox
@@ -383,6 +384,20 @@ export default function BusinessInformationForm({
                 {errors.termsAndConditions?.message}
               </FormErrorMessage>
             </FormControl>
+            {/* <Flex mb={10} alignItems="center" gap={2}>
+              <Checkbox id="remember" />
+              <Text color="gray.500" fontSize="md">
+                I confirm that I have read and agree to 10 MG&apos;s
+                <Link href="#" color={"blue.500"}>
+                  {" "}
+                  Terms & Conditions
+                </Link>{" "}
+                and{" "}
+                <Link href="#" color={"blue.500"}>
+                  Privacy Policy
+                </Link>
+              </Text>
+            </Flex> */}
 
             {/* Submit Button */}
             <Flex direction="column" gap={4} mb={8}>
