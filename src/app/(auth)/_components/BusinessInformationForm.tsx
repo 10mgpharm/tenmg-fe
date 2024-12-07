@@ -31,13 +31,14 @@ interface IFormInput {
   contactPhone: string;
   contactPersonName: string;
   contactPersonPosition: string;
+  termsAndConditions: boolean;
 }
 
 export default function BusinessInformationForm({
   sessionData,
 }: {
   sessionData: NextAuthUserSession;
-  }) {
+}) {
   const session = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>(null);
@@ -107,8 +108,7 @@ export default function BusinessInformationForm({
             completeProfile: true,
           },
         });
-        router.replace('/');
-
+        router.replace("/");
       } else {
         toast.error(`Sign up failed: ${response.data.message}`);
       }
@@ -173,7 +173,7 @@ export default function BusinessInformationForm({
           {/* Heading */}
           <Flex direction="column" mb={8}>
             <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
-              Business info
+            Business Information
             </Text>
             {name && provider === "google" && (
               <Text fontSize="lg" color="gray.500">
@@ -206,7 +206,10 @@ export default function BusinessInformationForm({
                   {...register("businessName", {
                     required: "Business Name is required",
                   })}
-                  className={cn(isLoading || provider === "credentials" && '!bg-gray-300 !text-black')}
+                  className={cn(
+                    isLoading ||
+                      (provider === "credentials" && "!bg-gray-300 !text-black")
+                  )}
                 />
                 <FormErrorMessage>
                   {errors.businessName?.message}
@@ -270,7 +273,10 @@ export default function BusinessInformationForm({
                       message: "Invalid email address",
                     },
                   })}
-                  className={cn(isLoading || provider === "credentials" && '!bg-gray-300 !text-black')}
+                  className={cn(
+                    isLoading ||
+                      (provider === "credentials" && "!bg-gray-300 !text-black")
+                  )}
                 />
                 <FormErrorMessage>
                   {errors.businessEmail?.message}
@@ -353,20 +359,30 @@ export default function BusinessInformationForm({
             </Flex>
 
             {/* Terms & Conditions */}
-            <Flex mb={10} alignItems="center" gap={2}>
-              <Checkbox id="remember" />
-              <Text color="gray.500" fontSize="md">
-                I confirm that I have read and agree to 10 MG&apos;s
-                <Link href="#" color={"blue.500"}>
-                  {" "}
-                  Terms & Conditions
-                </Link>{" "}
-                and{" "}
-                <Link href="#" color={"blue.500"}>
-                  Privacy Policy
-                </Link>
-              </Text>
-            </Flex>
+            <FormControl isInvalid={!!errors.termsAndConditions}>
+              <Flex mb={10} alignItems="center" gap={2}>
+                <Checkbox
+                  id="remember"
+                  {...register("termsAndConditions", {
+                    required: "Terms and Conditions is required",
+                  })}
+                />
+                <Text color="gray.500" fontSize="md">
+                  I confirm that I have read and agree to 10 MG&apos;s
+                  <Link href="#" color={"blue.500"}>
+                    {" "}
+                    Terms & Conditions
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="#" color={"blue.500"}>
+                    Privacy Policy
+                  </Link>
+                </Text>
+              </Flex>
+              <FormErrorMessage>
+                {errors.termsAndConditions?.message}
+              </FormErrorMessage>
+            </FormControl>
 
             {/* Submit Button */}
             <Flex direction="column" gap={4} mb={8}>
