@@ -7,9 +7,6 @@ import {
   FormControl,
   FormErrorMessage,
   Icon,
-  Input,
-  List,
-  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,7 +15,7 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { FiUploadCloud } from "react-icons/fi";
 import { CiFileOn } from "react-icons/ci";
 import requestClient from "@/lib/requestClient";
@@ -60,7 +57,6 @@ const UploadModal = ({
 }: UploadModalProps) => {
   const [isUploadLoading, setIsUploadLoading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -135,6 +131,7 @@ const UploadModal = ({
         setUploadProgress(0);
         if (reloadData) reloadData();
         reset();
+        onClose();
       } else {
         toast.error("Failed to upload the file. Please try again later.");
       }
