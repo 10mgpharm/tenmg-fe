@@ -54,6 +54,7 @@ const EmptyStateDashboard = () => {
       <NoticeCard
         setOpen={onOpen}
         status={sessionData?.user?.businessStatus}
+        url="/vendors/settings/license_upload"
       />
 
       <Flex

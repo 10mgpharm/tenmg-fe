@@ -36,8 +36,10 @@ const noticeInfos: Record<string, NoticeInfo> = {
 const NoticeCard = ({
   setOpen,
   status,
+  url,
 }: {
   setOpen: () => void;
+  url: string;
   status?: string;
 }) => {
   const router = useRouter();
@@ -61,7 +63,7 @@ const NoticeCard = ({
         <button
           onClick={() =>
             status === BusinessStatus.PENDING_VERIFICATION ? setOpen() :
-              router.push("/vendors/settings?tab=licenseUpload")
+              router.push(url)
           }
           className="bg-primary-400 text-white p-4 rounded-lg z-0"
         >
