@@ -23,8 +23,6 @@ export default async function SupplierLayout({
   const session: NextAuthUserSession = await getServerSession(authOptions);
   if (!session) redirect('/auth/signin');
 
-  // if (session.user?.entityType !== 'SUPPLIER') redirect('/');
-
   return(
     <>
       <TopNavBar />

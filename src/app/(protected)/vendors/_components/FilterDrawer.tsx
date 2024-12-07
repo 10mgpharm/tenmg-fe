@@ -1,4 +1,4 @@
-import DateComponent from "@/app/(protected)/suppliers/products/components/DateComponent";
+import DateComponent from "@/app/(protected)/suppliers/products/_components/DateComponent";
 import {
   Drawer,
   DrawerBody,

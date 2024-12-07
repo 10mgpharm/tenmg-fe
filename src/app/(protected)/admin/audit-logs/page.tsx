@@ -10,8 +10,8 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from '@tanstack/react-table';
-import SearchComponent from "../../suppliers/orders/components/SearchComponent"
-import EmptyOrder from "../../suppliers/orders/components/EmptyOrder"
+import SearchComponent from "../../suppliers/orders/_components/SearchComponent"
+import EmptyOrder from "../../suppliers/orders/_components/EmptyOrder"
 import { 
     Flex, 
     HStack, 
@@ -26,7 +26,7 @@ import {
 } from "@chakra-ui/react"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6"
 import Pagination from "../../suppliers/_components/Pagination"
-import { ColumsLogFN } from "./components/table";
+import { ColumsLogFN } from "./_components/table";
 
 const Page = () => {
 

@@ -10,18 +10,18 @@ import {
   Text,
   Divider,
 } from "@chakra-ui/react";
-import BusinessInformation from "./components/BusinessInformation";
-import PasswordForm from "./components/PasswordForm";
-import Notifications from "./components/Notifications";
+import BusinessInformation from "./_components/BusinessInformation";
+import PasswordForm from "./_components/PasswordForm";
+import Notifications from "./_components/Notifications";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, User } from "@/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import ApiKeys from "./components/ApiKeys";
-import TeamMembers from "./components/TeamMembers";
+import ApiKeys from "./_components/ApiKeys";
+import TeamMembers from "./_components/TeamMembers";
 import requestClient from "@/lib/requestClient";
-import GeneralSettings from "./components/GeneralSettings";
-import LicenseUpload from "./components/LicenseUpload";
+import GeneralSettings from "./_components/GeneralSettings";
+import LicenseUpload from "./_components/LicenseUpload";
 
 const Settings = () => {
   const [user, setUser] = useState<User>({} as User);

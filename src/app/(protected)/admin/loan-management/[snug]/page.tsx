@@ -1,5 +1,5 @@
 "use client";
-import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
+import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 import { repaymentData } from "@/data/mockdata";
 import { 
     ColumnOrderState, 
@@ -30,7 +30,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation"
 import { useState } from "react";
-import { ColumsRepaymentFN } from "../components/repaymentTable";
+import { ColumsRepaymentFN } from "../_components/repaymentTable";
 
 const theme = extendTheme({
     components: {

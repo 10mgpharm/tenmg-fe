@@ -22,7 +22,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { ColumnsCustomerFN } from "./components/table";
+import { ColumnsCustomerFN } from "./_components/table";
 import Link from "next/link";
 import FilterDrawer from "../_components/FilterDrawer";
 import Pagination from "../../suppliers/_components/Pagination";

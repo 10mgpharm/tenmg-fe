@@ -22,8 +22,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { ColumnsTransactionFN } from "./components/table";
-import FilterDrawer from "./components/FilterDrawer";
+import { ColumnsTransactionFN } from "./_components/table";
+import FilterDrawer from "./_components/FilterDrawer";
 import Pagination from "../../suppliers/_components/Pagination";
 import SearchInput from "../_components/SearchInput";
 import EmptyResult from "../_components/EmptyResult";

@@ -1,9 +1,9 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react"
-import GeneralSettings from "./components/GeneralSettings"
-import APIManagement from "./components/APIManagement"
-import Notifications from "./components/Notifications"
-import Members from "./components/Members"
-import BusinessInformation from "./components/BusinessInformation"
+import GeneralSettings from "./_components/GeneralSettings"
+import APIManagement from "./_components/APIManagement"
+import Notifications from "./_components/Notifications"
+import Members from "./_components/Members"
+import BusinessInformation from "./_components/BusinessInformation"
 
 const Page = () => {
   return (

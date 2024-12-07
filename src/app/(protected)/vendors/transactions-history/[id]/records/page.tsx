@@ -4,7 +4,7 @@ import { Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@ch
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation";
-import { ColumnsFN } from "../../components/trnascationtable";
+import { ColumnsFN } from "../../_components/trnascationtable";
 
 const data = [
     {reference: "JRT003", decription: "", amount: "₦15,161,060", date : "12/05/2024"}

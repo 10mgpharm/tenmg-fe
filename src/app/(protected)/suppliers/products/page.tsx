@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { CiFilter, CiSearch } from "react-icons/ci"
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
-import EmptyOrder from "../orders/components/EmptyOrder";
+import EmptyOrder from "../orders/_components/EmptyOrder";
 import { 
     Checkbox,
     Flex, 
@@ -28,15 +28,15 @@ import {
     useReactTable 
 } from "@tanstack/react-table";
 
-import { ColumsProductFN } from "./components/table";
+import { ColumsProductFN } from "./_components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
-import GridList from "./components/GridList";
+import GridList from "./_components/GridList";
 import { classNames } from "@/utils";
-import DeleteModal from "./components/DeleteModal";
-import RestockModal from "./components/RestockModal";
-import DeactiveModal from "./components/DeactiveModal";
+import DeleteModal from "./_components/DeleteModal";
+import RestockModal from "./_components/RestockModal";
+import DeactiveModal from "./_components/DeactiveModal";
 import Link from "next/link";
-import FilterDrawer from "./components/FilterDrawer";
+import FilterDrawer from "./_components/FilterDrawer";
 import Pagination from "../_components/Pagination";
 import { productData2 } from "@/data/mockdata";
 import ModalWrapper from "../_components/ModalWrapper";

@@ -12,12 +12,12 @@ import {
 import totalPattern from '@public/assets/images/bgPattern.svg';
 import orderPattern from '@public/assets/images/orderPattern.svg';
 import productPattern from '@public/assets/images/productpatterns.svg';
-import OverviewCard from "./components/OverviewCard";
+import OverviewCard from "./_components/OverviewCard";
 import { useState } from "react";
 import { classNames } from "@/utils";
 import Link from "next/link";
 import { transactionData } from "@/data/mockdata";
-import WalletTable from "./components/WalletTable";
+import WalletTable from "./_components/WalletTable";
 
 const timeLines = [
     {id: 1, timeline: "12 months"},

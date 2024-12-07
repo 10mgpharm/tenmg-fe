@@ -30,7 +30,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/_components/Pagination";
-import { ColumnsTnxHistoryFN } from "./components/table";
+import { ColumnsTnxHistoryFN } from "./_components/table";
 import UploadModal from "../_components/UploadModal";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../customers-management/page";

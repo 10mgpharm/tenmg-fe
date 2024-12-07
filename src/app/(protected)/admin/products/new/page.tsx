@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import DetailForm from "@/app/(protected)/suppliers/products/components/DetailForm";
-import EssentialForm from "@/app/(protected)/suppliers/products/components/EssentialForm";
-import InventoryForm from "@/app/(protected)/suppliers/products/components/InventoryForm";
+import DetailForm from "@/app/(protected)/suppliers/products/_components/DetailForm";
+import EssentialForm from "@/app/(protected)/suppliers/products/_components/EssentialForm";
+import InventoryForm from "@/app/(protected)/suppliers/products/_components/InventoryForm";
 import { useSession } from "next-auth/react";
 import { MedicationResponseData, NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";

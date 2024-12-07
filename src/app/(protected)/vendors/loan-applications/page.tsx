@@ -20,7 +20,7 @@ import { useSession } from "next-auth/react";
 import { CustomerRecords, LoanDataProp, NextAuthUserSession } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
-import CreateLoan from "./components/CreateLoan";
+import CreateLoan from "./_components/CreateLoan";
 import { 
   flexRender, 
   getCoreRowModel, 
@@ -28,10 +28,10 @@ import {
   useReactTable 
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/_components/Pagination";
-import { ColumnsLoanApplicationFN } from "./components/table";
+import { ColumnsLoanApplicationFN } from "./_components/table";
 import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../_components/FilterDrawer";
-import SendApplicationLink from "./components/SendApplicationLink";
+import SendApplicationLink from "./_components/SendApplicationLink";
 
 const LoanApplication = () => {
 

@@ -28,7 +28,7 @@ import { ArrowLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import UploadHistoryModal from "../components/UploadHistoryModal";
+import UploadHistoryModal from "../_components/UploadHistoryModal";
 import Link from "next/link";
 
 const Page = ({ params }: { params: { id: string } }) => {

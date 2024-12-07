@@ -24,10 +24,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/_components/Pagination";
-import { ColumnsCreditScoreFN } from "./components/table";
+import { ColumnsCreditScoreFN } from "./_components/table";
 import { creditScoreData } from "@/data/mockdata";
-import AffordabilityModel from "./components/AffordabilityModel";
-import BusinessLogicModal from "./components/BusinessLogicModal";
+import AffordabilityModel from "./_components/AffordabilityModel";
+import BusinessLogicModal from "./_components/BusinessLogicModal";
 
 const CreditScore = () => {
   const [loading, setLoading] = useState(false);

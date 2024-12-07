@@ -13,9 +13,9 @@ import {
 } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import pill from '@public/assets/images/Rectangle19718.png';
-import Essentials from '../components/Essentials';
-import Statistics from '../components/Statistics';
-import Reviews from '../components/Reviews';
+import Essentials from '../_components/Essentials';
+import Statistics from '../_components/Statistics';
+import Reviews from '../_components/Reviews';
 
 const ProductDetail = () => {
     const router = useRouter();

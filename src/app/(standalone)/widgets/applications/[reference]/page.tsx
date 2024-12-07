@@ -24,8 +24,8 @@ import {
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import LoadingScreen from "../components/LoadingScreen";
-import SuccessScreen from "../components/SuccessScreen";
+import LoadingScreen from "../_components/LoadingScreen";
+import SuccessScreen from "../_components/SuccessScreen";
 import LoanProfile from "../../_components/LoanProfile";
 
 interface IFormInput {

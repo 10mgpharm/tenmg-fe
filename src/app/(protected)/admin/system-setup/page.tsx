@@ -1,7 +1,7 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react"
-import MedicationSetup from "./components/MedicationSetup"
-import AccessControl from "./components/AccessControl"
-import SystemConfiguration from "./components/SystemConfiguration"
+import MedicationSetup from "./_components/MedicationSetup"
+import AccessControl from "./_components/AccessControl"
+import SystemConfiguration from "./_components/SystemConfiguration"
 
 const SystemSetup = () => {
   return (
