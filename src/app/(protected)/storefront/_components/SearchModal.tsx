@@ -42,7 +42,6 @@ const SearchModal = ({
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true);
-
     setIsLoading(false);
   };
 
