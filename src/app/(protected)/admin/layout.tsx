@@ -4,9 +4,9 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
-import TopNavBar from "../suppliers/components/TopNavBar";
-import Footer from "../suppliers/components/Footer";
-import SideBar from "./components/SideBar";
+import TopNavBar from "../suppliers/_components/TopNavBar";
+import Footer from "../suppliers/_components/Footer";
+import SideBar from "./_components/SideBar";
 
 const appName = config.appName;
 

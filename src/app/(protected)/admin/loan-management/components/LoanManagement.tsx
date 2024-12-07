@@ -28,7 +28,7 @@ import SearchComponent from "@/app/(protected)/suppliers/orders/components/Searc
 import { ColumsLoanFN } from "./table";
 import { LoanData } from "@/data/mockdata";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
-import Pagination from "@/app/(protected)/suppliers/components/Pagination";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 const LoanManagement = () => {
 

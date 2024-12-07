@@ -1,6 +1,6 @@
 import React from "react";
-import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
-import SignUpField from "@/app/(auth)/components/SignupField";
+import AuthWrapper from "@/app/(auth)/_components/AuthWrapper";
+import SignUpField from "@/app/(auth)/_components/SignupField";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

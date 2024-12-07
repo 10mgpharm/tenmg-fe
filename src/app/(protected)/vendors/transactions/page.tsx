@@ -24,9 +24,9 @@ import {
 
 import { ColumnsTransactionFN } from "./components/table";
 import FilterDrawer from "./components/FilterDrawer";
-import Pagination from "../../suppliers/components/Pagination";
-import SearchInput from "../components/SearchInput";
-import EmptyResult from "../components/EmptyResult";
+import Pagination from "../../suppliers/_components/Pagination";
+import SearchInput from "../_components/SearchInput";
+import EmptyResult from "../_components/EmptyResult";
 
 interface IFormInput {
   endDate?: Date | null;

@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-table';
 import { ColumsOrderFN } from './table';
 import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import Pagination from '../../components/Pagination';
+import Pagination from '../../_components/Pagination';
 
 const AllOrders = ({data, type}: {data: any, type: string}) => {
 

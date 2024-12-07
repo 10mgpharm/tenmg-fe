@@ -23,7 +23,7 @@ import { MedicationData } from "@/types";
 import EditMedicationType from "./EditMedicationType";
 import { useState } from "react";
 import DeleteMedication from "./DeleteMedication";
-import Loader from "../../components/Loader";
+import Loader from "../../_components/Loader";
 
 const MedicationTypes = (
   {data, fetchingMedicationTypes, loading}: 

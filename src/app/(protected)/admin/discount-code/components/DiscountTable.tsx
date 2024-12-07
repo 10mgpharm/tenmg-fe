@@ -12,7 +12,7 @@ import { ColumsDiscountFN } from "./table";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
 import { Flex, HStack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import Pagination from "@/app/(protected)/suppliers/components/Pagination";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 const DiscountTable = ({data}: any) => {
 

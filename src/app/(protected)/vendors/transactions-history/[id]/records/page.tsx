@@ -1,5 +1,5 @@
 "use client";
-import Pagination from "@/app/(protected)/suppliers/components/Pagination";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import { Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react"
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
 import { ArrowLeft } from "lucide-react"

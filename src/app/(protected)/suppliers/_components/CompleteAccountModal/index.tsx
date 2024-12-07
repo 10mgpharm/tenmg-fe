@@ -18,8 +18,10 @@ import inventory from '@public/assets/images/inventory.svg';
 import withdrawal from '@public/assets/images/walllet.svg';
 import insight from '@public/assets/images/insight.svg';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const CompleteAccountModal = ({ isOpen, onClose }: {isOpen: boolean, onClose: () => void}) => {
+  const router = useRouter();
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -59,7 +61,7 @@ const CompleteAccountModal = ({ isOpen, onClose }: {isOpen: boolean, onClose: ()
           <ModalFooter mt={3} mb={5}>
             <button
                 type="button"
-                onClick={() => onClose()}
+                onClick={() => router.push("/suppliers/settings")}
                 className="inline-flex w-full justify-center rounded-md bg-primary-500 p-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-400"
             >
                 Begin Account Setup

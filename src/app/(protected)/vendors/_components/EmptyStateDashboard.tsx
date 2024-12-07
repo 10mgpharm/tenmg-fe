@@ -18,13 +18,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
-import NoticeCard from "../../suppliers/components/NoticeCard";
+import NoticeCard from "../../suppliers/_components/NoticeCard";
 import OverviewCard from "./OverviewCard";
 import SideCard from "./SideCard";
 import { ArrowDown } from "lucide-react";
-import EmptyCard from "../../suppliers/components/EmptyCard";
+import EmptyCard from "../../suppliers/_components/EmptyCard";
 import CompleteAccountModal from "./CompleteAccountModal";
-import { BusinessStatus } from "@/constants";
 
 interface IVendorDashboard {
   totalCustomers: number;

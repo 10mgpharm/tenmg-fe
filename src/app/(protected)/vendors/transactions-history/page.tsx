@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import SearchInput from "../components/SearchInput";
+import SearchInput from "../_components/SearchInput";
 import { CiFilter } from "react-icons/ci";
 import {
   Button,
@@ -22,19 +22,19 @@ import {
   TransactionHistoryDataProps,
 } from "@/types";
 import { useSession } from "next-auth/react";
-import EmptyResult from "../components/EmptyResult";
+import EmptyResult from "../_components/EmptyResult";
 import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import Pagination from "../../suppliers/components/Pagination";
+import Pagination from "../../suppliers/_components/Pagination";
 import { ColumnsTnxHistoryFN } from "./components/table";
-import UploadModal from "../components/UploadModal";
+import UploadModal from "../_components/UploadModal";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../customers-management/page";
-import FilterDrawer from "../components/FilterDrawer";
+import FilterDrawer from "../_components/FilterDrawer";
 
 const TransactionHistory = () => {
   const [loading, setLoading] = useState(true);

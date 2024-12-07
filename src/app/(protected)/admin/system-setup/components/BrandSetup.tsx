@@ -22,7 +22,7 @@ import AddNewBrands from "./AddNewBrands";
 import EditBrands from "./EditBrands";
 import { MedicationData } from "@/types";
 import DeleteMedication from "./DeleteMedication";
-import Loader from "../../components/Loader";
+import Loader from "../../_components/Loader";
 
 const BrandSetup = (
   {data, type, refetchingTypes, loading}: 

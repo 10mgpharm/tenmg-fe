@@ -1,4 +1,4 @@
-import ModalWrapper from "@/app/(protected)/suppliers/components/ModalWrapper";
+import ModalWrapper from "@/app/(protected)/suppliers/_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { CustomerRecords, NextAuthUserSession } from "@/types";
 import { handleServerErrorMessage } from "@/utils";

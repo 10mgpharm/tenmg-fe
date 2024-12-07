@@ -23,15 +23,15 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ColumnsMemberFN } from "./table";
-import Pagination from "@/app/(protected)/suppliers/components/Pagination";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import InviteMember from "@/app/(protected)/admin/settings/components/InviteMember";
 import requestClient from "@/lib/requestClient";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
 import { SubmitHandler } from "react-hook-form";
-import DeleteModal from "../../components/DeleteModal";
-import EmptyResult from "../../components/EmptyResult";
+import DeleteModal from "../../_components/DeleteModal";
+import EmptyResult from "../../_components/EmptyResult";
 
 interface IFormInput {
   fullName: string;

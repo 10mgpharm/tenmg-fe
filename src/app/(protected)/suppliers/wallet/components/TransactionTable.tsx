@@ -13,7 +13,7 @@ import { useState } from "react";
 import { ColumsTransactionFN } from "./table";
 import EmptyOrder from "../../orders/components/EmptyOrder";
 import { Table,TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import Pagination from "../../components/Pagination";
+import Pagination from "../../_components/Pagination";
 
 const TransactionTable = ({data}: {data: any}) => {
 

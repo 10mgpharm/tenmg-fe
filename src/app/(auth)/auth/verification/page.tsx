@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import React from "react";
-import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
+import AuthWrapper from "@/app/(auth)/_components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import OtpInput from "react-otp-input";
 import { FaArrowLeft } from "react-icons/fa6";

@@ -1,4 +1,4 @@
-import RevenueChart from "@/app/(protected)/suppliers/components/RevenueChart"
+import RevenueChart from "@/app/(protected)/suppliers/_components/RevenueChart"
 
 const TransactionSummary = () => {
   return (

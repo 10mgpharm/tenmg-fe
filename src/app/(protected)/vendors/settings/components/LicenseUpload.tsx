@@ -194,7 +194,7 @@ const LicenseUpload = () => {
         )}
         {!isLoading && (
           <Flex direction={'column'} gap={5}>
-            <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500">
+            <Text className="text-left text-sm font-medium text-gray-500">
               CAC Document:
               <a target="_blank" href={businessLicense?.licenseFile} className="font-bold cursor-pointer underline">
                 View Document

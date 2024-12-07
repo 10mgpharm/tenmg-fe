@@ -22,7 +22,7 @@ import { IoKey, IoTrashOutline } from "react-icons/io5";
 import { FaEye, FaEyeSlash, FaKey } from "react-icons/fa6";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import DeleteModal from "../../components/DeleteModal";
+import DeleteModal from "../../_components/DeleteModal";
 
 interface IFormInput {
   clientId: string;

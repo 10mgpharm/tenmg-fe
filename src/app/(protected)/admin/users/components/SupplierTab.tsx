@@ -1,5 +1,5 @@
 "use client";
-import Pagination from '@/app/(protected)/suppliers/components/Pagination'
+import Pagination from '@/app/(protected)/suppliers/_components/Pagination'
 import EmptyOrder from '@/app/(protected)/suppliers/orders/components/EmptyOrder'
 import { 
     Stack,

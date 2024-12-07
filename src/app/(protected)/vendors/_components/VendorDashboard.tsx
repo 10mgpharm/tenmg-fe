@@ -20,7 +20,7 @@ import SideCard from "./SideCard";
 import { ArrowDown } from "lucide-react";
 import { ApexOptions } from "apexcharts";
 import ChartComponent from "./ChartComponent";
-import NoticeCard from "../../suppliers/components/NoticeCard";
+import NoticeCard from "../../suppliers/_components/NoticeCard";
 import CompleteAccountModal from "./CompleteAccountModal";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";

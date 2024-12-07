@@ -26,7 +26,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { ColumsApplicationFN } from "./applicationTable";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
-import Pagination from "@/app/(protected)/suppliers/components/Pagination";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import { applicationData } from "@/data/mockdata";
 import CreateLoan from "./CreateLoan";
 import SuccessModal from "./SuccessModal";

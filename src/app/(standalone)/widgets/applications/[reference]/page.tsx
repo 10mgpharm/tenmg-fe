@@ -26,7 +26,7 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import LoadingScreen from "../components/LoadingScreen";
 import SuccessScreen from "../components/SuccessScreen";
-import LoanProfile from "../../components/LoanProfile";
+import LoanProfile from "../../_components/LoanProfile";
 
 interface IFormInput {
   loanRepayment: string;

@@ -16,7 +16,7 @@ import {
     Tr, 
     HStack
  } from "@chakra-ui/react"
-import DashboardCard from "./components/DashboardCard"
+import DashboardCard from "./_components/DashboardCard"
 import salesIcon from '@public/assets/images/Emphasis.svg'
 import pharmIcon from '@public/assets/images/Emphasis1.svg'
 import productIcon from '@public/assets/images/Emphasis2.svg'
@@ -32,7 +32,7 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table"
-import { ColumsFN } from "./components/table"
+import { ColumsFN } from "./_components/table"
 import { useState } from "react"
 import { loanData, records } from "@/data/mockdata"
 

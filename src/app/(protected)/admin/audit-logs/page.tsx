@@ -25,7 +25,7 @@ import {
     Tr 
 } from "@chakra-ui/react"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6"
-import Pagination from "../../suppliers/components/Pagination"
+import Pagination from "../../suppliers/_components/Pagination"
 import { ColumsLogFN } from "./components/table";
 
 const Page = () => {

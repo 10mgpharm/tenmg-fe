@@ -28,7 +28,7 @@ const Settings = () => {
                     </Tab>
                     <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                         <div className='flex items-center gap-3'>
-                            <Text>Account Setup</Text>
+                            <Text>License Upload</Text>
                         </div>
                     </Tab>
                 </TabList>

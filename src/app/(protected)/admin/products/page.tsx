@@ -30,7 +30,7 @@ import { PRODUCTVIEW } from "@/app/globalTypes";
 import { classNames } from "@/utils";
 import Link from "next/link";
 import EmptyOrder from "../../suppliers/orders/components/EmptyOrder";
-import Pagination from "../../suppliers/components/Pagination";
+import Pagination from "../../suppliers/_components/Pagination";
 import GridList from "../../suppliers/products/components/GridList";
 import DeleteModal from "../../suppliers/products/components/DeleteModal";
 import RestockModal from "../../suppliers/products/components/RestockModal";

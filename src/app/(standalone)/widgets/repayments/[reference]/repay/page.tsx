@@ -1,5 +1,5 @@
 import React from "react";
-import LoanLayout from "../../../components/LoanLayout";
+import LoanLayout from "../../../_components/LoanLayout";
 import {
   Badge,
   Box,
