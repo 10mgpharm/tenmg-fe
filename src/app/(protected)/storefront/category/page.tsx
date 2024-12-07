@@ -1,8 +1,8 @@
 'use client'
 import React from 'react'
 import StoreProductCardComponent from '../_components/StoreProductCardComponent'
-import EmptyProductScreen from '../components/EmptyProductScreen'
-import BreadCrumbBanner from '../components/BreadCrumbBanner'
+// import EmptyProductScreen from '../_components/EmptyProductScreen'
+import BreadCrumbBanner from '../_components/BreadCrumbBanner'
 
 export default function StoreFrontByCategory() {
 

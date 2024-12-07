@@ -18,13 +18,13 @@ export default function SearchPage() {
 
   const {
     state,
-    actions,
-    getInnerTrackProps,
-    getInputProps,
-    getMarkerProps,
-    getRootProps,
-    getThumbProps,
-    getTrackProps,
+    // actions,
+    // getInnerTrackProps,
+    // getInputProps,
+    // getMarkerProps,
+    // getRootProps,
+    // getThumbProps,
+    // getTrackProps,
   } = useRangeSlider({ min, max, defaultValue })
 
   console.log(state);

@@ -6,6 +6,7 @@ export default function StoreProductReviewComponent() {
     <div className='border border-gray-200 rounded-md p-5 flex flex-col gap-1 w-full lg:w-9/12 mx-auto'>
       <h4 className='text-lg text-primary-500 font-semibold'>Frances Guerrero</h4>
 
+      {/* // !TODO: refactor this to be the chakra ui star rating component */}
       <div className='flex items-center'>
         <StarIcon className='w-5 fill-warning-400 stroke-none' />
         <StarIcon className='w-5 fill-warning-400 stroke-none' />
