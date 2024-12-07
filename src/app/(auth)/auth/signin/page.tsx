@@ -3,9 +3,9 @@ import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
-import LoginForm from "@/app/(auth)/components/LoginForm";
+import LoginForm from "@/app/(auth)/_components/LoginForm";
 import Link from "next/link";
-import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
+import AuthWrapper from "@/app/(auth)/_components/AuthWrapper";
 import { Heading, Text } from "@chakra-ui/react";
 
 export default async function LoginPage() {

@@ -31,7 +31,7 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from '@tanstack/react-table';
-import EmptyOrder from '@/app/(protected)/suppliers/orders/components/EmptyOrder';
+import EmptyOrder from '@/app/(protected)/suppliers/orders/_components/EmptyOrder';
 import { activityData } from "@/data/mockdata";
 import { ColumsActivityFN } from "../tables/activitiesTable";
 

@@ -1,20 +1,6 @@
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
-
-export enum BusinessStatus {
-  PENDING_VERIFICATION = "PENDING_VERIFICATION",
-  VERIFIED = "VERIFIED",
-  SUSPENDED = "SUSPENDED",
-  BANNED = "BANNED",
-  PENDING_APPROVAL = "PENDING_APPROVAL",
-}
-
-export enum BusinessType {
-  VENDOR = "VENDOR",
-  SUPPLIER = "SUPPLIER",
-  ADMIN = "ADMIN",
-  CUSTOMER_PHARMACY = "CUSTOMER_PHARMACY",
-}
+import { BusinessStatus } from "../constants/enum";
 
 export interface Account {
   providerAccountId: number | string;
@@ -84,6 +70,7 @@ export interface CustomerData {
   email: string;
   phone: string;
   active: 1;
+  reference: string;
   lastEvaluationHistory: any;
   businessId: number;
   createdAt: string;
@@ -99,11 +86,23 @@ export interface CustomerDataProp {
   prevPageUrl: string | null;
 }
 
+export interface singleCustomerData {
+  id: number;
+  name: string;
+  avatar: string | null;
+  email: string;
+  phone: string;
+  identifier: string;
+  businessId: number;
+  active: number;
+  updatedAt: string;
+  createdAt: string;
+}
 export interface LoanData {
   id: number;
   businessId: number;
   createdAt: string;
-  customerId: number;
+  customer: singleCustomerData;
   durationInMonths: string;
   identifier: string;
   interestAmount: string;

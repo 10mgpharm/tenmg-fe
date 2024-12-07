@@ -1,7 +1,7 @@
 import React from "react";
-import LoanLayout from "../../../components/LoanLayout";
+import LoanLayout from "../../../_components/LoanLayout";
 import { Button, Stack, Text } from "@chakra-ui/react";
-import LoanInnerWrapper from "../../../components/LoanInnerWrapper";
+import LoanInnerWrapper from "../../../_components/LoanInnerWrapper";
 
 interface IRepayment {
   loanAmount: string;

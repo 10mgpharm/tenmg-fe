@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import TopNavBar from "./components/TopNavBar";
-import SideBar from "./components/SideBar";
-import Footer from "./components/Footer";
+import TopNavBar from "./_components/TopNavBar";
+import SideBar from "./_components/SideBar";
+import Footer from "./_components/Footer";
 import config from "@/lib/config";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -23,16 +23,16 @@ export default async function SupplierLayout({
   const session: NextAuthUserSession = await getServerSession(authOptions);
   if (!session) redirect('/auth/signin');
 
-  // if (session.user?.entityType !== 'SUPPLIER') redirect('/');
-
   return(
     <>
-        <TopNavBar />
-        <SideBar />
-        <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB] min-h-screen">
+      <TopNavBar />
+      <SideBar />
+      <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
+        <div className="min-h-[calc(100vh-150px)]">
           {children}
-          <Footer />
-        </main>
+        </div>
+        <Footer />
+      </main>
     </>
   );
 }

@@ -10,9 +10,9 @@ import {
     Tab, 
     TabPanel, 
 } from "@chakra-ui/react"
-import SearchComponent from "../../suppliers/orders/components/SearchComponent"
+import SearchComponent from "../../suppliers/orders/_components/SearchComponent"
 import { discountData } from "@/data/mockdata"
-import DiscountTable from "./components/DiscountTable";
+import DiscountTable from "./_components/DiscountTable";
 
 const Page = () => {
 

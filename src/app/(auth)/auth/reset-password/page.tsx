@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import React from "react";
-import AuthWrapper from "@/app/(auth)/components/AuthWrapper";
+import AuthWrapper from "@/app/(auth)/_components/AuthWrapper";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";

@@ -5,12 +5,12 @@ import { FaEye } from "react-icons/fa"
 
 import folder from '@public/assets/images/Group 3.svg';
 import drugImage from '@public/assets/images/MedicineStreamline-Lagos1.svg'
-import AddAccount from "./components/AddAccount";
+import AddAccount from "./_components/AddAccount";
 import { useDisclosure } from "@chakra-ui/react";
-import WithdrawFunds from "./components/WithdrawFunds";
-import OTPModal from "./components/OTPModal";
+import WithdrawFunds from "./_components/WithdrawFunds";
+import OTPModal from "./_components/OTPModal";
 import Link from "next/link";
-import Transaction from "./components/Transaction";
+import Transaction from "./_components/Transaction";
 
 const Wallet = () => {
     let hasAccountNumber = true;

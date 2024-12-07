@@ -1,19 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CiFilter, CiSearch } from "react-icons/ci"
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
-import EmptyOrder from "../orders/components/EmptyOrder";
+import EmptyOrder from "../orders/_components/EmptyOrder";
 import { 
     Checkbox,
     Flex, 
-    HStack, 
+    Spinner, 
     Table, 
     TableContainer, 
     Tbody, 
     Td, 
-    Text, 
     Th, 
     Thead, 
     Tr, 
@@ -29,27 +28,36 @@ import {
     useReactTable 
 } from "@tanstack/react-table";
 
-import { ColumsProductFN } from "./components/table";
+import { ColumsProductFN } from "./_components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
-import GridList from "./components/GridList";
+import GridList from "./_components/GridList";
 import { classNames } from "@/utils";
-import DeleteModal from "./components/DeleteModal";
-import RestockModal from "./components/RestockModal";
-import DeactiveModal from "./components/DeactiveModal";
+import DeleteModal from "./_components/DeleteModal";
+import RestockModal from "./_components/RestockModal";
+import DeactiveModal from "./_components/DeactiveModal";
 import Link from "next/link";
-import FilterDrawer from "./components/FilterDrawer";
-import Pagination from "../components/Pagination";
+import FilterDrawer from "./_components/FilterDrawer";
+import Pagination from "../_components/Pagination";
 import { productData2 } from "@/data/mockdata";
-import ModalWrapper from "../components/ModalWrapper";
+import ModalWrapper from "../_components/ModalWrapper";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession, ProductResponseData } from "@/types";
 
 const Products = () => {
 
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+
+    const [loading, setLoading] = useState<boolean>(false); 
     const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
+    const [products, setProducts] = useState<ProductResponseData>();
     const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
 
     const { isOpen, onClose, onOpen } = useDisclosure();
@@ -58,10 +66,31 @@ const Products = () => {
     const { isOpen: isOpenDeactivate, onClose: onCloseDeactivate, onOpen: onOpenDeactivate } = useDisclosure();
     const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
 
-    // const memoizedData = useMemo(() => data, [data]);
+    const fetchProducts = useCallback(async () => {
+        setLoading(true);
+        try {
+        const response = await requestClient({ token: token }).get(
+            `/supplier/products`
+        );
+        if (response.status === 200) {
+            setProducts(response.data.data);
+        }
+        setLoading(false);
+        } catch (error) {
+        console.error(error);
+        setLoading(false);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if(!token) return;
+        fetchProducts();
+    },[fetchProducts, token]);
+
+    const memoizedData = useMemo(() => products?.data, [products?.data]);
 
     const table = useReactTable({
-        data: productData2,
+        data: memoizedData || [],
         columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate),
         onSortingChange: setSorting,
         state: {
@@ -78,22 +107,13 @@ const Products = () => {
         getSortedRowModel: getSortedRowModel(),
     });
 
-    const meta = {
-        meta: {
-            links: [
-                {label: 'Previous', active: false},
-                {label: 1, active: true}
-            ]
-        }
-    }
-
   return (
     <div className="p-8">
         <div className="flex justify-between">
             <div className="mb-5">
                 <h3 className="font-semibold text-2xl">
                     Products
-                    <span className="font-light text-gray-600">(10/10)</span>
+                    {/* <span className="font-light text-gray-600">(10/10)</span> */}
                 </h3>
                 <div className="flex items-center gap-3 mt-5">
                     <div className="border border-gray-300 rounded-md flex items-center gap-3 p-3 w-[350px]">
@@ -148,7 +168,12 @@ const Products = () => {
         </div>
         <div className="">
         {
-            productData2?.length === 0 
+            loading ? (
+                <Flex justify="center" align="center" height="200px">
+                  <Spinner size="xl" />
+                </Flex>
+            ) :
+            memoizedData?.length === 0 
             ? <EmptyOrder 
             heading={`No Product Yet`} 
             content={`You currently have no product. All products will appear here.`}
@@ -219,7 +244,7 @@ const Products = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination meta={meta} setPageCount={setPageCount}/>
+                <Pagination meta={products?.meta} setPageCount={setPageCount}/>
             </TableContainer>
             : <GridList data={productData2}/>
         }
