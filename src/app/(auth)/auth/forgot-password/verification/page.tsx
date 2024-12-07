@@ -1,6 +1,6 @@
 'use client';
 
-import AuthWrapper from '@/app/(auth)/components/AuthWrapper';
+import AuthWrapper from '@/app/(auth)/_components/AuthWrapper';
 import requestClient from '@/lib/requestClient';
 import { handleServerErrorMessage } from '@/utils';
 import { Button } from '@chakra-ui/react';

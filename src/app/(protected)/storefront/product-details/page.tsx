@@ -1,8 +1,8 @@
 import { Minus, Plus } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-import StoreProductReviewComponent from '../components/StoreProductReviewComponent'
-import StoreProductCardComponent from '../components/StoreProductCardComponent'
+import StoreProductReviewComponent from '../_components/StoreProductReviewComponent'
+import StoreProductCardComponent from '../_components/StoreProductCardComponent'
 import BreadCrumbBanner from '../components/BreadCrumbBanner'
 // ?NOTE: this page is going to be a dynamic page where the id of the product will be used to fetch and populate the information on the page.
 export default function ProductDetailPage() {

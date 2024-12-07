@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Navbar from "./components/Navbar";
+import Navbar from "./_components/Navbar";
 import config from "@/lib/config";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
-import Footer from "./components/Footer";
+import Footer from "./_components/Footer";
 
 const appName = config.appName;
 

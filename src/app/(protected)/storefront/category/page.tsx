@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import StoreProductCardComponent from '../components/StoreProductCardComponent'
+import StoreProductCardComponent from '../_components/StoreProductCardComponent'
 import EmptyProductScreen from '../components/EmptyProductScreen'
 import BreadCrumbBanner from '../components/BreadCrumbBanner'
 

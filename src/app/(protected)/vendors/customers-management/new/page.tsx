@@ -20,8 +20,8 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import UploadFile from "../../components/UploadFile";
-import PhoneNumberInput from "../../components/PhoneNumberInput";
+import UploadFile from "../../_components/UploadFile";
+import PhoneNumberInput from "../../_components/PhoneNumberInput";
 
 interface IFormInput {
   name: string;
@@ -51,11 +51,10 @@ const CreateCustomer = () => {
   const onSubmit = async (value: IFormInput) => {
     const formData = new FormData();
     formData.append("email", value.email);
-    formData.append("vendorId", sessionData?.user?.id);
     formData.append("name", value.name);
     formData.append("phone", value.phone);
     if (value.referenceId) {
-      formData.append("referenceId", value.referenceId);
+      formData.append("reference", value.referenceId);
     }
     if (value.file) {
       formData.append("file", value.file);
@@ -149,7 +148,7 @@ const CreateCustomer = () => {
               placeholder="08092389823"
             />
             <FormControl>
-              <FormLabel>External Reference ID</FormLabel>
+              <FormLabel>External Reference ID (Optional)</FormLabel>
               <Input placeholder="Reference ID" {...register("referenceId")} />
             </FormControl>
           </HStack>
@@ -176,8 +175,8 @@ const CreateCustomer = () => {
               <UploadFile
                 onUpload={(file) => setValue("file", file)}
                 accept=".csv, .xlsx, .xls"
-                uploadLabel="Excel, CSV, or JSON (max. 800x400px)"
-                uploadSuccessMessage="Customer data uploaded successfully!"
+                uploadLabel="Excel, CSV, or JSON (Maximum size: 5MB)"
+                uploadSuccessMessage="Customer transaction history file added"
               />
             </Center>
           </div>

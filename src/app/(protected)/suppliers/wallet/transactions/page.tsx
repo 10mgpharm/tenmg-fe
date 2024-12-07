@@ -1,6 +1,6 @@
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { CiFilter, CiSearch } from "react-icons/ci"
-import Transaction from "../components/Transaction"
+import Transaction from "../_components/Transaction"
 
 const TransactionUI = () => {
   return (
