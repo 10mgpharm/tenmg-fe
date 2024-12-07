@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function StoreProductReviewComponent() {
   return (
-    <div className='border border-gray-200 rounded-md p-5 flex flex-col gap-1 w-9/12 mx-auto'>
+    <div className='border border-gray-200 rounded-md p-5 flex flex-col gap-1 w-full lg:w-9/12 mx-auto'>
       <h4 className='text-lg text-primary-500 font-semibold'>Frances Guerrero</h4>
 
       <div className='flex items-center'>
