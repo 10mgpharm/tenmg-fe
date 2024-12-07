@@ -16,8 +16,8 @@ import {
 import { CiSearch } from 'react-icons/ci'
 import { FaChevronDown } from 'react-icons/fa6'
 import { MdFilterList } from 'react-icons/md'
-import AddNewDrawer from './components/AddNewDrawer'
-import SupplierTab from './components/SupplierTab'
+import AddNewDrawer from './_components/AddNewDrawer'
+import SupplierTab from './_components/SupplierTab'
 import { useSession } from 'next-auth/react';
 import { MemberDataProp, NextAuthUserSession } from '@/types';
 import { useCallback, useEffect, useState } from 'react';

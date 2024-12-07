@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { Metadata } from "next";
 import { NextAuthUserSession } from "@/types";
-import BusinessInformationForm from "../../components/BusinessInformationForm";
+import BusinessInformationForm from "../../_components/BusinessInformationForm";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {

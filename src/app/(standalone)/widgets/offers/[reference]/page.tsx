@@ -21,12 +21,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { MdCheckCircle } from "react-icons/md";
-import LoanProfile from "../../components/LoanProfile";
+import LoanProfile from "../../_components/LoanProfile";
 import { TbCurrencyNaira } from "react-icons/tb";
 import { CiBank } from "react-icons/ci";
 import { FiEyeOff } from "react-icons/fi";
 import { IoLockClosedOutline } from "react-icons/io5";
-import LoanInnerWrapper from "../../components/LoanInnerWrapper";
+import LoanInnerWrapper from "../../_components/LoanInnerWrapper";
 import { IoIosArrowForward } from "react-icons/io";
 
 const options = [

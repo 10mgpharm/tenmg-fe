@@ -2,7 +2,7 @@
 import { Button, Divider, Flex, SimpleGrid, Stack, Text, useDisclosure } from "@chakra-ui/react"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
-import ApproveLoan from "../components/ApproveLoan";
+import ApproveLoan from "../_components/ApproveLoan";
 
 const Page = () => {
     const router = useRouter();

@@ -1,6 +1,6 @@
 import { NextAuthUserSession } from "@/types";
-import EmptyStateDashboard from "./components/EmptyStateDashboard";
-import VendorDashboard from "./components/VendorDashboard";
+import EmptyStateDashboard from "./_components/EmptyStateDashboard";
+import VendorDashboard from "./_components/VendorDashboard";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { BusinessStatus } from "@/constants";

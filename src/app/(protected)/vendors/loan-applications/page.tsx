@@ -1,6 +1,6 @@
 "use client";
 import { CiFilter } from "react-icons/ci"
-import SearchInput from "../components/SearchInput"
+import SearchInput from "../_components/SearchInput"
 import { 
   Button, 
   Flex, 
@@ -15,23 +15,23 @@ import {
   useDisclosure 
 } from "@chakra-ui/react"
 import { useCallback, useEffect, useMemo, useState } from "react";
-import EmptyResult from "../components/EmptyResult";
+import EmptyResult from "../_components/EmptyResult";
 import { useSession } from "next-auth/react";
 import { CustomerRecords, LoanDataProp, NextAuthUserSession } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
-import CreateLoan from "./components/CreateLoan";
+import CreateLoan from "./_components/CreateLoan";
 import { 
   flexRender, 
   getCoreRowModel, 
   getFilteredRowModel, 
   useReactTable 
 } from "@tanstack/react-table";
-import Pagination from "../../suppliers/components/Pagination";
-import { ColumnsLoanApplicationFN } from "./components/table";
+import Pagination from "../../suppliers/_components/Pagination";
+import { ColumnsLoanApplicationFN } from "./_components/table";
 import { IFilterInput } from "../customers-management/page";
-import FilterDrawer from "../components/FilterDrawer";
-import SendApplicationLink from "./components/SendApplicationLink";
+import FilterDrawer from "../_components/FilterDrawer";
+import SendApplicationLink from "./_components/SendApplicationLink";
 
 const LoanApplication = () => {
 

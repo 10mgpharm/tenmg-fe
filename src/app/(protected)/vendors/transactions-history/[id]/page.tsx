@@ -4,14 +4,14 @@ import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import TransactionSummary from "../components/TransactionSummary";
-import Records from "../components/Records";
+import TransactionSummary from "../_components/TransactionSummary";
+import Records from "../_components/Records";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, TransactionHistoryData } from "@/types";
-import BreakdownRecords from "../components/BreakdownRecord";
+import BreakdownRecords from "../_components/BreakdownRecord";
 
 const SingleTransactionPage = ({params}: {params: {id: string}}) => {
     const router = useRouter();

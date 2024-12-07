@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import LoanLayout from "../components/LoanLayout";
-import LoanFooter from "../components/LoanFooter";
+import LoanLayout from "../_components/LoanLayout";
+import LoanFooter from "../_components/LoanFooter";
 
 export const metadata: Metadata = {
   title: "10MG Credit | Offers",

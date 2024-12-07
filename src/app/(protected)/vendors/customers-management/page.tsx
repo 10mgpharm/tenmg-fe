@@ -22,20 +22,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { ColumnsCustomerFN } from "./components/table";
+import { ColumnsCustomerFN } from "./_components/table";
 import Link from "next/link";
-import FilterDrawer from "../components/FilterDrawer";
-import Pagination from "../../suppliers/components/Pagination";
+import FilterDrawer from "../_components/FilterDrawer";
+import Pagination from "../../suppliers/_components/Pagination";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { CustomerDataProp, NextAuthUserSession } from "@/types";
 import { saveAs } from "file-saver";
 import { createXlsxTemplate } from "@/utils/createXlsxTemplate";
-import SearchInput from "../components/SearchInput";
-import EmptyResult from "../components/EmptyResult";
+import SearchInput from "../_components/SearchInput";
+import EmptyResult from "../_components/EmptyResult";
 import { useDebouncedValue } from "@/utils/debounce";
-import UploadModal from "../components/UploadModal";
+import UploadModal from "../_components/UploadModal";
 
 export interface IFilterInput {
   endDate?: Date | null;

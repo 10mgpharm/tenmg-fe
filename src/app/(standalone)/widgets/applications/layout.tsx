@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import config from "@/lib/config";
-import LoanFooter from "../components/LoanFooter";
-import LoanLayout from "../components/LoanLayout";
+import LoanFooter from "../_components/LoanFooter";
+import LoanLayout from "../_components/LoanLayout";
 
 const appName = config.appName;
 

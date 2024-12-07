@@ -20,8 +20,8 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import UploadFile from "../../components/UploadFile";
-import PhoneNumberInput from "../../components/PhoneNumberInput";
+import UploadFile from "../../_components/UploadFile";
+import PhoneNumberInput from "../../_components/PhoneNumberInput";
 
 interface IFormInput {
   name: string;
