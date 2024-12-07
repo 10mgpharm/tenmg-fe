@@ -51,7 +51,7 @@ export function ColumnsTnxHistoryFN() {
     //   ),
     // }),
     columnHelper.accessor("status", {
-      header: () => <p>Account Status</p>,
+      header: () => <p>Status</p>,
       cell: (info) => (
         <div>
           <p
