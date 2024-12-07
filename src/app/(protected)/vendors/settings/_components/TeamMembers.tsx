@@ -39,7 +39,7 @@ interface IFormInput {
   role: "admin" | "operator" | "support";
 }
 
-const Members = ({
+const TeamMembers = ({
   allMembersData,
   fetchTeamMembers,
   token,
@@ -158,4 +158,4 @@ const Members = ({
   );
 };
 
-export default Members;
+export default TeamMembers;

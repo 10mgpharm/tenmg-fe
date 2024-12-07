@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, Divider, Switch } from "@chakra-ui/react";
 import { useState } from "react";
 import requestClient from "@/lib/requestClient";
