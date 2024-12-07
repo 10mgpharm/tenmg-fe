@@ -1,8 +1,6 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { Text } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
 
 const StoreFront = () => {
   const session = useSession();
