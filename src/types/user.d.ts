@@ -66,14 +66,16 @@ export interface MemberDataProp {
 export interface CustomerData {
   id: number;
   identifier: string;
+  avatarId: number | null;
   name: string;
   email: string;
   phone: string;
-  active: 1;
-  reference: string;
+  active: number;
+  reference: string | null;
   lastEvaluationHistory: any;
   businessId: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface CustomerDataProp {
@@ -210,6 +212,112 @@ export interface ProductDataProps {
 export interface ProductResponseData {
   data: ProductDataProps[];
   links: any;
+  meta: MetaDataProp;
+}
+
+/**
+ * Interfaces for the Credit Score
+ */
+
+export interface TransactingMonth {
+  sum: number;
+  month: string;
+}
+
+export interface AppliedRule {
+  status: "passed" | "failed";
+  weight: number;
+  operator: string | null;
+  ruleName: string;
+  systemValue: string;
+  ruleDescription: string;
+  transactionValue: number | { sum: number; month: string }[];
+}
+
+export interface CreditScoreResult {
+  scoreTotal: number;
+  scoreValue: number;
+  appliedRules: AppliedRule[];
+  scorePercent: number;
+}
+
+export interface Affordability {
+  rule: string;
+  maxAmount: string;
+  baseAmount: string;
+}
+
+export interface CreditPattern {
+  noOf10MGCredits: number;
+  activeCreditCount: number;
+  noOfAllRepayments: number;
+  activeCreditAmount: number;
+  noOfFullRepayments: number;
+  noOfLateRepayments: number;
+  amountOf10MGCredits: number;
+  noOfExternalCredits: number;
+  totalPastCreditCount: number;
+  noOfPartialRepayments: number;
+  totalPastCreditAmount: number;
+  noOfScheduleRepayments: number;
+  amountOfExternalCredits: number;
+}
+
+export interface PurchasePattern {
+  noOfOmmitedMonths: number;
+  noOfTransactingMonths: number;
+  totalTransactionCount: number;
+  lowestTransactingMonth: number;
+  totalTransactionVolume: number;
+  highestTransactingMonth: number;
+  listOfTransactingMonths: TransactingMonth[];
+  averageTransactionVolume: number;
+}
+
+export interface Evaluation {
+  creditPattern: CreditPattern;
+  purchasePattern: PurchasePattern;
+}
+
+export interface Vendor {
+  id: number;
+  ownerId: number;
+  name: string;
+  shortName: string;
+  code: string;
+  logoId: number | null;
+  type: string;
+  address: string | null;
+  contactPerson: string;
+  contactPhone: string;
+  contactEmail: string;
+  contactPersonPosition: string;
+  active: number;
+  status: string;
+  licenseNumber: string;
+  expiryDate: string;
+  licenseVerificationStatus: string;
+  licenseVerificationComment: string | null;
+  cacDocumentId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreditScoreData {
+  id: number;
+  identifier: string;
+  creditScoreResult: CreditScoreResult;
+  affordability: Affordability;
+  evaluation: Evaluation;
+  customer: CustomerData;
+  vendor: Vendor;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreditScoreResponseData {
+  data: CreditScoreData[];
+  link: any;
   meta: MetaDataProp;
 }
 
