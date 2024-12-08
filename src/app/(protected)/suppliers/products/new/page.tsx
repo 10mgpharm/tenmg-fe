@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import DetailForm from "../components/DetailForm";
-import EssentialForm from "../components/EssentialForm";
-import InventoryForm from "../components/InventoryForm";
+import DetailForm from "../_components/DetailForm";
+import EssentialForm from "../_components/EssentialForm";
+import InventoryForm from "../_components/InventoryForm";
 
 const AddProducts = () => {
 

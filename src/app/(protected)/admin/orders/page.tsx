@@ -9,9 +9,9 @@ import {
     Button, 
     Flex
 } from '@chakra-ui/react'
-import SearchComponent from "../../suppliers/orders/components/SearchComponent"
+import SearchComponent from "../../suppliers/orders/_components/SearchComponent"
 import { adminOrderData } from '@/data/mockdata'
-import OrderPage from './components/OrderPage';
+import OrderPage from './_components/OrderPage';
 
 const Orders = () => {
 

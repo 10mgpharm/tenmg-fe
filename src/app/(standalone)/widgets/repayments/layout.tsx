@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LoanFooter from "../components/LoanFooter";
+import LoanFooter from "../_components/LoanFooter";
 
 export const metadata: Metadata = {
   title: "10MG Credit | Repayments",

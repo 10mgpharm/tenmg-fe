@@ -1,6 +1,6 @@
 import React from "react";
-import LoanLayout from "../../components/LoanLayout";
-import LoanProfile from "../../components/LoanProfile";
+import LoanLayout from "../../_components/LoanLayout";
+import LoanProfile from "../../_components/LoanProfile";
 import {
   Badge,
   Box,

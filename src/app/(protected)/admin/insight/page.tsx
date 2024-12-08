@@ -1,5 +1,5 @@
 import { Checkbox } from '@chakra-ui/react'
-import EmptyCard from '../../suppliers/components/EmptyCard'
+import EmptyCard from '../../suppliers/_components/EmptyCard'
 
 const Insight = () => {
   return (

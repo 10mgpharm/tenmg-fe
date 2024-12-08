@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import SearchInput from "../components/SearchInput";
+import SearchInput from "../_components/SearchInput";
 import { CiFilter } from "react-icons/ci";
 import {
   Button,
@@ -17,24 +17,25 @@ import {
 } from "@chakra-ui/react";
 import requestClient from "@/lib/requestClient";
 import {
+  CustomerData,
   NextAuthUserSession,
   TransactionHistoryData,
   TransactionHistoryDataProps,
 } from "@/types";
 import { useSession } from "next-auth/react";
-import EmptyResult from "../components/EmptyResult";
+import EmptyResult from "../_components/EmptyResult";
 import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import Pagination from "../../suppliers/components/Pagination";
-import { ColumnsTnxHistoryFN } from "./components/table";
-import UploadModel from "../components/UploadModel";
+import Pagination from "../../suppliers/_components/Pagination";
+import { ColumnsTnxHistoryFN } from "./_components/table";
+import UploadModal from "../_components/UploadModal";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../customers-management/page";
-import FilterDrawer from "../components/FilterDrawer";
+import FilterDrawer from "../_components/FilterDrawer";
 
 const TransactionHistory = () => {
   const [loading, setLoading] = useState(true);
@@ -46,6 +47,10 @@ const TransactionHistory = () => {
   const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [tnxHistoryData, setTnxHistoryData] =
     useState<TransactionHistoryDataProps | null>(null);
+
+  const [selectedCustomerId, setSelectedCustomerId] = useState<CustomerData[] | null>(
+    null
+  );
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
@@ -112,10 +117,28 @@ const TransactionHistory = () => {
     [token, debouncedSearch, status, createdAtStart, createdAtEnd]
   );
 
+  const fetchCustomers = useCallback(async () => {
+    try {
+      const response = await requestClient({ token }).get(
+        "vendor/customers/get-all"
+      );
+      if (response.status === 200) {
+        setSelectedCustomerId(response?.data?.data)
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token, debouncedSearch, status, createdAtStart, createdAtEnd]);
+
   useEffect(() => {
-    if(!token) return
+    if (!token) return;
     fetchCustomerTnx(pageCount);
-  }, [fetchCustomerTnx, pageCount, token]);
+    fetchCustomers();
+  }, [fetchCustomerTnx, pageCount, token, fetchCustomers]);
+
+  console.log(selectedCustomerId);
 
   const tableData = useMemo(() => tnxHistoryData?.data || [], [tnxHistoryData]);
 
@@ -133,15 +156,10 @@ const TransactionHistory = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const customerNames = useMemo(() => {
-    if (tableData.length > 0) {
-      const names = tableData.map((item) => item.customer?.name);
-      return Array.from(new Set(names));
-    }
-    return [];
-  }, [tableData]);
-
-  const tablePagination = useMemo(() => tnxHistoryData?.meta || [], [tnxHistoryData]);
+  const tablePagination = useMemo(
+    () => tnxHistoryData?.meta || [],
+    [tnxHistoryData]
+  );
 
   return (
     <div className="p-8">
@@ -229,14 +247,14 @@ const TransactionHistory = () => {
         )}
       </div>
 
-      <UploadModel
+      <UploadModal
         isOpen={isOpen}
         onClose={onClose}
         isDownloadTemplate={false}
         uploadEndpoint="/vendor/txn_history/upload_and_evaluate"
         isSearch
         searchTitle="Customer by Name or ID"
-        searchData={customerNames}
+        searchData={selectedCustomerId}
       />
       <FilterDrawer
         isOpen={isOpenFilter}

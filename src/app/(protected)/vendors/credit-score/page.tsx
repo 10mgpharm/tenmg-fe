@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import SearchInput from "../components/SearchInput";
+import SearchInput from "../_components/SearchInput";
 import { CiFilter } from "react-icons/ci";
 import {
   Button,
@@ -16,18 +16,18 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import EmptyResult from "../components/EmptyResult";
+import EmptyResult from "../_components/EmptyResult";
 import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import Pagination from "../../suppliers/components/Pagination";
-import { ColumnsCreditScoreFN } from "./components/table";
+import Pagination from "../../suppliers/_components/Pagination";
+import { ColumnsCreditScoreFN } from "./_components/table";
 import { creditScoreData } from "@/data/mockdata";
-import AffordabilityModel from "./components/AffordabilityModel";
-import BusinessLogicModal from "./components/BusinessLogicModal";
+import AffordabilityModel from "./_components/AffordabilityModel";
+import BusinessLogicModal from "./_components/BusinessLogicModal";
 
 const CreditScore = () => {
   const [loading, setLoading] = useState(false);

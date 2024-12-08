@@ -1,6 +1,6 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Text } from '@chakra-ui/react'
-import AllOrders from './components/AllOrders'
-import SearchComponent from './components/SearchComponent'
+import AllOrders from './_components/AllOrders'
+import SearchComponent from './_components/SearchComponent'
 import { orderData } from '@/data/mockdata'
 
 const OrderUI = () => {

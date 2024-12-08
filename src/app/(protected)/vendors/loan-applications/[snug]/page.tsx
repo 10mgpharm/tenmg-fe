@@ -1,5 +1,5 @@
 "use client";
-import EmptyOrder from "@/app/(protected)/suppliers/orders/components/EmptyOrder";
+import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 import { repaymentData } from "@/data/mockdata";
 import { 
     ColumnOrderState, 
@@ -33,11 +33,11 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from "react";
-import { ColumsRepaymentFN } from "@/app/(protected)/admin/loan-management/components/repaymentTable";
+import { ColumsRepaymentFN } from "@/app/(protected)/admin/loan-management/_components/repaymentTable";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import ApproveLoan from "@/app/(protected)/admin/loan-management/components/ApproveLoan";
+import ApproveLoan from "@/app/(protected)/admin/loan-management/_components/ApproveLoan";
 
 const theme = extendTheme({
     components: {

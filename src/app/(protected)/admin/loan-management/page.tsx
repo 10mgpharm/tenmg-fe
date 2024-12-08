@@ -8,10 +8,10 @@ import {
     Tabs, 
     Text 
 } from '@chakra-ui/react';
-import LoanManagement from './components/LoanManagement';
-import LoanApplication from './components/LoanApplication';
-import LoanOffer from './components/LoanOffer';
-import LoanRepayment from './components/LoanRepayment';
+import LoanManagement from './_components/LoanManagement';
+import LoanApplication from './_components/LoanApplication';
+import LoanOffer from './_components/LoanOffer';
+import LoanRepayment from './_components/LoanRepayment';
 
 const Page = () => {
   return (
