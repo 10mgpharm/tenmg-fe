@@ -32,13 +32,15 @@ const FilterDrawer = ({
   onClose,
   applyFilters,
   clearFilters,
-  filterOptions
+  filterOptions,
+  isNotDate,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  applyFilters: (filters: IFormInput) => void;
-  clearFilters: () => void;
-  filterOptions?: FilterOptions[]
+  applyFilters?: (filters: IFormInput) => void;
+  clearFilters?: () => void;
+  filterOptions?: FilterOptions[];
+  isNotDate?: boolean;
 }) => {
   const {
     handleSubmit,
@@ -99,35 +101,39 @@ const FilterDrawer = ({
                 )}
               />
             </FormControl>
-            <FormControl>
-              <FormLabel>From</FormLabel>
-              <Controller
-                name="startDate"
-                control={control}
-                render={({ field }) => (
-                  <DateComponent
-                    startDate={field.value}
-                    setStartDate={field.onChange}
-                    isMinDate
+            {isNotDate ? null : (
+              <>
+                <FormControl>
+                  <FormLabel>From</FormLabel>
+                  <Controller
+                    name="startDate"
+                    control={control}
+                    render={({ field }) => (
+                      <DateComponent
+                        startDate={field.value}
+                        setStartDate={field.onChange}
+                        isMinDate
+                      />
+                    )}
                   />
-                )}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>To</FormLabel>
-              <Controller
-                name="endDate"
-                control={control}
-                render={({ field }) => (
-                  <DateComponent
-                    startDate={field.value}
-                    setStartDate={field.onChange}
-                    isMinDate
-                    minDate={getValues("startDate")}
+                </FormControl>
+                <FormControl>
+                  <FormLabel>To</FormLabel>
+                  <Controller
+                    name="endDate"
+                    control={control}
+                    render={({ field }) => (
+                      <DateComponent
+                        startDate={field.value}
+                        setStartDate={field.onChange}
+                        isMinDate
+                        minDate={getValues("startDate")}
+                      />
+                    )}
                   />
-                )}
-              />
-            </FormControl>
+                </FormControl>
+              </>
+            )}
           </Stack>
         </DrawerBody>
 

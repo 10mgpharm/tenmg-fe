@@ -194,6 +194,7 @@ const VendorDashboard = () => {
         <NoticeCard
           setOpen={onOpen}
           status={sessionData?.user?.businessStatus}
+          url="/vendors/settings/license_upload"
         />
       )}
 

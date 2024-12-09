@@ -61,7 +61,7 @@ const CompleteAccountModal = ({ isOpen, onClose }: {isOpen: boolean, onClose: ()
           <ModalFooter mt={3} mb={5}>
             <button
                 type="button"
-                onClick={() => router.push("/suppliers/settings")}
+                onClick={() => router.push("/suppliers/settings/license_upload")}
                 className="inline-flex w-full justify-center rounded-md bg-primary-500 p-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-400"
             >
                 Begin Account Setup
