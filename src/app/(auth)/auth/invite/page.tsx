@@ -1,5 +1,5 @@
-import AuthWrapper from "../../components/AuthWrapper";
-import InvitationField from "../../components/InvitationField";
+import AuthWrapper from "../../_components/AuthWrapper";
+import InvitationField from "../../_components/InvitationField";
 
 export default async function LoginPage() {
  
