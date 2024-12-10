@@ -49,7 +49,9 @@ const BreakdownRecords: React.FC<Props> = ({isOpen, onClose, tnxHistoryData}) =>
                             <PurchasePattern data={tnxHistoryData?.creditScoreResult?.appliedRules}/>
                         </TabPanel>
                         <TabPanel px={0}>
-                            <PurchasePattern data={tnxHistoryData?.creditScoreResult?.appliedRules}/>
+                          <div className="mt-36">
+                            <p className="text-center font-medium">No Data found!</p>
+                          </div>
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
