@@ -136,8 +136,6 @@ const CreditScore = () => {
     [creditScoreData]
   );
 
-  console.log("vhjgkj", tableData);
-
   const table = useReactTable({
     data: tableData ?? [],
     columns: ColumnsCreditScoreFN(),
