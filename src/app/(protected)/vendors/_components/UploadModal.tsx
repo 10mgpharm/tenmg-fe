@@ -7,9 +7,6 @@ import {
   FormControl,
   FormErrorMessage,
   Icon,
-  Input,
-  List,
-  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,15 +15,17 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { FiUploadCloud } from "react-icons/fi";
 import { CiFileOn } from "react-icons/ci";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
+import { NextAuthUserSession, CustomerData } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import { handleServerErrorMessage } from "@/utils";
+import Select from "react-select";
+import { changeXlsxHeaders } from "@/utils/changeXlsxHeaders";
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -37,10 +36,11 @@ interface UploadModalProps {
   templateName?: string;
   isSearch?: boolean;
   searchTitle?: string;
-  searchData?: string[];
   onClose: () => void;
   handleDownload?: () => void;
   reloadData?: () => void;
+  searchData?: CustomerData[];
+  isCustomer?: boolean;
 }
 
 const UploadModal = ({
@@ -55,11 +55,11 @@ const UploadModal = ({
   isDownloadTemplate = false,
   isSearch = false,
   searchTitle = "Customer by Name or ID",
-  searchData = [],
+  searchData,
+  isCustomer = false,
 }: UploadModalProps) => {
   const [isUploadLoading, setIsUploadLoading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -77,20 +77,62 @@ const UploadModal = ({
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: { file: null, search: "" },
+    defaultValues: { file: null, customerId: null },
     mode: "onChange",
   });
+
+  const file = watch("file");
+
+  const processFileHeaders = async (inputFile: File): Promise<File | null> => {
+    const extension = `.${inputFile.name.split(".").pop()?.toLowerCase()}`;
+    if (!acceptedFileExtensions.includes(extension)) {
+      toast.error("Unsupported file format");
+      return null;
+    }
+
+    if (!isCustomer) {
+      return inputFile;
+    }
+
+    try {
+      const headersToChange = [
+        { original: "Reference (optional)", updated: "Reference" },
+      ];
+      const updatedBlob = await changeXlsxHeaders(inputFile, headersToChange);
+
+      return new File([updatedBlob], inputFile.name, {
+        type: inputFile.type,
+      });
+    } catch (error) {
+      toast.error("Failed to process the file. Please try again.");
+      return null;
+    }
+  };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const dataTransfer = event.dataTransfer;
     if (dataTransfer.files && dataTransfer.files.length > 0) {
       const droppedFile = dataTransfer.files[0];
-      setValue("file", droppedFile);
+      const processedFile = await processFileHeaders(droppedFile);
+      if (processedFile) {
+        setValue("file", processedFile);
+      }
+    }
+  };
+
+  const handleFileSelection = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+    const processedFile = await processFileHeaders(selectedFile);
+    if (processedFile) {
+      setValue("file", processedFile);
     }
   };
 
@@ -98,8 +140,12 @@ const UploadModal = ({
     document.getElementById("file_upload")?.click();
   };
 
-  const handleUploadFile = async (data: { file: File; search: string }) => {
+  const handleUploadFile = async (data: {
+    file: File;
+    customerId?: number;
+  }) => {
     const file = data.file;
+    const customerId = data.customerId;
 
     setIsUploadLoading(true);
     setUploadProgress(0);
@@ -107,6 +153,10 @@ const UploadModal = ({
     try {
       const formData = new FormData();
       formData.append("file", file);
+
+      if (customerId) {
+        formData.append("customerId", `${customerId}`);
+      }
 
       const axiosInstance = requestClient({ token });
 
@@ -126,6 +176,7 @@ const UploadModal = ({
         setUploadProgress(0);
         if (reloadData) reloadData();
         reset();
+        onClose();
       } else {
         toast.error("Failed to upload the file. Please try again later.");
       }
@@ -137,25 +188,10 @@ const UploadModal = ({
     }
   };
 
-  const handleInputChange = (value: string) => {
-    if (value.length > 0) {
-      const filteredSuggestions = searchData.filter((suggestion) =>
-        suggestion.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(
-        filteredSuggestions.length > 0
-          ? filteredSuggestions
-          : ["No matches found"]
-      );
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const handleSuggestionClick = (value: string) => {
-    setValue("search", value);
-    setSuggestions([]);
-  };
+  const customerOptions = searchData?.map((customer) => ({
+    value: customer.id,
+    label: `${customer.name} - ${customer.id}`,
+  }));
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose} size={"xl"}>
@@ -169,53 +205,34 @@ const UploadModal = ({
             onSubmit={handleSubmit(handleUploadFile)}
           >
             {isSearch && (
-              <Box mb={4}>
-                <Text fontWeight="medium" pb={2}>
-                  {searchTitle}
-                </Text>
-                <Controller
-                  name="search"
-                  control={control}
-                  rules={{
-                    required: isSearch ? "Customer Name/ID is required" : false,
-                  }}
-                  render={({ field }) => (
-                    <FormControl isInvalid={!!errors.search}>
-                      <Input
-                        placeholder="Eg. Jude Bellingham or MG-10932023"
-                        {...field}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          field.onChange(e.target.value);
-                          handleInputChange(e.target.value);
-                        }}
-                      />
-                      {suggestions.length > 0 && (
-                        <List mt={2} border="1px solid" borderColor="gray.200">
-                          {suggestions.map((item, index) => (
-                            <ListItem
-                              key={index}
-                              px={3}
-                              py={1}
-                              cursor="pointer"
-                              _hover={{ bg: "gray.100" }}
-                              onClick={() => {
-                                handleSuggestionClick(item);
-                              }}
-                            >
-                              {item}
-                            </ListItem>
-                          ))}
-                        </List>
+              <Controller
+                name="customerId"
+                control={control}
+                rules={{ required: "Please select a customer." }}
+                render={({ field }) => (
+                  <FormControl isInvalid={!!errors.customerId} mb={4}>
+                    <Select
+                      {...field}
+                      isClearable={true}
+                      isSearchable={true}
+                      options={customerOptions}
+                      placeholder={searchTitle}
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value);
+                        setValue("customerId", selectedOption?.value);
+                      }}
+                      value={customerOptions?.find(
+                        (option) => option.value === field.value
                       )}
-                      {errors.search && (
-                        <FormErrorMessage>
-                          {errors.search.message}
-                        </FormErrorMessage>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              </Box>
+                    />
+                    {errors.customerId && (
+                      <FormErrorMessage>
+                        {errors.customerId.message?.toString()}
+                      </FormErrorMessage>
+                    )}
+                  </FormControl>
+                )}
+              />
             )}
 
             {!isUploadLoading ? (
@@ -254,12 +271,7 @@ const UploadModal = ({
                           type="file"
                           id="file_upload"
                           name="file"
-                          onChange={(
-                            e: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            const file = e.target.files?.[0];
-                            field.onChange(file);
-                          }}
+                          onChange={handleFileSelection}
                           accept={acceptedFileTypes}
                           className="hidden"
                         />
@@ -273,13 +285,16 @@ const UploadModal = ({
                           </p>
                         </div>
                       </div>
+                      <FormErrorMessage>
+                        {errors.file?.message?.toString()}
+                      </FormErrorMessage>
                     </FormControl>
                   )}
                 />
 
-                {watch("file") && (
+                {file && (
                   <Text fontSize="sm" color="gray.500" mt={2}>
-                    Selected file: {watch("file")?.name}
+                    Selected file: {file.name}
                   </Text>
                 )}
               </div>
@@ -313,11 +328,10 @@ const UploadModal = ({
                       <Icon as={CiFileOn} boxSize={6} color="blue.500" />
                     </Box>
                     <Box ml="3">
-                      <Text fontSize="md">{watch("file")?.name}</Text>
+                      <Text fontSize="md">{file?.name}</Text>
                       <Text fontSize="sm" color="gray.500">
-                        {watch("file")?.size &&
-                          `${(watch("file").size / 1024).toFixed(2)} KB`}{" "}
-                        - {uploadProgress}% uploaded
+                        {file?.size && `${(file.size / 1024).toFixed(2)} KB`} -{" "}
+                        {uploadProgress}% uploaded
                       </Text>
                     </Box>
                   </Flex>
@@ -330,7 +344,6 @@ const UploadModal = ({
               </Box>
             )}
 
-            {/* Download Template */}
             {isDownloadTemplate && (
               <div className="border border-dashed relative p-4 rounded-md bg-warning-50 border-warning-300 mb-8">
                 <div className="flex items-center justify-between">
@@ -362,7 +375,7 @@ const UploadModal = ({
                 variant="outline"
                 isLoading={isUploadLoading}
                 loadingText="Uploading"
-                isDisabled={!watch("file")}
+                isDisabled={!file}
               >
                 Upload
               </Button>

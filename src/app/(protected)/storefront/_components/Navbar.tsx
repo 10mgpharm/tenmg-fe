@@ -21,7 +21,7 @@ import { Search, UserCircle2Icon, UserCircleIcon } from "lucide-react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
+import { signOut } from "next-auth/react";
 import avatar from "@public/assets/images/Avatar.png";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { PiShoppingBagBold } from "react-icons/pi";
@@ -147,7 +147,7 @@ const Navbar = () => {
                   colorScheme="primary"
                   width="full"
                   mt={2}
-                  onClick={() => alert("Logged Out!")}
+                  onClick={async () => await signOut()}
                 >
                   Log Out
                 </Button>
@@ -266,7 +266,7 @@ const Navbar = () => {
               <MenuItem py={3} px={4}>
                 <Text cursor="pointer">Shopping List</Text>
               </MenuItem>
-              <MenuItem py={3} px={4} color="error.500" borderTopWidth="thin">
+              <MenuItem py={3} px={4} color="error.500" borderTopWidth="thin"  onClick={async () => await signOut()}>
                 Log Out
               </MenuItem>
             </MenuList>

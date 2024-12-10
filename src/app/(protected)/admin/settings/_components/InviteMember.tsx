@@ -24,6 +24,8 @@ import shape from "@public/assets/images/Rectangle.svg";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useCallback } from "react";
 import requestClient from "@/lib/requestClient";
+import { handleServerErrorMessage } from "@/utils";
+import { toast } from "react-toastify";
 
 interface IFormInput {
   fullName: string;
@@ -35,25 +37,47 @@ const InviteMember = ({
   isOpen,
   onClose,
   accountType,
-  onSubmit,
-  isLoading,
+  fetchTeamMembers,
+  token,
 }: {
   isOpen: boolean;
   onClose: () => void;
   accountType?: "vendor";
   onSubmit?: SubmitHandler<IFormInput>;
   isLoading?: boolean;
+  fetchTeamMembers?: () => void;
+  token?: string;
 }) => {
-
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<IFormInput>({
     mode: "onBlur",
   });
 
-  const [isDetails, setIsDetails] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      setIsLoading(true);
+      const response = await requestClient({ token: token }).post(
+        "/vendor/settings/invite",
+        data
+      );
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+        fetchTeamMembers();
+        setIsLoading(false);
+        reset();
+        onClose();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(handleServerErrorMessage(error));
+    }
+  };
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">

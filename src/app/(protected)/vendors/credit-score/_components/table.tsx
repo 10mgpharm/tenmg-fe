@@ -1,9 +1,10 @@
+import { CreditScoreData } from "@/types";
 import { classNames } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<CreditScoreData>();
 
 export function ColumnsCreditScoreFN() {
   return [
@@ -19,7 +20,7 @@ export function ColumnsCreditScoreFN() {
         </div>
       ),
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("customer.name", {
       header: () => (
         <div>
           <p>Customer Name</p>
@@ -27,43 +28,43 @@ export function ColumnsCreditScoreFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-bold">{info.row.original?.name} </p>
+          <p className="font-bold">{info.row.original?.customer?.name} </p>
         </div>
       ),
     }),
-    columnHelper.accessor("email", {
+    columnHelper.accessor("customer.email", {
       header: () => <p>Contact Information</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.email}</p>
+          <p>{info.row.original?.customer?.email}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("score", {
+    columnHelper.accessor("creditScoreResult.scoreTotal", {
       header: () => <p>Credit Score</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.score}</p>
+          <p>{info.row.original?.creditScoreResult?.scoreTotal}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("percentage", {
+    columnHelper.accessor("creditScoreResult.scorePercent", {
       header: () => <p>Percentage</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.percentage}</p>
+          <p>{Number(info.row.original?.creditScoreResult?.scorePercent.toFixed(2))}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("status", {
+    columnHelper.accessor("customer.active", {
       header: () => <p>Account Status</p>,
       cell: (info) => (
         <div>
           <p
             className={classNames(
-              info?.row?.original?.status === "Active"
+              info?.row?.original?.customer?.active === 1
                 ? "text-[#027A48] bg-[#ECFDF3]"
-                : info?.row?.original?.status === "Suspended"
+                : info?.row?.original?.customer?.active === 0
                 ? "bg-[#FEF3F2] text-[#eaa640]"
                 : "text-gray-500",
               " max-w-min p-1 px-2 rounded-2xl text-xs font-medium items-center justify-center flex gap-1"
@@ -71,7 +72,7 @@ export function ColumnsCreditScoreFN() {
           >
             {" "}
             <span className="rounded-full text-[1.2rem]">•</span>
-            {info.row.original?.status}
+            {info.row.original?.customer?.active === 1 ? "Active" : "Suspended"}
           </p>
         </div>
       ),
@@ -81,10 +82,11 @@ export function ColumnsCreditScoreFN() {
       cell: (info) => {
         return (
           <div className="flex gap-4">
-            <Link 
-            href={`/vendors/transactions-history/${info.row.original?.customerId}`} 
-            className="text-primary font-medium">
-                View
+            <Link
+              href={`/vendors/transactions-history/${info.row.original?.customer?.id}`}
+              className="text-primary font-medium"
+            >
+              View
             </Link>
           </div>
         );
