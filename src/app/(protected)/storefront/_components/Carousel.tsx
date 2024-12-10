@@ -7,6 +7,11 @@ import carousel1 from "@public/assets/images/carousel1.png";
 import carousel2 from "@public/assets/images/carousel2.jpg";
 import carousel3 from "@public/assets/images/carousel3.jpg";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import {
+  MdOutlineKeyboardArrowLeft,
+  MdOutlineKeyboardArrowRight,
+} from "react-icons/md";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
   {
@@ -54,7 +59,7 @@ const Carousel: React.FC = () => {
                 src={image.src}
                 alt={title}
                 w="100%"
-                h="493px"
+                h={{ base: "256px", md: "493px" }}
                 objectFit="cover"
                 objectPosition="center"
                 borderRadius="8px"
@@ -70,7 +75,13 @@ const Carousel: React.FC = () => {
                 alignItems="center"
                 borderRadius="8px"
               >
-                <Text fontSize="6xl" color="white" fontWeight="bold" maxWidth="calc(657px + 114px)" pl={28}>
+                <Text
+                  fontSize={{ base: "2xl", md: "6xl" }}
+                  color="white"
+                  fontWeight="bold"
+                  maxWidth="calc(657px + 114px)"
+                  pl={[10, 14, 28]}
+                >
                   {title}
                 </Text>
               </Box>
@@ -82,31 +93,35 @@ const Carousel: React.FC = () => {
       {/* Navigation Buttons */}
       <Button
         position="absolute"
-        top="50%"
+        top={{ md: "50%" }}
+        bottom={{base: "10%", md:""}}
         left="10px"
         transform="translateY(-50%)"
         zIndex={10}
+        p={[0, 3]}
         onClick={() => handleScroll("prev")}
         bg="white"
         color="gray.800"
         _hover={{ bg: "gray.200" }}
         borderRadius="full"
       >
-        <BsArrowLeft />
+        <ChevronLeft />
       </Button>
       <Button
         position="absolute"
-        top="50%"
+        top={{ md: "50%" }}
+        bottom={{base: "10%", md:""}}
         right="10px"
         transform="translateY(-50%)"
         zIndex={10}
+        p={[0, 3]}
         onClick={() => handleScroll("next")}
         bg="white"
         color="gray.800"
         _hover={{ bg: "gray.200" }}
         borderRadius="full"
       >
-       <BsArrowRight />
+        <ChevronRight />
       </Button>
     </Box>
   );
