@@ -26,7 +26,6 @@ import { handleServerErrorMessage } from "@/utils";
 import { convertArray } from "@/utils/convertSelectArray";
 import { SelectProps } from "./SendApplicationLink";
 
-
 interface IFormInput {
   customerId: SelectProps;
   requestedAmount: string;
