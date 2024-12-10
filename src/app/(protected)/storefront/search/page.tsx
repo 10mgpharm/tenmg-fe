@@ -1,6 +1,6 @@
 'use client'
 import { Select, useRangeSlider, } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   RangeSlider,
@@ -8,33 +8,46 @@ import {
   RangeSliderFilledTrack,
   RangeSliderThumb,
 } from '@chakra-ui/react'
+import BreadCrumbBanner from '../_components/BreadCrumbBanner';
+import StoreProductCardComponent from '../_components/StoreProductCardComponent';
 
 export default function SearchPage() {
 
   const min = 0;
   const max = 100;
-  const defaultValue = [0, 30];
+  let defaultValue = [0, 30];
+
+  const [value, setVal] = useState(defaultValue);
+
+  const onChangeEnd = (val) => {
+    console.log(val)
+    defaultValue = val
+    setVal(val)
+  }
 
 
-  const {
-    state,
-    // actions,
-    // getInnerTrackProps,
-    // getInputProps,
-    // getMarkerProps,
-    // getRootProps,
-    // getThumbProps,
-    // getTrackProps,
-  } = useRangeSlider({ min, max, defaultValue })
+  const breadCrumb = [
+    {
+      text: 'Home',
+      link: '/'
+    },
+    {
+      text: 'Products',
+      link: '/storefront'
+    },
+    {
+      text: 'Search Result for Paracetamol',
+      link: '#'
+    }
+  ]
 
-  console.log(state);
 
   return (
     <section>
-
-      <div className="grid grid-cols-4 gap-6">
+      <BreadCrumbBanner breadCrumbsData={breadCrumb} />
+      <div className="grid grid-cols-4 gap-6  w-11/12 mx-auto my-10">
         <div className='col-span-1'>
-          <div>
+          <div className='space-y-4 border-x border-gray-200 px-4 h-full'>
             <Select placeholder='Categories '>
               {/* <option value=""></option> */}
             </Select>
@@ -48,13 +61,13 @@ export default function SearchPage() {
               {/* <option value=""></option> */}
             </Select>
 
-            <div className=''>
-              <RangeSlider defaultValue={[0, 4500]} min={0} max={7000}>
+            <div className='border-gray-200 border rounded-md  p-8 pt-4'>
+              <RangeSlider defaultValue={defaultValue} min={min} max={max} onChangeEnd={(val) => onChangeEnd(val)}>
                 <RangeSliderTrack>
                   <RangeSliderFilledTrack />
                 </RangeSliderTrack>
-                <RangeSliderThumb index={0} >g</RangeSliderThumb>
-                <RangeSliderThumb index={1}>hinge</RangeSliderThumb>
+                <RangeSliderThumb index={0} ><div className='absolute top-4'>{value[0]}</div></RangeSliderThumb>
+                <RangeSliderThumb index={1}><div className='absolute top-4'>{value[1]}</div></RangeSliderThumb>
               </RangeSlider>
             </div>
 
@@ -62,9 +75,14 @@ export default function SearchPage() {
         </div>
 
         <div className="col-span-3">
-          <Select placeholder='Choose Repayment Period '>
-            {/* <option value=""></option> */}
-          </Select>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6'>
+            {Array(8)
+              .fill(null)
+              .map((_, i: number) => (
+                // <p key={i}>Item {i}</p>
+                <StoreProductCardComponent key={1} />
+              ))}
+          </div>
         </div>
 
       </div>
@@ -73,3 +91,6 @@ export default function SearchPage() {
     </section>
   )
 }
+
+
+
