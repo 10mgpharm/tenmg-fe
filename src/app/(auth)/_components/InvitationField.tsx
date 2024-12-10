@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import { Suspense, useEffect, useState, useCallback } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -35,16 +33,13 @@ interface IFormInput {
 }
 
 export default function InvitationField() {
-  // UI State
   const [isLoading, setIsLoading] = useState(false);
   const [isViewLoading, setIsViewLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Password visibility states
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
-  // Data from fetched invite
   const [inviteData, setInviteData] = useState<{
     fullName?: string;
     email?: string;
@@ -54,7 +49,6 @@ export default function InvitationField() {
   const searchParams = useSearchParams();
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
-  // Replace &amp; with & in the URL for proper parsing
   const decodedUrl = currentUrl.replace(/&amp;/g, "&");
   const urlObj = decodedUrl ? new URL(decodedUrl) : null;
 
@@ -146,188 +140,185 @@ export default function InvitationField() {
 
   return (
     <section className="md:w-1/2 px-4 md:px-12 lg:px-32 flex items-center min-h-screen">
-      <Suspense fallback={<div>Loading...</div>}>
-        <article className="w-full">
-          {hasError ? (
-            <Heading
-              as="h3"
-              size="xl"
-              fontWeight="medium"
-              mb={3}
-              color="error.500"
-            >
-              {error}
-            </Heading>
-          ) : isLoadingContent ? (
-            <Heading
-              as="h3"
-              size="xl"
-              fontWeight="medium"
-              mb={3}
-              color="gray.900"
-            >
-              <Flex justify="center" align="center" height="200px">
-                <Spinner size="xl" />
-              </Flex>
-            </Heading>
-          ) : (
-            <>
-              <Image
-                src="/icons/logo.svg"
-                className="md:mb-8"
-                alt="tenmg"
-                width={75}
-                height={75}
-              />
-              <div className="mb-8">
-                <Heading
-                  as="h3"
-                  size="xl"
-                  fontWeight="medium"
-                  mb={3}
-                  color="gray.900"
+      <article className="w-full">
+        {hasError ? (
+          <Heading
+            as="h3"
+            size="xl"
+            fontWeight="medium"
+            mb={3}
+            color="error.500"
+          >
+            {error}
+          </Heading>
+        ) : isLoadingContent ? (
+          <Heading
+            as="h3"
+            size="xl"
+            fontWeight="medium"
+            mb={3}
+            color="gray.900"
+          >
+            <Flex justify="center" align="center" height="200px">
+              <Spinner size="xl" />
+            </Flex>
+          </Heading>
+        ) : (
+          <>
+            <Image
+              src="/icons/logo.svg"
+              className="md:mb-8"
+              alt="tenmg"
+              width={75}
+              height={75}
+            />
+            <div className="mb-8">
+              <Heading
+                as="h3"
+                size="xl"
+                fontWeight="medium"
+                mb={3}
+                color="gray.900"
+              >
+                Welcome {firstName}
+              </Heading>
+              <Text fontSize="lg" color="gray.500">
+                Create a new password to finish your account setup.
+              </Text>
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-5 text-gray mb-10">
+                <FormControl isInvalid={!!errors.password}>
+                  <FormLabel htmlFor="password">
+                    Password
+                    <Text as="span" color="red.500">
+                      *
+                    </Text>
+                  </FormLabel>
+                  <InputGroup>
+                    <Input
+                      id="password"
+                      type={isVisible ? "text" : "password"}
+                      placeholder="Enter your password"
+                      isDisabled={isLoading}
+                      {...register("password", {
+                        required: "Password is required",
+                        minLength: {
+                          value: 8,
+                          message: "Must be at least 8 characters.",
+                        },
+                      })}
+                    />
+                    <InputRightElement>
+                      <IconButton
+                        variant="ghost"
+                        h="1.75rem"
+                        size="sm"
+                        onClick={toggleVisibility}
+                        bgColor="transparent"
+                        _hover={{ bg: "transparent" }}
+                        isDisabled={isLoading}
+                        icon={
+                          isVisible ? (
+                            <FiEyeOff size={16} className="text-gray" />
+                          ) : (
+                            <IoEyeOutline size={16} className="text-gray" />
+                          )
+                        }
+                        aria-label="Toggle Password Visibility"
+                      />
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>
+                    {errors.password?.message}
+                  </FormErrorMessage>
+                </FormControl>
+
+                <FormControl isInvalid={!!errors.passwordConfirmation}>
+                  <FormLabel htmlFor="passwordConfirmation">
+                    Confirm Password
+                    <Text as="span" color="red.500">
+                      *
+                    </Text>
+                  </FormLabel>
+                  <InputGroup>
+                    <Input
+                      id="passwordConfirmation"
+                      type={isConfirmVisible ? "text" : "password"}
+                      isDisabled={isLoading}
+                      placeholder="Confirm your password"
+                      {...register("passwordConfirmation", {
+                        required: "Confirm Password is required",
+                        validate: (val) =>
+                          watch("password") !== val
+                            ? "Your passwords do not match"
+                            : undefined,
+                      })}
+                    />
+                    <InputRightElement>
+                      <IconButton
+                        isDisabled={isLoading}
+                        variant="ghost"
+                        h="1.75rem"
+                        size="sm"
+                        onClick={toggleConfirmVisibility}
+                        bgColor="transparent"
+                        _hover={{ bg: "transparent" }}
+                        icon={
+                          isConfirmVisible ? (
+                            <FiEyeOff size={16} className="text-gray" />
+                          ) : (
+                            <IoEyeOutline size={16} className="text-gray" />
+                          )
+                        }
+                        aria-label="Toggle Confirm Password Visibility"
+                      />
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>
+                    {errors.passwordConfirmation?.message}
+                  </FormErrorMessage>
+                </FormControl>
+
+                <FormControl isInvalid={!!errors.termsAndConditions}>
+                  <div className="flex gap-2 items-center">
+                    <Checkbox
+                      id="remember"
+                      {...register("termsAndConditions", {
+                        required: "You must agree to the Terms and Conditions",
+                      })}
+                    />
+                    <Text color="gray.500" fontSize="md">
+                      I confirm that I have read and agree to 10 MG&apos;s{" "}
+                      <Link href="#" color="primary.500">
+                        Terms & Conditions
+                      </Link>{" "}
+                      and{" "}
+                      <Link href="#" color="primary.500">
+                        Privacy Policy
+                      </Link>
+                    </Text>
+                  </div>
+                  <FormErrorMessage>
+                    {errors.termsAndConditions?.message}
+                  </FormErrorMessage>
+                </FormControl>
+
+                <Button
+                  size="lg"
+                  w="full"
+                  type="submit"
+                  isDisabled={isLoading}
+                  isLoading={isLoading}
+                  loadingText="Submitting..."
                 >
-                  Welcome {firstName}
-                </Heading>
-                <Text fontSize="lg" color="gray.500">
-                  Create a new password to finish your account setup.
-                </Text>
+                  Login
+                </Button>
               </div>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-5 text-gray mb-10">
-                  <FormControl isInvalid={!!errors.password}>
-                    <FormLabel htmlFor="password">
-                      Password
-                      <Text as="span" color="red.500">
-                        *
-                      </Text>
-                    </FormLabel>
-                    <InputGroup>
-                      <Input
-                        id="password"
-                        type={isVisible ? "text" : "password"}
-                        placeholder="Enter your password"
-                        isDisabled={isLoading}
-                        {...register("password", {
-                          required: "Password is required",
-                          minLength: {
-                            value: 8,
-                            message: "Must be at least 8 characters.",
-                          },
-                        })}
-                      />
-                      <InputRightElement>
-                        <IconButton
-                          variant="ghost"
-                          h="1.75rem"
-                          size="sm"
-                          onClick={toggleVisibility}
-                          bgColor="transparent"
-                          _hover={{ bg: "transparent" }}
-                          isDisabled={isLoading}
-                          icon={
-                            isVisible ? (
-                              <FiEyeOff size={16} className="text-gray" />
-                            ) : (
-                              <IoEyeOutline size={16} className="text-gray" />
-                            )
-                          }
-                          aria-label="Toggle Password Visibility"
-                        />
-                      </InputRightElement>
-                    </InputGroup>
-                    <FormErrorMessage>
-                      {errors.password?.message}
-                    </FormErrorMessage>
-                  </FormControl>
-
-                  <FormControl isInvalid={!!errors.passwordConfirmation}>
-                    <FormLabel htmlFor="passwordConfirmation">
-                      Confirm Password
-                      <Text as="span" color="red.500">
-                        *
-                      </Text>
-                    </FormLabel>
-                    <InputGroup>
-                      <Input
-                        id="passwordConfirmation"
-                        type={isConfirmVisible ? "text" : "password"}
-                        isDisabled={isLoading}
-                        placeholder="Confirm your password"
-                        {...register("passwordConfirmation", {
-                          required: "Confirm Password is required",
-                          validate: (val) =>
-                            watch("password") !== val
-                              ? "Your passwords do not match"
-                              : undefined,
-                        })}
-                      />
-                      <InputRightElement>
-                        <IconButton
-                          isDisabled={isLoading}
-                          variant="ghost"
-                          h="1.75rem"
-                          size="sm"
-                          onClick={toggleConfirmVisibility}
-                          bgColor="transparent"
-                          _hover={{ bg: "transparent" }}
-                          icon={
-                            isConfirmVisible ? (
-                              <FiEyeOff size={16} className="text-gray" />
-                            ) : (
-                              <IoEyeOutline size={16} className="text-gray" />
-                            )
-                          }
-                          aria-label="Toggle Confirm Password Visibility"
-                        />
-                      </InputRightElement>
-                    </InputGroup>
-                    <FormErrorMessage>
-                      {errors.passwordConfirmation?.message}
-                    </FormErrorMessage>
-                  </FormControl>
-
-                  <FormControl isInvalid={!!errors.termsAndConditions}>
-                    <div className="flex gap-2 items-center">
-                      <Checkbox
-                        id="remember"
-                        {...register("termsAndConditions", {
-                          required:
-                            "You must agree to the Terms and Conditions",
-                        })}
-                      />
-                      <Text color="gray.500" fontSize="md">
-                        I confirm that I have read and agree to 10 MG&apos;s{" "}
-                        <Link href="#" color="primary.500">
-                          Terms & Conditions
-                        </Link>{" "}
-                        and{" "}
-                        <Link href="#" color="primary.500">
-                          Privacy Policy
-                        </Link>
-                      </Text>
-                    </div>
-                    <FormErrorMessage>
-                      {errors.termsAndConditions?.message}
-                    </FormErrorMessage>
-                  </FormControl>
-
-                  <Button
-                    size="lg"
-                    w="full"
-                    type="submit"
-                    isDisabled={isLoading}
-                    isLoading={isLoading}
-                    loadingText="Submitting..."
-                  >
-                    Login
-                  </Button>
-                </div>
-              </form>
-            </>
-          )}
-        </article>
-      </Suspense>
+            </form>
+          </>
+        )}
+      </article>
     </section>
   );
 }
