@@ -122,7 +122,7 @@ const CustomerManagement = () => {
       { key: "name", header: "NAME" },
       { key: "email", header: "EMAIL" },
       { key: "phone", header: "PHONE" },
-      { key: "reference", header: "REFERENCE" },
+      { key: "reference", header: "REFERENCE (OPTIONAL)" },
     ];
 
     const bodyMappings = [
@@ -273,6 +273,7 @@ const CustomerManagement = () => {
         handleDownload={handleDownloadTemplate}
         reloadData={fetchCustomers}
         isDownloadTemplate={true}
+        isCustomer
         uploadEndpoint="/vendor/customers/import"
       />
       <FilterDrawer
