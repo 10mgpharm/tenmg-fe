@@ -14,8 +14,14 @@ import {
 } from "@chakra-ui/react"
 import { ChevronLeft } from "lucide-react";
 import PurchasePattern from "./PurchasePattern";
+import { SingleTransactionData } from "@/types";
 
-const BreakdownRecords = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  tnxHistoryData: SingleTransactionData;
+}
+const BreakdownRecords: React.FC<Props> = ({isOpen, onClose, tnxHistoryData}) => {
 
     return (
       <>
@@ -30,7 +36,7 @@ const BreakdownRecords = ({isOpen, onClose}: {isOpen: boolean, onClose: () => vo
             <DrawerCloseButton />
             <DrawerHeader className="flex items-center gap-2">
                 <ChevronLeft className="w-5 h-5 text-gray-600"/>
-                <span className="text-gray-600 text-md">EVAL-20241030-1624-29404</span>
+                <span className="text-gray-600 text-md">{tnxHistoryData?.identifier}</span>
             </DrawerHeader>
             <DrawerBody>
                 <Tabs>
@@ -40,10 +46,10 @@ const BreakdownRecords = ({isOpen, onClose}: {isOpen: boolean, onClose: () => vo
                     </TabList>
                     <TabPanels>
                         <TabPanel px={0}>
-                            <PurchasePattern />
+                            <PurchasePattern data={tnxHistoryData?.creditScoreResult?.appliedRules}/>
                         </TabPanel>
                         <TabPanel px={0}>
-                            <PurchasePattern />
+                            <PurchasePattern data={tnxHistoryData?.creditScoreResult?.appliedRules}/>
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
