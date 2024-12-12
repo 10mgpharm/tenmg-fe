@@ -31,6 +31,8 @@
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "context-filter-polyfill": "^0.3.21",
+    "embla-carousel": "^8.5.1",
+    "embla-carousel-react": "^8.5.1",
     "file-saver": "^2.0.5",
     "framer-motion": "^11.5.4",
     "js-cookie": "^3.0.5",
