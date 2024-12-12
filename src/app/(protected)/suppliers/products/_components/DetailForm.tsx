@@ -88,31 +88,31 @@ const DetailForm: React.FC<IChildComponentProps> = (
                     )}}
                 />
             </FormControl>
-            <FormControl isInvalid={!!errors.name}>
+            <FormControl isInvalid={!!errors.productName}>
                 <FormLabel>Product Name</FormLabel>
                 <Input 
-                id="name"
+                id="productName"
                 placeholder="" 
                 type="text"
-                isInvalid={!!errors.name}
+                isInvalid={!!errors.productName}
                 _focus={{
-                    border: !!errors.name ? "red.300" : "border-gray-300",
+                    border: !!errors.productName ? "red.300" : "border-gray-300",
                 }}
-                {...register("name", {
+                {...register("productName", {
                     required: true,
                 })}
                 />
             </FormControl>
-            <FormControl isInvalid={!!errors.description}>
+            <FormControl isInvalid={!!errors.productDescription}>
                 <FormLabel>Product Description</FormLabel>
                 <Textarea 
-                id="description"
+                id="productDescription"
                 placeholder="Enter a description"
-                isInvalid={!!errors.description}
+                isInvalid={!!errors.productDescription}
                 _focus={{
-                    border: !!errors.description ? "red.300" : "border-gray-300",
+                    border: !!errors.productDescription ? "red.300" : "border-gray-300",
                 }}
-                {...register("description", {
+                {...register("productDescription", {
                     required: true,
                 })}
                 />

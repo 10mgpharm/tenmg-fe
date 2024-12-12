@@ -19,7 +19,6 @@ import requestClient from "@/lib/requestClient";
 import {
   CustomerData,
   NextAuthUserSession,
-  TransactionHistoryData,
   TransactionHistoryDataProps,
 } from "@/types";
 import { useSession } from "next-auth/react";

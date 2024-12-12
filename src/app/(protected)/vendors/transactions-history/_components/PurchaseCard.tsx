@@ -1,33 +1,47 @@
+import React from "react";
 import { classNames } from "@/utils";
 import { Icon, Text } from "@chakra-ui/react"
-import { CircleCheck } from "lucide-react"
 
 interface PurchaseProps {
     value: string;
+    weight: number;
+    title: string;
     icon: any;
-    type: "past" | "active" | "late"
+    operator: string;
+    status: string;
 }
 
-const PurchaseCard = ({value, icon, type}: PurchaseProps) => {
+const PurchaseCard:React.FC<PurchaseProps> = ({value, title, icon, status, operator, weight}) => {
   return (
-    <div className={classNames(type === "past" ? "border-green-500 bg-[#D1EFEC]" : "border-red-600 bg-[#F6DADE]",  " border p-4 rounded-md flex-1 space-y-4")}>
-        <p className="text-sm text-gray-600">Total Past Credit Count is</p>
+    <div className={classNames(
+        status === "passed" ? 
+        "border-green-500 bg-[#D1EFEC]" 
+        : "border-red-600 bg-[#F6DADE]",  
+        " border p-4 rounded-md col-span-1 space-y-4")}>
+        <p className="text-sm text-gray-600">{title}</p>
         <Text 
         fontWeight={"600"}
         fontSize={"large"}
-        color={type === "past" ? "green.600": type === "active" ? "red.600" : "black"} 
+        color={status === "passed" ? "green.600": status === "failed" ? "red.600" : "black"} 
         >
-            {value}
+            {Number(value)?.toLocaleString()}
         </Text>
         <div className="flex justify-between items-center">
             <Text 
             fontSize={"small"}
             fontWeight={600}
-            color={type === "past" ? "green.700": type === "active" ? "red.600" : "black"} 
+            color={status === "passed" ? "green.700": status === "failed" ? "red.600" : "black"} 
             >
-                Analysis result {'> ='} 1
+                Analysis result {operator} {weight}
             </Text>
-            <Icon as={icon} className={classNames(type === "past" ? "text-green-600" : "text-red-600" ,"w-4 h-4")}/>
+            <Icon 
+            as={icon} 
+            className={classNames(
+                status === "passed" 
+                ? "text-green-600" 
+                : "text-red-600" 
+                ,"w-4 h-4")}
+            />
         </div>
     </div>
   )

@@ -23,6 +23,7 @@ import EditBrands from "./EditBrands";
 import { MedicationData } from "@/types";
 import DeleteMedication from "./DeleteMedication";
 import Loader from "../../_components/Loader";
+import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 
 const BrandSetup = (
   {data, type, refetchingTypes, loading}: 
@@ -50,7 +51,7 @@ const BrandSetup = (
   // };
 
   return (
-    <Stack flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
+    <Stack flex={1} minH={"500px"} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
       <Flex justify={"space-between"}>
         <InputGroup size='md' width={"20rem"}>
           <InputLeftElement pl={1}>
@@ -64,59 +65,64 @@ const BrandSetup = (
         </InputGroup>
         <Button h="38px" onClick={onOpen} bg={"primary.500"}>Add New {type}</Button>
       </Flex>
-      <TableContainer mt={5}>
-        <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
-          <Thead bg={"#E8F1F8"}>
-            <Tr color={"primary.500"} roundedTop={"md"}>
-              <Th>Date Created</Th>
-              <Th>Name</Th>
-              <Th>Active</Th>
-              <Th>Status</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {
-              loading ? 
-              <Loader />
-              :
-              data?.map((item: MedicationData) => (
-                <Tr key={item.id}>
-                  <Td fontSize={"14px"}>14-10-2024</Td>
-                  <Td fontSize={"14px"}>{item.name}</Td>
-                  <Td fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
-                  <Td fontSize={"14px"}>{item.status}</Td>
-                  <Td fontSize={"14px"}>
-                    <Flex gap={2}>
-                      <Button 
-                      onClick={() => {
-                        setSelectedItem(item);
-                        onEditOpen();
-                      }} 
-                      fontSize={"14px"} 
-                      variant={"unstyled"} 
-                      color={"gray.500"}>
-                        Edit
-                      </Button>
-                      <Button 
-                      variant="unstyled" 
-                      fontSize={"14px"} 
-                      color={"red.600"}
-                      onClick={() => {
-                        setSelectedId(item.id)
-                        onDeleteOpen();
-                      }}
-                      >
-                        Delete
-                      </Button>
-                    </Flex>
-                  </Td>
-                </Tr>
-              ))
-            }
-          </Tbody>
-        </Table>
-      </TableContainer>
+      {
+        loading ? <Loader /> :
+        data?.length === 0 
+        ? <EmptyOrder 
+          heading={`No ${type} Yet`} 
+          content={`You currently have no ${type}. All ${type} will appear here.`}
+        /> : 
+        <TableContainer mt={5}>
+          <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
+            <Thead bg={"#E8F1F8"}>
+              <Tr color={"primary.500"} roundedTop={"md"}>
+                <Th>Date Created</Th>
+                <Th>Name</Th>
+                <Th>Active</Th>
+                <Th>Status</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {
+                data?.map((item: MedicationData) => (
+                  <Tr key={item.id}>
+                    <Td fontSize={"14px"}>14-10-2024</Td>
+                    <Td fontSize={"14px"}>{item.name}</Td>
+                    <Td fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
+                    <Td fontSize={"14px"}>{item.status}</Td>
+                    <Td fontSize={"14px"}>
+                      <Flex gap={2}>
+                        <Button 
+                        onClick={() => {
+                          setSelectedItem(item);
+                          onEditOpen();
+                        }} 
+                        fontSize={"14px"} 
+                        variant={"unstyled"} 
+                        color={"gray.500"}>
+                          Edit
+                        </Button>
+                        <Button 
+                        variant="unstyled" 
+                        fontSize={"14px"} 
+                        color={"red.600"}
+                        onClick={() => {
+                          setSelectedId(item.id)
+                          onDeleteOpen();
+                        }}
+                        >
+                          Delete
+                        </Button>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))
+              }
+            </Tbody>
+          </Table>
+        </TableContainer>
+      }
       <AddNewBrands 
       isOpen={isOpen}
       onClose={onClose} 
