@@ -6,8 +6,9 @@ import Link from 'next/link'
 import DeleteModal from './DeleteModal'
 import RestockModal from './RestockModal'
 import DeactiveModal from './DeactiveModal'
+import { ProductDataProps } from '@/types'
 
-const GridList = ({data}: {data: any}) => {
+const GridList = ({data}: {data: ProductDataProps[]}) => {
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
@@ -16,11 +17,16 @@ const GridList = ({data}: {data: any}) => {
   return (
     <div className='grid grid-cols-3 gap-5'>
         {
-            data?.map((item: any, index: number) => (
-                <div key={index} className="bg-white p-2 rounded-md relative">
+            data?.map((item: ProductDataProps) => (
+                <div key={item.id} className="bg-white p-2 rounded-md relative">
                     <div className="absolute top-4 inset-x-4 flex items-center justify-between">
-                        <div className={classNames(item.status === "Available" ? "bg-green-50 text-green-500" : "bg-red-50 text-red-500" , ' max-w-max px-2 rounded-full')}>
-                            <Text fontSize={"13px"}>{item.status}</Text>
+                        <div className={
+                            classNames(
+                                item.inventory === "IN STOCK" ? 
+                                "bg-green-50 text-green-500" : 
+                                "bg-red-50 text-red-500" , 
+                                ' max-w-max px-2 rounded-full')}>
+                            <Text fontSize={"13px"}>{item.inventory}</Text>
                         </div>
                         <Menu>
                             <MenuButton>
@@ -28,12 +34,12 @@ const GridList = ({data}: {data: any}) => {
                             </MenuButton>
                             <MenuList dir='rtl'>
                                 <MenuItem>
-                                    <Link href={'/admin/products/global-pentazocine'}>View Details</Link>
+                                    <Link href={`/admin/products/${item.slug}`}>View Details</Link>
                                 </MenuItem>
                                 <MenuItem>Edit Product</MenuItem>
                                 <MenuItem onClick={() => onOpenRestock()}>Flag</MenuItem>
                                 {
-                                    data?.status === "Available" ? 
+                                    item?.status === "ACTIVE" ? 
                                     <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
                                     : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
                                 }
@@ -41,17 +47,17 @@ const GridList = ({data}: {data: any}) => {
                             </MenuList>
                         </Menu>
                     </div>
-                    <Image src={item.image} alt='' className='rounded-md w-full'/>
+                    <Image src={item.thumbnailFile} alt='' width={300} height={300} className='rounded-md w-full h-[200px]'/>
                     <div className="mt-3 mb-6">
                         <div className="flex items-center justify-between">
                             <h3 className='font-semibold'>{item?.name}</h3>
                             <p className='font-semibold'>{item?.price}</p>
                         </div>
-                        <p className='text-gray-500'>{item?.brand}</p>
+                        <p className='text-gray-500'>{item?.brand?.name}</p>
                         <div className="flex justify-between items-center mt-3">
                             <p className='font-medium'>{item.quantity} Qty</p>
                             <Box bg={"#FFFAEB"} color={"#F79009"} px={2} maxW={"fit-content"}>
-                                <Text fontSize={"13px"}>Pending</Text>
+                                <Text fontSize={"13px"}>{item?.status}</Text>
                             </Box>
                         </div>
                     </div>

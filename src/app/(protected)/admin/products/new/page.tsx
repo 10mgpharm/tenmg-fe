@@ -153,7 +153,7 @@ const AddProducts = () => {
         }
     }
     // console.log(getValues());
-    console.log(errors);
+    // console.log(errors);
 
     if (steps === null) {
         // Render a loading state or placeholder until the state is initialized

@@ -4,11 +4,16 @@ import { classNames } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Image from "next/image";
 import Link from "next/link";
+import { ProductDataProps } from "@/types";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<ProductDataProps>();
 
-export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, onOpenDeactivate: () => void, onOpenActivate: () => void) {
-
+export function ColumsProductFN(
+    onOpen: () => void,
+   onOpenRestock: () => void,
+   onOpenDeactivate: () => void, 
+   onOpenActivate: () => void) 
+  {
   return [
     columnHelper.accessor("name", {
       header: () => (
@@ -18,7 +23,7 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
-            <Image src={info?.row?.original?.image} alt="" className="w-10 h-10 rounded-full"/>
+            <Image src={info?.row?.original?.thumbnailFile} alt="" width={50} height={50} className="w-10 h-10 rounded-full"/>
             <p className="font-medium">
               {info?.row?.original?.name} 
             </p>
@@ -36,11 +41,11 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
       cell: (info) => (
         <div>
             <p className={classNames(
-            info?.row?.original?.inventory === "Low stock" 
+            info?.row?.original?.inventory === "LOW STOCK" 
             ? "bg-[#FFFAEB] text-[#F79009]" 
-            : info?.row?.original?.inventory === "Out of stock" 
+            : info?.row?.original?.inventory === "OUT OF STOCK" 
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.inventory === "In stock"
+            : info?.row?.original?.inventory === "IN STOCK"
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
             )}>
@@ -68,7 +73,7 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
       cell: (info) => {
         return (
           <div>
-           <p>{info?.row?.original?.brand}</p>
+           <p>{info?.row?.original?.brand?.name}</p>
           </div>
         );
       },
@@ -81,9 +86,9 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
         return (
           <div>
             <p className={classNames(
-            info?.row?.original?.status === "Inactive" 
+            info?.row?.original?.status === "PENDING"
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "Active"
+            : info?.row?.original?.status === "ACTIVE"
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
             )}>
@@ -113,7 +118,7 @@ export function ColumsProductFN(onOpen: () => void, onOpenRestock: () => void, o
                     <MenuItem>Edit Product</MenuItem>
                     <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
                     {
-                      info?.row?.original?.status === "Active" ? 
+                      info?.row?.original?.status === "ACTIVE" ? 
                       <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
                       : <MenuItem onClick={() => onOpenActivate()}>Activate Product</MenuItem>
                     }
