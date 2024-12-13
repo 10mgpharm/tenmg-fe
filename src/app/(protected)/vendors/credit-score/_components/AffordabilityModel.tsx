@@ -154,7 +154,7 @@ const AffordabilityModel = ({
                       name={`criteria.${index}.lowerBound`}
                       rules={{ required: "Lower bound is required" }}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Lower bound" />
+                        <Input {...field} placeholder="" />
                       )}
                     />
                     <FormErrorMessage>
@@ -172,7 +172,7 @@ const AffordabilityModel = ({
                       name={`criteria.${index}.upperBound`}
                       rules={{ required: "Upper bound is required" }}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Upper bound" />
+                        <Input {...field} placeholder="" />
                       )}
                     />
                     <FormErrorMessage>
@@ -262,11 +262,11 @@ const AffordabilityModel = ({
                   })
                 }
                 alignSelf="center"
-                bg="primary.50"
+                // bg="primary.50"
                 border="none"
                 rounded="lg"
-                colorScheme="primary"
-                variant="outline"
+                // colorScheme="primary"
+                // variant="outline"
               >
                 Add Another
               </Button>

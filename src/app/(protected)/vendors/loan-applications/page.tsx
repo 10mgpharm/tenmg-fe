@@ -183,7 +183,7 @@ const LoanApplication = () => {
         ) : tableData && tableData?.length === 0 ? (
           <EmptyResult
             heading={`Nothing to show here yet`}
-            content={`You don’t have any customer yet. When you do, they’ll appear here.`}
+            content={`No active loans yet. Once you've disbursed a loan, the details will appear here.`}
           />
         ) : (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>

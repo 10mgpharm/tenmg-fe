@@ -71,24 +71,6 @@ const TeamMembers = ({
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    try {
-      setIsLoading(true);
-      const response = await requestClient({ token: token }).post(
-        "/vendor/settings/invite",
-        data
-      );
-      if (response.status === 200) {
-        toast.success(response?.data?.message);
-        fetchTeamMembers();
-        onClose();
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error(handleServerErrorMessage(error));
-    }
-  };
-
   return (
     <div>
       <HStack justify="flex-end">
@@ -150,8 +132,8 @@ const TeamMembers = ({
         onClose={onClose}
         isOpen={isOpen}
         accountType="vendor"
-        isLoading={isLoading}
-        onSubmit={onSubmit}
+        fetchTeamMembers={fetchTeamMembers}
+        token={token}
       />
       <DeleteModal onClose={onCloseRemove} isOpen={isOpenRemove} title="Team Member" />
     </div>

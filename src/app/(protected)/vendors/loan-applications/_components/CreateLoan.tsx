@@ -26,7 +26,6 @@ import { handleServerErrorMessage } from "@/utils";
 import { convertArray } from "@/utils/convertSelectArray";
 import { SelectProps } from "./SendApplicationLink";
 
-
 interface IFormInput {
   customerId: SelectProps;
   requestedAmount: string;
@@ -106,7 +105,7 @@ const CreateLoan = (
                 <FormControl isInvalid={!!errors.requestedAmount}>
                     <FormLabel color={'#344054'}>Loan Amount</FormLabel>
                     <Input 
-                    placeholder="N 3,000.000.00" 
+                    placeholder="₦3,000.000.00" 
                     type="number"
                     id='requestedAmount'
                     errorBorderColor="red.300"
@@ -128,7 +127,7 @@ const CreateLoan = (
                         <Select
                           {...field}
                           options={[
-                            { value: 1, label: "1 months" },
+                            { value: 1, label: "1 month" },
                             { value: 3, label: "3 months" },
                             { value: 6, label: "6 months" },
                           ]}

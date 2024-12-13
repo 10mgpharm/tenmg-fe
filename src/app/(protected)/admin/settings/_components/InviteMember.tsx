@@ -22,8 +22,9 @@ import Image from "next/image";
 import { useState } from "react";
 import shape from "@public/assets/images/Rectangle.svg";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useCallback } from "react";
 import requestClient from "@/lib/requestClient";
+import { handleServerErrorMessage } from "@/utils";
+import { toast } from "react-toastify";
 
 interface IFormInput {
   fullName: string;
@@ -35,25 +36,48 @@ const InviteMember = ({
   isOpen,
   onClose,
   accountType,
-  onSubmit,
-  isLoading,
+  fetchTeamMembers,
+  token,
 }: {
   isOpen: boolean;
   onClose: () => void;
   accountType?: "vendor";
   onSubmit?: SubmitHandler<IFormInput>;
   isLoading?: boolean;
+  fetchTeamMembers?: () => void;
+  token?: string;
 }) => {
-
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<IFormInput>({
     mode: "onBlur",
   });
 
-  const [isDetails, setIsDetails] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDetailsVisible, setIsDetailsVisible] = useState(false); // Toggle state for Role Details
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      setIsLoading(true);
+      const response = await requestClient({ token: token }).post(
+        "/vendor/settings/invite",
+        data
+      );
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+        fetchTeamMembers();
+        setIsLoading(false);
+        reset();
+        onClose();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(handleServerErrorMessage(error));
+    }
+  };
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
@@ -63,7 +87,6 @@ const InviteMember = ({
         <DrawerHeader>Invite Member</DrawerHeader>
         <DrawerBody>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* {accountType && ( */}
             <FormControl mb={5} isInvalid={!!errors.fullName}>
               <FormLabel htmlFor="fullName">Full Name</FormLabel>
               <Input
@@ -74,7 +97,7 @@ const InviteMember = ({
               />
               <FormErrorMessage>{errors.fullName?.message}</FormErrorMessage>
             </FormControl>
-            {/* )} */}
+
             <FormControl mb={5} isInvalid={!!errors.email}>
               <FormLabel htmlFor="email">Email Address</FormLabel>
               <Input
@@ -90,6 +113,7 @@ const InviteMember = ({
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
+
             <FormControl mb={10}>
               <FormLabel>Roles</FormLabel>
               <Flex alignItems={"center"} gap={10}>
@@ -98,29 +122,27 @@ const InviteMember = ({
                   <option value="operator">Operator</option>
                   <option value="support">Support</option>
                 </Select>
-                <chakra.span className="text-primary-600 text-sm font-medium line-clamp-1 min-w-max cursor-pointer">
-                  Hide Role Details
+                <chakra.span
+                  className="text-primary-600 text-sm font-medium line-clamp-1 min-w-max cursor-pointer"
+                  onClick={() => setIsDetailsVisible(!isDetailsVisible)} // Toggle visibility
+                >
+                  {isDetailsVisible ? "Hide Role Details" : "View Role Details"}
                 </chakra.span>
               </Flex>
             </FormControl>
 
-            {/* {isDetails && (
+            {isDetailsVisible && ( // Conditional rendering for Role Details
               <Box p={4} rounded={"md"} bg={"gray.100"}>
                 <Text fontWeight={500} fontSize={"15px"} mb={1}>
-                  Role&apos;s Permission
+                  Role&apos;s Permissions
                 </Text>
                 <ul className="list-disc px-4 text-sm">
                   <li>API Management: Create, Edit, Delete</li>
-                  <li>
-                    User Management: Invite, Deactivate, Activate, Assign roles
-                  </li>
-                  <li>
-                    Monitoring and Analytics: Generate Analytics, View API Usage
-                    reports
-                  </li>
+                  <li>User Management: Invite, Deactivate, Activate, Assign roles</li>
+                  <li>Monitoring and Analytics: Generate Analytics, View API Usage reports</li>
                 </ul>
               </Box>
-            )} */}
+            )}
 
             <HStack maxW="300px" ml="auto" gap={3} mt={6}>
               <Button onClick={onClose} variant="outline">
@@ -146,3 +168,5 @@ const InviteMember = ({
 };
 
 export default InviteMember;
+
+

@@ -34,7 +34,7 @@ export default function ProductBrandSetupPage() {
         if (!token) return;
         fetchingBrandTypes();
     }, [token, fetchingBrandTypes]);
-
+    
     return (
         <BrandSetup
             data={brandData?.data}
