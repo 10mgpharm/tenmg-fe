@@ -15,7 +15,7 @@ export function ColumsVendorFN(
     columnHelper.accessor("id", {
       header: () => (
         <div className="pl-6">
-          <p>S/N</p>
+          <p>Result breakdown</p>
         </div>
       ),
       cell: (info) => {
