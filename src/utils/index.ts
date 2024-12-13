@@ -39,3 +39,10 @@ export const convertLetterCase = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
     
 }
+
+export const formatAmountString = (amount: any) => {
+    if(!amount) return 0;
+    const convert2Number = Number(amount)
+    const roundedNum = parseFloat(convert2Number.toFixed(2));
+    return roundedNum?.toLocaleString();
+}

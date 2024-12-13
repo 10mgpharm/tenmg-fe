@@ -155,7 +155,7 @@ const CreditScore = () => {
         <div className="mb-5">
           <div className="flex items-center gap-3 mt-5">
             <SearchInput
-              placeholder="Search for a user"
+              placeholder="Search"
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />

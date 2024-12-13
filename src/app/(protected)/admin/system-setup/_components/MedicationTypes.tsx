@@ -24,6 +24,7 @@ import EditMedicationType from "./EditMedicationType";
 import { useState } from "react";
 import DeleteMedication from "./DeleteMedication";
 import Loader from "../../_components/Loader";
+import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 
 const MedicationTypes = (
   {data, fetchingMedicationTypes, loading}: 
@@ -46,7 +47,7 @@ const MedicationTypes = (
   const [selectedItem, setSelectedItem] = useState<MedicationData>();
 
   return (
-    <Stack flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
+    <Stack minH={"500px"} flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
       <Flex justify={"space-between"}>
         <InputGroup size='md' width={"20rem"}>
           <InputLeftElement pl={1}>
@@ -60,57 +61,64 @@ const MedicationTypes = (
         </InputGroup>
         <Button h="38px" onClick={onOpen} bg={"primary.500"}>Add Medication Type</Button>
       </Flex>
-      <TableContainer mt={5}>
-        <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
-          <Thead bg={"#E8F1F8"}>
-            <Tr color={"primary.500"} roundedTop={"md"}>
-              <Th>Date Created</Th>
-              <Th>Name</Th>
-              <Th>Variations</Th>
-              <Th>Status</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {
-              loading ? <Loader /> :
-              data?.map((item: MedicationData) => (
-                <Tr key={item.id}>
-                  <Td>14-10-2024</Td>
-                  <Td>{item.name}</Td>
-                  <Td>
-                    <Tag colorScheme={"yellow"} size={"sm"}>View Variation</Tag>
-                  </Td>
-                  <Td className="text-sm">{item.status}</Td>
-                  <Td>
-                    <Flex gap={2}>
-                      <Button 
-                      onClick={() => {
-                        setSelectedItem(item)
-                        onEditOpen()
-                      }} 
-                      variant={"unstyled"}
-                      color={"gray.500"}>
-                        Edit
-                      </Button>
-                      <Button 
-                      variant="unstyled" 
-                      color={"red.600"}
-                      onClick={() => {
-                        setSelectedId(item.id)
-                        onDeleteOpen()
-                      }} 
-                      >
-                        Delete
-                      </Button>
-                    </Flex>
-                  </Td>
-                </Tr>
-              ))
-            }
-          </Tbody>
-        </Table>
-      </TableContainer>
+      {
+        loading ? <Loader /> :
+        data?.length === 0 
+        ? <EmptyOrder 
+          heading={`No Medication Type Yet`} 
+          content={`You currently have no medication type. All medication types will appear here.`}
+        /> : 
+        <TableContainer mt={5}>
+          <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
+            <Thead bg={"#E8F1F8"}>
+              <Tr color={"primary.500"} roundedTop={"md"}>
+                <Th>Date Created</Th>
+                <Th>Name</Th>
+                <Th>Variations</Th>
+                <Th>Status</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {
+                data?.map((item: MedicationData) => (
+                  <Tr key={item.id}>
+                    <Td>14-10-2024</Td>
+                    <Td>{item.name}</Td>
+                    <Td>
+                      <Tag colorScheme={"yellow"} size={"sm"}>View Variation</Tag>
+                    </Td>
+                    <Td className="text-sm">{item.status}</Td>
+                    <Td>
+                      <Flex gap={2}>
+                        <Button 
+                        onClick={() => {
+                          setSelectedItem(item)
+                          onEditOpen()
+                        }} 
+                        variant={"unstyled"}
+                        color={"gray.500"}>
+                          Edit
+                        </Button>
+                        <Button 
+                        variant="unstyled" 
+                        color={"red.600"}
+                        onClick={() => {
+                          setSelectedId(item.id)
+                          onDeleteOpen()
+                        }} 
+                        >
+                          Delete
+                        </Button>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))
+              }
+            </Tbody>
+          </Table>
+        </TableContainer>
+      }
       <AddMedicationType 
       isOpen={isOpen} 
       onClose={onClose}

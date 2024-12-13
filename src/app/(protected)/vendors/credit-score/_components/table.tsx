@@ -77,7 +77,7 @@ export function ColumnsCreditScoreFN() {
     //   ),
     // }),
     columnHelper.accessor("id", {
-      header: () => <p>Actions</p>,
+      header: () => <p>Action</p>,
       cell: (info) => {
         return (
           <div className="flex gap-4">

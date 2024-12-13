@@ -11,15 +11,35 @@ import {
     useDisclosure
 } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import SuccessModal from "./SuccessModal";
 import "react-datepicker/dist/react-datepicker.css";
 import DateComponent from "./DateComponent";
+import { 
+    Control, 
+    Controller, 
+    FieldErrors, 
+    FieldValues, 
+    UseFormHandleSubmit, 
+    UseFormRegister, 
+    UseFormSetValue 
+} from "react-hook-form";
+import { IFormInput } from "@/app/(protected)/admin/products/new/page";
 
-const InventoryForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>}) => {
+interface IChildComponentProps {
+    register: UseFormRegister<IFormInput>;
+    control: Control<IFormInput>;
+    errors: FieldErrors<FieldValues>;
+    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
+    setValue: UseFormSetValue<IFormInput>; 
+    handleSubmit: UseFormHandleSubmit<any>;
+}
+
+const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, setValue, handleSubmit, control}) => {
 
     const router = useRouter();
+
     const [startDate, setStartDate] = useState<Date | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -35,23 +55,67 @@ const InventoryForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' 
             </div>
         </div>
         <h3 className="font-semibold text-xl text-gray-700 my-5">Product Inventory</h3>
-        <form className="space-y-5">
+        <div className="space-y-5">
             <Stack gap={5}>
-                <FormControl>
+                <FormControl isInvalid={!!errors.quantity}>
                     <FormLabel color={"gray.600"}>Quantity</FormLabel>
-                    <Input type="text" />
+                    <Input 
+                        type="text" 
+                        isInvalid={!!errors.quantity}
+                        _focus={{
+                            border: !!errors.quantity ? "red.300" : "border-gray-300",
+                        }}
+                        {...register("quantity", {
+                            required: true,
+                        })}
+                    />
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!errors.minDeliveryDuration}>
                     <FormLabel color={"gray.600"}>Low Stock Level</FormLabel>
-                    <Input type="text" />
+                    <Input  
+                    id="minDeliveryDuration"
+                    placeholder="" 
+                    type="text"
+                    isInvalid={!!errors.minDeliveryDuration}
+                    _focus={{
+                        border: !!errors.minDeliveryDuration ? "red.300" : "border-gray-300",
+                    }}
+                    {...register("minDeliveryDuration", {
+                        required: true,
+                    })}
+                    />
                 </FormControl>
-                <FormControl>
+                <FormControl  isInvalid={!!errors.maxDeliveryDuration}>
                     <FormLabel color={"gray.600"}>Out of Stock Level</FormLabel>
-                    <Input type="text" />
+                    <Input 
+                    id="maxDeliveryDuration"
+                    placeholder="" 
+                    type="text"
+                    isInvalid={!!errors.maxDeliveryDuration}
+                    _focus={{
+                        border: !!errors.maxDeliveryDuration ? "red.300" : "border-gray-300",
+                    }}
+                    {...register("maxDeliveryDuration", {
+                        required: true,
+                    })}
+                    />
                 </FormControl>
                 <FormControl>
                     <FormLabel color={"gray.600"}>Expiration Date Proximity</FormLabel>
-                    <DateComponent startDate={startDate} setStartDate={setStartDate} />
+                    {/* <DateComponent startDate={startDate} setStartDate={setStartDate} /> */}
+                    <Controller
+                        name="expiredAt"
+                        control={control}
+                        rules={{ required: "Expiry date is required" }}
+                        render={({ field }) => (
+                        <DateComponent
+                            startDate={field.value}
+                            setStartDate={field.onChange}
+                            // isMinDate
+                            // minDate={getValues("startDate")}
+                        />
+                        )}
+                    />
                 </FormControl>
                 <FormControl display='flex' alignItems='center'>
                     <Switch id='email-alerts' mr={3}/>
@@ -60,10 +124,17 @@ const InventoryForm = ({setSteps}: {setSteps: Dispatch<SetStateAction<'details' 
                     </FormLabel>
                 </FormControl>
             </Stack>
-        </form>
+        </div>
         <div className="flex gap-4 justify-end mt-10 mb-6">
-            <button className="p-3 w-32 rounded-md border text-gray-600"  onClick={() => setSteps("essentials")}>Previous</button>
-            <button className="w-[280px] p-3 rounded-md bg-primary-500 text-white" onClick={() => onOpen()}>
+            <button 
+            className="p-3 w-32 rounded-md border text-gray-600"  
+            onClick={() => setSteps("essentials")}>
+                Previous
+            </button>
+            <button 
+            type="submit"
+            className="w-[280px] p-3 rounded-md bg-primary-500 text-white" 
+            >
                 Add Product
             </button>
         </div>

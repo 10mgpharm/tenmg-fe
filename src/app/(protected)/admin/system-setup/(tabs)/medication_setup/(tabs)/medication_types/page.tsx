@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import MedicationTypes from '../../../../_components/MedicationTypes'
 import { MedicationResponseData, NextAuthUserSession } from '@/types';
 import { useSession } from 'next-auth/react';
@@ -29,6 +29,11 @@ export default function ProductMedicationTypeSetupPage() {
       setMedicationLoading(false)
     }
   }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetchingMedicationTypes();
+}, [token, fetchingMedicationTypes]);
 
   return (
     <MedicationTypes

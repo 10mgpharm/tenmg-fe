@@ -1,21 +1,30 @@
-import { CircleCheck, CircleX } from "lucide-react"
+import React from "react"
 import PurchaseCard from "./PurchaseCard"
+import { ResultBreakdownProps } from "@/types"
+import { FaCheckCircle } from "react-icons/fa"
+import { FaCircleXmark } from "react-icons/fa6"
+interface Props {
+  data: ResultBreakdownProps[]
+}
 
-const PurchasePattern = () => {
+const PurchasePattern: React.FC<Props> = ({data}) => {
   return (
     <div className="space-y-5 mt-5">
-        <div className="flex items-center gap-5">
-            <PurchaseCard value="6" icon={CircleCheck} type="past" />
-            <PurchaseCard value="₦500,000" icon={CircleCheck} type="past"/>
-        </div>
-        <div className="flex items-center gap-5">
-            <PurchaseCard value="1" icon={CircleX} type="active" />
-            <PurchaseCard value="₦300,000" icon={CircleX} type="active"/>
-        </div>
-        <div className="flex items-center gap-5">
-            <PurchaseCard value="5" icon={CircleX} type="late" />
-            <PurchaseCard value="25" icon={CircleX} type="late"/>
-        </div>
+      <div className="grid grid-cols-2 gap-5">
+        {
+          data?.map((item: ResultBreakdownProps) => (
+            <PurchaseCard 
+            key={item.rulename}
+            value={item.systemValue} 
+            icon={item.status === "passed" ? FaCheckCircle : FaCircleXmark} 
+            status={item.status} 
+            operator={item.operator}
+            weight={item.weight}
+            title={item.ruleDescription}
+            />
+          ))
+        }
+      </div>
     </div>
   )
 }

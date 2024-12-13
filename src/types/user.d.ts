@@ -141,6 +141,61 @@ export interface TransactionHistoryData {
   updatedAt: string;
 }
 
+export interface VendorData {
+  id: number;
+  ownerId: number;
+  name: string;
+  shortName: string;
+  code: string;
+  logoId: string | null;
+  type: string;
+  address: string | null;
+  contactPerson: string;
+  contactPhone: string;
+  contactEmail: string;
+  contactPersonPosition: string;
+  active: number;
+  status: string;
+  licenseNumber: string;
+  expiryDate: string;
+  licenseVerificationStatus: string;
+  licenseVerificationComment: string | null;
+  cacDocumentId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+export interface ResultBreakdownProps {
+  operator: string;
+  ruleDescription: string;
+  rulename: string;
+  status: string;
+  systemValue: string;
+  transactionValue: number;
+  weight: number;
+}
+export interface SingleTransactionData {
+  id: number;
+  identifier: string;
+  updatedAt: string;
+  createdAt: string;
+  affordability: {
+    rule: string;
+    baseAmount: string;
+    maxAmount: string;
+  },
+  creditScoreResult: {
+    scorePercent: number;
+    scoreTotal: number;
+    scoreValue: number;
+    appliedRules: ResultBreakdownProps[];
+  }
+  customer: CustomerData;
+  vendor: VendorData;
+  evaluation: any;
+}
+
 export interface TransactionHistoryDataProps {
   currentPage: number;
   data: TransactionHistoryData[];

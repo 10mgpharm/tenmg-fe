@@ -1,5 +1,4 @@
 import { Flex, Stack, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react'
-import Link from 'next/link'
 import React from 'react'
 import MedicationSetupTabNavigation from './_components/MedicationSetupTabNavigation';
 
