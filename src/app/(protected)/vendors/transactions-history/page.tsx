@@ -48,9 +48,9 @@ const TransactionHistory = () => {
   const [tnxHistoryData, setTnxHistoryData] =
     useState<TransactionHistoryDataProps | null>(null);
 
-  const [selectedCustomerId, setSelectedCustomerId] = useState<CustomerData[] | null>(
-    null
-  );
+  const [selectedCustomerId, setSelectedCustomerId] = useState<
+    CustomerData[] | null
+  >(null);
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
@@ -123,7 +123,7 @@ const TransactionHistory = () => {
         "vendor/customers/get-all"
       );
       if (response.status === 200) {
-        setSelectedCustomerId(response?.data?.data)
+        setSelectedCustomerId(response?.data?.data);
       }
     } catch (error) {
       console.error(error);
@@ -186,16 +186,13 @@ const TransactionHistory = () => {
         </div>
       </div>
       <div>
-        {loading ? (
+        {loading && (
           <Flex justify="center" align="center" height="200px">
             <Spinner size="xl" />
           </Flex>
-        ) : tableData.length === 0 ? (
-          <EmptyResult
-            heading="No record available"
-            content=""
-          />
-        ) : (
+        )}
+
+        {!loading && tableData.length > 0 && (
           <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
             <Table>
               <Thead bg="blue.50">
@@ -244,6 +241,10 @@ const TransactionHistory = () => {
               </Tbody>
             </Table>
           </TableContainer>
+        )}
+
+        {!loading && tableData.length === 0 && (
+          <EmptyResult heading="No record available" content="" />
         )}
       </div>
 

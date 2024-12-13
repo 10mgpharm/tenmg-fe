@@ -1,10 +1,18 @@
+import { formatAmount } from "@/utils/formatAmount";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const columnHelper = createColumnHelper<any>();
+type TransactionData = {
+  reference: string;
+  description: string;
+  amount: string | number;
+  date: string;
+};
+
+const columnHelper = createColumnHelper<TransactionData>();
 
 export function ColumnsFN() {
   return [
-    columnHelper.accessor("identifier", {
+    columnHelper.accessor("reference", {
       header: () => (
         <div className="pl-6">
           <p>Reference</p>
@@ -12,11 +20,11 @@ export function ColumnsFN() {
       ),
       cell: (info) => (
         <div className="pl-6">
-          <p>JRTOO3</p>
+          <p>{info.getValue()}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("id", {
+    columnHelper.accessor("description", {
       header: () => (
         <div>
           <p>Description</p>
@@ -24,23 +32,23 @@ export function ColumnsFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-bold">Hydrochloride</p>
+          <p className="font-bold">{info.getValue()}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("source", {
+    columnHelper.accessor("amount", {
       header: () => <p>Amount</p>,
       cell: (info) => (
         <div>
-          <p>₦15,161,060</p>
+          <p>{formatAmount(info.getValue())}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("createdAt", {
+    columnHelper.accessor("date", {
       header: () => <p>Date</p>,
       cell: (info) => (
         <div>
-          <p>5/12/2024</p>
+          <p>{info.getValue()}</p>
         </div>
       ),
     }),
