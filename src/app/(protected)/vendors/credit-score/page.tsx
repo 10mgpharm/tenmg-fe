@@ -177,12 +177,8 @@ const CreditScore = () => {
         </div>
       </div>
       <div className="">
-        {loading ? (
-          <Flex justify="center" align="center" height="200px">
-            <Spinner size="xl" />
-          </Flex>
-        ) : (
-          tableData && (
+        {!loading ? (
+          tableData?.length !== 0 ? (
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
               <Table>
                 <Thead bg={"blue.50"}>
@@ -231,10 +227,13 @@ const CreditScore = () => {
                 </Tbody>
               </Table>
             </TableContainer>
+          ) : (
+            <EmptyResult heading={`Nothing to show here`} content={``} />
           )
-        )}
-        {tableData?.length === 0 && (
-          <EmptyResult heading={`Nothing to show here`} content={``} />
+        ) : (
+          <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+          </Flex>
         )}
       </div>
       <FilterDrawer

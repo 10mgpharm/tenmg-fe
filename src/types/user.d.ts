@@ -252,17 +252,51 @@ export interface NotificationResponseData {
   meta: MetaDataProp;
 }
 
+export interface BrandType {
+  id: number;
+  active: boolean;
+  name: string;
+  slug: string;
+  status: string;
+}
+export interface CategoryType {
+  id: number;
+  active: boolean;
+  name: string;
+  slug: string;
+  status: string;
+}
 
+export interface MeasurementType {
+  id: number;
+  active: boolean;
+  name: string;
+  status: string;
+}
 export interface ProductDataProps {
   id: number;
   name: string;
   image: string;
-  brand: string;
+  brand: BrandType;
   weight: string;
-  category: string;
+  category: CategoryType;
   price: string;
   quantity: string;
   status: string;
+  slug: string;
+  thumbnailFile: string;
+  inventory: string;
+  discountPrice: string;
+  actualPrice: string;
+  comment: string | null;
+  commission: string | null;
+  expiredAt: string | null;
+  minDeliveryDuration: string | null;
+  maxDeliveryDuration: string | null;
+  measurement: MeasurementType;
+  medicationType: MeasurementType;
+  package: MeasurementType;
+  presentation: MeasurementType;
 }
 export interface ProductResponseData {
   data: ProductDataProps[];
