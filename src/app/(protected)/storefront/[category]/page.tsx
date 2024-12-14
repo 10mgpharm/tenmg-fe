@@ -17,13 +17,9 @@ export default function StoreFrontByCategory() {
   const userData = session.data as NextAuthUserSession;
 
   const path = usePathname();
-
-  // console.log()
-
   const splitPath = path.split('/');
-  console.log(splitPath);
   const category = splitPath[splitPath.length - 1];
-  console.log(category);
+
 
 
 
@@ -49,7 +45,7 @@ export default function StoreFrontByCategory() {
     const fetchCategoryData = async () => {
       try {
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/categories/${category}`);
-        console.log(data);
+        // console.log(data);
         setCategoryData(data?.data?.data);
       } catch (e) {
         console.log(e)
@@ -58,9 +54,7 @@ export default function StoreFrontByCategory() {
     fetchCategoryData();
 
 
-  }, [userData?.user?.token, category])
-
-  console.log("categoryData", categoryData);
+  }, [userData?.user?.token, category]);
 
 
   return (

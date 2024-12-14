@@ -2,13 +2,14 @@
 import { Minus, Plus } from 'lucide-react'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import StoreProductReviewComponent from '../_components/StoreProductReviewComponent'
-import StoreProductCardComponent from '../_components/StoreProductCardComponent'
-import BreadCrumbBanner from '../_components/BreadCrumbBanner'
+
 import { usePathname } from 'next/navigation'
 import requestClient from '@/lib/requestClient'
 import { useSession } from 'next-auth/react'
 import { NextAuthUserSession } from '@/types'
+import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
+import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
+import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
 // ?NOTE: this page is going to be a dynamic page where the id of the product will be used to fetch and populate the information on the page.
 export default function ProductDetailPage() {
 
@@ -41,7 +42,7 @@ export default function ProductDetailPage() {
     const fetchProductData = async () => {
       try {
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/products/${product}`);
-        console.log(data);
+        // console.log(data);
         setProductData(data?.data?.data);
       } catch (e) {
         console.log(e)
@@ -52,31 +53,56 @@ export default function ProductDetailPage() {
 
   }, [userData?.user?.token, product]);
 
+  console.log("productData", productData);
+
+  //   {
+  //     "id": 4,
+  //     "name": "paracetemol",
+  //     "quantity": 1000,
+  //     "actualPrice": "10000.00",
+  //     "discountPrice": "5000.00",
+  //     "minDeliveryDuration": null,
+  //     "maxDeliveryDuration": null,
+  //     "thumbnailUrl": "https://tenmg-sanbox-bucket.s3.eu-west-1.amazonaws.com/uploads/files/2024-12-Dec/J51KctD2xWqwuiCy.png?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARLXAFSIQP34FJGJM%2F20241214%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20241214T153404Z&X-Amz-SignedHeaders=host&X-Amz-Expires=1800&X-Amz-Signature=3dceadeb298eb7ef335204e15335da67827251aded1d5f48c4793a917b688cf8",
+  //     "expiredAt": null,
+  //     "productDetails": {
+  //         "essential": null,
+  //         "startingStock": null,
+  //         "currentStock": null
+  //     },
+  //     "status": "ACTIVE",
+  //     "inventory": "OUT OF STOCK",
+  //     "comment": null
+  // }
+
+
+
   return (
     <section className=' '>
       <BreadCrumbBanner breadCrumbsData={breadCrumb} />
       <div className=' w-11/12 mx-auto my-10'>
 
         <div className='flex items-center justify-between gap-6 mx-auto w-11/12 flex-col lg:flex-row'>
-          {/* <div
-          style={{ backgroundImage: "url('/assets/images/productImgDetails.png')" }}
-          // style={{ backgroundImage: "url('/assets/images/pillImage.png')" }}
-          className='max-w-[568px] w-full lg:w-1/2 h-[611px] '
-        /> */}
+
           {/* product iamge container */}
           <div className='w-full lg:w-1/2 rounded-sm'>
             <Image
               width={568}
               height={611}
-              src={'/assets/images/productImgDetails.png'}
+              // src={'/assets/images/productImgDetails.png'}
+              src={productData?.thumbnailUrl ? productData?.thumbnailUrl : '/assets/images/productImgDetails.png'}
               alt=''
             />
           </div>
 
           {/* description container */}
           <div className='w-full lg:w-1/2 flex flex-col gap-6 px-8'>
-            <h2 className='text-6xl font-semibold'>Harmony Biotic Digestive Tablets</h2>
-            <p className='text-3xl font-semibold'>₦45,030</p>
+            <h2 className='text-6xl font-semibold'>{productData?.name}</h2>
+            <div className='flex items-center gap-x-2'>
+              {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-3xl font-semibold'>{productData?.discountPrice}</p>}
+              <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-red-500 line-through"}`}>{productData?.actualPrice}</p>
+            </div>
+
             <p className='text-sm'>Expertly formulated with a blend of probiotics, these tablets support a harmonious
               gut environment, promoting smooth digestion and overall digestive wellness for a
               happier, healthier you.</p>
