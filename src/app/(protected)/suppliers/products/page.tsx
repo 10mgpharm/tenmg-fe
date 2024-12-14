@@ -107,6 +107,8 @@ const Products = () => {
         getSortedRowModel: getSortedRowModel(),
     });
 
+    console.log(memoizedData)
+
   return (
     <div className="p-8">
         <div className="flex justify-between">
@@ -182,7 +184,7 @@ const Products = () => {
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
-                    {table?.getHeaderGroups()?.map((headerGroup) => (
+                    {memoizedData?.length > 0 && table?.getHeaderGroups()?.map((headerGroup) => (
                         <Tr key={headerGroup.id}>
                         <Th textTransform={"initial"} px="0px">
                             <Checkbox
@@ -216,7 +218,7 @@ const Products = () => {
                     ))}
                     </Thead>
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {table?.getRowModel()?.rows?.map((row) => (
+                    {(memoizedData?.length > 0) && table?.getRowModel()?.rows?.map((row) => (
                         <Tr key={row.id}>
                         <Td px="0px">
                             <Checkbox
@@ -246,7 +248,7 @@ const Products = () => {
                 </Table>
                 <Pagination meta={products?.meta} setPageCount={setPageCount}/>
             </TableContainer>
-            : <GridList data={productData2}/>
+            : <GridList data={memoizedData}/>
         }
         </div>
         <DeleteModal isOpen={isOpen} onClose={onClose}/>
