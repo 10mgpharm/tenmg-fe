@@ -126,17 +126,14 @@ const TransactionHistory = () => {
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
-  }, [token, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token]);
 
   useEffect(() => {
     if (!token) return;
     fetchCustomerTnx(pageCount);
     fetchCustomers();
   }, [fetchCustomerTnx, pageCount, token, fetchCustomers]);
-
 
   const tableData = useMemo(() => tnxHistoryData?.data || [], [tnxHistoryData]);
   const columns = useMemo(() => ColumnsTnxHistoryFN(), []);
@@ -153,10 +150,7 @@ const TransactionHistory = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const tablePagination = useMemo(
-    () => tnxHistoryData?.meta || [],
-    [tnxHistoryData]
-  );
+  const tablePagination = useMemo(() => tnxHistoryData?.meta || [], [tnxHistoryData]);
 
   return (
     <div className="p-8">

@@ -57,7 +57,7 @@ const AllOrders = ({data, type}: {data: any, type: string}) => {
             data?.length === 0 
             ? <EmptyOrder 
             heading={`No Order Yet`} 
-            content={`You currently have no order. All orders will appear here.`} 
+            content={`You currently have no order here. All unpaid orders will appear here.`} 
             /> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
