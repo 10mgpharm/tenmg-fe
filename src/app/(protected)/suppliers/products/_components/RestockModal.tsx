@@ -12,7 +12,7 @@ const RestockModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void})
             <ModalBody>
                 <form className="text-center mb-8 space-y-4">
                     <FormControl>
-                        <FormLabel>Product name</FormLabel>
+                        <FormLabel>Product Name</FormLabel>
                         <Input placeholder='Synthetic opioids'/>
                     </FormControl>
                     <FormControl>
