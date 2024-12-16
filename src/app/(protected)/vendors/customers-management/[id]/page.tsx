@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import UploadHistoryModal from "../_components/UploadHistoryModal";
 import Link from "next/link";
+import UploadModal from "../../_components/UploadModal";
 
 const Page = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -154,9 +155,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                   <Text fontSize={"14px"} color={"gray.600"}>
                     Customer ID
                   </Text>
-                  <Text fontWeight={"medium"}>
-                    {customersData?.id}
-                  </Text>
+                  <Text fontWeight={"medium"}>{customersData?.id}</Text>
                 </Stack>
               </GridItem>
               <GridItem>
@@ -271,10 +270,11 @@ const Page = ({ params }: { params: { id: string } }) => {
         </div>
       )}
 
-      <UploadHistoryModal
+      <UploadModal
+        uploadEndpoint="/vendor/txn_history/upload_and_evaluate"
         isOpen={isOpen}
         onClose={onClose}
-        fetchCustomerTnx={fetchCustomerTnx}
+        reloadData={fetchCustomerTnx}
         id={params.id}
       />
     </div>

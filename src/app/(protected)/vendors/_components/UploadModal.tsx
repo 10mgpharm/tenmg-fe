@@ -41,6 +41,7 @@ interface UploadModalProps {
   reloadData?: () => void;
   searchData?: CustomerData[];
   isCustomer?: boolean;
+  id?: string;
 }
 
 const UploadModal = ({
@@ -50,13 +51,14 @@ const UploadModal = ({
   reloadData,
   uploadEndpoint,
   acceptedFileTypes = ".csv, .xlsx, .xls",
-  maxFileSizeMB = 1,
-  templateName = "Upload Template.xls",
+  maxFileSizeMB = 5,
+  templateName = "Bulk Upload Customer Template.xls",
   isDownloadTemplate = false,
   isSearch = false,
   searchTitle = "Customer by Name or ID",
   searchData,
   isCustomer = false,
+  id,
 }: UploadModalProps) => {
   const [isUploadLoading, setIsUploadLoading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -156,6 +158,10 @@ const UploadModal = ({
 
       if (customerId) {
         formData.append("customerId", `${customerId}`);
+      }
+
+      if (id) {
+        formData.append("customerId", id);
       }
 
       const axiosInstance = requestClient({ token });
@@ -279,7 +285,7 @@ const UploadModal = ({
                           <div className="bg-gray-50 p-2 rounded-full mx-auto max-w-max mb-4">
                             <FiUploadCloud className="w-6 h-6 text-gray-700" />
                           </div>
-                          <p className="text-center">Select a File to upload</p>
+                          <p className="text-center">Select a file to upload</p>
                           <p className="text-sm font-normal text-center">
                             or drag and drop
                           </p>
@@ -344,8 +350,8 @@ const UploadModal = ({
               </Box>
             )}
 
-            {isDownloadTemplate && (
-              <div className="border border-dashed relative p-4 rounded-md bg-warning-50 border-warning-300 mb-8">
+            <div className="border border-dashed relative p-4 rounded-md bg-warning-50 border-warning-300 mb-8">
+              {isDownloadTemplate && (
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-primary-500 font-semibold flex items-center gap-2 mb-2">
                     <Box p={2} bg={"blue.100"} borderRadius={"full"}>
@@ -362,12 +368,10 @@ const UploadModal = ({
                     Download Template
                   </Button>
                 </div>
-                <p className="text-xs mb-2">
-                  Supports only {acceptedFileTypes}
-                </p>
-                <p className="text-xs">Maximum size of {maxFileSizeMB}MB</p>
-              </div>
-            )}
+              )}
+              <p className="text-xs mb-2">Supports only {acceptedFileTypes}</p>
+              <p className="text-xs">Maximum size of {maxFileSizeMB}MB</p>
+            </div>
 
             <Flex justifyContent={"center"} w={"full"}>
               <Button
