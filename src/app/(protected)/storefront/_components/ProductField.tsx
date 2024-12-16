@@ -1,8 +1,13 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import StoreProductCardComponent from "./StoreProductCardComponent";
+import Link from "next/link";
 
-const ProductsField = ({ title }: { title?: string }) => {
+
+
+const ProductsField = ({ category }: any) => {
+
+  console.log("category", category);
   return (
     <Box className="">
       <Flex
@@ -13,9 +18,11 @@ const ProductsField = ({ title }: { title?: string }) => {
         color="white"
         mb={8}
       >
-        <Text fontSize="lg">{title}</Text>
+        <Text fontSize="lg" className="capitalize">{category?.name}</Text>
         <Button variant="link" color="white" _hover={{ textDecoration: 'underline' }}>
-          SEE ALL
+          <Link href={`/storefront/${category?.name}`}>
+            SEE ALL
+          </Link>
         </Button>
       </Flex>
 
@@ -29,12 +36,12 @@ const ProductsField = ({ title }: { title?: string }) => {
           '::-webkit-scrollbar': {
             display: 'none'
           },
-          '-ms-overflow-style': 'none', 
-          'scrollbar-width': 'none'     
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none'
         }}
       >
-        {Array.from({ length: 12 }).map((_, index) => (
-          <StoreProductCardComponent key={index} />
+        {category?.products?.map((product, index) => (
+          <StoreProductCardComponent key={index} product={product} />
         ))}
       </Flex>
     </Box>
