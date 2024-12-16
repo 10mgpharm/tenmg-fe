@@ -1,24 +1,20 @@
 "use client";
 
+import { useRef } from "react";
+import { ApexOptions } from "apexcharts";
+import { CalendarIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useDisclosure } from "@chakra-ui/react";
+import { NextAuthUserSession } from "@/types";
+import { BusinessStatus } from "@/constants";
 import NoticeCard from "./_components/NoticeCard"
 import order from '@public/assets/images/totalorder.svg'
 import completedOrder from '@public/assets/images/target.svg'
 import totalProducts from '@public/assets/images/products.svg'
-// import totalPattern from '@public/assets/images/bgPattern.svg';
-// import orderPattern from '@public/assets/images/orderPattern.svg';
-// import completeOrder from '@public/assets/images/completePattern.svg';
-// import productPattern from '@public/assets/images/productpatterns.svg';
 import CompleteAccountModal from "./_components/CompleteAccountModal"
-import { useDisclosure } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
-import { BusinessStatus } from "@/constants";
-import { CalendarIcon } from "lucide-react";
 import OverviewCardWithoutBG from "./_components/OverViewWithoutBG";
 import ChartComponent from "../vendors/_components/ChartComponent";
-import { ApexOptions } from "apexcharts";
 import RevenuePerProduct from "./_components/RevenuePerProduct";
-import { useRef } from "react";
 
 export const options = [
     { label: "This week", value: "This week" },
@@ -39,11 +35,11 @@ const Supplier = () => {
 
     const formatValue = (value: any) => {
         if (value >= 1000000) {
-          return `₦${(value / 1000000).toFixed(1)}M`; // Format as millions
+          return `₦${(value / 1000000).toFixed(1)}M`;
         } else if (value >= 1000) {
-          return `₦${(value / 1000).toFixed(1)}K`; // Format as thousands
+          return `₦${(value / 1000).toFixed(1)}K`;
         } else {
-          return ` ₦${value.toFixed(1)}`; // For smaller values, just round
+          return ` ₦${value.toFixed(1)}`;
         }
     };
 
@@ -61,16 +57,12 @@ const Supplier = () => {
             },
             events: {
                 mouseMove: function (event) {
-                    // Prevent moving the chart on scroll
                     event?.preventDefault();
                 },
-                // wheel: function (event) {
-                // event.preventDefault(); // Prevent scroll zooming or panning
-                // },
             },
         },
         dataLabels: {
-          enabled: false, // Remove values on the bars
+          enabled: false,
         },
         yaxis: {
             show: true,
