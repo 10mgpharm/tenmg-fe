@@ -16,7 +16,6 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { ArrowLeft } from "lucide-react";
-import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import {
   flexRender,
   getCoreRowModel,
@@ -42,7 +41,6 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Fetch data function
   const fetchData = async () => {
     setLoading(true);
     setError("");
@@ -67,7 +65,6 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  // Fetch data on mount or when params.id changes
   useEffect(() => {
     if (token && params.id) {
       fetchData();
@@ -90,7 +87,6 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  // Construct pagination meta object based on the current page and total pages
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE) || 1;
 
   const meta = {
@@ -132,21 +128,18 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
         </Text>
       </Flex>
 
-      {/* Loading State */}
       {loading && (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
         </Flex>
       )}
 
-      {/* Error State */}
       {error && !loading && (
         <Center mt={10}>
           <Text color="red.500">{error}</Text>
         </Center>
       )}
 
-      {/* Table Display */}
       {!loading && !error && data.length > 0 && (
         <>
           <TableContainer
@@ -190,14 +183,20 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
                     ))}
                   </Tr>
                 ))}
+                <Tr>
+                  <Td py={4} w="full" colSpan={columns.length}>
+                    <ManualPagination
+                      meta={meta}
+                      setPageCount={setCurrentPage}
+                    />
+                  </Td>
+                </Tr>
               </Tbody>
             </Table>
           </TableContainer>
-          <ManualPagination meta={meta} setPageCount={setCurrentPage} />
         </>
       )}
 
-      {/* No Data State */}
       {!loading && !error && data.length === 0 && (
         <Center mt={10}>
           <Text>No transaction records found.</Text>
