@@ -32,7 +32,7 @@ const TransactionSummary: React.FC<SingleDataProps> = ({tnxHistoryData}) => {
             events: {
                 mouseMove: function (event) {
                 // Prevent moving the chart on scroll
-                event?.preventDefault();
+                    event?.preventDefault();
                 },
                 // wheel: function (event) {
                 // event.preventDefault(); // Prevent scroll zooming or panning

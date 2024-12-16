@@ -9,7 +9,6 @@ import totalProducts from '@public/assets/images/products.svg'
 // import completeOrder from '@public/assets/images/completePattern.svg';
 // import productPattern from '@public/assets/images/productpatterns.svg';
 import CompleteAccountModal from "./_components/CompleteAccountModal"
-import Orders from "./_components/orders";
 import { useDisclosure } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
@@ -19,6 +18,7 @@ import OverviewCardWithoutBG from "./_components/OverViewWithoutBG";
 import ChartComponent from "../vendors/_components/ChartComponent";
 import { ApexOptions } from "apexcharts";
 import RevenuePerProduct from "./_components/RevenuePerProduct";
+import { useRef } from "react";
 
 export const options = [
     { label: "This week", value: "This week" },
@@ -29,6 +29,7 @@ export const options = [
 const Supplier = () => {
 
     const session = useSession();
+    const chartRef = useRef<any>(null);
     const sessionData = session.data as NextAuthUserSession;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const isVisible = sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
@@ -48,9 +49,25 @@ const Supplier = () => {
 
     const graphOptions: ApexOptions = {
         chart: {
-          toolbar: {
-            show: false,
-          },
+            type: "area",
+            toolbar: {
+                show: false,
+            },
+            zoom: {
+                enabled: false
+            },
+            selection: {
+                enabled: false,
+            },
+            events: {
+                mouseMove: function (event) {
+                    // Prevent moving the chart on scroll
+                    event?.preventDefault();
+                },
+                // wheel: function (event) {
+                // event.preventDefault(); // Prevent scroll zooming or panning
+                // },
+            },
         },
         dataLabels: {
           enabled: false, // Remove values on the bars
@@ -188,13 +205,15 @@ const Supplier = () => {
                             </select>
                         </div>
                         {/* <EmptyCard /> */}
-                        <ChartComponent
-                            options={graphOptions}
-                            series={series}
-                            type="area"
-                            width={"100%"}
-                            height={320}
-                        />
+                        <div className="">
+                            <ChartComponent
+                                options={graphOptions}
+                                series={series}
+                                type="area"
+                                width={"100%"}
+                                height={320}
+                            />
+                        </div>
                     </div>
                     <div className="flex-1 bg-white p-5 rounded-md">
                         <div className="flex items-center justify-between">

@@ -137,10 +137,8 @@ const TransactionHistory = () => {
     fetchCustomers();
   }, [fetchCustomerTnx, pageCount, token, fetchCustomers]);
 
-  console.log(selectedCustomerId);
 
   const tableData = useMemo(() => tnxHistoryData?.data || [], [tnxHistoryData]);
-
   const columns = useMemo(() => ColumnsTnxHistoryFN(), []);
 
   const table = useReactTable({
