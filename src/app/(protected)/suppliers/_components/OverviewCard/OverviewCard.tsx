@@ -21,4 +21,5 @@ const OverviewCard = (
   )
 }
 
-export default OverviewCard
+
+export default OverviewCard;
