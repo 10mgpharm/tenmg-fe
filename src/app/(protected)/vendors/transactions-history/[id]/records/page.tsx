@@ -27,8 +27,10 @@ import { ColumnsFN } from "../../_components/trnascationtable";
 import requestClient from "@/lib/requestClient"; // Adjust path as needed
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import ManualPagination from "../../../_components/ManualPagination";
 
-// Props or get params as needed (e.g., from parent or route)
+const ITEMS_PER_PAGE = 10;
+
 const TransactionRecord = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const session = useSession();
@@ -38,6 +40,7 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Fetch data function
   const fetchData = async () => {
@@ -52,7 +55,6 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
       );
 
       if (response.status === 200 && response.data.data) {
-        // Assuming response.data.data is an array of transactions
         setData(response.data.data);
       } else {
         setError("Failed to load data. Please try again.");
@@ -74,13 +76,47 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
 
   const columns = useMemo(() => ColumnsFN(), []);
 
+  const currentData = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return data.slice(startIndex, endIndex);
+  }, [data, currentPage]);
+
   const table = useReactTable({
-    data: data || [],
+    data: currentData || [],
     columns,
     manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  // Construct pagination meta object based on the current page and total pages
+  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE) || 1;
+
+  const meta = {
+    currentPage,
+    first: `?page=1`,
+    last: `?page=${totalPages}`,
+    prev: currentPage > 1 ? `?page=${currentPage - 1}` : null,
+    next: currentPage < totalPages ? `?page=${currentPage + 1}` : null,
+    links: [
+      {
+        url: currentPage > 1 ? `?page=${currentPage - 1}` : null,
+        label: "Previous",
+        active: false,
+      },
+      ...Array.from({ length: totalPages }, (_, i) => ({
+        label: (i + 1).toString(),
+        url: `?page=${i + 1}`,
+        active: currentPage === i + 1,
+      })),
+      {
+        url: currentPage < totalPages ? `?page=${currentPage + 1}` : null,
+        label: "Next",
+        active: false,
+      },
+    ],
+  };
 
   return (
     <div className="p-8">
@@ -112,57 +148,53 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
 
       {/* Table Display */}
       {!loading && !error && data.length > 0 && (
-        <TableContainer
-          border={"1px solid #F9FAFB"}
-          borderRadius={"10px"}
-          mt={5}
-        >
-          <Table>
-            <Thead bg={"blue.50"}>
-              {table?.getHeaderGroups()?.map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers?.map((header) => (
-                    <Th
-                      textTransform={"initial"}
-                      px="0px"
-                      key={header.id}
-                      color={"primary.500"}
-                      fontWeight={"500"}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </Th>
-                  ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {table?.getRowModel()?.rows?.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="0px">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-              <Tr>
-                <Td py={4} w="full" colSpan={6}>
-                  {/* Pagination component if needed 
-                      <Pagination meta={tableData} setPageCount={setPageCount} />
-                  */}
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <>
+          <TableContainer
+            border={"1px solid #F9FAFB"}
+            borderRadius={"10px"}
+            mt={5}
+          >
+            <Table>
+              <Thead bg={"blue.50"}>
+                {table?.getHeaderGroups()?.map((headerGroup) => (
+                  <Tr key={headerGroup.id}>
+                    {headerGroup.headers?.map((header) => (
+                      <Th
+                        textTransform={"initial"}
+                        px="0px"
+                        key={header.id}
+                        color={"primary.500"}
+                        fontWeight={"500"}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </Th>
+                    ))}
+                  </Tr>
+                ))}
+              </Thead>
+              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                {table?.getRowModel()?.rows?.map((row) => (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells()?.map((cell) => (
+                      <Td key={cell.id} px="0px">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </Td>
+                    ))}
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+          <ManualPagination meta={meta} setPageCount={setCurrentPage} />
+        </>
       )}
 
       {/* No Data State */}
