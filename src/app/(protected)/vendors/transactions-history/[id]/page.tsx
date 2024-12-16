@@ -20,7 +20,9 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, SingleTransactionData } from "@/types";
 import BreakdownRecords from "../_components/BreakdownRecord";
-import { formatAmountString } from "@/utils";
+import { formatAmountString, handleServerErrorMessage } from "@/utils";
+import { downloadCsv } from "@/utils/downloadCsv";
+import { toast } from "react-toastify";
 
 const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -61,31 +63,13 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
       if (response.status === 200) {
         const data = response.data;
         if (!data) {
-          throw new Error("No file data found");
+          toast.error("No file data found");
         }
-
-        const uint8Array = new Uint8Array(data.length);
-        for (let i = 0; i < data.length; i++) {
-          uint8Array[i] = data.charCodeAt(i);
-        }
-
-        const blob = new Blob([uint8Array], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-
-        // Trigger download
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "transactions.xlsx";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        downloadCsv(data, "transactions.csv");
       }
       setIsDownloading(false);
     } catch (error) {
-      console.error(error);
+      toast.error(handleServerErrorMessage(error));
       setIsDownloading(false);
     }
   }, [token, params.id]);
@@ -114,8 +98,14 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
               Back
             </Text>
           </Flex>
-          <Flex justify={"space-between"} align={"center"} mt={4}>
-            <div className="max-w-lg">
+          <Flex
+            justify={"space-between"}
+            align={"center"}
+            mt={4}
+            flexWrap="wrap"
+            gap={2}
+          >
+            <Box maxW="lg">
               <h3 className="font-semibold text-xl">
                 Reference No: {tnxHistoryData?.identifier}{" "}
               </h3>
@@ -123,17 +113,34 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
                 This provides a detailed breakdown of the customer’s evaluation
                 reference, credit score, purchase and credit patterns.
               </p>
-            </div>
-            <Flex gap={2} align={"center"}>
-              <Button variant={"outline"} h={"34px"} onClick={downloadCustomerTnx}>
+            </Box>
+            <Flex
+              gap={2}
+              align={"center"}
+              flexDir={{ base: "column", md: "row" }}
+              w={{ base: "full", md: "auto" }}
+            >
+              <Button
+                variant={"outline"}
+                height={"34px"}
+                width={{ base: "100%", md: "auto" }}
+                onClick={downloadCustomerTnx}
+                isLoading={isDownloading}
+                isDisabled={isDownloading}
+              >
                 Download Transaction
               </Button>
-              <Link
+              <Button
+                as={Link}
                 href={`/vendors/transactions-history/${params.id}/records`}
-                className="bg-primary-600 text-white px-4 py-2 text-sm font-medium rounded-md"
+                bg="primary.600"
+                color="white"
+                height="34px"
+                width={{ base: "100%", md: "auto" }}
+                _hover={{ bg: "primary.700" }}
               >
                 View Transaction History
-              </Link>
+              </Button>
             </Flex>
           </Flex>
           <div className="grid grid-cols-6 gap-5 mt-5">
