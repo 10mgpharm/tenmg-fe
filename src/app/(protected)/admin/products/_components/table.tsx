@@ -85,7 +85,7 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="font-medium">{info?.row?.original?.category?.name}</p>
+           <p className="font-medium capitalize">{info?.row?.original?.category?.name}</p>
           </div>
         );
       },
@@ -154,7 +154,7 @@ export function ColumsProductFN(
             ? "bg-[#FEF3F2] text-[#B42318]" 
             : info?.row?.original?.status === "ACTIVE"
             ? "text-[#027A48] bg-[#ECFDF3]"
-            : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl text-[11px] capitalize font-medium"
+            : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl capitalize text-[11px] font-medium"
             )}>
                 <span className="text-[1.2rem] rounded-full">•</span>
                 {" "}

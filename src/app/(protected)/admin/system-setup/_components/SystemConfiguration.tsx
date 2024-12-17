@@ -51,7 +51,7 @@ const SystemConfiguration = () => {
       UPLOAD_PRODUCT_IMAGES(files);
     } else {
       event.target.value = "";
-      onOpen();
+      // onOpen();
     }
   };
 
