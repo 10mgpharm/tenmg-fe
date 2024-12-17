@@ -1,10 +1,11 @@
 import { Divider, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import React from 'react'
-import StorefrontTabsNavigation from '../../_components/(settings-component)/StorefrontTabsNavigation';
+import OrdersTabsNavigation from '../../_components/(my-orders-component)/OrdersTabsNavigation';
 
 
 
-export default function StorefrontSettingsLayout({
+
+export default function OrdersSettingsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -13,13 +14,12 @@ export default function StorefrontSettingsLayout({
   return (
 
     <div className="mt-4 ">
-      <h2 className="font-semibold text-2xl text-gray-600">Account Settings</h2>
-      <p className="text-sm font-normal text-gray-500">
-        Manage all your personal information and account settings.</p>
+      <h2 className="font-semibold text-2xl text-gray-600">Orders</h2>
+      <p className="text-sm font-normal text-gray-500">All your order information is displayed here.</p>
       <Divider my={[2, 5]} border="1px solid gray.200" />
       <div className="mt-2 md:mt-4">
         <Tabs>
-          <StorefrontTabsNavigation />
+          <OrdersTabsNavigation />
           <Divider my={[2, 5]} border="1px solid gray.200" />
           <TabPanels>
             <TabPanel px={0}>
