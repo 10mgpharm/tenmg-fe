@@ -113,7 +113,7 @@ export function ColumsProductFN(
                 </MenuButton>
                 <MenuList>
                     <MenuItem>
-                        <Link href={'/suppliers/products/global-pentazocine'}>View Product</Link>
+                        <Link href={'/admin/products/global-pentazocine'}>View Product</Link>
                     </MenuItem>
                     <MenuItem>Edit Product</MenuItem>
                     <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
