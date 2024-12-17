@@ -50,9 +50,19 @@ export default function ProfileInformation() {
       //   title: 'Promise rejected', description: 'Something wrong'
       // })
       return;
+
+
     }
 
     console.log(data)
+    const formData = new FormData();
+    formData.append("businessName", data.businessName);
+    formData.append("contactEmail", data.contactEmail);
+    formData.append("contactPerson", data.contactPerson);
+    formData.append("contactPhone", data.contactPhone);
+    formData.append("businessAddress", data.businessAddress);
+    formData.append("businessAddress", data.businessAddress);
+
   }
 
 
