@@ -169,7 +169,7 @@ export interface VendorData {
 export interface ResultBreakdownProps {
   operator: string;
   ruleDescription: string;
-  rulename: string;
+  ruleName: string;
   status: string;
   systemValue: string;
   transactionValue: number;

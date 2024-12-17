@@ -22,7 +22,6 @@ interface Props {
   tnxHistoryData: SingleTransactionData;
 }
 const BreakdownRecords: React.FC<Props> = ({isOpen, onClose, tnxHistoryData}) => {
-
     return (
       <>
         <Drawer

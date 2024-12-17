@@ -1,6 +1,6 @@
+import { Clock } from "lucide-react"
 import { options } from "@/app/(protected)/suppliers/page";
 import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent";
-import { Clock } from "lucide-react"
 
 const ExploreData = () => {
 
