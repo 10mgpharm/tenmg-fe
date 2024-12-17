@@ -102,7 +102,7 @@ export function ColumsProductFN(
     }),
     columnHelper.accessor("status", {
       header: ({ column }) => (
-        <p>Actions</p>
+        <p>Action</p>
       ),
       cell: (info) => {
         return (

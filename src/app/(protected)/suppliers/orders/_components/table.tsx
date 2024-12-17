@@ -101,7 +101,7 @@ export function ColumsOrderFN(onOpen: () => void) {
     }),
     columnHelper.accessor("status", {
       header: ({ column }) => (
-        <p className="-pl-10">Actions</p>
+        <p className="-pl-10">Action</p>
       ),
       cell: (info) => {
         return (

@@ -1,5 +1,5 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import Carousel from "./_components/Carousel";
 import ProductField from "./_components/ProductField";
