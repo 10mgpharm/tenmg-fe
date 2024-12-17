@@ -10,7 +10,6 @@ import { NextAuthUserSession } from '@/types'
 import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
 import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
 import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
-// ?NOTE: this page is going to be a dynamic page where the id of the product will be used to fetch and populate the information on the page.
 export default function ProductDetailPage() {
 
   const breadCrumb = [
@@ -54,28 +53,6 @@ export default function ProductDetailPage() {
   }, [userData?.user?.token, product]);
 
   console.log("productData", productData);
-
-  //   {
-  //     "id": 4,
-  //     "name": "paracetemol",
-  //     "quantity": 1000,
-  //     "actualPrice": "10000.00",
-  //     "discountPrice": "5000.00",
-  //     "minDeliveryDuration": null,
-  //     "maxDeliveryDuration": null,
-  //     "thumbnailUrl": "https://tenmg-sanbox-bucket.s3.eu-west-1.amazonaws.com/uploads/files/2024-12-Dec/J51KctD2xWqwuiCy.png?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARLXAFSIQP34FJGJM%2F20241214%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20241214T153404Z&X-Amz-SignedHeaders=host&X-Amz-Expires=1800&X-Amz-Signature=3dceadeb298eb7ef335204e15335da67827251aded1d5f48c4793a917b688cf8",
-  //     "expiredAt": null,
-  //     "productDetails": {
-  //         "essential": null,
-  //         "startingStock": null,
-  //         "currentStock": null
-  //     },
-  //     "status": "ACTIVE",
-  //     "inventory": "OUT OF STOCK",
-  //     "comment": null
-  // }
-
-
 
   return (
     <section className=' '>
