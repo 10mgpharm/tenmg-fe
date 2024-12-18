@@ -1,6 +1,6 @@
 import { Divider, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import React from 'react'
-import OrdersTabsNavigation from '../../_components/wishlist-component)/OrdersTabsNavigation';
+import OrdersTabsNavigation from '../../_components/(my-orders-component)/OrdersTabsNavigation';
 
 
 
