@@ -10,6 +10,8 @@ import StockChart from '@/app/(protected)/suppliers/_components/StockChart';
 import RevenueChart from '@/app/(protected)/suppliers/_components/RevenueChart';
 import { LucideClock4 } from 'lucide-react';
 import StackBarComponent from '@/app/(protected)/suppliers/_components/StackBarComponent';
+import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
+import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
 
 const ProductDetail = () => {
     const router = useRouter();
@@ -20,6 +22,32 @@ const ProductDetail = () => {
             <Text>Back</Text>
         </HStack>
         <div className="mt-5">
+            <div className="flex gap-5 mb-3">
+                <div className="">
+                    <Image src={pill} alt='' className='w-[380px] h-[340px] object-cover rounded-md'/>
+                </div>
+                <div className="flex-1 bg-white p-5 rounded-md pb-9">
+                    <div className="flex items-center justify-between">
+                        <h2 className='text-lg font-semibold mb-4'>Global Pentazocine</h2>
+                        <h2 className='text-lg font-semibold mb-4 text-primary-500'>₦100,000</h2>
+                    </div>
+                    <p className=''>Pentazocine works by interacting with specific receptors in the brain, primarily the mu-opioid receptors (MOR) and kappa-opioid receptors (KOR). 1  This interaction helps to reduce pain signals and provide relief. Pentazocine is often used to manage pain after surgical procedures.</p>
+                    <ul className='list-disc mt-5 space-y-2 list-inside ml-4'>
+                        <li className='text-sm'>Brand: <span className='font-semibold'>Emzor</span></li>
+                        <li className='text-sm'>Value (strength):<span className='font-semibold'>500</span></li>
+                        <li className='text-sm'>Value (strength):<span className='font-semibold'>kg</span></li>
+                        <li className='text-sm'>Presentation:<span className='font-semibold'>Syrup</span></li>
+                        <li className='text-sm'>Product Weight:<span className='font-semibold'>100</span></li>
+                        <li className='text-sm'>Expiration Date:<span className='font-semibold'>25-12-2025</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div className="mt-5">
+                <Statistics />
+                <ExploreData />
+            </div>
+        </div>
+        {/* <div className="mt-5">
             <h2 className='text-xl font-semibold mb-4'>Global Pentazocine</h2>
             <div className="flex gap-5 mb-3 max-w-7xl">
                 <Image src={pill} alt=''/>
@@ -124,7 +152,7 @@ const ProductDetail = () => {
                     <StackBarComponent />
                 </div>
             </div>
-        </div>
+        </div> */}
     </div>
   )
 }

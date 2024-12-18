@@ -12,14 +12,14 @@ const PurchasePattern: React.FC<Props> = ({data}) => {
     <div className="space-y-5 mt-5">
       <div className="grid grid-cols-2 gap-5">
         {
-          data?.map((item: ResultBreakdownProps) => (
+          data?.filter((item) => item.ruleName !== "listOfTransactingMonths")?.map((item: ResultBreakdownProps) => (
             <PurchaseCard 
-            key={item.rulename}
-            value={item.systemValue} 
+            key={item.ruleName}
+            value={item.transactionValue || 0} 
             icon={item.status === "passed" ? FaCheckCircle : FaCircleXmark} 
             status={item.status} 
             operator={item.operator}
-            weight={item.weight}
+            systemValue={item.systemValue}
             title={item.ruleDescription}
             />
           ))

@@ -87,7 +87,7 @@ const RevenuePerProduct = () => {
     
     return (
     <div className="bg-white p-5 rounded-md">
-        <h3 className="text-gray-600 font-semibold text-lg">Stock Status</h3>
+        <h3 className="text-gray-600 font-semibold text-lg">Revenue Per Product</h3>
         <ChartComponent
             options={chartOptions}
             series={series}

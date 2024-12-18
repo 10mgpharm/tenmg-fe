@@ -192,7 +192,7 @@ const DetailForm: React.FC<IChildComponentProps> = (
                             {" "} or drag and drop
                         </p>
                         <p className="text-gray-500 text-center">PDF, PNG or JPG 
-                        <span className="text-sm ml-1">(Max size 5MB, 800x400px)</span>
+                            <span className="text-sm ml-1">(Max size 5MB, 800x400px)</span>
                         </p>
                     </div>
                 </Center>

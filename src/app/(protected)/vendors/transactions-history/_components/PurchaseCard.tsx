@@ -3,15 +3,15 @@ import { classNames } from "@/utils";
 import { Icon, Text } from "@chakra-ui/react"
 
 interface PurchaseProps {
-    value: string;
-    weight: number;
+    value: number;
+    systemValue: string;
     title: string;
     icon: any;
     operator: string;
     status: string;
 }
 
-const PurchaseCard:React.FC<PurchaseProps> = ({value, title, icon, status, operator, weight}) => {
+const PurchaseCard:React.FC<PurchaseProps> = ({value, title, icon, status, operator, systemValue}) => {
   return (
     <div className={classNames(
         status === "passed" ? 
@@ -32,7 +32,7 @@ const PurchaseCard:React.FC<PurchaseProps> = ({value, title, icon, status, opera
             fontWeight={600}
             color={status === "passed" ? "green.700": status === "failed" ? "red.600" : "black"} 
             >
-                Analysis result {operator} {weight}
+                Analysis result {operator} {Number(systemValue)?.toLocaleString()}
             </Text>
             <Icon 
             as={icon} 
