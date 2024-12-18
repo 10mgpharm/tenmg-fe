@@ -5,7 +5,7 @@ import RevenueChart from "./RevenueChart"
 
 const Statistics = () => {
   return (
-    <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8 mt-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
         <div className="flex-1 border p-5 rounded-md">
             <div className="flex items-center justify-between mb-4">
                 <div className="">

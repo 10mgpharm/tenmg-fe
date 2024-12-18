@@ -34,9 +34,7 @@ import Pagination from "../../suppliers/_components/Pagination";
 import GridList from "../../suppliers/products/_components/GridList";
 import DeleteModal from "../../suppliers/products/_components/DeleteModal";
 import RestockModal from "../../suppliers/products/_components/RestockModal";
-import DeactiveModal from "../../suppliers/products/_components/DeactiveModal";
 import FilterDrawer from "../../suppliers/products/_components/FilterDrawer";
-import { productData } from "@/data/mockdata";
 import { ColumsProductFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
@@ -48,6 +46,7 @@ const Page = () => {
     const session = useSession();
     const sessionData = session?.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
+    const [pageCount, setPageCount] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
@@ -88,7 +87,7 @@ const Page = () => {
 
     const table = useReactTable({
         data: memoizedData,
-        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate),
+        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate, pageCount, 15),
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -241,7 +240,7 @@ const Page = () => {
                         ))}
                         </Tbody>
                     </Table>
-                    {/* <Pagination />  */}
+                    <Pagination meta={products?.meta} setPageCount={setPageCount}/>
                 </TableContainer>
             )
             : <GridList data={memoizedData}/>)

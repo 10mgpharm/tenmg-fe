@@ -1,23 +1,19 @@
 "use client";
 
+import { useRef } from "react";
+import { ApexOptions } from "apexcharts";
+import { CalendarIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useDisclosure } from "@chakra-ui/react";
+import { NextAuthUserSession } from "@/types";
+import { BusinessStatus } from "@/constants";
 import NoticeCard from "./_components/NoticeCard"
 import order from '@public/assets/images/totalorder.svg'
 import completedOrder from '@public/assets/images/target.svg'
 import totalProducts from '@public/assets/images/products.svg'
-// import totalPattern from '@public/assets/images/bgPattern.svg';
-// import orderPattern from '@public/assets/images/orderPattern.svg';
-// import completeOrder from '@public/assets/images/completePattern.svg';
-// import productPattern from '@public/assets/images/productpatterns.svg';
 import CompleteAccountModal from "./_components/CompleteAccountModal"
-import Orders from "./_components/orders";
-import { useDisclosure } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
-import { BusinessStatus } from "@/constants";
-import { CalendarIcon } from "lucide-react";
 import OverviewCardWithoutBG from "./_components/OverViewWithoutBG";
 import ChartComponent from "../vendors/_components/ChartComponent";
-import { ApexOptions } from "apexcharts";
 import RevenuePerProduct from "./_components/RevenuePerProduct";
 
 export const options = [
@@ -29,6 +25,7 @@ export const options = [
 const Supplier = () => {
 
     const session = useSession();
+    const chartRef = useRef<any>(null);
     const sessionData = session.data as NextAuthUserSession;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const isVisible = sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
@@ -38,22 +35,34 @@ const Supplier = () => {
 
     const formatValue = (value: any) => {
         if (value >= 1000000) {
-          return `₦${(value / 1000000).toFixed(1)}M`; // Format as millions
+          return `₦${(value / 1000000).toFixed(1)}M`;
         } else if (value >= 1000) {
-          return `₦${(value / 1000).toFixed(1)}K`; // Format as thousands
+          return `₦${(value / 1000).toFixed(1)}K`;
         } else {
-          return ` ₦${value.toFixed(1)}`; // For smaller values, just round
+          return ` ₦${value.toFixed(1)}`;
         }
     };
 
     const graphOptions: ApexOptions = {
         chart: {
-          toolbar: {
-            show: false,
-          },
+            type: "area",
+            toolbar: {
+                show: false,
+            },
+            zoom: {
+                enabled: false
+            },
+            selection: {
+                enabled: false,
+            },
+            events: {
+                mouseMove: function (event) {
+                    event?.preventDefault();
+                },
+            },
         },
         dataLabels: {
-          enabled: false, // Remove values on the bars
+          enabled: false,
         },
         yaxis: {
             show: true,
@@ -188,13 +197,15 @@ const Supplier = () => {
                             </select>
                         </div>
                         {/* <EmptyCard /> */}
-                        <ChartComponent
-                            options={graphOptions}
-                            series={series}
-                            type="area"
-                            width={"100%"}
-                            height={320}
-                        />
+                        <div className="">
+                            <ChartComponent
+                                options={graphOptions}
+                                series={series}
+                                type="area"
+                                width={"100%"}
+                                height={320}
+                            />
+                        </div>
                     </div>
                     <div className="flex-1 bg-white p-5 rounded-md">
                         <div className="flex items-center justify-between">
