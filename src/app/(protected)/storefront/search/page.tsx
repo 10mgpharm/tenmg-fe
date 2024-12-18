@@ -25,6 +25,8 @@ export default function SearchPage() {
     setVal(val)
   }
 
+  // const [] = useState();
+
 
   const breadCrumb = [
     {
