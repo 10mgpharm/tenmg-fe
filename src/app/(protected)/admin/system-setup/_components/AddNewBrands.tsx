@@ -29,7 +29,7 @@ import { NextAuthUserSession } from "@/types";
 interface IFormInput {
   name: string;
   status: string;
-  isActive: string;
+  active: string;
 }
 
 const AddNewBrands = (
@@ -121,11 +121,11 @@ const AddNewBrands = (
             </FormControl>
             <FormControl mt={5} display='flex' gap={2} alignItems='center'>
                 <Controller
-                  name="isActive"
+                  name="active"
                   control={control}
                   render={({ field }) => <Switch {...field} />}
                 />
-                <FormLabel htmlFor='isActive' mb='0'>
+                <FormLabel htmlFor='active' mb='0'>
                     Active
                 </FormLabel>
             </FormControl>
