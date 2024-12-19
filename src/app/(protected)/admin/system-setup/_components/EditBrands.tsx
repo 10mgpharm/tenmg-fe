@@ -29,8 +29,7 @@ import { useSession } from "next-auth/react";
 interface IFormInput {
   name: string;
   status: string;
-  isActive: string;
-  createdBy: string;
+  active: string;
 }
 
 const EditBrands = (
@@ -53,8 +52,7 @@ const EditBrands = (
       defaultValues: {
         name: brand?.name,
         status: brand?.status,
-        isActive: brand?.status,
-        createdBy: "",
+        active: brand?.status,
       },
   });
 
@@ -128,29 +126,14 @@ const EditBrands = (
               </Text>
             )}
           </FormControl>
-          <FormControl mt={5} isInvalid={!!errors.createdBy?.message}>
-            <FormLabel>Created By</FormLabel>
-            <Input
-                type={"text"}
-                placeholder=""
-                {...register("createdBy", {
-                  required: "Createdby is required",
-                })}
-              />
-            {errors.createdBy && (
-              <Text as={"span"} className="text-red-500 text-sm">
-                {errors.createdBy?.message}
-              </Text>
-            )}
-          </FormControl>
           <FormControl mt={5} display='flex' gap={2} alignItems='center'>
               <Controller
-                name="isActive"
+                name="active"
                 control={control}
                 defaultValue={brand?.active ? "true": "false"}
                 render={({ field }) => <Switch {...field} />}
                 />
-              <FormLabel htmlFor='isActive' mb='0'>
+              <FormLabel htmlFor='active' mb='0'>
                   Active
               </FormLabel>
           </FormControl>
