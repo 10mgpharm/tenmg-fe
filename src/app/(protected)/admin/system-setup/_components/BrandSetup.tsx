@@ -45,10 +45,6 @@ const BrandSetup = (
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedId, setSelectedId] = useState<number>();
   const [selectedItem, setSelectedItem] = useState<MedicationData>();
-  
-  // const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setInputValue(e.target.value);
-  // };
 
   return (
     <Stack flex={1} minH={"500px"} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
@@ -94,7 +90,7 @@ const BrandSetup = (
                     <Td fontSize={"14px"}>
                       <Flex gap={2}>
                         <Button 
-                        onClick={() => {
+                          onClick={() => {
                           setSelectedItem(item);
                           onEditOpen();
                         }} 
