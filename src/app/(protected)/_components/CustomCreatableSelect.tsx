@@ -60,7 +60,6 @@ export default function CustomCreatableSelectComponent({
                 name={name}
                 className={name}
                 id={name}
-                isClearable
                 value={selectedOption}
                 onChange={handleChange}
                 onCreateOption={handleCreateOption}

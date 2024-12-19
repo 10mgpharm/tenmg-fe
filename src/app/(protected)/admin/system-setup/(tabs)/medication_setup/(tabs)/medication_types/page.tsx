@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react'
-import MedicationTypes from '../../../../_components/MedicationTypes'
+import MedicationTypes from '@/app/(protected)/admin/system-setup/_components/MedicationTypes'
 import { MedicationResponseData, NextAuthUserSession } from '@/types';
 import { useSession } from 'next-auth/react';
 import requestClient from '@/lib/requestClient';
