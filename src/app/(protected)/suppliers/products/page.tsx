@@ -34,11 +34,9 @@ import GridList from "./_components/GridList";
 import { classNames } from "@/utils";
 import DeleteModal from "./_components/DeleteModal";
 import RestockModal from "./_components/RestockModal";
-import DeactiveModal from "./_components/DeactiveModal";
 import Link from "next/link";
 import FilterDrawer from "./_components/FilterDrawer";
 import Pagination from "../_components/Pagination";
-import { productData2 } from "@/data/mockdata";
 import ModalWrapper from "../_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
@@ -106,8 +104,6 @@ const Products = () => {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
-
-    console.log(memoizedData)
 
   return (
     <div className="p-8">

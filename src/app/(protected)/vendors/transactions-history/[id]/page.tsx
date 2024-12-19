@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import TransactionSummary from "../_components/TransactionSummary";
@@ -27,7 +27,9 @@ import { toast } from "react-toastify";
 const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const session = useSession();
+  const searchParams = useSearchParams();
 
+  const evaluationId = searchParams.get('evaluationId');
   const [isDownloading, setIsDownloading] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -41,7 +43,7 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
     setLoading(true);
     try {
       const response = await requestClient({ token: token }).get(
-        `vendor/txn_history/creditscore-breakdown/${params.id}`
+        `vendor/txn_history/creditscore-breakdown/${evaluationId}`
       );
       if (response.status === 200) {
         setTnxHistorysData(response.data.data);
@@ -51,7 +53,7 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
       console.error(error);
       setLoading(false);
     }
-  }, [token, params.id]);
+  }, [token, evaluationId]);
 
   const downloadCustomerTnx = useCallback(async () => {
     setIsDownloading(true);
@@ -219,7 +221,9 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
                       <p className="text-gray-500">
                         Total Months in Transaction History
                       </p>
-                      <h2 className="text-2xl font-semibold">{`${tnxHistoryData?.evaluation?.purchasePattern?.noOfTransactingMonths} Months`}</h2>
+                      <h2 className="text-2xl font-semibold">
+                        {`${tnxHistoryData?.evaluation?.purchasePattern?.noOfTransactingMonths} Months`}
+                      </h2>
                     </div>
                   </div>
                 </div>

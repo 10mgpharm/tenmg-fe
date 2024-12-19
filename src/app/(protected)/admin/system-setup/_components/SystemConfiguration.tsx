@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { 
+  Box,
   Button,
   Center, 
   Flex, 
@@ -51,7 +52,7 @@ const SystemConfiguration = () => {
       UPLOAD_PRODUCT_IMAGES(files);
     } else {
       event.target.value = "";
-      onOpen();
+      // onOpen();
     }
   };
 
@@ -107,11 +108,14 @@ const SystemConfiguration = () => {
                   cursor: "pointer",
                 }}
               />
-              <VStack opacity={file ? 0 : 1}>
-                <Text fontSize={"14px"}>Drag Image Here</Text>
-                <Text>Or</Text>
-                <Text className="underline text-primary-600 text-[14px]">Select Images</Text>
-              </VStack>
+              <Box opacity={file ? 0 : 1}>
+                <Text fontSize={"13px"}>Drag Image
+                </Text>
+                <p className="text-gray-600">Or</p>
+                <Text className="underline text-primary-600 text-[13px]">Select Images</Text>
+                <p className="text-gray-500 text-center mt-1.5">PDF, PNG or JPG</p>
+                <p className="text-sm text-gray-500 text-center">(Max size, 5MB)</p>
+              </Box>
             </Center>
             {imageSrcs?.map((e, index: number) => (
               <Flex
