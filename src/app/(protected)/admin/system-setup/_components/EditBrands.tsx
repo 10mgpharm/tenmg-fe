@@ -17,7 +17,7 @@ import {
     Text 
 } from "@chakra-ui/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import shape from "@public/assets/images/Rectangle 43.svg";
 import { MedicationData, NextAuthUserSession } from "@/types";
@@ -29,8 +29,7 @@ import { useSession } from "next-auth/react";
 interface IFormInput {
   name: string;
   status: string;
-  isActive: string;
-  createdBy: string;
+  active: boolean;
 }
 
 const EditBrands = (
@@ -42,20 +41,22 @@ const EditBrands = (
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
   const [isLoading, setIsLoading] = useState(false);
+
   const {
       register,
       formState: { errors, isValid },
       handleSubmit,
       control,
-      reset,
+    reset,
+    setValue,
+      watch,
   } = useForm<IFormInput>({
-      mode: "onChange",
-      defaultValues: {
-        name: brand?.name,
-        status: brand?.status,
-        isActive: brand?.status,
-        createdBy: "",
-      },
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      status: "",
+      active: false,
+    },
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -86,6 +87,14 @@ const EditBrands = (
         toast.error(handleServerErrorMessage(error));
     }
   };
+
+  useEffect(() => {
+    if (brand) {
+      setValue("name", brand?.name);
+      setValue("status", brand?.status);
+      setValue("active", brand?.active);
+    }
+  }, [brand, setValue]);
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
@@ -128,29 +137,18 @@ const EditBrands = (
               </Text>
             )}
           </FormControl>
-          <FormControl mt={5} isInvalid={!!errors.createdBy?.message}>
-            <FormLabel>Created By</FormLabel>
-            <Input
-                type={"text"}
-                placeholder=""
-                {...register("createdBy", {
-                  required: "Createdby is required",
-                })}
+            <FormControl mt={5} display='flex' gap={2} alignItems='center'>
+              <Switch
+                defaultChecked={watch('active')}
+                checked={watch('active')}
+                onChange={(e) => 
+                  setValue(
+                    "active",
+                    e.target.checked
+                  )
+                }
               />
-            {errors.createdBy && (
-              <Text as={"span"} className="text-red-500 text-sm">
-                {errors.createdBy?.message}
-              </Text>
-            )}
-          </FormControl>
-          <FormControl mt={5} display='flex' gap={2} alignItems='center'>
-              <Controller
-                name="isActive"
-                control={control}
-                defaultValue={brand?.active ? "true": "false"}
-                render={({ field }) => <Switch {...field} />}
-                />
-              <FormLabel htmlFor='isActive' mb='0'>
+              <FormLabel htmlFor='active' mb='0'>
                   Active
               </FormLabel>
           </FormControl>

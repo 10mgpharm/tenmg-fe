@@ -34,7 +34,7 @@ const PersonalInformation = () => {
                 <Image src={iconFile ? iconFile : avatar } width={50} height={50} alt='' className='rounded-full h-[55px] w-[55px]'/>
                 <div className="">
                     <h3 className='font-medium text-gray-500'>Upload Image</h3>
-                    <p className="text-gray-400 text-sm">PDF, PNG or JPG 
+                    <p className="text-gray-400 text-sm"> PNG or JPG 
                         <br></br>
                         <span className="text-xs">(Max size 5MB, 800x400px)</span>
                     </p>

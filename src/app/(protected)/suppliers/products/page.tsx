@@ -256,7 +256,7 @@ const Products = () => {
         >
             <div className="mb-8">
                 <p className='leading-6 text-gray-500 mt-2'>
-                You are about to deactivate Global Pentazocine, once deactivated, this product will not appear in your public shop.
+                You are about to deactivate Global Pentazocine, once deactivated, this product will appear in your public shop.
                 There is no fee for reactivating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">

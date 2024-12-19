@@ -27,7 +27,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { MedicationTypeProp, defaultRecords } from "./AddMedicationType";
+import { MedicationTypeProp } from "./AddMedicationType";
 import requestClient from "@/lib/requestClient";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
@@ -51,7 +51,6 @@ const EditMedicationType = (
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [data, setData] = useState<MedicationTypeProp[]>(defaultRecords);
     const {
         register,
         formState: { errors, isValid },
@@ -150,87 +149,7 @@ const EditMedicationType = (
                 </Thead>
                 <Tbody>
                     {
-                        data?.map((item, index) => (
-                            <Tr key={index}>
-                                <Td fontSize={"14px"}>{item.category}</Td>
-                                <Td fontSize={"14px"}>{item.strength}</Td>
-                                <Td fontSize={"14px"}>{item.value}</Td>
-                                <Td fontSize={"14px"}>{item.package}</Td>
-                                <Td fontSize={"14px"}>{item.presentation}</Td>
-                                <Td>
-                                    <Flex gap={2}>
-                                    <Button fontSize={"14px"} variant={"unstyled"} color={"gray.500"}>Edit</Button>
-                                    <Button fontSize={"14px"} variant="unstyled" color={"red.600"}>Delete</Button>
-                                    </Flex>
-                                </Td>
-                            </Tr>
-                        ))
                     }
-                    {/* <Tr>
-                    <Td px={0}>
-                        <Select 
-                        {...register("type.category", {
-                            required: "Category is required",
-                        })}
-                        pl={-2} 
-                        fontSize={"14px"} 
-                        minW={"fit-content"} 
-                        border={"none"} 
-                        placeholder="Select category">
-                            <option value="Syrup">Syrup</option>
-                            <option value="Tablet">Tablet</option>
-                        </Select>
-                    </Td>
-                    <Td>
-                        <Input 
-                        {...register("type.strength", {
-                        required: "Strength is required",
-                        })}
-                        px={0} 
-                        minW={"fit-content"} 
-                        border={"none"}
-                        placeholder="Strength" 
-                        type="text"/>
-                    </Td>
-                    <Td>
-                        <Input 
-                        px={0} 
-                        minW={"fit-content"} 
-                        border={"none"} 
-                        placeholder="Strength Value" 
-                        type="text"
-                        {...register("type.value", {
-                            required: "Strength value is required",
-                        })}
-                        />
-                    </Td>
-                    <Td>
-                        <Input 
-                        px={0} 
-                        minW={"fit-content"} 
-                        border={"none"} 
-                        placeholder="Presentation" type="text"
-                        {...register("type.presentation", {
-                            required: "Presentation is required",
-                        })}
-                        />
-                    </Td>
-                    <Td>
-                        <Input 
-                        px={0} 
-                        minW={"fit-content"}
-                        border={"none"} 
-                        placeholder="Package Per Roll" 
-                        type="text"
-                        {...register("type.package", {
-                            required: "Package is required",
-                        })}
-                        />
-                    </Td>
-                    <Td>
-                        <Button onClick={addVariant} fontSize={"14px"} variant={"unstyled"} color={"blue.500"}>Add New Variant</Button>
-                    </Td>
-                    </Tr> */}
                 </Tbody>
                 </Table>
             </TableContainer>
