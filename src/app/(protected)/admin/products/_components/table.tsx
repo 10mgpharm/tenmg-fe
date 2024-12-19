@@ -104,32 +104,6 @@ export function ColumsProductFN(
         );
       },
     }),
-    // columnHelper.accessor("inventory", {
-    //   header: ({ column }) => (
-    //     <div
-    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //     >
-    //       <p>Inventory</p>
-    //     </div>
-    //   ),
-    //   cell: (info) => (
-    //     <div>
-    //         <p className={classNames(
-    //         info?.row?.original?.inventory === "LOW STOCK" 
-    //         ? "bg-[#FFFAEB] text-[#F79009]" 
-    //         : info?.row?.original?.inventory === "OUT OF STOCK" 
-    //         ? "bg-[#FEF3F2] text-[#B42318]" 
-    //         : info?.row?.original?.inventory === "IN STOCK"
-    //         ? "text-[#027A48] bg-[#ECFDF3]"
-    //         : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-xs"
-    //         )}>
-    //             <span className="w-3 h-3 rounded-full"></span>
-    //             {" "}
-    //            {info?.row?.original?.inventory}
-    //         </p>
-    //     </div>
-    //   ),
-    // }),
     columnHelper.accessor("quantity", {
       header: ({ column }) => (
         <p className="px-5">Stock</p>
@@ -177,7 +151,7 @@ export function ColumsProductFN(
                 </MenuButton>
                 <MenuList>
                     <MenuItem>
-                        <Link href={'/admin/products/global-pentazocine'}>View Product</Link>
+                        <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
                     </MenuItem>
                     <MenuItem>Edit Product</MenuItem>
                     <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>

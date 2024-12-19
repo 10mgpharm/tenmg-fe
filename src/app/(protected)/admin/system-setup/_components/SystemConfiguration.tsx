@@ -9,7 +9,6 @@ import {
   SimpleGrid, 
   Stack, 
   Text, 
-  VStack,
   useDisclosure
 } from "@chakra-ui/react"
 import { X } from "lucide-react";

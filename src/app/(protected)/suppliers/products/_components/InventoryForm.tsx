@@ -70,32 +70,32 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
                         })}
                     />
                 </FormControl>
-                <FormControl isInvalid={!!errors.minDeliveryDuration}>
+                <FormControl isInvalid={!!errors.lowStockLevel}>
                     <FormLabel color={"gray.600"}>Low Stock Level</FormLabel>
                     <Input  
-                    id="minDeliveryDuration"
+                    id="lowStockLevel"
                     placeholder="" 
                     type="text"
-                    isInvalid={!!errors.minDeliveryDuration}
+                    isInvalid={!!errors.lowStockLevel}
                     _focus={{
-                        border: !!errors.minDeliveryDuration ? "red.300" : "border-gray-300",
+                        border: !!errors.lowStockLevel ? "red.300" : "border-gray-300",
                     }}
-                    {...register("minDeliveryDuration", {
+                    {...register("lowStockLevel", {
                         required: true,
                     })}
                     />
                 </FormControl>
-                <FormControl  isInvalid={!!errors.maxDeliveryDuration}>
+                <FormControl  isInvalid={!!errors.outStockLevel}>
                     <FormLabel color={"gray.600"}>Out of Stock Level</FormLabel>
                     <Input 
-                    id="maxDeliveryDuration"
+                    id="outStockLevel"
                     placeholder="" 
                     type="text"
-                    isInvalid={!!errors.maxDeliveryDuration}
+                    isInvalid={!!errors.outStockLevel}
                     _focus={{
-                        border: !!errors.maxDeliveryDuration ? "red.300" : "border-gray-300",
+                        border: !!errors.outStockLevel ? "red.300" : "border-gray-300",
                     }}
-                    {...register("maxDeliveryDuration", {
+                    {...register("outStockLevel", {
                         required: true,
                     })}
                     />
