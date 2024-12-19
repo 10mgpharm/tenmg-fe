@@ -66,8 +66,6 @@ const LicenseUpload = () => {
 
   const fileExtension = file?.name?.split(".").pop()?.toLowerCase();
 
-  console.log(fileExtension);
-
   const {
     register,
     handleSubmit,
