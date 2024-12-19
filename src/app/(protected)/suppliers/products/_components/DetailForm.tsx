@@ -71,14 +71,14 @@ const DetailForm: React.FC<IChildComponentProps> = (
         <h3 className="font-semibold text-xl text-gray-700 my-5">Add Product</h3>
         <form className="space-y-5">
             <FormControl isInvalid={!!errors.medicationTypeName}>
-                <FormLabel>Select Medication</FormLabel>
+                <FormLabel>Medication</FormLabel>
                 <Controller
                     name="medicationTypeName"
                     control={control}
                     render={({ field }) => {
                     return(
                         <Select 
-                        classNamePrefix="select"
+                        classNamePrefix="select Medication "
                         isClearable={true}
                         isSearchable={true}
                         {...field}
@@ -92,7 +92,7 @@ const DetailForm: React.FC<IChildComponentProps> = (
                 <FormLabel>Product Name</FormLabel>
                 <Input 
                 id="productName"
-                placeholder="" 
+                placeholder="Enter product Name" 
                 type="text"
                 isInvalid={!!errors.productName}
                 _focus={{

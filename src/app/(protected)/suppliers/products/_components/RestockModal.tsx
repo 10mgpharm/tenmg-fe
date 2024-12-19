@@ -25,7 +25,13 @@ const RestockModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void})
                             <option value="">10</option>
                             <option value="">50</option>
                             <option value="">100</option>
+                            <option value="">200</option>
+                            <option value="">300</option>
+                            <option value="">400</option>
+                            <option value="">500</option>
                             <option value="">1000</option>
+                            <option value="">2000</option>
+                            <option value="">3000</option>
                         </Select>
                     </FormControl>
                     <div className="flex flex-col gap-3 pt-5">
