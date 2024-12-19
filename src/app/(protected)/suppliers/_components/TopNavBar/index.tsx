@@ -132,7 +132,7 @@ const TopNavBar = () => {
                     router.push("/");
                   }}
                 >
-                  Log out
+                  Log Out
                 </button>
               </MenuItem>
             </MenuItems>
