@@ -20,9 +20,10 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
+  ColumnDef,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { ColumsSupplierFN } from "./table";
+import { ColumnsSupplierFN } from "./table";
 import { MemberDataProp } from "@/types";
 import { FaSpinner } from "react-icons/fa6";
 
@@ -44,23 +45,19 @@ const UsersTab = ({
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenDeactivate,
-    onOpen: onOpenDeactivate,
-    onClose: onCloseDeactivate,
-  } = useDisclosure();
+  const { onOpen } = useDisclosure();
+  const { onOpen: onOpenDeactivate } = useDisclosure();
 
   const records = useMemo(() => data?.data, [data?.data]);
 
   const renderedColumn =
     type === "vendor"
-      ? ColumsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
+      ? ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
       : type === "pharmacies"
-      ? ColumsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
+      ? ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
       : type === "supplier"
-      ? ColumsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
-      : ColumsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15);
+      ? ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
+      : ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15);
 
   const table = useReactTable({
     data: records,

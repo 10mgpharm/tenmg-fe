@@ -7,7 +7,7 @@ import { convertDate } from "@/utils/formatDate";
 import { AdminApprovals } from "@/types";
 
 const columnHelper = createColumnHelper<AdminApprovals>();
-export function ColumsSupplierFN(
+export function ColumnsSupplierFN(
   onOpen: () => void,
   onOpenDeactivate: () => void,
   pageIndex: number,
