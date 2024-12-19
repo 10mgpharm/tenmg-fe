@@ -27,7 +27,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { MedicationTypeProp, defaultRecords } from "./AddMedicationType";
+import { MedicationTypeProp } from "./AddMedicationType";
 import requestClient from "@/lib/requestClient";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
@@ -51,7 +51,6 @@ const EditMedicationType = (
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [data, setData] = useState<MedicationTypeProp[]>(defaultRecords);
     const {
         register,
         formState: { errors, isValid },
