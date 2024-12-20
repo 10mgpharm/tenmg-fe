@@ -83,7 +83,7 @@ const BrandSetup = (
               {
                 data?.map((item: MedicationData) => (
                   <Tr key={item.id}>
-                    <Td fontSize={"14px"}>14-10-2024</Td>
+                    <Td fontSize={"14px"}>{item.createdAt}</Td>
                     <Td fontSize={"14px"}>{item.name}</Td>
                     <Td fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
                     <Td fontSize={"14px"}>{item.status}</Td>
