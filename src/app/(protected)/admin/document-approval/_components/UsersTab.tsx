@@ -23,9 +23,22 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { ColumnsSupplierFN } from "./table";
-import { MemberDataProp } from "@/types";
+import { ColumnsAllFN } from "./table";
+import {
+  AdminApprovals,
+  AdminApprovalsProps,
+  NextAuthUserSession,
+} from "@/types";
 import { FaSpinner } from "react-icons/fa6";
+import RequestDrawer from "./RequestDrawer";
+import { ColumnsVendorFN } from "./VendorTable";
+import { ColumnsPharmFN } from "./PharmacyTable";
+import { ColumnsSupplierFN } from "./SupplierTable";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
+import { useSession } from "next-auth/react";
+import DeleteModal from "./DeleteModal";
 
 const UsersTab = ({
   data,
@@ -33,31 +46,112 @@ const UsersTab = ({
   isLoading,
   setPageCount,
   pageCount,
+  fetchTeamUser,
 }: {
-  data: MemberDataProp;
+  data: AdminApprovalsProps;
   type: string;
   isLoading: boolean;
   setPageCount: Dispatch<SetStateAction<number>>;
   pageCount: number;
+  fetchTeamUser: any;
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [approvalData, setApprovalData] = useState<AdminApprovals>();
+  const [requestId, setRequestId] = useState<number>();
+  const [isApprovingLoading, setIsApprovalLoading] = useState<boolean>(false);
 
-  const { onOpen } = useDisclosure();
-  const { onOpen: onOpenDeactivate } = useDisclosure();
+  const { onOpen, isOpen, onClose } = useDisclosure();
+  const {
+    onOpen: onOpenDelete,
+    isOpen: isOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
 
   const records = useMemo(() => data?.data, [data?.data]);
 
+  const handleData = (id: number) => {
+    setRequestId(id);
+    setApprovalData(data?.data.find((item) => item.id === id));
+    onOpen();
+  };
+
+  const handleAcceptRequest = async (id: number) => {
+    try {
+      setIsApprovalLoading(true);
+
+      const response = await requestClient({ token: token }).patch(
+        `admin/business/licenses/${id}/status`,
+        {
+          status: "APPROVED",
+          comment: "testing",
+        }
+      );
+
+      setIsApprovalLoading(false);
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        fetchTeamUser();
+      }
+    } catch (error) {
+      setIsApprovalLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleCommentDeleteRequest = async () => {
+    try {
+      setIsApprovalLoading(true);
+
+      const response = await requestClient({ token: token }).patch(
+        `admin/business/licenses/${requestId}/status`,
+        {
+          status: "REJECTED",
+          comment: "testing",
+        }
+      );
+
+      setIsApprovalLoading(false);
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        fetchTeamUser();
+      }
+    } catch (error) {
+      setIsApprovalLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleDeleteRequest = () => {
+    onOpenDelete();
+  };
+
+  const handleAccept = (id: string) => {
+    console.log("Accepted request ID:", id);
+  };
+
+  const handleDecline = (id: string) => {
+    // Implement decline logic
+    console.log("Declined request ID:", id);
+  };
+
   const renderedColumn =
-    type === "vendor"
-      ? ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
-      : type === "pharmacies"
-      ? ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
-      : type === "supplier"
-      ? ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15)
-      : ColumnsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15);
+    type === "Vendor"
+      ? ColumnsVendorFN(handleData, handleAcceptRequest, handleDeleteRequest)
+      : type === "Pharmacy"
+      ? ColumnsPharmFN(handleData, handleAcceptRequest, handleDeleteRequest)
+      : type === "Supplier"
+      ? ColumnsSupplierFN(handleData, handleAcceptRequest, handleDeleteRequest)
+      : ColumnsAllFN(handleData, handleAcceptRequest, handleDeleteRequest);
 
   const table = useReactTable({
     data: records,
@@ -85,8 +179,8 @@ const UsersTab = ({
         </Stack>
       ) : records?.length === 0 ? (
         <EmptyOrder
-          heading={`No User Yet`}
-          content={`You currently have no user. All users will appear here.`}
+          heading={`No New Approval Request Yet`}
+          content={`No recent request yet, all document request would appear here!`}
         />
       ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -126,6 +220,19 @@ const UsersTab = ({
           <Pagination meta={data?.meta} setPageCount={setPageCount} />
         </TableContainer>
       )}
+      <RequestDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onAccept={handleAccept}
+        onDecline={handleDecline}
+        requestId="1"
+        data={approvalData}
+      />
+      <DeleteModal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        handleCommentDeleteRequest={handleCommentDeleteRequest}
+      />
     </div>
   );
 };

@@ -17,44 +17,36 @@ import { CiSearch } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa6";
 import { MdFilterList } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import { MemberDataProp, NextAuthUserSession } from "@/types";
+import { AdminApprovalsProps, NextAuthUserSession } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
-import SupplierTab from "./_components/UsersTab";
 import UsersTab from "./_components/UsersTab";
 
 const DocumentApproval = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [type, setType] = useState<"supplier" | "vendor" | "pharmacy">(
     "supplier"
   );
-  const {
-    isOpen: isOpenPharm,
-    onClose: onClosePharm,
-    onOpen: onOpenPharm,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenVendor,
-    onClose: onCloseVendor,
-    onOpen: onOpenVendor,
-  } = useDisclosure();
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
-  const [supplierData, setSupplierData] = useState<MemberDataProp | null>();
-  const [vendorData, setVendorData] = useState<MemberDataProp | null>();
-  const [pharmData, setPharmData] = useState<MemberDataProp | null>();
-  const [supplierCount, setSupplierCount] = useState<MemberDataProp>();
-  const [vendorCount, setVendorCount] = useState<MemberDataProp>();
-  const [pharmCount, setPharmCount] = useState<MemberDataProp>();
+  const [supplierData, setSupplierData] =
+    useState<AdminApprovalsProps | null>();
+  const [vendorData, setVendorData] = useState<AdminApprovalsProps | null>();
+  const [pharmData, setPharmData] = useState<AdminApprovalsProps | null>();
+  const [requestData, setRequestData] = useState<AdminApprovalsProps | null>();
+  const [supplierCount, setSupplierCount] = useState<AdminApprovalsProps>();
+  const [vendorCount, setVendorCount] = useState<AdminApprovalsProps>();
+  const [pharmCount, setPharmCount] = useState<AdminApprovalsProps>();
+  const [requestCount, setRequestCount] =
+    useState<AdminApprovalsProps | null>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [pageCount, setPageCount] = useState<number>(1);
   // const [pageLimit, setPageLimit] = useState<number>(10);
   const [total, setTotal] = useState<any>("");
 
-  const fetchTeamUser = useCallback(
+  const fetchRequests = useCallback(
     async (type: string, pageCount: number) => {
       try {
         setIsLoading(true);
@@ -63,7 +55,11 @@ const DocumentApproval = () => {
         );
         if (response.status === 200) {
           setIsLoading(false);
-          if (type === "Supplier") {
+          if (type === "") {
+            setRequestCount(response.data.data);
+            setRequestData(response.data.data);
+            setTotal(response.data?.meta);
+          } else if (type === "Supplier") {
             setSupplierCount(response.data.data);
             setSupplierData(response.data.data);
             setTotal(response.data?.meta);
@@ -71,7 +67,7 @@ const DocumentApproval = () => {
             setVendorCount(response.data.data);
             setVendorData(response.data.data);
             setTotal(response.data?.meta);
-          } else if (type === "Pharmacies") {
+          } else if (type === "Pharmacy") {
             setPharmCount(response.data.data);
             setPharmData(response.data.data);
             setTotal(response.data?.meta);
@@ -87,25 +83,34 @@ const DocumentApproval = () => {
 
   useEffect(() => {
     if (!token) return;
-    fetchTeamUser("Supplier", pageCount);
-    fetchTeamUser("Pharmacies", pageCount);
-    fetchTeamUser("Vendor", pageCount);
-  }, [fetchTeamUser, token, pageCount]);
+    fetchRequests("", pageCount);
+    fetchRequests("Supplier", pageCount);
+    fetchRequests("Pharmacy", pageCount);
+    fetchRequests("Vendor", pageCount);
+  }, [fetchRequests, token, pageCount]);
 
   const handleTabsChange = (index: number) => {
     setPageCount(1);
     if (index === 1) {
-      fetchTeamUser("Pharmacies", 1);
+      fetchRequests("Supplier", 1);
       setVendorData(null);
-      setSupplierData(null);
+      setPharmData(null);
+      setRequestData(null);
     } else if (index === 2) {
-      fetchTeamUser("Vendor", 1);
+      fetchRequests("Pharmacy", 1);
+      setSupplierData(null);
+      setVendorData(null);
+      setRequestData(null);
+    } else if (index === 3) {
+      fetchRequests("Vendor", 1);
       setSupplierData(null);
       setPharmData(null);
+      setRequestData(null);
     } else {
-      fetchTeamUser("Supplier", 1);
+      fetchRequests("", 1);
       setVendorData(null);
       setPharmData(null);
+      setSupplierData(null);
     }
   };
 
@@ -154,6 +159,7 @@ const DocumentApproval = () => {
                 Accept All
               </MenuItem>
               <MenuItem
+                color="red.500"
                 onClick={() => {
                   ("");
                 }}
@@ -172,7 +178,7 @@ const DocumentApproval = () => {
             <div className="flex items-center gap-3">
               <Text>All</Text>
               <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {supplierCount?.meta.total || 0}
+                {requestCount?.meta.total || 0}
               </p>
             </div>
           </Tab>
@@ -211,28 +217,31 @@ const DocumentApproval = () => {
           <TabPanel px={0}>
             <UsersTab
               isLoading={isLoading}
-              data={supplierData}
-              type="All"
+              data={requestData}
+              type=""
               pageCount={pageCount}
               setPageCount={setPageCount}
+              fetchTeamUser={fetchRequests}
             />
           </TabPanel>
           <TabPanel>
             <UsersTab
               isLoading={isLoading}
-              data={pharmData}
+              data={supplierData}
               type="Suppliers"
               pageCount={pageCount}
               setPageCount={setPageCount}
+              fetchTeamUser={fetchRequests}
             />
           </TabPanel>
           <TabPanel>
             <UsersTab
               isLoading={isLoading}
               data={pharmData}
-              type="Pharmacies"
+              type="Pharmacy"
               pageCount={pageCount}
               setPageCount={setPageCount}
+              fetchTeamUser={fetchRequests}
             />
           </TabPanel>
           <TabPanel>
@@ -242,6 +251,7 @@ const DocumentApproval = () => {
               type="Vendors"
               pageCount={pageCount}
               setPageCount={setPageCount}
+              fetchTeamUser={fetchRequests}
             />
           </TabPanel>
         </TabPanels>

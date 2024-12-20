@@ -7,7 +7,7 @@ import { convertDate } from "@/utils/formatDate";
 import { AdminApprovals } from "@/types";
 
 const columnHelper = createColumnHelper<AdminApprovals>();
-export function ColumnsAllFN(
+export function ColumnsPharmFN(
   handleView: (id: number) => void,
   handleAcceptRequest: (id: number) => void,
   handleDeleteRequest: (id: number) => void
@@ -61,31 +61,27 @@ export function ColumnsAllFN(
       header: ({ column }) => <p>Actions</p>,
       cell: (info) => {
         return (
-          <Menu>
-            <MenuButton>
-              <BsThreeDotsVertical className="w-5 h-auto" />
-            </MenuButton>
-            <MenuList>
-              <MenuItem
-                mb={2}
-                onClick={() => handleView(info?.row?.original?.id)}
-              >
-                View Request
-              </MenuItem>
-              <MenuItem
-                mb={2}
-                onClick={() => handleAcceptRequest(info?.row?.original?.id)}
-              >
-                Accept Request
-              </MenuItem>
-              <MenuItem
-                onClick={() => handleDeleteRequest(info?.row?.original?.id)}
-                color="red.500"
-              >
-                Decline Request
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <Flex justify={"center"}>
+            <Menu>
+              <MenuButton>
+                <BsThreeDotsVertical className="w-5 h-auto" />
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => handleView(info?.row?.original?.id)}>
+                  View Request
+                </MenuItem>
+                <MenuItem onClick={() => handleAcceptRequest(info?.row?.original?.id)}>
+                  Accept Request
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleDeleteRequest(info?.row?.original?.id)}
+                  color="red.500"
+                >
+                  Delete Request
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
         );
       },
     }),

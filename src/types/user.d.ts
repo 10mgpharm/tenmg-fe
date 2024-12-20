@@ -419,9 +419,21 @@ export interface AdminApprovals {
   businessName: string;
   contactEmail: string,
   businessAddress: string,
+  contactPersonName: string;
+  contactPhoneNumber: string;
+  position: string;
   cacDocument: string,
   verificationStatus: string
   createdAt: string;
+  actions: string;
+}
+
+export interface AdminApprovalsProps {
+  data: AdminApprovals[];
+  links: any;
+  meta: MetaDataProp;
+  message: string;
+  status: string;
 }
 
 interface NextAuthUserSessionWithToken extends JWT {
