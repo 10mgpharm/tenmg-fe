@@ -14,14 +14,63 @@ import {
     Tag,
     InputGroup,
     InputLeftElement,
-    InputRightElement,
     FormLabel,
     FormControl,
   } from '@chakra-ui/react'
+import { Controller, useForm } from 'react-hook-form';
 import { FaSearch } from 'react-icons/fa'
-import { FaCalendar } from 'react-icons/fa6'
+import DateComponent from './DateComponent';
 
-const FilterDrawer = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {
+interface IFormInput {
+    endDate?: Date | null;
+    startDate?: Date | null;
+    status?: string;
+}
+
+interface FilterOptions {
+    option: string;
+    value: string;
+}
+
+const FilterDrawer = ({
+    isOpen,
+    onClose,
+    applyFilters,
+    clearFilters,
+    filterOptions,
+    isNotDate,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    applyFilters?: (filters: IFormInput) => void;
+    clearFilters?: () => void;
+    filterOptions?: FilterOptions[];
+    isNotDate?: boolean;
+}) => {
+
+    const {
+        handleSubmit,
+        formState: {},
+        control,
+        getValues,
+        reset,
+    } = useForm<IFormInput>({
+    mode: "onChange",
+    });
+
+    const onSubmit = (data: IFormInput) => {
+    applyFilters(data);
+    onClose();
+    };
+
+    const handleClearFilters = () => {
+    reset({
+        status: "",
+        startDate: null,
+        endDate: null,
+    });
+    clearFilters();
+    };
   return (
     <Drawer
         isOpen={isOpen}
@@ -83,33 +132,49 @@ const FilterDrawer = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void})
                     <FormLabel>
                         From
                     </FormLabel>
-                    <InputGroup>
-                        <Input type='text' placeholder='Search' />
-                        <InputRightElement pointerEvents='none'>
-                            <FaCalendar className='text-gray-500' />
-                        </InputRightElement>
-                    </InputGroup>
+                    <Controller
+                        name="startDate"
+                        control={control}
+                        render={({ field }) => (
+                        <DateComponent
+                            startDate={field.value}
+                            setStartDate={field.onChange}
+                            isMinDate
+                        />
+                        )}
+                    />
                 </FormControl>
                 <FormControl mt={4}>
                     <FormLabel>
                         To
                     </FormLabel>
-                    <InputGroup>
-                        <Input type='text' placeholder='Search' />
-                        <InputRightElement pointerEvents='none'>
-                            <FaCalendar className='text-gray-500' />
-                        </InputRightElement>
-                    </InputGroup>
+                    <Controller
+                        name="endDate"
+                        control={control}
+                        render={({ field }) => (
+                        <DateComponent
+                            startDate={field.value}
+                            setStartDate={field.onChange}
+                            isMinDate
+                            minDate={getValues("startDate")}
+                        />
+                        )}
+                    />
                 </FormControl>
             </Stack>
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant='outline' mr={3} onClick={onClose}>
-              Cancel
+            <Button variant="outline" mr={3} onClick={onClose}>
+                Cancel
             </Button>
-            <Button colorScheme='blue'>Apply</Button>
-          </DrawerFooter>
+            <Button variant="outline" mr={3} onClick={handleClearFilters}>
+                Clear Filters
+            </Button>
+            <Button colorScheme="blue" onClick={handleSubmit(onSubmit)}>
+                Apply
+            </Button>
+            </DrawerFooter>
         </DrawerContent>
     </Drawer>
   )
