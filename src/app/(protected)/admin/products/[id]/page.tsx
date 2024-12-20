@@ -22,7 +22,7 @@ import { useSession } from 'next-auth/react';
 import { NextAuthUserSession, ProductResponseData } from '@/types';
 import ExploreData from '../_components/ExploreData';
 
-const ProductDetail = ({params}: any ) => {
+const ProductDetail = ({params}: {params: {id: string}} ) => {
     const router = useRouter();
     const session = useSession();
     const sessionData = session?.data as NextAuthUserSession;
@@ -35,7 +35,7 @@ const ProductDetail = ({params}: any ) => {
         setLoading(true);
         try {
         const response = await requestClient({ token: token }).get(
-            `/admin/settings/products/2`
+            `/admin/settings/products/${params.id}`
         );
         if (response.status === 200) {
             setProducts(response.data.data);
@@ -52,7 +52,7 @@ const ProductDetail = ({params}: any ) => {
         fetchProducts();
     },[fetchProducts, token]);
 
-    console.log(products);
+    // console.log(products);
 
     return (
     <div className='p-8'>

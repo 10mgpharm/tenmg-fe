@@ -17,11 +17,10 @@ import {
     useDisclosure
 } from "@chakra-ui/react";
 import { 
-    ColumnOrderState, 
-    RowSelectionState, 
     SortingState, 
     flexRender, 
     getCoreRowModel, 
+    getFilteredRowModel, 
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table";
@@ -40,6 +39,9 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, ProductResponseData } from "@/types";
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
+import { useDebouncedValue } from "@/utils/debounce";
+import SearchInput from "../../vendors/_components/SearchInput";
+import { IFilterInput } from "../../vendors/customers-management/page";
 
 const Page = () => {
 
@@ -49,12 +51,15 @@ const Page = () => {
     const [pageCount, setPageCount] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnVisibility, setColumnVisibility] = useState({});
-    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     
-    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+    const [status, setStatus] = useState<string>("");
+    const [globalFilter, setGlobalFilter] = useState<string>("");
     const [products, setProducts] = useState<ProductResponseData>();
+    const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+    const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+
+    const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
@@ -64,19 +69,27 @@ const Page = () => {
 
     const fetchProducts = useCallback(async () => {
         setLoading(true);
+        let query = `/admin/settings/products?page=${pageCount}`;
+        if (debouncedSearch) {
+            query += `&search=${debouncedSearch}`;
+        }
+        if (createdAtStart) {
+            query += `&createdAtStart=${createdAtStart.toISOString().split("T")[0]}`;
+        }
+        if (createdAtEnd) {
+        query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+        }
         try {
-        const response = await requestClient({ token: token }).get(
-            `/admin/settings/products`
-        );
-        if (response.status === 200) {
-            setProducts(response.data.data);
-        }
-        setLoading(false);
+        const response = await requestClient({ token: token }).get(query);
+            if (response.status === 200) {
+                setProducts(response.data.data);
+            }
+            setLoading(false);
         } catch (error) {
-        console.error(error);
-        setLoading(false);
+            console.error(error);
+            setLoading(false);
         }
-    }, [token]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
 
     useEffect(() => {
         if(!token) return;
@@ -87,35 +100,53 @@ const Page = () => {
 
     const table = useReactTable({
         data: memoizedData,
-        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate, pageCount, 15),
+        columns: ColumsProductFN(
+                    onOpen, 
+                    onOpenRestock, 
+                    onOpenDeactivate, 
+                    onOpenActivate, 
+                    pageCount, 
+                    15
+                ),
         onSortingChange: setSorting,
         state: {
-          sorting,
-          columnVisibility,
-          columnOrder,
-          rowSelection,
+          globalFilter,
         },
-        enableRowSelection: true,
-        onRowSelectionChange: setRowSelection,
-        onColumnVisibilityChange: setColumnVisibility,
-        onColumnOrderChange: setColumnOrder,
+        manualFiltering: true,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
     });
+
+    const applyFilters = (filters: IFilterInput) => {
+        setCreatedAtStart(filters.startDate);
+        setCreatedAtEnd(filters.endDate);
+        setStatus(filters.status);
+    };
+
+    const clearFilters = () => {
+        setCreatedAtStart(null);
+        setCreatedAtEnd(null);
+        setStatus("");
+        setGlobalFilter("");
+    };
+
+    const filterOptions = [
+        { option: "Active", value: "active" },
+        { option: "Suspended", value: "inactive" },
+    ];
+    
     
   return (
     <div className="p-8">
         <div className="flex justify-between">
             <h3 className="font-semibold text-2xl">Products</h3>
             <div className="mb-4 flex items-center gap-3">
-                <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-[300px]">
-                    <CiSearch className="w-5 h-5 text-gray-700" />
-                    <input 
-                    type="text" 
-                    placeholder="Search for a product" 
-                    className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
-                    />
-                </div>
+                <SearchInput
+                placeholder="Search for a Product"
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                />
                 <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
                     <CiFilter className="w-5 h-5 text-gray-700" />
                     <p className="text-gray-500 font-medium">Filter</p>
@@ -243,12 +274,27 @@ const Page = () => {
                     <Pagination meta={products?.meta} setPageCount={setPageCount}/>
                 </TableContainer>
             )
-            : <GridList data={memoizedData}/>)
+            : <GridList 
+            data={memoizedData}
+            routing="/admin/products"
+            />)
         }
         </div>
-        <DeleteModal isOpen={isOpen} onClose={onClose}/>
-        <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock}/>
-        <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} />
+        <DeleteModal 
+            isOpen={isOpen} 
+            onClose={onClose}
+        />
+        <RestockModal 
+            isOpen={isOpenRestock} 
+            onClose={onCloseRestock}
+        />
+        <FilterDrawer 
+            isOpen={isOpenFilter} 
+            onClose={onCloseFilter} 
+            applyFilters={applyFilters}
+            clearFilters={clearFilters}
+            filterOptions={filterOptions}
+        />
         <ModalWrapper
         isOpen={isOpenDeactivate} 
         onClose={onCloseDeactivate}

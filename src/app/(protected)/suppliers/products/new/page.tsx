@@ -11,6 +11,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { SelectProps } from "@/app/(protected)/vendors/loan-applications/_components/SendApplicationLink";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
+import { useRouter } from "next/navigation";
 
 export interface IFormInput {
     productName: string;
@@ -24,12 +25,13 @@ export interface IFormInput {
     strengthValue: SelectProps;
     actualPrice: string;
     discountPrice: string;
-    minDeliveryDuration: string;
-    maxDeliveryDuration: string;
+    lowStockLevel: string;
+    outStockLevel: string;
     weight: SelectProps;
     quantity: string;
     expiredAt: any;
     thumbnailFile: string;
+    status: string;
 }
 
 const AddProducts = () => {
@@ -41,6 +43,7 @@ const AddProducts = () => {
         setSteps("details");
     },[])
 
+    const router = useRouter();
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
@@ -127,15 +130,16 @@ const AddProducts = () => {
         formdata.append("weight", data?.weight?.label);
         formdata.append("packageName", data?.brandName?.label);
         formdata.append("presentationName", data?.presentationName?.label);
-        formdata.append("strengthValue", data?.strengthValue?.label);
+        formdata.append("strengthValue", '1');
         formdata.append("measurementName", data?.measurementName?.label);
-        formdata.append("minDeliveryDuration", data?.minDeliveryDuration);
-        formdata.append("maxDeliveryDuration", data?.maxDeliveryDuration);
+        formdata.append("lowStockLevel", data?.lowStockLevel);
+        formdata.append("outStockLevel", data?.outStockLevel);
         formdata.append("expiredAt", expiryDate);
         formdata.append("thumbnailFile", data?.thumbnailFile);
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
         formdata.append("quantity", data?.quantity);
+        formdata.append("status", "ACTIVE");
 
         try {
             const response = await requestClient({token: token}).post(
@@ -145,6 +149,7 @@ const AddProducts = () => {
             if(response.status === 200){
                 setIsLoading(false);
                 fetchProducts();
+                router.push('/suppliers/products')
             }
         } catch (error) {
             setIsLoading(false);
@@ -166,6 +171,7 @@ const AddProducts = () => {
                     switch (steps) {
                         case 'details':
                             return <DetailForm 
+                                    title="Add Product"
                                     setSteps={setSteps} 
                                     brands={brandData?.data} 
                                     categories={categoryData?.data} 
@@ -189,7 +195,7 @@ const AddProducts = () => {
                                     control={control}
                                     errors={errors}
                                     setValue={setValue}
-                                    handleSubmit={handleSubmit}
+                                    isLoading={isLoading}
                                 />
                         default:
                             break;
