@@ -23,7 +23,7 @@ export default function StoreFrontByCategory() {
 
   console.log("category", category);
 
-  const categoryParam = category?.split("_").join(" ");
+  const categoryParam = category?.split("-").join(" ");
 
   console.log()
 
@@ -49,7 +49,7 @@ export default function StoreFrontByCategory() {
     setLoading(true);
     const fetchCategoryData = async () => {
       try {
-        const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/categories/${categoryParam}`);
+        const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/categories/${category}`);
         // console.log(data);
         setCategoryData(data?.data?.data);
       } catch (e) {
@@ -61,7 +61,7 @@ export default function StoreFrontByCategory() {
     fetchCategoryData();
 
 
-  }, [userData?.user?.token, categoryParam]);
+  }, [userData?.user?.token, category]);
 
 
   return (
