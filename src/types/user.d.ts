@@ -219,6 +219,18 @@ export interface CustomerRecords {
   updateddAt: string;
 }
 
+export interface MedicationVariant {
+  id?: number;
+  weight?: number;
+  strengthValue: string;
+  packagePerRoll: string;
+  medicationType: string;
+  presentation: string;
+  measurement: string;
+  active: boolean;
+  status: string;
+  statusComment: string;
+}
 
 export interface MedicationData {
   id: number;
@@ -226,6 +238,8 @@ export interface MedicationData {
   name: string;
   slug: string;
   status: string;
+  createdAt: string;
+  variations?: MedicationVariant[]
 }
 
 export interface MedicationResponseData {

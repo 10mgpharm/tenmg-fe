@@ -25,7 +25,7 @@ export const HiddenFileUpload = ({ setFilePreview, setFile }: HiddenFileUploadPr
     const file = event.target.files?.[0];
 
     if (file) {
-      if (file.size > 1 * 1024 * 1024) {
+      if (file.size > 5 * 1024 * 1024) {
         setFileError("File size must be less than 5MB");
         event.target.value = "";
         return;

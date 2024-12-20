@@ -32,26 +32,26 @@ import { Controller, SubmitHandler, useFieldArray, useForm } from "react-hook-fo
 import shape from "@public/assets/images/Rectangle 43.svg";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
+import { MedicationData, MedicationVariant, NextAuthUserSession } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
 import CustomCreatableSelectComponent, { CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
-import { DeleteIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { MdDeleteForever } from "react-icons/md";
 
 export interface MedicationTypeProp {
-    category: string;
-    strength: string;
-    value: number | null;
-    presentation: string;
-    package: string
+    isOpen: boolean;
+    onClose: () => void;
+    medication: MedicationData;
+    fetchingMedicationTypes: () => void;
+    resetSelectedItem: () => void;
 }
 
 type MedicationVariation = {
     id?: number; //to handle item already existing on the database during edit/update
     presentation: string;
     measurement: string;
-    strength_value: number;
+    strength_value: string;
     package: string;
     weight: number;
 }
@@ -81,10 +81,7 @@ const defaultFormValue: IFormInput = {
     }]
 }
 
-const AddMedicationType = (
-    { isOpen, onClose, fetchingMedicationTypes }:
-        { isOpen: boolean; onClose: () => void; fetchingMedicationTypes: () => void; }
-) => {
+const AddMedicationType = ({ medication, isOpen, onClose, resetSelectedItem, fetchingMedicationTypes }: MedicationTypeProp) => {
 
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
@@ -99,6 +96,7 @@ const AddMedicationType = (
         watch,
         control,
         trigger,
+        reset,
     } = useForm<IFormInput>({
         mode: "onChange",
         defaultValues: defaultFormValue,
@@ -116,11 +114,14 @@ const AddMedicationType = (
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true)
         try {
-            const response = await requestClient({ token: token }).post(
-                "/admin/settings/medication-types",
-                data
-            )
+            const response = await requestClient({ token: token })[!medication ? 'post' : 'patch']
+                (!medication ?
+                    "/admin/settings/medication-types" : `/admin/settings/medication-types/${medication?.id}`,
+                    data
+                )
+
             if (response.status === 200) {
+                reset(defaultFormValue);
                 setIsLoading(false);
                 fetchingMedicationTypes();
                 onClose();
@@ -132,33 +133,92 @@ const AddMedicationType = (
         }
     };
 
-    // todo: fetch existing presentation list from backend and set the hardcode list to empty array []
-    const [presentationList, setPresentationList] = useState<SelectedOption[]>([
-        { label: "Sachet", value: "Sachet" },
-        { label: "Bottle", value: "Bottle" },
-        { label: "Capsule", value: "Capsule" },
-    ]);
-
-    // todo: fetch existing measurements list from backend and set the hardcode list to empty array []
-    const [measurementList, setMeasurementList] = useState<SelectedOption[]>([
-        { label: "MG", value: "MG" },
-        { label: "ML", value: "ML" },
-        { label: "Ug", value: "Ug" },
-    ]);
+    const [presentationList, setPresentationList] = useState<SelectedOption[]>(null);
+    const [measurementList, setMeasurementList] = useState<SelectedOption[]>(null);
 
     useEffect(() => {
-        // TODO: implement fetch dropdowns i.e presentations and measurements list
-        //GET /admin/settings/measurements,
-        //GET /admin/settings/presentations,
-        
-    }, [])
+        const fetchPresentations = async () => {
+            try {
+                const response = await requestClient({ token: token })
+                    .get("/admin/settings/presentations");
+
+                if (response.status === 200) {
+                    const data = response.data.data;
+                    const mappedData = data?.map((item: any) => {
+                        return {
+                            label: item.name,
+                            value: item.name
+                        }
+                    })
+                    setPresentationList(mappedData)
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        const fetchMeasurements = async () => {
+            try {
+                const response = await requestClient({ token: token })
+                    .get("/admin/settings/measurements");
+
+                if (response.status === 200) {
+                    const data = response.data.data;
+                    const mappedData = data?.map((item: any) => {
+                        return {
+                            label: item.name,
+                            value: item.name
+                        }
+                    })
+                    setMeasurementList(mappedData)
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        if (isOpen) {
+            fetchPresentations();
+            fetchMeasurements();
+        }
+    }, [isOpen, token]);
+
+    //EDIT MODE: if selectedItem exist
+    useEffect(() => {
+        if (medication) {
+            setValue("name", medication.name);
+            setValue("status", medication.status);
+            setValue("active", medication.active);
+            setValue("variations", medication.variations.map((item: MedicationVariant) => {
+                return {
+                    id: item.id,
+                    presentation: item.presentation,
+                    strength_value: item.strengthValue,
+                    measurement: item.measurement,
+                    package: item.packagePerRoll,
+                    weight: item.weight,
+                }
+            }));
+        }
+    }, [medication, setValue]);
+
+    const resetForm = () => {
+        reset(defaultFormValue);
+        onClose();
+        resetSelectedItem();
+    }
 
     return (
-        <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"xl"}>
+        <Drawer
+            isOpen={isOpen}
+            placement="right"
+            onClose={resetForm}
+            size={"xl"}
+        >
             <DrawerOverlay />
             <DrawerContent>
                 <DrawerCloseButton />
-                <DrawerHeader className="capitalize">Add Medication Type</DrawerHeader>
+                <DrawerHeader className="capitalize">{!medication ? `Add Medication Type` : `Edit Medication Type`}</DrawerHeader>
                 <DrawerBody>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <FormControl isInvalid={!!errors.name?.message}>
@@ -221,6 +281,8 @@ const AddMedicationType = (
                                 </Thead>
                                 <Tbody>
                                     {
+                                        presentationList &&
+                                        measurementList &&
                                         variations.map((variation, index) => (
                                             <Tr key={index}>
                                                 <Td fontSize={"14px"} width={'20%'} px={2}>
@@ -228,17 +290,18 @@ const AddMedicationType = (
                                                         control={control}
                                                         name={`variations.${index}.presentation`}
                                                         rules={{ required: 'Presentation is required' }}
-                                                        render={({ field: { onChange } }) => 
+                                                        render={({ field: { onChange, value } }) =>
                                                             <div className="flex flex-col">
                                                                 <CustomCreatableSelectComponent
+                                                                    value={value}
                                                                     name={`variations.${index}.presentation`}
                                                                     placeholder={'Select...'}
-                                                                    options={presentationList}
+                                                                    options={presentationList ?? []}
                                                                     onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                                         onChange(selectedOption?.value);
                                                                     }}
                                                                 />
-                                                               {errors.variations?.[index]?.presentation?.message &&
+                                                                {errors.variations?.[index]?.presentation?.message &&
                                                                     <Text as={"span"} className="text-red-500 text-sm">
                                                                         {errors.variations?.[index]?.presentation?.message}
                                                                     </Text>
@@ -252,9 +315,14 @@ const AddMedicationType = (
                                                         <Input
                                                             {...register(`variations.${index}.strength_value`, {
                                                                 required: "Strength is required",
+                                                                // validate value can either be number only e.g 90 or number with sepearor between 90/80
+                                                                validate: (value) => {
+                                                                    const regex = /^[0-9]+(\/[0-9]+)?$/;
+                                                                    return regex.test(value) || "Strength is invalid";
+                                                                }
                                                             })}
                                                             placeholder="e.g 100"
-                                                            type="number"
+                                                            type="text"
                                                         />
                                                         {errors.variations?.[index]?.strength_value?.message &&
                                                             <Text as={"span"} className="text-red-500 text-sm">
@@ -268,22 +336,22 @@ const AddMedicationType = (
                                                         control={control}
                                                         name={`variations.${index}.measurement`}
                                                         rules={{ required: 'Measurement is required' }}
-                                                        render={({ field: { onChange } }) =>
+                                                        render={({ field: { onChange, value } }) =>
                                                             <div className="flex flex-col">
-
-                                                            <CustomCreatableSelectComponent
-                                                                name={`variations.${index}.measurement`}
-                                                                placeholder={'Select...'}
-                                                                options={measurementList}
-                                                                onOptionSelected={(selectedOption: CreatableSelectOption) => {
-                                                                    onChange(selectedOption?.value);
-                                                                }}
-                                                            />
-                                                            {errors.variations?.[index]?.measurement?.message &&
-                                                                <Text as={"span"} className="text-red-500 text-sm">
+                                                                <CustomCreatableSelectComponent
+                                                                    value={value}
+                                                                    name={`variations.${index}.measurement`}
+                                                                    placeholder={'Select...'}
+                                                                    options={measurementList ?? []}
+                                                                    onOptionSelected={(selectedOption: CreatableSelectOption) => {
+                                                                        onChange(selectedOption?.value);
+                                                                    }}
+                                                                />
+                                                                {errors.variations?.[index]?.measurement?.message &&
+                                                                    <Text as={"span"} className="text-red-500 text-sm">
                                                                         {errors.variations?.[index]?.measurement?.message}
-                                                                </Text>
-                                                            }
+                                                                    </Text>
+                                                                }
                                                             </div>
                                                         }
                                                     />
@@ -320,9 +388,9 @@ const AddMedicationType = (
                                                             onClick={() => {
                                                                 removeVariant(index);
                                                             }}
-                                                    >
-                                                        <MdDeleteForever className="text-red-500 h-6 w-6" />
-                                                    </IconButton>
+                                                        >
+                                                            <MdDeleteForever className="text-red-500 h-6 w-6" />
+                                                        </IconButton>
                                                     }
                                                 </Td>
                                             </Tr>
@@ -351,7 +419,7 @@ const AddMedicationType = (
                         </TableContainer>
                         <HStack mt={5} justify={"end"}>
                             <Flex gap={3}>
-                                <Button w={"120px"} onClick={onClose} variant={"outline"}>
+                                <Button w={"120px"} onClick={resetForm} variant={"outline"}>
                                     Cancel
                                 </Button>
                                 <Button
@@ -362,7 +430,7 @@ const AddMedicationType = (
                                     loadingText="Submitting..."
                                     className="bg-primary-500 text-white"
                                 >
-                                    Add Medication Type
+                                    {!medication ? `Add Medication Type` : `Save Changes`}
                                 </Button>
                             </Flex>
                         </HStack>

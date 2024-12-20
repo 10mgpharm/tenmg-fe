@@ -20,10 +20,9 @@ import {
 import { Search } from "lucide-react";
 import AddMedicationType from "./AddMedicationType";
 import { MedicationData } from "@/types";
-import EditMedicationType from "./EditMedicationType";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import DeleteMedication from "./DeleteMedication";
-import Loader from "../../_components/Loader";
+import Loader from "@/app/(protected)/admin/_components/Loader";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 
 const MedicationTypes = (
@@ -33,18 +32,17 @@ const MedicationTypes = (
 
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { 
-    isOpen: isEditOpen, 
-    onClose: onEditClose, 
-    onOpen: onEditOpen 
-  } = useDisclosure();
-  const { 
     isOpen: isDeleteOpen, 
     onClose: onDeleteClose, 
     onOpen: onDeleteOpen 
   } = useDisclosure();
 
   const [selectedId, setSelectedId] = useState<number>();
-  const [selectedItem, setSelectedItem] = useState<MedicationData>();
+  const [selectedItem, setSelectedItem] = useState<MedicationData>(null);
+
+  const resetSelectedItem = useCallback(() => {
+    setSelectedItem(null)
+  },[])
 
   return (
     <Stack minH={"500px"} flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
@@ -83,7 +81,7 @@ const MedicationTypes = (
               {
                 data?.map((item: MedicationData) => (
                   <Tr key={item.id}>
-                    <Td>14-10-2024</Td>
+                    <Td>{item.createdAt}</Td>
                     <Td>{item.name}</Td>
                     <Td>
                       <Tag colorScheme={"yellow"} size={"sm"}>View Variation</Tag>
@@ -94,7 +92,7 @@ const MedicationTypes = (
                         <Button 
                         onClick={() => {
                           setSelectedItem(item)
-                          onEditOpen()
+                          onOpen()
                         }} 
                         variant={"unstyled"}
                         color={"gray.500"}>
@@ -120,15 +118,11 @@ const MedicationTypes = (
         </TableContainer>
       }
       <AddMedicationType 
-      isOpen={isOpen} 
-      onClose={onClose}
-      fetchingMedicationTypes={fetchingMedicationTypes}
-      />
-      <EditMedicationType 
-      isOpen={isEditOpen} 
-      onClose={onEditClose} 
-      medication={selectedItem}
-      fetchingMedicationTypes={fetchingMedicationTypes}
+        isOpen={isOpen} 
+        medication={selectedItem}
+        onClose={onClose}
+        fetchingMedicationTypes={fetchingMedicationTypes}
+        resetSelectedItem={resetSelectedItem}
       />
       <DeleteMedication 
       isOpen={isDeleteOpen}
