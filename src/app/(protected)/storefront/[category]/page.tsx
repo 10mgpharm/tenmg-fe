@@ -21,11 +21,12 @@ export default function StoreFrontByCategory() {
   const splitPath = path.split('/');
   const category = splitPath[splitPath.length - 1];
 
-  console.log("category", category);
-
   const categoryParam = category?.split("-").join(" ");
 
-  console.log()
+  const [categoryData, setCategoryData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  console.log("categoryData", categoryData);
 
   const breadCrumb = [
     {
@@ -37,13 +38,11 @@ export default function StoreFrontByCategory() {
       link: '/storefront'
     },
     {
-      text: categoryParam,
+      text: `${loading ? <Spinner /> : categoryData?.category.name}`,
       link: '#'
     }
   ]
 
-  const [categoryData, setCategoryData] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
