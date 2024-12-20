@@ -443,3 +443,10 @@ interface NextAuthUserSessionWithToken extends JWT {
     exp: number;
     jti: string;
 }
+
+export interface PresentationProps {
+  id: number;
+  active: boolean;
+  name: string;
+  status: string;
+}

@@ -8,6 +8,7 @@ export interface CreatableSelectOption {
     value: string;
     label: string;
     newOption?: boolean;
+    id?: number;
 }
 
 interface CustomSelectProps {
@@ -52,7 +53,12 @@ export default function CustomCreatableSelectComponent({
                 setSelectedOption({ value, label: value });
             }
         }
-    }, [value, optionList]);
+
+        if(options){
+            setOptionList(options);
+        }
+
+    }, [value, optionList, options]);
 
     return (
         <div className="w-full">

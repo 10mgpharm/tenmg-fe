@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { IFormInput } from '../../new/page'
+import { IFormInput } from '../../add-product/page'
 import { 
     MedicationResponseData, 
     NextAuthUserSession, 

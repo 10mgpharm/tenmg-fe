@@ -152,7 +152,7 @@ const Page = () => {
                     <p className="text-gray-500 font-medium">Filter</p>
                 </div>
                 <Link 
-                href={'/admin/products/new'} 
+                href={'/admin/products/add-product'} 
                 className="bg-primary-500 text-white p-2 px-5 rounded-md">
                     Add Product
                 </Link>

@@ -81,7 +81,9 @@ const defaultFormValue: IFormInput = {
     }]
 }
 
-const AddMedicationType = ({ medication, isOpen, onClose, resetSelectedItem, fetchingMedicationTypes }: MedicationTypeProp) => {
+const AddMedicationType = (
+    { medication, isOpen, onClose, resetSelectedItem, fetchingMedicationTypes }
+    : MedicationTypeProp) => {
 
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;

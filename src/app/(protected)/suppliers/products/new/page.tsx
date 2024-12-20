@@ -16,18 +16,18 @@ import { useRouter } from "next/navigation";
 export interface IFormInput {
     productName: string;
     productDescription: string;
-    medicationTypeName: SelectProps;
-    categoryName: SelectProps;
-    brandName: SelectProps;
-    measurementName: SelectProps;
-    presentationName: SelectProps;
-    packageName: SelectProps;
-    strengthValue: SelectProps;
+    medicationTypeName: string;
+    categoryName: string;
+    brandName: string;
+    measurementName: string;
+    presentationName: string;
+    packageName: string;
+    strengthValue: string;
     actualPrice: string;
     discountPrice: string;
     lowStockLevel: string;
     outStockLevel: string;
-    weight: SelectProps;
+    weight: string;
     quantity: string;
     expiredAt: any;
     thumbnailFile: string;
@@ -124,14 +124,14 @@ const AddProducts = () => {
         const formdata = new FormData();
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
-        formdata.append("medicationTypeName", data.medicationTypeName?.label)
-        formdata.append("categoryName", data?.categoryName?.label);
-        formdata.append("brandName", data?.brandName?.label);
-        formdata.append("weight", data?.weight?.label);
-        formdata.append("packageName", data?.brandName?.label);
-        formdata.append("presentationName", data?.presentationName?.label);
+        formdata.append("medicationTypeName", data.medicationTypeName)
+        formdata.append("categoryName", data?.categoryName);
+        formdata.append("brandName", data?.brandName);
+        formdata.append("weight", data?.weight);
+        formdata.append("packageName", data?.brandName);
+        formdata.append("presentationName", data?.presentationName);
         formdata.append("strengthValue", '1');
-        formdata.append("measurementName", data?.measurementName?.label);
+        formdata.append("measurementName", data?.measurementName);
         formdata.append("lowStockLevel", data?.lowStockLevel);
         formdata.append("outStockLevel", data?.outStockLevel);
         formdata.append("expiredAt", expiryDate);
@@ -175,7 +175,6 @@ const AddProducts = () => {
                                     setSteps={setSteps} 
                                     brands={brandData?.data} 
                                     categories={categoryData?.data} 
-                                    medications={medicationData?.data}
                                     control={control}
                                     register={register}
                                     errors={errors}
@@ -185,6 +184,8 @@ const AddProducts = () => {
                             return <EssentialForm 
                                     setSteps={setSteps}
                                     register={register}
+                                    setValue={setValue}
+                                    medications={medicationData?.data}
                                     control={control}
                                     errors={errors}
                                 />
