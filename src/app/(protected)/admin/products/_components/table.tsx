@@ -153,7 +153,9 @@ export function ColumsProductFN(
                     <MenuItem>
                         <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
                     </MenuItem>
-                    <MenuItem>Edit Product</MenuItem>
+                    <MenuItem>
+                      <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
+                    </MenuItem>
                     <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
                     {
                       info?.row?.original?.status === "ACTIVE" ? 

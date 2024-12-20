@@ -21,6 +21,7 @@ import { IoCloudDoneOutline } from "react-icons/io5";
 import Select from 'react-select';
 
 interface IChildComponentProps {
+    title: string;
     register: UseFormRegister<IFormInput>;
     control: Control<IFormInput>;
     errors: FieldErrors<FieldValues>;
@@ -32,9 +33,17 @@ interface IChildComponentProps {
 }
   
 
-const DetailForm: React.FC<IChildComponentProps> = (
-    {setSteps, brands, medications, categories, errors, control, register, setValue}
-) => {
+const DetailForm: React.FC<IChildComponentProps> = ({
+    title,
+    setSteps, 
+    brands, 
+    medications, 
+    categories, 
+    errors, 
+    control, 
+    register, 
+    setValue
+}) => {
 
     const toast = useToast();
     const router = useRouter();
@@ -68,7 +77,7 @@ const DetailForm: React.FC<IChildComponentProps> = (
                 <p className="font-semibold">Steps 1/3</p>
             </div>
         </div>
-        <h3 className="font-semibold text-xl text-gray-700 my-5">Add Product</h3>
+        <h3 className="font-semibold text-xl text-gray-700 my-5">{title}</h3>
         <form className="space-y-5">
             <FormControl isInvalid={!!errors.medicationTypeName}>
                 <FormLabel>Select Medication</FormLabel>

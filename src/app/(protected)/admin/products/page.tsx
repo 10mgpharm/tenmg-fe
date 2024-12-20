@@ -100,7 +100,14 @@ const Page = () => {
 
     const table = useReactTable({
         data: memoizedData,
-        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate, pageCount, 15),
+        columns: ColumsProductFN(
+                    onOpen, 
+                    onOpenRestock, 
+                    onOpenDeactivate, 
+                    onOpenActivate, 
+                    pageCount, 
+                    15
+                ),
         onSortingChange: setSorting,
         state: {
           globalFilter,
