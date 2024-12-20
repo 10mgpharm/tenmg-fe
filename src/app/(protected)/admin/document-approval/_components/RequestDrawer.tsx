@@ -95,17 +95,13 @@ export default function RequestDrawer({
                   <Text fontSize="sm" color="gray.600">
                     Contact Phone Number
                   </Text>
-                  <Text fontWeight="medium">
-                    {data.contactPhoneNumber || "N/A"}
-                  </Text>
+                  <Text fontWeight="medium">{data.contactPhone || "N/A"}</Text>
                 </Box>
                 <Box w="50%" className="space-y-2">
                   <Text fontSize="sm" color="gray.600">
                     Contact Person’s Name
                   </Text>
-                  <Text fontWeight="medium">
-                    {data.contactPersonName || "N/A"}
-                  </Text>
+                  <Text fontWeight="medium">{data.contactPerson || "N/A"}</Text>
                 </Box>
               </Flex>
 
@@ -113,7 +109,7 @@ export default function RequestDrawer({
                 <Text fontSize="sm" color="gray.600">
                   Position
                 </Text>
-                <Text fontWeight="medium">{data.position || "N/A"}</Text>
+                <Text fontWeight="medium">{data.contactPersonPosition || "N/A"}</Text>
               </Box>
 
               <Box className="space-y-2">
@@ -142,7 +138,9 @@ export default function RequestDrawer({
                   <Text fontSize="sm" color="gray.600">
                     Expiry Date
                   </Text>
-                  <Text fontWeight="medium">{data.expiryDate || "N/A"}</Text>
+                  <Text fontWeight="medium">
+                    {data.expiryDate || "N/A"}
+                  </Text>
                 </Box>
               </Flex>
 
@@ -151,7 +149,7 @@ export default function RequestDrawer({
                   Date Submitted
                 </Text>
                 <Text fontWeight="medium">
-                  {data.createdAt ? convertDate(data.createdAt) : "N/A"}
+                  {data.createdAt || "N/A"}
                 </Text>
               </Box>
             </Stack>
