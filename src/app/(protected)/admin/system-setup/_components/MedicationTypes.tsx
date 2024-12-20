@@ -54,7 +54,7 @@ const MedicationTypes = (
           <Input
             type="text"
             pl={10}
-            placeholder='Search for a user'
+            placeholder='Search for a medication'
           />
         </InputGroup>
         <Button h="38px" onClick={onOpen} bg={"primary.500"}>Add Medication Type</Button>
