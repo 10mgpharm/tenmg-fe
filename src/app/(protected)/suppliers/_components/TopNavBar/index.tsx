@@ -30,13 +30,13 @@ const TopNavBar = () => {
         );
       case "SUPPLIER":
         return (
-          <Tag size="sm" variant="solid" colorScheme="green">
+          <Tag size="sm" variant="solid" bg="green.50" color={"green.500"}>
             {businessType?.toLocaleLowerCase()}
           </Tag>
         );
       case "ADMIN":
         return (
-          <Tag size="sm" variant="solid" colorScheme="blue">
+          <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
             {businessType?.toLocaleLowerCase()}
           </Tag>
         );

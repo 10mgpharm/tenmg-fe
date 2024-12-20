@@ -71,7 +71,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
         <div className="flex items-center justify-between">
             <HStack onClick={() => router.back()} cursor={"pointer"}>
                 <ArrowLeftIcon className='w-5- h-5'/>
-                <Text>Back</Text>
+                <Text>Back to products</Text>
             </HStack>
             <div className="">
                 <p className="font-semibold">Steps 1/3</p>
