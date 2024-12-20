@@ -2,14 +2,9 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Divider, HStack, Text } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import pill from '@public/assets/images/Rectangle19718.png';
-import { options } from '../../page';
-import StockChart from '@/app/(protected)/suppliers/_components/StockChart';
-import RevenueChart from '@/app/(protected)/suppliers/_components/RevenueChart';
-import { LucideClock4 } from 'lucide-react';
-import StackBarComponent from '@/app/(protected)/suppliers/_components/StackBarComponent';
 import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
 import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
 

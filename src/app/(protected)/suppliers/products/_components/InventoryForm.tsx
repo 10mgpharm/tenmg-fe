@@ -1,6 +1,7 @@
 "use client";
 
 import { 
+    Button,
     FormControl, 
     FormLabel, 
     HStack, 
@@ -21,7 +22,6 @@ import {
     Controller, 
     FieldErrors, 
     FieldValues, 
-    UseFormHandleSubmit, 
     UseFormRegister, 
     UseFormSetValue 
 } from "react-hook-form";
@@ -33,10 +33,10 @@ interface IChildComponentProps {
     errors: FieldErrors<FieldValues>;
     setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
     setValue: UseFormSetValue<IFormInput>; 
-    handleSubmit: UseFormHandleSubmit<any>;
+    isLoading: boolean;
 }
 
-const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, setValue, handleSubmit, control}) => {
+const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, setValue, control, isLoading }) => {
 
     const router = useRouter();
 
@@ -70,32 +70,32 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
                         })}
                     />
                 </FormControl>
-                <FormControl isInvalid={!!errors.minDeliveryDuration}>
+                <FormControl isInvalid={!!errors.lowStockLevel}>
                     <FormLabel color={"gray.600"}>Low Stock Level</FormLabel>
                     <Input  
-                    id="minDeliveryDuration"
+                    id="lowStockLevel"
                     placeholder="" 
                     type="text"
-                    isInvalid={!!errors.minDeliveryDuration}
+                    isInvalid={!!errors.lowStockLevel}
                     _focus={{
-                        border: !!errors.minDeliveryDuration ? "red.300" : "border-gray-300",
+                        border: !!errors.lowStockLevel ? "red.300" : "border-gray-300",
                     }}
-                    {...register("minDeliveryDuration", {
+                    {...register("lowStockLevel", {
                         required: true,
                     })}
                     />
                 </FormControl>
-                <FormControl  isInvalid={!!errors.maxDeliveryDuration}>
+                <FormControl  isInvalid={!!errors.outStockLevel}>
                     <FormLabel color={"gray.600"}>Out of Stock Level</FormLabel>
                     <Input 
-                    id="maxDeliveryDuration"
+                    id="outStockLevel"
                     placeholder="" 
                     type="text"
-                    isInvalid={!!errors.maxDeliveryDuration}
+                    isInvalid={!!errors.outStockLevel}
                     _focus={{
-                        border: !!errors.maxDeliveryDuration ? "red.300" : "border-gray-300",
+                        border: !!errors.outStockLevel ? "red.300" : "border-gray-300",
                     }}
-                    {...register("maxDeliveryDuration", {
+                    {...register("outStockLevel", {
                         required: true,
                     })}
                     />
@@ -131,12 +131,15 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
             onClick={() => setSteps("essentials")}>
                 Previous
             </button>
-            <button 
+            <Button 
             type="submit"
+            isLoading={isLoading}
+            loadingText={"Submitting..."}
+            disabled={isLoading}
             className="w-[280px] p-3 rounded-md bg-primary-500 text-white" 
             >
                 Add Product
-            </button>
+            </Button>
         </div>
         <SuccessModal isOpen={isOpen} onClose={onClose}/>
     </div>

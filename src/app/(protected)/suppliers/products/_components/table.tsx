@@ -1,18 +1,24 @@
-import { createColumnHelper } from "@tanstack/react-table";
-import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
-import { classNames } from "@/utils";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import Image from "next/image";
 import Link from "next/link";
+import { createColumnHelper } from "@tanstack/react-table";
+import { 
+  Flex, 
+  Menu, 
+  MenuButton, 
+  MenuItem, 
+  MenuList 
+} from "@chakra-ui/react";
+import { classNames } from "@/utils";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { ProductDataProps } from "@/types";
 
 const columnHelper = createColumnHelper<ProductDataProps>();
 
 export function ColumsProductFN(
     onOpen: () => void,
-   onOpenRestock: () => void,
-   onOpenDeactivate: () => void, 
-   onOpenActivate: () => void) 
+    onOpenRestock: () => void,
+    onOpenDeactivate: () => void, 
+    onOpenActivate: () => void) 
   {
   return [
     columnHelper.accessor("name", {
@@ -132,9 +138,11 @@ export function ColumsProductFN(
                 </MenuButton>
                 <MenuList>
                     <MenuItem>
-                        <Link href={'/suppliers/products/global-pentazocine'}>View Product</Link>
+                      <Link href={`/suppliers/products/${info.row.original.id}`}>View Product</Link>
                     </MenuItem>
-                    <MenuItem>Edit Product</MenuItem>
+                    <MenuItem>
+                      <Link href={`/suppliers/products/edit/${info.row.original.id}`}>Edit Product</Link>
+                    </MenuItem>
                     <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
                     {
                       info?.row?.original?.status === "ACTIVE" ? 

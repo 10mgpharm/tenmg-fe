@@ -24,8 +24,8 @@ const variants = [
     {label: "Tablet", value: "Tablet"},
 ]
 const strength = [
-    {label: "ML", value: "ML"},
-    {label: "MG", value: "MG"},
+    {label: "ml", value: "ml"},
+    {label: "mg", value: "mg"},
 ]
 const presentation = [
     {label: "Bottle", value: "Bottle"},

@@ -1,40 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import DetailForm from "@/app/(protected)/suppliers/products/_components/DetailForm";
-import EssentialForm from "@/app/(protected)/suppliers/products/_components/EssentialForm";
-import InventoryForm from "@/app/(protected)/suppliers/products/_components/InventoryForm";
-import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession } from "@/types";
-import requestClient from "@/lib/requestClient";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { SelectProps } from "@/app/(protected)/vendors/loan-applications/_components/SendApplicationLink";
-import { toast } from "react-toastify";
-import { handleServerErrorMessage } from "@/utils";
-import { useRouter } from "next/navigation";
+import requestClient from '@/lib/requestClient'
+import { handleServerErrorMessage } from '@/utils'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import { 
+    MedicationResponseData, 
+    NextAuthUserSession, 
+    ProductResponseData 
+} from '@/types'
+import DetailForm from '@/app/(protected)/suppliers/products/_components/DetailForm'
+import EssentialForm from '@/app/(protected)/suppliers/products/_components/EssentialForm'
+import InventoryForm from '@/app/(protected)/suppliers/products/_components/InventoryForm'
+import { IFormInput } from '@/app/(protected)/admin/products/new/page';
 
-export interface IFormInput {
-    productName: string;
-    productDescription: string;
-    medicationTypeName: SelectProps;
-    categoryName: SelectProps;
-    brandName: SelectProps;
-    measurementName: SelectProps;
-    presentationName: SelectProps;
-    packageName: SelectProps;
-    strengthValue: SelectProps;
-    actualPrice: string;
-    discountPrice: string;
-    lowStockLevel: string;
-    outStockLevel: string;
-    weight: SelectProps;
-    quantity: string;
-    expiredAt: any;
-    thumbnailFile: string;
-    status: string;
-}
-
-const AddProducts = () => {
+const EditPage = ({params}: {params: {id: string}}) => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [steps, setSteps] = useState<'details' | 'essentials' | 'inventory'>(null);
@@ -48,9 +31,26 @@ const AddProducts = () => {
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
 
+    const [products, setProducts] = useState<ProductResponseData>();
     const [brandData, setBrandData] = useState<MedicationResponseData>();
     const [categoryData, setCategoryData] = useState<MedicationResponseData>();
     const [medicationData, setMedicationData] = useState<MedicationResponseData>();
+
+    const fetchSingleProduct = useCallback(async () => {
+        setIsLoading(true);
+        try {
+        const response = await requestClient({ token: token }).get(
+            `/admin/settings/products/${params.id}`
+        );
+        if (response.status === 200) {
+            setProducts(response.data.data);
+        }
+            setIsLoading(false);
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    }, [token]);
 
     const fetchingMedicationTypes = useCallback(async() => {
         try {
@@ -91,22 +91,23 @@ const AddProducts = () => {
         }
     },[token]);
 
-    const fetchProducts = useCallback(async () => {
+    const fetchAllProducts = useCallback(async () => {
         try {
         const response = await requestClient({ token: token }).get(
             `/admin/settings/products`
         );
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     }, [token]);
 
     useEffect(() => {
         if(!token) return;
+        fetchSingleProduct()
         fetchingBrandTypes();
         fetchingCategoriesTypes();
         fetchingMedicationTypes();
-    }, [fetchingBrandTypes, fetchingCategoriesTypes, fetchingMedicationTypes, token]);
+    }, [fetchSingleProduct, fetchingBrandTypes, fetchingCategoriesTypes, fetchingMedicationTypes, token]);
 
     const {
         control,
@@ -148,8 +149,9 @@ const AddProducts = () => {
             )
             if(response.status === 200){
                 setIsLoading(false);
-                fetchProducts();
+                fetchAllProducts();
                 router.push('/admin/products')
+
             }
         } catch (error) {
             setIsLoading(false);
@@ -163,15 +165,16 @@ const AddProducts = () => {
         return <div>Loading...</div>;
       }
 
-    
-  return (
-    <div className="p-8">
-        <form onSubmit={handleSubmit(onSubmit)}>
+    return (
+    <div>
+        <form 
+        // onSubmit={handleSubmit(onSubmit)}
+        >
             {(() => {
                     switch (steps) {
                         case 'details':
                             return <DetailForm 
-                                    title="Add Product"
+                                    title="Edit Product"
                                     setSteps={setSteps} 
                                     brands={brandData?.data} 
                                     categories={categoryData?.data} 
@@ -208,4 +211,4 @@ const AddProducts = () => {
   )
 }
 
-export default AddProducts
+export default EditPage
