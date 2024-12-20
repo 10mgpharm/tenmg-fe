@@ -10,7 +10,7 @@ const columnHelper = createColumnHelper<AdminApprovals>();
 export function ColumnsSupplierFN(
   handleView: (id: number) => void,
   handleAcceptRequest: (id: number) => void,
-  handleDeleteRequest: (id: number) => void
+  handleDecline: (id: number) => void
 ) {
   return [
     columnHelper.accessor("name", {
@@ -28,7 +28,7 @@ export function ColumnsSupplierFN(
     columnHelper.accessor("type", {
       header: ({ column }) => <p className="">User Type</p>,
       cell: (info) => (
-        <div className="pl-4">
+        <div className="">
           <p className="font-medium">{info?.row?.original?.type || "N/A"}</p>
         </div>
       ),
@@ -44,15 +44,20 @@ export function ColumnsSupplierFN(
       ),
     }),
 
+    columnHelper.accessor("expiryDate", {
+      header: ({ column }) => <p className="">Expiry Date</p>,
+      cell: (info) => (
+        <div className="">
+          <p className="font-medium">{info?.row?.original?.expiryDate}</p>
+        </div>
+      ),
+    }),
+
     columnHelper.accessor("createdAt", {
       header: ({ column }) => <p className="">Date Submitted</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">
-            {info?.row?.original?.createdAt
-              ? convertDate(info?.row?.original?.createdAt)
-              : "N/A"}
-          </p>
+          <p className="font-medium">{info?.row?.original?.createdAt}</p>
         </div>
       ),
     }),
@@ -61,27 +66,31 @@ export function ColumnsSupplierFN(
       header: ({ column }) => <p>Actions</p>,
       cell: (info) => {
         return (
-          <Flex justify={"center"}>
-            <Menu>
-              <MenuButton>
-                <BsThreeDotsVertical className="w-5 h-auto" />
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => handleView(info?.row?.original?.id)}>
-                  View Request
-                </MenuItem>
-                <MenuItem onClick={() => handleAcceptRequest(info?.row?.original?.id)}>
-                  Accept Request
-                </MenuItem>
-                <MenuItem
-                  onClick={() => handleDeleteRequest(info?.row?.original?.id)}
-                  color="red.500"
-                >
-                  Delete Request
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
+          <Menu>
+            <MenuButton>
+              <BsThreeDotsVertical className="w-5 h-auto" />
+            </MenuButton>
+            <MenuList>
+              <MenuItem
+                mb={2}
+                onClick={() => handleView(info?.row?.original?.id)}
+              >
+                View Request
+              </MenuItem>
+              <MenuItem
+                mb={2}
+                onClick={() => handleAcceptRequest(info?.row?.original?.id)}
+              >
+                Accept Request
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleDecline(info?.row?.original?.id)}
+                color="red.500"
+              >
+                Decline Request
+              </MenuItem>
+            </MenuList>
+          </Menu>
         );
       },
     }),

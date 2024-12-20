@@ -19,6 +19,7 @@ import {
   MenuItem,
   Progress,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
 import { FiUploadCloud, FiMoreHorizontal } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -34,6 +35,8 @@ import { FaFileWord } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
 import pdfFileIcon from "@public/assets/images/file_fomat_icon.png";
 import reviewDocIcon from "@public/assets/images/review_ongoing.png";
+import successIcon from "@public/assets/images/licence_success.png";
+import rejectedIcon from "@public/assets/images/cancel-Icon.svg";
 
 interface IFormInput {
   licenseNumber: string;
@@ -201,7 +204,6 @@ const LicenseUpload = () => {
     }
   };
 
-  // handle fetch license
   useEffect(() => {
     const fetchLicense = async () => {
       setIsLicenseLoading(true);
@@ -264,7 +266,7 @@ const LicenseUpload = () => {
             Withdraw Submission
           </Button>
         </Box>
-        {isLoading && (
+        {isLicenseLoading && (
           <Flex
             direction={"column"}
             gap={5}
@@ -276,7 +278,7 @@ const LicenseUpload = () => {
             <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-9/12 h-5" />
           </Flex>
         )}
-        {!isLoading && (
+        {!isLicenseLoading && (
           <Flex direction={"column"} gap={5} alignSelf="flex-start">
             <Text className="text-left text-sm font-medium text-gray-500">
               CAC Document:{" "}
@@ -307,6 +309,102 @@ const LicenseUpload = () => {
       </Box>
     );
   }
+
+  if (sessionData?.user?.businessStatus === BusinessStatus.VERIFIED) {
+    <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5 items-center justify-center w-full">
+      {isLicenseLoading && (
+        <Flex justify="center" align="center" height="200px">
+          <Spinner size="xl" />
+        </Flex>
+      )}
+      {!isLicenseLoading && (
+        <>
+          <Image
+            src={successIcon.src}
+            alt="review"
+            width="120px"
+            height="120px"
+          />
+          <Text className="font-semibold text-2xl">Document Approved</Text>
+          <Text className="text-center font-normal text-gray-600">
+            Your document with license number{" "}
+            <span className="font-bold text-base text-primary-500">
+              {businessLicense?.licenseNumber}
+            </span>
+            , expiring on{" "}
+            <span className="font-bold text-base text-primary-500">
+              {" "}
+              {businessLicense?.expiryDate
+                ? moment(businessLicense?.expiryDate)?.format("MMMM Do YYYY")
+                : "N/A"}
+            </span>
+            , has been approved.
+          </Text>
+          <Box>
+            <Button
+              colorScheme="blue"
+              w="full"
+              onClick={() => {
+                window.open(businessLicense?.licenseFile, "_blank");
+              }}
+            >
+              View Document
+            </Button>
+          </Box>
+        </>
+      )}
+    </Box>;
+  }
+
+  //   else if (sessionData?.user?.businessStatus === BusinessStatus.REJECTED) {
+  //     return (
+  //       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5 items-center justify-center w-full">
+  //         {isLicenseLoading && (
+  //           <Flex justify="center" align="center" height="200px">
+  //             <Spinner size="xl" />
+  //           </Flex>
+  //         )}
+  //         {!isLicenseLoading && (
+  //           <>
+  //             <Image
+  //               src={rejectedIcon.src}
+  //               alt="review"
+  //               width="120px"
+  //               height="120px"
+  //             />
+  //             <Text className="font-semibold text-2xl">Document Rejected</Text>
+  //             <Text className="text-center font-normal text-gray-600">
+  //               Your document with license number{" "}
+  //               <span className="font-bold text-base text-primary-500">
+  //                 {businessLicense?.licenseNumber}
+  //               </span>
+  //               , expiring on{" "}
+  //               <span className="font-bold text-base text-primary-500">
+  //                 {" "}
+  //                 {businessLicense?.expiryDate
+  //                   ? moment(businessLicense?.expiryDate)?.format("MMMM Do YYYY")
+  //                   : "N/A"}
+  //               </span>
+  //               , has been rejected.
+  //             </Text>
+  //             <Box>
+  //               <Button
+  //                 colorScheme="blue"
+  //                 w="full"
+  //                 backgroundColor="error.600"
+  //                 _hover="error.700"
+  //                 onClick={() => {
+  //                   window.open(businessLicense?.licenseFile, "_blank");
+  //                 }}
+  //               >
+  //                 View Document
+  //               </Button>
+  //             </Box>
+  //           </>
+  //         )}
+  //       </Box>
+  //     );
+  //   }
 
   const fileActionsMenu = () => {
     if (file && localUploadProgress === 100 && !isLocalUploading) {
@@ -498,73 +596,81 @@ const LicenseUpload = () => {
   return (
     <>
       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 mb-6"
-          encType="multipart/form-data"
-        >
-          {/* License Number */}
-          <FormControl isInvalid={!!errors.licenseNumber}>
-            <FormLabel>License Number</FormLabel>
-            <Input
-              type="text"
-              placeholder="Enter License Number"
-              {...register("licenseNumber", {
-                required: "License number is required.",
-              })}
-              disabled={isLoading}
-            />
-            <FormErrorMessage>{errors.licenseNumber?.message}</FormErrorMessage>
-          </FormControl>
-
-          {/* Expiry Date */}
-          <FormControl isInvalid={!!errors.expiryDate}>
-            <FormLabel>Expiry Date</FormLabel>
-            <Controller
-              name="expiryDate"
-              control={control}
-              rules={{ required: "Expiry date is required" }}
-              render={({ field }) => (
-                <DateComponent
-                  startDate={field.value}
-                  setStartDate={field.onChange}
-                />
-              )}
-            />
-            <FormErrorMessage>{errors.expiryDate?.message}</FormErrorMessage>
-          </FormControl>
-
-          {/* CAC Document Upload */}
-          <FormControl isInvalid={!!errors.cacDocument} className="mb-8">
-            <FormLabel>CAC Document</FormLabel>
-            <Controller
-              name="cacDocument"
-              control={control}
-              rules={{
-                required: "CAC Document is required",
-              }}
-              render={() => renderFileUploadSection()}
-            />
-            <FormErrorMessage>{errors.cacDocument?.message}</FormErrorMessage>
-          </FormControl>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            colorScheme="blue"
-            w="full"
-            isDisabled={
-              isLoading ||
-              isLocalUploading ||
-              localUploadProgress < 100 ||
-              !file
-            }
-            isLoading={isLoading}
-            loadingText="Submitting"
+        {isLicenseLoading ? (
+          <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+          </Flex>
+        ) : (
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5 mb-6"
+            encType="multipart/form-data"
           >
-            Submit
-          </Button>
-        </form>
+            {/* License Number */}
+            <FormControl isInvalid={!!errors.licenseNumber}>
+              <FormLabel>License Number</FormLabel>
+              <Input
+                type="text"
+                placeholder="Enter License Number"
+                {...register("licenseNumber", {
+                  required: "License number is required.",
+                })}
+                disabled={isLoading}
+              />
+              <FormErrorMessage>
+                {errors.licenseNumber?.message}
+              </FormErrorMessage>
+            </FormControl>
+
+            {/* Expiry Date */}
+            <FormControl isInvalid={!!errors.expiryDate}>
+              <FormLabel>Expiry Date</FormLabel>
+              <Controller
+                name="expiryDate"
+                control={control}
+                rules={{ required: "Expiry date is required" }}
+                render={({ field }) => (
+                  <DateComponent
+                    startDate={field.value}
+                    setStartDate={field.onChange}
+                  />
+                )}
+              />
+              <FormErrorMessage>{errors.expiryDate?.message}</FormErrorMessage>
+            </FormControl>
+
+            {/* CAC Document Upload */}
+            <FormControl isInvalid={!!errors.cacDocument} className="mb-8">
+              <FormLabel>CAC Document</FormLabel>
+              <Controller
+                name="cacDocument"
+                control={control}
+                rules={{
+                  required: "CAC Document is required",
+                }}
+                render={() => renderFileUploadSection()}
+              />
+              <FormErrorMessage>{errors.cacDocument?.message}</FormErrorMessage>
+            </FormControl>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              colorScheme="blue"
+              w="full"
+              isDisabled={
+                isLoading ||
+                isLocalUploading ||
+                localUploadProgress < 100 ||
+                !file
+              }
+              isLoading={isLoading}
+              loadingText="Submitting"
+            >
+              Submit
+            </Button>
+          </form>
+        )}
       </Box>
     </>
   );
