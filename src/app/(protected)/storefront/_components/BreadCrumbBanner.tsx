@@ -14,7 +14,7 @@ type BreadcrumbProps = {
 const BreadCrumbBanner: React.FC<BreadcrumbProps> = ({ breadCrumbsData }) => {
   return (
     <div className="w-full px-8 py-8 bg-primary-500 text-white">
-      <div className="flex items-center">
+      {/* <div className="flex items-center">
         {breadCrumbsData.map((item, index) =>
           index === breadCrumbsData.length - 1 ? (
             <p key={index} className="font-semibold">
@@ -29,9 +29,33 @@ const BreadCrumbBanner: React.FC<BreadcrumbProps> = ({ breadCrumbsData }) => {
             </div>
           )
         )}
-      </div>
+      </div> */}
+      <BreadCrumbs breadCrumbsData={breadCrumbsData} />
     </div>
   );
 };
 
 export default BreadCrumbBanner;
+
+
+
+export const BreadCrumbs: React.FC<BreadcrumbProps> = ({ breadCrumbsData }) => {
+  return (
+    <div className="flex items-center">
+      {breadCrumbsData.map((item, index) =>
+        index === breadCrumbsData.length - 1 ? (
+          <p key={index} className="font-semibold">
+            {item.text}
+          </p>
+        ) : (
+          <div key={index} className="flex items-center gap-1 mx-1">
+            <Link href={item.link} className="font-semibold">
+              {item.text}
+            </Link>
+            <MdKeyboardArrowRight className="w-5 h-5" />
+          </div>
+        )
+      )}
+    </div>
+  )
+}
