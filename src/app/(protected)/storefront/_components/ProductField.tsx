@@ -7,7 +7,10 @@ import Link from "next/link";
 
 const ProductsField = ({ category }: any) => {
 
-  console.log("category", category);
+
+
+  const categoryParam = category?.name?.split(" ").join("_");
+
   return (
     <Box className="">
       <Flex
@@ -20,7 +23,7 @@ const ProductsField = ({ category }: any) => {
       >
         <Text fontSize="lg" className="capitalize">{category?.name}</Text>
         <Button variant="link" color="white" _hover={{ textDecoration: 'underline' }}>
-          <Link href={`/storefront/${category?.name}`}>
+          <Link href={`/storefront/${categoryParam}`}>
             SEE ALL
           </Link>
         </Button>

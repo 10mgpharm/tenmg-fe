@@ -21,21 +21,6 @@ export default function VendorSettingsLayout({
     "",
   ]
 
-  const breadCrumb = [
-    {
-      text: "Home",
-      link: "/"
-    },
-    {
-      text: "Products",
-      link: "/storefront"
-    },
-    {
-      text: "Vaccines",
-      link: "#"
-    }
-  ]
-
   const link_arr = [
     { label: "Personal Information", href: '/storefront/settings/profile-information' },
     { label: 'My Orders', href: '/storefront/orders/my-orders' },
@@ -47,9 +32,29 @@ export default function VendorSettingsLayout({
   // /storefront/shopping-list
   const pathname = usePathname();
 
-  console.log("pathname", pathname);
+  // console.log("pathname", pathname);
   const activeIndex = link_arr.findIndex((link) => pathname.startsWith(link.href));
   console.log("activeIndex", activeIndex);
+
+
+  const breadCrumb = [
+    {
+      text: "Home",
+      link: "/"
+    },
+    {
+      text: "Products",
+      link: "/storefront"
+    },
+    {
+      text: link_arr[activeIndex].label,
+      link: "#"
+    }
+  ]
+
+
+
+
 
   return (
 

@@ -9,7 +9,7 @@ export default function ShoppingListCardComponent({ product }) {
           <h4 className='text-lg font-medium text-gray-700'>Order #{product?.order_id}</h4>
           <p className='text-sm  text-gray-500 my-1'>{product?.created_at}</p>
         </div>
-        <p className='text-lg font-medium text-gray-900'>{product?.price}</p>
+        <p className='text-lg font-medium text-gray-900'>₦{product?.price}</p>
       </div>
       <Divider className='my-3' />
       <div>
@@ -19,7 +19,7 @@ export default function ShoppingListCardComponent({ product }) {
             <div>
               <h4 className='text-lg font-medium text-gray-700'>{product?.product}</h4>
               <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>
-              <p className={`text-sm text-gray-500`}>{product?.quantity}</p>
+              <p className={`text-sm text-gray-500`}>Quantity: {product?.quantity} Pcs</p>
             </div>
           </div>
           <div className='space-x-4'>

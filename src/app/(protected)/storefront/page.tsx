@@ -46,7 +46,7 @@ const StoreFront = () => {
 
   return (
     <div className="">
-      <div className="p-8 px-6 md:px-20 max-w-screen-2xl mx-auto">
+      <div className="p-8 px-6 md:px-20 max-w-screen-2xl">
         <Carousel />
       </div>
       {storeFrontData?.map((category, i) => (

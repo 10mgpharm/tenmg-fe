@@ -44,12 +44,12 @@ export const BreadCrumbs: React.FC<BreadcrumbProps> = ({ breadCrumbsData }) => {
     <div className="flex items-center">
       {breadCrumbsData.map((item, index) =>
         index === breadCrumbsData.length - 1 ? (
-          <p key={index} className="font-semibold">
+          <p key={index} className="font-semibold capitalize">
             {item.text}
           </p>
         ) : (
           <div key={index} className="flex items-center gap-1 mx-1">
-            <Link href={item.link} className="font-semibold">
+            <Link href={item.link} className="font-semibold capitalize">
               {item.text}
             </Link>
             <MdKeyboardArrowRight className="w-5 h-5" />
