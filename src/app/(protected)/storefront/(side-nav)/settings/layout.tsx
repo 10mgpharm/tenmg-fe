@@ -4,7 +4,7 @@ import StorefrontTabsNavigation from '../../_components/(settings-component)/Sto
 
 
 
-export default function VendorSettingsLayout({
+export default function StorefrontSettingsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

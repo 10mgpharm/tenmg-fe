@@ -376,7 +376,7 @@ const UploadModal = ({
             <Flex justifyContent={"center"} w={"full"}>
               <Button
                 type="submit"
-                variant="outline"
+                variant="solid"
                 isLoading={isUploadLoading}
                 loadingText="Uploading"
                 isDisabled={!file}

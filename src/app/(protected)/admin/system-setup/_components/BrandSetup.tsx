@@ -45,10 +45,6 @@ const BrandSetup = (
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedId, setSelectedId] = useState<number>();
   const [selectedItem, setSelectedItem] = useState<MedicationData>();
-  
-  // const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setInputValue(e.target.value);
-  // };
 
   return (
     <Stack flex={1} minH={"500px"} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
@@ -87,14 +83,14 @@ const BrandSetup = (
               {
                 data?.map((item: MedicationData) => (
                   <Tr key={item.id}>
-                    <Td fontSize={"14px"}>14-10-2024</Td>
+                    <Td fontSize={"14px"}>{item.createdAt}</Td>
                     <Td fontSize={"14px"}>{item.name}</Td>
                     <Td fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
                     <Td fontSize={"14px"}>{item.status}</Td>
                     <Td fontSize={"14px"}>
                       <Flex gap={2}>
                         <Button 
-                        onClick={() => {
+                          onClick={() => {
                           setSelectedItem(item);
                           onEditOpen();
                         }} 

@@ -167,11 +167,11 @@ const VerificationComponent = () => {
 
           <div className="mb-8">
             <h3 className="font-normal text-gray-900 text-4xl leading-[44px] tracking-tight mb-3">
-              Check your email
+              Check your Email
             </h3>
 
             <p className="text-gray-500 text-base font-normal leading-6 text-left">
-              We sent a verification code to {email}
+              We Sent a Verification Code To {email}
             </p>
           </div>
 
@@ -196,21 +196,21 @@ const VerificationComponent = () => {
                   isLoading={isLoading || isLoadingResend}
                   loadingText="Verifying..."
                 >
-                  Verify email
+                  Verify Email
                 </Button>
               </div>
             </div>
           </form>
           <div className="text-center">
             <p className="text-gray-500 text-base font-normal leading-6 mb-8">
-              Didn&apos;t receive the email?
+              Didn&apos;t Receive the Email?
               <Button
                 variant={"link"}
                 pl={2}
                 onClick={resendOtp}
                 isDisabled={isLoadingResend}
               >
-                Click to resend
+                Click to Resend
               </Button>
             </p>
 

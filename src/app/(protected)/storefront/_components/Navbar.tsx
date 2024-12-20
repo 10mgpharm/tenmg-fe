@@ -28,6 +28,7 @@ import { PiShoppingBagBold } from "react-icons/pi";
 import { FaRegCircleQuestion } from "react-icons/fa6";
 import CartDrawer from "./CartDrawer";
 import SearchModal from "./SearchModal";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -125,16 +126,32 @@ const Navbar = () => {
             >
               {/* Menu Items */}
               <MenuItem py={3}>
-                <Text cursor="pointer">Personal Information</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/settings"}>
+                    Personal Information
+                  </Link>
+                </Text>
               </MenuItem>
               <MenuItem py={3}>
-                <Text cursor="pointer">My Orders</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/orders"}>
+                    My Orders
+                  </Link>
+                </Text>
               </MenuItem>
               <MenuItem py={3}>
-                <Text cursor="pointer">My Wishlist</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/my-wishlist"}>
+                    My Wishlist
+                  </Link>
+                </Text>
               </MenuItem>
               <MenuItem py={3}>
-                <Text cursor="pointer">Shopping List</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/shopping-list"}>
+                    Shopping List
+                  </Link>
+                </Text>
               </MenuItem>
               <MenuItem py={3}>
                 <Text cursor="pointer">Product Reviews</Text>
@@ -255,18 +272,34 @@ const Navbar = () => {
                 </HStack>
               </Box>
               <MenuItem py={3} px={4}>
-                <Text cursor="pointer">Personal Information</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/settings"}>
+                    Personal Information
+                  </Link>
+                </Text>
               </MenuItem>
               <MenuItem py={3} px={4}>
-                <Text cursor="pointer">My Orders</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/orders"}>
+                    My Orders
+                  </Link>
+                </Text>
               </MenuItem>
               <MenuItem py={3} px={4}>
-                <Text cursor="pointer">My Wishlist</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/my-wishlist"}>
+                    My Wishlist
+                  </Link>
+                </Text>
               </MenuItem>
               <MenuItem py={3} px={4}>
-                <Text cursor="pointer">Shopping List</Text>
+                <Text cursor="pointer">
+                  <Link href={"/storefront/shopping-list"}>
+                    Shopping List
+                  </Link>
+                </Text>
               </MenuItem>
-              <MenuItem py={3} px={4} color="error.500" borderTopWidth="thin"  onClick={async () => await signOut()}>
+              <MenuItem py={3} px={4} color="error.500" borderTopWidth="thin" onClick={async () => await signOut()}>
                 Log Out
               </MenuItem>
             </MenuList>

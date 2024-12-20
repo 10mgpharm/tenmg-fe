@@ -3,10 +3,10 @@ import pill2 from '@public/assets/images/medicine-8287535_1280.webp';
 import avatar from '@public/assets/images/avatar.jpg';
 
 export const records = [
-    {id: 1, title: "Today's Sales", amount: "$10,455", changeType: "INCREASE", timeStamp: " vs. last week", percentage: "2.35%"},
-    {id: 2, title: "Today's Revenue", amount: "$10,455", changeType: "DECREASE", timeStamp: " vs. last week", percentage: "2.35%"},
-    {id: 3, title: "Today's Customers", amount: "50", changeType: "INCREASE", timeStamp: " vs. last week", percentage: "5.35%"},
-    {id: 4, title: "Today's Sales", amount: "$10,455", changeType: "INCREASE", timeStamp: " vs. last week", percentage: "2.35%"},
+    {id: 1, title: "Today's Sales", amount: "₦0", changeType: "INCREASE", timeStamp: " vs. last week", percentage: "2.35%"},
+    {id: 2, title: "Today's Revenue", amount: "₦0", changeType: "DECREASE", timeStamp: " vs. last week", percentage: "2.35%"},
+    {id: 3, title: "Today's Customers", amount: "0", changeType: "INCREASE", timeStamp: " vs. last week", percentage: "5.35%"},
+    {id: 4, title: "Today's Sales", amount: "₦0", changeType: "INCREASE", timeStamp: " vs. last week", percentage: "2.35%"},
 ]
 
 export const loanData = [
