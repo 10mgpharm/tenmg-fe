@@ -25,7 +25,7 @@ import {
     UseFormRegister, 
     UseFormSetValue 
 } from "react-hook-form";
-import { IFormInput } from "@/app/(protected)/admin/products/new/page";
+import { IFormInput } from "@/app/(protected)/admin/products/add-product/page";
 
 interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;

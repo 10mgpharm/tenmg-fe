@@ -15,7 +15,7 @@ import {
 import DetailForm from '@/app/(protected)/suppliers/products/_components/DetailForm'
 import EssentialForm from '@/app/(protected)/suppliers/products/_components/EssentialForm'
 import InventoryForm from '@/app/(protected)/suppliers/products/_components/InventoryForm'
-import { IFormInput } from '@/app/(protected)/admin/products/new/page';
+import { IFormInput } from '@/app/(protected)/admin/products/add-product/page';
 
 const EditPage = ({params}: {params: {id: string}}) => {
 
