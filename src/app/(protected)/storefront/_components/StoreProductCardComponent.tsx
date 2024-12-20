@@ -15,7 +15,7 @@ export default function StoreProductCardComponent({ product }: any) {
     }
   }
   return (
-    <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md mx-auto">
+    <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md ">
       <Link href={`/storefront/product/${product?.name}`}>
         <div
           // style={{ backgroundImage: "url('/assets/images/pillImage.png')" }}
@@ -25,17 +25,17 @@ export default function StoreProductCardComponent({ product }: any) {
               : '/assets/images/pillImage.png'
               })`
           }}
-          className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm"
+          className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
         />
         <div className="w-full">
           <div className="flex items-center justify-between my-2">
-            <p className="text-gray-950 font-semibold text-sm">{product?.name}</p>
+            <p className="text-gray-950 font-semibold text-sm capitalize">{product?.name}</p>
             <HeartIcon className="w-6 stroke-primary fill-primary-50" />
           </div>
           {/* <p className="text-gray-500 text-xs my-2">Pentazocine (NEML 23.1)</p> */}
           <div className="relative flex items-center gap-x-2">
-            {product?.discountPrice && <p className="text-green-500 font-semibold my-2 text-sm left-1/4">{product?.discountPrice}</p>}
-            <p className={`text-gray-950 font-semibold my-2 text-sm ${product?.discountPrice > 0 && "text-red-500 line-through"}`}>{product?.actualPrice}</p>
+            {product?.discountPrice && <p className="text-green-500 font-semibold my-2 text-sm left-1/4">₦{product?.discountPrice}</p>}
+            <p className={`text-gray-950 font-semibold my-2 text-xs ${product?.discountPrice > 0 && "text-red-500 line-through"}`}>₦{product?.actualPrice}</p>
           </div>
 
           <div className="flex items-center justify-between">

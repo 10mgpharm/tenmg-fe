@@ -1,8 +1,10 @@
 "use client";
 
-import { IFormInput } from "@/app/(protected)/admin/products/new/page";
+import 
+CustomCreatableSelectComponent, 
+{ CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
 import { MedicationData } from "@/types";
-import { convertArray } from "@/utils/convertSelectArray";
+import { convertCreateOptionArray } from "@/utils/convertSelectArray";
 import { 
     Center,
     FormControl, 
@@ -16,18 +18,17 @@ import {
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { Control, Controller, FieldErrors, FieldValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
-import Select from 'react-select';
+import { IFormInput } from "../new/page";
 
 interface IChildComponentProps {
     title: string;
     register: UseFormRegister<IFormInput>;
     control: Control<IFormInput>;
-    errors: FieldErrors<FieldValues>;
+    errors: FieldErrors<IFormInput>;
     setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>; 
-    brands: MedicationData[];
-    medications: MedicationData[]; 
+    brands: MedicationData[]; 
     categories: MedicationData[];
     setValue: UseFormSetValue<IFormInput>;
 }
@@ -36,8 +37,7 @@ interface IChildComponentProps {
 const DetailForm: React.FC<IChildComponentProps> = ({
     title,
     setSteps, 
-    brands, 
-    medications, 
+    brands,  
     categories, 
     errors, 
     control, 
@@ -79,29 +79,11 @@ const DetailForm: React.FC<IChildComponentProps> = ({
         </div>
         <h3 className="font-semibold text-xl text-gray-700 my-5">{title}</h3>
         <form className="space-y-5">
-            <FormControl isInvalid={!!errors.medicationTypeName}>
-                <FormLabel>Medication</FormLabel>
-                <Controller
-                    name="medicationTypeName"
-                    control={control}
-                    render={({ field }) => {
-                    return(
-                        <Select 
-                        classNamePrefix="select Medication "
-                        isClearable={true}
-                        isSearchable={true}
-                        {...field}
-                        name="medicationTypeName"
-                        options={convertArray(medications)} 
-                    />
-                    )}}
-                />
-            </FormControl>
             <FormControl isInvalid={!!errors.productName}>
                 <FormLabel>Product Name</FormLabel>
                 <Input 
                 id="productName"
-                placeholder="Enter product Name" 
+                placeholder="Enter product name" 
                 type="text"
                 isInvalid={!!errors.productName}
                 _focus={{
@@ -130,37 +112,53 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                 <FormControl isInvalid={!!errors.brandName}>
                     <FormLabel>Brand</FormLabel>
                     <Controller
-                    name="brandName"
-                    control={control}
-                    render={({ field }) => {
-                    return(
-                        <Select 
-                        classNamePrefix="select"
-                        isClearable={true}
-                        isSearchable={true}
-                        {...field}
-                        name="brandName"
-                        options={convertArray(brands)} 
-                    />
-                    )}}
+                        control={control}
+                        name={"brandName"}
+                        rules={{ required: 'Brand is required' }}
+                        render={({ field: { onChange, value } }) =>
+                            <div className="flex flex-col">
+                                <CustomCreatableSelectComponent
+                                    value={value}
+                                    name={"brandName"}
+                                    placeholder={'Select...'}
+                                    options={convertCreateOptionArray(brands)}
+                                    onOptionSelected={(selectedOption: CreatableSelectOption) => {
+                                        onChange(selectedOption?.value);
+                                    }}
+                                />
+                                {errors.brandName?.message &&
+                                    <Text as={"span"} className="text-red-500 text-sm">
+                                        {errors?.brandName?.message}
+                                    </Text>
+                                }
+                            </div>
+                        }
                     />
                 </FormControl>
                 <FormControl isInvalid={!!errors.categoryName}>
                     <FormLabel>Category</FormLabel>
                     <Controller
-                    name="categoryName"
-                    control={control}
-                    render={({ field }) => {
-                    return(
-                        <Select 
-                        classNamePrefix="select"
-                        isClearable={true}
-                        isSearchable={true}
-                        {...field}
-                        name="categoryName"
-                        options={convertArray(categories)} 
-                    />
-                    )}}
+                        control={control}
+                        name={"categoryName"}
+                        rules={{ required: 'Category is required' }}
+                        render={({ field: { onChange, value } }) =>
+                            <div className="flex flex-col">
+                                <CustomCreatableSelectComponent
+                                    value={value}
+                                    name={"categoryName"}
+                                    placeholder={'Select...'}
+                                    options={convertCreateOptionArray(categories)}
+                                    onOptionSelected={(selectedOption: CreatableSelectOption) => {
+                                        onChange(selectedOption?.value);
+                                    }}
+                                />
+                                {errors.categoryName?.message &&
+                                    <Text as={"span"} className="text-red-500 text-sm">
+                                        {errors?.categoryName?.message}
+                                    </Text>
+                                }
+                            </div>
+                        }
                     />
                 </FormControl>
             </HStack>
@@ -200,7 +198,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                             <span className="font-semibold text-primary-500">Click to upload</span> 
                             {" "} or drag and drop
                         </p>
-                        <p className="text-gray-500 text-center">PDF, PNG or JPG 
+                        <p className="text-gray-500 text-center">JPEG, PNG or JPG 
                             <span className="text-sm ml-1">(Max size 5MB, 800x400px)</span>
                         </p>
                     </div>

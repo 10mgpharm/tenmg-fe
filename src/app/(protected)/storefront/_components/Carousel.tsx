@@ -94,7 +94,7 @@ const Carousel: React.FC = () => {
       <Button
         position="absolute"
         top={{ md: "50%" }}
-        bottom={{base: "10%", md:""}}
+        bottom={{ base: "10%", md: "" }}
         left="10px"
         transform="translateY(-50%)"
         zIndex={10}
@@ -110,7 +110,7 @@ const Carousel: React.FC = () => {
       <Button
         position="absolute"
         top={{ md: "50%" }}
-        bottom={{base: "10%", md:""}}
+        bottom={{ base: "10%", md: "" }}
         right="10px"
         transform="translateY(-50%)"
         zIndex={10}
