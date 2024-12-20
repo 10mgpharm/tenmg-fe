@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { IFormInput } from '../../new/page'
 import { 
     MedicationResponseData, 
     NextAuthUserSession, 
@@ -16,6 +15,7 @@ import {
 import DetailForm from '@/app/(protected)/suppliers/products/_components/DetailForm'
 import EssentialForm from '@/app/(protected)/suppliers/products/_components/EssentialForm'
 import InventoryForm from '@/app/(protected)/suppliers/products/_components/InventoryForm'
+import { IFormInput } from '@/app/(protected)/admin/products/new/page';
 
 const EditPage = ({params}: {params: {id: string}}) => {
 

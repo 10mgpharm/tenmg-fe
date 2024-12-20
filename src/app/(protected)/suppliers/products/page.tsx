@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter, CiSearch } from "react-icons/ci"
+import { CiFilter } from "react-icons/ci"
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import EmptyOrder from "../orders/_components/EmptyOrder";
@@ -19,11 +19,10 @@ import {
     useDisclosure
 } from "@chakra-ui/react";
 import { 
-    ColumnOrderState, 
-    RowSelectionState, 
     SortingState, 
     flexRender, 
     getCoreRowModel, 
+    getFilteredRowModel, 
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table";
@@ -35,12 +34,15 @@ import { classNames } from "@/utils";
 import DeleteModal from "./_components/DeleteModal";
 import RestockModal from "./_components/RestockModal";
 import Link from "next/link";
-import FilterDrawer from "./_components/FilterDrawer";
 import Pagination from "../_components/Pagination";
 import ModalWrapper from "../_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, ProductResponseData } from "@/types";
+import { useDebouncedValue } from "@/utils/debounce";
+import { IFilterInput } from "../../vendors/customers-management/page";
+import FilterDrawer from "./_components/FilterDrawer";
+import SearchInput from "../../vendors/_components/SearchInput";
 
 const Products = () => {
 
@@ -51,12 +53,15 @@ const Products = () => {
     const [loading, setLoading] = useState<boolean>(false); 
     const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnVisibility, setColumnVisibility] = useState({});
-    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
+    const [status, setStatus] = useState<string>("");
+    const [globalFilter, setGlobalFilter] = useState<string>("");
     const [products, setProducts] = useState<ProductResponseData>();
+    const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+    const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
     const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+
+    const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
@@ -66,19 +71,27 @@ const Products = () => {
 
     const fetchProducts = useCallback(async () => {
         setLoading(true);
+        let query = `/supplier/products?page=${pageCount}`;
+        if (debouncedSearch) {
+            query += `&search=${debouncedSearch}`;
+        }
+        if (createdAtStart) {
+            query += `&createdAtStart=${createdAtStart.toISOString().split("T")[0]}`;
+        }
+        if (createdAtEnd) {
+        query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+        }
         try {
-        const response = await requestClient({ token: token }).get(
-            `/supplier/products`
-        );
-        if (response.status === 200) {
-            setProducts(response.data.data);
-        }
-        setLoading(false);
+        const response = await requestClient({ token: token }).get(query);
+            if (response.status === 200) {
+                setProducts(response.data.data);
+            }
+            setLoading(false);
         } catch (error) {
-        console.error(error);
-        setLoading(false);
+            console.error(error);
+            setLoading(false);
         }
-    }, [token]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
 
     useEffect(() => {
         if(!token) return;
@@ -92,18 +105,31 @@ const Products = () => {
         columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate),
         onSortingChange: setSorting,
         state: {
-          sorting,
-          columnVisibility,
-          columnOrder,
-          rowSelection,
+          globalFilter,
         },
-        enableRowSelection: true,
-        onRowSelectionChange: setRowSelection,
-        onColumnVisibilityChange: setColumnVisibility,
-        onColumnOrderChange: setColumnOrder,
+        manualFiltering: true,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
     });
+
+    const applyFilters = (filters: IFilterInput) => {
+        setCreatedAtStart(filters.startDate);
+        setCreatedAtEnd(filters.endDate);
+        setStatus(filters.status);
+    };
+
+    const clearFilters = () => {
+        setCreatedAtStart(null);
+        setCreatedAtEnd(null);
+        setStatus("");
+        setGlobalFilter("");
+    };
+
+    const filterOptions = [
+        { option: "Active", value: "active" },
+        { option: "Suspended", value: "inactive" },
+    ];
 
   return (
     <div className="p-8">
@@ -114,15 +140,12 @@ const Products = () => {
                     {/* <span className="font-light text-gray-600">(10/10)</span> */}
                 </h3>
                 <div className="flex items-center gap-3 mt-5">
-                    <div className="border border-gray-300 rounded-md flex items-center gap-3 p-3 w-[350px]">
-                        <CiSearch className="w-5 h-5" />
-                        <input 
-                        type="text" 
-                        placeholder="Search for a product" 
-                        className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
-                        />
-                    </div>
-                    <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 p-3 rounded-md flex items-center gap-2">
+                    <SearchInput
+                        placeholder="Search for a Product"
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                    />
+                    <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2">
                         <CiFilter className="w-5 h-5" />
                         <p className="text-gray-500 font-medium">Filter</p>
                     </div>
@@ -285,7 +308,13 @@ const Products = () => {
                 </div>
             </div>
         </ModalWrapper>
-        <FilterDrawer isOpen={isOpenFilter} onClose={onCloseFilter} />
+        <FilterDrawer 
+            isOpen={isOpenFilter} 
+            onClose={onCloseFilter} 
+            applyFilters={applyFilters}
+            clearFilters={clearFilters}
+            filterOptions={filterOptions}
+        />
     </div>
   )
 }

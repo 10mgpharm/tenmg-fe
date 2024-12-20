@@ -182,7 +182,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                     id="image_uploads"
                     name="image"
                     onChange={onLoadImage}
-                    accept=".pdf, .png, .jpg"
+                    accept=".jpeg, .png, .jpg"
                     style={{
                         opacity: "0",
                         position: "absolute",

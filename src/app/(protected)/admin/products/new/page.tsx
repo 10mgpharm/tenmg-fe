@@ -150,7 +150,6 @@ const AddProducts = () => {
                 setIsLoading(false);
                 fetchProducts();
                 router.push('/admin/products')
-
             }
         } catch (error) {
             setIsLoading(false);
@@ -196,7 +195,7 @@ const AddProducts = () => {
                                     control={control}
                                     errors={errors}
                                     setValue={setValue}
-                                    handleSubmit={handleSubmit}
+                                    isLoading={isLoading}
                                 />
                         default:
                             break;
