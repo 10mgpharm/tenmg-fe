@@ -274,7 +274,10 @@ const Page = () => {
                     <Pagination meta={products?.meta} setPageCount={setPageCount}/>
                 </TableContainer>
             )
-            : <GridList data={memoizedData}/>)
+            : <GridList 
+            data={memoizedData}
+            routing="/admin/products"
+            />)
         }
         </div>
         <DeleteModal 

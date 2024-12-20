@@ -267,7 +267,10 @@ const Products = () => {
                 </Table>
                 <Pagination meta={products?.meta} setPageCount={setPageCount}/>
             </TableContainer>
-            : <GridList data={memoizedData}/>
+            : <GridList 
+            data={memoizedData}
+            routing="/suppliers/products"
+            />
         }
         </div>
         <DeleteModal isOpen={isOpen} onClose={onClose}/>

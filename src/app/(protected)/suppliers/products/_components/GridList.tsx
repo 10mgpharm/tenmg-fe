@@ -1,6 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Box, Menu, MenuButton, MenuItem, MenuList, Text, useDisclosure } from '@chakra-ui/react'
+import { 
+    Box, 
+    Menu, 
+    MenuButton, 
+    MenuItem, 
+    MenuList, 
+    Text, 
+    useDisclosure 
+} from '@chakra-ui/react'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { classNames } from '@/utils'
 import DeleteModal from './DeleteModal'
@@ -8,7 +16,7 @@ import RestockModal from './RestockModal'
 import DeactiveModal from './DeactiveModal'
 import { ProductDataProps } from '@/types'
 
-const GridList = ({data}: {data: ProductDataProps[]}) => {
+const GridList = ({data, routing}: {data: ProductDataProps[], routing: string}) => {
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { 
@@ -39,9 +47,11 @@ const GridList = ({data}: {data: ProductDataProps[]}) => {
                             </MenuButton>
                             <MenuList dir='rtl'>
                                 <MenuItem>
-                                    <Link href={`/admin/products/${item.slug}`}>View Details</Link>
+                                    <Link href={`${routing}/${item.id}`}>View Details</Link>
                                 </MenuItem>
-                                <MenuItem>Edit Product</MenuItem>
+                                <MenuItem>
+                                    <Link href={`${routing}/edit/${item.id}`}>Edit Product</Link>
+                                </MenuItem>
                                 <MenuItem onClick={() => onOpenRestock()}>Flag</MenuItem>
                                 {
                                     item?.status === "ACTIVE" ? 
