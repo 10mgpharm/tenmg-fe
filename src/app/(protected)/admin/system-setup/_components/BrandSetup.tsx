@@ -56,7 +56,7 @@ const BrandSetup = (
           <Input
             type="text"
             pl={10}
-            placeholder='Search for a user'
+            placeholder={`Search for a ${type?.toLocaleLowerCase()}`}
           />
         </InputGroup>
         <Button h="38px" onClick={onOpen} bg={"primary.500"}>Add New {type}</Button>

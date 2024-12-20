@@ -8,6 +8,7 @@ import requestClient from '@/lib/requestClient'
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from '@/types'
 import EmptyProductScreen from '../_components/EmptyProductScreen'
+import { Spinner } from '@chakra-ui/react'
 
 
 
@@ -20,8 +21,12 @@ export default function StoreFrontByCategory() {
   const splitPath = path.split('/');
   const category = splitPath[splitPath.length - 1];
 
+  const categoryParam = category?.split("-").join(" ");
 
+  const [categoryData, setCategoryData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  console.log("categoryData", categoryData);
 
   const breadCrumb = [
     {
@@ -33,15 +38,14 @@ export default function StoreFrontByCategory() {
       link: '/storefront'
     },
     {
-      text: category,
+      text: `${loading ? <Spinner /> : categoryData?.category.name}`,
       link: '#'
     }
   ]
 
-  const [categoryData, setCategoryData] = useState(null);
 
   useEffect(() => {
-
+    setLoading(true);
     const fetchCategoryData = async () => {
       try {
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/categories/${category}`);
@@ -49,6 +53,8 @@ export default function StoreFrontByCategory() {
         setCategoryData(data?.data?.data);
       } catch (e) {
         console.log(e)
+      } finally {
+        setLoading(false);
       }
     }
     fetchCategoryData();
@@ -63,18 +69,22 @@ export default function StoreFrontByCategory() {
       {/* <section className=""> */}
       {/* <EmptyProductScreen /> */}
 
-      <div className=" w-11/12 my-8 mx-auto">
-        <div className={`gap-x-4 gap-y-6 w-full   ${categoryData?.data.length > 0 ? "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4" : " "}`}>
-          {categoryData?.data && categoryData?.data.length > 0 ? categoryData?.data
-            .map((data: any, i: number) => (
-              // <p key={i}>Item {i}</p>
-              <StoreProductCardComponent key={i} product={data} />
-            ))
+      {loading ? <Spinner /> :
+        <>
+          <div className=" w-11/12 my-8 mx-auto">
+            <div className={`gap-x-4 gap-y-6 w-full   ${categoryData?.data.length > 0 ? "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4" : " "}`}>
+              {categoryData?.data && categoryData?.data.length > 0 ? categoryData?.data
+                .map((data: any, i: number) => (
+                  // <p key={i}>Item {i}</p>
+                  <StoreProductCardComponent key={i} product={data} />
+                ))
 
-            : <EmptyProductScreen />
-          }
-        </div>
-      </div>
+                : <EmptyProductScreen />
+              }
+            </div>
+          </div>
+        </>
+      }
     </section>
     // </section>
   )

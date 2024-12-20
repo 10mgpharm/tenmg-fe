@@ -24,12 +24,14 @@ import { LuUsers, LuWallet } from 'react-icons/lu'
 import { FaBalanceScale } from 'react-icons/fa'
 import { GiSpanner } from "react-icons/gi";
 import { MdMonitor } from 'react-icons/md'
+import { IoDocumentTextOutline } from 'react-icons/io5'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
   { name: 'Orders', href: '/admin/orders', icon: BsCart2, current: false },
   { name: 'Products', href: '/admin/products', icon: FiShoppingBag, current: false },
   { name: 'User Management', href: '/admin/users', icon: LuUsers, current: false },
+  { name: 'Document Approval', href: '/admin/document-approval', icon: IoDocumentTextOutline, current: false },
   { name: 'Insight', href: '/admin/insight', icon: LuUsers, current: false },
   { name: 'Wallet', href: '/admin/wallet', icon: LuWallet, current: false },
   { name: 'Discount Code', href: '/admin/discount-code', icon: RiPercentLine, current: false },

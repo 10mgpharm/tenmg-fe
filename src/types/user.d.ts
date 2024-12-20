@@ -424,6 +424,32 @@ export interface CreditScoreResponseData {
   meta: MetaDataProp;
 }
 
+export interface AdminApprovals {
+  id: number;
+  type: string;
+  licenseNumber: string;
+  expiryDate: string;
+  name: string;
+  businessName: string;
+  contactEmail: string,
+  businessAddress: string,
+  contactPersonName: string;
+  contactPhoneNumber: string;
+  position: string;
+  cacDocument: string,
+  verificationStatus: string
+  createdAt: string;
+  actions: string;
+}
+
+export interface AdminApprovalsProps {
+  data: AdminApprovals[];
+  links: any;
+  meta: MetaDataProp;
+  message: string;
+  status: string;
+}
+
 interface NextAuthUserSessionWithToken extends JWT {
     name: string;
     email: string;

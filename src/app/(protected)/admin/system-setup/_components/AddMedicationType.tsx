@@ -291,7 +291,7 @@ const AddMedicationType = (
                                                     <Controller
                                                         control={control}
                                                         name={`variations.${index}.presentation`}
-                                                        rules={{ required: 'Presentation is required' }}
+                                                        rules={{ required: 'Variant is required' }}
                                                         render={({ field: { onChange, value } }) =>
                                                             <div className="flex flex-col">
                                                                 <CustomCreatableSelectComponent

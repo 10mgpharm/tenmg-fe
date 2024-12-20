@@ -1,4 +1,4 @@
-import { Badge, Divider } from '@chakra-ui/react'
+import { Badge, Button, Divider } from '@chakra-ui/react'
 import React from 'react'
 
 export default function OrderCardComponent({ product }) {
@@ -10,7 +10,7 @@ export default function OrderCardComponent({ product }) {
           <p className='text-sm  text-gray-500 my-1'>{product?.created_at}</p>
           <p className={`text-xs  py-1 px-3 rounded-md  w-fit ${product?.status.toLowerCase() === 'completed' ? "text-green-100 bg-green-500" : product?.status.toLowerCase() === "pending" ? "text-amber-100 bg-amber-500" : "text-red-100 bg-red-500"} `}>{product?.status}</p>
         </div>
-        <p className='text-lg font-medium text-gray-900'>{product?.price}</p>
+        <p className='text-lg font-medium text-gray-900'>₦{product?.price}</p>
       </div>
       <Divider className='my-3' />
       <div>
@@ -20,10 +20,10 @@ export default function OrderCardComponent({ product }) {
             <div>
               <h4 className='text-lg font-medium text-gray-700'>{product?.product}</h4>
               <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>
-              <p className={`text-sm text-gray-500`}>{product?.quantity}</p>
+              <p className={`text-sm text-gray-500`}>Quantity: {product?.quantity} Pcs</p>
             </div>
           </div>
-          <button>View Order</button>
+          <Button variant="outline" size="sm" colorScheme={"blue"}>View Order</Button>
         </div>
       </div>
     </div>
