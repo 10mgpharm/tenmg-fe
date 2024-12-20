@@ -112,8 +112,6 @@ const AddMedicationType = ({ medication, isOpen, onClose, resetSelectedItem, fet
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        // return alert(JSON.stringify(data, null, 2));
-
         setIsLoading(true)
         try {
             const response = await requestClient({ token: token })[!medication ? 'post' : 'patch']
