@@ -20,7 +20,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
-  ColumnDef,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ColumnsAllFN } from "./table";
@@ -39,6 +38,16 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./DeleteModal";
+import EmptyRequest from "./EmptyRequest";
+
+interface UsersTabProps {
+  data: AdminApprovalsProps;
+  type: string;
+  isLoading: boolean;
+  setPageCount: Dispatch<SetStateAction<number>>;
+  pageCount: number;
+  fetchTeamUser: (reqType: string, page: number) => void;
+}
 
 const UsersTab = ({
   data,
@@ -47,14 +56,7 @@ const UsersTab = ({
   setPageCount,
   pageCount,
   fetchTeamUser,
-}: {
-  data: AdminApprovalsProps;
-  type: string;
-  isLoading: boolean;
-  setPageCount: Dispatch<SetStateAction<number>>;
-  pageCount: number;
-  fetchTeamUser: any;
-}) => {
+}: UsersTabProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -62,6 +64,7 @@ const UsersTab = ({
   const [approvalData, setApprovalData] = useState<AdminApprovals>();
   const [requestId, setRequestId] = useState<number>();
   const [isApprovingLoading, setIsApprovalLoading] = useState<boolean>(false);
+  const [isLoadingDecline, setIsLoadingDecline] = useState<boolean>(false);
 
   const { onOpen, isOpen, onClose } = useDisclosure();
   const {
@@ -69,35 +72,37 @@ const UsersTab = ({
     isOpen: isOpenDelete,
     onClose: onCloseDelete,
   } = useDisclosure();
+
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
 
-  const records = useMemo(() => data?.data, [data?.data]);
+  const records = useMemo(() => data?.data || [], [data?.data]);
 
   const handleData = (id: number) => {
     setRequestId(id);
-    setApprovalData(data?.data.find((item) => item.id === id));
-    onOpen();
+    const selected = records.find((item) => item.id === id);
+    if (selected) {
+      setApprovalData(selected);
+      onOpen();
+    }
   };
 
   const handleAcceptRequest = async (id: number) => {
+    if (!token) return;
     try {
       setIsApprovalLoading(true);
-
-      const response = await requestClient({ token: token }).patch(
+      const response = await requestClient({ token }).patch(
         `admin/business/licenses/${id}/status`,
         {
           status: "APPROVED",
-          comment: "testing",
+          comment: "Approved by admin",
         }
       );
-
       setIsApprovalLoading(false);
-
       if (response.status === 200) {
         toast.success(response.data.message);
-        fetchTeamUser();
+        fetchTeamUser(type, pageCount);
       }
     } catch (error) {
       setIsApprovalLoading(false);
@@ -106,52 +111,54 @@ const UsersTab = ({
     }
   };
 
-  const handleCommentDeleteRequest = async () => {
+  const handleCommentDeleteRequest = async (comment: string) => {
+    if (!token || !requestId) return;
+    setIsLoadingDecline(true);
     try {
-      setIsApprovalLoading(true);
-
-      const response = await requestClient({ token: token }).patch(
+      const response = await requestClient({ token }).patch(
         `admin/business/licenses/${requestId}/status`,
         {
           status: "REJECTED",
-          comment: "testing",
+          comment: comment,
         }
       );
-
-      setIsApprovalLoading(false);
-
+      setIsLoadingDecline(false);
       if (response.status === 200) {
         toast.success(response.data.message);
-        fetchTeamUser();
+        fetchTeamUser("", pageCount);
+        fetchTeamUser("Supplier", pageCount);
+        fetchTeamUser("Vendor", pageCount);
+        fetchTeamUser("Pharmacy", pageCount);
+        onCloseDelete();
+        if (onClose) onClose();
       }
     } catch (error) {
-      setIsApprovalLoading(false);
+      setIsLoadingDecline(false);
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
     }
   };
 
-  const handleDeleteRequest = () => {
-    onOpenDelete();
-  };
-
   const handleAccept = (id: string) => {
-    console.log("Accepted request ID:", id);
+    const numericId = Number(id);
+    handleAcceptRequest(numericId);
+    onClose();
   };
 
-  const handleDecline = (id: string) => {
-    // Implement decline logic
-    console.log("Declined request ID:", id);
+  const handleDecline = (id) => {
+    const numericId = Number(id);
+    setRequestId(numericId);
+    onOpenDelete();
   };
 
   const renderedColumn =
     type === "Vendor"
-      ? ColumnsVendorFN(handleData, handleAcceptRequest, handleDeleteRequest)
+      ? ColumnsVendorFN(handleData, handleAcceptRequest, handleDecline)
       : type === "Pharmacy"
-      ? ColumnsPharmFN(handleData, handleAcceptRequest, handleDeleteRequest)
+      ? ColumnsPharmFN(handleData, handleAcceptRequest, handleDecline)
       : type === "Supplier"
-      ? ColumnsSupplierFN(handleData, handleAcceptRequest, handleDeleteRequest)
-      : ColumnsAllFN(handleData, handleAcceptRequest, handleDeleteRequest);
+      ? ColumnsSupplierFN(handleData, handleAcceptRequest, handleDecline)
+      : ColumnsAllFN(handleData, handleAcceptRequest, handleDecline);
 
   const table = useReactTable({
     data: records,
@@ -172,24 +179,24 @@ const UsersTab = ({
   });
 
   return (
-    <div className="">
+    <div>
       {isLoading ? (
         <Stack mt={"10rem"}>
           <FaSpinner className="animate-spin w-6 h-6 mx-auto" />
         </Stack>
-      ) : records?.length === 0 ? (
-        <EmptyOrder
+      ) : records.length === 0 ? (
+        <EmptyRequest
           heading={`No New Approval Request Yet`}
           content={`No recent request yet, all document request would appear here!`}
         />
       ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
-            <Thead bg={"#F2F4F7"}>
-              {table?.getHeaderGroups()?.map((headerGroup, index) => (
-                <Tr key={index}>
-                  {headerGroup.headers?.map((header, index) => (
-                    <Th textTransform={"initial"} px="6px" key={index}>
+            <Thead bg={"blue.50"}>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <Tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <Th textTransform={"initial"} px="6px" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -202,35 +209,37 @@ const UsersTab = ({
               ))}
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {records &&
-                table?.getRowModel()?.rows?.map((row, index) => (
-                  <Tr key={index}>
-                    {row.getVisibleCells()?.map((cell, index) => (
-                      <Td key={index} px="6px">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </Td>
-                    ))}
-                  </Tr>
-                ))}
+              {table.getRowModel().rows.map((row) => (
+                <Tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <Td key={cell.id} px="6px">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </Td>
+                  ))}
+                </Tr>
+              ))}
             </Tbody>
           </Table>
           <Pagination meta={data?.meta} setPageCount={setPageCount} />
         </TableContainer>
       )}
+
       <RequestDrawer
         isOpen={isOpen}
         onClose={onClose}
         onAccept={handleAccept}
         onDecline={handleDecline}
-        requestId="1"
+        requestId={requestId?.toString() || ""}
         data={approvalData}
       />
+
       <DeleteModal
         isOpen={isOpenDelete}
         onClose={onCloseDelete}
+        isLoadingDecline={isLoadingDecline}
         handleCommentDeleteRequest={handleCommentDeleteRequest}
       />
     </div>

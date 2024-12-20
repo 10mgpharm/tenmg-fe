@@ -10,7 +10,7 @@ const columnHelper = createColumnHelper<AdminApprovals>();
 export function ColumnsAllFN(
   handleView: (id: number) => void,
   handleAcceptRequest: (id: number) => void,
-  handleDeleteRequest: (id: number) => void
+  handleDecline: (id: number) => void
 ) {
   return [
     columnHelper.accessor("name", {
@@ -28,7 +28,7 @@ export function ColumnsAllFN(
     columnHelper.accessor("type", {
       header: ({ column }) => <p className="">User Type</p>,
       cell: (info) => (
-        <div className="pl-4">
+        <div className="">
           <p className="font-medium">{info?.row?.original?.type || "N/A"}</p>
         </div>
       ),
@@ -44,15 +44,20 @@ export function ColumnsAllFN(
       ),
     }),
 
+    columnHelper.accessor("expiryDate", {
+      header: ({ column }) => <p className="">Expiry Date</p>,
+      cell: (info) => (
+        <div className="">
+          <p className="font-medium">{info?.row?.original?.expiryDate}</p>
+        </div>
+      ),
+    }),
+
     columnHelper.accessor("createdAt", {
       header: ({ column }) => <p className="">Date Submitted</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">
-            {info?.row?.original?.createdAt
-              ? convertDate(info?.row?.original?.createdAt)
-              : "N/A"}
-          </p>
+          <p className="font-medium">{info?.row?.original?.createdAt}</p>
         </div>
       ),
     }),
@@ -79,7 +84,7 @@ export function ColumnsAllFN(
                 Accept Request
               </MenuItem>
               <MenuItem
-                onClick={() => handleDeleteRequest(info?.row?.original?.id)}
+                onClick={() => handleDecline(info?.row?.original?.id)}
                 color="red.500"
               >
                 Decline Request

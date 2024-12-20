@@ -11,10 +11,8 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { CiSearch } from "react-icons/ci";
-import { FaChevronDown } from "react-icons/fa6";
 import { MdFilterList } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import { AdminApprovalsProps, NextAuthUserSession } from "@/types";
@@ -22,63 +20,71 @@ import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import UsersTab from "./_components/UsersTab";
 
+// interface ResponseData {
+//   data: AdminApprovalsProps;
+//   stats: { type: string; total: number }[];
+// }
+
 const DocumentApproval = () => {
-  const [type, setType] = useState<"supplier" | "vendor" | "pharmacy">(
-    "supplier"
-  );
-
-  const session = useSession();
-  const sessionToken = session?.data as NextAuthUserSession;
+  const [type, setType] = useState<"supplier" | "vendor" | "pharmacy" | "">("");
+  const { data: sessionData } = useSession();
+  const sessionToken = sessionData as NextAuthUserSession;
   const token = sessionToken?.user?.token;
-  const [supplierData, setSupplierData] =
-    useState<AdminApprovalsProps | null>();
-  const [vendorData, setVendorData] = useState<AdminApprovalsProps | null>();
-  const [pharmData, setPharmData] = useState<AdminApprovalsProps | null>();
-  const [requestData, setRequestData] = useState<AdminApprovalsProps | null>();
-  const [supplierCount, setSupplierCount] = useState<AdminApprovalsProps>();
-  const [vendorCount, setVendorCount] = useState<AdminApprovalsProps>();
-  const [pharmCount, setPharmCount] = useState<AdminApprovalsProps>();
-  const [requestCount, setRequestCount] =
-    useState<AdminApprovalsProps | null>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [requestData, setRequestData] = useState<AdminApprovalsProps | null>(
+    null
+  );
+  const [supplierData, setSupplierData] = useState<AdminApprovalsProps | null>(
+    null
+  );
+  const [vendorData, setVendorData] = useState<AdminApprovalsProps | null>(
+    null
+  );
+  const [pharmData, setPharmData] = useState<AdminApprovalsProps | null>(null);
+
+  const [requestTotal, setRequestTotal] = useState<number>(0);
+  const [supplierTotal, setSupplierTotal] = useState<number>(0);
+  const [vendorTotal, setVendorTotal] = useState<number>(0);
+  const [pharmTotal, setPharmTotal] = useState<number>(0);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(1);
-  // const [pageLimit, setPageLimit] = useState<number>(10);
-  const [total, setTotal] = useState<any>("");
 
   const fetchRequests = useCallback(
-    async (type: string, pageCount: number) => {
+    async (requestType: string, page: number) => {
+      if (!token) return;
       try {
         setIsLoading(true);
-        const response = await requestClient({ token: token }).get(
-          `/admin/business/licenses?page=${pageCount}&type=${type}`
+        const response = await requestClient({ token }).get(
+          `/admin/business/licenses?page=${page}${
+            requestType ? `&type=${requestType}` : ""
+          }`
         );
+
         if (response.status === 200) {
-          setIsLoading(false);
-          if (type === "") {
-            setRequestCount(response.data.data);
-            setRequestData(response.data.data);
-            setTotal(response.data?.meta);
-          } else if (type === "Supplier") {
-            setSupplierCount(response.data.data);
-            setSupplierData(response.data.data);
-            setTotal(response.data?.meta);
-          } else if (type === "Vendor") {
-            setVendorCount(response.data.data);
-            setVendorData(response.data.data);
-            setTotal(response.data?.meta);
-          } else if (type === "Pharmacy") {
-            setPharmCount(response.data.data);
-            setPharmData(response.data.data);
-            setTotal(response.data?.meta);
+          const { data } = response.data;
+
+          if (requestType === "") {
+            setRequestData(data);
+            setRequestTotal(data.meta.total);
+          } else if (requestType === "Supplier") {
+            setSupplierData(data);
+            setSupplierTotal(data.meta.total);
+          } else if (requestType === "Pharmacy") {
+            setPharmData(data);
+            setPharmTotal(data.meta.total);
+          } else if (requestType === "Vendor") {
+            setVendorData(data);
+            setVendorTotal(data.meta.total);
           }
         }
       } catch (error) {
-        setIsLoading(false);
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     },
-    [token, pageCount, type]
+    [token]
   );
 
   useEffect(() => {
@@ -91,10 +97,16 @@ const DocumentApproval = () => {
 
   const handleTabsChange = (index: number) => {
     setPageCount(1);
-    if (index === 1) {
-      fetchRequests("Supplier", 1);
-      setVendorData(null);
+
+    if (index === 0) {
+      fetchRequests("", 1);
+      setSupplierData(null);
       setPharmData(null);
+      setVendorData(null);
+    } else if (index === 1) {
+      fetchRequests("Supplier", 1);
+      setPharmData(null);
+      setVendorData(null);
       setRequestData(null);
     } else if (index === 2) {
       fetchRequests("Pharmacy", 1);
@@ -106,14 +118,10 @@ const DocumentApproval = () => {
       setSupplierData(null);
       setPharmData(null);
       setRequestData(null);
-    } else {
-      fetchRequests("", 1);
-      setVendorData(null);
-      setPharmData(null);
-      setSupplierData(null);
     }
   };
 
+  console.log(requestData, supplierData, vendorData, pharmData);
   return (
     <div className="p-8">
       <div className="flex justify-between">
@@ -143,31 +151,6 @@ const DocumentApproval = () => {
               </MenuList>
             </Menu>
           </div>
-          <Menu>
-            <MenuButton className="bg-primary-500 font-medium text-white p-2 px-5 rounded-md">
-              <div className="flex items-center gap-2">
-                Actions
-                <FaChevronDown className="w-4 h-4 text-white" />
-              </div>
-            </MenuButton>
-            <MenuList>
-              <MenuItem
-                onClick={() => {
-                  ("");
-                }}
-              >
-                Accept All
-              </MenuItem>
-              <MenuItem
-                color="red.500"
-                onClick={() => {
-                  ("");
-                }}
-              >
-                Decline Request
-              </MenuItem>
-            </MenuList>
-          </Menu>
         </div>
       </div>
       <Tabs onChange={handleTabsChange} variant={"unstyled"}>
@@ -178,7 +161,7 @@ const DocumentApproval = () => {
             <div className="flex items-center gap-3">
               <Text>All</Text>
               <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {requestCount?.meta.total || 0}
+                {requestTotal || 0}
               </p>
             </div>
           </Tab>
@@ -188,7 +171,7 @@ const DocumentApproval = () => {
             <div className="flex items-center gap-3">
               <Text>Suppliers</Text>
               <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {supplierCount?.meta.total || 0}
+                {supplierTotal || 0}
               </p>
             </div>
           </Tab>
@@ -198,7 +181,7 @@ const DocumentApproval = () => {
             <div className="flex items-center gap-3">
               <Text>Pharmacies</Text>
               <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                {pharmCount?.meta.total || 0}
+                {pharmTotal || 0}
               </p>
             </div>
           </Tab>
@@ -208,7 +191,7 @@ const DocumentApproval = () => {
             <div className="flex items-center gap-3">
               <Text>Vendors</Text>
               <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                {vendorCount?.meta.total || 0}
+                {vendorTotal || 0}
               </p>
             </div>
           </Tab>
@@ -228,7 +211,7 @@ const DocumentApproval = () => {
             <UsersTab
               isLoading={isLoading}
               data={supplierData}
-              type="Suppliers"
+              type="Supplier"
               pageCount={pageCount}
               setPageCount={setPageCount}
               fetchTeamUser={fetchRequests}
@@ -248,7 +231,7 @@ const DocumentApproval = () => {
             <UsersTab
               isLoading={isLoading}
               data={vendorData}
-              type="Vendors"
+              type="Vendor"
               pageCount={pageCount}
               setPageCount={setPageCount}
               fetchTeamUser={fetchRequests}

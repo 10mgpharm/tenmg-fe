@@ -433,12 +433,15 @@ export interface AdminApprovals {
   businessName: string;
   contactEmail: string,
   businessAddress: string,
-  contactPersonName: string;
-  contactPhoneNumber: string;
+  contactPerson: string;
+  contactPhone: string;
+  contactPersonPosition: string;
+  code: string;
   position: string;
   cacDocument: string,
   verificationStatus: string
   createdAt: string;
+  address: string;
   actions: string;
 }
 
