@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation"
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
-import { IFormInput } from "../new/page";
+import { IFormInput } from "../add-product/page";
 
 interface IChildComponentProps {
     title: string;

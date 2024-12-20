@@ -125,14 +125,14 @@ const EditPage = ({params}: {params: {id: string}}) => {
         const formdata = new FormData();
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
-        formdata.append("medicationTypeName", data.medicationTypeName?.label)
-        formdata.append("categoryName", data?.categoryName?.label);
-        formdata.append("brandName", data?.brandName?.label);
-        formdata.append("weight", data?.weight?.label);
-        formdata.append("packageName", data?.brandName?.label);
-        formdata.append("presentationName", data?.presentationName?.label);
+        formdata.append("medicationTypeName", data.medicationTypeName)
+        formdata.append("categoryName", data?.categoryName);
+        formdata.append("brandName", data?.brandName);
+        formdata.append("weight", data?.weight);
+        formdata.append("packageName", data?.brandName);
+        formdata.append("presentationName", data?.presentationName);
         formdata.append("strengthValue", '1');
-        formdata.append("measurementName", data?.measurementName?.label);
+        formdata.append("measurementName", data?.measurementName);
         formdata.append("lowStockLevel", data?.lowStockLevel);
         formdata.append("outStockLevel", data?.outStockLevel);
         formdata.append("expiredAt", expiryDate);
@@ -178,7 +178,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     setSteps={setSteps} 
                                     brands={brandData?.data} 
                                     categories={categoryData?.data} 
-                                    medications={medicationData?.data}
                                     control={control}
                                     register={register}
                                     errors={errors}
@@ -189,7 +188,9 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     setSteps={setSteps}
                                     register={register}
                                     control={control}
+                                    medications={medicationData?.data}
                                     errors={errors}
+                                    setValue={setValue}
                                 />
                         case 'inventory':
                             return <InventoryForm 
