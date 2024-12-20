@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 import { MedicationResponseData, NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { SelectProps } from "@/app/(protected)/vendors/loan-applications/_components/SendApplicationLink";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { useRouter } from "next/navigation";
@@ -27,7 +26,7 @@ export interface IFormInput {
     discountPrice: string;
     lowStockLevel: string;
     outStockLevel: string;
-    weight: string;
+    weight: string | null;
     quantity: string;
     expiredAt: any;
     thumbnailFile: string;

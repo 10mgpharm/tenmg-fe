@@ -12,7 +12,7 @@ import {
     useDisclosure
 } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import SuccessModal from "./SuccessModal";
 import "react-datepicker/dist/react-datepicker.css";
@@ -36,11 +36,9 @@ interface IChildComponentProps {
     isLoading: boolean;
 }
 
-const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, setValue, control, isLoading }) => {
+const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, control, isLoading }) => {
 
     const router = useRouter();
-
-    const [startDate, setStartDate] = useState<Date | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
@@ -48,7 +46,7 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
         <div className="flex items-center justify-between">
             <HStack onClick={() => router.back()} cursor={"pointer"}>
                 <ArrowLeftIcon className='w-5- h-5'/>
-                <Text>Back</Text>
+                <Text>Back to products</Text>
             </HStack>
             <div className="">
                 <p className="font-semibold">Steps 3/3</p>
@@ -102,7 +100,6 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
                 </FormControl>
                 <FormControl>
                     <FormLabel color={"gray.600"}>Expiration Date Proximity</FormLabel>
-                    {/* <DateComponent startDate={startDate} setStartDate={setStartDate} /> */}
                     <Controller
                         name="expiredAt"
                         control={control}
@@ -141,7 +138,10 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
                 Add Product
             </Button>
         </div>
-        <SuccessModal isOpen={isOpen} onClose={onClose}/>
+        <SuccessModal 
+        isOpen={isOpen} 
+        onClose={onClose}
+        />
     </div>
   )
 }
