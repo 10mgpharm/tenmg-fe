@@ -184,7 +184,11 @@ const Products = () => {
                         " w-5 h-5")}
                     />
                 </div>
-                <Link href={'/suppliers/products/new'} className="bg-primary-500 text-white p-2 px-5 rounded-md">Add Product</Link>
+                <Link 
+                href={'/suppliers/products/add-product'} 
+                className="bg-primary-500 text-white p-2 px-5 rounded-md">
+                    Add Product
+                </Link>
             </div>
         </div>
         <div className="">
