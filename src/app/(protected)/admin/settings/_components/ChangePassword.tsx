@@ -101,7 +101,7 @@ const ChangePassword = ({
         <DrawerBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.currentPassword?.message}>
-              <FormLabel>Old Password</FormLabel>
+              <FormLabel> The Old Password</FormLabel>
               <InputGroup>
                 <Input
                   type={show ? "text" : "password"}
