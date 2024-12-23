@@ -73,7 +73,7 @@ export default function ProfileInformation() {
           backgroundImage: `url(${filePreview ? filePreview : '/assets/images/avatar.jpg'})`,
         }} />
         <div className="flex flex-col justify-between gap-3">
-          <Text fontSize={"1rem"} fontWeight={600} color="gray.700">Upload Image</Text>
+          <Text fontSize={"1rem"} fontWeight={600} color="gray.700">Profile Image</Text>
           <Text fontSize={"14px"} fontWeight={400} color="gray.700">Min 400x400px, PNG or JPEG</Text>
 
           <HiddenFileUpload

@@ -47,7 +47,7 @@ export default function VendorSettingsLayout({
       link: "/storefront"
     },
     {
-      text: link_arr[activeIndex].label,
+      text: link_arr[activeIndex]?.label,
       link: "#"
     }
   ]

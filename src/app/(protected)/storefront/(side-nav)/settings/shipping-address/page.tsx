@@ -14,7 +14,7 @@ export default function ShippingAddress
             <div key={i} className='border border-gray-300 p-5 flex flex-col gap-2 rounded-md mx-auto w-full cursor-pointer'>
               <h2 className='text-xl font-bold'>Shipping Address</h2>
               <p className='text-base font-bold'>+234 8123 456 789 </p>
-              <p className='text-sm text-gray-500'>Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+              <p className='text-sm text-gray-500'>Apt. 721 56357 Abshire Squares, Jonesbury, AR 66477</p>
 
               <HStack width={'65%'}>
                 <EditShippingAddress id={"2"} />
@@ -79,7 +79,7 @@ function EditShippingAddress({ id }: EditShippingAddressProps) {
 
   return (
     <>
-      <Button onClick={onOpen} variant={id ? "outline" : "solid"} colorScheme={"blue"} size={"sm"} width={"100%"}>{id ? "Edit Address" : "Add Address "}</Button>
+      <Button onClick={onOpen} variant={id ? "outline" : "solid"} colorScheme={"blue"} size={"sm"} width={"100%"}>{id ? "Edit Address" : "Add Shipping Address "}</Button>
 
       <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={true} size={"xl"}>
         <ModalOverlay />
