@@ -64,32 +64,30 @@ const BusinessInformation = ({ user }: { user: User }) => {
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
     try {
       setIsLoading(true);
-
+  
       const response = await requestClient({
         token: sessionData.user.token,
       }).patch("/vendor/settings/business-information", {
         ...value,
       });
-      // const { status, message }: ResponseDto<User> = response.data;
+  
       if (response.status === 200) {
-        toast.success(response.data.message);
+        // Override backend success message with a fixed one
+        toast.success("Business information successfully updated");
         setIsLoading(false);
-        // await session.update({
-        //   user: {
-        //     ...sessionData.user,
-        //     name: data.name,
-        //     email: data.email,
-        //   },
-        // });
       } else {
-        toast.error(`License upload failed: ${response.data.message}`);
+        toast.error(`Error: ${response.data.message}`);
+        setIsLoading(false);
       }
     } catch (error) {
       setIsLoading(false);
+  
+      // Handle unexpected errors and display a user-friendly message
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
     }
   };
+  
 
   return (
     <div className="p-2 md:p-5 rounded-md bg-white md:max-w-5xl">
