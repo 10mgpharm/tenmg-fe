@@ -5,6 +5,7 @@ import Carousel from "./_components/Carousel";
 import ProductField from "./_components/ProductField";
 import { useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
+import EmptyStoreFront from "./_components/EmptyStoreFront";
 
 const StoreFront = () => {
   const session = useSession();
@@ -29,12 +30,16 @@ const StoreFront = () => {
   //     }
   // )
   const [storeFrontData, setStoreFrontData] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
   useEffect(() => {
     const fetchStoreFront = async () => {
       try {
         const data = await requestClient({ token: userData?.user?.token }).get("/storefront");
         // console.log(data);
         setStoreFrontData(data?.data?.data);
+
+        const storeCount = data?.data?.data?.flatMap(item => item.products).length;
+        setIsEmpty(storeCount === 0);
       } catch (e) {
         console.log(e)
       }
@@ -49,7 +54,7 @@ const StoreFront = () => {
       <div className="p-8 px-6 md:px-20 max-w-screen-2xl">
         <Carousel />
       </div>
-      {storeFrontData?.map((category, i) => (
+      {isEmpty ? <EmptyStoreFront /> : storeFrontData?.map((category, i) => (
         category?.products?.length > 0 && <ProductField key={i} category={category} />
       ))}
     </div>
