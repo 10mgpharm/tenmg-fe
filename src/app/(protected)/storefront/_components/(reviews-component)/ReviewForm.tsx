@@ -110,7 +110,7 @@ export default function ReviewForm({ onClose }: any) {
 
 
         <div className="flex flex-col justify-between gap-3 my-3">
-          <Text fontSize={"1rem"} fontWeight={600} color="gray.700">Upload Pictures (MaximumE number of images - 6 )</Text>
+          <Text fontSize={"1rem"} fontWeight={600} color="gray.700">Upload Pictures (Maximum number of images - 6 )</Text>
           {/* <Text fontSize={"14px"} fontWeight={400} color="gray.700">Upload Pictures (MaximumE number of images - 6 )</Text> */}
 
           <div className='flex items-center gap-x-2'>

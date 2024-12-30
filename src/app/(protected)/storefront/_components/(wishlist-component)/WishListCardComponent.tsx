@@ -11,11 +11,11 @@ export default function WishListCardComponent({ product }) {
             <div>
               <h4 className='text-lg font-medium text-gray-700'>{product?.product}</h4>
               <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>
-              <p className={`text-sm text-gray-500`}>{product?.quantity}</p>
+              <p className={`text-sm text-gray-500`}>Quantity: {product?.quantity} Pcs</p>
             </div>
           </div>
           <div className='space-y-4'>
-            <p className='text-lg font-medium text-gray-900 text-end'>{product?.price}</p>
+            <p className='text-lg font-medium text-gray-900 text-end'>₦{product?.price}</p>
             <div className='space-x-4'>
               <Button className='' variant={"outline"} colorScheme={"blue"} size="sm">Buy Now</Button>
               <Button variant={"outline"} colorScheme={"red"} size="sm">Remove</Button>

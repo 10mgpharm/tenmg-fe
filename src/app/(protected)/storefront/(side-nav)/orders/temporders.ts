@@ -7,7 +7,7 @@ export const temp_order = [
     status: "Completed",
     product: "MedFERTIL FOR MEN TABLETS - (CARNITINE , MULTIVITAMINS)",
     description: "Pentazocine (NEML 23.1)",
-    quantity: "15 Pcs",
+    quantity: "15",
   },
   {
     id: "2",
@@ -17,7 +17,7 @@ export const temp_order = [
     status: "Pending",
     product: "Folic Acid Supplement - 400mcg",
     description: "Folic Acid (NEML 10.1)",
-    quantity: "20 Pcs",
+    quantity: "20",
   },
   {
     id: "3",
@@ -27,7 +27,7 @@ export const temp_order = [
     status: "Cancelled",
     product: "Vitamin D3 - 5000 IU Softgels",
     description: "Vitamin D3 (NEML 24.2)",
-    quantity: "10 Pcs",
+    quantity: "10",
   },
   {
     id: "4",
@@ -37,7 +37,7 @@ export const temp_order = [
     status: "Completed",
     product: "Omega-3 Fish Oil Capsules - 1000mg",
     description: "Fish Oil (NEML 21.4)",
-    quantity: "25 Pcs",
+    quantity: "25",
   },
   {
     id: "5",
@@ -47,7 +47,7 @@ export const temp_order = [
     status: "Pending",
     product: "Iron Tablets - 65mg",
     description: "Ferrous Sulfate (NEML 12.3)",
-    quantity: "30 Pcs",
+    quantity: "30",
   },
   {
     id: "6",
@@ -57,7 +57,7 @@ export const temp_order = [
     status: "Completed",
     product: "Probiotic Supplement - 50 Billion CFU",
     description: "Probiotics (NEML 28.6)",
-    quantity: "15 Pcs",
+    quantity: "15",
   },
   {
     id: "7",
@@ -67,7 +67,7 @@ export const temp_order = [
     status: "Cancelled",
     product: "Magnesium Tablets - 500mg",
     description: "Magnesium Citrate (NEML 19.7)",
-    quantity: "12 Pcs",
+    quantity: "12",
   },
   {
     id: "8",
@@ -77,7 +77,7 @@ export const temp_order = [
     status: "Pending",
     product: "Zinc Supplement - 50mg Tablets",
     description: "Zinc (NEML 26.3)",
-    quantity: "20 Pcs",
+    quantity: "20",
   },
   {
     id: "9",
@@ -87,7 +87,7 @@ export const temp_order = [
     status: "Completed",
     product: "Calcium + Vitamin D3 Tablets",
     description: "Calcium Carbonate (NEML 17.1)",
-    quantity: "18 Pcs",
+    quantity: "18",
   },
   {
     id: "10",
@@ -97,7 +97,7 @@ export const temp_order = [
     status: "Cancelled",
     product: "Multivitamin Gummies for Adults",
     description: "Multivitamins (NEML 22.8)",
-    quantity: "10 Pcs",
+    quantity: "10",
   },
   {
     id: "11",
@@ -107,7 +107,7 @@ export const temp_order = [
     status: "Pending",
     product: "Coenzyme Q10 (CoQ10) Capsules",
     description: "CoQ10 (NEML 25.5)",
-    quantity: "15 Pcs",
+    quantity: "15",
   },
   {
     id: "12",
@@ -117,7 +117,7 @@ export const temp_order = [
     status: "Completed",
     product: "Collagen Powder - Unflavored",
     description: "Collagen (NEML 18.3)",
-    quantity: "8 Pcs",
+    quantity: "8",
   },
   {
     id: "13",
@@ -127,7 +127,7 @@ export const temp_order = [
     status: "Completed",
     product: "Vitamin C Chewable Tablets - 500mg",
     description: "Vitamin C (NEML 24.5)",
-    quantity: "25 Pcs",
+    quantity: "25",
   },
   {
     id: "14",
@@ -137,7 +137,7 @@ export const temp_order = [
     status: "Cancelled",
     product: "L-Arginine Tablets - 500mg",
     description: "L-Arginine (NEML 13.8)",
-    quantity: "10 Pcs",
+    quantity: "10",
   },
   {
     id: "15",
@@ -147,7 +147,7 @@ export const temp_order = [
     status: "Pending",
     product: "B Complex + B12 Tablets",
     description: "Vitamin B Complex (NEML 20.2)",
-    quantity: "20 Pcs",
+    quantity: "20",
   },
   {
     id: "16",
@@ -157,7 +157,7 @@ export const temp_order = [
     status: "Completed",
     product: "Herbal Stress Relief Capsules",
     description: "Ashwagandha (NEML 16.5)",
-    quantity: "15 Pcs",
+    quantity: "15",
   },
   {
     id: "17",
@@ -167,7 +167,7 @@ export const temp_order = [
     status: "Cancelled",
     product: "Turmeric + Ginger Capsules",
     description: "Turmeric Extract (NEML 27.3)",
-    quantity: "12 Pcs",
+    quantity: "12",
   },
   {
     id: "18",
@@ -177,7 +177,7 @@ export const temp_order = [
     status: "Pending",
     product: "Spirulina Powder - 250g",
     description: "Spirulina (NEML 29.1)",
-    quantity: "8 Pcs",
+    quantity: "8",
   },
   {
     id: "19",
@@ -187,7 +187,7 @@ export const temp_order = [
     status: "Completed",
     product: "Prebiotic Fiber Supplement - 500g",
     description: "Fiber Supplement (NEML 28.4)",
-    quantity: "6 Pcs",
+    quantity: "6",
   },
   {
     id: "20",
@@ -197,6 +197,6 @@ export const temp_order = [
     status: "Cancelled",
     product: "Electrolyte Rehydration Powder",
     description: "Electrolytes (NEML 31.2)",
-    quantity: "14 Pcs",
+    quantity: "14",
   },
 ];
