@@ -138,32 +138,67 @@ export function ColumsProductFN(
         );
       },
     }),
+    // columnHelper.accessor("status", {
+    //   header: ({ column }) => (
+    //     <p>Action</p>
+    //   ),
+    //   cell: (info) => {
+    //     return (
+    //     <Flex justify={"center"}>
+    //         <Menu>
+    //             <MenuButton>
+    //               <BsThreeDotsVertical className="w-5 h-auto"/>
+    //             </MenuButton>
+    //             <MenuList>
+    //                 <MenuItem>
+    //                     <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
+    //                 </MenuItem>
+    //                 <MenuItem>
+    //                   <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
+    //                 </MenuItem>
+    //                 <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
+    //                 {
+    //                   info?.row?.original?.status === "ACTIVE" ? 
+    //                   <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
+    //                   : <MenuItem onClick={() => onOpenActivate()}>Activate Product</MenuItem>
+    //                 }
+    //                 <MenuItem onClick={() => onOpen()} color="red.500">Delete Product</MenuItem>
+    //             </MenuList>
+    //         </Menu>
+    //       </Flex>
+    //     );
+    //   },
+    // }),
     columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p>Action</p>
-      ),
+      header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
-        <Flex justify={"center"}>
-            <Menu>
-                <MenuButton>
-                  <BsThreeDotsVertical className="w-5 h-auto"/>
-                </MenuButton>
-                <MenuList>
-                    <MenuItem>
-                        <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
-                    </MenuItem>
-                    <MenuItem>
-                      <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
-                    </MenuItem>
-                    <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
-                    {
-                      info?.row?.original?.status === "ACTIVE" ? 
-                      <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
-                      : <MenuItem onClick={() => onOpenActivate()}>Activate Product</MenuItem>
-                    }
-                    <MenuItem onClick={() => onOpen()} color="red.500">Delete Product</MenuItem>
-                </MenuList>
+          <Flex justify={"flex-start"}> {/* Aligned to the left */}
+            <Menu placement="bottom-start"> {/* Align dropdown to the left */}
+              <MenuButton>
+                <BsThreeDotsVertical className="" />
+              </MenuButton>
+              <MenuList>
+                <MenuItem>
+                  <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
+                </MenuItem>
+                <MenuItem>
+                  <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
+                </MenuItem>
+                <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
+                {info?.row?.original?.status === "ACTIVE" ? (
+                  <MenuItem onClick={() => onOpenDeactivate()}>
+                    Deactivate Product
+                  </MenuItem>
+                ) : (
+                  <MenuItem onClick={() => onOpenActivate()}>
+                    Activate Product
+                  </MenuItem>
+                )}
+                <MenuItem onClick={() => onOpen()} color="red.500">
+                  Delete Product
+                </MenuItem>
+              </MenuList>
             </Menu>
           </Flex>
         );

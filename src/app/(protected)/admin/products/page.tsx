@@ -303,7 +303,7 @@ const Page = () => {
             <div className="mb-8">
                 <p className='leading-6 text-gray-500 mt-2'>
                 You are about to deactivate Global Pentazocine, once deactivated, this product will not appear in your public shop.
-                There is no fee for reactivating a product.
+                There is no fee for deactivating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
                     <button className='bg-primary-600 text-white p-3 rounded-md'>

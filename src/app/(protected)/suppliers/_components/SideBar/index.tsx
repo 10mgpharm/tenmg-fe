@@ -154,7 +154,7 @@ const SideBar = () => {
                     aria-hidden="true"
                     className="h-6 w-6 shrink-0 text-red-500"
                   />
-                  LogOut
+                  Logout
                 </button>
               </li>
             </ul>
