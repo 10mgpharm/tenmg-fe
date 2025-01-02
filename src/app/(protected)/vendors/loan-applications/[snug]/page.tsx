@@ -99,10 +99,10 @@ const Page = ({params}: {params: {snug: string}}) => {
                 <Text fontSize={"1.2rem"} fontWeight={600}>{data?.customer?.name}&apos;s Loan Information</Text>
                 <Text fontSize={"15px"} color={"gray.600"}>At a glance summary of customer Loan.</Text>
             </Stack>
-            <Flex gap={2}>
+            {/* <Flex gap={2}>
                 <Button onClick={onOpen} h={"38px"} bg={"green.600"} className="text-white text-sm">Approve</Button>
                 <Button h={"38px"} bg={"red.500"} className=" text-white text-sm">Reject</Button>
-            </Flex>
+            </Flex> */}
         </Flex>
         <Stack mt={4} className="p-5 rounded-md border bg-white">
             <SimpleGrid columns={5} gap={4} mb={3}>
