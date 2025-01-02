@@ -34,7 +34,7 @@ interface IFormInput {
 
 const AddNewBrands = (
   { isOpen, onClose, type, refetchingTypes }: 
-  { isOpen: boolean; onClose: () => void; type: "Brand" | "Category", refetchingTypes: () => void;}
+  { isOpen: boolean; onClose: () => void; type: "Brand" | "Category" | "Presentation" | "Measurement", refetchingTypes: () => void;}
 ) => {
     
   const session = useSession();
@@ -66,9 +66,20 @@ const AddNewBrands = (
           "/admin/settings/categories",
           data
         )
+      }else if(type === "Measurement"){
+        response = await requestClient({token: token}).post(
+          "/admin/settings/measurements",
+          data
+        )
+      }else if(type === "Presentation"){
+        response = await requestClient({token: token}).post(
+          "/admin/settings/presentations",
+          data
+        )
       }
       if(response.status === 200){
         setIsLoading(false);
+        toast.success(response?.data?.message);
         refetchingTypes();
         reset();
         onClose();
@@ -135,7 +146,7 @@ const AddNewBrands = (
                   Cancel
                 </Button>
                 <Button
-                  w={"160px"}
+                  minW={"160px"}
                   type="submit"
                   isDisabled={isLoading}
                   isLoading={isLoading}

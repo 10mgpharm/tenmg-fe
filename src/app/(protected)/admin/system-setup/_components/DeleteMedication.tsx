@@ -1,12 +1,12 @@
 import React from 'react'
 import ModalComponent from './ModalComponent'
 import success from '@public/assets/images/cancel-Icon.svg';
-import { Text } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 
 const DeleteMedication = (
-  { isOpen, onClose, handleDelete, id, title}: 
-  { isOpen: boolean; onClose: () => void; handleDelete: () => void, id: number, title: string}
+  { isOpen, onClose, handleDelete, title, isLoading}: 
+  { isOpen: boolean; onClose: () => void; handleDelete: () => void, title: string, isLoading: boolean}
 ) => {
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose}>
@@ -14,8 +14,23 @@ const DeleteMedication = (
       <Text fontWeight={"semibold"} textAlign={"center"} fontSize={"x-large"}>Remove {title}</Text>
       <Text color={"gray.500"} textAlign={"center"} mt={2}>Are your sure you want to remove this {title}?.</Text>
       <div className="my-6 flex flex-col gap-2">
-        <button onClick={handleDelete} className='bg-red-500 text-white p-3 rounded-md'>Yes, Remove</button>
-        <button onClick={onClose} className='border rounded p-3'>Cancel</button>
+        <Button
+        isLoading={isLoading}
+        disabled={isLoading}
+        loadingText={"Deleting..."}
+        onClick={handleDelete} 
+        bg={"red.500"}
+        color={"white"}
+        _hover={{
+          background: "red"
+        }}
+        rounded={"md"}
+        >
+          Yes, Remove
+        </Button>
+        <Button onClick={onClose} variant={"outline"} rounded={"md"}>
+          Cancel
+        </Button>
       </div>
     </ModalComponent>
   )

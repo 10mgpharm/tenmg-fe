@@ -30,6 +30,7 @@ const MedicationTypes = (
   {data: MedicationData[], fetchingMedicationTypes: () => void, loading: boolean}
 ) => {
 
+  const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { 
     isOpen: isDeleteOpen, 
@@ -45,9 +46,9 @@ const MedicationTypes = (
   },[])
 
   return (
-    <Stack minH={"500px"} flex={1} p={5} bg={"white"} rounded={"md"} shadow={"sm"}>
+    <Stack flex={1}>
       <Flex justify={"space-between"}>
-        <InputGroup size='md' width={"20rem"}>
+        <InputGroup size='md' width={"20rem"} shadow={"sm"}>
           <InputLeftElement pl={1}>
             <Icon as={Search} className="w-5 h-5"/>
           </InputLeftElement>
@@ -66,7 +67,7 @@ const MedicationTypes = (
           heading={`No Medication Type Yet`} 
           content={`You currently have no medication type. All medication types will appear here.`}
         /> : 
-        <TableContainer mt={5}>
+        <TableContainer mt={5} minH={"500px"} rounded={"md"} shadow={"sm"}>
           <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
             <Thead bg={"#E8F1F8"}>
               <Tr color={"primary.500"} roundedTop={"md"}>
@@ -127,8 +128,8 @@ const MedicationTypes = (
       <DeleteMedication 
       isOpen={isDeleteOpen}
       onClose={onDeleteClose}
-      id={selectedId}
       title="Medication"
+      isLoading={isLoading}
       handleDelete={() => {}}
       />
     </Stack>
