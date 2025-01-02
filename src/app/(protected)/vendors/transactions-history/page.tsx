@@ -247,6 +247,7 @@ const TransactionHistory = () => {
         isSearch
         searchTitle="Customer by Name or ID"
         searchData={selectedCustomerId}
+        reloadData={fetchCustomerTnx}
       />
       <FilterDrawer
         isOpen={isOpenFilter}

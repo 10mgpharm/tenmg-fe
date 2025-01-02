@@ -136,6 +136,7 @@ const Page = () => {
         { option: "Suspended", value: "inactive" },
     ];
     
+    console.log(products)
     
   return (
     <div className="p-8">

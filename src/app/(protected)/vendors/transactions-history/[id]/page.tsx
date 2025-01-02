@@ -23,6 +23,7 @@ import BreakdownRecords from "../_components/BreakdownRecord";
 import { formatAmountString, handleServerErrorMessage } from "@/utils";
 import { downloadCsv } from "@/utils/downloadCsv";
 import { toast } from "react-toastify";
+import { transactionData } from "@/data/mockdata";
 
 const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -80,6 +81,8 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
     if (!token) return;
     fetchCustomerTnx();
   }, [fetchCustomerTnx, token]);
+
+  console.log(tnxHistoryData)
 
   return (
     <div className="p-8">
