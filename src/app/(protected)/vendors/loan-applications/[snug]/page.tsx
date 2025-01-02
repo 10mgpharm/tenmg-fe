@@ -1,39 +1,16 @@
 "use client";
-import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import { repaymentData } from "@/data/mockdata";
-import { 
-    ColumnOrderState, 
-    RowSelectionState, 
-    SortingState, 
-    flexRender, 
-    getCoreRowModel, 
-    getSortedRowModel, 
-    useReactTable 
-} from '@tanstack/react-table';
 import { 
     Divider, 
     Flex,
-    Progress, 
     Stack, 
     Text, 
-    ThemeProvider, 
     extendTheme, 
-    chakra, 
-    TableContainer, 
-    Table, 
-    Thead,
-    Tr, 
-    Th, 
-    Tbody, 
-    Td, 
-    Button,
     SimpleGrid,
     useDisclosure
 } from "@chakra-ui/react"
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from "react";
-import { ColumsRepaymentFN } from "@/app/(protected)/admin/loan-management/_components/repaymentTable";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
