@@ -99,7 +99,7 @@ const SendApplicationLink = (
                 isLoading={isLoading}
                 loadingText={'Submitting..'}
                 className='bg-primary-500 text-white'>
-                    Apply for Loan
+                    Send Link
                 </Button>
             </Flex>
         </form>

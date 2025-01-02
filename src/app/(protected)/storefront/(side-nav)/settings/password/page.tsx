@@ -1,8 +1,15 @@
+'use client'
 import { Button, Divider, Flex, FormControl, FormLabel, HStack, Input, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import React, { useState } from 'react'
 
 
 export default function Password() {
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showConfirmedPassword, setShowConfirmedPassword] = useState(false);
+
   return (
     <div>
       <VStack>
@@ -16,8 +23,13 @@ export default function Password() {
           <HStack className='w-full'>
             <FormControl className='flex w-full gap-4'>
               <FormLabel className='w-1/4'>Current Password</FormLabel>
-              <div className='w-2/4'>
-                <Input type="password" defaultValue={'Jacquelyn’s Pharmacy'} className='w-fit' />
+              <div className='w-2/4 relative'>
+                <div className='w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ' >
+                  {showCurrentPassword ?
+                    <EyeSlashIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowCurrentPassword(!showCurrentPassword)} /> :
+                    <EyeIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowCurrentPassword(!showCurrentPassword)} />}
+                </div>
+                <Input type={showCurrentPassword ? "text" : "password"} defaultValue={'current password'} className='w-fit' />
               </div>
             </FormControl>
           </HStack>
@@ -25,8 +37,13 @@ export default function Password() {
           <HStack className='w-full'>
             <FormControl className='flex w-full gap-4'>
               <FormLabel className='w-1/4'>New Password</FormLabel>
-              <div className='w-2/4'>
-                <Input type="password" defaultValue={'Jacquelyn’s Pharmacy'} className='w-fit' />
+              <div className='w-2/4 relative'>
+                <div className='w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ' >
+                  {showPassword ?
+                    <EyeSlashIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)} /> :
+                    <EyeIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)} />}
+                </div>
+                <Input type={showPassword ? "text" : "password"} defaultValue={'new password'} className='w-fit' />
               </div>
             </FormControl>
           </HStack>
@@ -34,8 +51,13 @@ export default function Password() {
           <HStack className='w-full'>
             <FormControl className='flex w-full gap-4'>
               <FormLabel className='w-1/4'>Confirm New Password</FormLabel>
-              <div className='w-2/4'>
-                <Input type="password" defaultValue={'Jacquelyn’s Pharmacy'} className='w-fit' />
+              <div className='w-2/4 relative'>
+                <div className='w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ' >
+                  {showConfirmedPassword ?
+                    <EyeSlashIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowConfirmedPassword(!showConfirmedPassword)} /> :
+                    <EyeIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowConfirmedPassword(!showConfirmedPassword)} />}
+                </div>
+                <Input type={showConfirmedPassword ? "text" : "password"} defaultValue={'confirm password'} className='w-fit' />
               </div>
             </FormControl>
           </HStack>

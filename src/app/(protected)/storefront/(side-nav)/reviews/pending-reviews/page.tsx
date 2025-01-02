@@ -6,9 +6,9 @@ import Image from 'next/image'
 export default function page() {
   return (
     <div className='w-full'>
-      {temp_order.slice(0, 3).map((item) => (
+      {/* {temp_order.slice(0, 3).map((item) => (
         <ReviewsCardComponent key={item?.order_id} product={item} />
-      ))}
+      ))} */}
 
       <div className='flex items-center justify-center w-full h-fit py-32'>
         <Image

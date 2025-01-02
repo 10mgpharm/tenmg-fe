@@ -245,7 +245,7 @@ const TransactionHistory = () => {
         isDownloadTemplate={false}
         uploadEndpoint="/vendor/txn_history/upload_and_evaluate"
         isSearch
-        searchTitle="Customer by Name or ID"
+        searchTitle="Customer by Name or Email"
         searchData={selectedCustomerId}
         reloadData={fetchCustomerTnx}
       />

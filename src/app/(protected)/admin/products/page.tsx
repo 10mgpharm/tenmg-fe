@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter, CiSearch } from "react-icons/ci"
+import { CiFilter } from "react-icons/ci"
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { 
@@ -69,7 +69,7 @@ const Page = () => {
 
     const fetchProducts = useCallback(async () => {
         setLoading(true);
-        let query = `/admin/settings/products?page=${pageCount}`;
+        let query = `/admin/settings/products/search?page=${pageCount}`;
         if (debouncedSearch) {
             query += `&search=${debouncedSearch}`;
         }
@@ -135,8 +135,6 @@ const Page = () => {
         { option: "Active", value: "active" },
         { option: "Suspended", value: "inactive" },
     ];
-    
-    console.log(products)
     
   return (
     <div className="p-8">
@@ -304,7 +302,7 @@ const Page = () => {
             <div className="mb-8">
                 <p className='leading-6 text-gray-500 mt-2'>
                 You are about to deactivate Global Pentazocine, once deactivated, this product will not appear in your public shop.
-                There is no fee for reactivating a product.
+                There is no fee for deactivating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
                     <button className='bg-primary-600 text-white p-3 rounded-md'>

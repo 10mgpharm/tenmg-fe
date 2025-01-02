@@ -91,10 +91,23 @@ const InviteMember = ({
               <FormLabel htmlFor="fullName">Full Name</FormLabel>
               <Input
                 id="fullName"
+                type="text"
                 {...register("fullName", {
                   required: "Full Name is Required",
+                  pattern: {
+                    value: /^[A-Za-z\s]+$/, // Regex to allow only letters and spaces
+                    message: "Only letters are allowed in the Full Name",
+                  },
                 })}
+                onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.replace(
+                    /[^A-Za-z\s]/g,
+                    ""
+                  ); // Remove non-letter characters
+                }}
+                placeholder="Enter full name"
               />
+
               <FormErrorMessage>{errors.fullName?.message}</FormErrorMessage>
             </FormControl>
 
@@ -138,8 +151,13 @@ const InviteMember = ({
                 </Text>
                 <ul className="list-disc px-4 text-sm">
                   <li>API Management: Create, Edit, Delete</li>
-                  <li>User Management: Invite, Deactivate, Activate, Assign roles</li>
-                  <li>Monitoring and Analytics: Generate Analytics, View API Usage reports</li>
+                  <li>
+                    User Management: Invite, Deactivate, Activate, Assign roles
+                  </li>
+                  <li>
+                    Monitoring and Analytics: Generate Analytics, View API Usage
+                    reports
+                  </li>
                 </ul>
               </Box>
             )}
@@ -168,5 +186,3 @@ const InviteMember = ({
 };
 
 export default InviteMember;
-
-

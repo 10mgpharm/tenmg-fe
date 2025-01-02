@@ -66,12 +66,12 @@ const loanItems = [
     icon: ReceiptPercentIcon,
     current: false,
   },
-  {
-    name: "Loan Offers",
-    href: "/vendors/loan-offers",
-    icon: ReceiptPercentIcon,
-    current: false,
-  },
+  // {
+  //   name: "Loan Offers",
+  //   href: "/vendors/loan-offers",
+  //   icon: ReceiptPercentIcon,
+  //   current: false,
+  // },
   {
     name: "Loan Repayments",
     href: "/vendors/loan-repayments",

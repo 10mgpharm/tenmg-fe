@@ -25,7 +25,6 @@ import {
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/_components/Pagination";
 import { ColumnsCreditScoreFN } from "./_components/table";
-import { creditScoreData } from "@/data/mockdata";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import {
@@ -105,8 +104,9 @@ const CreditScore = () => {
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
   useEffect(() => {
+    if(!token) return;
     fetchCreditScore();
-  }, [fetchCreditScore]);
+  }, [token, fetchCreditScore]);
 
   const applyFilters = (filters: IFilterInput) => {
     setCreatedAtStart(filters.startDate);
@@ -161,20 +161,19 @@ const CreditScore = () => {
             />
             <div
               onClick={onOpenFilter}
-              className="border cursor-pointer border-gray-300 p-3 rounded-md flex items-center gap-2"
+              className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
             >
               <CiFilter className="w-5 h-5" />
               <p className="text-gray-500 font-medium">Filter</p>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <Button variant="outline" color="primary.500" onClick={onOpen}>
             Configure Affordability
           </Button>
-
           <Button onClick={onOpenBusiness}>Create Business Rule</Button>
-        </div>
+        </div> */}
       </div>
       <div className="">
         {!loading ? (
