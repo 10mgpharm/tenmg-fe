@@ -203,7 +203,6 @@ const Page = ({ params }: { params: { id: string } }) => {
                   </Thead>
                   <Tbody>
                     {tnxHistoryData?.map((item: TransactionHistoryData) => {
-                      const evaluation = JSON.parse(item?.evaluationResult);
                       return (
                         <Tr key={item.id}>
                           <Td>
@@ -231,7 +230,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                           </Td>
                           <Td fontSize={"14px"}>
                             <Link
-                              href={`/vendors/transactions-history/${params.id}?evaluationId=${item?.id}`}
+                              href={item.status === "DONE" ? `/vendors/transactions-history/${params.id}?evaluationId=${item?.id}` : "#"}
                               className="text-primary-600 font-medium"
                             >
                               View Details

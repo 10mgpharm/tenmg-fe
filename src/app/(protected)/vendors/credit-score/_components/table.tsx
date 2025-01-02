@@ -34,12 +34,23 @@ export function ColumnsCreditScoreFN() {
         </div>
       ),
     }),
-
+    columnHelper.accessor("customer.name", {
+      header: () => (
+        <div>
+          <p>Category</p>
+        </div>
+      ),
+      cell: (info) => (
+        <div>
+          <p className="font-semibold">Category A</p>
+        </div>
+      ),
+    }),
     columnHelper.accessor("creditScoreResult.scoreTotal", {
       header: () => <p>Credit Score</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.creditScoreResult?.scoreTotal}</p>
+          <p>{info.row.original?.creditScoreResult?.scoreValue} / {info.row.original.creditScoreResult.scoreTotal}</p>
         </div>
       ),
     }),
@@ -82,7 +93,7 @@ export function ColumnsCreditScoreFN() {
         return (
           <div className="flex gap-4">
             <Link
-              href={`/vendors/transactions-history/${info.row.original?.customer?.id}`}
+              href={`/vendors/transactions-history/${info.row.original?.customer?.id}?evaluationId=${info.row.original.id}`}
               className="text-primary font-medium"
             >
               View

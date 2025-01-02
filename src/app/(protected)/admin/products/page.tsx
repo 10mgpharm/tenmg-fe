@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter, CiSearch } from "react-icons/ci"
+import { CiFilter } from "react-icons/ci"
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { 
@@ -69,7 +69,7 @@ const Page = () => {
 
     const fetchProducts = useCallback(async () => {
         setLoading(true);
-        let query = `/admin/settings/products?page=${pageCount}`;
+        let query = `/admin/settings/products/search?page=${pageCount}`;
         if (debouncedSearch) {
             query += `&search=${debouncedSearch}`;
         }
@@ -135,7 +135,6 @@ const Page = () => {
         { option: "Active", value: "active" },
         { option: "Suspended", value: "inactive" },
     ];
-    
     
   return (
     <div className="p-8">

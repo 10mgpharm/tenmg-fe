@@ -87,7 +87,23 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
         </Flex>
-      ) : (
+      ) : 
+      tnxHistoryData === null ?
+      <div className="">
+        <Flex
+          cursor={"pointer"}
+          onClick={() => router.back()}
+          align={"center"}
+          gap={2}
+        >
+          <ArrowLeft className="w-5 h-auto text-gray-500" />
+          <Text fontSize={"14px"} color={"gray.600"}>
+            Back
+          </Text>
+        </Flex>
+        <p className="mt-16 text-center font-semibold text-2xl text-gray-400">No evaluation result</p>
+      </div>
+      :(
         <Box>
           <Flex
             cursor={"pointer"}

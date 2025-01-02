@@ -137,7 +137,7 @@ const BrandSetup = (
       onClose={onDeleteClose}
       id={selectedId}
       title="Brand"
-      refetch={refetchingTypes}
+      handleDelete={() => {}}
       />
     </Stack>
   )

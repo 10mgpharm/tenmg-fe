@@ -55,7 +55,7 @@ const UploadModal = ({
   templateName = "Bulk Upload Customer Template.xls",
   isDownloadTemplate = false,
   isSearch = false,
-  searchTitle = "Customer by Name or ID",
+  searchTitle = "Customer by Name or Email",
   searchData,
   isCustomer = false,
   id,
@@ -196,7 +196,7 @@ const UploadModal = ({
 
   const customerOptions = searchData?.map((customer) => ({
     value: customer.id,
-    label: `${customer.name} - ${customer.id}`,
+    label: `${customer.name} - ${customer.email}`,
   }));
 
   return (

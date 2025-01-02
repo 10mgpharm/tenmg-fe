@@ -1,10 +1,9 @@
-import { Stack } from '@chakra-ui/react'
-import { FaSpinner } from 'react-icons/fa6'
+import { Spinner, Stack } from '@chakra-ui/react'
 
 const Loader = () => {
   return (
-    <Stack my={"10rem"} mx={"auto"}>
-        <FaSpinner className='animate-spin w-6 h-6 mx-auto'/>
+    <Stack justify="center" align="center" height="200px" my={"10rem"} mx={"auto"}>
+      <Spinner size="xl" />
     </Stack> 
   )
 }

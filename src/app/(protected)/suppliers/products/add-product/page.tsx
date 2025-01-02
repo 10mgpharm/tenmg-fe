@@ -126,10 +126,10 @@ const AddProducts = () => {
         formdata.append("medicationTypeName", data.medicationTypeName)
         formdata.append("categoryName", data?.categoryName);
         formdata.append("brandName", data?.brandName);
-        formdata.append("weight", data?.weight);
+        formdata.append("weight", data.weight);
         formdata.append("packageName", data?.brandName);
         formdata.append("presentationName", data?.presentationName);
-        formdata.append("strengthValue", '1');
+        formdata.append("strengthValue", data.strengthValue);
         formdata.append("measurementName", data?.measurementName);
         formdata.append("lowStockLevel", data?.lowStockLevel);
         formdata.append("outStockLevel", data?.outStockLevel);
@@ -139,7 +139,7 @@ const AddProducts = () => {
         formdata.append("discountPrice", data?.discountPrice);
         formdata.append("quantity", data?.quantity);
         formdata.append("status", "ACTIVE");
-
+        
         try {
             const response = await requestClient({token: token}).post(
                 "/supplier/products",

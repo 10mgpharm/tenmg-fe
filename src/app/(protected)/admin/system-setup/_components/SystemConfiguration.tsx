@@ -17,6 +17,7 @@ import { ChangeEvent, useRef, useState } from "react";
 import ModalComponent from "./ModalComponent";
 import ImgEditor from "./ImgEditor.create.product";
 import AskQuestions from "./AskQuestions";
+import FAQList from "./FAQList";
 
 const SystemConfiguration = () => {
 
@@ -27,7 +28,6 @@ const SystemConfiguration = () => {
   const [imageSrcs, setImageSrcs] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { isOpen: isOpenQuestion, onClose: onCloseQuestion, onOpen: onOpenQuestion } = useDisclosure();
 
   const onLoadImage = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -173,13 +173,7 @@ const SystemConfiguration = () => {
             ))}
           </SimpleGrid>
         </Stack>
-      <HStack mt={4} justify={"space-between"} bg={"white"} p={5} rounded={"lg"} shadow={"sm"}>
-        <Text fontWeight={700} fontSize={"1rem"} color={"gray.700"}>Set FAQs</Text>
-        <Button onClick={onOpenQuestion} h={"34px"} variant={"outline"} px={2} fontSize={"14px"} color={"gray.600"}>
-        Add Questions & Answers
-        </Button>
-      </HStack>
-      <AskQuestions isOpen={isOpenQuestion} onClose={onCloseQuestion}/>
+        <FAQList />
       <ModalComponent
         onClose={() => {
           onClose();

@@ -56,7 +56,7 @@ const creditScoreItems = [
 const loanItems = [
   {
     name: "Loan Management",
-    href: "/vendors/loan",
+    href: "/vendors/loan-management",
     icon: FaBalanceScale,
     current: false,
   },
@@ -66,12 +66,12 @@ const loanItems = [
     icon: ReceiptPercentIcon,
     current: false,
   },
-  {
-    name: "Loan Offers",
-    href: "/vendors/loan-offers",
-    icon: ReceiptPercentIcon,
-    current: false,
-  },
+  // {
+  //   name: "Loan Offers",
+  //   href: "/vendors/loan-offers",
+  //   icon: ReceiptPercentIcon,
+  //   current: false,
+  // },
   {
     name: "Loan Repayments",
     href: "/vendors/loan-repayments",

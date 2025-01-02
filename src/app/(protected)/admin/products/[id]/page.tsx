@@ -3,24 +3,19 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { 
+    Flex,
     HStack, 
-    Tab, 
-    TabList, 
-    TabPanel,
-    TabPanels, 
-    Tabs, 
+    Spinner, 
     Text 
 } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
-import pill from '@public/assets/images/Rectangle19718.png';
-import Essentials from '../_components/Essentials';
 import Statistics from '../_components/Statistics';
-import Reviews from '../_components/Reviews';
 import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
 import { useSession } from 'next-auth/react';
-import { NextAuthUserSession, ProductResponseData } from '@/types';
+import { NextAuthUserSession, ProductDataProps } from '@/types';
 import ExploreData from '../_components/ExploreData';
+import { convertDate } from '@/utils/formatDate';
 
 const ProductDetail = ({params}: {params: {id: string}} ) => {
     const router = useRouter();
@@ -29,7 +24,7 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
     const token = sessionData?.user?.token;
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [products, setProducts] = useState<ProductResponseData>();
+    const [products, setProducts] = useState<ProductDataProps>();
 
     const fetchProducts = useCallback(async () => {
         setLoading(true);
@@ -52,7 +47,13 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
         fetchProducts();
     },[fetchProducts, token]);
 
-    // console.log(products);
+    if(loading){
+        return(
+            <Flex justify="center" align="center" height="200px">
+                <Spinner size="xl" />
+            </Flex>
+        )
+    }
 
     return (
     <div className='p-8'>
@@ -63,21 +64,27 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
         <div className="mt-5">
             <div className="flex gap-5 mb-3">
                 <div className="">
-                    <Image src={pill} alt='' className='w-[380px] h-[340px] object-cover rounded-md'/>
+                    <Image 
+                    src={products?.thumbnailFile} 
+                    alt='' 
+                    width={380} 
+                    height={340} 
+                    className='w-[380px] h-[340px] object-cover rounded-md'
+                    />
                 </div>
                 <div className="flex-1 bg-white p-5 rounded-md pb-9">
                     <div className="flex items-center justify-between">
-                        <h2 className='text-lg font-semibold mb-4'>Global Pentazocine</h2>
-                        <h2 className='text-lg font-semibold mb-4 text-primary-500'>₦100,000</h2>
+                        <h2 className='text-lg font-semibold mb-4'>{products?.name}</h2>
+                        <h2 className='text-lg font-semibold mb-4 text-primary-500'>₦{Number(products?.actualPrice)?.toLocaleString()}.00</h2>
                     </div>
-                    <p className=''>Pentazocine works by interacting with specific receptors in the brain, primarily the mu-opioid receptors (MOR) and kappa-opioid receptors (KOR). 1  This interaction helps to reduce pain signals and provide relief. Pentazocine is often used to manage pain after surgical procedures.</p>
+                    <p className=''>{products?.description}</p>
                     <ul className='list-disc mt-5 space-y-2 list-inside ml-4'>
-                        <li className='text-sm'>Brand: <span className='font-semibold'>Emzor</span></li>
-                        <li className='text-sm'>Value (strength):<span className='font-semibold'>500</span></li>
-                        <li className='text-sm'>Value (strength):<span className='font-semibold'>kg</span></li>
-                        <li className='text-sm'>Presentation:<span className='font-semibold'>Syrup</span></li>
-                        <li className='text-sm'>Product Weight:<span className='font-semibold'>100</span></li>
-                        <li className='text-sm'>Expiration Date:<span className='font-semibold'>25-12-2025</span></li>
+                        <li className='text-sm'>Brand: <span className='font-semibold ml-1'>{products?.brand?.name}</span></li>
+                        <li className='text-sm'>Value (strength):<span className='font-semibold ml-1'>{products?.measurement?.name}</span></li>
+                        <li className='text-sm'>Category:<span className='font-semibold ml-1'>{products?.category?.name}</span></li>
+                        <li className='text-sm'>Presentation:<span className='font-semibold ml-1'>{products?.presentation?.name}</span></li>
+                        <li className='text-sm'>Medication Type:<span className='font-semibold ml-1'>{products?.medicationType?.name}</span></li>
+                        <li className='text-sm'>Expiration Date:<span className='font-semibold ml-1'>{convertDate(products?.expiredAt)}</span></li>
                     </ul>
                 </div>
             </div>
@@ -86,60 +93,6 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
                 <ExploreData />
             </div>
         </div>
-        {/* <div className="mt-5">
-            <h2 className='text-xl font-semibold mb-4'>Global Pentazocine</h2>
-            <div className="flex gap-5 mb-3">
-                <div className="">
-                    <Image src={pill} alt='' className='w-[380px] h-auto'/>
-                    <div className="grid grid-cols-3 gap-x-2 gap-y-6 mt-3">
-                        <div className="space-y-2">
-                            <p className='text-gray-600 text-sm'>Name</p>
-                            <p className='text-gray-700 font-medium'>Zimax</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className='text-gray-600 text-sm'>Brand</p>
-                            <p className='text-gray-700 font-medium'>Azithromycin</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className='text-gray-600 text-sm'>Weight</p>
-                            <p className='text-gray-700 font-medium'>500mg</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className='text-gray-600 text-sm'>Category</p>
-                            <p className='text-gray-700 font-medium'>Tablet</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className='text-gray-600 text-sm'>Manufacturer</p>
-                            <p className='text-gray-700 font-medium'>Healthcare</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className='text-gray-600 text-sm'>Expire Date</p>
-                            <p className='text-gray-700 font-medium'>19/12/2024</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex-1 bg-white p-5 rounded-md">
-                    <Tabs>
-                        <TabList>
-                            <Tab>Product Essentials</Tab>
-                            <Tab>Product Statistics</Tab>
-                            <Tab>Product Reviews</Tab>
-                        </TabList>
-                        <TabPanels>
-                            <TabPanel>
-                                <Essentials />
-                            </TabPanel>
-                            <TabPanel>
-                                <Statistics />
-                            </TabPanel>
-                            <TabPanel>
-                                <Reviews />
-                            </TabPanel>
-                        </TabPanels>
-                    </Tabs>
-                </div>
-            </div>
-        </div> */}
     </div>
   )
 }

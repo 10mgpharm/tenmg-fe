@@ -129,7 +129,7 @@ const MedicationTypes = (
       onClose={onDeleteClose}
       id={selectedId}
       title="Medication"
-      refetch={fetchingMedicationTypes}
+      handleDelete={() => {}}
       />
     </Stack>
   )

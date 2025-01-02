@@ -292,6 +292,7 @@ export interface ProductDataProps {
   name: string;
   image: string;
   brand: BrandType;
+  description: string;
   weight: string;
   category: CategoryType;
   price: string;
@@ -477,5 +478,19 @@ export interface PresentationProps {
   id: number;
   active: boolean;
   name: string;
+  status: string;
+}
+
+interface faqProps {
+  id: number;
+  question: string;
+  answer: string;
+}
+
+interface FaqDataProps {
+  data: faqProps[];
+  links: any;
+  meta: MetaDataProp;
+  message: string;
   status: string;
 }

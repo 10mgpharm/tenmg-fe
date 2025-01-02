@@ -77,22 +77,23 @@ export function ColumnsLoanApplicationFN() {
         </div>
       ),
     }),
-
-    // Actions
-
     columnHelper.accessor("id", {
       header: () => <p>Actions</p>,
       cell: (info) => {
         return (
           <div className="flex gap-4">
-            <Link href={`/vendors/loan-applications/${info.row.original?.customer?.id}`} className="text-primary font-medium">View</Link>
-            {
+            <Link 
+            href={`/vendors/loan-applications/${info.row.original?.customer?.id}`} 
+            className="text-primary font-medium">
+              View
+            </Link>
+            {/* {
               info.row.original?.status === "PENDING" &&
               <div className="flex items-center gap-4">
                 <p className="cursor-pointer text-primary-600 font-medium">Edit</p>
                 <p className="cursor-pointer text-primary-600 font-medium">Approve</p>
               </div>
-            }
+            } */}
           </div>
         );
       },

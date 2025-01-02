@@ -11,9 +11,86 @@ import {
 } from "@chakra-ui/react";
 import ModalComponent from "./ModalComponent"
 import { X } from "lucide-react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
-const AskQuestions = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) => {
-  return (
+interface IFormInput {
+    question: string;
+    answer: string;
+}
+
+interface QuestionsProps {
+    id: number;
+    question: string;
+    answer: string;
+}
+
+const AskQuestions = (
+    {isOpen, onClose, refetch, questions, isEditing, setIsEditing}: 
+    {isOpen: boolean, onClose: () => void; refetch: () => void, questions?: QuestionsProps, isEditing: boolean, setIsEditing: Dispatch<SetStateAction<boolean>>}
+) => {
+
+    const session = useSession();
+    const sessionToken = session?.data as NextAuthUserSession;
+    const token = sessionToken?.user?.token;
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const {
+        register,
+        formState: { errors, isValid },
+        handleSubmit,
+        setValue,
+        reset
+      } = useForm<IFormInput>({
+        mode: "onChange",
+        defaultValues: {
+        question: "",
+        answer: "",
+    },
+    });
+
+    const onSubmit: SubmitHandler<IFormInput>  = async (data) => {
+        setIsLoading(true)
+        try {
+            let response: any;
+            if(isEditing){
+                response = await requestClient({token: token}).patch(
+                    `/admin/settings/faqs/${questions?.id}`,
+                    data
+                )
+            }else{
+                response = await requestClient({token: token}).post(
+                    "/admin/settings/faqs",
+                    data
+                )
+            }
+            if(response.status === 200){
+                setIsLoading(false);
+                refetch();
+                setIsEditing(false);
+                reset();
+                onClose();
+            }
+        } catch (error) {
+          setIsLoading(false);
+          console.error(error);
+          toast.error(handleServerErrorMessage(error));
+        }
+    };
+
+    useEffect(() => {
+        if (questions) {
+          setValue("question", questions?.question);
+          setValue("answer", questions?.answer);
+        }
+      }, [questions, setValue]);
+
+    return (
     <ModalComponent
         onClose={onClose}
         isOpen={isOpen}
@@ -33,19 +110,50 @@ const AskQuestions = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}
                 </Text>
                 <X onClick={onClose} className="w-5 h-auto text-gray-600 cursor-pointer"/>
             </Flex>
-            <form className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <FormControl>
                     <FormLabel fontSize={"1rem"} color={"gray.600"}>Add Question</FormLabel>
-                    <Input type="text" />
+                    <Input 
+                     type={"text"}
+                     defaultValue={questions?.question}
+                     placeholder=""
+                     {...register("question", {
+                       required: "Question is required",
+                     })}
+                    />
+                    {errors.question && (
+                        <Text as={"span"} className="text-red-500 text-sm">
+                        {errors?.question?.message}
+                        </Text>
+                    )}
                 </FormControl>
                 <FormControl>
                     <FormLabel fontSize={"1rem"} color={"gray.600"}>Enter Answer</FormLabel>
-                    <Textarea />
+                    <Textarea 
+                     placeholder=""
+                     defaultValue={questions?.answer}
+                     {...register("answer", {
+                       required: "Answer is required",
+                     })}
+                    />
+                    {errors.answer && (
+                        <Text as={"span"} className="text-red-500 text-sm">
+                        {errors.answer?.message}
+                        </Text>
+                    )}
                 </FormControl>
                 <Flex pt={10} pb={5} justify={"flex-end"}>
                     <HStack>
                     <Button onClick={onClose} h={"40px"} variant={"outline"}>Cancel</Button>
-                    <Button h={"40px"}>Save Changes</Button>
+                    <Button 
+                    h={"40px"} 
+                    type="submit" 
+                    isLoading={isLoading} 
+                    disabled={isLoading}
+                    loadingText={"Submitting..."}
+                    >
+                        Save Changes
+                    </Button>
                     </HStack>
                 </Flex>
             </form>

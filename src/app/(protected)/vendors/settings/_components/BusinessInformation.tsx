@@ -122,8 +122,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
         </HStack>
         <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>;
           <FormControl isInvalid={!!errors.contactEmail?.message}>
-            <FormLabel fontSize={"sm"} fontWeight={"medium"}>                                                                                                                                     ///////////////////////////////////////////////////////////////////////////////66///x6x/6x/x//6x6x6xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxllpo;;l;lrlflge]rfs
-
+            <FormLabel fontSize={"sm"} fontWeight={"medium"}>                                                                                                                                  
               Business Email
             </FormLabel>
             <InputGroup>
