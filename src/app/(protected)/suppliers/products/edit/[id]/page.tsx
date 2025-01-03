@@ -115,6 +115,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formState: { errors, isValid },
         handleSubmit,
         setValue,
+        getValues,
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -182,6 +183,10 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     register={register}
                                     errors={errors}
                                     setValue={setValue}
+                                    getValue={getValues}
+                                    handleStepValidation={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    }}
                                 />
                         case 'essentials':
                             return <EssentialForm 
@@ -191,6 +196,9 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     medications={medicationData?.data}
                                     errors={errors}
                                     setValue={setValue}
+                                    handleStepValidation={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    }}
                                 />
                         case 'inventory':
                             return <InventoryForm 

@@ -115,6 +115,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formState: { errors, isValid },
         handleSubmit,
         setValue,
+        getValues,
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -174,15 +175,19 @@ const EditPage = ({params}: {params: {id: string}}) => {
                     switch (steps) {
                         case 'details':
                             return <DetailForm 
-                                    title="Edit Product"
-                                    setSteps={setSteps} 
-                                    brands={brandData?.data} 
-                                    categories={categoryData?.data} 
-                                    control={control}
-                                    register={register}
-                                    errors={errors}
-                                    setValue={setValue}
-                                />
+                                title="Edit Product"
+                                setSteps={setSteps}
+                                brands={brandData?.data}
+                                categories={categoryData?.data}
+                                control={control}
+                                register={register}
+                                errors={errors}
+                                setValue={setValue}
+                                getValue={getValues}
+                                handleStepValidation={function (): void {
+                                    throw new Error('Function not implemented.');
+                                }}
+                            />
                         case 'essentials':
                             return <EssentialForm 
                                     setSteps={setSteps}
@@ -191,6 +196,9 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     setValue={setValue}
                                     control={control}
                                     errors={errors}
+                                    handleStepValidation={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    }}
                                 />
                         case 'inventory':
                             return <InventoryForm 
