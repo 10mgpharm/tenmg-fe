@@ -17,7 +17,7 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import AddNewBrands from "./AddNewBrands";
 import EditBrands from "./EditBrands";
 import { MedicationData, NextAuthUserSession } from "@/types";
@@ -28,13 +28,18 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 const BrandSetup = (
-  {data, type, refetchingTypes, loading}: 
+  {data, type, refetchingTypes, loading, searchWord, setSearchWord, meta, setPageCount}: 
   {
-    data: MedicationData[], 
-    type: "Brand" | "Category" | "Presentation" | "Measurement", 
-    refetchingTypes: () => void, loading: boolean
+    data: MedicationData[];
+    type: "Brand" | "Category" | "Presentation" | "Measurement";
+    refetchingTypes: () => void, loading: boolean;
+    searchWord?: string;
+    setSearchWord: Dispatch<SetStateAction<string>>;
+    meta: any;
+    setPageCount: Dispatch<SetStateAction<number>>
   }
 ) => {
 
@@ -84,6 +89,10 @@ const BrandSetup = (
     }
   }
 
+  const metadata = {
+    "links": meta
+  }
+
   return (
     <Stack flex={1}>
       <Flex justify={"space-between"}>
@@ -93,6 +102,8 @@ const BrandSetup = (
           </InputLeftElement>
           <Input
             type="text"
+            value={searchWord}
+            onChange={(e) => setSearchWord(e.target.value)}
             pl={10}
             placeholder={`Search for a ${type?.toLocaleLowerCase()}`}
           />
@@ -107,8 +118,8 @@ const BrandSetup = (
           content={`You currently have no ${type}. All ${type} will appear here.`}
         /> : 
         <Stack minH={"500px"} mt={5}>
-          <TableContainer rounded={"md"} shadow={"sm"}>
-            <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
+          <TableContainer rounded={"md"}>
+            <Table variant='simple' border={"1px solid #EAECF0"} shadow={"sm"} rounded={"md"}>
               <Thead bg={"#E8F1F8"}>
                 <Tr color={"primary.500"} roundedTop={"md"}>
                   <Th>Date Created</Th>
@@ -122,11 +133,11 @@ const BrandSetup = (
                 {
                   data?.map((item: MedicationData) => (
                     <Tr key={item.id}>
-                      <Td fontSize={"14px"}>{item.createdAt}</Td>
-                      <Td fontSize={"14px"}>{item.name}</Td>
-                      <Td fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
-                      <Td fontSize={"13px"}>{item.status}</Td>
-                      <Td fontSize={"14px"}>
+                      <Td py={1} lineHeight={3} fontSize={"14px"}>{item.createdAt}</Td>
+                      <Td py={1} lineHeight={3} fontSize={"14px"}>{item.name}</Td>
+                      <Td py={1} lineHeight={3} fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
+                      <Td py={1} lineHeight={3} fontSize={"13px"}>{item.status}</Td>
+                      <Td py={1} lineHeight={3} fontSize={"14px"}>
                         <Flex gap={2}>
                           <Button 
                             onClick={() => {
@@ -158,6 +169,7 @@ const BrandSetup = (
                 }
               </Tbody>
             </Table>
+            <Pagination meta={metadata} setPageCount={setPageCount}/>
           </TableContainer>
         </Stack>
       }
