@@ -17,6 +17,7 @@ interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;
     control: Control<IFormInput>;
     errors: FieldErrors<IFormInput>;
+    handleStepValidation: () => void;
     setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
     medications: MedicationData[]; 
     setValue: UseFormSetValue<IFormInput>;
@@ -28,7 +29,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     control, 
     errors,
     medications,
-    setValue
+    setValue,
+    handleStepValidation
 }) => {
 
     const router = useRouter();
@@ -37,6 +39,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     const token = sessionToken?.user?.token;
 
     const [showVariation, setShowVariation] = useState<boolean>(false);
+    const [newVariation, setNewVariation] = useState<boolean>(false);
     const [selectedVariation, setSelectedVariation] = useState<any>();
     const [presentationData, setPresentationData] = useState<PresentationProps[]>([]);
     const [measurementData, setMeasurementData] = useState<PresentationProps[]>([]);
@@ -47,9 +50,9 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
             const response = await requestClient({ token: token }).get(
                 `/admin/settings/presentations`
             );
-        if(response.status === 200){
-            setPresentationData(response.data.data);
-        }
+            if(response.status === 200){
+                setPresentationData(response.data.data);
+            }
         } catch (error) {
             console.error(error)
         }
@@ -80,7 +83,6 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
             console.error(error)
         }
     },[token]);
-
 
     useEffect(() => {
         if(!token) return;
@@ -118,8 +120,12 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                         if(selectedOption?.value){
                                             onChange(selectedOption?.value);
-                                            fetchingVarationByTypeId(selectedOption.id);
-                                            setShowVariation(true);
+                                            if(selectedOption?.newOption){
+                                                setShowVariation(false);
+                                            }else{
+                                                fetchingVarationByTypeId(selectedOption.id);
+                                                setShowVariation(true);
+                                            }
                                         }
                                     }}
                                 />
@@ -133,7 +139,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                     />
                 </FormControl>
                 {
-                    showVariation ?
+                    (showVariation) &&
                     <Stack>
                         <Text color={"gray.700"} mt={5} fontWeight={"semibold"}>Select Variation</Text>
                         <Select
@@ -151,7 +157,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     setValue("weight", selectedOption?.detail?.weight);
                                 }else{
                                     setSelectedVariation([]);
-                                    setShowVariation(false);
+                                    setNewVariation(true);
+                                    // setShowVariation(false);
                                     setSelectedVariation(selectedOption)
                                     setValue("measurementName", "");
                                     setValue("presentationName", "");
@@ -194,130 +201,133 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     <Stack flex={1}>
                                         <FormLabel color={"gray.500"}>Weight (kg)</FormLabel>
                                         <Box className="border rounded-md p-2">
-                                            <Text>{selectedVariation?.detail?.weight}</Text>
+                                            <Text>{`${selectedVariation?.detail?.weight}`}</Text>
                                         </Box>
                                     </Stack>
                                 </HStack>
                             </Box>
                         }
                     </Stack>
-                    : 
-                    <Stack>
-                        <Text color={"gray.700"} mt={5} fontWeight={"semibold"}>Variation</Text>
-                        <HStack>
-                            <FormControl isInvalid={!!errors.presentationName}>
-                                <FormLabel color={"gray.500"}>Presentation</FormLabel>
-                                <Controller
-                                    control={control}
-                                    name={"presentationName"}
-                                    rules={{ required: 'Presentation name is required' }}
-                                    render={({ field: { onChange, value } }) =>
-                                        <div className="flex flex-col">
-                                            <CustomCreatableSelectComponent
-                                                value={value}
-                                                name={"presentationName"}
-                                                placeholder={'Select...'}
-                                                options={convertCreateOptionArray(presentationData)}
-                                                onOptionSelected={(selectedOption: CreatableSelectOption) => {
-                                                    onChange(selectedOption?.value);
-                                                }}
-                                            />
-                                            {errors.presentationName?.message &&
-                                                <Text as={"span"} className="text-red-500 text-sm">
-                                                    {errors?.presentationName?.message}
-                                                </Text>
-                                            }
-                                        </div>
+                }
+                {
+                (!showVariation || newVariation) && !selectedVariation?.detail ?
+                <Stack>
+                    <Text color={"gray.700"} mt={5} fontWeight={"semibold"}>Variation</Text>
+                    <HStack>
+                        <FormControl isInvalid={!!errors.presentationName}>
+                            <FormLabel color={"gray.500"}>Presentation</FormLabel>
+                            <Controller
+                                control={control}
+                                name={"presentationName"}
+                                rules={{ required: 'Presentation name is required' }}
+                                render={({ field: { onChange, value } }) =>
+                                    <div className="flex flex-col">
+                                        <CustomCreatableSelectComponent
+                                            value={value}
+                                            name={"presentationName"}
+                                            placeholder={'Select...'}
+                                            options={convertCreateOptionArray(presentationData)}
+                                            onOptionSelected={(selectedOption: CreatableSelectOption) => {
+                                                onChange(selectedOption?.value);
+                                            }}
+                                        />
+                                        {errors.presentationName?.message &&
+                                            <Text as={"span"} className="text-red-500 text-sm">
+                                                {errors?.presentationName?.message}
+                                            </Text>
+                                        }
+                                    </div>
+                                }
+                            />
+                        </FormControl>
+                        <FormControl isInvalid={!!errors.strengthValue}>
+                            <FormLabel color={"gray.500"}>Strength Value</FormLabel>
+                            <Input 
+                                id="strengthValue"
+                                placeholder="" 
+                                {...register("strengthValue", {
+                                    required: "Strength is required",
+                                    // validate value can either be number only e.g 90 or number with sepearor between 90/80
+                                    validate: (value) => {
+                                        const regex = /^[0-9]+(\/[0-9]+)?$/;
+                                        return regex.test(value) || "Strength is invalid";
                                     }
+                                })}
+                                isInvalid={!!errors.strengthValue}
+                                _focus={{
+                                    border: !!errors.strengthValue ? "red.300" : "border-gray-300",
+                                }}
+                            />
+                        </FormControl>
+                        <FormControl isInvalid={!!errors.measurementName}>
+                            <FormLabel color={"gray.500"}>Measurement</FormLabel>
+                            <Controller
+                                control={control}
+                                name={"measurementName"}
+                                rules={{ required: 'measurementName is required' }}
+                                render={({ field: { onChange, value } }) =>
+                                    <div className="flex flex-col">
+                                        <CustomCreatableSelectComponent
+                                            value={value}
+                                            name={"measurementName"}
+                                            placeholder={'Select...'}
+                                            options={convertCreateOptionArray(measurementData)}
+                                            onOptionSelected={(selectedOption: CreatableSelectOption) => {
+                                                onChange(selectedOption?.value);
+                                            }}
+                                        />
+                                        {errors.measurementName?.message &&
+                                            <Text as={"span"} className="text-red-500 text-sm">
+                                                {errors?.measurementName?.message}
+                                            </Text>
+                                        }
+                                    </div>
+                                }
+                            />
+                        </FormControl>
+                    </HStack>
+                    <Stack mt={4}>
+                        <Text color={"gray.700"} fontWeight={"semibold"}>Packaging</Text>
+                        <HStack>
+                            <FormControl isInvalid={!!errors.packageName}>
+                                <FormLabel color={"gray.500"}>Package Per Roll</FormLabel>
+                                <Input 
+                                    id="packageName"
+                                    placeholder="" 
+                                    type="text"
+                                    isInvalid={!!errors.packageName}
+                                    _focus={{
+                                        border: !!errors.packageName ? "red.300" : "border-gray-300",
+                                    }}
+                                    {...register("packageName", {
+                                        required: true,
+                                    })}
                                 />
                             </FormControl>
-                            <FormControl isInvalid={!!errors.strengthValue}>
-                                <FormLabel color={"gray.500"}>Strength Value</FormLabel>
+                            <FormControl isInvalid={!!errors.weight}>
+                                <FormLabel color={"gray.500"}>Weight (Kg)</FormLabel>
                                 <Input 
-                                    id="strengthValue"
+                                    id="weight"
                                     placeholder="" 
-                                    {...register("strengthValue", {
-                                        required: "Strength is required",
-                                        // validate value can either be number only e.g 90 or number with sepearor between 90/80
+                                    type="number"
+                                    isInvalid={!!errors.weight}
+                                    _focus={{
+                                        border: !!errors.weight ? "red.300" : "border-gray-300",
+                                    }}
+                                    {...register("weight", {
+                                        // required: true,
                                         validate: (value) => {
-                                            const regex = /^[0-9]+(\/[0-9]+)?$/;
-                                            return regex.test(value) || "Strength is invalid";
+                                            const regex = /^\d+(\.\d+)?$/;
+                                            return regex.test(value) || "Weight is invalid";
                                         }
                                     })}
-                                    isInvalid={!!errors.strengthValue}
-                                    _focus={{
-                                        border: !!errors.strengthValue ? "red.300" : "border-gray-300",
-                                    }}
-                                />
-                            </FormControl>
-                            <FormControl isInvalid={!!errors.measurementName}>
-                                <FormLabel color={"gray.500"}>Measurement</FormLabel>
-                                <Controller
-                                    control={control}
-                                    name={"measurementName"}
-                                    rules={{ required: 'measurementName is required' }}
-                                    render={({ field: { onChange, value } }) =>
-                                        <div className="flex flex-col">
-                                            <CustomCreatableSelectComponent
-                                                value={value}
-                                                name={"measurementName"}
-                                                placeholder={'Select...'}
-                                                options={convertCreateOptionArray(measurementData)}
-                                                onOptionSelected={(selectedOption: CreatableSelectOption) => {
-                                                    onChange(selectedOption?.value);
-                                                }}
-                                            />
-                                            {errors.measurementName?.message &&
-                                                <Text as={"span"} className="text-red-500 text-sm">
-                                                    {errors?.measurementName?.message}
-                                                </Text>
-                                            }
-                                        </div>
-                                    }
                                 />
                             </FormControl>
                         </HStack>
-                        <Stack mt={4}>
-                            <Text color={"gray.700"} fontWeight={"semibold"}>Packaging</Text>
-                            <HStack>
-                                <FormControl isInvalid={!!errors.packageName}>
-                                    <FormLabel color={"gray.500"}>Package Per Roll</FormLabel>
-                                    <Input 
-                                        id="packageName"
-                                        placeholder="" 
-                                        type="text"
-                                        isInvalid={!!errors.packageName}
-                                        _focus={{
-                                            border: !!errors.packageName ? "red.300" : "border-gray-300",
-                                        }}
-                                        {...register("packageName", {
-                                            required: true,
-                                        })}
-                                    />
-                                </FormControl>
-                                <FormControl isInvalid={!!errors.weight}>
-                                    <FormLabel color={"gray.500"}>Weight (Kg)</FormLabel>
-                                    <Input 
-                                        id="weight"
-                                        placeholder="" 
-                                        type="number"
-                                        isInvalid={!!errors.weight}
-                                        _focus={{
-                                            border: !!errors.weight ? "red.300" : "border-gray-300",
-                                        }}
-                                        {...register("weight", {
-                                            // required: true,
-                                            validate: (value) => {
-                                                const regex = /^\d+(\.\d+)?$/;
-                                                return regex.test(value) || "Weight is invalid";
-                                            }
-                                        })}
-                                    />
-                                </FormControl>
-                            </HStack>
-                        </Stack>
                     </Stack>
-                }
+                </Stack>
+                : null
+                } 
                 <Stack mt={4}>
                     <Text color={"gray.700"} fontWeight={"semibold"}>Pricing</Text>
                     <HStack>
@@ -363,7 +373,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
             </button>
             <button 
             className="w-[280px] p-3 rounded-md bg-primary-500 text-white" 
-            onClick={() => setSteps("inventory")}>
+            onClick={handleStepValidation}>
                 Next: Inventory
             </button>
         </div>

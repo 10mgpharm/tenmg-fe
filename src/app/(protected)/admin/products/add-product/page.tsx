@@ -113,6 +113,8 @@ const AddProducts = () => {
         formState: { errors, isValid },
         handleSubmit,
         setValue,
+        trigger,
+        getValues,
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -127,7 +129,7 @@ const AddProducts = () => {
         formdata.append("categoryName", data?.categoryName);
         formdata.append("brandName", data?.brandName);
         formdata.append("weight", data.weight);
-        formdata.append("packageName", data?.brandName);
+        formdata.append("packagePerRoll", data?.packageName);
         formdata.append("presentationName", data?.presentationName);
         formdata.append("strengthValue", data.strengthValue);
         formdata.append("measurementName", data?.measurementName);
@@ -160,10 +162,14 @@ const AddProducts = () => {
     if (steps === null) {
         // Render a loading state or placeholder until the state is initialized
         return <div>Loading...</div>;
-      }
+    }
 
+    const handleStepValidation = async (fieldsToValidate: any) => {
+        const isValid = await trigger(fieldsToValidate);
+        return isValid;
+    };  
     
-  return (
+    return (
     <div className="p-8">
         <form onSubmit={handleSubmit(onSubmit)}>
             {(() => {
@@ -171,16 +177,31 @@ const AddProducts = () => {
                         case 'details':
                             return <DetailForm 
                                     title="Add Product"
-                                    setSteps={setSteps} 
+                                    handleStepValidation={
+                                        async () => {
+                                        const isValid = await handleStepValidation([
+                                            "productName", "productDescription", "categoryName", "brandName", "thumbnailFile"
+                                        ]);
+                                        if (isValid) setSteps("essentials");
+                                    }}
+                                    setSteps={setSteps}
                                     brands={brandData?.data} 
                                     categories={categoryData?.data} 
                                     control={control}
                                     register={register}
                                     errors={errors}
                                     setValue={setValue}
+                                    getValue={getValues}
                                 />
                         case 'essentials':
                             return <EssentialForm 
+                                    handleStepValidation={
+                                        async () => {
+                                        const isValid = await handleStepValidation([
+                                            "medicationTypeName", "measurementName", "presentationName", "strengthValue", "packageName", "weight", "actualPrice", "discountPrice"
+                                        ]);
+                                        if (isValid) setSteps("inventory");
+                                    }}
                                     setSteps={setSteps}
                                     register={register}
                                     setValue={setValue}

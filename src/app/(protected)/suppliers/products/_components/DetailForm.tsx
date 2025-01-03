@@ -17,8 +17,8 @@ import {
 } from "@chakra-ui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Control, Controller, FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
 import { IFormInput } from "../add-product/page";
 
@@ -27,12 +27,13 @@ interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;
     control: Control<IFormInput>;
     errors: FieldErrors<IFormInput>;
-    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>; 
+    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
+    handleStepValidation: () => void;
     brands: MedicationData[]; 
     categories: MedicationData[];
     setValue: UseFormSetValue<IFormInput>;
+    getValue: UseFormGetValues<IFormInput>;
 }
-  
 
 const DetailForm: React.FC<IChildComponentProps> = ({
     title,
@@ -42,7 +43,9 @@ const DetailForm: React.FC<IChildComponentProps> = ({
     errors, 
     control, 
     register, 
-    setValue
+    setValue,
+    getValue,
+    handleStepValidation
 }) => {
 
     const toast = useToast();
@@ -62,9 +65,17 @@ const DetailForm: React.FC<IChildComponentProps> = ({
         const inputFile = event.target.files[0];
         setValue("thumbnailFile", inputFile);
         if (event?.target?.files?.length > 0) {
+            console.log(inputFile)
             setIconFile(URL.createObjectURL(inputFile));
         }
     };
+
+    const formattedImage = getValue("thumbnailFile");
+    useEffect(() => {
+        if(formattedImage){
+            setIconFile(URL.createObjectURL(formattedImage as unknown as Blob));
+        }
+    },[formattedImage])
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -78,7 +89,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
             </div>
         </div>
         <h3 className="font-semibold text-xl text-gray-700 my-5">{title}</h3>
-        <form className="space-y-5">
+        <div className="space-y-5">
             <FormControl isInvalid={!!errors.productName}>
                 <FormLabel>Product Name</FormLabel>
                 <Input 
@@ -208,10 +219,14 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                     <img src={iconFile} alt="" className="w-10 h-10 mt-3 rounded-sm" />
                 }
             </div>
-        </form>
+        </div>
         <div className="flex gap-4 justify-end mt-5 mb-6">
             <button className="p-3 w-32 rounded-md border text-gray-600">Back</button>
-            <button className="w-[280px] p-3 rounded-md bg-primary-500 text-white" onClick={() => setSteps("essentials")}>
+            <button
+            type="button"
+            className="w-[280px] p-3 rounded-md bg-primary-500 text-white"
+            onClick={handleStepValidation}
+            >
                 Next: Product Essentials
             </button>
         </div>
