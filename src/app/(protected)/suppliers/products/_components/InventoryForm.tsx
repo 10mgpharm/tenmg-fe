@@ -59,6 +59,7 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
                     <FormLabel color={"gray.600"}>Quantity</FormLabel>
                     <Input 
                         type="text" 
+                        id="quantity"
                         isInvalid={!!errors.quantity}
                         _focus={{
                             border: !!errors.quantity ? "red.300" : "border-gray-300",

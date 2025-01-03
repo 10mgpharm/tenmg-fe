@@ -156,7 +156,7 @@ const FAQList = () => {
         <DeleteMedication
         isOpen={isDeleteOpen}
         onClose={onDeleteClose}
-        id={selectedId}
+        isLoading={loading}
         title="FAQ"
         handleDelete={handleDelete}
         />
