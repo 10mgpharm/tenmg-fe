@@ -34,7 +34,7 @@ interface IFormInput {
 
 const EditBrands = (
   { isOpen, onClose, type, brand, refetchingTypes}: 
-  { isOpen: boolean; onClose: () => void; type: "Brand" | "Category", brand: MedicationData, refetchingTypes: () => void}
+  { isOpen: boolean; onClose: () => void; type: "Brand" | "Category" | "Presentation" | "Measurement", brand: MedicationData, refetchingTypes: () => void}
 ) => {
 
   const session = useSession();
@@ -62,7 +62,7 @@ const EditBrands = (
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true)
     try {
-        let response;
+        let response: any;
         if(type === "Brand"){
           response = await requestClient({token: token}).patch(
               `/admin/settings/brands/${brand?.id}`,

@@ -81,6 +81,8 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
     fetchCustomerTnx();
   }, [fetchCustomerTnx, token]);
 
+  console.log(tnxHistoryData)
+
   return (
     <div className="p-8">
       {loading ? (
