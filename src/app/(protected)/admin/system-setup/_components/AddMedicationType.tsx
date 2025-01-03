@@ -220,7 +220,9 @@ const AddMedicationType = (
             <DrawerOverlay />
             <DrawerContent>
                 <DrawerCloseButton />
-                <DrawerHeader className="capitalize">{!medication ? `Add Medication Type` : `Edit Medication Type`}</DrawerHeader>
+                <DrawerHeader className="capitalize">
+                    {!medication ? `Add Medication Type` : `Edit Medication Type`}
+                </DrawerHeader>
                 <DrawerBody>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <FormControl isInvalid={!!errors.name?.message}>
