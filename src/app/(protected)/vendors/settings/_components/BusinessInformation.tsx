@@ -64,13 +64,13 @@ const BusinessInformation = ({ user }: { user: User }) => {
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
     try {
       setIsLoading(true);
-  
+
       const response = await requestClient({
         token: sessionData.user.token,
       }).patch("/vendor/settings/business-information", {
         ...value,
       });
-  
+
       if (response.status === 200) {
         // Override backend success message with a fixed one
         toast.success("Business information successfully updated");
@@ -81,13 +81,12 @@ const BusinessInformation = ({ user }: { user: User }) => {
       }
     } catch (error) {
       setIsLoading(false);
-  
+
       // Handle unexpected errors and display a user-friendly message
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
     }
   };
-  
 
   return (
     <div className="p-2 md:p-5 rounded-md bg-white md:max-w-5xl">
@@ -120,9 +119,10 @@ const BusinessInformation = ({ user }: { user: User }) => {
             />
           </FormControl>
         </HStack>
-        <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>;
+        <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
+          ;
           <FormControl isInvalid={!!errors.contactEmail?.message}>
-            <FormLabel fontSize={"sm"} fontWeight={"medium"}>                                                                                                                                  
+            <FormLabel fontSize={"sm"} fontWeight={"medium"}>
               Business Email
             </FormLabel>
             <InputGroup>
@@ -144,7 +144,6 @@ const BusinessInformation = ({ user }: { user: User }) => {
             </InputGroup>
             <FormErrorMessage>{errors.contactEmail?.message}</FormErrorMessage>
           </FormControl>
-
           <FormControl isInvalid={!!errors.contactPhone?.message}>
             <FormLabel fontSize={"sm"} fontWeight={"medium"}>
               Contact Phone Number
@@ -191,7 +190,19 @@ const BusinessInformation = ({ user }: { user: User }) => {
           flexDirection={{ base: "column", md: "row" }}
         >
           <Flex>
-            <Button variant="outline" mr={3}>
+            <Button
+              variant="outline"
+              mr={3}
+              onClick={() => {
+                // Reset the form to default values
+                setValue("businessName", user?.businessName || "");
+                setValue("contactEmail", user?.email || "");
+                setValue("contactPerson", "");
+                setValue("contactPhone", "");
+                setValue("businessAddress", "");
+                setValue("contactPersonPosition", "");
+              }}
+            >
               Cancel
             </Button>
             <Button
