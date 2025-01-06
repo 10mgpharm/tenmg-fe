@@ -36,6 +36,7 @@ import SearchInput from "../_components/SearchInput";
 import EmptyResult from "../_components/EmptyResult";
 import { useDebouncedValue } from "@/utils/debounce";
 import UploadModal from "../_components/UploadModal";
+import { ConfirmationModal } from "./_components/ConfirmationModal";
 
 export interface IFilterInput {
   endDate?: Date | null;
@@ -47,14 +48,20 @@ const CustomerManagement = () => {
   const [loading, setLoading] = useState(true);
   const [allCustomersData, setAllCustomersData] =
     useState<CustomerDataProp | null>(null);
+
   const [pageCount, setPageCount] = useState<number>(1);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
   const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
 
-  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [actionType, setActionType] = useState<"activate" | "suspend" | null>(
+    null
+  );
 
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
@@ -117,6 +124,22 @@ const CustomerManagement = () => {
     [token, fetchCustomers]
   );
 
+  const handleOpenModal = (id: number, action: "activate" | "suspend") => {
+    setSelectedUserId(id);
+    setActionType(action);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmToggle = () => {
+    if (selectedUserId !== null) {
+      handleToggle(selectedUserId);
+
+      setIsModalOpen(false);
+      setSelectedUserId(null);
+      setActionType(null);
+    }
+  };
+
   const handleDownloadTemplate = useCallback(() => {
     const headerMappings = [
       { key: "name", header: "NAME" },
@@ -126,23 +149,36 @@ const CustomerManagement = () => {
     ];
 
     const bodyMappings = [
-      { name: "John Doe", email: "john.doe@example.com", phone: "9067636443", reference: "REF123" },
-      { name: "Jane Smith", email: "jane.smith@example.com", phone: "9076543210", reference: "REF456" },
+      {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        phone: "9067636443",
+        reference: "REF123",
+      },
+      {
+        name: "Jane Smith",
+        email: "jane.smith@example.com",
+        phone: "9076543210",
+        reference: "REF456",
+      },
     ];
 
     const templateBlob = createXlsxTemplate(
       headerMappings,
-      "Vendor Customer Template", 
+      "Vendor Customer Template",
       bodyMappings
     );
 
     saveAs(templateBlob, "vendor_customer_uploads.xlsx");
   }, []);
 
+  /**
+   * Handle the filters
+   */
   const applyFilters = (filters: IFilterInput) => {
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
-    setStatus(filters.status);
+    setCreatedAtStart(filters.startDate || null);
+    setCreatedAtEnd(filters.endDate || null);
+    setStatus(filters.status || "");
   };
 
   const clearFilters = () => {
@@ -157,19 +193,18 @@ const CustomerManagement = () => {
     { option: "Suspended", value: "inactive" },
   ];
 
-
-  const tableData: CustomerDataProp = useMemo(
+  /**
+   * Memoize your table data and columns
+   */
+  const tableData: CustomerDataProp | null = useMemo(
     () => allCustomersData,
     [allCustomersData]
   );
 
-  const columns = useMemo(
-    () => ColumnsCustomerFN(handleToggle),
-    [handleToggle]
-  );
+  const columns = useMemo(() => ColumnsCustomerFN(handleOpenModal), []);
 
   const table = useReactTable({
-    data: tableData ? tableData?.data : [],
+    data: tableData ? tableData.data : [],
     columns: columns,
     state: {
       globalFilter,
@@ -209,24 +244,26 @@ const CustomerManagement = () => {
           </Button>
         </div>
       </div>
+
+      {/* TABLE SECTION */}
       <div className="">
         {loading ? (
           <Flex justify="center" align="center" height="200px">
             <Spinner size="xl" />
           </Flex>
-        ) : tableData && tableData?.data?.length !== 0 ? (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+        ) : tableData && tableData.data.length !== 0 ? (
+          <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
             <Table>
-              <Thead bg={"blue.50"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
+              <Thead bg="blue.50">
+                {table.getHeaderGroups().map((headerGroup) => (
                   <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
+                    {headerGroup.headers.map((header) => (
                       <Th
-                        textTransform={"initial"}
+                        textTransform="initial"
                         px="0px"
                         key={header.id}
-                        color={"primary.500"}
-                        fontWeight={"500"}
+                        color="primary.500"
+                        fontWeight="500"
                       >
                         {header.isPlaceholder
                           ? null
@@ -239,10 +276,10 @@ const CustomerManagement = () => {
                   </Tr>
                 ))}
               </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
+              <Tbody bg="white" color="#606060" fontSize="14px">
+                {table.getRowModel().rows.map((row) => (
                   <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
+                    {row.getVisibleCells().map((cell) => (
                       <Td key={cell.id} px="0px">
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -262,8 +299,8 @@ const CustomerManagement = () => {
           </TableContainer>
         ) : (
           <EmptyResult
-            heading={`Nothing to show here yet`}
-            content={`You don’t have any customer yet. When you do, they’ll appear here.`}
+            heading="Nothing to show here yet"
+            content="You don’t have any customer yet. When you do, they’ll appear here."
           />
         )}
       </div>
@@ -283,6 +320,14 @@ const CustomerManagement = () => {
         clearFilters={clearFilters}
         filterOptions={filterOptions}
       />
+      {isModalOpen && (
+        <ConfirmationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleConfirmToggle}
+          actionType={actionType}
+        />
+      )}
     </div>
   );
 };

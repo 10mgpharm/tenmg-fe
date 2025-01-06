@@ -7,6 +7,7 @@ import { NextAuthUserSession } from "@/types";
 import TopNavBar from "../suppliers/_components/TopNavBar";
 import Footer from "../suppliers/_components/Footer";
 import SideBar from "./_components/SideBar";
+// import { Suspense } from "react";
 
 const appName = config.appName;
 
@@ -21,20 +22,20 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }>) {
   const session: NextAuthUserSession = await getServerSession(authOptions);
-  if (!session) redirect('/auth/signin');
+  if (!session) redirect("/auth/signin");
 
-  if (session.user?.entityType !== 'ADMIN') redirect('/');
+  if (session.user?.entityType !== "ADMIN") redirect("/");
 
-  return(
+  return (
     <>
       <TopNavBar />
       <SideBar />
+      {/* <Suspense fallback={<div>Loading...</div>}> */}
       <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
-        <div className="min-h-[calc(100vh-150px)]">
-          {children}
-        </div>
+        <div className="min-h-[calc(100vh-150px)]">{children}</div>
         <Footer />
       </main>
+      {/* </Suspense> */}
     </>
   );
 }

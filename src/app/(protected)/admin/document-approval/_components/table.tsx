@@ -48,7 +48,9 @@ export function ColumnsAllFN(
       header: ({ column }) => <p className="">Expiry Date</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info?.row?.original?.expiryDate}</p>
+          <p className="font-medium">
+            {convertDate(info?.row?.original?.expiryDate)}
+          </p>
         </div>
       ),
     }),
@@ -57,7 +59,9 @@ export function ColumnsAllFN(
       header: ({ column }) => <p className="">Date Submitted</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info?.row?.original?.createdAt}</p>
+          <p className="font-medium">
+            {convertDate(info?.row?.original?.createdAt)}
+          </p>
         </div>
       ),
     }),

@@ -37,13 +37,17 @@ export default function Password() {
           <HStack className='w-full'>
             <FormControl className='flex w-full gap-4'>
               <FormLabel className='w-1/4'>New Password</FormLabel>
-              <div className='w-2/4 relative'>
-                <div className='w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ' >
-                  {showPassword ?
-                    <EyeSlashIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)} /> :
-                    <EyeIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)} />}
+              <div className='w-2/4'>
+
+                <div className='w-full relative'>
+                  <div className='w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ' >
+                    {showPassword ?
+                      <EyeSlashIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)} /> :
+                      <EyeIcon className='w-4 cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)} />}
+                  </div>
+                  <Input type={showPassword ? "text" : "password"} defaultValue={'new password'} className='w-fit' />
                 </div>
-                <Input type={showPassword ? "text" : "password"} defaultValue={'new password'} className='w-fit' />
+                <p className='text-sm text-gray-500 font-semibold'>Your new password must be more than 8 characters.</p>
               </div>
             </FormControl>
           </HStack>

@@ -102,7 +102,11 @@ const UsersTab = ({
       setIsApprovalLoading(false);
       if (response.status === 200) {
         toast.success(response.data.message);
-        fetchTeamUser(type, pageCount);
+        // fetchTeamUser(type, pageCount);
+        fetchTeamUser("", pageCount);
+        fetchTeamUser("Supplier", pageCount);
+        fetchTeamUser("Vendor", pageCount);
+        fetchTeamUser("Pharmacy", pageCount);
       }
     } catch (error) {
       setIsApprovalLoading(false);
