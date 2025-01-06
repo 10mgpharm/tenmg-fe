@@ -70,7 +70,7 @@ export default function RequestDrawer({
               <Flex mb={2}>
                 <Box w="50%" className="space-y-2">
                   <Text fontSize="sm" color="gray.600">
-                    User type
+                    User Type
                   </Text>
                   <Text fontWeight="medium">{data.type || "N/A"}</Text>
                 </Box>
