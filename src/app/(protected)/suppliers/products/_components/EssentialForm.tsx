@@ -4,7 +4,7 @@ import { IFormInput } from "@/app/(protected)/admin/products/add-product/page";
 import { Box, FormControl, FormLabel, HStack, Input, Stack, Text } from "@chakra-ui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import Select from 'react-select';
 import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { convertCreateOptionArray, convertVariationArray } from "@/utils/convertSelectArray";
@@ -93,9 +93,9 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <div className="flex items-center justify-between">
-            <HStack onClick={() => router.back()} cursor={"pointer"}>
+            <HStack onClick={() => setSteps("details")} cursor={"pointer"}>
                 <ArrowLeftIcon className='w-5- h-5'/>
-                <Text>Back to products</Text>
+                <Text>Go to Product Details</Text>
             </HStack>
             <div className="">
                 <p className="font-semibold">Steps 2/3</p>
