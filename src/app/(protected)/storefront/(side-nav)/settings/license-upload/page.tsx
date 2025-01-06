@@ -294,7 +294,7 @@ export default function LegalLicense
                       or drag and drop
                     </Text>
                     <Text fontSize="xs" color="gray.500" textAlign="center">
-                      PDF, DOC or DOCX. Maximum size of 10MB (max. 800x400px)
+                      PDF, DOC or DOCX. Maximum size of 10MB
                     </Text>
                     {file && (
                       <Text fontSize="sm" color="gray.500">

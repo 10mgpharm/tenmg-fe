@@ -16,10 +16,13 @@ import {
     InputLeftElement,
     FormLabel,
     FormControl,
+    CheckboxGroup,
   } from '@chakra-ui/react'
 import { Controller, useForm } from 'react-hook-form';
 import { FaSearch } from 'react-icons/fa'
 import DateComponent from './DateComponent';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { MedicationData, MedicationResponseData } from '@/types';
 
 interface IFormInput {
     endDate?: Date | null;
@@ -37,8 +40,11 @@ const FilterDrawer = ({
     onClose,
     applyFilters,
     clearFilters,
-    filterOptions,
-    isNotDate,
+    brands,
+    brandQuery,
+    setBrandFilter,
+    setBrandQuery,
+    setInventoryQuery,
 }: {
     isOpen: boolean;
     onClose: () => void;
@@ -46,7 +52,14 @@ const FilterDrawer = ({
     clearFilters?: () => void;
     filterOptions?: FilterOptions[];
     isNotDate?: boolean;
+    setBrandFilter: Dispatch<SetStateAction<string>>;
+    setInventoryQuery: Dispatch<SetStateAction<string>>;
+    setBrandQuery: Dispatch<SetStateAction<string>>;
+    brands: MedicationResponseData;
+    brandQuery: string;
 }) => {
+
+    const [checkedItems, setCheckedItems] = useState([false, false, false]);
 
     const {
         handleSubmit,
@@ -59,19 +72,20 @@ const FilterDrawer = ({
     });
 
     const onSubmit = (data: IFormInput) => {
-    applyFilters(data);
-    onClose();
+        applyFilters(data);
+        onClose();
     };
 
     const handleClearFilters = () => {
-    reset({
-        status: "",
-        startDate: null,
-        endDate: null,
-    });
-    clearFilters();
+        reset({
+            status: "",
+            startDate: null,
+            endDate: null,
+        });
+        clearFilters();
     };
-  return (
+
+    return (
     <Drawer
         isOpen={isOpen}
         placement='right'
@@ -86,45 +100,62 @@ const FilterDrawer = ({
             <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>Apply filters to table data.</Text>
           </DrawerHeader>
           <DrawerBody>
-            <Stack spacing={5} direction='column'>
-                <Checkbox>
-                    <Tag colorScheme={"green"}>In stock</Tag>
-                </Checkbox>
-                <Checkbox>
-                    <Tag colorScheme={"orange"}>Low stock</Tag>
-                </Checkbox>
-                <Checkbox>
-                    <Tag colorScheme={"red"}>Out of stock</Tag>
-                </Checkbox>
-            </Stack>
+            <CheckboxGroup>
+                <Stack spacing={5} direction='column'>
+                    <Checkbox 
+                        isChecked={checkedItems[0]} 
+                        onChange={(e) => {
+                            setCheckedItems([e.target.checked, false, false])
+                            setInventoryQuery("IN STOCK")
+                        }} 
+                    >
+                        <Tag colorScheme={"green"}>In stock</Tag>
+                    </Checkbox>
+                    <Checkbox 
+                        isChecked={checkedItems[1]} 
+                        onChange={(e) => {
+                            setCheckedItems([false, e.target.checked, false])
+                            setInventoryQuery("LOW STOCK")
+                        }} 
+                    >
+                        <Tag colorScheme={"orange"}>Low stock</Tag>
+                    </Checkbox>
+                    <Checkbox 
+                    isChecked={checkedItems[2]} 
+                    onChange={(e) => {
+                        setCheckedItems([false, false, e.target.checked])
+                        setInventoryQuery("OUT OF STOCK")
+                    }} 
+                    >
+                        <Tag colorScheme={"red"}>Out of stock</Tag>
+                    </Checkbox>
+                </Stack>
+            </CheckboxGroup>
             <Stack mt={5}>
                 <Text mb={4}>Brand</Text>
                 <InputGroup>
                     <InputLeftElement pointerEvents='none'>
                     <FaSearch className='text-gray-400' />
                     </InputLeftElement>
-                    <Input type='text' placeholder='Search' />
+                    <Input type='text' placeholder='Search' onChange={(e) => setBrandFilter(e.target.value)} />
                 </InputGroup>
-                <Stack mt={5}>
-                    <Checkbox>
-                        Brand One
-                    </Checkbox>
-                    <Checkbox>
-                        Brand Two
-                    </Checkbox>
-                    <Checkbox>
-                        Brand Three
-                    </Checkbox>
-                    <Checkbox>
-                        Brand Four
-                    </Checkbox>
-                    <Checkbox>
-                        Brand Five
-                    </Checkbox>
-                    <Checkbox>
-                        Brand Six
-                    </Checkbox>
-                </Stack>
+                {
+                    brands && brands?.data?.slice(0, 5)?.map((brand: MedicationData) => (
+                        <Stack key={brand.id}>
+                            <Checkbox 
+                            value={brand?.name}
+                            isChecked={brand?.name === brandQuery}
+                            onChange={(e) => {
+                                const isChecked = e.target.checked;
+                                if(isChecked){
+                                    setBrandQuery(e.target.value);
+                                }
+                            }}>
+                                {brand.name}
+                            </Checkbox>
+                        </Stack>
+                    ))
+                }
             </Stack>
             <Stack mt={5}>
                 <Text mb={4}>Date</Text>

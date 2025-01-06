@@ -10,14 +10,14 @@ export default function page() {
         <ReviewsCardComponent key={item?.order_id} product={item} />
       ))} */}
 
-      <div className='flex items-center justify-center w-full h-fit py-32'>
+      <div className='flex flex-col items-center justify-center w-full h-fit py-32'>
         <Image
           src={'/assets/images/Homework.png'}
           alt=''
           width={300}
           height={300}
         />
-        <p>{`You don't have any product to review.`}</p>
+        <p className='my-4 font-semibold '>{`You don't have any product to review.`}</p>
       </div>
     </div>
   )

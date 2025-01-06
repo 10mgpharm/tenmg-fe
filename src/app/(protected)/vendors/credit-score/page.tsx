@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SearchInput from "../_components/SearchInput";
 import { CiFilter } from "react-icons/ci";
 import {
-  Button,
   Flex,
   Spinner,
   Table,
@@ -32,8 +31,6 @@ import {
   CreditScoreResponseData,
   NextAuthUserSession,
 } from "@/types";
-import AffordabilityModel from "./_components/AffordabilityModel";
-import BusinessLogicModal from "./_components/BusinessLogicModal";
 import FilterDrawer from "../_components/FilterDrawer";
 import { useDebouncedValue } from "@/utils/debounce";
 
@@ -58,10 +55,6 @@ const CreditScore = () => {
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  //   const tableData: TransactionHistoryData[] = useMemo(
-  //     () => tnxHistoryData,
-  //     [tnxHistoryData]
-  //   );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenFilter,
@@ -243,8 +236,8 @@ const CreditScore = () => {
         filterOptions={filterOptions}
         isNotDate={true}
       />
-      <AffordabilityModel isOpen={isOpen} onClose={onClose} />
-      <BusinessLogicModal isOpen={isOpenBusiness} onClose={onCloseBusiness} />
+      {/* <AffordabilityModel isOpen={isOpen} onClose={onClose} />
+      <BusinessLogicModal isOpen={isOpenBusiness} onClose={onCloseBusiness} /> */}
     </div>
   );
 };

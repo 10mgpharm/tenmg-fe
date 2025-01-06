@@ -180,7 +180,11 @@ const AddProducts = () => {
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([
-                                            "productName", "productDescription", "categoryName", "brandName", "thumbnailFile"
+                                            "productName", 
+                                            "productDescription", 
+                                            "categoryName", 
+                                            "brandName", 
+                                            "thumbnailFile"
                                         ]);
                                         if (isValid) setSteps("essentials");
                                     }}
@@ -198,7 +202,14 @@ const AddProducts = () => {
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([
-                                            "medicationTypeName", "measurementName", "presentationName", "strengthValue", "packageName", "weight", "actualPrice", "discountPrice"
+                                            "medicationTypeName", 
+                                            "measurementName", 
+                                            "presentationName", 
+                                            "strengthValue", 
+                                            "packageName", 
+                                            "weight", 
+                                            "actualPrice", 
+                                            "discountPrice"
                                         ]);
                                         if (isValid) setSteps("inventory");
                                     }}

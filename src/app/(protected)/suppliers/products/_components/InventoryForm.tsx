@@ -44,9 +44,9 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <div className="flex items-center justify-between">
-            <HStack onClick={() => router.back()} cursor={"pointer"}>
+            <HStack onClick={() => setSteps("essentials")} cursor={"pointer"}>
                 <ArrowLeftIcon className='w-5- h-5'/>
-                <Text>Back to products</Text>
+                <Text>Go to Products Essentials</Text>
             </HStack>
             <div className="">
                 <p className="font-semibold">Steps 3/3</p>

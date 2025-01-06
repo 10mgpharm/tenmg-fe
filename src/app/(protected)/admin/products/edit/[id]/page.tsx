@@ -115,7 +115,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formState: { errors, isValid },
         handleSubmit,
         setValue,
-        getValues,
+        trigger,
+        getValues
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -164,8 +165,12 @@ const EditPage = ({params}: {params: {id: string}}) => {
     if (steps === null) {
         // Render a loading state or placeholder until the state is initialized
         return <div>Loading...</div>;
-      }
+    }
 
+    const handleStepValidation = async (fieldsToValidate: any) => {
+        const isValid = await trigger(fieldsToValidate);
+        return isValid;
+    }; 
     return (
     <div>
         <form 
@@ -175,30 +180,38 @@ const EditPage = ({params}: {params: {id: string}}) => {
                     switch (steps) {
                         case 'details':
                             return <DetailForm 
-                                title="Edit Product"
-                                setSteps={setSteps}
-                                brands={brandData?.data}
-                                categories={categoryData?.data}
-                                control={control}
-                                register={register}
-                                errors={errors}
-                                setValue={setValue}
-                                getValue={getValues}
-                                handleStepValidation={function (): void {
-                                    throw new Error('Function not implemented.');
-                                }}
-                            />
+                                    title="Edit Product"
+                                    handleStepValidation={
+                                        async () => {
+                                        const isValid = await handleStepValidation([
+                                            "productName", "productDescription", "categoryName", "brandName", "thumbnailFile"
+                                        ]);
+                                        if (isValid) setSteps("essentials");
+                                    }}
+                                    setSteps={setSteps}
+                                    brands={brandData?.data} 
+                                    categories={categoryData?.data} 
+                                    control={control}
+                                    register={register}
+                                    errors={errors}
+                                    setValue={setValue}
+                                    getValue={getValues}
+                                />
                         case 'essentials':
                             return <EssentialForm 
+                                    handleStepValidation={
+                                        async () => {
+                                        const isValid = await handleStepValidation([
+                                            "medicationTypeName", "measurementName", "presentationName", "strengthValue", "packageName", "weight", "actualPrice", "discountPrice"
+                                        ]);
+                                        if (isValid) setSteps("inventory");
+                                    }}
                                     setSteps={setSteps}
                                     register={register}
                                     medications={medicationData?.data}
                                     setValue={setValue}
                                     control={control}
                                     errors={errors}
-                                    handleStepValidation={function (): void {
-                                        throw new Error('Function not implemented.');
-                                    }}
                                 />
                         case 'inventory':
                             return <InventoryForm 
