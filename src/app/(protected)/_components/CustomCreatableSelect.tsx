@@ -14,6 +14,7 @@ export interface CreatableSelectOption {
 interface CustomSelectProps {
     name: string;
     placeholder: string;
+    defaultValue?: string | null;
     onOptionSelected: (selectedOption: CreatableSelectOption) => void;
     options: CreatableSelectOption[];
     value?: string;
@@ -27,6 +28,7 @@ export default function CustomCreatableSelectComponent({
     placeholder,
     error,
     name,
+    defaultValue,
 }: CustomSelectProps) {
     const [optionList, setOptionList] = useState(options);
     const [selectedOption, setSelectedOption] = useState<CreatableSelectOption>(null);
@@ -53,13 +55,12 @@ export default function CustomCreatableSelectComponent({
                 setSelectedOption({ value, label: value });
             }
         }
-
         if(options){
             setOptionList(options);
         }
 
-    }, [value, optionList, options]);
-
+    }, [value, optionList, options, defaultValue]);
+    
     return (
         <div className="w-full">
             <CreatableSelect

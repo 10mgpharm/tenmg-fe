@@ -11,6 +11,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { useRouter } from "next/navigation";
+import SuccessModal from "../_components/SuccessModal";
+import { useDisclosure } from "@chakra-ui/react";
 
 export interface IFormInput {
     productName: string;
@@ -38,6 +40,7 @@ export interface StepsProps {
 }
 const AddProducts = () => {
 
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [steps, setSteps] = useState<'details' | 'essentials' | 'inventory'>(null);
 
@@ -181,6 +184,7 @@ const AddProducts = () => {
                     return (
                     <DetailForm
                         title="Add Product"
+                        isEditing={false}
                         handleStepValidation={
                             async () => {
                             const isValid = await handleStepValidation([
@@ -201,6 +205,7 @@ const AddProducts = () => {
                 case "essentials":
                     return (
                     <EssentialForm
+                        isEditing={false}
                         handleStepValidation={
                             async () => {
                             const isValid = await handleStepValidation([
@@ -219,6 +224,7 @@ const AddProducts = () => {
                 case "inventory":
                     return (
                     <InventoryForm
+                        isEditing={false}
                         setSteps={setSteps}
                         register={register}
                         control={control}
@@ -232,6 +238,13 @@ const AddProducts = () => {
                 }
             })()}
         </form>
+        <SuccessModal
+            isOpen={isOpen} 
+            onClose={onClose}
+            routeUrl="/suppliers/products"
+            isEditing={false}
+            routeUrl2="/suppliers/product/new"
+        />
     </div>
   )
 }

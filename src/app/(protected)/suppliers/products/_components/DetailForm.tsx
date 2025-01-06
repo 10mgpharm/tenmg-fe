@@ -3,7 +3,7 @@
 import 
 CustomCreatableSelectComponent, 
 { CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
-import { MedicationData } from "@/types";
+import { MedicationData, ProductDataProps } from "@/types";
 import { convertCreateOptionArray } from "@/utils/convertSelectArray";
 import { 
     Center,
@@ -24,6 +24,8 @@ import { IFormInput } from "../add-product/page";
 
 interface IChildComponentProps {
     title: string;
+    isEditing: boolean;
+    data?: ProductDataProps;
     register: UseFormRegister<IFormInput>;
     control: Control<IFormInput>;
     errors: FieldErrors<IFormInput>;
@@ -37,6 +39,8 @@ interface IChildComponentProps {
 
 const DetailForm: React.FC<IChildComponentProps> = ({
     title,
+    data,
+    isEditing,
     setSteps, 
     brands,  
     categories, 
@@ -71,11 +75,21 @@ const DetailForm: React.FC<IChildComponentProps> = ({
     };
 
     const formattedImage = getValue("thumbnailFile");
+
     useEffect(() => {
-        if(formattedImage){
-            setIconFile(URL.createObjectURL(formattedImage as unknown as Blob));
+        if(isEditing && data){
+            setValue("productName", data?.name);
+            setValue("productDescription", data?.description);
+            setValue("brandName", data?.brand?.name);
+            setValue("categoryName", data?.category?.name);
+            setValue("thumbnailFile", data?.thumbnailFile);
         }
-    },[formattedImage])
+        if(formattedImage && !isEditing){
+            setIconFile(URL.createObjectURL(formattedImage as unknown as Blob));
+        }else{
+            setIconFile(formattedImage)
+        }
+    },[formattedImage, data])
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -94,6 +108,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                 <FormLabel>Product Name</FormLabel>
                 <Input 
                 id="productName"
+                defaultValue={data?.name}
                 placeholder="Enter product name" 
                 type="text"
                 isInvalid={!!errors.productName}
@@ -109,6 +124,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                 <FormLabel>Product Description</FormLabel>
                 <Textarea 
                 id="productDescription"
+                defaultValue={data?.description}
                 placeholder="Enter a description"
                 isInvalid={!!errors.productDescription}
                 _focus={{
@@ -126,23 +142,26 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                         control={control}
                         name={"brandName"}
                         rules={{ required: 'Brand is required' }}
-                        render={({ field: { onChange, value } }) =>
-                            <div className="flex flex-col">
-                                <CustomCreatableSelectComponent
-                                    value={value}
-                                    name={"brandName"}
-                                    placeholder={'Select...'}
-                                    options={convertCreateOptionArray(brands)}
-                                    onOptionSelected={(selectedOption: CreatableSelectOption) => {
-                                        onChange(selectedOption?.value);
-                                    }}
-                                />
-                                {errors.brandName?.message &&
-                                    <Text as={"span"} className="text-red-500 text-sm">
-                                        {errors?.brandName?.message}
-                                    </Text>
-                                }
-                            </div>
+                        render={({ field: { onChange, value } }) => {
+                            return(
+                                <div className="flex flex-col">
+                                    <CustomCreatableSelectComponent
+                                        value={value}
+                                        name={"brandName"}
+                                        placeholder={'Select...'}
+                                        options={convertCreateOptionArray(brands)}
+                                        onOptionSelected={(selectedOption: CreatableSelectOption) => {
+                                            onChange(selectedOption?.value);
+                                        }}
+                                    />
+                                    {errors.brandName?.message &&
+                                        <Text as={"span"} className="text-red-500 text-sm">
+                                            {errors?.brandName?.message}
+                                        </Text>
+                                    }
+                                </div>
+                            )
+                        }
                         }
                     />
                 </FormControl>

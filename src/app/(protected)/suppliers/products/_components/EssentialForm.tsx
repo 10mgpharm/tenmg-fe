@@ -1,17 +1,16 @@
 "use client";
 
+import Select from 'react-select';
+import { useSession } from "next-auth/react";
+import requestClient from "@/lib/requestClient";
 import { IFormInput } from "@/app/(protected)/admin/products/add-product/page";
 import { Box, FormControl, FormLabel, HStack, Input, Stack, Text } from "@chakra-ui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
-import { useRouter } from "next/navigation"
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
-import Select from 'react-select';
 import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { convertCreateOptionArray, convertVariationArray } from "@/utils/convertSelectArray";
-import { MedicationData, NextAuthUserSession, PresentationProps } from "@/types";
+import { MedicationData, NextAuthUserSession, PresentationProps, ProductDataProps } from "@/types";
 import CustomCreatableSelectComponent, { CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
-import requestClient from "@/lib/requestClient";
-import { useSession } from "next-auth/react";
 
 interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;
@@ -21,6 +20,8 @@ interface IChildComponentProps {
     setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
     medications: MedicationData[]; 
     setValue: UseFormSetValue<IFormInput>;
+    data?: ProductDataProps;
+    isEditing: boolean
 }
 
 const EssentialForm: React.FC<IChildComponentProps> = ({
@@ -30,10 +31,11 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     errors,
     medications,
     setValue,
-    handleStepValidation
+    handleStepValidation,
+    data,
+    isEditing
 }) => {
 
-    const router = useRouter();
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
@@ -89,6 +91,18 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         fetchingPresentationTypes();
         fetchingMeasurementTypes();
     }, [fetchingPresentationTypes, fetchingMeasurementTypes]);
+
+    useEffect(() => {
+        if(isEditing){
+            setValue("medicationTypeName", data?.medicationType?.name);
+            setValue("presentationName", data?.presentation?.name);
+            setValue("measurementName", data?.measurement?.name);
+            setValue("packageName", data?.package?.name);
+            setValue("weight", data?.weight);
+            setValue("actualPrice", data?.actualPrice);
+            setValue("discountPrice", data?.discountPrice);
+        }
+    }, [data, isEditing])
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">

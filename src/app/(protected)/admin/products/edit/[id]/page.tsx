@@ -1,24 +1,26 @@
 "use client";
 
-import requestClient from '@/lib/requestClient'
-import { handleServerErrorMessage } from '@/utils'
+import { toast } from 'react-toastify'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { handleServerErrorMessage } from '@/utils'
+import requestClient from '@/lib/requestClient'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
+import { useDisclosure } from '@chakra-ui/react';
 import { IFormInput } from '../../add-product/page'
 import { 
     MedicationResponseData, 
     NextAuthUserSession, 
-    ProductResponseData 
+    ProductDataProps,
 } from '@/types'
 import DetailForm from '@/app/(protected)/suppliers/products/_components/DetailForm'
 import EssentialForm from '@/app/(protected)/suppliers/products/_components/EssentialForm'
 import InventoryForm from '@/app/(protected)/suppliers/products/_components/InventoryForm'
+import SuccessModal from '@/app/(protected)/suppliers/products/_components/SuccessModal';
 
 const EditPage = ({params}: {params: {id: string}}) => {
 
+    const { isOpen, onClose, onOpen } = useDisclosure();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [steps, setSteps] = useState<'details' | 'essentials' | 'inventory'>(null);
 
@@ -26,12 +28,11 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setSteps("details");
     },[])
 
-    const router = useRouter();
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
 
-    const [products, setProducts] = useState<ProductResponseData>();
+    const [products, setProducts] = useState<ProductDataProps>();
     const [brandData, setBrandData] = useState<MedicationResponseData>();
     const [categoryData, setCategoryData] = useState<MedicationResponseData>();
     const [medicationData, setMedicationData] = useState<MedicationResponseData>();
@@ -91,16 +92,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
         }
     },[token]);
 
-    const fetchAllProducts = useCallback(async () => {
-        try {
-        const response = await requestClient({ token: token }).get(
-            `/admin/settings/products`
-        );
-        } catch (error) {
-            console.error(error);
-        }
-    }, [token]);
-
     useEffect(() => {
         if(!token) return;
         fetchSingleProduct()
@@ -121,9 +112,12 @@ const EditPage = ({params}: {params: {id: string}}) => {
         mode: "onChange",
     });
 
+    useEffect(() => {
+        setValue("thumbnailFile", products?.thumbnailFile)
+    }, [products]);
+
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
-        const expiryDate = data?.expiredAt.toISOString();
         const formdata = new FormData();
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
@@ -133,11 +127,11 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("weight", data?.weight);
         formdata.append("packageName", data?.brandName);
         formdata.append("presentationName", data?.presentationName);
-        formdata.append("strengthValue", '1');
+        formdata.append("strengthValue", data?.strengthValue);
         formdata.append("measurementName", data?.measurementName);
         formdata.append("lowStockLevel", data?.lowStockLevel);
         formdata.append("outStockLevel", data?.outStockLevel);
-        formdata.append("expiredAt", expiryDate);
+        formdata.append("expiredAt", data?.expiredAt);
         formdata.append("thumbnailFile", data?.thumbnailFile);
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
@@ -145,14 +139,13 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("status", "ACTIVE");
 
         try {
-            const response = await requestClient({token: token}).post(
-                "/admin/settings/products",
+            const response = await requestClient({token: token}).patch(
+                `/admin/settings/products/${products?.id}`,
                 formdata
             )
             if(response.status === 200){
                 setIsLoading(false);
-                fetchAllProducts();
-                router.push('/admin/products')
+               onOpen();
 
             }
         } catch (error) {
@@ -170,21 +163,28 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const handleStepValidation = async (fieldsToValidate: any) => {
         const isValid = await trigger(fieldsToValidate);
         return isValid;
-    }; 
+    };
+
     return (
     <div>
         <form 
-        // onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         >
             {(() => {
                     switch (steps) {
                         case 'details':
                             return <DetailForm 
                                     title="Edit Product"
+                                    isEditing={true}
+                                    data={products}
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([
-                                            "productName", "productDescription", "categoryName", "brandName", "thumbnailFile"
+                                            "productName", 
+                                            "productDescription", 
+                                            "categoryName", 
+                                            "brandName", 
+                                            "thumbnailFile"
                                         ]);
                                         if (isValid) setSteps("essentials");
                                     }}
@@ -199,10 +199,19 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                 />
                         case 'essentials':
                             return <EssentialForm 
+                                    isEditing={true}
+                                    data={products}
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([
-                                            "medicationTypeName", "measurementName", "presentationName", "strengthValue", "packageName", "weight", "actualPrice", "discountPrice"
+                                            "medicationTypeName", 
+                                            "measurementName", 
+                                            "presentationName", 
+                                            "strengthValue", 
+                                            "packageName", 
+                                            "weight", 
+                                            "actualPrice", 
+                                            "discountPrice"
                                         ]);
                                         if (isValid) setSteps("inventory");
                                     }}
@@ -215,6 +224,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                 />
                         case 'inventory':
                             return <InventoryForm 
+                                    isEditing={true}
+                                    data={products}
                                     setSteps={setSteps}
                                     register={register}
                                     control={control}
@@ -229,6 +240,13 @@ const EditPage = ({params}: {params: {id: string}}) => {
             )()
             }
         </form>
+        <SuccessModal
+            isOpen={isOpen} 
+            onClose={onClose}
+            routeUrl="/admin/products"
+            isEditing={true}
+            routeUrl2="/admin/product/new"
+        />
     </div>
   )
 }

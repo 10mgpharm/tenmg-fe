@@ -308,6 +308,8 @@ export interface ProductDataProps {
   expiredAt: string | null;
   minDeliveryDuration: string | null;
   maxDeliveryDuration: string | null;
+  lowStockLevel: number;
+  outStockLevel: number;
   measurement: MeasurementType;
   medicationType: MeasurementType;
   package: MeasurementType;
