@@ -37,7 +37,7 @@ import FilterDrawer from "../../suppliers/products/_components/FilterDrawer";
 import { ColumsProductFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession, ProductResponseData } from "@/types";
+import { MedicationResponseData, NextAuthUserSession, ProductResponseData } from "@/types";
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
@@ -53,13 +53,18 @@ const Page = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     
     const [status, setStatus] = useState<string>("");
+    const [brandQuery, setBrandQuery] = useState("");
     const [globalFilter, setGlobalFilter] = useState<string>("");
+    const [brandFilter, setBrandFilter] = useState<string>("");
+    const [inventoryQuery, setInventoryQuery] = useState("");
+    const [brands, setBrands] = useState<MedicationResponseData>();
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
     const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
+    const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
@@ -73,11 +78,17 @@ const Page = () => {
         if (debouncedSearch) {
             query += `&search=${debouncedSearch}`;
         }
+        if(inventoryQuery) {
+            query += `&inventory=${inventoryQuery}`
+        }
+        if(brandQuery) {
+            query += `&brand=${brandQuery}`
+        }
         if (createdAtStart) {
-            query += `&createdAtStart=${createdAtStart.toISOString().split("T")[0]}`;
+            query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
         }
         if (createdAtEnd) {
-        query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+        query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
         }
         try {
         const response = await requestClient({ token: token }).get(query);
@@ -91,10 +102,24 @@ const Page = () => {
         }
     }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
 
+    const fetchingBrands = useCallback(async() => {
+        try {
+            const response = await requestClient({ token: token }).get(
+                `/admin/settings/brands?search=${debouncedBrandSearch}`
+            );
+            if(response.status === 200){
+                setBrands(response.data.data);
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    },[token, debouncedBrandSearch]);
+
     useEffect(() => {
         if(!token) return;
         fetchProducts();
-    },[fetchProducts, token]);
+        fetchingBrands();
+    },[fetchProducts, fetchingBrands, token]);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 
@@ -128,6 +153,8 @@ const Page = () => {
         setCreatedAtStart(null);
         setCreatedAtEnd(null);
         setStatus("");
+        setBrandQuery("")
+        setInventoryQuery("")
         setGlobalFilter("");
     };
 
@@ -290,6 +317,11 @@ const Page = () => {
         <FilterDrawer 
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
+            brands={brands}
+            setBrandFilter={setBrandFilter}
+            setInventoryQuery={setInventoryQuery}
+            setBrandQuery={setBrandQuery}
+            brandQuery={brandQuery}
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
