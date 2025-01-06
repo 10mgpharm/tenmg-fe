@@ -39,6 +39,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   const [tnxHistoryData, setTnxHistorysData] = useState<
     TransactionHistoryData[] | null
   >(null);
+  const [showAllTnxHistory, setShowAllTnxHistory] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const session = useSession();
@@ -81,7 +82,13 @@ const Page = ({ params }: { params: { id: string } }) => {
     if (!token) return;
     fetchCustomers();
     fetchCustomerTnx();
-  }, [fetchCustomers, token]);
+  }, [fetchCustomers, fetchCustomerTnx, token]);
+
+  const displayedTnxData = tnxHistoryData
+    ? showAllTnxHistory
+      ? tnxHistoryData
+      : tnxHistoryData.slice(0, 10)
+    : [];
 
   return (
     <div className="p-5">
@@ -202,7 +209,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {tnxHistoryData?.map((item: TransactionHistoryData) => {
+                    {displayedTnxData?.map((item: TransactionHistoryData) => {
                       return (
                         <Tr key={item.id}>
                           <Td>
@@ -230,7 +237,11 @@ const Page = ({ params }: { params: { id: string } }) => {
                           </Td>
                           <Td fontSize={"14px"}>
                             <Link
-                              href={item.status === "DONE" ? `/vendors/transactions-history/${params.id}?evaluationId=${item?.id}` : "#"}
+                              href={
+                                item.status === "DONE"
+                                  ? `/vendors/transactions-history/${params.id}?evaluationId=${item?.id}`
+                                  : "#"
+                              }
                               className="text-primary-600 font-medium"
                             >
                               View Details
@@ -242,11 +253,16 @@ const Page = ({ params }: { params: { id: string } }) => {
                   </Tbody>
                 </Table>
               </TableContainer>
-              <div className="text-center mb-5">
-                <button className="border py-1 text-sm px-4 rounded-md mt-5 text-center border-primary-600 text-primary-600">
-                  View More
-                </button>
-              </div>
+              {tnxHistoryData.length > 10 && !showAllTnxHistory && (
+                <div className="text-center mb-5">
+                  <button
+                    className="border py-1 text-sm px-4 rounded-md mt-5 text-center border-primary-600 text-primary-600"
+                    onClick={() => setShowAllTnxHistory(true)}
+                  >
+                    View More
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="my-[8rem]">

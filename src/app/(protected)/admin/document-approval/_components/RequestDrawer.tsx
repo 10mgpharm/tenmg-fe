@@ -25,6 +25,7 @@ import shape from "@public/assets/images/Rectangle.svg";
 import { convertDate } from "@/utils/formatDate";
 import { AdminApprovals } from "@/types";
 import pdfFileIcon from "@public/assets/images/file_fomat_icon.png";
+import Link from "next/link";
 
 interface RequestDrawerProps {
   isOpen: boolean;
@@ -69,7 +70,7 @@ export default function RequestDrawer({
               <Flex mb={2}>
                 <Box w="50%" className="space-y-2">
                   <Text fontSize="sm" color="gray.600">
-                    User type
+                    User Type
                   </Text>
                   <Text fontWeight="medium">{data.type || "N/A"}</Text>
                 </Box>
@@ -109,7 +110,9 @@ export default function RequestDrawer({
                 <Text fontSize="sm" color="gray.600">
                   Position
                 </Text>
-                <Text fontWeight="medium">{data.contactPersonPosition || "N/A"}</Text>
+                <Text fontWeight="medium">
+                  {data.contactPersonPosition || "N/A"}
+                </Text>
               </Box>
 
               <Box className="space-y-2">
@@ -138,9 +141,7 @@ export default function RequestDrawer({
                   <Text fontSize="sm" color="gray.600">
                     Expiry Date
                   </Text>
-                  <Text fontWeight="medium">
-                    {data.expiryDate || "N/A"}
-                  </Text>
+                  <Text fontWeight="medium">{data.expiryDate || "N/A"}</Text>
                 </Box>
               </Flex>
 
@@ -148,9 +149,7 @@ export default function RequestDrawer({
                 <Text fontSize="sm" color="gray.600">
                   Date Submitted
                 </Text>
-                <Text fontWeight="medium">
-                  {data.createdAt || "N/A"}
-                </Text>
+                <Text fontWeight="medium">{data.createdAt || "N/A"}</Text>
               </Box>
             </Stack>
           </Box>
@@ -167,14 +166,16 @@ export default function RequestDrawer({
                   height="40px"
                   alt="pdf"
                 />
-
                 <Text fontWeight="medium" flex={1}>
                   {data.cacDocument.split("/").pop()?.split("?")[0] ||
                     "document.pdf"}
                 </Text>
-                <ChakraLink href={data.cacDocument} isExternal cursor="pointer">
-                  <Icon as={FiEye} w={5} h={5} />
-                </ChakraLink>
+                <Link
+                  href={data.cacDocument}
+                  className="text-primary-600 text-sm"
+                >
+                  View
+                </Link>
               </Flex>
               <Text fontSize="sm" color="gray.500">
                 Size: 120 KB

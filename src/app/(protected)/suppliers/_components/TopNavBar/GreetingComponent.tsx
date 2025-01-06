@@ -2,21 +2,26 @@
 
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
+import { useSession } from 'next-auth/react';
+import { NextAuthUserSession } from '@/types';
 
 export default function GreetingComponent() {
     const [greeting, setGreeting] = useState('');
     const [currentDateTime, setCurrentDateTime] = useState('');
+
+    const session = useSession();
+    const data = session.data as NextAuthUserSession;
 
     useEffect(() => {
         const updateGreetingAndTime = () => {
             const now = moment();
             const hours = now.hour();
             if (hours < 12) {
-                setGreeting('Good Morning,');
+                setGreeting('Good Morning, ');
             } else if (hours < 17) {
-                setGreeting('Good Afternoon,');
+                setGreeting('Good Afternoon, ');
             } else {
-                setGreeting('Good Evening,');
+                setGreeting('Good Evening, ');
             }
 
             const formattedDate = now.format('dddd, Do MMMM, h:mm A');
@@ -32,7 +37,7 @@ export default function GreetingComponent() {
 
     return (
         <div className="hidden md:block text-xs md:text-base">
-            <h4 className="text-gray-700 font-semibold">{greeting}</h4>
+            <h4 className="text-gray-700 font-semibold">{greeting} {data?.user?.name}</h4>
             <p className="text-gray-400 md:text-sm">{currentDateTime}</p>
         </div>
     );

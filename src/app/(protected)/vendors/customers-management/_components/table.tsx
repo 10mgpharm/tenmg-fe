@@ -6,7 +6,9 @@ import Link from "next/link";
 
 const columnHelper = createColumnHelper<CustomerData>();
 
-export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
+export function ColumnsCustomerFN(
+  handleOpenModal: (id: number, action: "activate" | "suspend") => void
+) {
   return [
     columnHelper.accessor("identifier", {
       header: () => (
@@ -100,9 +102,14 @@ export function ColumnsCustomerFN(handleToggle: (id: number) => void) {
                   : "text-gray-500",
                 "cursor-pointer"
               )}
-              onClick={() => handleToggle(info.row.original?.id)}
+              onClick={() =>
+                handleOpenModal(
+                  info.row.original?.id,
+                  info.row.original?.active ? "suspend" : "activate"
+                )
+              }
             >
-              {info.row.original?.active === 1 ? "Suspend" : "Activate"}
+              {info.row.original?.active ? "Suspend" : "Activate"}
             </p>
           </div>
         );
