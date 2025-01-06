@@ -1,6 +1,6 @@
 "use client"
-import { Button, } from '@chakra-ui/react'
-import React from 'react'
+import { Box, Button, Menu, MenuButton, MenuItem, MenuList, } from '@chakra-ui/react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 export default function ShippingAddress
   () {
@@ -41,8 +41,10 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  FormControl, FormLabel, HStack, Input, Flex,
+  FormControl, FormLabel, HStack, Input, Flex, Select
 } from '@chakra-ui/react'
+
+
 function DeleteShippingAddress() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -70,12 +72,66 @@ function DeleteShippingAddress() {
     </>
   )
 }
+import { Country, State, City, ICountry, IState, ICity } from 'country-state-city';
+import { ChevronDownIcon } from 'lucide-react'
 
+// import { Input } from '@chakra-ui/react'
 type EditShippingAddressProps = {
   id?: string;
 };
 function EditShippingAddress({ id }: EditShippingAddressProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // console.log("country:", Country.getAllCountries());
+
+  // const 
+  const [countryPlaceHolder, setCountryPlaceholder] = useState<string>("Select a country");
+  const [countries, setCountries] = useState<ICountry[] | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const [statePlaceHolder, setStatePlaceholder] = useState<string>("Select a state");
+  const [states, setStates] = useState<IState[] | null>(null);
+
+  const [cityPlaceholder, setCityPlaceholder] = useState<string>("Select a city");
+  const [cities, setCities] = useState<ICity[] | null>(null);
+
+
+  useEffect(() => {
+    setCountries(Country.getAllCountries())
+  }, [])
+
+  const filteredCountries = useMemo(() => {
+    return countries?.filter((country) =>
+      country.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [countries, searchQuery]);
+
+  const handleCountrySearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleCountryChange = (country: ICountry) => {
+    // console.log("event", e.target.value, "country", country);
+    setCountryPlaceholder(country?.name);
+    setStates(State.getStatesOfCountry(country?.isoCode));
+  }
+
+  const handleSelectState = (state: IState) => {
+    // console.log("event", e.target.value, "state", state)
+    setStatePlaceholder(state?.name);
+    setCities(City.getCitiesOfState(state?.countryCode, state?.isoCode));
+  }
+
+  const handleSelectCity = (e, city: ICity) => {
+    console.log("event", e.target.value, "city", city)
+    setCityPlaceholder(city?.name);
+    // setCities(City.getCitiesOfState(city?.countryCode, city?.isoCode))
+  }
+
+
+
+
+
 
   return (
     <>
@@ -91,40 +147,87 @@ function EditShippingAddress({ id }: EditShippingAddressProps) {
               <HStack gap={5}>
                 <FormControl>
                   <FormLabel>Address Label</FormLabel>
-                  <Input type="text" defaultValue={'eg: Pharmacy One'} />
+                  <Input type="text" placeholder={'eg: Pharmacy One'} />
                 </FormControl>
               </HStack>
 
               <HStack gap={5}>
                 <FormControl>
                   <FormLabel>Full Name</FormLabel>
-                  <Input type="text" defaultValue={'Jacquelyn’s Pharmacy'} />
+                  <Input type="text" placeholder={'Jacquelyn Bernard'} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Phone Number</FormLabel>
-                  <Input type="text" defaultValue={'Jacquelyn Bernard'} />
+                  <Input type="text" placeholder={'0812 342 3456'} />
                 </FormControl>
               </HStack>
 
-              <HStack gap={5}>
-                <FormControl>
-                  <FormLabel>Country</FormLabel>
-                  <Input type="text" defaultValue={'Select a country'} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>State</FormLabel>
-                  <Input type="number" defaultValue={'Select a state'} />
-                </FormControl>
-              </HStack>
+              <div className='grid gap-4 grid-cols-2'>
+                <div className=''>
+                  <FormControl >
+                    <FormLabel>Country</FormLabel>
+                    <Menu>
+                      <MenuButton as={Button} variant={"outline"} w="100%" rightIcon={<ChevronDownIcon />} colorScheme={"grey.400"}>
+                        {countryPlaceHolder}
+                      </MenuButton>
+                      <MenuList maxH="300px" overflowY="auto">
+                        <Box p={2}>
+                          <Input
+                            placeholder="Search for a country"
+                            value={searchQuery}
+                            onChange={(e) => handleCountrySearch(e)}
+                          />
+                        </Box>
+                        {filteredCountries?.map((country) => (
+                          <MenuItem key={country.isoCode} value={country.isoCode} onClick={(e) => handleCountryChange(country)}>
+                            {country.name}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </Menu>
+                  </FormControl>
+                </div>
+                <div className=''>
+                  <FormControl >
+                    <FormLabel>State</FormLabel>
+                    <Menu>
+                      <MenuButton as={Button} variant={"outline"} w="100%" rightIcon={<ChevronDownIcon />} colorScheme={"grey.400"} >
+                        {statePlaceHolder}
+                      </MenuButton>
+                      <MenuList maxH="300px" overflowY="auto">
+
+                        {states?.map((state) => (
+                          <MenuItem key={state.isoCode} value={state.isoCode} onClick={(e) => handleSelectState(state)}>
+                            {state.name}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </Menu>
+                  </FormControl>
+                </div>
+              </div>
 
               <HStack gap={5}>
                 <FormControl>
                   <FormLabel>City</FormLabel>
-                  <Input type="text" defaultValue={'Select a city'} />
+
+                  <Menu>
+                    <MenuButton as={Button} variant={"outline"} w="100%" rightIcon={<ChevronDownIcon />} colorScheme={"grey.400"}>
+                      {cityPlaceholder}
+                    </MenuButton>
+                    <MenuList maxH="300px" overflowY="auto">
+
+                      {cities?.map((city, i) => (
+                        <MenuItem key={i} onClick={(e) => handleSelectCity(e, city)}>
+                          {city.name}
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </Menu>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Zip Code</FormLabel>
-                  <Input type="text" defaultValue={'eg: 1006390'} />
+                  <Input type="text" placeholder={'eg: 1006390'} />
                 </FormControl>
               </HStack>
             </form>

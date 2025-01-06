@@ -8,7 +8,7 @@ const tabs = [
   { label: 'Personal Information', href: '/storefront/settings/profile-information' },
   { label: 'Password', href: '/storefront/settings/password' },
   { label: 'Shipping Address', href: '/storefront/settings/shipping-address' },
-  { label: 'Legal ID and License', href: '/storefront/settings/legal-license' },
+  { label: 'License Upload', href: '/storefront/settings/license-upload' },
 ];
 
 
