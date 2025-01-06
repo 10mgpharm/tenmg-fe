@@ -140,7 +140,7 @@ const AddProducts = () => {
             )
             if(response.status === 200){
                 setIsLoading(false);
-                onOpen
+                onOpen();
             }
         } catch (error) {
             setIsLoading(false);
@@ -191,6 +191,7 @@ const AddProducts = () => {
                         case 'essentials':
                             return <EssentialForm 
                                     isEditing={false}
+                                    type="admin"
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([

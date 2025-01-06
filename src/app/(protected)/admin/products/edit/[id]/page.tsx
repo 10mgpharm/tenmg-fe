@@ -201,6 +201,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
                             return <EssentialForm 
                                     isEditing={true}
                                     data={products}
+                                    type="admin"
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([

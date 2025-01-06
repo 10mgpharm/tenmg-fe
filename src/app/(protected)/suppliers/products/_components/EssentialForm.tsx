@@ -21,7 +21,8 @@ interface IChildComponentProps {
     medications: MedicationData[]; 
     setValue: UseFormSetValue<IFormInput>;
     data?: ProductDataProps;
-    isEditing: boolean
+    isEditing: boolean;
+    type: string
 }
 
 const EssentialForm: React.FC<IChildComponentProps> = ({
@@ -33,7 +34,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     setValue,
     handleStepValidation,
     data,
-    isEditing
+    isEditing,
+    type
 }) => {
 
     const session = useSession();
@@ -49,11 +51,20 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
 
     const fetchingPresentationTypes = useCallback(async() => {
         try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/presentations`
-            );
-            if(response.status === 200){
-                setPresentationData(response.data.data);
+            if(type === "admin"){
+                const response = await requestClient({ token: token }).get(
+                    `/admin/settings/presentations`
+                );
+                if(response.status === 200){
+                    setPresentationData(response.data.data);
+                }
+            } else {
+                const response = await requestClient({ token: token }).get(
+                    `/supplier/presentations`
+                );
+                if(response.status === 200){
+                    setPresentationData(response.data.data.data);
+                }
             }
         } catch (error) {
             console.error(error)
@@ -62,12 +73,21 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
 
     const fetchingMeasurementTypes = useCallback(async() => {
         try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/measurements`
-            );
-        if(response.status === 200){
-            setMeasurementData(response.data.data);
-        }
+            if(type === "admin"){
+                const response = await requestClient({ token: token }).get(
+                    `/admin/settings/measurements`
+                );
+                if(response.status === 200){
+                    setMeasurementData(response.data.data);
+                }
+            } else {
+                const response = await requestClient({ token: token }).get(
+                    `/supplier/measurements`
+                );
+                if(response.status === 200){
+                    setMeasurementData(response.data.data.data);
+                }
+            }
         } catch (error) {
             console.error(error)
         }
@@ -75,9 +95,13 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
 
     const fetchingVarationByTypeId = useCallback(async(id: number) => {
         try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/medication-types/${id}/medication-variations`
-            );
+            let query: string;
+            if(type === "admin"){
+                query = `/admin/settings/medication-types/${id}/medication-variations`
+            }else{
+                query = `/supplier/settings/medication-types/${id}/medication-variations`
+            }
+            const response = await requestClient({ token: token }).get(query);
         if(response.status === 200){
             setVariationTypes([...response.data.data, {label: "Create New", value: "Create New"}]);
         }
@@ -104,6 +128,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         }
     }, [data, isEditing])
 
+    console.log(presentationData, measurementData)
+
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <div className="flex items-center justify-between">
@@ -116,7 +142,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
             </div>
         </div>
         <h3 className="font-semibold text-xl text-gray-700 my-5">Product Essentials</h3>
-        <form className="space-y-5">
+        <div className="space-y-5">
             <Stack>
                 <FormControl isInvalid={!!errors.medicationTypeName}>
                     <FormLabel>Medication</FormLabel>
@@ -285,7 +311,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                             value={value}
                                             name={"measurementName"}
                                             placeholder={'Select...'}
-                                            options={convertCreateOptionArray(measurementData)}
+                                            options={measurementData && convertCreateOptionArray(measurementData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                 onChange(selectedOption?.value);
                                             }}
@@ -378,7 +404,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                     </HStack>
                 </Stack>
             </Stack>
-        </form>
+        </div>
         <div className="flex gap-4 justify-end mt-10 mb-6">
             <button 
             className="p-3 w-32 rounded-md border text-gray-600"  

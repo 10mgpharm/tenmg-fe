@@ -69,7 +69,6 @@ const DetailForm: React.FC<IChildComponentProps> = ({
         const inputFile = event.target.files[0];
         setValue("thumbnailFile", inputFile);
         if (event?.target?.files?.length > 0) {
-            console.log(inputFile)
             setIconFile(URL.createObjectURL(inputFile));
         }
     };

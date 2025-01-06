@@ -142,7 +142,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
             if(response.status === 200){
                 setIsLoading(false);
                 onOpen();
-
             }
         } catch (error) {
             setIsLoading(false);
@@ -196,6 +195,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
                             return <EssentialForm
                                     isEditing={true} 
                                     data={products}
+                                    type="supplier"
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([
