@@ -184,6 +184,7 @@ export interface SingleTransactionData {
     rule: string;
     baseAmount: string;
     maxAmount: string;
+    category: string | null;
   },
   creditScoreResult: {
     scorePercent: number;

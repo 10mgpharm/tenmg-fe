@@ -128,8 +128,6 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         }
     }, [data, isEditing])
 
-    console.log(presentationData, measurementData)
-
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <div className="flex items-center justify-between">

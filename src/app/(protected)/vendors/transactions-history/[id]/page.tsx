@@ -252,7 +252,7 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
                       <div className="space-y-1.5">
                         <p className="text-sm text-gray-500">Score Category</p>
                         <p className="text-xl font-semibold text-gray-800">
-                          Category A
+                          {tnxHistoryData?.affordability?.category ?? "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1.5">

@@ -2,8 +2,7 @@ import ModalWrapper from "@/app/(protected)/suppliers/_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { CustomerRecords, NextAuthUserSession } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
-import { convertArray } from "@/utils/convertSelectArray";
-import { Button, Flex, FormControl, FormLabel } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -12,12 +11,20 @@ import { toast } from "react-toastify";
 
 export interface SelectProps {
     label: string;
-    value: number; 
+    value: string; 
 }
 
 interface IFormInput {
     customerId: SelectProps
 }
+
+const customStyles = {
+    menuList: (provided: any) => ({
+      ...provided,
+      maxHeight: 200, // Limit dropdown height
+      overflowY: 'auto', // Enable vertical scrolling
+    }),
+};
 
 const SendApplicationLink = (
     {isOpen, onClose, customers, fetchLoanApplication}: 
@@ -32,18 +39,18 @@ const SendApplicationLink = (
     const {
         control,
         formState: { errors, isValid },
-        handleSubmit
-    } = useForm<IFormInput>({
+        handleSubmit,
+        setValue,
+    } = useForm({
         mode: "onChange",
     });
 
-    const onSubmit: SubmitHandler<IFormInput> = async (record) => {
-        const data = String(record.customerId.value);
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         try {
           setIsLoading(true);
           const response = await requestClient({token: token}).post(
-            "/vendor/loan-applications/apply",
-            {"customerId": data}
+            "/vendor/loan-applications/send-application-link",
+            data
           );
             
           if (response.status === 200) {
@@ -56,6 +63,11 @@ const SendApplicationLink = (
           toast.error(handleServerErrorMessage(error));
         }
     };
+
+    const customerOptions = customers?.map((customer) => ({
+        value: customer.id,
+        label: `${customer.name} - ${customer.email}`,
+    }));
     
     return (
     <ModalWrapper 
@@ -63,27 +75,38 @@ const SendApplicationLink = (
     onClose={onClose} 
     title="Send Application Link"
     >
-        <form onSubmit={handleSubmit(onSubmit)} className="mb-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="mb-20">
             <FormControl isInvalid={!!errors.customerId}>
                 <FormLabel>Select Customer</FormLabel>
                 <Controller
-                    name="customerId"
-                    control={control}
-                    render={({ field }) => {
-                        const handleChange = (selectedOption: any) => {
-                            field.onChange(selectedOption ? selectedOption.value : null);
-                        };
-                    return(
-                        <Select 
-                        classNamePrefix="select"
-                        isClearable={true}
-                        isSearchable={true}
-                        {...field}
-                        name="customerId"
-                        // onChange={handleChange}
-                        options={convertArray(customers)} 
+                name="customerId"
+                control={control}
+                rules={{ required: "Please select a customer." }}
+                render={({ field }) => (
+                  <>
+                    <Select
+                      {...field}
+                      isClearable={true}
+                      isSearchable={true}
+                      options={customerOptions}
+                      placeholder={"Search Customer"}
+                      styles={customStyles}
+                      name="customerId"
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value);
+                        setValue("customerId", selectedOption?.value);
+                      }}
+                      value={customerOptions?.find(
+                        (option) => option.value === field.value
+                      )}
                     />
-                    )}}
+                    {errors.customerId && (
+                      <FormErrorMessage>
+                        {errors.customerId.message?.toString()}
+                      </FormErrorMessage>
+                    )}
+                  </>
+                )}
                 />
             </FormControl>
             <Flex justify={"end"} mt={5} gap={3}>
