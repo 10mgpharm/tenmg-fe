@@ -6,6 +6,7 @@ import {
   TransactionHistoryData,
 } from "@/types";
 import { convertDate } from "@/utils/formatDate";
+import Link from "next/link";
 import {
   Flex,
   GridItem,
@@ -28,8 +29,6 @@ import { ArrowLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import UploadHistoryModal from "../_components/UploadHistoryModal";
-import Link from "next/link";
 import UploadModal from "../../_components/UploadModal";
 
 const Page = ({ params }: { params: { id: string } }) => {
@@ -238,9 +237,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                           <Td fontSize={"14px"}>
                             <Link
                               href={
-                                item.status === "DONE"
-                                  ? `/vendors/transactions-history/${params.id}?evaluationId=${item?.id}`
-                                  : "#"
+                                `/vendors/transactions-history/${params.id}?evaluationId=${item?.id}`
                               }
                               className="text-primary-600 font-medium"
                             >
