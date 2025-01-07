@@ -10,7 +10,8 @@ import requestClient from "@/lib/requestClient";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
-import { useRouter } from "next/navigation";
+import SuccessModal from "../_components/SuccessModal";
+import { useDisclosure } from "@chakra-ui/react";
 
 export interface IFormInput {
     productName: string;
@@ -38,6 +39,7 @@ export interface StepsProps {
 }
 const AddProducts = () => {
 
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [steps, setSteps] = useState<'details' | 'essentials' | 'inventory'>(null);
 
@@ -45,7 +47,6 @@ const AddProducts = () => {
         setSteps("details");
     },[])
 
-    const router = useRouter();
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
@@ -92,16 +93,6 @@ const AddProducts = () => {
             console.error(error)
         }
     },[token]);
-
-    const fetchProducts = useCallback(async () => {
-        try {
-        const response = await requestClient({ token: token }).get(
-            `/supplier/products`
-        );
-        } catch (error) {
-            console.error(error);
-        }
-    }, [token]);
 
     useEffect(() => {
         if(!token) return;
@@ -152,8 +143,7 @@ const AddProducts = () => {
             )
             if(response.status === 200){
                 setIsLoading(false);
-                fetchProducts();
-                router.push('/suppliers/products')
+                onOpen();
             }
         } catch (error) {
             setIsLoading(false);
@@ -181,10 +171,15 @@ const AddProducts = () => {
                     return (
                     <DetailForm
                         title="Add Product"
+                        isEditing={false}
                         handleStepValidation={
                             async () => {
                             const isValid = await handleStepValidation([
-                                "productName", "productDescription", "categoryName", "brandName", "thumbnailFile"
+                                "productName", 
+                                "productDescription", 
+                                "categoryName", 
+                                "brandName", 
+                                "thumbnailFile"
                             ]);
                             if (isValid) setSteps("essentials");
                         }}
@@ -201,10 +196,19 @@ const AddProducts = () => {
                 case "essentials":
                     return (
                     <EssentialForm
+                        isEditing={false}
+                        type="supplier"
                         handleStepValidation={
                             async () => {
                             const isValid = await handleStepValidation([
-                                "medicationTypeName", "measurementName", "presentationName", "strengthValue", "packageName", "weight", "actualPrice", "discountPrice"
+                                "medicationTypeName", 
+                                "measurementName", 
+                                "presentationName", 
+                                "strengthValue", 
+                                "packageName", 
+                                "weight", 
+                                "actualPrice", 
+                                "discountPrice"
                             ]);
                             if (isValid) setSteps("inventory");
                         }}
@@ -219,6 +223,7 @@ const AddProducts = () => {
                 case "inventory":
                     return (
                     <InventoryForm
+                        isEditing={false}
                         setSteps={setSteps}
                         register={register}
                         control={control}
@@ -232,6 +237,13 @@ const AddProducts = () => {
                 }
             })()}
         </form>
+        <SuccessModal
+            isOpen={isOpen} 
+            onClose={onClose}
+            routeUrl="/suppliers/products"
+            isEditing={false}
+            routeUrl2="/suppliers/product/new"
+        />
     </div>
   )
 }

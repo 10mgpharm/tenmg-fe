@@ -9,12 +9,9 @@ import {
     Stack, 
     Switch, 
     Text, 
-    useDisclosure
 } from "@chakra-ui/react"
-import { useRouter } from "next/navigation"
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
-import SuccessModal from "./SuccessModal";
 import "react-datepicker/dist/react-datepicker.css";
 import DateComponent from "./DateComponent";
 import { 
@@ -26,6 +23,7 @@ import {
     UseFormSetValue 
 } from "react-hook-form";
 import { IFormInput } from "@/app/(protected)/admin/products/add-product/page";
+import { ProductDataProps } from "@/types";
 
 interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;
@@ -34,12 +32,20 @@ interface IChildComponentProps {
     setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
     setValue: UseFormSetValue<IFormInput>; 
     isLoading: boolean;
+    data?: ProductDataProps;
+    isEditing: boolean
 }
 
-const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, control, isLoading }) => {
+const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, control, isLoading, data, isEditing, setValue }) => {
 
-    const router = useRouter();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    useEffect(() => {
+        if(isEditing){
+            setValue("quantity", data?.quantity);
+            setValue("lowStockLevel", data?.lowStockLevel?.toString());
+            setValue("outStockLevel", data?.outStockLevel?.toString());
+            setValue("expiredAt", data?.expiredAt);
+        }
+    }, [isEditing, data])
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -136,13 +142,9 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
             disabled={isLoading}
             className="w-[280px] p-3 rounded-md bg-primary-500 text-white" 
             >
-                Add Product
+                {isEditing ? "Save Changes" : "Add Product"}
             </Button>
         </div>
-        <SuccessModal 
-        isOpen={isOpen} 
-        onClose={onClose}
-        />
     </div>
   )
 }
