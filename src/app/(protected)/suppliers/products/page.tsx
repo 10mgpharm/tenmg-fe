@@ -107,7 +107,7 @@ const Products = () => {
     const fetchingBrands = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/admin/settings/brands?search=${debouncedBrandSearch}`
+                `/supplier/brands?search=${debouncedBrandSearch}`
             );
             if(response.status === 200){
                 setBrands(response.data.data);
