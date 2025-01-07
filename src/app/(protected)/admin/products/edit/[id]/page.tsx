@@ -17,6 +17,7 @@ import DetailForm from '@/app/(protected)/suppliers/products/_components/DetailF
 import EssentialForm from '@/app/(protected)/suppliers/products/_components/EssentialForm'
 import InventoryForm from '@/app/(protected)/suppliers/products/_components/InventoryForm'
 import SuccessModal from '@/app/(protected)/suppliers/products/_components/SuccessModal';
+import { useRouter } from 'next/navigation';
 
 const EditPage = ({params}: {params: {id: string}}) => {
 
@@ -28,6 +29,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setSteps("details");
     },[])
 
+    const router = useRouter();
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
@@ -100,6 +102,16 @@ const EditPage = ({params}: {params: {id: string}}) => {
         fetchingMedicationTypes();
     }, [fetchSingleProduct, fetchingBrandTypes, fetchingCategoriesTypes, fetchingMedicationTypes, token]);
 
+    const fetchingProducts = useCallback(async() => {
+        try {
+            const response = await requestClient({ token: token }).get(
+                `/admin/settings/products`
+            );
+        } catch (error) {
+            console.error(error)
+        }
+    },[token]);
+
     const {
         control,
         register,
@@ -145,8 +157,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
             )
             if(response.status === 200){
                 setIsLoading(false);
-               onOpen();
-
+                fetchingProducts();
+                router.push('/admin/products')
             }
         } catch (error) {
             setIsLoading(false);

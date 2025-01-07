@@ -22,12 +22,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { FaSearch } from 'react-icons/fa'
 import DateComponent from './DateComponent';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { MedicationData, MedicationResponseData } from '@/types';
+import { MedicationData, MedicationResponseData, ProductDataProps } from '@/types';
 
 interface IFormInput {
-    endDate?: Date | null;
-    startDate?: Date | null;
-    status?: string;
+    fromDate?: Date | null;
+    toDate?: Date | null;
+    inventory?: string;
+    brand?: string;
 }
 
 interface FilterOptions {
@@ -45,6 +46,8 @@ const FilterDrawer = ({
     setBrandFilter,
     setBrandQuery,
     setInventoryQuery,
+    products,
+    brandFilter
 }: {
     isOpen: boolean;
     onClose: () => void;
@@ -52,11 +55,13 @@ const FilterDrawer = ({
     clearFilters?: () => void;
     filterOptions?: FilterOptions[];
     isNotDate?: boolean;
+    brandFilter: string;
     setBrandFilter: Dispatch<SetStateAction<string>>;
     setInventoryQuery: Dispatch<SetStateAction<string>>;
     setBrandQuery: Dispatch<SetStateAction<string>>;
     brands: MedicationResponseData;
     brandQuery: string;
+    products: ProductDataProps[]
 }) => {
 
     const [checkedItems, setCheckedItems] = useState([false, false, false]);
@@ -65,10 +70,9 @@ const FilterDrawer = ({
         handleSubmit,
         formState: {},
         control,
-        getValues,
         reset,
     } = useForm<IFormInput>({
-    mode: "onChange",
+        mode: "onChange",
     });
 
     const onSubmit = (data: IFormInput) => {
@@ -78,13 +82,19 @@ const FilterDrawer = ({
 
     const handleClearFilters = () => {
         reset({
-            status: "",
-            startDate: null,
-            endDate: null,
+            brand: "",
+            inventory: "",
+            toDate: null,
+            fromDate: null,
         });
         clearFilters();
+        setCheckedItems([false, false, false])
     };
 
+    // const brandLists = brands?.data?.filter(brand =>
+    //     products?.some(product => product?.brand.id === brand.id)
+    // );
+    
     return (
     <Drawer
         isOpen={isOpen}
@@ -101,7 +111,7 @@ const FilterDrawer = ({
           </DrawerHeader>
           <DrawerBody>
             <CheckboxGroup>
-                <Stack spacing={5} direction='column'>
+                <Stack spacing={4} direction='column'>
                     <Checkbox 
                         isChecked={checkedItems[0]} 
                         onChange={(e) => {
@@ -109,7 +119,7 @@ const FilterDrawer = ({
                             setInventoryQuery("IN STOCK")
                         }} 
                     >
-                        <Tag colorScheme={"green"}>In stock</Tag>
+                        <Tag colorScheme={"green"} size={"sm"}>In stock</Tag>
                     </Checkbox>
                     <Checkbox 
                         isChecked={checkedItems[1]} 
@@ -118,7 +128,7 @@ const FilterDrawer = ({
                             setInventoryQuery("LOW STOCK")
                         }} 
                     >
-                        <Tag colorScheme={"orange"}>Low stock</Tag>
+                        <Tag colorScheme={"orange"} size={"sm"}>Low stock</Tag>
                     </Checkbox>
                     <Checkbox 
                     isChecked={checkedItems[2]} 
@@ -127,7 +137,7 @@ const FilterDrawer = ({
                         setInventoryQuery("OUT OF STOCK")
                     }} 
                     >
-                        <Tag colorScheme={"red"}>Out of stock</Tag>
+                        <Tag colorScheme={"red"} size={"sm"}>Out of stock</Tag>
                     </Checkbox>
                 </Stack>
             </CheckboxGroup>
@@ -135,12 +145,17 @@ const FilterDrawer = ({
                 <Text mb={4}>Brand</Text>
                 <InputGroup>
                     <InputLeftElement pointerEvents='none'>
-                    <FaSearch className='text-gray-400' />
+                        <FaSearch className='text-gray-400' />
                     </InputLeftElement>
-                    <Input type='text' placeholder='Search' onChange={(e) => setBrandFilter(e.target.value)} />
+                    <Input 
+                        type='text' 
+                        placeholder='Search' 
+                        value={brandFilter} 
+                        onChange={(e) => setBrandFilter(e.target.value)} 
+                    />
                 </InputGroup>
                 {
-                    brands && brands?.data?.slice(0, 5)?.map((brand: MedicationData) => (
+                    brands?.data?.length > 0 && brands?.data?.slice(0, 5)?.map((brand: MedicationData) => (
                         <Stack key={brand.id}>
                             <Checkbox 
                             value={brand?.name}
@@ -158,19 +173,20 @@ const FilterDrawer = ({
                 }
             </Stack>
             <Stack mt={5}>
-                <Text mb={4}>Date</Text>
+                <Text mb={3}>Date</Text>
                 <FormControl>
                     <FormLabel>
                         From
                     </FormLabel>
                     <Controller
-                        name="startDate"
+                        name="fromDate"
                         control={control}
                         render={({ field }) => (
                         <DateComponent
                             startDate={field.value}
                             setStartDate={field.onChange}
                             isMinDate
+                            isMaxDate
                         />
                         )}
                     />
@@ -180,14 +196,15 @@ const FilterDrawer = ({
                         To
                     </FormLabel>
                     <Controller
-                        name="endDate"
+                        name="toDate"
                         control={control}
                         render={({ field }) => (
                         <DateComponent
                             startDate={field.value}
                             setStartDate={field.onChange}
+                            isMaxDate
                             isMinDate
-                            minDate={getValues("startDate")}
+                            // minDate={getValues("fromDate")}
                         />
                         )}
                     />

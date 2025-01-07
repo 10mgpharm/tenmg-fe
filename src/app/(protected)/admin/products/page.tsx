@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter } from "react-icons/ci"
+import { CiFilter } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { 
@@ -118,11 +118,14 @@ const Page = () => {
     useEffect(() => {
         if(!token) return;
         fetchProducts();
+    },[fetchProducts, token]);
+
+    useEffect(() => {
+        if(!token) return;
         fetchingBrands();
-    },[fetchProducts, fetchingBrands, token]);
+    }, [fetchingBrands, token])
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
-
     const table = useReactTable({
         data: memoizedData,
         columns: ColumsProductFN(
@@ -144,8 +147,8 @@ const Page = () => {
     });
 
     const applyFilters = (filters: IFilterInput) => {
-        setCreatedAtStart(filters.startDate);
-        setCreatedAtEnd(filters.endDate);
+        setCreatedAtStart(filters.fromDate);
+        setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
     };
 
@@ -154,6 +157,7 @@ const Page = () => {
         setCreatedAtEnd(null);
         setStatus("");
         setBrandQuery("")
+        setBrandFilter("");
         setInventoryQuery("")
         setGlobalFilter("");
     };
@@ -322,9 +326,11 @@ const Page = () => {
             setInventoryQuery={setInventoryQuery}
             setBrandQuery={setBrandQuery}
             brandQuery={brandQuery}
+            brandFilter={brandFilter}
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
+            products={products?.data}
         />
         <ModalWrapper
         isOpen={isOpenDeactivate} 

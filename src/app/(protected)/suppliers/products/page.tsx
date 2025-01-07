@@ -123,8 +123,6 @@ const Products = () => {
         fetchingBrands();
     },[fetchProducts, fetchingBrands, token]);
 
-    console.log(brands);
-
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 
     const table = useReactTable({
@@ -352,7 +350,9 @@ const Products = () => {
             setInventoryQuery={setInventoryQuery}
             setBrandQuery={setBrandQuery}
             brandQuery={brandQuery}
+            brandFilter={brandFilter}
             setBrandFilter={setBrandFilter}
+            products={products?.data}
         />
     </div>
   )
