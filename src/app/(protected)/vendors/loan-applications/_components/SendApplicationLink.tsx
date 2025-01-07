@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 export interface SelectProps {
     label: string;
-    value: string; 
+    value: number; 
 }
 
 interface IFormInput {
