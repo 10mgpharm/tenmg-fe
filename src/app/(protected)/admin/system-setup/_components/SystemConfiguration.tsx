@@ -13,21 +13,52 @@ import {
 } from "@chakra-ui/react"
 import { X } from "lucide-react";
 import { PiNotePencil } from "react-icons/pi";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import ModalComponent from "./ModalComponent";
 import ImgEditor from "./ImgEditor.create.product";
-import AskQuestions from "./AskQuestions";
 import FAQList from "./FAQList";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession, StoreFrontImage, StoreFrontImageResponse } from "@/types";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
 const SystemConfiguration = () => {
 
   const imagesUrls: any[] = [];
-  const { dropZoneStyle } = useStyles()
+  const { dropZoneStyle } = useStyles();
   const [file, setFile] = useState("");
   const [image, setImage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [imageSrcs, setImageSrcs] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [storeImages, setStoreImages] = useState<StoreFrontImageResponse>()
+
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
+
+  const fetchingStoreImages = useCallback(async () => {
+    setLoading(true)
+    try {
+        const response = await requestClient({ token: token }).get(
+          `/admin/system-setup/storefront-images`
+        );
+        if (response.status === 200) {
+          setStoreImages(response.data.data);
+          setLoading(false);
+        }
+    } catch (error) {
+        console.error(error)
+        setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+      if (!token) return;
+      fetchingStoreImages();
+  }, [token, fetchingStoreImages]);
 
   const onLoadImage = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -78,12 +109,49 @@ const SystemConfiguration = () => {
     setImageSrcs(removedImage);
   }
 
+  const uploadImages = async () => {
+    console.log(imageSrcs)
+    if(imageSrcs?.length > 0){
+      const formdata = new FormData();
+      formdata.append("title", "Upload");
+      formdata.append("image", imageSrcs[0]);
+      try {
+        setLoading(true);
+        const response = await requestClient({token: token}).post(
+          "/admin/system-setup/storefront-images",
+          formdata
+        );
+        if(response.status === 200){
+          toast.success(response?.data?.message);
+          setLoading(false)
+        }
+      } catch (error) {
+        setLoading(false)
+        console.error(error);
+        toast.error(handleServerErrorMessage(error));
+      }
+    }
+  }
+
+  console.log(storeImages);
+
   return (
     <Stack>
       <Text fontSize={"1rem"} fontWeight={700} color={"gray.700"}>System Configuration</Text>
-
         <Stack bg={"white"} p={5} rounded={"lg"} gap={2} shadow={"sm"}>
-          <Text fontSize={"13px"} fontWeight={600} color={"gray.600"}>Store Front Image ({imageSrcs?.length}/10)</Text>
+          <HStack justifyContent={"space-between"} align={"center"}>
+            <Text fontSize={"13px"} fontWeight={600} color={"gray.600"}>
+              Store Front Image ({imageSrcs?.length}/10)
+            </Text>
+            <Button 
+            h={"34px"} 
+            bg={"blue.600"} 
+            color={"white"} 
+            onClick={uploadImages}
+            >
+              Save Changes
+            </Button>
+          </HStack>
           <SimpleGrid columns={[2, 3, 6]} spacing="10px" w={"100%"}>
             <Center
               as="button"
@@ -137,13 +205,15 @@ const SystemConfiguration = () => {
                   w="100%"
                   pos={"relative"}
                   alignItems={"center"}
+                  border={"1px solid #d7d7d7"}
+                  rounded={"md"}
                 >
                   <Image
                     src={e}
                     alt=""
                     width={400}
                     height={400}
-                    className="object-cover rounded-md h-[140px] w-full"
+                    className="object-cover rounded-md h-[140px] w-full mix-blend-darken"
                   />
                   <Flex 
                   gap={2}
@@ -171,6 +241,56 @@ const SystemConfiguration = () => {
                 </Center>
               </Flex>
             ))}
+            {
+              storeImages?.data && storeImages?.data?.map((image: StoreFrontImage) => (
+                <Flex
+                h={"140px"}
+                w="100%"
+                borderRadius="10px"
+                pos={"relative"}
+                key={image.id}
+              >
+                <Center
+                  h={"140px"}
+                  w="100%"
+                  pos={"relative"}
+                  alignItems={"center"}
+                  border={"1px solid #d7d7d7"}
+                  rounded={"md"}
+                >
+                  <Image
+                    src={image.imageUrl}
+                    alt=""
+                    width={400}
+                    height={400}
+                    className="object-cover rounded-md h-[140px] w-full mix-blend-darken"
+                  />
+                  <Flex 
+                  gap={2}
+                  bg={"white"}
+                  p={1}
+                  rounded={"md"}
+                  pos={"absolute"}
+                  right={3}
+                  top={2}
+                  >
+                    <PiNotePencil 
+                    cursor={"pointer"}
+                    onClick={() => {
+                      // onSelectImgToEdit(e);
+                    }}
+                    className="w-4 h-auto" />
+                    <X 
+                    cursor={"pointer"}
+                    onClick={() => {
+                      // REMOVE_IMAGES(e);
+                    }}
+                    className="w-4 h-auto text-red-600"/>
+                  </Flex>
+                </Center>
+              </Flex>
+              ))
+            }
           </SimpleGrid>
         </Stack>
         <FAQList />

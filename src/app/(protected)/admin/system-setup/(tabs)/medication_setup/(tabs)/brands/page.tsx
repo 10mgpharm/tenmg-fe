@@ -39,8 +39,6 @@ export default function ProductBrandSetupPage() {
         if (!token) return;
         fetchingBrandTypes();
     }, [token, fetchingBrandTypes]);
-
-    console.log(brandData);
     
     return (
         <BrandSetup

@@ -497,3 +497,14 @@ interface FaqDataProps {
   message: string;
   status: string;
 }
+export interface StoreFrontImage{
+  id: number;
+  description: string | null;
+  imageUrl: string;
+  title: string | null;
+}
+export interface StoreFrontImageResponse {
+  data: any;
+  links: any;
+  meta: MetaDataProp;
+}
