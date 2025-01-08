@@ -281,7 +281,6 @@ export interface CategoryType {
   slug: string;
   status: string;
 }
-
 export interface MeasurementType {
   id: number;
   active: boolean;

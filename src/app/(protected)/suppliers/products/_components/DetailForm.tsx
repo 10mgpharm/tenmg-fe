@@ -14,9 +14,9 @@ import {
     Text, 
     Textarea, 
     useToast
-} from "@chakra-ui/react"
-import { ArrowLeftIcon } from "@heroicons/react/20/solid"
-import { useRouter } from "next/navigation"
+} from "@chakra-ui/react";
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
+import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Control, Controller, FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
@@ -82,13 +82,12 @@ const DetailForm: React.FC<IChildComponentProps> = ({
             setValue("brandName", data?.brand?.name);
             setValue("categoryName", data?.category?.name);
             setValue("thumbnailFile", data?.thumbnailFile);
-        }
-        if(formattedImage && !isEditing){
+        }else if(formattedImage && !isEditing){
             setIconFile(URL.createObjectURL(formattedImage as unknown as Blob));
         }else{
             setIconFile(formattedImage)
         }
-    },[formattedImage, data])
+    },[formattedImage, data]);
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
