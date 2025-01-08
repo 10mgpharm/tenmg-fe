@@ -1,6 +1,6 @@
-import React from "react";
-import { classNames } from "@/utils";
-import { Icon, Text } from "@chakra-ui/react"
+import { camelCaseToTitleCase, classNames } from "@/utils";
+import { Flex, Icon, Text, Tooltip } from "@chakra-ui/react"
+import { Info } from "lucide-react";
 
 interface PurchaseProps {
     value: number;
@@ -9,16 +9,25 @@ interface PurchaseProps {
     icon: any;
     operator: string;
     status: string;
+    description: string;
 }
 
-const PurchaseCard:React.FC<PurchaseProps> = ({value, title, icon, status, operator, systemValue}) => {
+const PurchaseCard:React.FC<PurchaseProps> = ({value, title, icon, status, operator, systemValue, description}) => {
+
   return (
-    <div className={classNames(
+    <div className={
+        classNames(
         status === "passed" ? 
         "border-green-500 bg-[#D1EFEC]" 
         : "border-red-600 bg-[#F6DADE]",  
-        " border p-4 rounded-md col-span-1 space-y-4")}>
-        <p className="text-sm text-gray-600">{title}</p>
+        " border p-4 rounded-md col-span-1 space-y-4")}
+    >
+        <Flex align={"center"} justify={"space-between"}>
+            <Text className="text-sm text-gray-600 w-3/4">{camelCaseToTitleCase(title)}</Text>
+            <Tooltip label={description} aria-label='A tooltip' width={"128px"}>
+                <Info className="w-4 h-4"/>
+            </Tooltip>
+        </Flex>
         <Text 
         fontWeight={"600"}
         fontSize={"large"}
@@ -36,7 +45,8 @@ const PurchaseCard:React.FC<PurchaseProps> = ({value, title, icon, status, opera
             </Text>
             <Icon 
             as={icon} 
-            className={classNames(
+            className={
+                classNames(
                 status === "passed" 
                 ? "text-green-600" 
                 : "text-red-600" 

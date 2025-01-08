@@ -122,13 +122,13 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
             setValue("presentationName", data?.presentation?.name);
             setValue("measurementName", data?.measurement?.name);
             setValue("packageName", data?.package?.name);
-            setValue("weight", data?.weight);
+            setValue("strengthValue", data?.medicationType?.variations?.[0].strengthValue);
+            setValue("packageName", data?.medicationType?.variations?.[0].packagePerRoll)
+            setValue("weight", data?.medicationType?.variations?.[0]?.weight.toString());
             setValue("actualPrice", data?.actualPrice);
             setValue("discountPrice", data?.discountPrice);
         }
     }, [data, isEditing])
-
-    console.log(presentationData, measurementData)
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -293,6 +293,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                         return regex.test(value) || "Strength is invalid";
                                     }
                                 })}
+                                // defaultValue={data?.medicationType?.variations?.[0].strengthValue}
                                 isInvalid={!!errors.strengthValue}
                                 _focus={{
                                     border: !!errors.strengthValue ? "red.300" : "border-gray-300",
@@ -336,6 +337,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     placeholder="" 
                                     type="text"
                                     isInvalid={!!errors.packageName}
+                                    // defaultValue={data?.medicationType?.variations[0].packagePerRoll}
                                     _focus={{
                                         border: !!errors.packageName ? "red.300" : "border-gray-300",
                                     }}
@@ -349,8 +351,9 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <Input 
                                     id="weight"
                                     placeholder="" 
-                                    type="number"
+                                    type="text"
                                     isInvalid={!!errors.weight}
+                                    // defaultValue={data?.medicationType?.variations[0].weight}
                                     _focus={{
                                         border: !!errors.weight ? "red.300" : "border-gray-300",
                                     }}

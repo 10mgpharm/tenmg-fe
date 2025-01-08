@@ -1,8 +1,7 @@
 "use client";
 
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Flex, HStack, Spinner, Text } from '@chakra-ui/react';
+import { Flex, HStack, Image, Spinner, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
 import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
@@ -11,6 +10,7 @@ import { NextAuthUserSession, ProductDataProps } from '@/types';
 import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
 import { convertDate } from '@/utils/formatDate';
+import productImage from '../../../../../../public/assets/images/product.svg';
 
 const ProductDetail = ({params}: {params: {id: string}}) => {
     const router = useRouter();
@@ -59,11 +59,12 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
             <div className="flex gap-5 mb-3">
                 <div className="">
                     <Image 
-                    src={products?.thumbnailFile} 
-                    alt='' 
-                    width={380} 
-                    height={340} 
-                    className='w-[380px] h-[340px] object-cover rounded-md'
+                        src={products?.thumbnailFile} 
+                        fallbackSrc={productImage}
+                        alt='' 
+                        width={380} 
+                        height={340} 
+                        className='w-[380px] h-[340px] object-cover rounded-md'
                     />
                 </div>
                 <div className="flex-1 bg-white p-5 rounded-md pb-9">

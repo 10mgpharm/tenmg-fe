@@ -41,7 +41,11 @@ import { ConfirmationModal } from "./_components/ConfirmationModal";
 export interface IFilterInput {
   endDate?: Date | null;
   startDate?: Date | null;
+  toDate?: Date | null;
+  fromDate?: Date | null;
   status?: string;
+  inventory?: string;
+  brand?: string;
 }
 
 const CustomerManagement = () => {

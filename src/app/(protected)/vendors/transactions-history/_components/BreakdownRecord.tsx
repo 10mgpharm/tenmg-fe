@@ -22,6 +22,11 @@ interface Props {
   tnxHistoryData: SingleTransactionData;
 }
 const BreakdownRecords: React.FC<Props> = ({isOpen, onClose, tnxHistoryData}) => {
+  const purchasePatternKeys = Object.keys(tnxHistoryData?.evaluation?.purchasePattern);
+  const creditPatternKeys = Object.keys(tnxHistoryData?.evaluation?.creditPattern);
+  const purchasePatternArray = tnxHistoryData?.creditScoreResult?.appliedRules.filter((result) => purchasePatternKeys.includes(result.ruleName));
+  const creditPatternArray = tnxHistoryData?.creditScoreResult?.appliedRules.filter((result) => creditPatternKeys.includes(result.ruleName));
+  
     return (
       <>
         <Drawer
@@ -40,17 +45,15 @@ const BreakdownRecords: React.FC<Props> = ({isOpen, onClose, tnxHistoryData}) =>
             <DrawerBody>
                 <Tabs>
                     <TabList>
-                        <Tab>Purchase Pattern</Tab>
-                        <Tab>Credit Pattern</Tab>
+                      <Tab>Purchase Pattern</Tab>
+                      <Tab>Credit Pattern</Tab>
                     </TabList>
                     <TabPanels>
                         <TabPanel px={0}>
-                            <PurchasePattern data={tnxHistoryData?.creditScoreResult?.appliedRules}/>
+                          <PurchasePattern data={purchasePatternArray}/>
                         </TabPanel>
                         <TabPanel px={0}>
-                          <div className="mt-36">
-                            <p className="text-center font-medium">No Data found!</p>
-                          </div>
+                          <PurchasePattern data={creditPatternArray}/>
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
