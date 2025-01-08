@@ -154,6 +154,7 @@ const FilterDrawer = ({
                         onChange={(e) => setBrandFilter(e.target.value)} 
                     />
                 </InputGroup>
+                <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>Frequently searched brands.</Text>
                 {
                     brands?.data?.length > 0 && brands?.data?.slice(0, 5)?.map((brand: MedicationData) => (
                         <Stack key={brand.id}>

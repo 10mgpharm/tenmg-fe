@@ -287,6 +287,7 @@ export interface MeasurementType {
   active: boolean;
   name: string;
   status: string;
+  variations?: MedicationVariant[]
 }
 export interface ProductDataProps {
   id: number;
