@@ -57,6 +57,7 @@ const Page = () => {
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [inventoryQuery, setInventoryQuery] = useState("");
+    const [selectedBrand, setSelectedBrand] = useState("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
@@ -100,7 +101,7 @@ const Page = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
 
     const fetchingBrands = useCallback(async() => {
         try {
@@ -151,6 +152,8 @@ const Page = () => {
         setCreatedAtStart(filters.fromDate);
         setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
+        setBrandQuery(filters.brand);
+        setInventoryQuery(filters.inventory)
     };
 
     const clearFilters = () => {
@@ -161,12 +164,15 @@ const Page = () => {
         setBrandFilter("");
         setInventoryQuery("")
         setGlobalFilter("");
+        setSelectedBrand("")
     };
 
     const filterOptions = [
         { option: "Active", value: "active" },
         { option: "Suspended", value: "inactive" },
     ];
+
+    console.log(brandQuery)
     
   return (
     <div className="p-8">
@@ -178,7 +184,9 @@ const Page = () => {
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 />
-                <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
+                <div 
+                onClick={onOpenFilter} 
+                className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
                     <CiFilter className="w-5 h-5 text-gray-700" />
                     <p className="text-gray-500 font-medium">Filter</p>
                 </div>
@@ -292,18 +300,16 @@ const Page = () => {
             onClose={onCloseRestock}
         />
         <FilterDrawer 
+            brands={brands}
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
-            brands={brands}
-            setBrandFilter={setBrandFilter}
-            setInventoryQuery={setInventoryQuery}
-            setBrandQuery={setBrandQuery}
-            brandQuery={brandQuery}
             brandFilter={brandFilter}
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
-            products={products?.data}
+            selectedBrand={selectedBrand}
+            setBrandFilter={setBrandFilter}
+            setSelectedBrand={setSelectedBrand}
         />
         <ModalWrapper
         isOpen={isOpenDeactivate} 

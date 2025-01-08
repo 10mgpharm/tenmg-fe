@@ -42,11 +42,9 @@ const FilterDrawer = ({
     applyFilters,
     clearFilters,
     brands,
-    brandQuery,
     setBrandFilter,
-    setBrandQuery,
-    setInventoryQuery,
-    products,
+    selectedBrand,
+    setSelectedBrand,
     brandFilter
 }: {
     isOpen: boolean;
@@ -57,11 +55,9 @@ const FilterDrawer = ({
     isNotDate?: boolean;
     brandFilter: string;
     setBrandFilter: Dispatch<SetStateAction<string>>;
-    setInventoryQuery: Dispatch<SetStateAction<string>>;
-    setBrandQuery: Dispatch<SetStateAction<string>>;
+    selectedBrand: string;
+    setSelectedBrand: Dispatch<SetStateAction<string>>;
     brands: MedicationResponseData;
-    brandQuery: string;
-    products: ProductDataProps[]
 }) => {
 
     const [checkedItems, setCheckedItems] = useState([false, false, false]);
@@ -71,6 +67,7 @@ const FilterDrawer = ({
         formState: {},
         control,
         reset,
+        setValue
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -115,8 +112,8 @@ const FilterDrawer = ({
                     <Checkbox 
                         isChecked={checkedItems[0]} 
                         onChange={(e) => {
-                            setCheckedItems([e.target.checked, false, false])
-                            setInventoryQuery("IN STOCK")
+                            setCheckedItems([e.target.checked, false, false]);
+                            setValue("inventory", "IN STOCK");
                         }} 
                     >
                         <Tag colorScheme={"green"} size={"sm"}>In stock</Tag>
@@ -125,7 +122,7 @@ const FilterDrawer = ({
                         isChecked={checkedItems[1]} 
                         onChange={(e) => {
                             setCheckedItems([false, e.target.checked, false])
-                            setInventoryQuery("LOW STOCK")
+                            setValue("inventory", "LOW STOCK")
                         }} 
                     >
                         <Tag colorScheme={"orange"} size={"sm"}>Low stock</Tag>
@@ -134,7 +131,7 @@ const FilterDrawer = ({
                     isChecked={checkedItems[2]} 
                     onChange={(e) => {
                         setCheckedItems([false, false, e.target.checked])
-                        setInventoryQuery("OUT OF STOCK")
+                        setValue("inventory", "OUT OF STOCK")
                     }} 
                     >
                         <Tag colorScheme={"red"} size={"sm"}>Out of stock</Tag>
@@ -151,7 +148,9 @@ const FilterDrawer = ({
                         type='text' 
                         placeholder='Search' 
                         value={brandFilter} 
-                        onChange={(e) => setBrandFilter(e.target.value)} 
+                        onChange={(e) => {
+                            setBrandFilter(e.target.value);
+                        }} 
                     />
                 </InputGroup>
                 <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>Frequently searched brands.</Text>
@@ -160,11 +159,12 @@ const FilterDrawer = ({
                         <Stack key={brand.id}>
                             <Checkbox 
                             value={brand?.name}
-                            isChecked={brand?.name === brandQuery}
+                            isChecked={brand?.name === selectedBrand}
                             onChange={(e) => {
                                 const isChecked = e.target.checked;
                                 if(isChecked){
-                                    setBrandQuery(e.target.value);
+                                    setSelectedBrand(e.target.value);
+                                    setValue("brand", e.target.value);
                                 }
                             }}>
                                 {brand.name}
@@ -205,14 +205,12 @@ const FilterDrawer = ({
                             setStartDate={field.onChange}
                             isMaxDate
                             isMinDate
-                            // minDate={getValues("fromDate")}
                         />
                         )}
                     />
                 </FormControl>
             </Stack>
           </DrawerBody>
-
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
                 Cancel

@@ -38,7 +38,11 @@ import Pagination from "../_components/Pagination";
 import ModalWrapper from "../_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession, ProductResponseData } from "@/types";
+import { 
+    MedicationResponseData, 
+    NextAuthUserSession, 
+    ProductResponseData 
+} from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../../vendors/customers-management/page";
 import FilterDrawer from "./_components/FilterDrawer";
@@ -60,6 +64,7 @@ const Products = () => {
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [inventoryQuery, setInventoryQuery] = useState("");
+    const [selectedBrand, setSelectedBrand] = useState("");
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
@@ -90,7 +95,7 @@ const Products = () => {
             query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
         }
         if (createdAtEnd) {
-        query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
+            query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
         }
         try {
         const response = await requestClient({ token: token }).get(query);
@@ -113,7 +118,7 @@ const Products = () => {
                 setBrands(response.data.data);
             }
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
     },[token, debouncedBrandSearch]);
 
@@ -142,13 +147,19 @@ const Products = () => {
         setCreatedAtStart(filters.startDate);
         setCreatedAtEnd(filters.endDate);
         setStatus(filters.status);
+        setBrandQuery(filters.brand);
+        setInventoryQuery(filters.inventory)
     };
 
     const clearFilters = () => {
         setCreatedAtStart(null);
         setCreatedAtEnd(null);
         setStatus("");
+        setBrandQuery("")
+        setBrandFilter("");
+        setInventoryQuery("")
         setGlobalFilter("");
+        setSelectedBrand("");
     };
 
     const filterOptions = [
@@ -341,18 +352,16 @@ const Products = () => {
             </div>
         </ModalWrapper>
         <FilterDrawer 
+            brands={brands}
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
-            brands={brands}
-            setInventoryQuery={setInventoryQuery}
-            setBrandQuery={setBrandQuery}
-            brandQuery={brandQuery}
             brandFilter={brandFilter}
             setBrandFilter={setBrandFilter}
-            products={products?.data}
+            selectedBrand={selectedBrand}
+            setSelectedBrand={setSelectedBrand}
         />
     </div>
   )
