@@ -29,23 +29,13 @@ interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;
     control: Control<IFormInput>;
     errors: FieldErrors<FieldValues>;
-    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
-    setValue: UseFormSetValue<IFormInput>; 
+    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>; 
     isLoading: boolean;
     data?: ProductDataProps;
     isEditing: boolean
 }
 
-const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, control, isLoading, data, isEditing, setValue }) => {
-
-    useEffect(() => {
-        if(isEditing){
-            setValue("quantity", data?.quantity);
-            setValue("lowStockLevel", data?.lowStockLevel?.toString());
-            setValue("outStockLevel", data?.outStockLevel?.toString());
-            setValue("expiredAt", data?.expiredAt);
-        }
-    }, [isEditing, data])
+const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, control, isLoading, isEditing }) => {
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -131,6 +121,7 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
         </div>
         <div className="flex gap-4 justify-end mt-10 mb-6">
             <button 
+            type="button"
             className="p-3 w-32 rounded-md border text-gray-600"  
             onClick={() => setSteps("essentials")}>
                 Previous

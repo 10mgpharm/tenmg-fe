@@ -37,7 +37,12 @@ import FilterDrawer from "../../suppliers/products/_components/FilterDrawer";
 import { ColumsProductFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession, ProductResponseData } from "@/types";
+import { 
+    MedicationResponseData, 
+    NextAuthUserSession, 
+    ProductDataProps, 
+    ProductResponseData 
+} from "@/types";
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
@@ -57,11 +62,13 @@ const Page = () => {
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [inventoryQuery, setInventoryQuery] = useState("");
+    const [selectedBrand, setSelectedBrand] = useState("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
-    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
+    const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
@@ -88,7 +95,7 @@ const Page = () => {
             query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
         }
         if (createdAtEnd) {
-        query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
+            query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
         }
         try {
         const response = await requestClient({ token: token }).get(query);
@@ -100,9 +107,10 @@ const Page = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
 
     const fetchingBrands = useCallback(async() => {
+        if(!brandFilter) return;
         try {
             const response = await requestClient({ token: token }).get(
                 `/admin/settings/brands?search=${debouncedBrandSearch}`
@@ -113,7 +121,7 @@ const Page = () => {
         } catch (error) {
             console.error(error)
         }
-    },[token, debouncedBrandSearch]);
+    },[token, debouncedBrandSearch, brandFilter]);
 
     useEffect(() => {
         if(!token) return;
@@ -123,7 +131,7 @@ const Page = () => {
     useEffect(() => {
         if(!token) return;
         fetchingBrands();
-    }, [fetchingBrands, token])
+    }, [fetchingBrands, token]);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
     
@@ -135,7 +143,8 @@ const Page = () => {
                     onOpenDeactivate, 
                     onOpenActivate, 
                     pageCount, 
-                    15
+                    15,
+                    setSelectedProduct
                 ),
         onSortingChange: setSorting,
         state: {
@@ -151,6 +160,8 @@ const Page = () => {
         setCreatedAtStart(filters.fromDate);
         setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
+        setBrandQuery(filters.brand);
+        setInventoryQuery(filters.inventory)
     };
 
     const clearFilters = () => {
@@ -161,6 +172,7 @@ const Page = () => {
         setBrandFilter("");
         setInventoryQuery("")
         setGlobalFilter("");
+        setSelectedBrand("")
     };
 
     const filterOptions = [
@@ -178,7 +190,9 @@ const Page = () => {
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 />
-                <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
+                <div 
+                onClick={onOpenFilter} 
+                className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
                     <CiFilter className="w-5 h-5 text-gray-700" />
                     <p className="text-gray-500 font-medium">Filter</p>
                 </div>
@@ -280,6 +294,10 @@ const Page = () => {
             : <GridList 
             data={memoizedData}
             routing="/admin/products"
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
+            fetchProducts={fetchProducts}
+            type="admin"
             />)
         }
         </div>
@@ -290,20 +308,21 @@ const Page = () => {
         <RestockModal 
             isOpen={isOpenRestock} 
             onClose={onCloseRestock}
+            product={selectedProduct}
+            fetchProducts={fetchProducts}
+            type="admin"
         />
         <FilterDrawer 
+            brands={brands}
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
-            brands={brands}
-            setBrandFilter={setBrandFilter}
-            setInventoryQuery={setInventoryQuery}
-            setBrandQuery={setBrandQuery}
-            brandQuery={brandQuery}
             brandFilter={brandFilter}
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
-            products={products?.data}
+            selectedBrand={selectedBrand}
+            setBrandFilter={setBrandFilter}
+            setSelectedBrand={setSelectedBrand}
         />
         <ModalWrapper
         isOpen={isOpenDeactivate} 

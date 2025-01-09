@@ -88,11 +88,17 @@ const AskQuestions = (
           setValue("question", questions?.question);
           setValue("answer", questions?.answer);
         }
-      }, [questions, setValue]);
+    }, [questions, setValue]);
+
+    const handleClose = () => {
+        reset();
+        onClose();
+        setIsEditing(false);
+    }
 
     return (
     <ModalComponent
-        onClose={onClose}
+        onClose={handleClose}
         isOpen={isOpen}
         modalBodyStyle={{
             height: "100vh",
@@ -106,13 +112,13 @@ const AskQuestions = (
                     alignSelf={"center"}
                     mb="5px"
                 >
-                Add FAQs
+                    { isEditing ? "Edit FAQs" : "Add FAQs"}
                 </Text>
                 <X onClick={onClose} className="w-5 h-auto text-gray-600 cursor-pointer"/>
             </Flex>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <FormControl>
-                    <FormLabel fontSize={"1rem"} color={"gray.600"}>Add Question</FormLabel>
+                    <FormLabel fontSize={"1rem"} color={"gray.600"}>{isEditing ? "Question" : "Add Question"}</FormLabel>
                     <Input 
                      type={"text"}
                      defaultValue={questions?.question}
@@ -144,7 +150,12 @@ const AskQuestions = (
                 </FormControl>
                 <Flex pt={10} pb={5} justify={"flex-end"}>
                     <HStack>
-                    <Button onClick={onClose} h={"40px"} variant={"outline"}>Cancel</Button>
+                    <Button 
+                    onClick={handleClose} 
+                    h={"40px"} 
+                    variant={"outline"}>
+                        Cancel
+                    </Button>
                     <Button 
                     h={"40px"} 
                     type="submit" 
