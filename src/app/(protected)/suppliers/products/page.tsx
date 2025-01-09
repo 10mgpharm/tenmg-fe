@@ -45,9 +45,19 @@ import {
     ProductResponseData 
 } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
-import { IFilterInput } from "../../vendors/customers-management/page";
 import FilterDrawer from "./_components/FilterDrawer";
 import SearchInput from "../../vendors/_components/SearchInput";
+
+
+interface IFilterInput {
+    endDate?: Date | null;
+    startDate?: Date | null;
+    toDate?: Date | null;
+    fromDate?: Date | null;
+    status?: string[];
+    inventory?: string[];
+    brand?: string[];
+}
 
 const Products = () => {
 
@@ -59,12 +69,12 @@ const Products = () => {
     const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
 
-    const [status, setStatus] = useState<string>("");
-    const [brandQuery, setBrandQuery] = useState("");
+    const [status, setStatus] = useState<string[]>();
+    const [brandQuery, setBrandQuery] = useState<string[]>();
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [brands, setBrands] = useState<MedicationResponseData>();
-    const [inventoryQuery, setInventoryQuery] = useState("");
+    const [inventoryQuery, setInventoryQuery] = useState<string[]>();
     const [selectedBrand, setSelectedBrand] = useState("");
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
@@ -84,26 +94,28 @@ const Products = () => {
     const fetchProducts = useCallback(async () => {
         setLoading(true);
         let query = `/supplier/products?page=${pageCount}`;
-        if (debouncedSearch) {
-            query += `&search=${debouncedSearch}`;
-        }
-        if(inventoryQuery) {
-            query += `&inventory=${inventoryQuery}`
-        }
-        if(status) {
-            query += `&status=${status}`
-        }
-        if(brandQuery) {
-            query += `&brand=${brandQuery}`
-        }
-        if (createdAtStart) {
-            query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
-        }
-        if (createdAtEnd) {
-            query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
-        }
+        const params = {
+            inventory: inventoryQuery ?? [""],
+            status: status ?? [""],
+            category: [],
+            brand: brandQuery ?? [],
+            search: debouncedSearch ?? "",
+            variation: "",
+            medicationType: [],
+            from: createdAtStart ? createdAtStart.toISOString().split("T")[0] : "",
+            to: createdAtEnd ? createdAtEnd.toISOString().split("T")[0] : "",
+        };
+
+        // Convert the payload into query parameters
+        const queryString = new URLSearchParams(
+            Object.entries(params).flatMap(([key, value]) => 
+            Array.isArray(value) 
+                ? value.map((v) => [key, v]) 
+                : [[key, value]]
+            )
+        ).toString();
         try {
-        const response = await requestClient({ token: token }).get(query);
+        const response = await requestClient({ token: token }).get(`${query}?${queryString}`);
             if (response.status === 200) {
                 setProducts(response.data.data);
             }
@@ -170,10 +182,10 @@ const Products = () => {
     const clearFilters = () => {
         setCreatedAtStart(null);
         setCreatedAtEnd(null);
-        setStatus("");
-        setBrandQuery("")
+        setStatus([]);
+        setBrandQuery([])
         setBrandFilter("");
-        setInventoryQuery("")
+        setInventoryQuery([])
         setGlobalFilter("");
         setSelectedBrand("");
     };

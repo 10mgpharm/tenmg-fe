@@ -21,15 +21,15 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { FaSearch } from 'react-icons/fa';
 import DateComponent from './DateComponent';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { MedicationData, MedicationResponseData} from '@/types';
 
 interface IFormInput {
     fromDate?: Date | null;
     toDate?: Date | null;
-    inventory?: string;
-    brand?: string;
-    status?: string;
+    inventory?: string[];
+    brand?: string[];
+    status?: string[];
 }
 
 interface FilterOptions {
@@ -61,16 +61,24 @@ const FilterDrawer = ({
     brands: MedicationResponseData;
 }) => {
 
-    const [checkedItems, setCheckedItems] = useState([false, false, false]);
-    const [checkedItems2, setCheckedItems2] = useState([false, false, false, false]);
     const {
         handleSubmit,
         formState: {},
         control,
         reset,
-        setValue
+        setValue,
+        getValues,
+        trigger,
+        watch
     } = useForm<IFormInput>({
         mode: "onChange",
+        defaultValues: {
+            inventory: [],
+            status: [],
+            brand: [],
+            toDate: null,
+            fromDate: null
+        }
     });
 
     const onSubmit = (data: IFormInput) => {
@@ -80,15 +88,13 @@ const FilterDrawer = ({
 
     const handleClearFilters = () => {
         reset({
-            brand: "",
-            inventory: "",
+            brand: [],
+            inventory: [],
             toDate: null,
             fromDate: null,
-            status: "",
+            status: [],
         });
         clearFilters();
-        setCheckedItems([false, false, false])
-        setCheckedItems2([false, false, false, false])
     };
     
     return (
@@ -111,29 +117,50 @@ const FilterDrawer = ({
                 <CheckboxGroup>
                     <Stack spacing={4} direction='column'>
                         <Checkbox 
-                            isChecked={checkedItems[0]} 
+                            isChecked={watch("inventory").includes("IN STOCK")} 
                             onChange={(e) => {
-                                setCheckedItems([e.target.checked, false, false]);
-                                setValue("inventory", "IN STOCK");
+                                const currentValues = getValues("inventory") || [];
+                                if(e.target.checked){
+                                    const newArr = [...currentValues, "IN STOCK"]
+                                    setValue("inventory", newArr);
+                                }else{
+                                    const removeItem = currentValues.filter((item) => item !== "IN STOCK")
+                                    setValue("inventory", removeItem);
+                                }
+                                trigger("inventory");
                             }} 
                         >
                             <Tag colorScheme={"green"} size={"sm"}>In stock</Tag>
                         </Checkbox>
                         <Checkbox 
-                            isChecked={checkedItems[1]} 
+                            isChecked={watch("inventory").includes("LOW STOCK")} 
                             onChange={(e) => {
-                                setCheckedItems([false, e.target.checked, false])
-                                setValue("inventory", "LOW STOCK")
+                                const currentValues = getValues("inventory") || [];
+                                if(e.target.checked){
+                                    const newArr = [...currentValues, "LOW STOCK"]
+                                    setValue("inventory", newArr);
+                                }else{
+                                    const removeItem = currentValues.filter((item) => item !== "LOW STOCK")
+                                    setValue("inventory", removeItem);
+                                }
+                                trigger("inventory");
                             }} 
                         >
                             <Tag colorScheme={"orange"} size={"sm"}>Low stock</Tag>
                         </Checkbox>
                         <Checkbox 
-                        isChecked={checkedItems[2]} 
-                        onChange={(e) => {
-                            setCheckedItems([false, false, e.target.checked])
-                            setValue("inventory", "OUT OF STOCK")
-                        }} 
+                            isChecked={watch("inventory").includes("OUT OF STOCK")} 
+                            onChange={(e) => {
+                                const currentValues = getValues("inventory") || [];
+                                if(e.target.checked){
+                                    const newArr = [...currentValues, "OUT OF STOCK"]
+                                    setValue("inventory", newArr);
+                                }else{
+                                    const removeItem = currentValues.filter((item) => item !== "OUT OF STOCK")
+                                    setValue("inventory", removeItem);
+                                }
+                                trigger("inventory");
+                            }} 
                         >
                             <Tag colorScheme={"red"} size={"sm"}>Out of stock</Tag>
                         </Checkbox>
@@ -145,37 +172,65 @@ const FilterDrawer = ({
                 <CheckboxGroup>
                     <Stack spacing={4} direction='column'>
                         <Checkbox 
-                            isChecked={checkedItems2[0]} 
+                            isChecked={watch("status").includes("active")} 
                             onChange={(e) => {
-                                setCheckedItems2([e.target.checked, false, false, false]);
-                                setValue("status", "active");
+                                const currentValues = getValues("status") || [];
+                                if(e.target.checked){
+                                    const newArr = [...currentValues, "active"]
+                                    setValue("status", newArr);
+                                }else{
+                                    const removeItem = currentValues.filter((item) => item !== "active")
+                                    setValue("status", removeItem);
+                                }
+                                trigger("status");
                             }} 
                         >
                             <Tag colorScheme={"green"} size={"sm"}>Active</Tag>
                         </Checkbox>
                         <Checkbox 
-                            isChecked={checkedItems2[1]} 
+                            isChecked={watch("status").includes("inactive")} 
                             onChange={(e) => {
-                                setCheckedItems2([false, e.target.checked, false, false])
-                                setValue("status", "inactive")
+                                const currentValues = getValues("status") || [];
+                                if(e.target.checked){
+                                    const newArr = [...currentValues, "inactive"]
+                                    setValue("status", newArr);
+                                }else{
+                                    const removeItem = currentValues.filter((item) => item !== "inactive")
+                                    setValue("status", removeItem);
+                                }
+                                trigger("status");
                             }} 
                         >
                             <Tag colorScheme={"orange"} size={"sm"}>Inactive</Tag>
                         </Checkbox>
                         <Checkbox 
-                        isChecked={checkedItems2[2]} 
+                        isChecked={watch("status").includes("pending")} 
                         onChange={(e) => {
-                            setCheckedItems2([false, false, e.target.checked, false])
-                            setValue("status", "pending")
-                        }} 
+                            const currentValues = getValues("status") || [];
+                            if(e.target.checked){
+                                const newArr = [...currentValues, "pending"]
+                                setValue("status", newArr);
+                            }else{
+                                const removeItem = currentValues.filter((item) => item !== "pending")
+                                setValue("status", removeItem);
+                            }
+                            trigger("status");
+                        }}  
                         >
                             <Tag colorScheme={"red"} size={"sm"}>Pending</Tag>
                         </Checkbox>
                         <Checkbox 
-                        isChecked={checkedItems2[3]} 
+                        isChecked={watch("status").includes("approved")} 
                         onChange={(e) => {
-                            setCheckedItems2([false, false, false, e.target.checked])
-                            setValue("status", "approved")
+                            const currentValues = getValues("status") || [];
+                            if(e.target.checked){
+                                const newArr = [...currentValues, "approved"]
+                                setValue("status", newArr);
+                            }else{
+                                const removeItem = currentValues.filter((item) => item !== "approved")
+                                setValue("status", removeItem);
+                            }
+                            trigger("status");
                         }} 
                         >
                             <Tag colorScheme={"blue"} size={"sm"}>Approved</Tag>
@@ -209,7 +264,7 @@ const FilterDrawer = ({
                                 const isChecked = e.target.checked;
                                 if(isChecked){
                                     setSelectedBrand(e.target.value);
-                                    setValue("brand", e.target.value);
+                                    // setValue("brand", e.target.value);
                                 }
                             }}>
                                 {brand.name}
