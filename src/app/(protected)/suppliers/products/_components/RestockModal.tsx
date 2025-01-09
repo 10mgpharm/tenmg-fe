@@ -1,5 +1,8 @@
-import { ProductDataProps } from '@/types'
+import requestClient from '@/lib/requestClient';
+import { NextAuthUserSession, ProductDataProps } from '@/types'
+import { handleServerErrorMessage } from '@/utils';
 import { 
+    Button,
     FormControl, 
     FormLabel, 
     Input, 
@@ -10,8 +13,10 @@ import {
     ModalHeader, 
     ModalOverlay,  
 } from '@chakra-ui/react'
-import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 interface IFormInput {
     name: string;
@@ -19,15 +24,21 @@ interface IFormInput {
     quantity: number;
 }
 const RestockModal = (
-    {isOpen, onClose, product}: 
-    {isOpen: boolean, onClose: () => void, product: ProductDataProps}
+    {isOpen, onClose, product, fetchProducts, type}: 
+    {isOpen: boolean, onClose: () => void, product: ProductDataProps, fetchProducts: () => void, type: string}
 ) => {
+
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+    const [isLoading, setIsLoading] = useState(false);
 
     const {
         register,
         formState: { errors, isValid },
         handleSubmit,
         setValue,
+        reset,
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -37,9 +48,37 @@ const RestockModal = (
             setValue("name", product.name);
             setValue("currentStock", product.quantity);
         }
-    },[product])
+    },[product, setValue, isOpen]);
 
-    const onSubmit:SubmitHandler<IFormInput>  = async(data) => {}
+    const onSubmit:SubmitHandler<IFormInput>  = async(data) => {
+        try {
+            setIsLoading(true)
+            const totalQuantity = Number(data.quantity) + Number(data.currentStock);
+            let response: any;
+            if(type === "admin"){
+                response = await requestClient({token: token}).patch(
+                    `/admin/settings/products/${product.id}`,
+                    {quantity: totalQuantity}
+                )
+            }else if(type === "supplier"){
+                response = await requestClient({token: token}).patch(
+                    `/supplier/products/${product.id}`,
+                    {quantity: totalQuantity}
+                )
+            }
+            if(response.status === 200){
+                toast.success(response.data?.message);
+                reset();
+                fetchProducts()
+                setIsLoading(false);
+                onClose();
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        }
+    }
 
     return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -71,6 +110,7 @@ const RestockModal = (
                         <Input 
                         id='currentStock'
                         type='number' 
+                        disabled
                         placeholder=''
                         isInvalid={!!errors.currentStock}
                             _focus={{
@@ -96,11 +136,16 @@ const RestockModal = (
                             })}
                         />
                     </FormControl>
-                    <div className="flex flex-col gap-3 pt-5">
-                        <button type='submit' className='bg-primary-500 text-white p-3 rounded-md'>
+                    <div className="flex flex-col gap-1.5 pt-4">
+                        <Button 
+                        type='submit' 
+                        isLoading={isLoading} 
+                        disabled={isLoading} 
+                        loadingText="Submitting..." 
+                        className='bg-primary-500 text-white p-3 rounded-md'>
                             Restock
-                        </button>
-                        <button className='cursor-pointer mt-2' onClick={() => onClose()}>Cancel</button>
+                        </Button>
+                        <Button variant={"outline"} onClick={() => onClose()}>Cancel</Button>
                     </div>
                 </form>
             </ModalBody>

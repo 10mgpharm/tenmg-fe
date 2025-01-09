@@ -134,7 +134,7 @@ const Products = () => {
 
     const table = useReactTable({
         data: memoizedData || [],
-        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate),
+        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate, setSelectedProduct),
         onSortingChange: setSorting,
         state: {
           globalFilter,
@@ -314,14 +314,21 @@ const Products = () => {
             routing="/suppliers/products"
             selectedProduct={selectedProduct}
             setSelectedProduct={setSelectedProduct}
+            fetchProducts={fetchProducts}
+            type="supplier"
             />
         }
         </div>
-        <DeleteModal isOpen={isOpen} onClose={onClose}/>
+        <DeleteModal 
+        isOpen={isOpen} 
+        onClose={onClose}
+        />
         <RestockModal 
         isOpen={isOpenRestock} 
         onClose={onCloseRestock} 
         product={selectedProduct}
+        fetchProducts={fetchProducts}
+        type="supplier"
         />
         <ModalWrapper
         isOpen={isOpenDeactivate} 

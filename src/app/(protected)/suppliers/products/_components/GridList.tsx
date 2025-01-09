@@ -18,8 +18,8 @@ import { ProductDataProps } from '@/types'
 import { Dispatch, SetStateAction } from 'react'
 
 const GridList = (
-    {data, routing, selectedProduct, setSelectedProduct}: 
-    {data: ProductDataProps[], routing: string, selectedProduct: ProductDataProps, setSelectedProduct: Dispatch<SetStateAction<ProductDataProps>>}) => {
+    {data, routing, selectedProduct, setSelectedProduct, fetchProducts, type}: 
+    {data: ProductDataProps[], routing: string, selectedProduct: ProductDataProps, setSelectedProduct: Dispatch<SetStateAction<ProductDataProps>>, fetchProducts: () => void, type: string}) => {
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { 
@@ -106,7 +106,13 @@ const GridList = (
             ))
         }
         <DeleteModal isOpen={isOpen} onClose={onClose}/>
-        <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock} product={selectedProduct}/>
+        <RestockModal 
+        isOpen={isOpenRestock} 
+        onClose={onCloseRestock} 
+        product={selectedProduct} 
+        fetchProducts={fetchProducts}
+        type={type}
+        />
         <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate}/>
     </div>
   )

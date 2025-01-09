@@ -90,7 +90,7 @@ const Page = () => {
             query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
         }
         if (createdAtEnd) {
-        query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
+            query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
         }
         try {
         const response = await requestClient({ token: token }).get(query);
@@ -290,6 +290,8 @@ const Page = () => {
             routing="/admin/products"
             selectedProduct={selectedProduct}
             setSelectedProduct={setSelectedProduct}
+            fetchProducts={fetchProducts}
+            type="admin"
             />)
         }
         </div>
@@ -301,6 +303,8 @@ const Page = () => {
             isOpen={isOpenRestock} 
             onClose={onCloseRestock}
             product={selectedProduct}
+            fetchProducts={fetchProducts}
+            type="admin"
         />
         <FilterDrawer 
             brands={brands}
