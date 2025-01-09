@@ -17,12 +17,12 @@ import {
     FormLabel,
     FormControl,
     CheckboxGroup,
-  } from '@chakra-ui/react'
+  } from '@chakra-ui/react';
 import { Controller, useForm } from 'react-hook-form';
-import { FaSearch } from 'react-icons/fa'
+import { FaSearch } from 'react-icons/fa';
 import DateComponent from './DateComponent';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { MedicationData, MedicationResponseData, ProductDataProps } from '@/types';
+import { MedicationData, MedicationResponseData} from '@/types';
 
 interface IFormInput {
     fromDate?: Date | null;
@@ -61,7 +61,6 @@ const FilterDrawer = ({
 }) => {
 
     const [checkedItems, setCheckedItems] = useState([false, false, false]);
-
     const {
         handleSubmit,
         formState: {},
@@ -153,9 +152,9 @@ const FilterDrawer = ({
                         }} 
                     />
                 </InputGroup>
-                <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>Frequently searched brands.</Text>
+                {/* <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>Searched results.</Text> */}
                 {
-                    brands?.data?.length > 0 && brands?.data?.slice(0, 5)?.map((brand: MedicationData) => (
+                    (brands?.data?.length > 0) && brands?.data?.map((brand: MedicationData) => (
                         <Stack key={brand.id}>
                             <Checkbox 
                             value={brand?.name}

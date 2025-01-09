@@ -37,7 +37,12 @@ import FilterDrawer from "../../suppliers/products/_components/FilterDrawer";
 import { ColumsProductFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession, ProductDataProps, ProductResponseData } from "@/types";
+import { 
+    MedicationResponseData, 
+    NextAuthUserSession, 
+    ProductDataProps, 
+    ProductResponseData 
+} from "@/types";
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
@@ -105,6 +110,7 @@ const Page = () => {
     }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
 
     const fetchingBrands = useCallback(async() => {
+        if(!brandFilter) return;
         try {
             const response = await requestClient({ token: token }).get(
                 `/admin/settings/brands?search=${debouncedBrandSearch}`
@@ -115,7 +121,7 @@ const Page = () => {
         } catch (error) {
             console.error(error)
         }
-    },[token, debouncedBrandSearch]);
+    },[token, debouncedBrandSearch, brandFilter]);
 
     useEffect(() => {
         if(!token) return;
@@ -125,7 +131,7 @@ const Page = () => {
     useEffect(() => {
         if(!token) return;
         fetchingBrands();
-    }, [fetchingBrands, token])
+    }, [fetchingBrands, token]);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
     

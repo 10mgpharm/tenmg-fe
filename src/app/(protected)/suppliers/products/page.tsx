@@ -27,13 +27,13 @@ import {
     useReactTable 
 } from "@tanstack/react-table";
 
+import Link from "next/link";
 import { ColumsProductFN } from "./_components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
 import GridList from "./_components/GridList";
 import { classNames } from "@/utils";
 import DeleteModal from "./_components/DeleteModal";
 import RestockModal from "./_components/RestockModal";
-import Link from "next/link";
 import Pagination from "../_components/Pagination";
 import ModalWrapper from "../_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
@@ -109,9 +109,10 @@ const Products = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
 
     const fetchingBrands = useCallback(async() => {
+        if(!brandFilter) return;
         try {
             const response = await requestClient({ token: token }).get(
                 `/supplier/brands?search=${debouncedBrandSearch}`
@@ -122,19 +123,29 @@ const Products = () => {
         } catch (error) {
             console.error(error);
         }
-    },[token, debouncedBrandSearch]);
+    },[token, debouncedBrandSearch, brandFilter]);
 
     useEffect(() => {
         if(!token) return;
         fetchProducts();
+    },[fetchProducts, token]);
+
+    useEffect(() => {
+        if(!token) return;
         fetchingBrands();
-    },[fetchProducts, fetchingBrands, token]);
+    }, [fetchingBrands, token])
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 
     const table = useReactTable({
         data: memoizedData || [],
-        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate, setSelectedProduct),
+        columns: ColumsProductFN(
+            onOpen, 
+            onOpenRestock, 
+            onOpenDeactivate, 
+            onOpenActivate, 
+            setSelectedProduct
+        ),
         onSortingChange: setSorting,
         state: {
           globalFilter,
