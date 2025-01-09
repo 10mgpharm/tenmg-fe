@@ -59,22 +59,17 @@ const BusinessInformation = ({ user }: { user: User }) => {
     const fetchUser = async () => {
       try {
         setIsInfoLoading(true);
-
         const response = await requestClient({
           token: sessionData.user.token,
         }).get("/vendor/settings");
-
-        if (response.status === 200) {
-          const data = response.data.data;
-          setValue("businessName", data.businessName);
-          setValue("contactEmail", data.contactEmail);
-          setValue("contactPerson", data.contactPerson);
-          setValue("contactPhone", data.contactPhone);
-          setValue("businessAddress", data.businessAddress);
-          setValue("contactPersonPosition", data.contactPersonPosition);
-        } else {
-          toast.error(`Error: ${response.data.message}`);
-        }
+  
+        const data = response.data.data;
+        setValue("businessName", data.businessName);
+        setValue("contactEmail", data.contactEmail);
+        setValue("contactPerson", data.contactPerson);
+        setValue("contactPhone", data.contactPhone);
+        setValue("businessAddress", data.businessAddress);
+        setValue("contactPersonPosition", data.contactPersonPosition || ""); 
       } catch (error) {
         const errorMessage = handleServerErrorMessage(error);
         toast.error(errorMessage);
@@ -82,19 +77,23 @@ const BusinessInformation = ({ user }: { user: User }) => {
         setIsInfoLoading(false);
       }
     };
+  
     if (sessionData?.user?.token) fetchUser();
   }, [sessionData?.user?.token, setValue]);
+  
 
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
+    console.log("Form Values on Submit:", value); // Check this value for accuracy
+  
     try {
       setIsLoading(true);
-
+  
       const response = await requestClient({
         token: sessionData.user.token,
       }).patch("/vendor/settings/business-information", {
         ...value,
       });
-
+  
       if (response.status === 200) {
         toast.success("Business information successfully updated");
       } else {
@@ -107,7 +106,6 @@ const BusinessInformation = ({ user }: { user: User }) => {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="p-2 md:p-5 rounded-md bg-white md:max-w-5xl">
       <form
@@ -159,7 +157,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
                   {...register("contactEmail", {
                     required: "Business Email is required",
                     pattern: {
-                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                       message: "Invalid email address",
                     },
                   })}
@@ -169,6 +167,31 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 {errors.contactEmail?.message}
               </FormErrorMessage>
             </FormControl>
+            {/* <FormControl isInvalid={!!errors.contactEmail?.message}>
+              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                Business Email
+              </FormLabel>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" fontSize="1.2em">
+                  <MdOutlineEmail color="gray.300" />
+                </InputLeftElement>
+                <Input
+                  type="email"
+                  placeholder="Enter business email"
+                  pl={10}
+                  {...register("contactEmail", {
+                    required: "Business Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      message: "Invalid email address",
+                    },
+                  })}
+                />
+              </InputGroup>
+              <FormErrorMessage>
+                {errors.contactEmail?.message}
+              </FormErrorMessage>
+            </FormControl> */}
             <FormControl isInvalid={!!errors.contactPhone?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Contact Phone Number
@@ -210,6 +233,18 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 })}
               />
             </FormControl>
+            {/* <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
+              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                Position
+              </FormLabel>
+              <Input
+                type="text"
+                placeholder="Enter position"
+                {...register("contactPersonPosition", {
+                  required: "Contact Person Position is required",
+                })}
+              />
+            </FormControl> */}
           </HStack>
         </Skeleton>
         <Skeleton isLoaded={!isInfoLoading}>
