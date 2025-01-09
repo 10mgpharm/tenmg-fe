@@ -10,7 +10,7 @@ import { NextAuthUserSession } from '@/types'
 import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
 import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
 import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
-import { Spinner } from '@chakra-ui/react'
+import { Flex, Spinner } from '@chakra-ui/react'
 export default function ProductDetailPage() {
 
   const breadCrumb = [
@@ -143,17 +143,31 @@ export default function ProductDetailPage() {
             <div className='w-full mx-auto'>
               <h3 className='text-3xl font-semibold text-gray-900 my-3'>Related Products</h3>
 
-              <div className=' flex items-center justify-between gap-x-8 '>
+              {/* <div className=' flex items-center justify-between gap-x-8 '> */}
+              <Flex
+                overflowX="auto"
+                gap={6}
+                className="px-6 md:px-20 max-w-screen-2xl mx-auto"
+                py={2}
+                mb={8}
+                sx={{
+                  '::-webkit-scrollbar': {
+                    display: 'none'
+                  },
+                  '-ms-overflow-style': 'none',
+                  'scrollbar-width': 'none'
+                }}
+              >
                 {Array(4)
                   .fill(null)
                   .map((_, i: number) => (
                     // <p key={i}>Item {i}</p>
                     <StoreProductCardComponent key={1} />
                   ))}
-              </div>
+              </Flex>
             </div>
-
           </div>
+
       }
     </section>
   )
