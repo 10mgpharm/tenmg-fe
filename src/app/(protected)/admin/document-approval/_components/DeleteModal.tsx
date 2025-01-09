@@ -39,6 +39,7 @@ const DeleteModal = ({
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     handleCommentDeleteRequest(data.comment);
+    reset();
   };
 
   return (

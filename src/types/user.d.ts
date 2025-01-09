@@ -447,6 +447,7 @@ export interface AdminApprovals {
   createdAt: string;
   address: string;
   actions: string;
+  cacFileSize: number;
 }
 
 export interface AdminApprovalsProps {
