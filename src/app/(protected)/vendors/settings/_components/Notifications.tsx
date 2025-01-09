@@ -125,7 +125,7 @@ const Notifications = () => {
       </div>
       <div className="flex justify-end">
         <div className="flex items-center gap-3">
-          <Button variant={"outline"}>Discard</Button>
+          {/* <Button variant={"outline"}>Discard</Button> */}
           <Button
             bg={"blue.700"}
             onClick={handleNotification}
