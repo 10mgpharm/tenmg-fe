@@ -29,6 +29,7 @@ interface IFormInput {
     toDate?: Date | null;
     inventory?: string;
     brand?: string;
+    status?: string;
 }
 
 interface FilterOptions {
@@ -61,6 +62,7 @@ const FilterDrawer = ({
 }) => {
 
     const [checkedItems, setCheckedItems] = useState([false, false, false]);
+    const [checkedItems2, setCheckedItems2] = useState([false, false, false, false]);
     const {
         handleSubmit,
         formState: {},
@@ -82,14 +84,12 @@ const FilterDrawer = ({
             inventory: "",
             toDate: null,
             fromDate: null,
+            status: "",
         });
         clearFilters();
         setCheckedItems([false, false, false])
+        setCheckedItems2([false, false, false, false])
     };
-
-    // const brandLists = brands?.data?.filter(brand =>
-    //     products?.some(product => product?.brand.id === brand.id)
-    // );
     
     return (
     <Drawer
@@ -106,37 +106,83 @@ const FilterDrawer = ({
             <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>Apply filters to table data.</Text>
           </DrawerHeader>
           <DrawerBody>
-            <CheckboxGroup>
-                <Stack spacing={4} direction='column'>
-                    <Checkbox 
-                        isChecked={checkedItems[0]} 
+            <Stack mt={1}>
+                <Text mb={4}>Inventory</Text>
+                <CheckboxGroup>
+                    <Stack spacing={4} direction='column'>
+                        <Checkbox 
+                            isChecked={checkedItems[0]} 
+                            onChange={(e) => {
+                                setCheckedItems([e.target.checked, false, false]);
+                                setValue("inventory", "IN STOCK");
+                            }} 
+                        >
+                            <Tag colorScheme={"green"} size={"sm"}>In stock</Tag>
+                        </Checkbox>
+                        <Checkbox 
+                            isChecked={checkedItems[1]} 
+                            onChange={(e) => {
+                                setCheckedItems([false, e.target.checked, false])
+                                setValue("inventory", "LOW STOCK")
+                            }} 
+                        >
+                            <Tag colorScheme={"orange"} size={"sm"}>Low stock</Tag>
+                        </Checkbox>
+                        <Checkbox 
+                        isChecked={checkedItems[2]} 
                         onChange={(e) => {
-                            setCheckedItems([e.target.checked, false, false]);
-                            setValue("inventory", "IN STOCK");
+                            setCheckedItems([false, false, e.target.checked])
+                            setValue("inventory", "OUT OF STOCK")
                         }} 
-                    >
-                        <Tag colorScheme={"green"} size={"sm"}>In stock</Tag>
-                    </Checkbox>
-                    <Checkbox 
-                        isChecked={checkedItems[1]} 
+                        >
+                            <Tag colorScheme={"red"} size={"sm"}>Out of stock</Tag>
+                        </Checkbox>
+                    </Stack>
+                </CheckboxGroup>
+            </Stack>
+            <Stack mt={5}>
+                <Text mb={4}>Status</Text>
+                <CheckboxGroup>
+                    <Stack spacing={4} direction='column'>
+                        <Checkbox 
+                            isChecked={checkedItems2[0]} 
+                            onChange={(e) => {
+                                setCheckedItems2([e.target.checked, false, false, false]);
+                                setValue("status", "active");
+                            }} 
+                        >
+                            <Tag colorScheme={"green"} size={"sm"}>Active</Tag>
+                        </Checkbox>
+                        <Checkbox 
+                            isChecked={checkedItems2[1]} 
+                            onChange={(e) => {
+                                setCheckedItems2([false, e.target.checked, false, false])
+                                setValue("status", "inactive")
+                            }} 
+                        >
+                            <Tag colorScheme={"orange"} size={"sm"}>Inactive</Tag>
+                        </Checkbox>
+                        <Checkbox 
+                        isChecked={checkedItems2[2]} 
                         onChange={(e) => {
-                            setCheckedItems([false, e.target.checked, false])
-                            setValue("inventory", "LOW STOCK")
+                            setCheckedItems2([false, false, e.target.checked, false])
+                            setValue("status", "pending")
                         }} 
-                    >
-                        <Tag colorScheme={"orange"} size={"sm"}>Low stock</Tag>
-                    </Checkbox>
-                    <Checkbox 
-                    isChecked={checkedItems[2]} 
-                    onChange={(e) => {
-                        setCheckedItems([false, false, e.target.checked])
-                        setValue("inventory", "OUT OF STOCK")
-                    }} 
-                    >
-                        <Tag colorScheme={"red"} size={"sm"}>Out of stock</Tag>
-                    </Checkbox>
-                </Stack>
-            </CheckboxGroup>
+                        >
+                            <Tag colorScheme={"red"} size={"sm"}>Pending</Tag>
+                        </Checkbox>
+                        <Checkbox 
+                        isChecked={checkedItems2[3]} 
+                        onChange={(e) => {
+                            setCheckedItems2([false, false, false, e.target.checked])
+                            setValue("status", "approved")
+                        }} 
+                        >
+                            <Tag colorScheme={"blue"} size={"sm"}>Approved</Tag>
+                        </Checkbox>
+                    </Stack>
+                </CheckboxGroup>
+            </Stack>
             <Stack mt={5}>
                 <Text mb={4}>Brand</Text>
                 <InputGroup>

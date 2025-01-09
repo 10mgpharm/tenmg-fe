@@ -88,6 +88,9 @@ const Page = () => {
         if(inventoryQuery) {
             query += `&inventory=${inventoryQuery}`
         }
+        if(status) {
+            query += `&status=${status}`
+        }
         if(brandQuery) {
             query += `&brand=${brandQuery}`
         }
@@ -107,7 +110,7 @@ const Page = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery, status]);
 
     const fetchingBrands = useCallback(async() => {
         if(!brandFilter) return;
