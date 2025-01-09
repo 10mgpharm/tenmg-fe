@@ -135,8 +135,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setValue("measurementName", products?.measurement?.name);
         setValue("packageName", products?.package?.name);
         setValue("strengthValue", products?.medicationType?.variations?.[0].strengthValue);
-        setValue("packageName", products?.medicationType?.variations?.[0].packagePerRoll)
-        setValue("weight", products?.medicationType?.variations?.[0]?.weight.toString());
+        setValue("packageName", products?.medicationType?.variations?.[0].packagePerRoll);
+        setValue("weight", products?.medicationType?.variations?.[0]?.weight ?? products?.medicationType?.variations?.[0]?.weight);
         setValue("actualPrice", products?.actualPrice);
         setValue("discountPrice", products?.discountPrice);
         setValue("quantity", products?.quantity);

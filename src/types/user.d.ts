@@ -222,7 +222,7 @@ export interface CustomerRecords {
 
 export interface MedicationVariant {
   id?: number;
-  weight?: number;
+  weight?: string;
   strengthValue: string;
   packagePerRoll: string;
   medicationType: string;
