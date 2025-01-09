@@ -178,7 +178,7 @@ export default function RequestDrawer({
                 </Link>
               </Flex>
               <Text fontSize="sm" color="gray.500">
-                Size: 120 KB
+                Size: {data.cacFileSize || 0} KB
               </Text>
             </Box>
           )}
