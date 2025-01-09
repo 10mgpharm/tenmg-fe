@@ -184,6 +184,7 @@ export interface SingleTransactionData {
     rule: string;
     baseAmount: string;
     maxAmount: string;
+    category: string | null;
   },
   creditScoreResult: {
     scorePercent: number;
@@ -280,12 +281,12 @@ export interface CategoryType {
   slug: string;
   status: string;
 }
-
 export interface MeasurementType {
   id: number;
   active: boolean;
   name: string;
   status: string;
+  variations?: MedicationVariant[]
 }
 export interface ProductDataProps {
   id: number;
@@ -308,6 +309,8 @@ export interface ProductDataProps {
   expiredAt: string | null;
   minDeliveryDuration: string | null;
   maxDeliveryDuration: string | null;
+  lowStockLevel: number;
+  outStockLevel: number;
   measurement: MeasurementType;
   medicationType: MeasurementType;
   package: MeasurementType;

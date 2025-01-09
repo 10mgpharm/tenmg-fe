@@ -42,12 +42,16 @@ export function ColumsProductFN(
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
+          {
+            info?.row?.original?.thumbnailFile && 
             <Image 
-            src={info?.row?.original?.thumbnailFile} 
-            alt="" 
-            width={35} 
-            height={35} 
-            className="w-8 h-8 rounded-full"/>
+              src={info?.row?.original?.thumbnailFile} 
+              alt="" 
+              width={35} 
+              height={35} 
+              className="w-8 h-8 rounded-full"
+            />
+          }
             <p className="font-medium capitalize">
               {info?.row?.original?.name} 
             </p>
@@ -73,7 +77,7 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="font-medium">{info?.row?.original?.weight}</p>
+           <p className="font-medium">{info?.row?.original?.medicationType?.variations[0]?.weight}</p>
           </div>
         );
       },
@@ -130,6 +134,8 @@ export function ColumsProductFN(
             ? "text-[#027A48] bg-[#ECFDF3]"
             : info.row.original?.status === "APPROVED"
             ? "bg-blue-50 text-blue-500"
+            : info.row.original?.status === "FLAGGED"
+            ? "bg-orange-50 text-orange-500"
             : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl capitalize text-[11px] font-medium"
             )}>
                 <span className="text-[1.2rem] rounded-full">•</span>
@@ -140,43 +146,12 @@ export function ColumsProductFN(
         );
       },
     }),
-    // columnHelper.accessor("status", {
-    //   header: ({ column }) => (
-    //     <p>Action</p>
-    //   ),
-    //   cell: (info) => {
-    //     return (
-    //     <Flex justify={"center"}>
-    //         <Menu>
-    //             <MenuButton>
-    //               <BsThreeDotsVertical className="w-5 h-auto"/>
-    //             </MenuButton>
-    //             <MenuList>
-    //                 <MenuItem>
-    //                     <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
-    //                 </MenuItem>
-    //                 <MenuItem>
-    //                   <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
-    //                 </MenuItem>
-    //                 <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
-    //                 {
-    //                   info?.row?.original?.status === "ACTIVE" ? 
-    //                   <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
-    //                   : <MenuItem onClick={() => onOpenActivate()}>Activate Product</MenuItem>
-    //                 }
-    //                 <MenuItem onClick={() => onOpen()} color="red.500">Delete Product</MenuItem>
-    //             </MenuList>
-    //         </Menu>
-    //       </Flex>
-    //     );
-    //   },
-    // }),
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
-          <Flex justify={"flex-start"}> {/* Aligned to the left */}
-            <Menu placement="bottom-start"> {/* Align dropdown to the left */}
+          <Flex justify={"flex-start"}>
+            <Menu placement="bottom-start">
               <MenuButton>
                 <BsThreeDotsVertical className="" />
               </MenuButton>

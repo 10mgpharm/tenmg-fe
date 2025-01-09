@@ -46,3 +46,8 @@ export const formatAmountString = (amount: any) => {
     const roundedNum = parseFloat(convert2Number.toFixed(2));
     return roundedNum?.toLocaleString();
 }
+
+export const camelCaseToTitleCase = (str: string) => {
+    const result = str.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\b\w/g, char => char.toUpperCase());
+    return result;
+}

@@ -117,6 +117,8 @@ export function ColumsProductFN(
             ? "text-[#027A48] bg-[#ECFDF3]"
             : info.row.original?.status === "APPROVED"
             ? "bg-blue-50 text-blue-500"
+            : info.row.original?.status === "FLAGGED"
+            ? "bg-orange-50 text-orange-500"
             : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl text-[11px] capitalize font-medium"
             )}>
                 <span className="text-[1.2rem] rounded-full">•</span>
@@ -138,10 +140,10 @@ export function ColumsProductFN(
               </MenuButton>
               <MenuList>
                 <MenuItem>
-                  <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
+                  <Link href={`/suppliers/products/${info.row.original.id}`}>View Product</Link>
                 </MenuItem>
                 <MenuItem>
-                  <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
+                  <Link href={`/suppliers/products/edit/${info.row.original.id}`}>Edit Product</Link>
                 </MenuItem>
                 <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
                 {info?.row?.original?.status === "ACTIVE" ? (

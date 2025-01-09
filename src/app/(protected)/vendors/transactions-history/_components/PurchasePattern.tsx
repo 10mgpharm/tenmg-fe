@@ -4,7 +4,7 @@ import { ResultBreakdownProps } from "@/types"
 import { FaCheckCircle } from "react-icons/fa"
 import { FaCircleXmark } from "react-icons/fa6"
 interface Props {
-  data: ResultBreakdownProps[]
+  data: ResultBreakdownProps[];
 }
 
 const PurchasePattern: React.FC<Props> = ({data}) => {
@@ -20,7 +20,8 @@ const PurchasePattern: React.FC<Props> = ({data}) => {
             status={item.status} 
             operator={item.operator}
             systemValue={item.systemValue}
-            title={item.ruleDescription}
+            title={item.ruleName}
+            description={item.ruleDescription}
             />
           ))
         }

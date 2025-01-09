@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter } from "react-icons/ci"
+import { CiFilter } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { 
@@ -118,11 +118,15 @@ const Page = () => {
     useEffect(() => {
         if(!token) return;
         fetchProducts();
+    },[fetchProducts, token]);
+
+    useEffect(() => {
+        if(!token) return;
         fetchingBrands();
-    },[fetchProducts, fetchingBrands, token]);
+    }, [fetchingBrands, token])
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
-
+    
     const table = useReactTable({
         data: memoizedData,
         columns: ColumsProductFN(
@@ -144,8 +148,8 @@ const Page = () => {
     });
 
     const applyFilters = (filters: IFilterInput) => {
-        setCreatedAtStart(filters.startDate);
-        setCreatedAtEnd(filters.endDate);
+        setCreatedAtStart(filters.fromDate);
+        setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
     };
 
@@ -154,6 +158,7 @@ const Page = () => {
         setCreatedAtEnd(null);
         setStatus("");
         setBrandQuery("")
+        setBrandFilter("");
         setInventoryQuery("")
         setGlobalFilter("");
     };
@@ -237,20 +242,6 @@ const Page = () => {
                         <Thead bg={"#F2F4F7"}>
                         {table?.getHeaderGroups()?.map((headerGroup) => (
                             <Tr key={headerGroup.id}>
-                            {/* <Th textTransform={"initial"} px="0px">
-                                <Checkbox
-                                _checked={{
-                                    "& .chakra-checkbox__control": {
-                                    background: "#1A70B8",
-                                    // borderColor: "#D0D5DD",
-                                    borderRadius: 5,
-                                    },
-                                }}
-                                marginLeft={5}
-                                isChecked={table.getIsAllRowsSelected()}
-                                onChange={table.getToggleAllRowsSelectedHandler()}
-                                />
-                            </Th> */}
                             {headerGroup.headers?.map((header) => (
                                 <Th
                                 textTransform={"initial"}
@@ -271,20 +262,6 @@ const Page = () => {
                         <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
                         {products?.data && table?.getRowModel()?.rows?.map((row) => (
                             <Tr key={row.id}>
-                            {/* <Td px="0px">
-                                <Checkbox
-                                _checked={{
-                                    "& .chakra-checkbox__control": {
-                                    background: "#1A70B8",
-                                    // borderColor: "#D0D5DD",
-                                    borderRadius: 5,
-                                    },
-                                }}
-                                marginLeft={5}
-                                isChecked={row.getIsSelected()}
-                                onChange={row.getToggleSelectedHandler()}
-                                />
-                            </Td> */}
                             {row.getVisibleCells()?.map((cell) => (
                                 <Td key={cell.id} px="0px">
                                 {flexRender(
@@ -322,9 +299,11 @@ const Page = () => {
             setInventoryQuery={setInventoryQuery}
             setBrandQuery={setBrandQuery}
             brandQuery={brandQuery}
+            brandFilter={brandFilter}
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
+            products={products?.data}
         />
         <ModalWrapper
         isOpen={isOpenDeactivate} 

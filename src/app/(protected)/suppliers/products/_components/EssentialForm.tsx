@@ -1,17 +1,16 @@
 "use client";
 
+import Select from 'react-select';
+import { useSession } from "next-auth/react";
+import requestClient from "@/lib/requestClient";
 import { IFormInput } from "@/app/(protected)/admin/products/add-product/page";
 import { Box, FormControl, FormLabel, HStack, Input, Stack, Text } from "@chakra-ui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
-import { useRouter } from "next/navigation"
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
-import Select from 'react-select';
 import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { convertCreateOptionArray, convertVariationArray } from "@/utils/convertSelectArray";
-import { MedicationData, NextAuthUserSession, PresentationProps } from "@/types";
+import { MedicationData, NextAuthUserSession, PresentationProps, ProductDataProps } from "@/types";
 import CustomCreatableSelectComponent, { CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
-import requestClient from "@/lib/requestClient";
-import { useSession } from "next-auth/react";
 
 interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;
@@ -21,6 +20,9 @@ interface IChildComponentProps {
     setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
     medications: MedicationData[]; 
     setValue: UseFormSetValue<IFormInput>;
+    data?: ProductDataProps;
+    isEditing: boolean;
+    type: string
 }
 
 const EssentialForm: React.FC<IChildComponentProps> = ({
@@ -30,10 +32,12 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     errors,
     medications,
     setValue,
-    handleStepValidation
+    handleStepValidation,
+    data,
+    isEditing,
+    type
 }) => {
 
-    const router = useRouter();
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
@@ -47,11 +51,20 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
 
     const fetchingPresentationTypes = useCallback(async() => {
         try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/presentations`
-            );
-            if(response.status === 200){
-                setPresentationData(response.data.data);
+            if(type === "admin"){
+                const response = await requestClient({ token: token }).get(
+                    `/admin/settings/presentations`
+                );
+                if(response.status === 200){
+                    setPresentationData(response.data.data);
+                }
+            } else {
+                const response = await requestClient({ token: token }).get(
+                    `/supplier/presentations`
+                );
+                if(response.status === 200){
+                    setPresentationData(response.data.data.data);
+                }
             }
         } catch (error) {
             console.error(error)
@@ -60,12 +73,21 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
 
     const fetchingMeasurementTypes = useCallback(async() => {
         try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/measurements`
-            );
-        if(response.status === 200){
-            setMeasurementData(response.data.data);
-        }
+            if(type === "admin"){
+                const response = await requestClient({ token: token }).get(
+                    `/admin/settings/measurements`
+                );
+                if(response.status === 200){
+                    setMeasurementData(response.data.data);
+                }
+            } else {
+                const response = await requestClient({ token: token }).get(
+                    `/supplier/measurements`
+                );
+                if(response.status === 200){
+                    setMeasurementData(response.data.data.data);
+                }
+            }
         } catch (error) {
             console.error(error)
         }
@@ -73,9 +95,13 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
 
     const fetchingVarationByTypeId = useCallback(async(id: number) => {
         try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/medication-types/${id}/medication-variations`
-            );
+            let query: string;
+            if(type === "admin"){
+                query = `/admin/settings/medication-types/${id}/medication-variations`
+            }else{
+                query = `/supplier/settings/medication-types/${id}/medication-variations`
+            }
+            const response = await requestClient({ token: token }).get(query);
         if(response.status === 200){
             setVariationTypes([...response.data.data, {label: "Create New", value: "Create New"}]);
         }
@@ -90,6 +116,20 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         fetchingMeasurementTypes();
     }, [fetchingPresentationTypes, fetchingMeasurementTypes]);
 
+    useEffect(() => {
+        if(isEditing){
+            setValue("medicationTypeName", data?.medicationType?.name);
+            setValue("presentationName", data?.presentation?.name);
+            setValue("measurementName", data?.measurement?.name);
+            setValue("packageName", data?.package?.name);
+            setValue("strengthValue", data?.medicationType?.variations?.[0].strengthValue);
+            setValue("packageName", data?.medicationType?.variations?.[0].packagePerRoll)
+            setValue("weight", data?.medicationType?.variations?.[0]?.weight.toString());
+            setValue("actualPrice", data?.actualPrice);
+            setValue("discountPrice", data?.discountPrice);
+        }
+    }, [data, isEditing])
+
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <div className="flex items-center justify-between">
@@ -102,7 +142,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
             </div>
         </div>
         <h3 className="font-semibold text-xl text-gray-700 my-5">Product Essentials</h3>
-        <form className="space-y-5">
+        <div className="space-y-5">
             <Stack>
                 <FormControl isInvalid={!!errors.medicationTypeName}>
                     <FormLabel>Medication</FormLabel>
@@ -253,6 +293,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                         return regex.test(value) || "Strength is invalid";
                                     }
                                 })}
+                                // defaultValue={data?.medicationType?.variations?.[0].strengthValue}
                                 isInvalid={!!errors.strengthValue}
                                 _focus={{
                                     border: !!errors.strengthValue ? "red.300" : "border-gray-300",
@@ -271,7 +312,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                             value={value}
                                             name={"measurementName"}
                                             placeholder={'Select...'}
-                                            options={convertCreateOptionArray(measurementData)}
+                                            options={measurementData && convertCreateOptionArray(measurementData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                 onChange(selectedOption?.value);
                                             }}
@@ -296,6 +337,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     placeholder="" 
                                     type="text"
                                     isInvalid={!!errors.packageName}
+                                    // defaultValue={data?.medicationType?.variations[0].packagePerRoll}
                                     _focus={{
                                         border: !!errors.packageName ? "red.300" : "border-gray-300",
                                     }}
@@ -309,8 +351,9 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <Input 
                                     id="weight"
                                     placeholder="" 
-                                    type="number"
+                                    type="text"
                                     isInvalid={!!errors.weight}
+                                    // defaultValue={data?.medicationType?.variations[0].weight}
                                     _focus={{
                                         border: !!errors.weight ? "red.300" : "border-gray-300",
                                     }}
@@ -364,7 +407,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                     </HStack>
                 </Stack>
             </Stack>
-        </form>
+        </div>
         <div className="flex gap-4 justify-end mt-10 mb-6">
             <button 
             className="p-3 w-32 rounded-md border text-gray-600"  

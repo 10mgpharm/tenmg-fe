@@ -3,22 +3,26 @@
 import requestClient from '@/lib/requestClient'
 import { handleServerErrorMessage } from '@/utils'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { 
     MedicationResponseData, 
     NextAuthUserSession, 
-    ProductResponseData 
+    ProductDataProps,  
 } from '@/types'
 import DetailForm from '@/app/(protected)/suppliers/products/_components/DetailForm'
 import EssentialForm from '@/app/(protected)/suppliers/products/_components/EssentialForm'
 import InventoryForm from '@/app/(protected)/suppliers/products/_components/InventoryForm'
 import { IFormInput } from '@/app/(protected)/admin/products/add-product/page';
+import SuccessModal from '../../_components/SuccessModal';
+import { useDisclosure } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
 
 const EditPage = ({params}: {params: {id: string}}) => {
 
+    const router = useRouter();
+    const { isOpen, onClose, onOpen } = useDisclosure();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [steps, setSteps] = useState<'details' | 'essentials' | 'inventory'>(null);
 
@@ -26,12 +30,11 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setSteps("details");
     },[])
 
-    const router = useRouter();
     const session = useSession();
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
 
-    const [products, setProducts] = useState<ProductResponseData>();
+    const [products, setProducts] = useState<ProductDataProps>();
     const [brandData, setBrandData] = useState<MedicationResponseData>();
     const [categoryData, setCategoryData] = useState<MedicationResponseData>();
     const [medicationData, setMedicationData] = useState<MedicationResponseData>();
@@ -40,7 +43,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setIsLoading(true);
         try {
         const response = await requestClient({ token: token }).get(
-            `/admin/settings/products/${params.id}`
+            `/supplier/products/${params.id}`
         );
         if (response.status === 200) {
             setProducts(response.data.data);
@@ -55,7 +58,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const fetchingMedicationTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/admin/settings/medication-types`
+                `/supplier/medication-types`
             );
         if(response.status === 200){
             setMedicationData(response.data.data);
@@ -68,7 +71,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const fetchingBrandTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/admin/settings/brands`
+                `/supplier/brands`
             );
         if(response.status === 200){
             setBrandData(response.data.data);
@@ -81,7 +84,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const fetchingCategoriesTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/admin/settings/categories`
+                `/supplier/categories`
             );
         if(response.status === 200){
             setCategoryData(response.data.data);
@@ -91,15 +94,15 @@ const EditPage = ({params}: {params: {id: string}}) => {
         }
     },[token]);
 
-    const fetchAllProducts = useCallback(async () => {
+    const fetchingProducts = useCallback(async() => {
         try {
-        const response = await requestClient({ token: token }).get(
-            `/admin/settings/products`
-        );
+            const response = await requestClient({ token: token }).get(
+                `/supplier/products`
+            );
         } catch (error) {
-            console.error(error);
+            console.error(error)
         }
-    }, [token]);
+    },[token]);
 
     useEffect(() => {
         if(!token) return;
@@ -123,7 +126,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
-        const expiryDate = data?.expiredAt.toISOString();
         const formdata = new FormData();
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
@@ -131,13 +133,13 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("categoryName", data?.categoryName);
         formdata.append("brandName", data?.brandName);
         formdata.append("weight", data?.weight);
-        formdata.append("packageName", data?.brandName);
+        formdata.append("packageName", data?.packageName);
         formdata.append("presentationName", data?.presentationName);
-        formdata.append("strengthValue", '1');
+        formdata.append("strengthValue", data?.strengthValue);
         formdata.append("measurementName", data?.measurementName);
         formdata.append("lowStockLevel", data?.lowStockLevel);
         formdata.append("outStockLevel", data?.outStockLevel);
-        formdata.append("expiredAt", expiryDate);
+        formdata.append("expiredAt", data?.expiredAt);
         formdata.append("thumbnailFile", data?.thumbnailFile);
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
@@ -145,15 +147,14 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("status", "ACTIVE");
 
         try {
-            const response = await requestClient({token: token}).post(
-                "/admin/settings/products",
+            const response = await requestClient({token: token}).patch(
+                `/supplier/products/${products.id}`,
                 formdata
             )
             if(response.status === 200){
                 setIsLoading(false);
-                fetchAllProducts();
-                router.push('/admin/products')
-
+                fetchingProducts();
+                router.push('/suppliers/products')
             }
         } catch (error) {
             setIsLoading(false);
@@ -163,7 +164,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
     }
 
     if (steps === null) {
-        // Render a loading state or placeholder until the state is initialized
         return <div>Loading...</div>;
     }
 
@@ -171,21 +171,26 @@ const EditPage = ({params}: {params: {id: string}}) => {
         const isValid = await trigger(fieldsToValidate);
         return isValid;
     };  
-
     return (
     <div>
         <form 
-        // onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         >
             {(() => {
                     switch (steps) {
                         case 'details':
                             return <DetailForm 
                                     title="Edit Product"
+                                    data={products}
+                                    isEditing={true}
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([
-                                            "productName", "productDescription", "categoryName", "brandName", "thumbnailFile"
+                                            "productName", 
+                                            "productDescription", 
+                                            "categoryName", 
+                                            "brandName", 
+                                            "thumbnailFile"
                                         ]);
                                         if (isValid) setSteps("essentials");
                                     }}
@@ -199,11 +204,21 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     getValue={getValues}
                                 />
                         case 'essentials':
-                            return <EssentialForm 
+                            return <EssentialForm
+                                    isEditing={true} 
+                                    data={products}
+                                    type="supplier"
                                     handleStepValidation={
                                         async () => {
                                         const isValid = await handleStepValidation([
-                                            "medicationTypeName", "measurementName", "presentationName", "strengthValue", "packageName", "weight", "actualPrice", "discountPrice"
+                                            "medicationTypeName", 
+                                            "measurementName", 
+                                            "presentationName", 
+                                            "strengthValue", 
+                                            "packageName", 
+                                            "weight", 
+                                            "actualPrice", 
+                                            "discountPrice"
                                         ]);
                                         if (isValid) setSteps("inventory");
                                     }}
@@ -216,6 +231,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                 />
                         case 'inventory':
                             return <InventoryForm 
+                                    isEditing={true}
+                                    data={products}
                                     setSteps={setSteps}
                                     register={register}
                                     control={control}
@@ -230,6 +247,13 @@ const EditPage = ({params}: {params: {id: string}}) => {
             )()
             }
         </form>
+        <SuccessModal
+            isOpen={isOpen} 
+            onClose={onClose}
+            routeUrl="/suppliers/products"
+            isEditing={true}
+            routeUrl2="/suppliers/product/new"
+        />
     </div>
   )
 }

@@ -107,7 +107,7 @@ const Products = () => {
     const fetchingBrands = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/admin/settings/brands?search=${debouncedBrandSearch}`
+                `/supplier/brands?search=${debouncedBrandSearch}`
             );
             if(response.status === 200){
                 setBrands(response.data.data);
@@ -122,8 +122,6 @@ const Products = () => {
         fetchProducts();
         fetchingBrands();
     },[fetchProducts, fetchingBrands, token]);
-
-    console.log(brands);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 
@@ -352,7 +350,9 @@ const Products = () => {
             setInventoryQuery={setInventoryQuery}
             setBrandQuery={setBrandQuery}
             brandQuery={brandQuery}
+            brandFilter={brandFilter}
             setBrandFilter={setBrandFilter}
+            products={products?.data}
         />
     </div>
   )
