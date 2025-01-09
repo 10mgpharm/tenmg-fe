@@ -445,6 +445,7 @@ export interface AdminApprovals {
   cacDocument: string,
   verificationStatus: string
   createdAt: string;
+  updatedAt: string;
   address: string;
   actions: string;
   cacFileSize: number;

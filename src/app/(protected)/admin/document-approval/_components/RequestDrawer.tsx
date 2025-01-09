@@ -13,7 +13,6 @@ import {
   HStack,
   Flex,
   Divider,
-  Link as ChakraLink,
   Icon,
   chakra,
   Stack,
@@ -141,7 +140,9 @@ export default function RequestDrawer({
                   <Text fontSize="sm" color="gray.600">
                     Expiry Date
                   </Text>
-                  <Text fontWeight="medium">{convertDate(data.expiryDate) || "N/A"}</Text>
+                  <Text fontWeight="medium">
+                    {convertDate(data.expiryDate) || "N/A"}
+                  </Text>
                 </Box>
               </Flex>
 
@@ -149,7 +150,9 @@ export default function RequestDrawer({
                 <Text fontSize="sm" color="gray.600">
                   Date Submitted
                 </Text>
-                <Text fontWeight="medium">{convertDate(data.createdAt) || "N/A"}</Text>
+                <Text fontWeight="medium">
+                  {convertDate(data.updatedAt) || "N/A"}
+                </Text>
               </Box>
             </Stack>
           </Box>
@@ -171,6 +174,7 @@ export default function RequestDrawer({
                     "document.pdf"}
                 </Text>
                 <Link
+                  target="_blank"
                   href={data.cacDocument}
                   className="text-primary-600 text-sm"
                 >

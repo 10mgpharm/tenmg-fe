@@ -60,7 +60,7 @@ export function ColumnsSupplierFN(
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-            {convertDate(info?.row?.original?.createdAt)}
+            {convertDate(info?.row?.original?.updatedAt)}
           </p>
         </div>
       ),

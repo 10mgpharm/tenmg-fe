@@ -18,7 +18,9 @@ export function ConfirmationModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white p-6 rounded-md w-[300px]">
-        <h2 className="text-lg font-bold mb-4">Confirm Action?</h2>
+        <h2 className="text-lg font-bold mb-4">
+          {actionType === "activate" ? "Activate Customer" : "Suspend Customer"}
+        </h2>
         <p className="mb-6">
           Are you sure you want to{" "}
           <span
