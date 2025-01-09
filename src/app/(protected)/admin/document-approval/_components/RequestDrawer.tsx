@@ -141,7 +141,7 @@ export default function RequestDrawer({
                   <Text fontSize="sm" color="gray.600">
                     Expiry Date
                   </Text>
-                  <Text fontWeight="medium">{data.expiryDate || "N/A"}</Text>
+                  <Text fontWeight="medium">{convertDate(data.expiryDate) || "N/A"}</Text>
                 </Box>
               </Flex>
 
@@ -149,7 +149,7 @@ export default function RequestDrawer({
                 <Text fontSize="sm" color="gray.600">
                   Date Submitted
                 </Text>
-                <Text fontWeight="medium">{data.createdAt || "N/A"}</Text>
+                <Text fontWeight="medium">{convertDate(data.createdAt) || "N/A"}</Text>
               </Box>
             </Stack>
           </Box>
