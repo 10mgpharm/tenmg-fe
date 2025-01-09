@@ -27,18 +27,23 @@ import {
     useReactTable 
 } from "@tanstack/react-table";
 
+import Link from "next/link";
 import { ColumsProductFN } from "./_components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
 import GridList from "./_components/GridList";
 import { classNames } from "@/utils";
 import DeleteModal from "./_components/DeleteModal";
 import RestockModal from "./_components/RestockModal";
-import Link from "next/link";
 import Pagination from "../_components/Pagination";
 import ModalWrapper from "../_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession, ProductResponseData } from "@/types";
+import { 
+    MedicationResponseData, 
+    NextAuthUserSession, 
+    ProductDataProps, 
+    ProductResponseData 
+} from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../../vendors/customers-management/page";
 import FilterDrawer from "./_components/FilterDrawer";
@@ -60,10 +65,12 @@ const Products = () => {
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [inventoryQuery, setInventoryQuery] = useState("");
+    const [selectedBrand, setSelectedBrand] = useState("");
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
-    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
+    const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
@@ -90,7 +97,7 @@ const Products = () => {
             query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
         }
         if (createdAtEnd) {
-        query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
+            query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
         }
         try {
         const response = await requestClient({ token: token }).get(query);
@@ -102,34 +109,43 @@ const Products = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
 
     const fetchingBrands = useCallback(async() => {
+        if(!brandFilter) return;
         try {
             const response = await requestClient({ token: token }).get(
-                `/admin/settings/brands?search=${debouncedBrandSearch}`
+                `/supplier/brands?search=${debouncedBrandSearch}`
             );
             if(response.status === 200){
                 setBrands(response.data.data);
             }
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-    },[token, debouncedBrandSearch]);
+    },[token, debouncedBrandSearch, brandFilter]);
 
     useEffect(() => {
         if(!token) return;
         fetchProducts();
-        fetchingBrands();
-    },[fetchProducts, fetchingBrands, token]);
+    },[fetchProducts, token]);
 
-    console.log(brands);
+    useEffect(() => {
+        if(!token) return;
+        fetchingBrands();
+    }, [fetchingBrands, token])
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 
     const table = useReactTable({
         data: memoizedData || [],
-        columns: ColumsProductFN(onOpen, onOpenRestock, onOpenDeactivate, onOpenActivate),
+        columns: ColumsProductFN(
+            onOpen, 
+            onOpenRestock, 
+            onOpenDeactivate, 
+            onOpenActivate, 
+            setSelectedProduct
+        ),
         onSortingChange: setSorting,
         state: {
           globalFilter,
@@ -144,13 +160,19 @@ const Products = () => {
         setCreatedAtStart(filters.startDate);
         setCreatedAtEnd(filters.endDate);
         setStatus(filters.status);
+        setBrandQuery(filters.brand);
+        setInventoryQuery(filters.inventory)
     };
 
     const clearFilters = () => {
         setCreatedAtStart(null);
         setCreatedAtEnd(null);
         setStatus("");
+        setBrandQuery("")
+        setBrandFilter("");
+        setInventoryQuery("")
         setGlobalFilter("");
+        setSelectedBrand("");
     };
 
     const filterOptions = [
@@ -301,11 +323,24 @@ const Products = () => {
             : <GridList 
             data={memoizedData}
             routing="/suppliers/products"
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
+            fetchProducts={fetchProducts}
+            type="supplier"
             />
         }
         </div>
-        <DeleteModal isOpen={isOpen} onClose={onClose}/>
-        <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock}/>
+        <DeleteModal 
+        isOpen={isOpen} 
+        onClose={onClose}
+        />
+        <RestockModal 
+        isOpen={isOpenRestock} 
+        onClose={onCloseRestock} 
+        product={selectedProduct}
+        fetchProducts={fetchProducts}
+        type="supplier"
+        />
         <ModalWrapper
         isOpen={isOpenDeactivate} 
         onClose={onCloseDeactivate}
@@ -343,16 +378,16 @@ const Products = () => {
             </div>
         </ModalWrapper>
         <FilterDrawer 
+            brands={brands}
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
-            brands={brands}
-            setInventoryQuery={setInventoryQuery}
-            setBrandQuery={setBrandQuery}
-            brandQuery={brandQuery}
+            brandFilter={brandFilter}
             setBrandFilter={setBrandFilter}
+            selectedBrand={selectedBrand}
+            setSelectedBrand={setSelectedBrand}
         />
     </div>
   )

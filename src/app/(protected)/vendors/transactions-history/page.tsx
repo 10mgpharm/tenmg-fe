@@ -94,12 +94,10 @@ const TransactionHistory = () => {
         query += `&status=${status}`;
       }
       if (createdAtStart) {
-        query += `&createdAtStart=${
-          createdAtStart.toISOString().split("T")[0]
-        }`;
+        query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
       }
       if (createdAtEnd) {
-        query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+        query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
       }
 
       try {
@@ -150,7 +148,10 @@ const TransactionHistory = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const tablePagination = useMemo(() => tnxHistoryData?.meta || [], [tnxHistoryData]);
+  const tablePagination = useMemo(
+    () => tnxHistoryData?.meta || [],
+    [tnxHistoryData]
+  );
 
   return (
     <div className="p-8">

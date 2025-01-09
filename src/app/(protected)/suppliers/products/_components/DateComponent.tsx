@@ -7,6 +7,7 @@ interface DateProps {
   startDate: Date | null;
   setStartDate: Dispatch<SetStateAction<Date | null>>;
   isMinDate?: boolean;
+  isMaxDate?: boolean
   minDate?: Date | null;
 }
 const DateComponent = ({
@@ -14,6 +15,7 @@ const DateComponent = ({
   startDate,
   setStartDate,
   minDate,
+  isMaxDate
 }: DateProps) => {
   return (
     <DatePicker
@@ -21,6 +23,7 @@ const DateComponent = ({
       selected={startDate}
       toggleCalendarOnIconClick
       minDate={!isMinDate ? new Date() : minDate}
+      maxDate={isMaxDate ? new Date() : null}
       showIcon
       icon={<FiCalendar className="w-5 h-5 text-gray-600" />}
       onChange={(date: Date | null) => setStartDate(date)}

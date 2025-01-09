@@ -5,6 +5,7 @@ import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { classNames } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { ProductDataProps } from "@/types";
+import { Dispatch, SetStateAction } from "react";
 
 const columnHelper = createColumnHelper<ProductDataProps>();
 
@@ -14,7 +15,8 @@ export function ColumsProductFN(
     onOpenDeactivate: () => void, 
     onOpenActivate: () => void,
     pageIndex: number, 
-    pageSize: number
+    pageSize: number,
+    setSelectedProduct: Dispatch<SetStateAction<ProductDataProps>>
   ) 
   {
   return [
@@ -42,12 +44,16 @@ export function ColumsProductFN(
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
+          {
+            info?.row?.original?.thumbnailFile && 
             <Image 
-            src={info?.row?.original?.thumbnailFile} 
-            alt="" 
-            width={35} 
-            height={35} 
-            className="w-8 h-8 rounded-full"/>
+              src={info?.row?.original?.thumbnailFile} 
+              alt="" 
+              width={35} 
+              height={35} 
+              className="w-8 h-8 rounded-full"
+            />
+          }
             <p className="font-medium capitalize">
               {info?.row?.original?.name} 
             </p>
@@ -73,7 +79,7 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="font-medium">{info?.row?.original?.weight}</p>
+           <p className="font-medium">{info?.row?.original?.medicationType?.variations[0]?.weight}</p>
           </div>
         );
       },
@@ -146,8 +152,8 @@ export function ColumsProductFN(
       header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
-          <Flex justify={"flex-start"}> {/* Aligned to the left */}
-            <Menu placement="bottom-start"> {/* Align dropdown to the left */}
+          <Flex justify={"flex-start"}>
+            <Menu placement="bottom-start">
               <MenuButton>
                 <BsThreeDotsVertical className="" />
               </MenuButton>
@@ -158,7 +164,13 @@ export function ColumsProductFN(
                 <MenuItem>
                   <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
                 </MenuItem>
-                <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
+                <MenuItem 
+                  onClick={() => {
+                    setSelectedProduct(info.row.original)
+                    onOpenRestock()
+                  }}>
+                    Restock
+                  </MenuItem>
                 {info?.row?.original?.status === "ACTIVE" ? (
                   <MenuItem onClick={() => onOpenDeactivate()}>
                     Deactivate Product

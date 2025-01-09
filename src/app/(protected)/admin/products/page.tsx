@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter } from "react-icons/ci"
+import { CiFilter } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { 
@@ -37,7 +37,12 @@ import FilterDrawer from "../../suppliers/products/_components/FilterDrawer";
 import { ColumsProductFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession, ProductResponseData } from "@/types";
+import { 
+    MedicationResponseData, 
+    NextAuthUserSession, 
+    ProductDataProps, 
+    ProductResponseData 
+} from "@/types";
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
@@ -57,11 +62,13 @@ const Page = () => {
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [inventoryQuery, setInventoryQuery] = useState("");
+    const [selectedBrand, setSelectedBrand] = useState("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
-    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
+    const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
@@ -88,7 +95,7 @@ const Page = () => {
             query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
         }
         if (createdAtEnd) {
-        query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
+            query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
         }
         try {
         const response = await requestClient({ token: token }).get(query);
@@ -100,9 +107,10 @@ const Page = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
 
     const fetchingBrands = useCallback(async() => {
+        if(!brandFilter) return;
         try {
             const response = await requestClient({ token: token }).get(
                 `/admin/settings/brands?search=${debouncedBrandSearch}`
@@ -113,16 +121,20 @@ const Page = () => {
         } catch (error) {
             console.error(error)
         }
-    },[token, debouncedBrandSearch]);
+    },[token, debouncedBrandSearch, brandFilter]);
 
     useEffect(() => {
         if(!token) return;
         fetchProducts();
+    },[fetchProducts, token]);
+
+    useEffect(() => {
+        if(!token) return;
         fetchingBrands();
-    },[fetchProducts, fetchingBrands, token]);
+    }, [fetchingBrands, token]);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
-
+    
     const table = useReactTable({
         data: memoizedData,
         columns: ColumsProductFN(
@@ -131,7 +143,8 @@ const Page = () => {
                     onOpenDeactivate, 
                     onOpenActivate, 
                     pageCount, 
-                    15
+                    15,
+                    setSelectedProduct
                 ),
         onSortingChange: setSorting,
         state: {
@@ -144,9 +157,11 @@ const Page = () => {
     });
 
     const applyFilters = (filters: IFilterInput) => {
-        setCreatedAtStart(filters.startDate);
-        setCreatedAtEnd(filters.endDate);
+        setCreatedAtStart(filters.fromDate);
+        setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
+        setBrandQuery(filters.brand);
+        setInventoryQuery(filters.inventory)
     };
 
     const clearFilters = () => {
@@ -154,8 +169,10 @@ const Page = () => {
         setCreatedAtEnd(null);
         setStatus("");
         setBrandQuery("")
+        setBrandFilter("");
         setInventoryQuery("")
         setGlobalFilter("");
+        setSelectedBrand("")
     };
 
     const filterOptions = [
@@ -173,7 +190,9 @@ const Page = () => {
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 />
-                <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
+                <div 
+                onClick={onOpenFilter} 
+                className="border cursor-pointer border-gray-300 py-2 px-3 rounded-md flex items-center gap-2">
                     <CiFilter className="w-5 h-5 text-gray-700" />
                     <p className="text-gray-500 font-medium">Filter</p>
                 </div>
@@ -237,20 +256,6 @@ const Page = () => {
                         <Thead bg={"#F2F4F7"}>
                         {table?.getHeaderGroups()?.map((headerGroup) => (
                             <Tr key={headerGroup.id}>
-                            {/* <Th textTransform={"initial"} px="0px">
-                                <Checkbox
-                                _checked={{
-                                    "& .chakra-checkbox__control": {
-                                    background: "#1A70B8",
-                                    // borderColor: "#D0D5DD",
-                                    borderRadius: 5,
-                                    },
-                                }}
-                                marginLeft={5}
-                                isChecked={table.getIsAllRowsSelected()}
-                                onChange={table.getToggleAllRowsSelectedHandler()}
-                                />
-                            </Th> */}
                             {headerGroup.headers?.map((header) => (
                                 <Th
                                 textTransform={"initial"}
@@ -271,20 +276,6 @@ const Page = () => {
                         <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
                         {products?.data && table?.getRowModel()?.rows?.map((row) => (
                             <Tr key={row.id}>
-                            {/* <Td px="0px">
-                                <Checkbox
-                                _checked={{
-                                    "& .chakra-checkbox__control": {
-                                    background: "#1A70B8",
-                                    // borderColor: "#D0D5DD",
-                                    borderRadius: 5,
-                                    },
-                                }}
-                                marginLeft={5}
-                                isChecked={row.getIsSelected()}
-                                onChange={row.getToggleSelectedHandler()}
-                                />
-                            </Td> */}
                             {row.getVisibleCells()?.map((cell) => (
                                 <Td key={cell.id} px="0px">
                                 {flexRender(
@@ -303,6 +294,10 @@ const Page = () => {
             : <GridList 
             data={memoizedData}
             routing="/admin/products"
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
+            fetchProducts={fetchProducts}
+            type="admin"
             />)
         }
         </div>
@@ -313,18 +308,21 @@ const Page = () => {
         <RestockModal 
             isOpen={isOpenRestock} 
             onClose={onCloseRestock}
+            product={selectedProduct}
+            fetchProducts={fetchProducts}
+            type="admin"
         />
         <FilterDrawer 
+            brands={brands}
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
-            brands={brands}
-            setBrandFilter={setBrandFilter}
-            setInventoryQuery={setInventoryQuery}
-            setBrandQuery={setBrandQuery}
-            brandQuery={brandQuery}
+            brandFilter={brandFilter}
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
+            selectedBrand={selectedBrand}
+            setBrandFilter={setBrandFilter}
+            setSelectedBrand={setSelectedBrand}
         />
         <ModalWrapper
         isOpen={isOpenDeactivate} 

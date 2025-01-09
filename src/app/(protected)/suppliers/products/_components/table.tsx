@@ -1,8 +1,9 @@
-import Image from "next/image";
+
 import Link from "next/link";
 import { createColumnHelper } from "@tanstack/react-table";
 import { 
   Flex, 
+  Image, 
   Menu, 
   MenuButton, 
   MenuItem, 
@@ -11,6 +12,7 @@ import {
 import { classNames } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { ProductDataProps } from "@/types";
+import { Dispatch, SetStateAction } from "react";
 
 const columnHelper = createColumnHelper<ProductDataProps>();
 
@@ -18,7 +20,9 @@ export function ColumsProductFN(
     onOpen: () => void,
     onOpenRestock: () => void,
     onOpenDeactivate: () => void, 
-    onOpenActivate: () => void) 
+    onOpenActivate: () => void,
+    setSelectedProduct: Dispatch<SetStateAction<ProductDataProps>>
+  ) 
   {
   return [
     columnHelper.accessor("name", {
@@ -34,6 +38,7 @@ export function ColumsProductFN(
             alt="" 
             width={35} 
             height={35} 
+            fallbackSrc=""
             className="w-8 h-8 rounded-full"/>
             <p className="font-medium capitalize">
               {info?.row?.original?.name} 
@@ -133,20 +138,26 @@ export function ColumsProductFN(
       header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
-          <Flex justify={"flex-start"}> {/* Aligned to the left */}
-            <Menu placement="bottom-start"> {/* Align dropdown to the left */}
+          <Flex justify={"flex-start"}>
+            <Menu placement="bottom-start">
               <MenuButton>
                 <BsThreeDotsVertical className="w-5 h-auto" />
               </MenuButton>
               <MenuList>
                 <MenuItem>
-                  <Link href={`/admin/products/${info.row.original.id}`}>View Product</Link>
+                  <Link href={`/suppliers/products/${info.row.original.id}`}>View Product</Link>
                 </MenuItem>
                 <MenuItem>
-                  <Link href={`/admin/products/edit/${info.row.original.id}`}>Edit Product</Link>
+                  <Link href={`/suppliers/products/edit/${info.row.original.id}`}>Edit Product</Link>
                 </MenuItem>
-                <MenuItem onClick={() => onOpenRestock()}>Restock</MenuItem>
-                {info?.row?.original?.status === "ACTIVE" ? (
+                <MenuItem 
+                  onClick={() => {
+                    setSelectedProduct(info.row.original);
+                    onOpenRestock();
+                  }}>
+                    Restock
+                  </MenuItem>
+                  {info?.row?.original?.status === "ACTIVE" ? (
                   <MenuItem onClick={() => onOpenDeactivate()}>
                     Deactivate Product
                   </MenuItem>

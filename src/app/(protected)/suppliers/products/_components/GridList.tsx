@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { 
     Box, 
+    Image, 
     Menu, 
     MenuButton, 
     MenuItem, 
@@ -15,8 +15,11 @@ import DeleteModal from './DeleteModal'
 import RestockModal from './RestockModal'
 import DeactiveModal from './DeactiveModal'
 import { ProductDataProps } from '@/types'
+import { Dispatch, SetStateAction } from 'react'
 
-const GridList = ({data, routing}: {data: ProductDataProps[], routing: string}) => {
+const GridList = (
+    {data, routing, selectedProduct, setSelectedProduct, fetchProducts, type}: 
+    {data: ProductDataProps[], routing: string, selectedProduct: ProductDataProps, setSelectedProduct: Dispatch<SetStateAction<ProductDataProps>>, fetchProducts: () => void, type: string}) => {
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { 
@@ -47,12 +50,19 @@ const GridList = ({data, routing}: {data: ProductDataProps[], routing: string}) 
                             </MenuButton>
                             <MenuList dir='rtl'>
                                 <MenuItem>
-                                    <Link href={`${routing}/${item.id}`}>View Details</Link>
+                                    <Link href={`${routing}/${item.id}`}>View Product</Link>
                                 </MenuItem>
                                 <MenuItem>
                                     <Link href={`${routing}/edit/${item.id}`}>Edit Product</Link>
                                 </MenuItem>
-                                <MenuItem onClick={() => onOpenRestock()}>Flag</MenuItem>
+                                <MenuItem 
+                                    onClick={() => {
+                                        setSelectedProduct(item)
+                                        onOpenRestock()
+                                    }}
+                                >
+                                    Restock
+                                </MenuItem>
                                 {
                                     item?.status === "ACTIVE" ? 
                                     <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
@@ -61,16 +71,15 @@ const GridList = ({data, routing}: {data: ProductDataProps[], routing: string}) 
                                 <MenuItem 
                                 onClick={() => onOpen()} 
                                 color="red.500">
-                                    Remove Product
+                                    Delete Product
                                 </MenuItem>
                             </MenuList>
                         </Menu>
                     </div>
                     <Image 
                     src={item.thumbnailFile} 
-                    alt='' 
-                    width={300} 
-                    height={300} 
+                    fallbackSrc=''
+                    alt=''  
                     className='rounded-md w-full h-[200px]'
                     />
                     <div className="mt-3 mb-6 px-2">
@@ -97,7 +106,13 @@ const GridList = ({data, routing}: {data: ProductDataProps[], routing: string}) 
             ))
         }
         <DeleteModal isOpen={isOpen} onClose={onClose}/>
-        <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock}/>
+        <RestockModal 
+        isOpen={isOpenRestock} 
+        onClose={onCloseRestock} 
+        product={selectedProduct} 
+        fetchProducts={fetchProducts}
+        type={type}
+        />
         <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate}/>
     </div>
   )

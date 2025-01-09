@@ -46,3 +46,32 @@ export const formatAmountString = (amount: any) => {
     const roundedNum = parseFloat(convert2Number.toFixed(2));
     return roundedNum?.toLocaleString();
 }
+
+export const camelCaseToTitleCase = (str: string) => {
+    const result = str.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\b\w/g, char => char.toUpperCase());
+    return result;
+}
+
+export const fetchImageAsBlob = async (imageUrl: string) => {
+    try {
+      // Fetch the image
+      const response = await fetch(imageUrl, { mode: "cors" });
+  
+      // Check if the response is OK
+      if (!response.ok) throw new Error("Failed to fetch image");
+  
+      // Convert the response into a blob
+      const blob = await response.blob();
+  
+      // Generate a UUID for the blob
+      const uuid = crypto.randomUUID(); // Generates a unique identifier
+  
+      // Simulate saving locally by creating an object URL
+      const localUrl = `http://localhost:3000/${uuid}`;
+  
+      console.log(`Blob URL: ${localUrl}`);
+      return { localUrl, blob };
+    } catch (error) {
+      console.error("Error fetching or converting the image:", error);
+    }
+};
