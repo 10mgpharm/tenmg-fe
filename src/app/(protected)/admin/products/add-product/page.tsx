@@ -179,7 +179,6 @@ const AddProducts = () => {
                                         ]);
                                         if (isValid) setSteps("essentials");
                                     }}
-                                    setSteps={setSteps}
                                     brands={brandData?.data} 
                                     categories={categoryData?.data} 
                                     control={control}
@@ -220,7 +219,6 @@ const AddProducts = () => {
                                     register={register}
                                     control={control}
                                     errors={errors}
-                                    setValue={setValue}
                                     isLoading={isLoading}
                                 />
                         default:

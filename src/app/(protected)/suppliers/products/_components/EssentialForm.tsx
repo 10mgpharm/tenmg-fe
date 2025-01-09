@@ -9,7 +9,7 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { convertCreateOptionArray, convertVariationArray } from "@/utils/convertSelectArray";
-import { MedicationData, NextAuthUserSession, PresentationProps, ProductDataProps } from "@/types";
+import { MedicationData, NextAuthUserSession, PresentationProps } from "@/types";
 import CustomCreatableSelectComponent, { CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
 
 interface IChildComponentProps {
@@ -20,7 +20,6 @@ interface IChildComponentProps {
     setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
     medications: MedicationData[]; 
     setValue: UseFormSetValue<IFormInput>;
-    data?: ProductDataProps;
     isEditing: boolean;
     type: string
 }
@@ -33,7 +32,6 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     medications,
     setValue,
     handleStepValidation,
-    data,
     isEditing,
     type
 }) => {
@@ -115,20 +113,6 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         fetchingPresentationTypes();
         fetchingMeasurementTypes();
     }, [fetchingPresentationTypes, fetchingMeasurementTypes]);
-
-    useEffect(() => {
-        if(isEditing){
-            setValue("medicationTypeName", data?.medicationType?.name);
-            setValue("presentationName", data?.presentation?.name);
-            setValue("measurementName", data?.measurement?.name);
-            setValue("packageName", data?.package?.name);
-            setValue("strengthValue", data?.medicationType?.variations?.[0].strengthValue);
-            setValue("packageName", data?.medicationType?.variations?.[0].packagePerRoll)
-            setValue("weight", data?.medicationType?.variations?.[0]?.weight.toString());
-            setValue("actualPrice", data?.actualPrice);
-            setValue("discountPrice", data?.discountPrice);
-        }
-    }, [data, isEditing])
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -410,11 +394,13 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         </div>
         <div className="flex gap-4 justify-end mt-10 mb-6">
             <button 
+            type='button'
             className="p-3 w-32 rounded-md border text-gray-600"  
             onClick={() => setSteps("details")}>
                 Previous
             </button>
             <button 
+            type='button'
             className="w-[280px] p-3 rounded-md bg-primary-500 text-white" 
             onClick={handleStepValidation}>
                 Next: Inventory
