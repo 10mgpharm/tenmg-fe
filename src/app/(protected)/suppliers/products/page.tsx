@@ -41,6 +41,7 @@ import { useSession } from "next-auth/react";
 import { 
     MedicationResponseData, 
     NextAuthUserSession, 
+    ProductDataProps, 
     ProductResponseData 
 } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
@@ -68,7 +69,8 @@ const Products = () => {
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
-    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
+    const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
@@ -310,11 +312,17 @@ const Products = () => {
             : <GridList 
             data={memoizedData}
             routing="/suppliers/products"
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
             />
         }
         </div>
         <DeleteModal isOpen={isOpen} onClose={onClose}/>
-        <RestockModal isOpen={isOpenRestock} onClose={onCloseRestock}/>
+        <RestockModal 
+        isOpen={isOpenRestock} 
+        onClose={onCloseRestock} 
+        product={selectedProduct}
+        />
         <ModalWrapper
         isOpen={isOpenDeactivate} 
         onClose={onCloseDeactivate}

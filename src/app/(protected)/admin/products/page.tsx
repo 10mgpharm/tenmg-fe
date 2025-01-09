@@ -37,7 +37,7 @@ import FilterDrawer from "../../suppliers/products/_components/FilterDrawer";
 import { ColumsProductFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession, ProductResponseData } from "@/types";
+import { MedicationResponseData, NextAuthUserSession, ProductDataProps, ProductResponseData } from "@/types";
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
@@ -62,7 +62,8 @@ const Page = () => {
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
-    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST)
+    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
+    const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
@@ -136,7 +137,8 @@ const Page = () => {
                     onOpenDeactivate, 
                     onOpenActivate, 
                     pageCount, 
-                    15
+                    15,
+                    setSelectedProduct
                 ),
         onSortingChange: setSorting,
         state: {
@@ -171,8 +173,6 @@ const Page = () => {
         { option: "Active", value: "active" },
         { option: "Suspended", value: "inactive" },
     ];
-
-    console.log(brandQuery)
     
   return (
     <div className="p-8">
@@ -288,6 +288,8 @@ const Page = () => {
             : <GridList 
             data={memoizedData}
             routing="/admin/products"
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
             />)
         }
         </div>
@@ -298,6 +300,7 @@ const Page = () => {
         <RestockModal 
             isOpen={isOpenRestock} 
             onClose={onCloseRestock}
+            product={selectedProduct}
         />
         <FilterDrawer 
             brands={brands}

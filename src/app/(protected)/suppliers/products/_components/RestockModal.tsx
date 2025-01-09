@@ -1,7 +1,47 @@
-import { FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Select } from '@chakra-ui/react'
+import { ProductDataProps } from '@/types'
+import { 
+    FormControl, 
+    FormLabel, 
+    Input, 
+    Modal, 
+    ModalBody, 
+    ModalCloseButton, 
+    ModalContent, 
+    ModalHeader, 
+    ModalOverlay,  
+} from '@chakra-ui/react'
+import { useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
-const RestockModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {
-  return (
+interface IFormInput {
+    name: string;
+    currentStock: string;
+    quantity: number;
+}
+const RestockModal = (
+    {isOpen, onClose, product}: 
+    {isOpen: boolean, onClose: () => void, product: ProductDataProps}
+) => {
+
+    const {
+        register,
+        formState: { errors, isValid },
+        handleSubmit,
+        setValue,
+    } = useForm<IFormInput>({
+        mode: "onChange",
+    });
+
+    useEffect(() => {
+        if(product){
+            setValue("name", product.name);
+            setValue("currentStock", product.quantity);
+        }
+    },[product])
+
+    const onSubmit:SubmitHandler<IFormInput>  = async(data) => {}
+
+    return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -10,32 +50,54 @@ const RestockModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void})
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                <form className="text-center mb-8 space-y-4">
-                    <FormControl>
+                <form onSubmit={handleSubmit(onSubmit)} className="text-center mb-8 space-y-4">
+                    <FormControl isInvalid={!!errors.name}>
                         <FormLabel>Product Name</FormLabel>
-                        <Input placeholder='Synthetic opioids'/>
+                        <Input
+                            id='name'
+                            disabled
+                            placeholder='Synthetic opioids'
+                            isInvalid={!!errors.name}
+                            _focus={{
+                                border: !!errors.name ? "red.300" : "border-gray-300",
+                            }}
+                            {...register("name", {
+                                required: true,
+                            })}
+                         />
                     </FormControl>
-                    <FormControl>
+                    <FormControl isInvalid={!!errors.currentStock}>
                         <FormLabel>Current Stock</FormLabel>
-                        <Input type='number' placeholder='0'/>
+                        <Input 
+                        id='currentStock'
+                        type='number' 
+                        placeholder=''
+                        isInvalid={!!errors.currentStock}
+                            _focus={{
+                                border: !!errors.currentStock ? "red.300" : "border-gray-300",
+                            }}
+                            {...register("currentStock", {
+                                required: true,
+                            })}
+                        />
                     </FormControl>
-                    <FormControl>
+                    <FormControl isInvalid={!!errors.quantity}>
                         <FormLabel>Desired Quantity</FormLabel>
-                        <Select>
-                            <option value="">10</option>
-                            <option value="">50</option>
-                            <option value="">100</option>
-                            <option value="">200</option>
-                            <option value="">300</option>
-                            <option value="">400</option>
-                            <option value="">500</option>
-                            <option value="">1000</option>
-                            <option value="">2000</option>
-                            <option value="">3000</option>
-                        </Select>
+                        <Input 
+                        id='quantity'
+                        type='number' 
+                        placeholder=''
+                        isInvalid={!!errors.quantity}
+                            _focus={{
+                                border: !!errors.quantity ? "red.300" : "border-gray-300",
+                            }}
+                            {...register("quantity", {
+                                required: true,
+                            })}
+                        />
                     </FormControl>
                     <div className="flex flex-col gap-3 pt-5">
-                        <button className='bg-primary-500 text-white p-3 rounded-md'>
+                        <button type='submit' className='bg-primary-500 text-white p-3 rounded-md'>
                             Restock
                         </button>
                         <button className='cursor-pointer mt-2' onClick={() => onClose()}>Cancel</button>
