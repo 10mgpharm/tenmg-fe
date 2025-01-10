@@ -13,6 +13,7 @@ import Image from "next/image";
 import Logo from "@public/assets/images/logoWhite.svg";
 
 const Footer = () => {
+    const currentYear = new Date().getFullYear(); // Get the current year
   return (
     <Box bg="primary.600" color="white" py={10}>
       <Box className="px-3 md:px-20">
@@ -123,8 +124,8 @@ const Footer = () => {
           justify="space-between"
           direction={{ base: "column", md: "row" }}
         >
-          <Text fontSize="sm" textAlign="center">
-            &copy; 2024 10MG Pharmacy. All rights reserved.
+           <Text fontSize="sm" textAlign="center">
+            &copy; {currentYear} 10MG Pharmacy. All Rights Reserved.
           </Text>
           <HStack spacing={6}>
             <FaTwitter cursor="pointer" />

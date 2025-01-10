@@ -48,7 +48,7 @@ const GridList = (
                             <MenuButton className='bg-white shadow-sm p-2 rounded-full'>
                                 <BsThreeDotsVertical className="w-5 h-auto"/>
                             </MenuButton>
-                            <MenuList dir='rtl'>
+                            <MenuList dir='ltr'>
                                 <MenuItem>
                                     <Link href={`${routing}/${item.id}`}>View Product</Link>
                                 </MenuItem>
@@ -118,4 +118,4 @@ const GridList = (
   )
 }
 
-export default GridList
+export default GridList;
