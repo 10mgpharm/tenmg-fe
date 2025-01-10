@@ -19,6 +19,7 @@ import { AdminApprovalsProps, NextAuthUserSession } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import UsersTab from "./_components/UsersTab";
+import { useDebouncedValue } from "@/utils/debounce";
 
 // interface ResponseData {
 //   data: AdminApprovalsProps;
@@ -46,20 +47,23 @@ const DocumentApproval = () => {
   const [supplierTotal, setSupplierTotal] = useState<number>(0);
   const [vendorTotal, setVendorTotal] = useState<number>(0);
   const [pharmTotal, setPharmTotal] = useState<number>(0);
-
+  const [globalFilter, setGlobalFilter] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(1);
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
   const fetchRequests = useCallback(
     async (requestType: string, page: number) => {
       if (!token) return;
       try {
         setIsLoading(true);
-        const response = await requestClient({ token }).get(
-          `/admin/business/licenses?page=${page}${
-            requestType ? `&type=${requestType}` : ""
-          }`
-        );
+
+        const query = `/admin/business/licenses?page=${page}${
+          requestType ? `&type=${requestType}` : ""
+        }${debouncedSearch ? `&search=${debouncedSearch}` : ""}`;
+
+        const response = await requestClient({ token }).get(query);
 
         if (response.status === 200) {
           const { data } = response.data;
@@ -84,7 +88,7 @@ const DocumentApproval = () => {
         setIsLoading(false);
       }
     },
-    [token]
+    [token, debouncedSearch]
   );
 
   useEffect(() => {
@@ -93,7 +97,7 @@ const DocumentApproval = () => {
     fetchRequests("Supplier", pageCount);
     fetchRequests("Pharmacy", pageCount);
     fetchRequests("Vendor", pageCount);
-  }, [fetchRequests, token, pageCount]);
+  }, [fetchRequests, token, pageCount, debouncedSearch]);
 
   const handleTabsChange = (index: number) => {
     setPageCount(1);
@@ -132,6 +136,8 @@ const DocumentApproval = () => {
               type="text"
               placeholder="Search for a user"
               className="outline-none flex-1 placeholder:text-gray-400 bg-transparent"
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
             />
             <Menu>
               <MenuButton>
@@ -203,6 +209,8 @@ const DocumentApproval = () => {
               type=""
               pageCount={pageCount}
               setPageCount={setPageCount}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
               fetchTeamUser={fetchRequests}
             />
           </TabPanel>
@@ -212,6 +220,8 @@ const DocumentApproval = () => {
               data={supplierData}
               type="Supplier"
               pageCount={pageCount}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
               setPageCount={setPageCount}
               fetchTeamUser={fetchRequests}
             />
@@ -221,6 +231,8 @@ const DocumentApproval = () => {
               isLoading={isLoading}
               data={pharmData}
               type="Pharmacy"
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
               pageCount={pageCount}
               setPageCount={setPageCount}
               fetchTeamUser={fetchRequests}
@@ -231,6 +243,8 @@ const DocumentApproval = () => {
               isLoading={isLoading}
               data={vendorData}
               type="Vendor"
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
               pageCount={pageCount}
               setPageCount={setPageCount}
               fetchTeamUser={fetchRequests}

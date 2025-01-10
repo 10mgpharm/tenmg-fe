@@ -44,6 +44,8 @@ interface UsersTabProps {
   data: AdminApprovalsProps;
   type: string;
   isLoading: boolean;
+  globalFilter: string;
+  setGlobalFilter: Dispatch<SetStateAction<string>>;
   setPageCount: Dispatch<SetStateAction<number>>;
   pageCount: number;
   fetchTeamUser: (reqType: string, page: number) => void;
@@ -56,6 +58,8 @@ const UsersTab = ({
   setPageCount,
   pageCount,
   fetchTeamUser,
+  globalFilter,
+  setGlobalFilter,
 }: UsersTabProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -173,7 +177,10 @@ const UsersTab = ({
       columnVisibility,
       columnOrder,
       rowSelection,
+      globalFilter,
     },
+    manualFiltering: true,
+    onGlobalFilterChange: setGlobalFilter,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onColumnVisibilityChange: setColumnVisibility,

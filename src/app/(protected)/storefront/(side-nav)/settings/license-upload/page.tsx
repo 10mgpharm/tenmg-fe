@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useRef, forwardRef, useEffect } from "react";
@@ -33,13 +32,11 @@ type BusinessLicense = {
   expiryDate: string;
   licenseFile: string;
   licenseNumber: string;
-  licenseVerificationStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
-}
+  licenseVerificationStatus: "PENDING" | "APPROVED" | "REJECTED";
+};
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
-export default function LegalLicense
-  () {
-
+export default function LegalLicense() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -153,11 +150,16 @@ export default function LegalLicense
       try {
         const response = await requestClient({
           token: sessionData.user.token,
-        }).get("/vendor/settings/license");
+        }).get("/storefront/settings/license");
         setIsLoading(false);
 
         if (response.status === 200) {
-          const { expiryDate, licenseFile, licenseNumber, licenseVerificationStatus } = response.data?.data;
+          const {
+            expiryDate,
+            licenseFile,
+            licenseNumber,
+            licenseVerificationStatus,
+          } = response.data?.data;
           setBusinessLisense({
             expiryDate,
             licenseFile,
@@ -178,40 +180,53 @@ export default function LegalLicense
     return (
       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5">
         <Text className="text-left text-sm font-medium text-red-500">
-          Your business CAC and License has been updated. Please check back later for the approval status.
+          Your business CAC and License has been updated. Please check back
+          later for the approval status.
         </Text>
         {/* preview with document link  */}
         {isLoading && (
-          <Flex direction={'column'} gap={5} className="animate-pulse">
+          <Flex direction={"column"} gap={5} className="animate-pulse">
             <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-full h-5">
-              {' '}
+              {" "}
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-full h-5">
-              {' '}
+              {" "}
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-9/12 h-5">
-              {' '}
+              {" "}
             </Text>
           </Flex>
         )}
         {!isLoading && (
-          <Flex direction={'column'} gap={5}>
+          <Flex direction={"column"} gap={5}>
             <Text className="text-left text-sm font-medium text-gray-500">
               CAC Document:
-              <a target="_blank" href={businessLicense?.licenseFile} className="font-bold cursor-pointer underline">
+              <a
+                target="_blank"
+                href={businessLicense?.licenseFile}
+                className="font-bold cursor-pointer underline"
+              >
                 View Document
               </a>
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500">
-              License Number: <span className="font-bold">{businessLicense?.licenseNumber}</span>
+              License Number:{" "}
+              <span className="font-bold">
+                {businessLicense?.licenseNumber}
+              </span>
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500">
-              Expiry Date: <span className="font-bold">{businessLicense?.expiryDate ? moment(businessLicense?.expiryDate)?.format('MMMM Do YYYY') : 'N/A'}</span>
+              Expiry Date:{" "}
+              <span className="font-bold">
+                {businessLicense?.expiryDate
+                  ? moment(businessLicense?.expiryDate)?.format("MMMM Do YYYY")
+                  : "N/A"}
+              </span>
             </Text>
           </Flex>
         )}
       </Box>
-    )
+    );
   }
 
   return (
@@ -324,5 +339,4 @@ export default function LegalLicense
       </Box>
     </>
   );
-};
-
+}
