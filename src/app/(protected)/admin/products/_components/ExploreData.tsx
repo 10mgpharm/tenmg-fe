@@ -1,5 +1,5 @@
 import { Clock } from "lucide-react"
-import { options } from "@/app/(protected)/suppliers/page";
+import { options } from "@/app/(protected)/suppliers/SupplierDashboard";
 import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent";
 
 const ExploreData = () => {
