@@ -198,7 +198,7 @@ const AddMedicationType = (
                     strength_value: item.strengthValue,
                     measurement: item.measurement,
                     package: item.packagePerRoll,
-                    weight: item.weight,
+                    weight: Number(item.weight),
                 }
             }));
         }

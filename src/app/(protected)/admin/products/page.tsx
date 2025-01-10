@@ -46,7 +46,16 @@ import {
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
-import { IFilterInput } from "../../vendors/customers-management/page";
+
+interface IFilterInput {
+    endDate?: Date | null;
+    startDate?: Date | null;
+    toDate?: Date | null;
+    fromDate?: Date | null;
+    status?: string[];
+    inventory?: string[];
+    brand?: string[];
+}
 
 const Page = () => {
 
@@ -57,11 +66,11 @@ const Page = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     
-    const [status, setStatus] = useState<string>("");
-    const [brandQuery, setBrandQuery] = useState("");
+    const [status, setStatus] = useState<string[]>([]);
+    const [brandQuery, setBrandQuery] = useState<string[]>([]);
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
-    const [inventoryQuery, setInventoryQuery] = useState("");
+    const [inventoryQuery, setInventoryQuery] = useState<string[]>([]);
     const [selectedBrand, setSelectedBrand] = useState("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [products, setProducts] = useState<ProductResponseData>();
@@ -82,23 +91,29 @@ const Page = () => {
     const fetchProducts = useCallback(async () => {
         setLoading(true);
         let query = `/admin/settings/products/search?page=${pageCount}`;
-        if (debouncedSearch) {
-            query += `&search=${debouncedSearch}`;
-        }
-        if(inventoryQuery) {
-            query += `&inventory=${inventoryQuery}`
-        }
-        if(brandQuery) {
-            query += `&brand=${brandQuery}`
-        }
-        if (createdAtStart) {
-            query += `&fromDate=${createdAtStart.toISOString().split("T")[0]}`;
-        }
-        if (createdAtEnd) {
-            query += `&toDate=${createdAtEnd.toISOString().split("T")[0]}`;
-        }
+        const params = {
+            inventory: inventoryQuery ?? [""],
+            status: status ?? [""],
+            category: [],
+            brand: brandQuery ?? [],
+            search: debouncedSearch ?? "",
+            variation: "",
+            medicationType: [],
+            from: createdAtStart ? createdAtStart.toISOString().split("T")[0] : "",
+            to: createdAtEnd ? createdAtEnd.toISOString().split("T")[0] : "",
+        };
+
+        // Convert the payload into query parameters
+        const queryString = new URLSearchParams(
+            Object.entries(params).flatMap(([key, value]) => 
+            Array.isArray(value) 
+                ? value.map((v) => [key, v]) 
+                : [[key, value]]
+            )
+        ).toString();
+  
         try {
-        const response = await requestClient({ token: token }).get(query);
+        const response = await requestClient({ token: token }).get(`${query}?${queryString}`);
             if (response.status === 200) {
                 setProducts(response.data.data);
             }
@@ -107,7 +122,7 @@ const Page = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery]);
+    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery, status]);
 
     const fetchingBrands = useCallback(async() => {
         if(!brandFilter) return;
@@ -167,10 +182,10 @@ const Page = () => {
     const clearFilters = () => {
         setCreatedAtStart(null);
         setCreatedAtEnd(null);
-        setStatus("");
-        setBrandQuery("")
+        setStatus([]);
+        setBrandQuery([])
         setBrandFilter("");
-        setInventoryQuery("")
+        setInventoryQuery([])
         setGlobalFilter("");
         setSelectedBrand("")
     };
@@ -179,8 +194,10 @@ const Page = () => {
         { option: "Active", value: "active" },
         { option: "Suspended", value: "inactive" },
     ];
+
+    console.log(inventoryQuery)
     
-  return (
+    return (
     <div className="p-8">
         <div className="flex justify-between">
             <h3 className="font-semibold text-2xl">Products</h3>
