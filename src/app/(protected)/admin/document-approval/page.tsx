@@ -121,7 +121,6 @@ const DocumentApproval = () => {
     }
   };
 
-  console.log(requestData, supplierData, vendorData, pharmData);
   return (
     <div className="p-8">
       <div className="flex justify-between">

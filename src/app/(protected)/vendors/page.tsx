@@ -12,6 +12,7 @@ const Vendor = async () => {
       {[
         BusinessStatus.PENDING_VERIFICATION,
         BusinessStatus.PENDING_APPROVAL,
+        BusinessStatus.REJECTED,
       ].includes(data?.user?.businessStatus) ?
         (
         <EmptyStateDashboard />

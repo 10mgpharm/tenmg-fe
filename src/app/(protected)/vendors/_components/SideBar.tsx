@@ -8,11 +8,8 @@ import { SlPeople } from "react-icons/sl";
 import { FaBalanceScale } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineSwapHorizontalCircle } from "react-icons/md";
-
-import {
-  HomeIcon,
-  ReceiptPercentIcon,
-} from "@heroicons/react/24/outline";
+import { BusinessStatus } from "@/constants";
+import { HomeIcon, ReceiptPercentIcon } from "@heroicons/react/24/outline";
 import { classNames } from "@/utils";
 import { usePathname } from "next/navigation";
 import { GiBullseye } from "react-icons/gi";
@@ -28,77 +25,89 @@ import { useBreakpointValue } from "@chakra-ui/react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Link from "next/link";
 
-const navigationItems = [
-  { name: "Dashboard", href: "/vendors", icon: HomeIcon, current: true },
+const navSections = [
   {
-    name: "Customers Management",
-    href: "/vendors/customers-management",
-    icon: SlPeople,
-    current: false,
-  },
-];
-
-const creditScoreItems = [
-  {
-    name: "Transaction Evaluation",
-    href: "/vendors/transactions-history",
-    icon: LuFileText,
-    current: false,
+    title: "NAVIGATION",
+    items: [
+      { name: "Dashboard", href: "/vendors", icon: HomeIcon },
+      {
+        name: "Customers Management",
+        href: "/vendors/customers-management",
+        icon: SlPeople,
+      },
+    ],
   },
   {
-    name: "Credit Score",
-    href: "/vendors/credit-score",
-    icon: MdPercent,
-    current: false,
-  },
-];
-
-const loanItems = [
-  {
-    name: "Loan Management",
-    href: "/vendors/loan-management",
-    icon: FaBalanceScale,
-    current: false,
-  },
-  {
-    name: "Loan Applications",
-    href: "/vendors/loan-applications",
-    icon: ReceiptPercentIcon,
-    current: false,
-  },
-  // {
-  //   name: "Loan Offers",
-  //   href: "/vendors/loan-offers",
-  //   icon: ReceiptPercentIcon,
-  //   current: false,
-  // },
-  {
-    name: "Loan Repayments",
-    href: "/vendors/loan-repayments",
-    icon: MdOutlineSwapHorizontalCircle,
-    current: false,
-  },
-];
-
-const systemItems = [
-  {
-    name: "Audit Logs",
-    href: "/vendors/audit-logs",
-    icon: GiBullseye,
-    current: false,
+    title: "CREDIT SCORE",
+    items: [
+      {
+        name: "Transaction Evaluation",
+        href: "/vendors/transactions-history",
+        icon: LuFileText,
+      },
+      {
+        name: "Credit Score",
+        href: "/vendors/credit-score",
+        icon: MdPercent,
+      },
+    ],
   },
   {
-    name: "Settings",
-    href: "/vendors/settings",
-    icon: IoSettingsOutline,
-    current: false,
+    title: "LOANS",
+    items: [
+      {
+        name: "Loan Management",
+        href: "/vendors/loan-management",
+        icon: FaBalanceScale,
+      },
+      {
+        name: "Loan Applications",
+        href: "/vendors/loan-applications",
+        icon: ReceiptPercentIcon,
+      },
+      {
+        name: "Loan Repayments",
+        href: "/vendors/loan-repayments",
+        icon: MdOutlineSwapHorizontalCircle,
+      },
+    ],
+  },
+  {
+    title: "SYSTEM",
+    items: [
+      {
+        name: "Audit Logs",
+        href: "/vendors/audit-logs",
+        icon: GiBullseye,
+      },
+      {
+        name: "Settings",
+        href: "/vendors/settings",
+        icon: IoSettingsOutline,
+      },
+    ],
   },
 ];
 
 const smVariant = { navigation: "drawer", navigationButton: true };
 const mdVariant = { navigation: "sidebar", navigationButton: false };
 
-const SideBar = () => {
+const mustAlwaysBeEnabled = (name: string) =>
+  ["Dashboard", "Settings"].includes(name);
+
+const isLinkDisabled = (businessStatus: string, name: string) => {
+  const disabledBusinessStatuses = [
+    BusinessStatus.PENDING_VERIFICATION,
+    BusinessStatus.PENDING_APPROVAL,
+    BusinessStatus.REJECTED,
+  ];
+  return disabledBusinessStatuses.includes(businessStatus as BusinessStatus) &&
+    !mustAlwaysBeEnabled(name)
+    ? true
+    : false;
+};
+
+const SideBar = ({ businessStatus }: { businessStatus: string }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const variants = useBreakpointValue({ base: smVariant, md: mdVariant });
@@ -108,7 +117,7 @@ const SideBar = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    setSidebarOpen(false); // Close sidebar on route change
+    setSidebarOpen(false);
   }, [pathname]);
 
   return variants.navigation === "drawer" ? (
@@ -127,7 +136,10 @@ const SideBar = () => {
           <DrawerContent>
             <DrawerCloseButton />
             <DrawerBody>
-              <SidebarContent pathname={pathname} />
+              <SidebarContent
+                pathname={pathname}
+                businessStatus={businessStatus}
+              />
             </DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
@@ -142,76 +154,63 @@ const SideBar = () => {
       w="72"
       h="calc(100vh - 98px)"
     >
-      <SidebarContent pathname={pathname} />
+      <SidebarContent pathname={pathname} businessStatus={businessStatus} />
     </Box>
   );
 };
 
 export default SideBar;
 
-const SidebarContent = ({ pathname }: { pathname: string }) => (
+const SidebarContent = ({
+  pathname,
+  businessStatus,
+}: {
+  pathname: string;
+  businessStatus: string;
+}) => (
   <Box className="flex grow flex-col gap-y-5 md:overflow-y-auto bg-white md:px-6 pb-4 pt-8 md:border-r border-gray-200">
     <nav className="flex flex-1 flex-col">
-      <ul role="list" className="flex flex-1 flex-col gap-y-7">
-        <RenderSection
-          title="NAVIGATION"
-          items={navigationItems}
-          pathname={pathname}
-        />
-        <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
-          CREDIT SCORE
-        </Text>
-        <RenderSection
-          title="CREDIT SCORE"
-          items={creditScoreItems}
-          pathname={pathname}
-        />
-        <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
-          LOANS
-        </Text>
-        <RenderSection title="LOANS" items={loanItems} pathname={pathname} />
-        <Text fontSize="xs" fontWeight="medium" letterSpacing="widest">
-          SYSTEM
-        </Text>
-        <RenderSection title="SYSTEM" items={systemItems} pathname={pathname} />
-      </ul>
+      {navSections.map((section) => (
+        <Box key={section.title} mb={6}>
+          {/* Section Title */}
+          <Text fontSize="xs" fontWeight="medium" letterSpacing="widest" mb={2}>
+            {section.title}
+          </Text>
+
+          {/* Section Items */}
+          <ul role="list" className="-mx-2 space-y-8">
+            {section.items.map((item) => {
+              const isActive = item.href === pathname;
+              const disabled = isLinkDisabled(businessStatus, item.name);
+
+              return (
+                <li key={item.name}>
+                  <Link
+                    href={disabled ? "#" : item.href}
+                    className={classNames(
+                      isActive
+                        ? "bg-primary-50 text-primary-500 p-0.5"
+                        : "text-gray-500 px-3",
+                      disabled ? "pointer-events-none opacity-50" : "",
+                      "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
+                    )}
+                  >
+                    <item.icon
+                      aria-label={item.name}
+                      className={classNames(
+                        isActive
+                          ? "text-white bg-primary-500 rounded-full p-2 w-10 h-10"
+                          : "text-gray-500 h-6 w-6"
+                      )}
+                    />
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </Box>
+      ))}
     </nav>
   </Box>
 );
-
-const RenderSection = ({
-  title,
-  items,
-  pathname,
-}: {
-  title: string;
-  items: any[];
-  pathname: string;
-}) => (
-  <ul role="list" className="-mx-2 space-y-8">
-    {items.map((item) => {
-      const isActive = item.href === pathname;
-      return (
-        <li key={item.name}>
-          <Link href={item.href} className={getNavItemClassNames(isActive)}>
-            <item.icon
-              aria-label={item.name}
-              className={
-                isActive
-                  ? "text-white bg-primary-500 rounded-full p-2 w-10 h-10"
-                  : "text-gray-500 h-6 w-6"
-              }
-            />
-            {item.name}
-          </Link>
-        </li>
-      );
-    })}
-  </ul>
-);
-
-const getNavItemClassNames = (isActive: boolean) =>
-  classNames(
-    isActive ? "bg-primary-50 text-primary-500 p-0.5" : "text-gray-500 px-3",
-    "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
-  );
