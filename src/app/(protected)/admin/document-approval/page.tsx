@@ -61,7 +61,7 @@ const DocumentApproval = () => {
 
         const query = `/admin/business/licenses?page=${page}${
           requestType ? `&type=${requestType}` : ""
-        }${debouncedSearch ? `&search=${debouncedSearch}` : ""}`;
+        }${debouncedSearch ? `&businessName=${debouncedSearch}` : ""}`;
 
         const response = await requestClient({ token }).get(query);
 
