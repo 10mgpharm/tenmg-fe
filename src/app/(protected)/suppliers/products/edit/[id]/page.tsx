@@ -124,6 +124,27 @@ const EditPage = ({params}: {params: {id: string}}) => {
         mode: "onChange",
     });
 
+    useEffect(() => {
+        setValue("productName", products?.name);
+        setValue("brandName", products?.brand?.name);
+        setValue("categoryName", products?.category?.name);
+        setValue("productDescription", products?.description);
+        setValue("thumbnailFile", products?.thumbnailFile);
+        setValue("medicationTypeName", products?.medicationType?.name);
+        setValue("presentationName", products?.presentation?.name);
+        setValue("measurementName", products?.measurement?.name);
+        setValue("packageName", products?.package?.name);
+        setValue("strengthValue", products?.medicationType?.variations?.[0]?.strengthValue ?? products?.medicationType?.variations?.[0]?.strengthValue);
+        setValue("packageName", products?.medicationType?.variations?.[0]?.packagePerRoll ?? products?.medicationType?.variations?.[0]?.packagePerRoll);
+        setValue("weight", products?.medicationType?.variations?.[0]?.weight ?? products?.medicationType?.variations?.[0]?.weight);
+        setValue("actualPrice", products?.actualPrice);
+        setValue("discountPrice", products?.discountPrice);
+        setValue("quantity", products?.quantity);
+        setValue("lowStockLevel", products?.lowStockLevel?.toString());
+        setValue("outStockLevel", products?.outStockLevel?.toString());
+        setValue("expiredAt", products?.expiredAt);
+    }, [products]);
+
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
         const formdata = new FormData();
@@ -147,12 +168,13 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("status", "ACTIVE");
 
         try {
-            const response = await requestClient({token: token}).patch(
+            const response = await requestClient({token: token}).post(
                 `/supplier/products/${products.id}`,
                 formdata
             )
             if(response.status === 200){
                 setIsLoading(false);
+                toast.success(response.data?.message);
                 fetchingProducts();
                 router.push('/suppliers/products')
             }
@@ -181,7 +203,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
                         case 'details':
                             return <DetailForm 
                                     title="Edit Product"
-                                    data={products}
                                     isEditing={true}
                                     handleStepValidation={
                                         async () => {
@@ -194,7 +215,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                         ]);
                                         if (isValid) setSteps("essentials");
                                     }}
-                                    setSteps={setSteps}
                                     brands={brandData?.data} 
                                     categories={categoryData?.data} 
                                     control={control}
@@ -206,7 +226,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
                         case 'essentials':
                             return <EssentialForm
                                     isEditing={true} 
-                                    data={products}
                                     type="supplier"
                                     handleStepValidation={
                                         async () => {
@@ -237,7 +256,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     register={register}
                                     control={control}
                                     errors={errors}
-                                    setValue={setValue}
                                     isLoading={isLoading}
                                 />
                         default:

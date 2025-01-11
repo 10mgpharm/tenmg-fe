@@ -3,7 +3,7 @@
 import 
 CustomCreatableSelectComponent, 
 { CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
-import { MedicationData, ProductDataProps } from "@/types";
+import { MedicationData } from "@/types";
 import { convertCreateOptionArray } from "@/utils/convertSelectArray";
 import { 
     Center,
@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Control, Controller, FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IoCloudDoneOutline } from "react-icons/io5";
 import { IFormInput } from "../add-product/page";
@@ -25,11 +25,9 @@ import { IFormInput } from "../add-product/page";
 interface IChildComponentProps {
     title: string;
     isEditing: boolean;
-    data?: ProductDataProps;
     register: UseFormRegister<IFormInput>;
     control: Control<IFormInput>;
     errors: FieldErrors<IFormInput>;
-    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
     handleStepValidation: () => void;
     brands: MedicationData[]; 
     categories: MedicationData[];
@@ -39,9 +37,7 @@ interface IChildComponentProps {
 
 const DetailForm: React.FC<IChildComponentProps> = ({
     title,
-    data,
     isEditing,
-    setSteps, 
     brands,  
     categories, 
     errors, 
@@ -55,6 +51,16 @@ const DetailForm: React.FC<IChildComponentProps> = ({
     const toast = useToast();
     const router = useRouter();
     const [iconFile, setIconFile] = useState<string>("");
+
+    const formattedImage = getValue("thumbnailFile");
+
+    useEffect(() => {
+        if(formattedImage && !isEditing){
+            setIconFile(URL.createObjectURL(formattedImage as unknown as Blob));
+        }else{
+            setIconFile(formattedImage)
+        }
+    },[formattedImage, isEditing]);
 
     const onLoadImage = (event: any) => {
         if (!event.target.files) return;
@@ -73,22 +79,6 @@ const DetailForm: React.FC<IChildComponentProps> = ({
         }
     };
 
-    const formattedImage = getValue("thumbnailFile");
-
-    useEffect(() => {
-        if(isEditing && data){
-            setValue("productName", data?.name);
-            setValue("productDescription", data?.description);
-            setValue("brandName", data?.brand?.name);
-            setValue("categoryName", data?.category?.name);
-            setValue("thumbnailFile", data?.thumbnailFile);
-        }else if(formattedImage && !isEditing){
-            setIconFile(URL.createObjectURL(formattedImage as unknown as Blob));
-        }else{
-            setIconFile(formattedImage)
-        }
-    },[formattedImage, data]);
-
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <div className="flex items-center justify-between">
@@ -106,7 +96,8 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                 <FormLabel>Product Name</FormLabel>
                 <Input 
                 id="productName"
-                defaultValue={data?.name}
+                // defaultValue={data?.name}
+                name="productName"
                 placeholder="Enter product name" 
                 type="text"
                 isInvalid={!!errors.productName}
@@ -122,7 +113,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                 <FormLabel>Product Description</FormLabel>
                 <Textarea 
                 id="productDescription"
-                defaultValue={data?.description}
+                // defaultValue={data?.description}
                 placeholder="Enter a description"
                 isInvalid={!!errors.productDescription}
                 _focus={{
@@ -238,7 +229,11 @@ const DetailForm: React.FC<IChildComponentProps> = ({
             </div>
         </div>
         <div className="flex gap-4 justify-end mt-5 mb-6">
-            <button className="p-3 w-32 rounded-md border text-gray-600">Back</button>
+            <button 
+            type="button" 
+            className="p-3 w-32 rounded-md border text-gray-600">
+                Back
+            </button>
             <button
             type="button"
             className="w-[280px] p-3 rounded-md bg-primary-500 text-white"

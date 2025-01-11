@@ -3,6 +3,6 @@ import SystemConfiguration from '../../_components/SystemConfiguration'
 
 export default function SystemConfigurationPage() {
     return (
-        <SystemConfiguration />
+    <SystemConfiguration />
   )
 }

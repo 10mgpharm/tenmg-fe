@@ -222,7 +222,7 @@ export interface CustomerRecords {
 
 export interface MedicationVariant {
   id?: number;
-  weight?: number;
+  weight?: string;
   strengthValue: string;
   packagePerRoll: string;
   medicationType: string;
@@ -445,6 +445,7 @@ export interface AdminApprovals {
   cacDocument: string,
   verificationStatus: string
   createdAt: string;
+  updatedAt: string;
   address: string;
   actions: string;
   cacFileSize: number;
@@ -497,4 +498,15 @@ interface FaqDataProps {
   meta: MetaDataProp;
   message: string;
   status: string;
+}
+export interface StoreFrontImage{
+  id: number;
+  description: string | null;
+  imageUrl: string;
+  title: string | null;
+}
+export interface StoreFrontImageResponse {
+  data: any;
+  links: any;
+  meta: MetaDataProp;
 }
