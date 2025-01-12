@@ -6,3 +6,13 @@ export const convertDate = (date: string) => {
     const dateString = `${day} ${monthList[month]} ${year}`
     return dateString;
 }
+
+export const dateToString = (date: Date | null) => {
+    if (!date) return ""; 
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const day = String(date.getDate()).padStart(2, "0");
+  
+    return `${year}-${month}-${day}`;
+  }
+  

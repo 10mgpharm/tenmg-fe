@@ -35,6 +35,7 @@ import UploadModal from "../_components/UploadModal";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../_components/FilterDrawer";
+import { dateToString } from "@/utils/formatDate";
 
 const TransactionHistory = () => {
   const [loading, setLoading] = useState(true);
@@ -94,10 +95,10 @@ const TransactionHistory = () => {
         query += `&status=${status}`;
       }
       if (createdAtStart) {
-        query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+        query += `&dateFrom=${dateToString(createdAtStart)}`;
       }
       if (createdAtEnd) {
-        query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+        query += `&dateTo=${dateToString(createdAtEnd)}`;
       }
 
       try {
