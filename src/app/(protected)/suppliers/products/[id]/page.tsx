@@ -1,13 +1,14 @@
 "use client";
 
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { Flex, HStack, Image, Spinner, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
 import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
-import { useSession } from 'next-auth/react';
 import { NextAuthUserSession, ProductDataProps } from '@/types';
-import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
 import { convertDate } from '@/utils/formatDate';
 import productImage from '../../../../../../public/assets/images/product.svg';
@@ -51,10 +52,17 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
 
     return (
     <div className='p-8'>
-        <HStack onClick={() => router.back()} cursor={"pointer"}>
-            <ArrowLeftIcon className='w-5- h-5'/>
-            <Text>Back</Text>
-        </HStack>
+        <Flex justifyContent={"space-between"} align={"center"}>
+            <HStack onClick={() => router.back()} cursor={"pointer"}>
+                <ArrowLeftIcon className='w-5- h-5'/>
+                <Text>Back</Text>
+            </HStack>
+            <Link 
+            className='bg-primary-500 p-2.5 w-28 font-medium text-center rounded-md text-white' 
+            href={`/suppliers/products/edit/${params.id}`}>
+                Edit
+            </Link>
+        </Flex>
         <div className="mt-5">
             <div className="flex gap-5 mb-3">
                 <div className="">

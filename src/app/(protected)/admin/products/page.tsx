@@ -30,7 +30,6 @@ import { PRODUCTVIEW } from "@/app/globalTypes";
 import { classNames, handleServerErrorMessage } from "@/utils";
 import Link from "next/link";
 import EmptyOrder from "../../suppliers/orders/_components/EmptyOrder";
-import Pagination from "../../suppliers/_components/Pagination";
 import GridList from "../../suppliers/products/_components/GridList";
 import DeleteModal from "../../suppliers/products/_components/DeleteModal";
 import RestockModal from "../../suppliers/products/_components/RestockModal";
@@ -48,6 +47,7 @@ import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
 import { toast } from "react-toastify";
+import Pagination from "./_components/Pagination";
 
 interface IFilterInput {
     endDate?: Date | null;
@@ -116,7 +116,7 @@ const Page = () => {
         ).toString();
   
         try {
-        const response = await requestClient({ token: token }).get(`${query}?${queryString}`);
+        const response = await requestClient({ token: token }).get(`${query}&${queryString}`);
             if (response.status === 200) {
                 setProducts(response.data.data);
             }
@@ -244,8 +244,6 @@ const Page = () => {
             toast.error(handleServerErrorMessage(error));
         }
     }
-
-    console.log(products)
     
     return (
     <div className="p-8">
@@ -355,7 +353,15 @@ const Page = () => {
                         ))}
                         </Tbody>
                     </Table>
-                    <Pagination meta={products?.meta} setPageCount={setPageCount}/>
+                    <Pagination 
+                    links={products?.links}
+                    prevPageUrl={products?.prevPageUrl}
+                    nextPageUrl={products?.nextPageUrl}
+                    firstPageUrl={products?.firstPageUrl} 
+                    lastPageUrl={products?.lastPageUrl}
+                    setPageCount={setPageCount}
+                    currentPage={products?.currentPage}
+                    />
                 </TableContainer>
             )
             : <GridList 
