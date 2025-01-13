@@ -34,7 +34,7 @@ export default function StoreProductCardComponent({ product }: any) {
           </div>
           {/* <p className="text-gray-500 text-xs my-2">Pentazocine (NEML 23.1)</p> */}
           <div className="relative flex items-center gap-x-2">
-            {product?.discountPrice && <p className="text-green-500 font-semibold my-2 text-sm left-1/4">₦{product?.discountPrice}</p>}
+            {product?.discountPrice > 0 && <p className="text-green-500 font-semibold my-2 text-sm left-1/4">₦{product?.discountPrice}</p>}
             <p className={`text-gray-950 font-semibold my-2 text-xs ${product?.discountPrice > 0 && "text-red-500 line-through"}`}>₦{product?.actualPrice}</p>
           </div>
 

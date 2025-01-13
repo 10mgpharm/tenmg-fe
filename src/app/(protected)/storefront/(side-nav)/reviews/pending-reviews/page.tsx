@@ -6,11 +6,11 @@ import Image from 'next/image'
 export default function page() {
   return (
     <div className='w-full'>
-      {/* {temp_order.slice(0, 3).map((item) => (
+      {temp_order.slice(0, 3).map((item) => (
         <ReviewsCardComponent key={item?.order_id} product={item} />
-      ))} */}
+      ))}
 
-      <div className='flex flex-col items-center justify-center w-full h-fit py-32'>
+      {/* <div className='flex flex-col items-center justify-center w-full h-fit py-32'>
         <Image
           src={'/assets/images/Homework.png'}
           alt=''
@@ -18,7 +18,7 @@ export default function page() {
           height={300}
         />
         <p className='my-4 font-semibold '>{`You don't have any product to review.`}</p>
-      </div>
+      </div> */}
     </div>
   )
 }

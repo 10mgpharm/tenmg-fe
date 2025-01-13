@@ -44,8 +44,9 @@ export default function ProductDetailPage() {
     const fetchProductData = async () => {
       setLoading(true);
       try {
-        const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/products/${product}`);
-        // console.log(data);
+        // storefront/products/quidins
+        const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/products/${product.toLocaleLowerCase()}`);
+        console.log(data);
         setProductData(data?.data?.data);
       } catch (e) {
         console.log(e)
