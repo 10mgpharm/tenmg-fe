@@ -233,7 +233,7 @@ const AddProducts = () => {
             onClose={onClose}
             routeUrl="/admin/products"
             isEditing={false}
-            routeUrl2="/admin/product/new"
+            routeUrl2="/admin/products/add-product"
         />
     </div>
   )
