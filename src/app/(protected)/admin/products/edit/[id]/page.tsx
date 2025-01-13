@@ -102,16 +102,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
         fetchingMedicationTypes();
     }, [fetchSingleProduct, fetchingBrandTypes, fetchingCategoriesTypes, fetchingMedicationTypes, token]);
 
-    const fetchingProducts = useCallback(async() => {
-        try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/products`
-            );
-        } catch (error) {
-            console.error(error)
-        }
-    },[token]);
-
     const {
         control,
         register,
@@ -153,6 +143,13 @@ const EditPage = ({params}: {params: {id: string}}) => {
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
+        const dateString = data?.expiredAt?.toString();
+        let formattedDate: string;
+        if(dateString.includes('Z')){
+            formattedDate = data?.expiredAt;
+        } else {
+            formattedDate = data?.expiredAt.toISOString();
+        }
         const formdata = new FormData();
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
@@ -166,7 +163,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("measurementName", data?.measurementName);
         formdata.append("lowStockLevel", data?.lowStockLevel);
         formdata.append("outStockLevel", data?.outStockLevel);
-        formdata.append("expiredAt", data?.expiredAt);
+        formdata.append("expiredAt", formattedDate);
         formdata.append("thumbnailFile", data?.thumbnailFile);
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
@@ -180,8 +177,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
             )
             if(response.status === 200){
                 setIsLoading(false);
-                toast.success(response.data?.message)
-                fetchingProducts();
+                toast.success(response.data?.message);
                 router.push('/admin/products')
             }
         } catch (error) {
@@ -200,8 +196,6 @@ const EditPage = ({params}: {params: {id: string}}) => {
         const isValid = await trigger(fieldsToValidate);
         return isValid;
     };
-
-    console.log(getValues())
 
     return (
     <div>

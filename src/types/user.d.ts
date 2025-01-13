@@ -319,7 +319,12 @@ export interface ProductDataProps {
 export interface ProductResponseData {
   data: ProductDataProps[];
   links: any;
-  meta: MetaDataProp;
+  meta?: MetaDataProp;
+  prevPageUrl?: string | null, 
+  nextPageUrl?: string | null,
+  currentPage?: number;
+  firstPageUrl?: any;
+  lastPageUrl?: any;
 }
 
 /**
