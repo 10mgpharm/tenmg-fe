@@ -171,16 +171,25 @@ export function ColumsProductFN(
                   }}>
                     Restock
                   </MenuItem>
-                {info?.row?.original?.status === "ACTIVE" ? (
-                  <MenuItem onClick={() => onOpenDeactivate()}>
+                {(info?.row?.original?.status === "ACTIVE" || info.row.original.status === "APPROVED") ? (
+                  <MenuItem onClick={() => {
+                    setSelectedProduct(info.row.original)
+                    onOpenDeactivate()
+                  }}>
                     Deactivate Product
                   </MenuItem>
                 ) : (
-                  <MenuItem onClick={() => onOpenActivate()}>
+                  <MenuItem onClick={() => {
+                    setSelectedProduct(info.row.original)
+                    onOpenActivate()
+                  }}>
                     Activate Product
                   </MenuItem>
                 )}
-                <MenuItem onClick={() => onOpen()} color="red.500">
+                <MenuItem onClick={() => {
+                  setSelectedProduct(info.row.original)
+                  onOpen()
+                  }} color="red.500">
                   Delete Product
                 </MenuItem>
               </MenuList>

@@ -41,9 +41,8 @@ const Users = () => {
     const [pharmCount, setPharmCount] = useState<MemberDataProp>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [pageCount, setPageCount] = useState<number>(1);
-    // const [pageLimit, setPageLimit] = useState<number>(10);
     const [total, setTotal] = useState<any>('');
+    const [pageCount, setPageCount] = useState<number>(1);
 
     const fetchTeamUser = useCallback(async (type: string, pageCount: number) => {
         try {
@@ -61,7 +60,7 @@ const Users = () => {
                 setVendorCount(response.data.data)
                 setVendorData(response.data.data);
                 setTotal(response.data?.meta);
-            }else if(type === "Pharmacies"){
+            }else if(type === "Customer"){
                 setPharmCount(response.data.data);
                 setPharmData(response.data.data);
                 setTotal(response.data?.meta);
@@ -76,14 +75,14 @@ const Users = () => {
     useEffect(() => {
         if(!token) return;
         fetchTeamUser('Supplier', pageCount);
-        fetchTeamUser('Pharmacies', pageCount);
+        fetchTeamUser('Customer', pageCount);
         fetchTeamUser('Vendor', pageCount);
     }, [fetchTeamUser, token, pageCount]);
 
     const handleTabsChange = (index: number) => {
         setPageCount(1);
        if(index === 1){
-            fetchTeamUser('Pharmacies', 1);
+            fetchTeamUser('Customer', 1);
             setVendorData(null);
             setSupplierData(null);
         }else if(index === 2){
@@ -96,11 +95,6 @@ const Users = () => {
             setPharmData(null);
        }
     }
-    // const { getPaginationInfo } = usePaginate({
-    //     page: pageCount,
-    //     total: total?.total,
-    //     limit: pageLimit,
-    // });
     
     return (
     <div className='p-8'>
