@@ -36,9 +36,9 @@ const StoreFront = () => {
       try {
         const data = await requestClient({ token: userData?.user?.token }).get("/storefront");
         // console.log(data);
-        setStoreFrontData(data?.data?.data);
+        setStoreFrontData(data?.data?.data?.data);
 
-        const storeCount = data?.data?.data?.flatMap(item => item.products).length;
+        const storeCount = data?.data?.data?.data?.flatMap(item => item.products).length;
         setIsEmpty(storeCount === 0);
       } catch (e) {
         console.log(e)
@@ -47,7 +47,7 @@ const StoreFront = () => {
     fetchStoreFront();
   }, [userData?.user?.token])
 
-  // console.log("storeFrontData", storeFrontData);
+  console.log("storeFrontData", storeFrontData);
 
   return (
     <div className="">
