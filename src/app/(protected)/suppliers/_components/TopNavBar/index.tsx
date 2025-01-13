@@ -9,7 +9,14 @@ import avatar from "@public/assets/images/Avatar.svg";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { Badge, FormControl, FormLabel, Switch, Tag, TagLabel } from "@chakra-ui/react";
+import {
+  Badge,
+  FormControl,
+  FormLabel,
+  Switch,
+  Tag,
+  TagLabel,
+} from "@chakra-ui/react";
 import { redirect, useRouter } from "next/navigation";
 import { convertLetterCase } from "@/utils";
 import GreetingComponent from "./GreetingComponent";
@@ -19,19 +26,25 @@ const TopNavBar = () => {
   const data = session.data as NextAuthUserSession;
 
   const router = useRouter();
-  
+
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
       case "VENDOR":
         return (
-          <Tag size="sm" ml="1" borderRadius={"full"} color={"green.500"} bgColor={"green.50"}>
-            <TagLabel>{convertLetterCase(businessType)}</TagLabel> 
+          <Tag
+            size="sm"
+            ml="1"
+            borderRadius={"full"}
+            color={"green.500"}
+            bgColor={"green.50"}
+          >
+            <TagLabel>{convertLetterCase(businessType)}</TagLabel>
           </Tag>
         );
       case "SUPPLIER":
         return (
           <Tag size="sm" variant="solid" bg="green.50" color={"green.500"}>
-            {businessType?.toLocaleLowerCase()}
+            {convertLetterCase(businessType)}
           </Tag>
         );
       case "ADMIN":
@@ -117,13 +130,20 @@ const TopNavBar = () => {
               className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
             >
               <MenuItem>
-              <button
+                <button
                   className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
-                  onClick={() => router.push("/general-settings")}
+                  onClick={() => {
+                    if (data?.user?.entityType === "SUPPLIER") {
+                      router.push("/suppliers/settings/personal_information");
+                    } else if (data?.user?.entityType === "VENDOR") {
+                      router.push("/vendors/settings/general_settings");
+                    } else {
+                      router.push("/"); // Fallback route if no entity type matches
+                    }
+                  }}
                 >
                   View Profile
                 </button>
-
               </MenuItem>
               <MenuItem>
                 <button
