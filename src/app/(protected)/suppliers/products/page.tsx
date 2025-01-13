@@ -6,6 +6,7 @@ import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import EmptyOrder from "../orders/_components/EmptyOrder";
 import { 
+    Button,
     Checkbox,
     Flex, 
     Spinner, 
@@ -31,7 +32,7 @@ import Link from "next/link";
 import { ColumsProductFN } from "./_components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
 import GridList from "./_components/GridList";
-import { classNames } from "@/utils";
+import { classNames, handleServerErrorMessage } from "@/utils";
 import DeleteModal from "./_components/DeleteModal";
 import RestockModal from "./_components/RestockModal";
 import Pagination from "../_components/Pagination";
@@ -47,6 +48,7 @@ import {
 import { useDebouncedValue } from "@/utils/debounce";
 import FilterDrawer from "./_components/FilterDrawer";
 import SearchInput from "../../vendors/_components/SearchInput";
+import { toast } from "react-toastify";
 
 
 interface IFilterInput {
@@ -81,6 +83,7 @@ const Products = () => {
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
     const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
     const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
@@ -195,7 +198,54 @@ const Products = () => {
         { option: "Suspended", value: "inactive" },
     ];
 
-  return (
+    const handleProductDeactivate = async(type: string) => {
+        if(!selectedProduct) return;
+        setIsLoading(true);
+        const formdata = new FormData();
+        if(type === "deactivate"){
+            formdata.append("status", "PENDING");
+        }else{
+            formdata.append("status", "ACTIVE");
+        }
+        try {
+            const response = await requestClient({token: token}).post(
+                `/supplier/products/${selectedProduct?.id}`,
+                formdata
+            )
+            if (response.status === 200) {
+                toast.success(response.data.message);
+                fetchProducts();
+                setIsLoading(false);
+                onCloseDeactivate();
+                onCloseActivate();
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        }
+    }
+    const handleProductDelete = async() => {
+        if(!selectedProduct) return;
+        setIsLoading(true);
+        try {
+            const response = await requestClient({token: token}).delete(
+                `/supplier/products/${selectedProduct?.id}`,
+            )
+            if (response.status === 200) {
+                toast.success(response.data.message);
+                fetchProducts();
+                setIsLoading(false);
+                onClose();
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        }
+    }
+
+    return (
     <div className="p-8">
         <div className="flex justify-between">
             <div className="mb-5">
@@ -209,7 +259,9 @@ const Products = () => {
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                     />
-                    <div onClick={onOpenFilter} className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2">
+                    <div 
+                    onClick={onOpenFilter} 
+                    className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2">
                         <CiFilter className="w-5 h-5" />
                         <p className="text-gray-500 font-medium">Filter</p>
                     </div>
@@ -278,7 +330,6 @@ const Products = () => {
                             _checked={{
                                 "& .chakra-checkbox__control": {
                                 background: "#1A70B8",
-                                // borderColor: "#D0D5DD",
                                 borderRadius: 5,
                                 },
                             }}
@@ -312,7 +363,6 @@ const Products = () => {
                             _checked={{
                                 "& .chakra-checkbox__control": {
                                 background: "#1A70B8",
-                                // borderColor: "#D0D5DD",
                                 borderRadius: 5,
                                 },
                             }}
@@ -333,7 +383,9 @@ const Products = () => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination meta={products?.meta} setPageCount={setPageCount}/>
+                <Pagination 
+                meta={products?.meta} 
+                setPageCount={setPageCount}/>
             </TableContainer>
             : <GridList 
             data={memoizedData}
@@ -342,12 +394,19 @@ const Products = () => {
             setSelectedProduct={setSelectedProduct}
             fetchProducts={fetchProducts}
             type="supplier"
+            isLoading={isLoading}
+            deleteFn={handleProductDelete}
+            onOpen={onOpen}
+            onOpenActivate={onOpenActivate}
+            onOpenDeactivate={onOpenDeactivate}
             />
         }
         </div>
         <DeleteModal 
         isOpen={isOpen} 
         onClose={onClose}
+        isLoading={isLoading}
+        deleteFn={handleProductDelete}
         />
         <RestockModal 
         isOpen={isOpenRestock} 
@@ -363,14 +422,25 @@ const Products = () => {
         >
             <div className="mb-8">
                 <p className='leading-6 text-gray-500 mt-2'>
-                You are about to deactivate Global Pentazocine, once deactivated, this product will appear in your public shop.
+                You are about to deactivate
+                <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                , once deactivated, this product will not appear in your public shop.
                 There is no fee for deactivating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
-                    <button className='bg-primary-600 text-white p-3 rounded-md'>
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleProductDeactivate("deactivate")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
                         Deactivate
-                    </button>
-                    <button className='cursor-pointer mt-2' onClick={onCloseDeactivate}>Cancel</button>
+                    </Button>
+                    <Button 
+                    variant={"outline"} 
+                    className='cursor-pointer mt-2' 
+                    onClick={onCloseDeactivate}>
+                        Cancel
+                    </Button>
                 </div>
             </div>
         </ModalWrapper>
@@ -381,14 +451,25 @@ const Products = () => {
         >
             <div className="mb-8">
                 <p className='leading-6 text-gray-500 mt-2'>
-                You are about to activate Global Pentazocine, once activated, this product will not appear in your public shop.
+                You are about to activate
+                <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                , this product will not appear in your public shop.
                 There is no fee for activating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
-                    <button className='bg-primary-600 text-white p-3 rounded-md'>
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleProductDeactivate("activate")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
                         Activate
-                    </button>
-                    <button className='cursor-pointer mt-2' onClick={onCloseActivate}>Cancel</button>
+                    </Button>
+                    <Button 
+                    variant={"outline"}
+                    className='cursor-pointer mt-2'
+                    onClick={onCloseActivate}>
+                        Cancel
+                    </Button>
                 </div>
             </div>
         </ModalWrapper>

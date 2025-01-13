@@ -5,6 +5,7 @@ import { CiFilter } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { 
+    Button,
     Flex, 
     Spinner, 
     Table, 
@@ -26,7 +27,7 @@ import {
 } from "@tanstack/react-table";
 
 import { PRODUCTVIEW } from "@/app/globalTypes";
-import { classNames } from "@/utils";
+import { classNames, handleServerErrorMessage } from "@/utils";
 import Link from "next/link";
 import EmptyOrder from "../../suppliers/orders/_components/EmptyOrder";
 import Pagination from "../../suppliers/_components/Pagination";
@@ -46,6 +47,7 @@ import {
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
+import { toast } from "react-toastify";
 
 interface IFilterInput {
     endDate?: Date | null;
@@ -65,6 +67,7 @@ const Page = () => {
     const [pageCount, setPageCount] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     
     const [status, setStatus] = useState<string[]>([]);
     const [brandQuery, setBrandQuery] = useState<string[]>([]);
@@ -195,7 +198,54 @@ const Page = () => {
         { option: "Suspended", value: "inactive" },
     ];
 
-    console.log(inventoryQuery)
+    const handleProductDeactivate = async(type: string) => {
+        if(!selectedProduct) return;
+        setIsLoading(true);
+        const formdata = new FormData();
+        if(type === "deactivate"){
+            formdata.append("status", "PENDING");
+        }else{
+            formdata.append("status", "ACTIVE");
+        }
+        try {
+            const response = await requestClient({token: token}).post(
+                `/admin/settings/products/${selectedProduct?.id}`,
+                formdata
+            )
+            if (response.status === 200) {
+                toast.success(response.data.message);
+                fetchProducts();
+                setIsLoading(false);
+                onCloseDeactivate();
+                onCloseActivate();
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        }
+    }
+    const handleProductDelete = async() => {
+        if(!selectedProduct) return;
+        setIsLoading(true);
+        try {
+            const response = await requestClient({token: token}).delete(
+                `/admin/settings/products/${selectedProduct?.id}`,
+            )
+            if (response.status === 200) {
+                toast.success(response.data.message);
+                fetchProducts();
+                setIsLoading(false);
+                onClose();
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        }
+    }
+
+    console.log(products)
     
     return (
     <div className="p-8">
@@ -309,18 +359,25 @@ const Page = () => {
                 </TableContainer>
             )
             : <GridList 
-            data={memoizedData}
-            routing="/admin/products"
-            selectedProduct={selectedProduct}
-            setSelectedProduct={setSelectedProduct}
-            fetchProducts={fetchProducts}
-            type="admin"
+                data={memoizedData}
+                routing="/admin/products"
+                selectedProduct={selectedProduct}
+                setSelectedProduct={setSelectedProduct}
+                fetchProducts={fetchProducts}
+                type="admin"
+                isLoading={isLoading}
+                onOpen={onOpen}
+                onOpenActivate={onOpenActivate}
+                onOpenDeactivate={onOpenDeactivate}
+                deleteFn={handleProductDelete}
             />)
         }
         </div>
         <DeleteModal 
             isOpen={isOpen} 
             onClose={onClose}
+            deleteFn={handleProductDelete}
+            isLoading={isLoading}
         />
         <RestockModal 
             isOpen={isOpenRestock} 
@@ -348,14 +405,25 @@ const Page = () => {
         >
             <div className="mb-8">
                 <p className='leading-6 text-gray-500 mt-2'>
-                You are about to deactivate Global Pentazocine, once deactivated, this product will not appear in your public shop.
+                You are about to deactivate
+                <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                , once deactivated, this product will not appear in your public shop.
                 There is no fee for deactivating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
-                    <button className='bg-primary-600 text-white p-3 rounded-md'>
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleProductDeactivate("deactivate")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
                         Deactivate
-                    </button>
-                    <button className='cursor-pointer mt-2' onClick={onCloseDeactivate}>Cancel</button>
+                    </Button>
+                    <Button 
+                    variant={"outline"} 
+                    className='cursor-pointer mt-2' 
+                    onClick={onCloseDeactivate}>
+                        Cancel
+                    </Button>
                 </div>
             </div>
         </ModalWrapper>
@@ -366,14 +434,25 @@ const Page = () => {
         >
             <div className="mb-8">
                 <p className='leading-6 text-gray-500 mt-2'>
-                You are about to activate Global Pentazocine, once activated, this product will not appear in your public shop.
+                You are about to activate
+                <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                , this product will not appear in your public shop.
                 There is no fee for activating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
-                    <button className='bg-primary-600 text-white p-3 rounded-md'>
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleProductDeactivate("activate")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
                         Activate
-                    </button>
-                    <button className='cursor-pointer mt-2' onClick={onCloseActivate}>Cancel</button>
+                    </Button>
+                    <Button 
+                    variant={"outline"}
+                    className='cursor-pointer mt-2'
+                    onClick={onCloseActivate}>
+                        Cancel
+                    </Button>
                 </div>
             </div>
         </ModalWrapper>
