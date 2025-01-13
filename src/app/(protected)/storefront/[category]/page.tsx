@@ -38,7 +38,7 @@ export default function StoreFrontByCategory() {
       link: '/storefront'
     },
     {
-      text: `${loading ? <Spinner /> : categoryData?.category.name}`,
+      text: `${loading ? <Spinner /> : categoryData?.category?.name}`,
       link: '#'
     }
   ]
@@ -49,7 +49,8 @@ export default function StoreFrontByCategory() {
     const fetchCategoryData = async () => {
       try {
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/categories/${category}`);
-        // console.log(data);
+        console.log(data?.data?.data);
+        // setCategoryData([]);
         setCategoryData(data?.data?.data);
       } catch (e) {
         console.log(e)
@@ -69,15 +70,14 @@ export default function StoreFrontByCategory() {
       {/* <section className=""> */}
       {/* <EmptyProductScreen /> */}
 
-      {loading ? <Spinner /> :
+      {loading ? <div className='w-full h-screen flex items-center justify-center'> <Spinner /></div> :
         <>
           <div className=" w-11/12 my-8 mx-auto">
-            <div className={`gap-x-4 gap-y-6 w-full   ${categoryData?.data.length > 0 ? "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4" : " "}`}>
-              {categoryData?.data && categoryData?.data.length > 0 ? categoryData?.data
-                .map((data: any, i: number) => (
-                  // <p key={i}>Item {i}</p>
-                  <StoreProductCardComponent key={i} product={data} />
-                ))
+            <div className={`gap-x-4 gap-y-6 w-full   ${categoryData?.data?.length > 0 ? "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4" : " "}`}>
+              {categoryData?.data && categoryData?.data?.length > 0 ? categoryData?.data?.map((data: any, i: number) => (
+                // <p key={i}>Item {i}</p>
+                <StoreProductCardComponent key={i} product={data} />
+              ))
 
                 : <EmptyProductScreen />
               }
