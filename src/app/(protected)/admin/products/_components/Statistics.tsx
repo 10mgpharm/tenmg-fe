@@ -1,4 +1,4 @@
-import { options } from "@/app/(protected)/suppliers/page"
+import { options } from "@/app/(protected)/suppliers/SupplierDashboard"
 import VisitChart from "./VisitChart"
 import ProductSoldChart from "./ProductSoldChart"
 import RevenueChart from "./RevenueChart"

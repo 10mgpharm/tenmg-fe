@@ -37,6 +37,7 @@ import EmptyResult from "../_components/EmptyResult";
 import { useDebouncedValue } from "@/utils/debounce";
 import UploadModal from "../_components/UploadModal";
 import { ConfirmationModal } from "./_components/ConfirmationModal";
+import { dateToString } from "@/utils/formatDate";
 
 export interface IFilterInput {
   endDate?: Date | null;
@@ -88,10 +89,10 @@ const CustomerManagement = () => {
       query += `&status=${status}`;
     }
     if (createdAtStart) {
-      query += `&createdAtStart=${createdAtStart.toISOString().split("T")[0]}`;
+      query += `&createdAtStart=${dateToString(createdAtStart)}`;
     }
     if (createdAtEnd) {
-      query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
+      query += `&createdAtEnd=${dateToString(createdAtEnd)}`;
     }
 
     try {

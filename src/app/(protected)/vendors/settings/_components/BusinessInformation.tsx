@@ -167,31 +167,6 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 {errors.contactEmail?.message}
               </FormErrorMessage>
             </FormControl>
-            {/* <FormControl isInvalid={!!errors.contactEmail?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Business Email
-              </FormLabel>
-              <InputGroup>
-                <InputLeftElement pointerEvents="none" fontSize="1.2em">
-                  <MdOutlineEmail color="gray.300" />
-                </InputLeftElement>
-                <Input
-                  type="email"
-                  placeholder="Enter business email"
-                  pl={10}
-                  {...register("contactEmail", {
-                    required: "Business Email is required",
-                    pattern: {
-                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                      message: "Invalid email address",
-                    },
-                  })}
-                />
-              </InputGroup>
-              <FormErrorMessage>
-                {errors.contactEmail?.message}
-              </FormErrorMessage>
-            </FormControl> */}
             <FormControl isInvalid={!!errors.contactPhone?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Contact Phone Number
@@ -233,18 +208,6 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 })}
               />
             </FormControl>
-            {/* <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Position
-              </FormLabel>
-              <Input
-                type="text"
-                placeholder="Enter position"
-                {...register("contactPersonPosition", {
-                  required: "Contact Person Position is required",
-                })}
-              />
-            </FormControl> */}
           </HStack>
         </Skeleton>
         <Skeleton isLoaded={!isInfoLoading}>

@@ -20,6 +20,7 @@ import { BiMessageDetail } from 'react-icons/bi'
 import { redirect, usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
+import { BusinessStatus } from "@/constants";
 
 const navigation = [
   { name: 'Dashboard', href: '/suppliers', icon: HomeIcon, current: true },
@@ -31,7 +32,24 @@ const navigation = [
   { name: 'Settings', href: '/suppliers/settings', icon: Cog6ToothIcon, current: false },
 ]
 
-const SideBar = () => {
+const mustAlwaysBeEnabled = (name: string) =>
+  ["Dashboard", "Settings"].includes(name);
+
+const isLinkDisabled = (businessStatus: string, name: string) => {
+  const disabledBusinessStatuses = [
+    BusinessStatus.PENDING_VERIFICATION,
+    BusinessStatus.PENDING_APPROVAL,
+    BusinessStatus.REJECTED,
+  ];
+  return disabledBusinessStatuses.includes(businessStatus as BusinessStatus) &&
+    !mustAlwaysBeEnabled(name)
+    ? true
+    : false;
+};
+
+
+
+const SideBar = ({ businessStatus }: { businessStatus: string }) => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -63,6 +81,7 @@ const SideBar = () => {
                     <ul role="list" className="-mx-2 space-y-6">
                       {navigation.map((item) => {
                         const isActive = pathname.includes(item.href);
+                        const disabled = isLinkDisabled(businessStatus, item.name);
                         return (
                           <li key={item.name}>
                             <Link
@@ -71,6 +90,7 @@ const SideBar = () => {
                                 isActive
                                   ? 'bg-indigo-700 text-white'
                                   : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
+                                  disabled ? "pointer-events-none opacity-50" : "",
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                               )}
                             >
@@ -115,8 +135,10 @@ const SideBar = () => {
                 <ul role="list" className="-mx-2 space-y-8">
                   {navigation.map((item) => {
                     const isActive = pathname === item.href;
+                    const disabled = isLinkDisabled(businessStatus, item.name);
                     // const isActive = pathname.includes(item.href);
                     // let isActive = new RegExp(`^${item.href.replace(/\d+/g, '\\d+')}.*$`).test(pathname);
+                    
                     return (
                       <li key={item.name}>
                         <Link
@@ -125,6 +147,7 @@ const SideBar = () => {
                             isActive
                               ? 'bg-primary-50 text-primary-500 p-0.5'
                               : 'text-gray-500 px-3',
+                              disabled ? "pointer-events-none opacity-50" : "",
                             'group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6',
                           )}
                         >
