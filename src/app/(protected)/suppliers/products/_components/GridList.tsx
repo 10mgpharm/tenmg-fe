@@ -13,25 +13,50 @@ import { BsThreeDotsVertical } from 'react-icons/bs'
 import { classNames } from '@/utils'
 import DeleteModal from './DeleteModal'
 import RestockModal from './RestockModal'
-import DeactiveModal from './DeactiveModal'
 import { ProductDataProps } from '@/types'
 import { Dispatch, SetStateAction } from 'react'
 
 const GridList = (
-    {data, routing, selectedProduct, setSelectedProduct, fetchProducts, type}: 
-    {data: ProductDataProps[], routing: string, selectedProduct: ProductDataProps, setSelectedProduct: Dispatch<SetStateAction<ProductDataProps>>, fetchProducts: () => void, type: string}) => {
+    {
+        data, 
+        routing, 
+        selectedProduct, 
+        setSelectedProduct, 
+        fetchProducts, 
+        type,
+        isLoading,
+        deleteFn,
+        onOpen,
+        onOpenDeactivate,
+        onOpenActivate,
+    }: 
+    {
+        data: ProductDataProps[], 
+        routing: string, 
+        selectedProduct: 
+        ProductDataProps, 
+        setSelectedProduct: Dispatch<SetStateAction<ProductDataProps>>, 
+        fetchProducts: () => void, 
+        type: string,
+        isLoading: boolean,
+        deleteFn: () => void,
+        onOpen: () => void,
+        onOpenDeactivate: () => void,
+        onOpenActivate: () => void,
+    }
+) => {
 
-    const { isOpen, onClose, onOpen } = useDisclosure();
     const { 
         isOpen: isOpenRestock, 
         onClose: onCloseRestock, 
-        onOpen: onOpenRestock } = useDisclosure();
-    const { 
-        isOpen: isOpenDeactivate, 
-        onClose: onCloseDeactivate, 
-        onOpen: onOpenDeactivate 
+        onOpen: onOpenRestock 
     } = useDisclosure();
-    
+    const { 
+        isOpen: isOpenDelete, 
+        onClose: onCloseDelete, 
+        onOpen: onOpenDelete 
+    } = useDisclosure();
+
   return (
     <div className='grid grid-cols-3 2xl:grid-cols-4 gap-5'>
         {
@@ -48,7 +73,7 @@ const GridList = (
                             <MenuButton className='bg-white shadow-sm p-2 rounded-full'>
                                 <BsThreeDotsVertical className="w-5 h-auto"/>
                             </MenuButton>
-                            <MenuList dir='rtl'>
+                            <MenuList dir='ltr'>
                                 <MenuItem>
                                     <Link href={`${routing}/${item.id}`}>View Product</Link>
                                 </MenuItem>
@@ -64,12 +89,26 @@ const GridList = (
                                     Restock
                                 </MenuItem>
                                 {
-                                    item?.status === "ACTIVE" ? 
-                                    <MenuItem onClick={() => onOpenDeactivate()}>Deactivate Product</MenuItem>
-                                    : <MenuItem onClick={() => onOpenDeactivate()}>Activate Product</MenuItem>
+                                    (item?.status === "ACTIVE" || item?.status === "APPROVED") ? 
+                                    <MenuItem onClick={() => {
+                                        setSelectedProduct(item)
+                                        onOpenDeactivate()
+                                    }}>
+                                        Deactivate Product
+                                    </MenuItem>
+                                    : <MenuItem 
+                                    onClick={() => {
+                                        setSelectedProduct(item)
+                                        onOpenActivate()}
+                                    }>
+                                        Activate Product
+                                    </MenuItem>
                                 }
                                 <MenuItem 
-                                onClick={() => onOpen()} 
+                                onClick={() => {
+                                    setSelectedProduct(item)
+                                    onOpenDelete()
+                                }} 
                                 color="red.500">
                                     Delete Product
                                 </MenuItem>
@@ -93,19 +132,28 @@ const GridList = (
                             <Box px={2} maxW={"fit-content"} 
                             className={
                                 classNames(
-                                item.inventory === "IN STOCK" ? 
+                                item.inventory === "ACTIVE" ? 
                                 "bg-green-50 text-green-500" : 
+                                item.status === "PENDING" ? 
+                                "bg-orange-50 text-orange-500":
+                                item.status === "APPROVED" ? 
+                                "text-blue-500 bg-blue-50" :
                                 "bg-red-50 text-red-500" , 
                                 ' max-w-max px-2 rounded-full')}
                             >
-                                <Text fontSize={"12px"}>{item?.inventory}</Text>
+                                <Text fontSize={"12px"}>{item?.status}</Text>
                             </Box>
                         </div>
                     </div>
                 </div>
             ))
         }
-        <DeleteModal isOpen={isOpen} onClose={onClose}/>
+        <DeleteModal 
+        isOpen={isOpenDelete} 
+        onClose={onCloseDelete}
+        isLoading={isLoading}
+        deleteFn={deleteFn}
+        />
         <RestockModal 
         isOpen={isOpenRestock} 
         onClose={onCloseRestock} 
@@ -113,9 +161,8 @@ const GridList = (
         fetchProducts={fetchProducts}
         type={type}
         />
-        <DeactiveModal isOpen={isOpenDeactivate} onClose={onCloseDeactivate}/>
     </div>
   )
 }
 
-export default GridList
+export default GridList;

@@ -1,11 +1,7 @@
-"use client";
-import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import Carousel from "./_components/Carousel";
-import ProductField from "./_components/ProductField";
-import { useEffect, useState } from "react";
-import requestClient from "@/lib/requestClient";
-import EmptyStoreFront from "./_components/EmptyStoreFront";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import StoreFrontPharmacy from "./_components/StorefrontPharmacy";
 
 const StoreFront = () => {
   const session = useSession();
@@ -50,13 +46,8 @@ const StoreFront = () => {
   console.log("storeFrontData", storeFrontData);
 
   return (
-    <div className="">
-      <div className="p-8 px-6 md:px-20 max-w-screen-2xl">
-        <Carousel />
-      </div>
-      {isEmpty ? <EmptyStoreFront /> : storeFrontData?.map((category, i) => (
-        category?.products?.length > 0 && <ProductField key={i} category={category} />
-      ))}
+    <div>
+      <StoreFrontPharmacy businessStatus={data?.user?.businessStatus} />
     </div>
   );
 };

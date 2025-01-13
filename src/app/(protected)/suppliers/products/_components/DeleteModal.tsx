@@ -1,8 +1,11 @@
-import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react'
+import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react'
 import icon from '@public/assets/images/image 20.svg';
 import Image from 'next/image';
 
-const DeleteModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) => {
+const DeleteModal = (
+    {isOpen, onClose, deleteFn, isLoading}: 
+    {isOpen: boolean, onClose: () => void, deleteFn: () => void, isLoading: boolean}
+) => {
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -16,10 +19,21 @@ const DeleteModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void}) 
                     <h3 className='text-xl font-semibold'>Delete Product</h3>
                     <p className='text-sm text-gray-500 mt-2'>Deleting this product will remove it permanently from your store. Are you sure?</p>
                     <div className="flex flex-col gap-1 mt-8">
-                        <button className='bg-red-600 text-white p-3 rounded-md'>
+                        <Button 
+                        isLoading={isLoading}
+                        onClick={deleteFn}
+                        loadingText="Deleting..."
+                        bg={"red.600"}
+                        color={"white"}
+                        >
                             Yes, Delete Product
-                        </button>
-                        <button className='cursor-pointer mt-2 p-3 rounded-md border' onClick={() => onClose()}>Cancel</button>
+                        </Button>
+                        <Button 
+                        variant={"outline"}
+                        className='mt-2' 
+                        onClick={() => onClose()}>
+                            Cancel
+                        </Button>
                     </div>
                 </div>
             </ModalBody>

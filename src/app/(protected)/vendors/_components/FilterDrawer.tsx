@@ -15,6 +15,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { Controller, useForm } from "react-hook-form";
+import DateRange from "../../_components/DateRange";
 
 interface IFormInput {
   endDate?: Date | null;
@@ -46,13 +47,16 @@ const FilterDrawer = ({
     handleSubmit,
     formState: {},
     control,
-    getValues,
+    watch,
+    setValue,
     reset,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
 
   const onSubmit = (data: IFormInput) => {
+
+    console.log(data.startDate.toISOString().split("T")[1])
     applyFilters(data);
     onClose();
   };
@@ -80,7 +84,7 @@ const FilterDrawer = ({
           </Text>
         </DrawerHeader>
         <DrawerBody>
-          <Stack mt={5}>
+          <Stack mt={5} spacing={5}>
             <FormControl>
               <FormLabel>Status</FormLabel>
               <Controller
@@ -102,37 +106,15 @@ const FilterDrawer = ({
               />
             </FormControl>
             {isNotDate ? null : (
-              <>
-                <FormControl>
-                  <FormLabel>From</FormLabel>
-                  <Controller
-                    name="startDate"
-                    control={control}
-                    render={({ field }) => (
-                      <DateComponent
-                        startDate={field.value}
-                        setStartDate={field.onChange}
-                        isMinDate
-                      />
-                    )}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>To</FormLabel>
-                  <Controller
-                    name="endDate"
-                    control={control}
-                    render={({ field }) => (
-                      <DateComponent
-                        startDate={field.value}
-                        setStartDate={field.onChange}
-                        isMinDate
-                        minDate={getValues("startDate")}
-                      />
-                    )}
-                  />
-                </FormControl>
-              </>
+            <DateRange
+            fromName="startDate"
+            toName="endDate"
+            control={control}
+            watch={watch}
+            setValue={setValue}
+            labelFrom="From"
+            labelTo="To"
+          />
             )}
           </Stack>
         </DrawerBody>

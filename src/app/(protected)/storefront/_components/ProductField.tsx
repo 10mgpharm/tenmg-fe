@@ -21,7 +21,7 @@ const ProductsField = ({ category }: any) => {
         color="white"
         mb={8}
       >
-        <Text fontSize="lg" className="capitalize">{category?.name}</Text>
+        <Text fontSize="lg" className="capitalize">{category?.name.toUpperCase()}</Text>
         <Button variant="link" color="white" _hover={{ textDecoration: 'underline' }}>
           {/* <Link href={`/storefront/${categoryParam}`}> */}
           <Link href={`/storefront/${category?.slug}`}>
