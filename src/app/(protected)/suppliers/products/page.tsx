@@ -315,7 +315,7 @@ const Products = () => {
             memoizedData?.length === 0 
             ? <EmptyOrder 
             heading={`No Product Yet`} 
-            content={`You currently have no product. All products will appear here.`}
+            content={globalFilter ? "All products will appear here." : "You currently have no product. All products will appear here."}
             /> : 
             currentView === PRODUCTVIEW.LIST ?
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -457,7 +457,7 @@ const Products = () => {
                 <p className='leading-6 text-gray-500 mt-2'>
                 You are about to activate
                 <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
-                , this product will not appear in your public shop.
+                , this product will appear in your public shop.
                 There is no fee for activating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
