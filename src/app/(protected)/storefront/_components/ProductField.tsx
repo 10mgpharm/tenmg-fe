@@ -44,12 +44,19 @@ const ProductsField = ({ category }: any) => {
           'scrollbar-width': 'none'
         }}
       >
+        {/* {category?.products?.length < 1 ? "" :
+          <> */}
         {category?.products?.map((product, index) => (
           <StoreProductCardComponent key={index} product={product} />
         ))}
+        {/* </>
+        } */}
       </Flex>
     </Box>
   );
 };
 
 export default ProductsField;
+
+
+// const EmptyProd
