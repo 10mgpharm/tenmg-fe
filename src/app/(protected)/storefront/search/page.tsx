@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react'
 import BreadCrumbBanner from '../_components/BreadCrumbBanner';
 import StoreProductCardComponent from '../_components/StoreProductCardComponent';
+import EmptyProductScreen from '../_components/EmptyProductScreen';
 
 export default function SearchPage() {
 
@@ -77,14 +78,15 @@ export default function SearchPage() {
         </div>
 
         <div className="col-span-3">
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6'>
+          {/* <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6'>
             {Array(8)
               .fill(null)
               .map((_, i: number) => (
                 // <p key={i}>Item {i}</p>
                 <StoreProductCardComponent key={1} />
               ))}
-          </div>
+          </div> */}
+          <EmptyProductScreen />
         </div>
 
       </div>

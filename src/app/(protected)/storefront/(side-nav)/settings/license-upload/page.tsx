@@ -93,44 +93,44 @@ export default function LegalLicense() {
       console.log("No CAC document selected.");
     }
 
-    // try {
-    //   setIsLoading(true);
-    //   const response = await requestClient({
-    //     token: sessionData.user.token,
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   }).post("/vendor/settings/license", formData);
-    //   if (response.status === 200) {
-    //     toast.success(response.data.message);
+    try {
+      setIsLoading(true);
+      const response = await requestClient({
+        token: sessionData.user.token,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }).post("/vendor/settings/license", formData);
+      if (response.status === 200) {
+        toast.success(response.data.message);
 
-    //     // update session here
-    //     await session.update({
-    //       ...sessionData,
-    //       user: {
-    //         ...sessionData.user,
-    //         businessStatus: BusinessStatus.PENDING_APPROVAL
-    //       },
-    //     });
+        // update session here
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            businessStatus: BusinessStatus.PENDING_APPROVAL
+          },
+        });
 
-    //     const { expiryDate, licenseFile, licenseNumber, licenseVerificationStatus } = response.data?.data;
+        const { expiryDate, licenseFile, licenseNumber, licenseVerificationStatus } = response.data?.data;
 
-    //     setBusinessLisense({
-    //       expiryDate,
-    //       licenseFile,
-    //       licenseNumber,
-    //       licenseVerificationStatus,
-    //     });
+        setBusinessLisense({
+          expiryDate,
+          licenseFile,
+          licenseNumber,
+          licenseVerificationStatus,
+        });
 
-    //     setIsLoading(false);
-    //   } else {
-    //     toast.error(`License upload failed: ${response.data.message}`);
-    //   }
-    // } catch (error) {
-    //   setIsLoading(false);
-    //   const errorMessage = handleServerErrorMessage(error);
-    //   toast.error(`License upload failed: ${errorMessage}`);
-    // }
+        setIsLoading(false);
+      } else {
+        toast.error(`License upload failed: ${response.data.message}`);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(`License upload failed: ${errorMessage}`);
+    }
   };
 
   const {

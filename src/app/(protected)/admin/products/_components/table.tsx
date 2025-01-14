@@ -54,9 +54,11 @@ export function ColumsProductFN(
               className="w-8 h-8 rounded-full"
             />
           }
-            <p className="font-medium capitalize">
-              {info?.row?.original?.name} 
-            </p>
+            <Link 
+            className="capitalize font-medium" 
+            href={`/admin/products/${info.row.original.id}`}>
+              {info?.row?.original?.name}
+            </Link>
         </div>
       ),
     }),
@@ -67,7 +69,9 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="capitalize font-medium">{info?.row?.original?.brand?.name}</p>
+            <p className="capitalize font-medium">
+              {info?.row?.original?.brand?.name}
+            </p>
           </div>
         );
       },
@@ -79,7 +83,9 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="font-medium">{info?.row?.original?.medicationType?.variations[0]?.weight}</p>
+           <p className="font-medium">
+            {info?.row?.original?.medicationType?.variations[0]?.weight}
+          </p>
           </div>
         );
       },

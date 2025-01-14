@@ -23,6 +23,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Skeleton,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
@@ -67,8 +68,8 @@ const StoreFrontPharmacy = ({
         );
 
         setStoreFrontData(data?.data?.data);
-
-        const storeCount = data?.data?.data?.flatMap(
+        console.log("data?.data?.data", data?.data?.data)
+        const storeCount = data?.data?.data?.data?.flatMap(
           (item) => item.products
         ).length;
         setIsEmpty(storeCount === 0);
@@ -80,6 +81,8 @@ const StoreFrontPharmacy = ({
     };
     fetchStoreFront();
   }, [userData?.user?.token]);
+
+  console.log("isEmpty", isEmpty);
 
   return (
     <div className="">
@@ -133,14 +136,16 @@ const StoreFrontPharmacy = ({
       <div className="p-8 px-6 md:px-20 max-w-screen-2xl">
         <Carousel />
       </div>
-
+      {isLoading && <div className="w-full h-1/2 flex items-center justify-center">
+        <Spinner />
+      </div>}
       <Skeleton isLoaded={!isLoading} fadeDuration={0.4}>
         {isEmpty ? (
           <EmptyStoreFront />
         ) : (
           <>
             {storeFrontData?.data?.map((category, i) => (
-              <ProductField key={i} category={category} />
+              category?.products?.length > 0 && <ProductField key={i} category={category} />
             ))}
           </>
         )}

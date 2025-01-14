@@ -18,6 +18,7 @@ import { NextAuthUserSession, ProductDataProps } from '@/types';
 import ExploreData from '../_components/ExploreData';
 import { convertDate } from '@/utils/formatDate';
 import productImage from '../../../../../../public/assets/images/product.svg'
+import Link from 'next/link';
 
 const ProductDetail = ({params}: {params: {id: string}} ) => {
     const router = useRouter();
@@ -59,10 +60,17 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
 
     return (
     <div className='p-8'>
-        <HStack onClick={() => router.back()} cursor={"pointer"}>
-            <ArrowLeftIcon className='w-5 h-5'/>
-            <Text>Back</Text>
-        </HStack>
+        <Flex justify={"space-between"} align={"center"}>
+            <HStack onClick={() => router.back()} cursor={"pointer"}>
+                <ArrowLeftIcon className='w-5 h-5'/>
+                <Text>Back</Text>
+            </HStack>
+            <Link 
+            className='bg-primary-500 p-2.5 w-28 font-medium text-center rounded-md text-white' 
+            href={`/admin/products/edit/${params.id}`}>
+                Edit
+            </Link>
+        </Flex>
         <div className="mt-5">
             <div className="flex gap-5 mb-3">
                 <div className="">

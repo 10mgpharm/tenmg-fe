@@ -148,6 +148,13 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
         const formdata = new FormData();
+        const dateString = data?.expiredAt?.toString();
+        let formattedDate: string;
+        if(dateString.includes('Z')){
+            formattedDate = data?.expiredAt;
+        } else {
+            formattedDate = data?.expiredAt.toISOString();
+        }
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
         formdata.append("medicationTypeName", data.medicationTypeName)
@@ -160,7 +167,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("measurementName", data?.measurementName);
         formdata.append("lowStockLevel", data?.lowStockLevel);
         formdata.append("outStockLevel", data?.outStockLevel);
-        formdata.append("expiredAt", data?.expiredAt);
+        formdata.append("expiredAt", formattedDate);
         formdata.append("thumbnailFile", data?.thumbnailFile);
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);

@@ -92,33 +92,6 @@ const DetailForm: React.FC<IChildComponentProps> = ({
         </div>
         <h3 className="font-semibold text-xl text-gray-700 my-5">{title}</h3>
         <div className="space-y-5">
-        <FormControl isInvalid={!!errors.categoryName}>
-                    <FormLabel>Select Medication</FormLabel>
-                    <Controller
-                        control={control}
-                        name={"categoryName"}
-                        rules={{ required: 'Medication is required' }}
-                        render={({ field: { onChange, value } }) =>
-                            <div className="flex flex-col">
-                                <CustomCreatableSelectComponent
-                                    value={value}
-                                    name={"categoryName"}
-                                    placeholder={'Select...'}
-                                    options={convertCreateOptionArray(categories)}
-                                    onOptionSelected={(selectedOption: CreatableSelectOption) => {
-                                        onChange(selectedOption?.value);
-                                    }}
-                                />
-                                {errors.categoryName?.message &&
-                                    <Text as={"span"} className="text-red-500 text-sm">
-                                        {errors?.categoryName?.message}
-                                    </Text>
-                                }
-                            </div>
-                        }
-                    />
-                </FormControl>
-
             <FormControl isInvalid={!!errors.productName}>
                 <FormLabel>Product Name</FormLabel>
                 <Input 
