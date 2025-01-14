@@ -81,8 +81,6 @@ const StoreFrontPharmacy = ({
     fetchStoreFront();
   }, [userData?.user?.token]);
 
-  console.log("storeFrontData", storeFrontData);
-
   return (
     <div className="">
       {[
