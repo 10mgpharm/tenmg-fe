@@ -49,7 +49,6 @@ const PersonalInformation = () => {
 
     const file = event.target.files[0];
 
-    // Validate file size
     if (file.size >= 5 * 1024 * 1024) {
       chakraToast({
         title: "Warning",
@@ -62,7 +61,6 @@ const PersonalInformation = () => {
       return;
     }
 
-    // Validate file type (optional additional check)
     if (!file.type.startsWith("image/")) {
       chakraToast({
         title: "Warning",
@@ -141,7 +139,7 @@ const PersonalInformation = () => {
     } finally {
       setIsUerInfo(false);
     }
-  }, [sessionData.user.token, setValue]);
+  }, [sessionData?.user?.token, setValue]);
 
   useEffect(() => {
     if (sessionData?.user?.token) fetchUserInformation();
