@@ -10,7 +10,7 @@ import { NextAuthUserSession } from '@/types'
 import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
 import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
 import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
-import { Flex, Spinner } from '@chakra-ui/react'
+import { Flex, Spinner, Tag, TagLabel } from '@chakra-ui/react'
 export default function ProductDetailPage() {
 
   const breadCrumb = [
@@ -23,7 +23,7 @@ export default function ProductDetailPage() {
       link: '/storefront'
     },
     {
-      text: 'Vaccines',
+      text: '',
       link: '#'
     }
   ]
@@ -71,14 +71,24 @@ export default function ProductDetailPage() {
             <div className='flex items-center justify-between gap-6 mx-auto w-11/12 flex-col lg:flex-row'>
 
               {/* product iamge container */}
-              <div className='w-full lg:w-1/2 rounded-sm'>
+              <div className='w-full lg:w-1/2 rounded-lg overflow-hidden relative '>
                 <Image
                   width={568}
                   height={611}
                   // src={'/assets/images/productImgDetails.png'}
                   src={productData?.thumbnailUrl ? productData?.thumbnailUrl : '/assets/images/productImgDetails.png'}
                   alt=''
+                  className='w-full'
                 />
+                <div className='absolute top-4 right-4'> <Tag
+                  size="sm"
+                  ml="1"
+                  // borderRadius={"50%"}
+                  color={"green.500"}
+                  bgColor={"green.50"}
+                >
+                  <TagLabel>{`${productData?.inventory}: ${productData?.quantity} items left`}</TagLabel>
+                </Tag></div>
               </div>
 
               {/* description container */}
@@ -94,29 +104,14 @@ export default function ProductDetailPage() {
                   happier, healthier you.</p>
 
 
-                <div className='flex items-center gap-4'>
-                  <div className='flex bg-primary-50 text-xs items-center gap-4 px-3 py-2'>
+                <div className=' space-y-4'>
+                  <div className='flex bg-primary-50 text-xs items-center gap-4 px-3 py-2 w-fit'>
                     <Minus className='w-3' />
                     <span>1</span>
                     <Plus className='w-3' />
                   </div>
 
                   <button className='bg-primary-500 text-white w-fit p-3  rounded-md text-xs font-semibold'>Buy Now</button>
-                </div>
-
-                <div className='flex gap-4 bg-gray-25 px-8 py-5 rounded-md'>
-                  <div className='w-1/2 '>
-                    <h4 className='text-2xl text-primary-500 font-semibold'>Ingredients:</h4>
-                    <p className='text-[14px] my-1'>Probiotic Blend (Lactobacillus acidophilus)</p>
-                    <p className='text-[14px] my-1'>Prebiotic Fiber</p>
-                    <p className='text-[14px] my-1'>Digestive Enzymes (Amylase,Protease, Lipase)</p>
-                  </div>
-                  <div className='w-1/2 '>
-                    <h4 className='text-2xl text-primary-500 font-semibold'>Key Features:</h4>
-                    <p className='text-[14px] my-1'>Supports digestive health</p>
-                    <p className='text-[14px] my-1'>Balances gut flora</p>
-                    <p className='text-[14px] my-1'>Aids in nutrient absorption</p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -159,7 +154,7 @@ export default function ProductDetailPage() {
                   'scrollbar-width': 'none'
                 }}
               >
-                {Array(4)
+                {Array(6)
                   .fill(null)
                   .map((_, i: number) => (
                     // <p key={i}>Item {i}</p>

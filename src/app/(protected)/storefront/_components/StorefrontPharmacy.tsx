@@ -30,6 +30,7 @@ import {
 } from "@chakra-ui/react";
 import { FiX } from "react-icons/fi";
 import { BusinessStatus } from "@/constants";
+import { toast } from "react-toastify";
 
 const StoreFrontPharmacy = ({
   businessStatus,
@@ -67,13 +68,14 @@ const StoreFrontPharmacy = ({
         );
 
         setStoreFrontData(data?.data?.data);
-        console.log("data?.data?.data", data?.data?.data)
+
         const storeCount = data?.data?.data?.data?.flatMap(
           (item) => item.products
         ).length;
         setIsEmpty(storeCount === 0);
       } catch (e) {
-        console.log(e);
+        // !Todo: handle error
+        // toast.error("Could not fetch store, please try again")
       } finally {
         setIsLoading(false);
       }
@@ -81,7 +83,6 @@ const StoreFrontPharmacy = ({
     fetchStoreFront();
   }, [userData?.user?.token]);
 
-  console.log("isEmpty", isEmpty);
 
   return (
     <div className="">
