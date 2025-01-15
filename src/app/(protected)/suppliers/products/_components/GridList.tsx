@@ -26,7 +26,7 @@ const GridList = (
         type,
         isLoading,
         deleteFn,
-        onOpen,
+        onOpenFlag,
         onOpenDeactivate,
         onOpenActivate,
     }: 
@@ -41,6 +41,7 @@ const GridList = (
         isLoading: boolean,
         deleteFn: () => void,
         onOpen: () => void,
+        onOpenFlag?: () => void,
         onOpenDeactivate: () => void,
         onOpenActivate: () => void,
     }
@@ -89,6 +90,17 @@ const GridList = (
                                     Restock
                                 </MenuItem>
                                 {
+                                    type === "admin" &&
+                                    <MenuItem 
+                                        onClick={() => {
+                                            setSelectedProduct(item)
+                                            onOpenFlag();
+                                        }}
+                                    >
+                                        Flag Product
+                                    </MenuItem>
+                                }
+                                {
                                     (item?.status === "ACTIVE" || item?.status === "APPROVED") ? 
                                     <MenuItem onClick={() => {
                                         setSelectedProduct(item)
@@ -132,7 +144,7 @@ const GridList = (
                             <Box px={2} maxW={"fit-content"} 
                             className={
                                 classNames(
-                                item.inventory === "ACTIVE" ? 
+                                item.status === "ACTIVE" ? 
                                 "bg-green-50 text-green-500" : 
                                 item.status === "PENDING" ? 
                                 "bg-orange-50 text-orange-500":

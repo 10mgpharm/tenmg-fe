@@ -68,6 +68,7 @@ const Page = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [comment, setComment] = useState<string>("");
     
     const [status, setStatus] = useState<string[]>([]);
     const [brandQuery, setBrandQuery] = useState<string[]>([]);
@@ -86,6 +87,7 @@ const Page = () => {
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
 
     const { isOpen, onClose, onOpen } = useDisclosure();
+    const { isOpen: isOpenFlag, onClose: onCloseFlag, onOpen: onOpenFlag } = useDisclosure();
     const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
     const { isOpen: isOpenActivate, onClose: onCloseActivate, onOpen: onOpenActivate } = useDisclosure();
@@ -157,6 +159,7 @@ const Page = () => {
         data: memoizedData,
         columns: ColumsProductFN(
                     onOpen, 
+                    onOpenFlag,
                     onOpenRestock, 
                     onOpenDeactivate, 
                     onOpenActivate, 
@@ -204,8 +207,11 @@ const Page = () => {
         const formdata = new FormData();
         if(type === "deactivate"){
             formdata.append("status", "PENDING");
-        }else{
+        }else if(type === "activate"){
             formdata.append("status", "ACTIVE");
+        }else if(type === "flagged" && comment !== ""){
+            formdata.append("status", "FLAGGED")
+            formdata.append("statusComment", comment);
         }
         try {
             const response = await requestClient({token: token}).post(
@@ -215,7 +221,9 @@ const Page = () => {
             if (response.status === 200) {
                 toast.success(response.data.message);
                 fetchProducts();
+                setComment("")
                 setIsLoading(false);
+                onCloseFlag();
                 onCloseDeactivate();
                 onCloseActivate();
             }
@@ -311,8 +319,8 @@ const Page = () => {
             ) :
             memoizedData?.length === 0 
             ? <EmptyOrder 
-                heading={`No Product Yet`} 
-                content={`You currently have no product. All products will appear here.`}
+                heading={`No Product Found`} 
+                content={globalFilter ? "All products will appear here." : "You currently have no product. All products will appear here."}
             /> : 
             memoizedData?.length > 0 && (
             currentView === PRODUCTVIEW.LIST ? (
@@ -373,6 +381,7 @@ const Page = () => {
                 type="admin"
                 isLoading={isLoading}
                 onOpen={onOpen}
+                onOpenFlag={onOpenFlag}
                 onOpenActivate={onOpenActivate}
                 onOpenDeactivate={onOpenDeactivate}
                 deleteFn={handleProductDelete}
@@ -442,7 +451,7 @@ const Page = () => {
                 <p className='leading-6 text-gray-500 mt-2'>
                 You are about to activate
                 <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
-                , this product will not appear in your public shop.
+                , this product will appear in your public shop.
                 There is no fee for activating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">
@@ -457,6 +466,38 @@ const Page = () => {
                     variant={"outline"}
                     className='cursor-pointer mt-2'
                     onClick={onCloseActivate}>
+                        Cancel
+                    </Button>
+                </div>
+            </div>
+        </ModalWrapper>
+        <ModalWrapper
+        isOpen={isOpenFlag} 
+        onClose={onCloseFlag}
+        title="Flag Product"
+        >
+            <div className="mb-8">
+                <p className='leading-6 text-gray-500 mt-2'>
+                You are about to flag
+                <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                , this product will appear not in your public shop.
+                </p>
+                <textarea 
+                onChange={(e) => setComment(e.target.value)}
+                className="w-full border rounded-md my-5 placeholder:text-gray-400 p-2" 
+                placeholder="Enter reason"></textarea>
+                <div className="flex flex-col gap-2">
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleProductDeactivate("flagged")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
+                        Proceed
+                    </Button>
+                    <Button 
+                    variant={"outline"}
+                    className='cursor-pointer'
+                    onClick={onCloseFlag}>
                         Cancel
                     </Button>
                 </div>
