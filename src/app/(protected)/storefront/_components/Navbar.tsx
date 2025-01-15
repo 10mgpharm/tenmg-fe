@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Menu,
   MenuButton,
@@ -21,7 +21,7 @@ import { Search, UserCircle2Icon, UserCircleIcon } from "lucide-react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import avatar from "@public/assets/images/Avatar.png";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { PiShoppingBagBold } from "react-icons/pi";
@@ -29,6 +29,8 @@ import { FaRegCircleQuestion } from "react-icons/fa6";
 import CartDrawer from "./CartDrawer";
 import SearchModal from "./SearchModal";
 import Link from "next/link";
+import { useCartStore } from "../useCartStore";
+import { NextAuthUserSession } from "@/types";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -45,6 +47,16 @@ const Navbar = () => {
 
   const handleOpenRemove = () => setIsRemoveOpen(true);
   const handleCloseRemove = () => setIsRemoveOpen(false);
+
+
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+  const { fetchCart, cart } = useCartStore();
+
+  useEffect(() => {
+    fetchCart(userData?.user?.token);
+
+  }, [isCartOpen, fetchCart, userData?.user?.token])
 
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
@@ -90,7 +102,7 @@ const Navbar = () => {
                   px={1}
                   borderRadius="full"
                 >
-                  1
+                  {cart?.items?.length}
                 </Box>
               </Box>
             </Stack>
@@ -221,7 +233,7 @@ const Navbar = () => {
                   px={1}
                   borderRadius="full"
                 >
-                  1
+                  {cart?.items?.length}
                 </Box>
               </Box>
               <Text>Cart</Text>

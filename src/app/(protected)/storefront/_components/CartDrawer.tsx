@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   VStack,
@@ -24,6 +24,10 @@ import drugs from "@public/assets/images/Rectangle19718.png";
 import drugsCard from "@public/assets/images/card.png";
 import drugsCh from "@public/assets/images/card1.png";
 import emptyCart from "@public/assets/images/emptyOrder.png";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import { useCartStore } from "../useCartStore";
 
 const CartDrawer = ({
   isOpen,
@@ -38,70 +42,71 @@ const CartDrawer = ({
   handleCloseRemove: () => void;
   handleOpenRemove: () => void;
 }) => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Paracetamol",
-      price: 10000,
-      quantity: 1,
-      stock: 10,
-      image: drugs,
-    },
-    {
-      id: 2,
-      name: "Pulvinar",
-      price: 10000,
-      quantity: 1,
-      stock: 10,
-      image: drugsCard,
-    },
-    {
-      id: 3,
-      name: "Paracetamol",
-      price: 10000,
-      quantity: 1,
-      stock: 10,
-      image: drugsCh,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState<any>({});
 
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { cart, addToCart, updateLoading } = useCartStore();
+
+
+  useEffect(() => {
+    if (cart) {
+      setCartItems(cart)
+    }
+  }, [cart])
+
+  console.log("userCartData", cartItems);
+
+  const subtotal = 0;
+  // const subtotal = cartItems.reduce(
+  //   (acc, item) => acc + item.price * item.quantity,
+  //   0
+  // );
 
   // Function to increase quantity
-  const increaseQuantity = (itemId: number) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId
-          ? {
-              ...item,
-              quantity:
-                item.quantity < item.stock ? item.quantity + 1 : item.quantity,
-            }
-          : item
-      )
-    );
+  const increaseQuantity = async (itemId: number) => {
+
+    const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
+    console.log("item qty", item)
+    const data = {
+      productId: itemId,
+      qty: item + 1,
+      action: 'add'
+    }
+
+    addToCart(data, userData?.user?.token)
+
+
   };
 
   // Function to decrease quantity
   const decreaseQuantity = (itemId: number) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId
-          ? {
-              ...item,
-              quantity: item.quantity > 1 ? item.quantity - 1 : item.quantity,
-            }
-          : item
-      )
-    );
+
+    const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
+    console.log("item qty", item)
+    const data = {
+      productId: itemId,
+      qty: 1,
+      action: 'minus'
+    }
+
+    addToCart(data, userData?.user?.token)
   };
 
   // Function to remove item from cart
   const removeItem = (itemId: number) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
+    console.log("item qty", item)
+    const data = {
+      productId: itemId,
+      qty: 1,
+      action: 'remove'
+    }
+
+    addToCart(data, userData?.user?.token)
   };
 
   return (
@@ -123,11 +128,11 @@ const CartDrawer = ({
 
         <Box p={4} mt={2}>
           {/* Cart Items */}
-          {cartItems.length > 0 ? (
+          {cartItems?.items?.length > 0 ? (
             <VStack align="start" spacing={4}>
-              {cartItems.map((item) => (
+              {cartItems?.items?.map((item) => (
                 <HStack
-                  key={item.id}
+                  key={item?.id}
                   spacing={6}
                   align="flex-start"
                   width="full"
@@ -136,8 +141,8 @@ const CartDrawer = ({
                 >
                   {/* Product Image */}
                   <Image
-                    src={item.image.src}
-                    alt={item.name}
+                    src={item?.product?.thumbnailFile}
+                    alt={item?.product?.name}
                     boxSize={{ base: "100px", md: "128px" }}
                     borderRadius="xl"
                   />
@@ -152,16 +157,17 @@ const CartDrawer = ({
                   >
                     {/* Product Name */}
                     <Text fontWeight="medium" fontSize="md">
-                      {item.name}
+                      {item?.product?.name}
                     </Text>
 
                     {/* Stock Information and Price */}
                     <Box>
                       <Text fontSize="sm" fontWeight="medium" color="red.500">
-                        {item.stock} units left
+                        {item?.product?.quantity} units left
                       </Text>
                       <Text fontSize="md" fontWeight="medium">
-                        ₦{item.price.toLocaleString()}.00
+                        ₦{item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}
+                        {/* ₦{item?.price?.toLocaleString()}.00 */}
                       </Text>
                     </Box>
 
@@ -180,10 +186,10 @@ const CartDrawer = ({
                         as={AiOutlineMinus}
                         _hover={{
                           cursor:
-                            item.quantity === 1 ? "not-allowed" : "pointer",
+                            item.quantity === 1 || updateLoading ? "not-allowed" : "pointer",
                         }}
                         aria-label="Decrease quantity"
-                        onClick={() => decreaseQuantity(item.id)}
+                        onClick={() => decreaseQuantity(item?.product?.id)}
                         color={item.quantity === 1 ? "gray.300" : "inherit"}
                       />
                       <Text>{item.quantity}</Text>
@@ -191,14 +197,14 @@ const CartDrawer = ({
                         as={AiOutlinePlus}
                         _hover={{
                           cursor:
-                            item.quantity === item.stock
+                            item?.quantity === item?.product?.quantity || updateLoading
                               ? "not-allowed"
                               : "pointer",
                         }}
                         aria-label="Increase quantity"
-                        onClick={() => increaseQuantity(item.id)}
+                        onClick={() => increaseQuantity(item?.product?.id)}
                         color={
-                          item.quantity === item.stock ? "gray.300" : "inherit"
+                          item?.quantity === item?.product?.quantity ? "gray.300" : "inherit"
                         }
                       />
                     </HStack>
@@ -221,7 +227,7 @@ const CartDrawer = ({
                     onClose={handleCloseRemove}
                     title="Remove Item"
                     description="remove this item from your shopping cart?"
-                    handleDelete={() => removeItem(item.id)}
+                    handleDelete={() => removeItem(item?.product?.id)}
                   />
                 </HStack>
               ))}
@@ -240,7 +246,7 @@ const CartDrawer = ({
           )}
 
           {/* Subtotal */}
-          {cartItems.length > 0 && (
+          {cartItems.items?.length > 0 && (
             <>
               <Flex mt={20} justifyContent="flex-end">
                 <Stack mb={4}>
@@ -248,7 +254,7 @@ const CartDrawer = ({
                     Subtotal
                   </Text>
                   <Text fontWeight="medium" fontSize="2xl">
-                    ₦{subtotal.toLocaleString()}.00
+                    ₦{cartItems?.orderTotal.toLocaleString()}
                   </Text>
                 </Stack>
               </Flex>

@@ -9,14 +9,14 @@ const ProductsField = ({ category }: any) => {
 
 
 
-  const categoryParam = category?.name?.split(" ").join("_");
+  // const categoryParam = category?.name?.split(" ").join("_");
 
   return (
     <Box className="">
       <Flex
         justifyContent="space-between"
         py={4}
-        bgColor="success.500"
+        bgColor="success.600"
         className="px-6 md:px-20 max-w-screen-2xl mx-auto"
         color="white"
         mb={8}
@@ -24,9 +24,9 @@ const ProductsField = ({ category }: any) => {
         <Text fontSize="lg" className="capitalize">{category?.name.toUpperCase()}</Text>
         <Button variant="link" color="white" _hover={{ textDecoration: 'underline' }}>
           {/* <Link href={`/storefront/${categoryParam}`}> */}
-          <Link href={`/storefront/${category?.slug}`}>
+          {category?.products?.length > 6 && <Link href={`/storefront/${category?.slug}`}>
             SEE ALL
-          </Link>
+          </Link>}
         </Button>
       </Flex>
 
