@@ -386,56 +386,6 @@ const LicenseUpload = () => {
     );
   }
 
-  //   else if (sessionData?.user?.businessStatus === BusinessStatus.REJECTED) {
-  //     return (
-  //       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5 items-center justify-center w-full">
-  //         {isLicenseLoading && (
-  //           <Flex justify="center" align="center" height="200px">
-  //             <Spinner size="xl" />
-  //           </Flex>
-  //         )}
-  //         {!isLicenseLoading && (
-  //           <>
-  //             <Image
-  //               src={rejectedIcon.src}
-  //               alt="review"
-  //               width="120px"
-  //               height="120px"
-  //             />
-  //             <Text className="font-semibold text-2xl">Document Rejected</Text>
-  //             <Text className="text-center font-normal text-gray-600">
-  //               Your document with license number{" "}
-  //               <span className="font-bold text-base text-primary-500">
-  //                 {businessLicense?.licenseNumber}
-  //               </span>
-  //               , expiring on{" "}
-  //               <span className="font-bold text-base text-primary-500">
-  //                 {" "}
-  //                 {businessLicense?.expiryDate
-  //                   ? moment(businessLicense?.expiryDate)?.format("MMMM Do YYYY")
-  //                   : "N/A"}
-  //               </span>
-  //               , has been rejected.
-  //             </Text>
-  //             <Box>
-  //               <Button
-  //                 colorScheme="blue"
-  //                 w="full"
-  //                 backgroundColor="error.600"
-  //                 _hover="error.700"
-  //                 onClick={() => {
-  //                   window.open(businessLicense?.licenseFile, "_blank");
-  //                 }}
-  //               >
-  //                 View Document
-  //               </Button>
-  //             </Box>
-  //           </>
-  //         )}
-  //       </Box>
-  //     );
-  //   }
-
   const fileActionsMenu = () => {
     if (file && localUploadProgress === 100 && !isLocalUploading) {
       const fileURL = URL.createObjectURL(file);
