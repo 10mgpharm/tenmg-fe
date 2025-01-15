@@ -235,8 +235,6 @@ const LicenseUpload = () => {
     if (sessionData?.user?.token) fetchLicense();
   }, [sessionData?.user?.token]);
 
-  console.log("businessLicense", sessionData?.user?.businessStatus);
-
   if (sessionData?.user?.businessStatus === BusinessStatus.PENDING_APPROVAL) {
     return (
       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5 items-center justify-center w-full">
