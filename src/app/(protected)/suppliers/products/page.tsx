@@ -392,7 +392,7 @@ const Products = () => {
                 />
             </TableContainer>
             : <GridList 
-            data={memoizedData}
+            product={products}
             routing="/suppliers/products"
             selectedProduct={selectedProduct}
             setSelectedProduct={setSelectedProduct}
@@ -401,6 +401,7 @@ const Products = () => {
             isLoading={isLoading}
             deleteFn={handleProductDelete}
             onOpen={onOpen}
+            setPageCount={setPageCount}
             onOpenActivate={onOpenActivate}
             onOpenDeactivate={onOpenDeactivate}
             />
