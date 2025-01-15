@@ -1,10 +1,20 @@
+import { NextAuthUserSession } from "@/types";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { HeartIcon } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
+import { useCartStore } from "../useCartStore";
+import { Tag, TagLabel } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 
 export default function StoreProductCardComponent({ product }: any) {
 
+  const router = useRouter();
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+
+  const { addToCart, cart } = useCartStore();
 
   function isValidUrl(url) {
     try {
@@ -14,6 +24,30 @@ export default function StoreProductCardComponent({ product }: any) {
       return false;
     }
   }
+
+  const addCartFunction = (prod_id) => {
+
+    console.log("adding")
+    const data = {
+      productId: prod_id,
+      qty: 1,
+      action: "add"
+    }
+    addToCart(data, userData?.user?.token)
+  }
+  const buyNowFunction = async (prod_id) => {
+
+
+  }
+
+  // {
+  //   "productId": 20,
+  //   "qty": 1,
+  //   "action": "add" //add or minus or remove
+  // }
+
+  console.log('product', product)
+
   return (
     <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md ">
       <Link href={`/storefront/product/${product?.name}`}>
@@ -34,8 +68,9 @@ export default function StoreProductCardComponent({ product }: any) {
           </div>
           {/* <p className="text-gray-500 text-xs my-2">Pentazocine (NEML 23.1)</p> */}
           <div className="relative flex items-center gap-x-2">
-            {product?.discountPrice > 0 && <p className="text-green-500 font-semibold my-2 text-sm left-1/4">₦{product?.discountPrice}</p>}
-            <p className={`text-gray-950 font-semibold my-2 text-xs ${product?.discountPrice > 0 && "text-red-500 line-through"}`}>₦{product?.actualPrice}</p>
+            {product?.discountPrice > 0 && <p className="text-gray-900 font-semibold my-2 text-sm left-1/4">₦{product?.discountPrice}</p>}
+
+            <p className={` font-semibold my-2 text-sm ${product?.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>₦{product?.actualPrice}</p>
           </div>
 
           <div className="flex items-center justify-between">
@@ -47,19 +82,38 @@ export default function StoreProductCardComponent({ product }: any) {
               <StarIcon className="w-5 fill-warning-400 stroke-none" />
             </div>
 
-            {product?.inventory?.toLowerCase() === "in stock" ? <p className='w-fit py-1 px-3 rounded-3xl bg-green-100'><span className='text-green-700 text-[12px] font-semibold'>In Stock</span></p> :
-              <p className="w-fit py-1 px-3 rounded-3xl bg-red-100">
-                <span className="text-red-700 text-[12px] font-semibold">
-                  Out of Stock
-                </span>
-              </p>}
+            {product?.inventory?.toLowerCase() === "in stock" ? <Tag
+              size="sm"
+              ml="1"
+              borderRadius={"full"}
+              color={"green.500"}
+              bgColor={"green.100"}
+            >
+              <TagLabel>{"in stock"}</TagLabel>
+            </Tag> :
+              <Tag
+                size="sm"
+                ml="1"
+                borderRadius={"full"}
+                color={"error.500"}
+                bgColor={"error.100"}
+              >
+                <TagLabel>{"in stock"}</TagLabel>
+              </Tag>}
+
           </div>
         </div>
       </Link>
 
-      <button className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold">
-        Buy Now
-      </button>
+      <div className="flex items-center justify-between w-full gap-4 my-2">
+
+        <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => router.push(`/storefront/product/${product?.name}`)}>
+          Buy Now
+        </button>
+        <button className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold" onClick={() => addCartFunction(product.id)}>
+          Add To Cart
+        </button>
+      </div>
     </div>
   );
 }
@@ -67,3 +121,4 @@ export default function StoreProductCardComponent({ product }: any) {
 
 // In Stock
 // Buy Now
+// disabled={product?.inventory?.toLowerCase() !== "in stock"}
