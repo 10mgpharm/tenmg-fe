@@ -92,7 +92,7 @@ const AddMedicationType = (
 
     const {
         register,
-        formState: { errors, isValid },
+        formState: { errors },
         handleSubmit,
         setValue,
         watch,
@@ -191,7 +191,7 @@ const AddMedicationType = (
             setValue("name", medication.name);
             setValue("status", medication.status);
             setValue("active", medication.active);
-            setValue("variations", medication.variations.map((item: MedicationVariant) => {
+            setValue("variations", medication?.variations?.map((item: MedicationVariant) => {
                 return {
                     id: item.id,
                     presentation: item.presentation,
@@ -210,6 +210,7 @@ const AddMedicationType = (
         resetSelectedItem();
     }
 
+    console.log(medication)
     return (
         <Drawer
             isOpen={isOpen}

@@ -127,7 +127,10 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
                     <div className="flex justify-between">
                         <div className="">
                             <h2 className='text-lg font-semibold capitalize'>
-                                {`${products?.brand?.name} ${products?.name} - ${products?.presentation?.name}`}
+                                {`${products?.brand?.name} 
+                                ${products?.name} 
+                                ${products?.medicationType?.variations?.[0].strengthValue}${products?.medicationType?.variations?.[0].measurement} 
+                                - ${products?.presentation?.name}`}
                             </h2>
                             <p className='max-w-sm text-gray-500 text-sm'>{products?.description}</p>
                         </div>

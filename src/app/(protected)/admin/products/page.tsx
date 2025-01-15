@@ -88,6 +88,7 @@ const Page = () => {
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenFlag, onClose: onCloseFlag, onOpen: onOpenFlag } = useDisclosure();
+    const { isOpen: isOpenUnFlag, onClose: onCloseUnFlag, onOpen: onOpenUnFlag } = useDisclosure();
     const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
     const { isOpen: isOpenActivate, onClose: onCloseActivate, onOpen: onOpenActivate } = useDisclosure();
@@ -160,6 +161,7 @@ const Page = () => {
         columns: ColumsProductFN(
                     onOpen, 
                     onOpenFlag,
+                    onOpenUnFlag,
                     onOpenRestock, 
                     onOpenDeactivate, 
                     onOpenActivate, 
@@ -210,7 +212,7 @@ const Page = () => {
         }else if(type === "activate"){
             formdata.append("status", "ACTIVE");
         }else if(type === "flagged" && comment !== ""){
-            formdata.append("status", "FLAGGED")
+            formdata.append("status", "FLAGGED");
             formdata.append("statusComment", comment);
         }
         try {
@@ -224,6 +226,7 @@ const Page = () => {
                 setComment("")
                 setIsLoading(false);
                 onCloseFlag();
+                onCloseUnFlag();
                 onCloseDeactivate();
                 onCloseActivate();
             }
@@ -382,6 +385,7 @@ const Page = () => {
                 isLoading={isLoading}
                 onOpen={onOpen}
                 onOpenFlag={onOpenFlag}
+                onOpenUnflag={onOpenUnFlag}
                 onOpenActivate={onOpenActivate}
                 onOpenDeactivate={onOpenDeactivate}
                 deleteFn={handleProductDelete}
@@ -499,6 +503,34 @@ const Page = () => {
                     variant={"outline"}
                     className='cursor-pointer'
                     onClick={onCloseFlag}>
+                        Cancel
+                    </Button>
+                </div>
+            </div>
+        </ModalWrapper>
+        <ModalWrapper
+        isOpen={isOpenUnFlag} 
+        onClose={onCloseUnFlag}
+        title="Unflag Product"
+        >
+            <div className="mb-8">
+                <p className='leading-6 text-gray-500 mt-2'>
+                You are about to unflag
+                <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                , this product will appear in your public shop.
+                </p>
+                <div className="flex flex-col gap-2 mt-5">
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleProductDeactivate("activate")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
+                        Proceed
+                    </Button>
+                    <Button 
+                    variant={"outline"}
+                    className='cursor-pointer'
+                    onClick={onCloseUnFlag}>
                         Cancel
                     </Button>
                 </div>

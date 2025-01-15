@@ -12,6 +12,7 @@ const columnHelper = createColumnHelper<ProductDataProps>();
 export function ColumsProductFN(
     onOpen: () => void,
     onOpenFlag: () => void,
+    onOpenUnFlag: () => void,
     onOpenRestock: () => void,
     onOpenDeactivate: () => void, 
     onOpenActivate: () => void,
@@ -177,15 +178,26 @@ export function ColumsProductFN(
                     setSelectedProduct(info.row.original)
                     onOpenRestock()
                   }}>
-                    Restock
-                  </MenuItem>
-                <MenuItem 
-                  onClick={() => {
-                    setSelectedProduct(info.row.original)
-                    onOpenFlag()
-                  }}>
-                    Flag Product
-                  </MenuItem>
+                  Restock
+                </MenuItem>
+                {
+                  info.row.original.status === "FLAGGED" ? 
+                    <MenuItem 
+                      onClick={() => {
+                        setSelectedProduct(info.row.original)
+                        onOpenUnFlag()
+                    }}>
+                      Unflag Product
+                    </MenuItem>
+                  :
+                    <MenuItem 
+                      onClick={() => {
+                        setSelectedProduct(info.row.original)
+                        onOpenFlag()
+                    }}>
+                      Flag Product
+                    </MenuItem>
+                }
                 {(info?.row?.original?.status === "ACTIVE" || info.row.original.status === "APPROVED") ? (
                   <MenuItem onClick={() => {
                     setSelectedProduct(info.row.original)
