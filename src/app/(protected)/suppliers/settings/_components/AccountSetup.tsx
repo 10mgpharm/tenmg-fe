@@ -138,6 +138,34 @@ const LicenseUpload = () => {
     setLocalUploadProgress(0);
   };
 
+  const handleWithdraw = async () => {
+    try {
+      setIsLoading(true);
+      const response = await requestClient({
+        token: sessionData.user.token,
+      }).patch("/supplier/settings/license/withdraw");
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+
+        // update session here
+        // await session.update({
+        //   ...sessionData,
+        //   user: {
+        //     ...sessionData.user,
+        //     businessStatus: BusinessStatus.PENDING_APPROVAL,
+        //   },
+        // });
+
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(`Withdrawal failed: ${errorMessage}`);
+    }
+  };
+
   const onSubmit = async (value: IFormInput) => {
     if (!file || localUploadProgress < 100) {
       toast.error("Please wait until the file finishes uploading locally.");
@@ -258,6 +286,7 @@ const LicenseUpload = () => {
             backgroundColor="error.600"
             _hover="error.700"
             w="full"
+            onClick={handleWithdraw}
             isDisabled={isLoading}
             isLoading={isLoading}
             loadingText="Withdrawing..."
