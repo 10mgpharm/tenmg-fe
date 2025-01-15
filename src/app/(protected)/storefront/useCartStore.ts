@@ -9,9 +9,6 @@ type CartItem = {
   price: any;
   quantity: number;
   productId: string;
-  items: [];
-  // name: string;
-  // price: number;
   qty: number;
 };
 
@@ -19,9 +16,10 @@ type CartState = {
   cart: CartItem[];
   isLoading: boolean;
   error: string | null;
-  fetchCart: (token) => Promise<void>;
+  fetchCart: (token: string) => Promise<void>;
   updateLoading: boolean;
-  addToCart: (item, token) => void;
+  addToCart: (item, token: string) => Promise<void>;
+  cartSize: string | number | null;
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -29,8 +27,9 @@ export const useCartStore = create<CartState>((set, get) => ({
   isLoading: false,
   error: null,
   updateLoading: false,
+  cartSize: 0,
 
-  fetchCart: async (token) => {
+  fetchCart: async (token: string) => {
     try {
       set({ isLoading: true });
 
@@ -38,9 +37,16 @@ export const useCartStore = create<CartState>((set, get) => ({
         "/storefront/get-user-cart"
       );
 
-      console.log("resp", resp?.data?.data);
-      set({ cart: resp?.data?.data, isLoading: false });
-      return resp?.data?.data;
+      const cartData = resp?.data?.data || [];
+      console.log("API response:", cartData);
+
+      set({
+        cart: cartData,
+        isLoading: false,
+        cartSize: cartData?.items.length,
+      });
+
+      return cartData;
     } catch (err: any) {
       set({
         error: err.response?.data?.message || "Failed to fetch cart items",
@@ -49,8 +55,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     }
   },
 
-  addToCart: async (item, token) => {
-    // console.log("store adding");
+  addToCart: async (item, token: string) => {
     try {
       set({ updateLoading: true });
 
@@ -58,19 +63,17 @@ export const useCartStore = create<CartState>((set, get) => ({
         "/storefront/add-remove-cart-items",
         item
       );
+
       if (resp) {
         console.log("Item added to cart successfully.");
-        // Call fetchCart after a successful addition
+        // Refresh the cart after adding the item
         await get().fetchCart(token);
       }
 
-      // console.log("add resp", resp);
       set({ updateLoading: false });
-
-      // return resp;
     } catch (err: any) {
       set({
-        error: err.response?.data?.message || "Failed to fetch cart items",
+        error: err.response?.data?.message || "Failed to add item to cart",
         updateLoading: false,
       });
     }

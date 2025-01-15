@@ -48,10 +48,11 @@ const Navbar = () => {
   const handleOpenRemove = () => setIsRemoveOpen(true);
   const handleCloseRemove = () => setIsRemoveOpen(false);
 
+  const [cartDataCount, setCartDataCount] = useState(null);
 
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
-  const { fetchCart, cart } = useCartStore();
+  const { fetchCart, cartSize } = useCartStore();
 
   useEffect(() => {
     fetchCart(userData?.user?.token);
@@ -102,7 +103,7 @@ const Navbar = () => {
                   px={1}
                   borderRadius="full"
                 >
-                  {cart?.items?.length}
+                  {cartSize}
                 </Box>
               </Box>
             </Stack>
@@ -233,7 +234,7 @@ const Navbar = () => {
                   px={1}
                   borderRadius="full"
                 >
-                  {cart?.items?.length}
+                  {cartSize}
                 </Box>
               </Box>
               <Text>Cart</Text>
