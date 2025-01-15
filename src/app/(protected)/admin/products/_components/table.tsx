@@ -11,6 +11,7 @@ const columnHelper = createColumnHelper<ProductDataProps>();
 
 export function ColumsProductFN(
     onOpen: () => void,
+    onOpenFlag: () => void,
     onOpenRestock: () => void,
     onOpenDeactivate: () => void, 
     onOpenActivate: () => void,
@@ -54,9 +55,11 @@ export function ColumsProductFN(
               className="w-8 h-8 rounded-full"
             />
           }
-            <p className="font-medium capitalize">
-              {info?.row?.original?.name} 
-            </p>
+            <Link 
+            className="capitalize font-medium" 
+            href={`/admin/products/${info.row.original.id}`}>
+              {info?.row?.original?.name}
+            </Link>
         </div>
       ),
     }),
@@ -67,7 +70,9 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="capitalize font-medium">{info?.row?.original?.brand?.name}</p>
+            <p className="capitalize font-medium">
+              {info?.row?.original?.brand?.name}
+            </p>
           </div>
         );
       },
@@ -79,7 +84,9 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="font-medium">{info?.row?.original?.medicationType?.variations[0]?.weight}</p>
+           <p className="font-medium">
+            {info?.row?.original?.medicationType?.variations[0]?.weight}
+          </p>
           </div>
         );
       },
@@ -170,6 +177,13 @@ export function ColumsProductFN(
                     onOpenRestock()
                   }}>
                     Restock
+                  </MenuItem>
+                <MenuItem 
+                  onClick={() => {
+                    setSelectedProduct(info.row.original)
+                    onOpenFlag()
+                  }}>
+                    Flag Product
                   </MenuItem>
                 {(info?.row?.original?.status === "ACTIVE" || info.row.original.status === "APPROVED") ? (
                   <MenuItem onClick={() => {

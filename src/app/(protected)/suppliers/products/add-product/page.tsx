@@ -240,7 +240,7 @@ const AddProducts = () => {
             onClose={onClose}
             routeUrl="/suppliers/products"
             isEditing={false}
-            routeUrl2="/suppliers/product/new"
+            routeUrl2="/suppliers/products/add-product"
         />
     </div>
   )

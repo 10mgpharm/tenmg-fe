@@ -32,11 +32,12 @@ type BusinessLicense = {
   expiryDate: string;
   licenseFile: string;
   licenseNumber: string;
-  licenseVerificationStatus: "PENDING" | "APPROVED" | "REJECTED";
-};
+  licenseVerificationStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+}
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
-export default function LegalLicense() {
+
+const LicenseUpload = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -100,7 +101,7 @@ export default function LegalLicense() {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }).post("/vendor/settings/license", formData);
+      }).post("/storefront/settings/license", formData);
       if (response.status === 200) {
         toast.success(response.data.message);
 
@@ -109,12 +110,12 @@ export default function LegalLicense() {
           ...sessionData,
           user: {
             ...sessionData.user,
-            businessStatus: BusinessStatus.PENDING_APPROVAL
+           businessStatus: BusinessStatus.PENDING_APPROVAL 
           },
         });
 
         const { expiryDate, licenseFile, licenseNumber, licenseVerificationStatus } = response.data?.data;
-
+        
         setBusinessLisense({
           expiryDate,
           licenseFile,
@@ -154,12 +155,7 @@ export default function LegalLicense() {
         setIsLoading(false);
 
         if (response.status === 200) {
-          const {
-            expiryDate,
-            licenseFile,
-            licenseNumber,
-            licenseVerificationStatus,
-          } = response.data?.data;
+          const { expiryDate, licenseFile, licenseNumber, licenseVerificationStatus } = response.data?.data;
           setBusinessLisense({
             expiryDate,
             licenseFile,
@@ -173,170 +169,159 @@ export default function LegalLicense() {
         toast.error(`License fetch failed: ${errorMessage}`);
       }
     };
-    // if (sessionData?.user?.token) fetchLicense();
+    if (sessionData?.user?.token) fetchLicense();
   }, [sessionData?.user?.token]);
 
   if (sessionData?.user?.businessStatus === BusinessStatus.PENDING_APPROVAL) {
     return (
       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5">
         <Text className="text-left text-sm font-medium text-red-500">
-          Your business CAC and License has been updated. Please check back
-          later for the approval status.
+          Your business CAC and License has been updated. Please check back later for the approval status.
         </Text>
         {/* preview with document link  */}
         {isLoading && (
-          <Flex direction={"column"} gap={5} className="animate-pulse">
+          <Flex direction={'column'} gap={5} className="animate-pulse">
             <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-full h-5">
-              {" "}
+              {' '}
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-full h-5">
-              {" "}
+              {' '}
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500 bg-gray-500 w-9/12 h-5">
-              {" "}
+              {' '}
             </Text>
           </Flex>
         )}
         {!isLoading && (
-          <Flex direction={"column"} gap={5}>
+          <Flex direction={'column'} gap={5}>
             <Text className="text-left text-sm font-medium text-gray-500">
               CAC Document:
-              <a
-                target="_blank"
-                href={businessLicense?.licenseFile}
-                className="font-bold cursor-pointer underline"
-              >
+              <a target="_blank" href={businessLicense?.licenseFile} className="font-bold cursor-pointer underline">
                 View Document
               </a>
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500">
-              License Number:{" "}
-              <span className="font-bold">
-                {businessLicense?.licenseNumber}
-              </span>
+              License Number: <span className="font-bold">{businessLicense?.licenseNumber}</span>
             </Text>
             <Text className="text-left text-sm font-medium text-gray-500">
-              Expiry Date:{" "}
-              <span className="font-bold">
-                {businessLicense?.expiryDate
-                  ? moment(businessLicense?.expiryDate)?.format("MMMM Do YYYY")
-                  : "N/A"}
-              </span>
+              Expiry Date: <span className="font-bold">{businessLicense?.expiryDate ? moment(businessLicense?.expiryDate)?.format('MMMM Do YYYY') : 'N/A'}</span>
             </Text>
           </Flex>
         )}
       </Box>
-    );
+    )
   }
 
   return (
     <>
-      <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 ">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 mb-6"
-          encType="multipart/form-data"
-        >
-          {/* License Number */}
-          <FormControl isInvalid={!!errors.licenseNumber}>
-            <FormLabel>License Number</FormLabel>
-            <Input
-              type="text"
-              placeholder="Enter License Number"
-              {...register("licenseNumber", {
-                required: "License number is required.",
-              })}
-            />
-            <FormErrorMessage>{errors.licenseNumber?.message}</FormErrorMessage>
-          </FormControl>
+    <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-5 mb-6"
+        encType="multipart/form-data"
+      >
+        {/* License Number */}
+        <FormControl isInvalid={!!errors.licenseNumber}>
+          <FormLabel>License Number</FormLabel>
+          <Input
+            type="text"
+            placeholder="Enter License Number"
+            {...register("licenseNumber", {
+              required: "License number is required.",
+            })}
+          />
+          <FormErrorMessage>{errors.licenseNumber?.message}</FormErrorMessage>
+        </FormControl>
 
-          {/* Expiry Date */}
-          <FormControl isInvalid={!!errors.expiryDate}>
-            <FormLabel>Expiry Date</FormLabel>
-            <Controller
-              name="expiryDate"
-              control={control}
-              rules={{ required: "Expiry date is required" }}
-              render={({ field }) => (
-                <DateComponent
-                  startDate={field.value}
-                  setStartDate={field.onChange}
-                />
-              )}
-            />
+        {/* Expiry Date */}
+        <FormControl isInvalid={!!errors.expiryDate}>
+          <FormLabel>Expiry Date</FormLabel>
+          <Controller
+            name="expiryDate"
+            control={control}
+            rules={{ required: "Expiry date is required" }}
+            render={({ field }) => (
+              <DateComponent
+                startDate={field.value}
+                setStartDate={field.onChange}
+              />
+            )}
+          />
 
-            <FormErrorMessage>{errors.expiryDate?.message}</FormErrorMessage>
-          </FormControl>
+          <FormErrorMessage>{errors.expiryDate?.message}</FormErrorMessage>
+        </FormControl>
 
-          {/* CAC Document Upload */}
-          <FormControl isInvalid={!!errors.cacDocument} className="mb-8">
-            <FormLabel>CAC Document</FormLabel>
-            <Controller
-              name="cacDocument"
-              control={control}
-              rules={{
-                required: "CAC Document is required",
-              }}
-              render={({ field }) => (
-                <Box
-                  className="border relative p-4 rounded-md"
-                  onClick={() => fileInputRef.current?.click()}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => {
-                    handleDrop(e);
-                    field.onChange(e.dataTransfer.files?.[0]);
+        {/* CAC Document Upload */}
+        <FormControl isInvalid={!!errors.cacDocument} className="mb-8">
+          <FormLabel>CAC Document</FormLabel>
+          <Controller
+            name="cacDocument"
+            control={control}
+            rules={{
+              required: "CAC Document is required",
+            }}
+            render={({ field }) => (
+              <Box
+                className="border relative p-4 rounded-md"
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  handleDrop(e);
+                  field.onChange(e.dataTransfer.files?.[0]);
+                }}
+                cursor="pointer"
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept=".pdf, .doc, .docx"
+                  onChange={(e) => {
+                    handleFileChange(e);
+                    field.onChange(e.target.files?.[0]);
                   }}
-                  cursor="pointer"
-                >
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept=".pdf, .doc, .docx"
-                    onChange={(e) => {
-                      handleFileChange(e);
-                      field.onChange(e.target.files?.[0]);
-                    }}
-                    className="hidden"
-                  />
-                  <Box display="flex" flexDirection="column" gap={2}>
-                    <Box bg="gray.50" p={2} rounded="full" mx="auto" mb={4}>
-                      <IoCloudDoneOutline className="w-6 h-6 text-gray-700" />
-                    </Box>
-                    <Text fontSize="sm" textAlign="center">
-                      <span className="font-semibold text-primary-500">
-                        Click to upload
-                      </span>{" "}
-                      or drag and drop
-                    </Text>
-                    <Text fontSize="xs" color="gray.500" textAlign="center">
-                      PDF, DOC or DOCX. Maximum size of 10MB
-                    </Text>
-                    {file && (
-                      <Text fontSize="sm" color="gray.500">
-                        Selected file: {field.value?.name}
-                      </Text>
-                    )}
+                  className="hidden"
+                />
+                <Box display="flex" flexDirection="column" gap={2}>
+                  <Box bg="gray.50" p={2} rounded="full" mx="auto" mb={4}>
+                    <IoCloudDoneOutline className="w-6 h-6 text-gray-700" />
                   </Box>
+                  <Text fontSize="sm" textAlign="center">
+                    <span className="font-semibold text-primary-500">
+                      Click to upload
+                    </span>{" "}
+                    or drag and drop
+                  </Text>
+                  <Text fontSize="xs" color="gray.500" textAlign="center">
+                    PDF, DOC or DOCX. Maximum size of 10MB (max. 800x400px)
+                  </Text>
+                  {file && (
+                    <Text fontSize="sm" color="gray.500">
+                      Selected file: {field.value?.name}
+                    </Text>
+                  )}
                 </Box>
-              )}
-            />
+              </Box>
+            )}
+          />
 
-            <FormErrorMessage>{errors.cacDocument?.message}</FormErrorMessage>
-          </FormControl>
+          <FormErrorMessage>{errors.cacDocument?.message}</FormErrorMessage>
+        </FormControl>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            colorScheme="blue"
-            w="full"
-            isDisabled={isLoading}
-            isLoading={isLoading}
-            loadingText="Submitting"
-          >
-            Submit
-          </Button>
-        </form>
-      </Box>
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          colorScheme="blue"
+          w="full"
+          isDisabled={isLoading}
+          isLoading={isLoading}
+          loadingText="Submitting"
+        >
+          Submit
+        </Button>
+      </form>
+    </Box>
     </>
   );
-}
+};
+
+export default LicenseUpload;

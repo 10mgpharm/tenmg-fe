@@ -35,7 +35,6 @@ import GridList from "./_components/GridList";
 import { classNames, handleServerErrorMessage } from "@/utils";
 import DeleteModal from "./_components/DeleteModal";
 import RestockModal from "./_components/RestockModal";
-import Pagination from "../_components/Pagination";
 import ModalWrapper from "../_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
@@ -49,7 +48,7 @@ import { useDebouncedValue } from "@/utils/debounce";
 import FilterDrawer from "./_components/FilterDrawer";
 import SearchInput from "../../vendors/_components/SearchInput";
 import { toast } from "react-toastify";
-
+import Pagination from "../../admin/products/_components/Pagination";
 
 interface IFilterInput {
     endDate?: Date | null;
@@ -108,7 +107,6 @@ const Products = () => {
             from: createdAtStart ? createdAtStart.toISOString().split("T")[0] : "",
             to: createdAtEnd ? createdAtEnd.toISOString().split("T")[0] : "",
         };
-
         // Convert the payload into query parameters
         const queryString = new URLSearchParams(
             Object.entries(params).flatMap(([key, value]) => 
@@ -118,7 +116,7 @@ const Products = () => {
             )
         ).toString();
         try {
-        const response = await requestClient({ token: token }).get(`${query}?${queryString}`);
+        const response = await requestClient({ token: token }).get(`${query}&${queryString}`);
             if (response.status === 200) {
                 setProducts(response.data.data);
             }
@@ -317,7 +315,7 @@ const Products = () => {
             memoizedData?.length === 0 
             ? <EmptyOrder 
             heading={`No Product Yet`} 
-            content={`You currently have no product. All products will appear here.`}
+            content={globalFilter ? "All products will appear here." : "You currently have no product. All products will appear here."}
             /> : 
             currentView === PRODUCTVIEW.LIST ?
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -384,8 +382,14 @@ const Products = () => {
                     </Tbody>
                 </Table>
                 <Pagination 
-                meta={products?.meta} 
-                setPageCount={setPageCount}/>
+                    links={products?.links}
+                    prevPageUrl={products?.prevPageUrl}
+                    nextPageUrl={products?.nextPageUrl}
+                    firstPageUrl={products?.firstPageUrl} 
+                    lastPageUrl={products?.lastPageUrl}
+                    setPageCount={setPageCount}
+                    currentPage={products?.currentPage}
+                />
             </TableContainer>
             : <GridList 
             data={memoizedData}
@@ -453,7 +457,7 @@ const Products = () => {
                 <p className='leading-6 text-gray-500 mt-2'>
                 You are about to activate
                 <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
-                , this product will not appear in your public shop.
+                , this product will appear in your public shop.
                 There is no fee for activating a product.
                 </p>
                 <div className="flex flex-col gap-3 mt-8">

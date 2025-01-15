@@ -21,7 +21,7 @@ interface IChildComponentProps {
     medications: MedicationData[]; 
     setValue: UseFormSetValue<IFormInput>;
     isEditing: boolean;
-    type: string
+    type: string;
 }
 
 const EssentialForm: React.FC<IChildComponentProps> = ({
@@ -129,7 +129,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         <div className="space-y-5">
             <Stack>
                 <FormControl isInvalid={!!errors.medicationTypeName}>
-                    <FormLabel>Medication</FormLabel>
+                    <FormLabel>Medication Type</FormLabel>
                     <Controller
                         control={control}
                         name={"medicationTypeName"}
@@ -182,7 +182,6 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 }else{
                                     setSelectedVariation([]);
                                     setNewVariation(true);
-                                    // setShowVariation(false);
                                     setSelectedVariation(selectedOption)
                                     setValue("measurementName", "");
                                     setValue("presentationName", "");
@@ -197,35 +196,35 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <Box>
                                 <HStack mt={4}>
                                     <Stack flex={1}>
-                                        <FormLabel color={"gray.500"}>Presentation</FormLabel>
+                                        <FormLabel color={"gray.600"}>Presentation</FormLabel>
                                         <Box className="border rounded-md p-2">
-                                            <Text>{selectedVariation?.detail?.presentation}</Text>
+                                            <Text color={"gray.400"}>{selectedVariation?.detail?.presentation}</Text>
                                         </Box>
                                     </Stack>
                                     <Stack flex={1}>
-                                        <FormLabel color={"gray.500"}>Strength Value</FormLabel>
+                                        <FormLabel color={"gray.600"}>Strength Value</FormLabel>
                                         <Box className="border rounded-md p-2">
-                                            <Text>{selectedVariation?.detail?.strength}</Text>
+                                            <Text color={"gray.400"}>{selectedVariation?.detail?.strength}</Text>
                                         </Box>
                                     </Stack>
                                     <Stack flex={1}>
-                                        <FormLabel color={"gray.500"}>Measurement</FormLabel>
+                                        <FormLabel color={"gray.600"}>Measurement</FormLabel>
                                         <Box className="border rounded-md p-2">
-                                            <Text>{selectedVariation?.detail?.measurement}</Text>
+                                            <Text color={"gray.400"}>{selectedVariation?.detail?.measurement}</Text>
                                         </Box>
                                     </Stack>
                                 </HStack>
                                 <HStack mt={4}>
                                     <Stack flex={1}>
-                                        <FormLabel color={"gray.500"}>Package per roll</FormLabel>
+                                        <FormLabel color={"gray.600"}>Package per roll</FormLabel>
                                         <Box className="border rounded-md p-2">
-                                            <Text>{selectedVariation?.detail?.packagePerRoll || "None"}</Text>
+                                            <Text color={"gray.400"}>{selectedVariation?.detail?.packagePerRoll || "None"}</Text>
                                         </Box>
                                     </Stack>
                                     <Stack flex={1}>
-                                        <FormLabel color={"gray.500"}>Weight (kg)</FormLabel>
+                                        <FormLabel color={"gray.600"}>Weight (kg)</FormLabel>
                                         <Box className="border rounded-md p-2">
-                                            <Text>{`${selectedVariation?.detail?.weight}`}</Text>
+                                            <Text color={"gray.400"}>{`${selectedVariation?.detail?.weight}`}</Text>
                                         </Box>
                                     </Stack>
                                 </HStack>

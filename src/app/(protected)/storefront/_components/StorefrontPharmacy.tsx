@@ -7,7 +7,6 @@ import ProductField from "./ProductField";
 import { useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import EmptyStoreFront from "./EmptyStoreFront";
-import verification from "@public/assets/images/verification.png";
 import { useRouter } from "next/navigation";
 
 import {
@@ -26,10 +25,10 @@ import {
   Spinner,
   Stack,
   Text,
+  Image,
   useDisclosure,
 } from "@chakra-ui/react";
 import { FiX } from "react-icons/fi";
-import Image from "next/image";
 import { BusinessStatus } from "@/constants";
 import { toast } from "react-toastify";
 
@@ -157,7 +156,7 @@ const StoreFrontPharmacy = ({
         <ModalContent>
           <ModalBody>
             <Flex direction="column" align="center" textAlign="center">
-              <Image src={verification} alt="Verification illustration" />
+              <Image src="/assets/images/verification.png" alt="Verification"  />
               <Text fontWeight="bold" fontSize="lg" mb={2} mt={5}>
                 Verify your account
               </Text>

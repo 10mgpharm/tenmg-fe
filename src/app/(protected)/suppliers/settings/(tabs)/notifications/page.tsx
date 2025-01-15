@@ -1,5 +1,6 @@
+import Notifications from '@/app/(protected)/vendors/settings/_components/Notifications'
 import React from 'react'
-import Notifications from '../../_components/Notifications'
+
 
 export default function NotificationsPage() {
   return (

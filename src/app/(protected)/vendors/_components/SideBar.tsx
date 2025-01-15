@@ -103,7 +103,7 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
   ];
   return disabledBusinessStatuses.includes(businessStatus as BusinessStatus) &&
     !mustAlwaysBeEnabled(name)
-    ? false
+    ? true
     : false;
 };
 

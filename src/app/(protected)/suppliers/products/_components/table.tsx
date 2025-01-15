@@ -39,10 +39,11 @@ export function ColumsProductFN(
             width={35} 
             height={35} 
             fallbackSrc=""
-            className="w-8 h-8 rounded-full"/>
-            <p className="font-medium capitalize">
-              {info?.row?.original?.name} 
-            </p>
+            className="w-8 h-8 rounded-full"
+            />
+            <Link className="capitalize font-medium" href={`/suppliers/products/${info.row.original.id}`}>
+              {info?.row?.original?.name}
+            </Link>
         </div>
       ),
     }),
@@ -53,7 +54,9 @@ export function ColumsProductFN(
       cell: (info) => {
         return (
           <div>
-           <p className="capitalize font-medium">{info?.row?.original?.brand?.name}</p>
+            <p className="capitalize font-medium">
+            {info?.row?.original?.brand?.name}
+            </p>
           </div>
         );
       },
