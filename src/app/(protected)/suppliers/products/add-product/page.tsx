@@ -107,8 +107,10 @@ const AddProducts = () => {
         formState: { errors, isValid },
         handleSubmit,
         setValue,
+        reset,
         trigger,
-        getValues
+        getValues,
+        watch
     } = useForm<IFormInput>({
         mode: "onChange",
     });
@@ -228,6 +230,8 @@ const AddProducts = () => {
                         control={control}
                         errors={errors}
                         isLoading={isLoading}
+                        setValue={setValue}
+                        watch={watch}
                     />
                     );
                 default:
@@ -240,6 +244,8 @@ const AddProducts = () => {
             onClose={onClose}
             routeUrl="/suppliers/products"
             isEditing={false}
+            reset={reset}
+            setSteps={setSteps}
             routeUrl2="/suppliers/products/add-product"
         />
     </div>

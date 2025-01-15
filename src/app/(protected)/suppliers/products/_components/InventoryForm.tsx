@@ -10,7 +10,7 @@ import {
     Switch, 
     Text, 
 } from "@chakra-ui/react"
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import "react-datepicker/dist/react-datepicker.css";
 import DateComponent from "./DateComponent";
@@ -18,9 +18,9 @@ import {
     Control, 
     Controller, 
     FieldErrors, 
-    FieldValues, 
+    FieldValues,  
     UseFormRegister, 
-    UseFormSetValue 
+    UseFormSetValue, 
 } from "react-hook-form";
 import { IFormInput } from "@/app/(protected)/admin/products/add-product/page";
 import { ProductDataProps } from "@/types";
@@ -33,10 +33,14 @@ interface IChildComponentProps {
     isLoading: boolean;
     data?: ProductDataProps;
     isEditing: boolean
+    setValue: UseFormSetValue<IFormInput>;
+    watch: any;
 }
 
-const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, errors, control, isLoading, isEditing }) => {
-
+const InventoryForm: React.FC<IChildComponentProps> = (
+    {setSteps, register, errors, control, isLoading, isEditing, setValue, watch }
+) => {
+    const isChecked = watch("status");
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
         <div className="flex items-center justify-between">
@@ -115,6 +119,30 @@ const InventoryForm: React.FC<IChildComponentProps> = ({setSteps, register, erro
                     <Switch id='email-alerts' mr={3}/>
                     <FormLabel htmlFor='email-alerts' color={"gray.600"} mb='0'>
                         Save Inventory Settings
+                    </FormLabel>
+                </FormControl>
+                <FormControl display='flex' alignItems='center'>
+                    <Controller
+                        name="status"
+                        control={control}
+                        render={({ field }) => (
+                            <Switch 
+                            defaultChecked={isChecked === "ACTIVE" ? true : false}
+                            id='acitvate-product' 
+                            checked={isChecked === "ACTIVE" ? true : false}
+                            onChange={((e) => {
+                                const isActive = e.target.checked;
+                                if(isActive){
+                                    setValue("status", "ACTIVE");
+                                }else{
+                                    setValue("status", "INACTIVE")
+                                }
+                            })}
+                            mr={3}/>
+                        )}
+                    />
+                    <FormLabel htmlFor='activate-product' color={"gray.600"} mb='0'>
+                        Activate Product
                     </FormLabel>
                 </FormControl>
             </Stack>

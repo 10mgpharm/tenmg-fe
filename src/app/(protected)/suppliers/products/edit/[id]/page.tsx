@@ -115,13 +115,22 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const {
         control,
         register,
-        formState: { errors, isValid },
+        formState: { errors },
         handleSubmit,
         setValue,
+        reset,
         trigger,
+        watch,
         getValues,
     } = useForm<IFormInput>({
         mode: "onChange",
+        defaultValues: {
+            productName: products?.name,
+            productDescription: products?.description,
+            brandName: products?.brand.name,
+            categoryName: products?.category.name,
+            status: products?.status
+        }
     });
 
     useEffect(() => {
@@ -143,6 +152,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setValue("lowStockLevel", products?.lowStockLevel?.toString());
         setValue("outStockLevel", products?.outStockLevel?.toString());
         setValue("expiredAt", products?.expiredAt);
+        setValue("status", products?.status);
     }, [products]);
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -264,6 +274,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     control={control}
                                     errors={errors}
                                     isLoading={isLoading}
+                                    setValue={setValue}
+                                    watch={watch}
                                 />
                         default:
                             break;
@@ -278,6 +290,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
             routeUrl="/suppliers/products"
             isEditing={true}
             routeUrl2="/suppliers/product/new"
+            reset={reset}
+            setSteps={setSteps}
         />
     </div>
   )

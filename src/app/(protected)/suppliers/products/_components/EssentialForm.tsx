@@ -249,6 +249,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                             value={value}
                                             name={"presentationName"}
                                             placeholder={'Select...'}
+                                            isDisabled={isEditing && !newVariation}
                                             options={convertCreateOptionArray(presentationData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                 onChange(selectedOption?.value);
@@ -267,6 +268,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <FormLabel color={"gray.500"}>Strength Value</FormLabel>
                             <Input 
                                 id="strengthValue"
+                                disabled={isEditing && !newVariation}
                                 placeholder="" 
                                 {...register("strengthValue", {
                                     required: "Strength is required",
@@ -276,7 +278,6 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                         return regex.test(value) || "Strength is invalid";
                                     }
                                 })}
-                                // defaultValue={data?.medicationType?.variations?.[0].strengthValue}
                                 isInvalid={!!errors.strengthValue}
                                 _focus={{
                                     border: !!errors.strengthValue ? "red.300" : "border-gray-300",
@@ -295,6 +296,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                             value={value}
                                             name={"measurementName"}
                                             placeholder={'Select...'}
+                                            isDisabled={isEditing && !newVariation}
                                             options={measurementData && convertCreateOptionArray(measurementData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                 onChange(selectedOption?.value);
@@ -319,8 +321,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     id="packageName"
                                     placeholder="" 
                                     type="text"
+                                    disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.packageName}
-                                    // defaultValue={data?.medicationType?.variations[0].packagePerRoll}
                                     _focus={{
                                         border: !!errors.packageName ? "red.300" : "border-gray-300",
                                     }}
@@ -335,8 +337,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     id="weight"
                                     placeholder="" 
                                     type="text"
+                                    disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.weight}
-                                    // defaultValue={data?.medicationType?.variations[0].weight}
                                     _focus={{
                                         border: !!errors.weight ? "red.300" : "border-gray-300",
                                     }}

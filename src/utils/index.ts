@@ -75,3 +75,9 @@ export const fetchImageAsBlob = async (imageUrl: string) => {
       console.error("Error fetching or converting the image:", error);
     }
 };
+
+export const formatText = (text: string) : string => {
+    return text
+      .toLowerCase() // Convert to lowercase: "in stock"
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letters: "In Stock"
+};

@@ -11,10 +11,18 @@ import success from '@public/assets/images/success.svg'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Dispatch, SetStateAction } from 'react'
 
 const SuccessModal = (
-    {isOpen, onClose, routeUrl, isEditing, routeUrl2}: 
-    {isOpen: boolean, onClose: () => void, routeUrl: string, isEditing: boolean, routeUrl2: string}) => {
+    {isOpen, onClose, routeUrl, isEditing, routeUrl2, reset, setSteps}: 
+    {isOpen: boolean, 
+    onClose: () => void, 
+    routeUrl: string, 
+    isEditing: boolean, 
+    routeUrl2: string, 
+    reset: () => void,
+    setSteps: Dispatch<SetStateAction<string>>;
+}) => {
     const router = useRouter();
     return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -37,11 +45,16 @@ const SuccessModal = (
                     className='bg-primary-500 text-white p-3 rounded-md'>
                         Go Back to Products
                     </button>
-                    <Link 
-                    href={routeUrl2} 
+                    <button 
+                    onClick={() => {
+                        // router.push(routeUrl2)
+                        reset();
+                        setSteps("details");
+                        onClose();
+                    }} 
                     className='border rounded p-3 text-center'>
                         Add Another
-                    </Link>
+                    </button>
                 </div>
             </ModalBody>
         </ModalContent>

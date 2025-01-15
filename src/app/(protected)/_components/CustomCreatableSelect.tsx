@@ -17,6 +17,7 @@ interface CustomSelectProps {
     defaultValue?: string | null;
     onOptionSelected: (selectedOption: CreatableSelectOption) => void;
     options: CreatableSelectOption[];
+    isDisabled?: boolean;
     value?: string;
     error?: string;
 }
@@ -28,6 +29,7 @@ export default function CustomCreatableSelectComponent({
     placeholder,
     error,
     name,
+    isDisabled,
     defaultValue,
 }: CustomSelectProps) {
     const [optionList, setOptionList] = useState(options);
@@ -69,6 +71,7 @@ export default function CustomCreatableSelectComponent({
                 id={name}
                 value={selectedOption}
                 onChange={handleChange}
+                isDisabled={isDisabled}
                 onCreateOption={handleCreateOption}
                 options={optionList}
                 menuPortalTarget={document.body}
@@ -98,9 +101,10 @@ export default function CustomCreatableSelectComponent({
 export const customStyles = (hasError: boolean = false): StylesConfig => ({
     control: (base, state) => ({
         ...base,
-        borderColor: hasError ? 'red' : state.isFocused ? '#212121' : 'rgb(214 221 235 / 1)',
+        borderColor: hasError ? 'red' : state.isFocused ? '#212121' : state.isDisabled ? '0 0 0 1px gray' : 'rgb(214 221 235 / 1)',
         borderWidth: '1px',
         borderRadius: '4px',
+        background: 'transparent',
         boxShadow: hasError ? 'red' : state.isFocused ? '0 0 0 1px #212121' : 'none',
         padding: '0px', // remove padding
         minHeight: '40px', // height to match the input

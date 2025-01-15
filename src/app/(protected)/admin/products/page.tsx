@@ -206,7 +206,7 @@ const Page = () => {
         setIsLoading(true);
         const formdata = new FormData();
         if(type === "deactivate"){
-            formdata.append("status", "PENDING");
+            formdata.append("status", "INACTIVE");
         }else if(type === "activate"){
             formdata.append("status", "ACTIVE");
         }else if(type === "flagged" && comment !== ""){
@@ -373,7 +373,7 @@ const Page = () => {
                 </TableContainer>
             )
             : <GridList 
-                data={memoizedData}
+                product={products}
                 routing="/admin/products"
                 selectedProduct={selectedProduct}
                 setSelectedProduct={setSelectedProduct}
@@ -385,6 +385,7 @@ const Page = () => {
                 onOpenActivate={onOpenActivate}
                 onOpenDeactivate={onOpenDeactivate}
                 deleteFn={handleProductDelete}
+                setPageCount={setPageCount}
             />)
         }
         </div>
