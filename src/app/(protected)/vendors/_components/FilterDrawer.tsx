@@ -55,8 +55,6 @@ const FilterDrawer = ({
   });
 
   const onSubmit = (data: IFormInput) => {
-
-    console.log(data.startDate.toISOString().split("T")[1])
     applyFilters(data);
     onClose();
   };

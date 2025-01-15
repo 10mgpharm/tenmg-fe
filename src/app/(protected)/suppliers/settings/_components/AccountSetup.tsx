@@ -138,6 +138,34 @@ const LicenseUpload = () => {
     setLocalUploadProgress(0);
   };
 
+  const handleWithdraw = async () => {
+    try {
+      setIsLoading(true);
+      const response = await requestClient({
+        token: sessionData.user.token,
+      }).patch("/supplier/settings/license/withdraw");
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+
+        // update session here
+        // await session.update({
+        //   ...sessionData,
+        //   user: {
+        //     ...sessionData.user,
+        //     businessStatus: BusinessStatus.PENDING_APPROVAL,
+        //   },
+        // });
+
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(`Withdrawal failed: ${errorMessage}`);
+    }
+  };
+
   const onSubmit = async (value: IFormInput) => {
     if (!file || localUploadProgress < 100) {
       toast.error("Please wait until the file finishes uploading locally.");
@@ -235,8 +263,6 @@ const LicenseUpload = () => {
     if (sessionData?.user?.token) fetchLicense();
   }, [sessionData?.user?.token]);
 
-  console.log("businessLicense", sessionData?.user?.businessStatus);
-
   if (sessionData?.user?.businessStatus === BusinessStatus.PENDING_APPROVAL) {
     return (
       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5 items-center justify-center w-full">
@@ -260,6 +286,7 @@ const LicenseUpload = () => {
             backgroundColor="error.600"
             _hover="error.700"
             w="full"
+            onClick={handleWithdraw}
             isDisabled={isLoading}
             isLoading={isLoading}
             loadingText="Withdrawing..."
@@ -358,56 +385,6 @@ const LicenseUpload = () => {
       </Box>
     );
   }
-
-  //   else if (sessionData?.user?.businessStatus === BusinessStatus.REJECTED) {
-  //     return (
-  //       <Box className="max-w-2xl bg-white p-10 rounded-md border-2 border-gray-200 flex flex-col space-y-5 items-center justify-center w-full">
-  //         {isLicenseLoading && (
-  //           <Flex justify="center" align="center" height="200px">
-  //             <Spinner size="xl" />
-  //           </Flex>
-  //         )}
-  //         {!isLicenseLoading && (
-  //           <>
-  //             <Image
-  //               src={rejectedIcon.src}
-  //               alt="review"
-  //               width="120px"
-  //               height="120px"
-  //             />
-  //             <Text className="font-semibold text-2xl">Document Rejected</Text>
-  //             <Text className="text-center font-normal text-gray-600">
-  //               Your document with license number{" "}
-  //               <span className="font-bold text-base text-primary-500">
-  //                 {businessLicense?.licenseNumber}
-  //               </span>
-  //               , expiring on{" "}
-  //               <span className="font-bold text-base text-primary-500">
-  //                 {" "}
-  //                 {businessLicense?.expiryDate
-  //                   ? moment(businessLicense?.expiryDate)?.format("MMMM Do YYYY")
-  //                   : "N/A"}
-  //               </span>
-  //               , has been rejected.
-  //             </Text>
-  //             <Box>
-  //               <Button
-  //                 colorScheme="blue"
-  //                 w="full"
-  //                 backgroundColor="error.600"
-  //                 _hover="error.700"
-  //                 onClick={() => {
-  //                   window.open(businessLicense?.licenseFile, "_blank");
-  //                 }}
-  //               >
-  //                 View Document
-  //               </Button>
-  //             </Box>
-  //           </>
-  //         )}
-  //       </Box>
-  //     );
-  //   }
 
   const fileActionsMenu = () => {
     if (file && localUploadProgress === 100 && !isLocalUploading) {

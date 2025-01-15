@@ -83,8 +83,6 @@ const BusinessInformation = ({ user }: { user: User }) => {
   
 
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
-    console.log("Form Values on Submit:", value); // Check this value for accuracy
-  
     try {
       setIsLoading(true);
   

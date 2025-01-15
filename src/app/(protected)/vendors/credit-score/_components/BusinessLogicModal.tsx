@@ -26,7 +26,6 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { IoTrashOutline } from "react-icons/io5";
 
 interface BusinessLogicCriteriaProps {
   isOpen: boolean;
@@ -68,8 +67,7 @@ const BusinessLogicCriteria = ({ isOpen, onClose }: BusinessLogicCriteriaProps) 
     name: "purchasePattern",
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Submitted Data:", data);
+  const onSubmit = () => {
     reset();
     onClose();
   };
