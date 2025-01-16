@@ -103,7 +103,7 @@ const TopNavBar = () => {
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">
               <span className="sr-only">Open user menu</span>
-              <Image src={avatar} alt="" />
+              <Image className= "rounded-full w-12 h-12" src={data?.user?.picture ? data?.user?.picture : avatar} alt="" width={48} height={48} />
               <span className="hidden lg:flex lg:items-center">
                 <div className="text-left ml-4">
                   <div className="flex gap-2">

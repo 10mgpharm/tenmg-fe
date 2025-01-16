@@ -10,6 +10,7 @@ import {
   FormLabel,
   HStack,
   Input,
+  Spinner,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -21,6 +22,7 @@ import { toast } from "react-toastify";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import Loader from "@/app/(protected)/admin/_components/Loader";
 
 interface IFormInput {
   businessName: string;
@@ -37,10 +39,12 @@ const PersonalInformation = () => {
   const chakraToast = useToast();
 
   const [iconFile, setIconFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [previewUrl, setPreviewUrl] = useState<string>(
+    sessionData?.user?.avatar || avatar
+  );
   const [userInformation, setUserInformation] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isUserInfo, setIsUerInfo] = useState<boolean>(false);
+  const [isUserInfo, setIsUserInfo] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
 
@@ -94,7 +98,7 @@ const PersonalInformation = () => {
 
   const uploadProfileImage = async () => {
     if (!iconFile) return;
-    
+
     const formdata = new FormData();
     formdata.append("profilePicture", iconFile);
     formdata.append("email", userEmail);
@@ -117,7 +121,7 @@ const PersonalInformation = () => {
 
   const fetchUserInformation = useCallback(async () => {
     try {
-      setIsUerInfo(true);
+      setIsUserInfo(true);
 
       const response = await requestClient({
         token: sessionData.user.token,
@@ -137,7 +141,7 @@ const PersonalInformation = () => {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
     } finally {
-      setIsUerInfo(false);
+      setIsUserInfo(false);
     }
   }, [sessionData?.user?.token, setValue]);
 
@@ -160,6 +164,16 @@ const PersonalInformation = () => {
 
       if (response.status === 200) {
         toast.success("Personal information successfully updated");
+
+        //  update session here
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            businessName: value.businessName,
+            picture: response?.data?.data?.owner?.avatar,
+          },
+        });
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -171,12 +185,18 @@ const PersonalInformation = () => {
     }
   };
 
+  if (isUserInfo) {
+    return (
+      <Loader />
+    );
+  }
+
   return (
     <div className="p-5 rounded-md bg-white max-w-3xl">
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Image
-            src={previewUrl ? previewUrl : avatar}
+            src={previewUrl}
             width={50}
             height={50}
             alt=""
@@ -204,7 +224,7 @@ const PersonalInformation = () => {
             id="image_uploads"
             name="image"
             onChange={onLoadImage}
-            accept=".png, .jpg, .pdf"
+            accept=".png, .jpg, .jpeg"
             style={{
               opacity: "0",
               position: "absolute",
