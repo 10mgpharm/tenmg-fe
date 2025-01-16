@@ -50,7 +50,7 @@ const TopNavBar = () => {
       case "ADMIN":
         return (
           <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
-            {businessType?.toLocaleLowerCase()}
+            {convertLetterCase(businessType)}
           </Tag>
         );
       default:
@@ -137,7 +137,9 @@ const TopNavBar = () => {
                       router.push("/suppliers/settings/personal_information");
                     } else if (data?.user?.entityType === "VENDOR") {
                       router.push("/vendors/settings/general_settings");
-                    } else {
+                    } else if (data?.user?.entityType === "ADMIN") {
+                      router.push("/admin/settings/general_settings");
+                    }else {
                       router.push("/"); // Fallback route if no entity type matches
                     }
                   }}
