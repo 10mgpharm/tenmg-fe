@@ -49,6 +49,7 @@ export const authOptions: NextAuthOptions = {
             businessStatus: data.businessStatus,
             owner: data.owner,
             completeProfile: data.completeProfile,
+            picture: data?.avatar,
           };
         } catch (error) {
           if (error instanceof Error) {
@@ -140,6 +141,8 @@ export const authOptions: NextAuthOptions = {
         params.token.name = params?.session.user?.name;
         params.token.email = params?.session.user?.email;
         params.token.businessStatus = params?.session.user?.businessStatus;
+        params.token.businessName = params?.session.user?.businessName;
+        params.token.picture = params?.session.user?.picture;
       }
 
       return params.token;

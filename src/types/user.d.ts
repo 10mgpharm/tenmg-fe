@@ -15,6 +15,7 @@ export interface User {
   phone?: string;
   active: boolean;
   avatar?: string;
+  picture?: string;
   owner: boolean;
   emailVerifiedAt: string;
   entityType: string;

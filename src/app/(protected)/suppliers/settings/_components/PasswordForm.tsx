@@ -91,7 +91,7 @@ const PasswordForm = () => {
   return (
     <div className="max-w-2xl bg-white p-5 rounded-md">
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-        <Stack direction={"column"} gap={5} divider={<Divider />}>
+        <Stack direction={"column"} gap={4}>
           <FormControl isInvalid={!!errors.currentPassword?.message}>
             <FormLabel>
               Current Password
