@@ -106,8 +106,13 @@ const AddProducts = () => {
         setValue,
         trigger,
         getValues,
+        watch,
+        reset
     } = useForm<IFormInput>({
         mode: "onChange",
+        defaultValues: {
+            status: "INACTIVE"
+        }
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -131,7 +136,7 @@ const AddProducts = () => {
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
         formdata.append("quantity", data?.quantity);
-        formdata.append("status", "ACTIVE");
+        formdata.append("status", data.status);
 
         try {
             const response = await requestClient({token: token}).post(
@@ -219,7 +224,9 @@ const AddProducts = () => {
                                     register={register}
                                     control={control}
                                     errors={errors}
+                                    setValue={setValue}
                                     isLoading={isLoading}
+                                    watch={watch}
                                 />
                         default:
                             break;
@@ -234,6 +241,8 @@ const AddProducts = () => {
             routeUrl="/admin/products"
             isEditing={false}
             routeUrl2="/admin/products/add-product"
+            reset={reset}
+            setSteps={setSteps}
         />
     </div>
   )

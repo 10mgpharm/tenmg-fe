@@ -50,7 +50,7 @@ const TopNavBar = () => {
       case "ADMIN":
         return (
           <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
-            {businessType?.toLocaleLowerCase()}
+            {convertLetterCase(businessType)}
           </Tag>
         );
       default:
@@ -103,7 +103,7 @@ const TopNavBar = () => {
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">
               <span className="sr-only">Open user menu</span>
-              <Image src={avatar} alt="" />
+              <Image className= "rounded-full w-12 h-12" src={data?.user?.picture ? data?.user?.picture : avatar} alt="" width={48} height={48} />
               <span className="hidden lg:flex lg:items-center">
                 <div className="text-left ml-4">
                   <div className="flex gap-2">
@@ -137,7 +137,9 @@ const TopNavBar = () => {
                       router.push("/suppliers/settings/personal_information");
                     } else if (data?.user?.entityType === "VENDOR") {
                       router.push("/vendors/settings/general_settings");
-                    } else {
+                    } else if (data?.user?.entityType === "ADMIN") {
+                      router.push("/admin/settings/general_settings");
+                    }else {
                       router.push("/"); // Fallback route if no entity type matches
                     }
                   }}

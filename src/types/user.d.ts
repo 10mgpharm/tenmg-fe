@@ -15,6 +15,7 @@ export interface User {
   phone?: string;
   active: boolean;
   avatar?: string;
+  picture?: string;
   owner: boolean;
   emailVerifiedAt: string;
   entityType: string;
@@ -301,6 +302,7 @@ export interface ProductDataProps {
   status: string;
   slug: string;
   thumbnailFile: string;
+  company: string| null;
   inventory: string;
   discountPrice: string;
   actualPrice: string;

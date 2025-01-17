@@ -109,6 +109,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
         handleSubmit,
         setValue,
         trigger,
+        reset,
+        watch,
         getValues
     } = useForm<IFormInput>({
         mode: "onChange",
@@ -117,6 +119,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
             productDescription: products?.description,
             brandName: products?.brand.name,
             categoryName: products?.category.name,
+            status: products?.status
         }
     });
 
@@ -139,6 +142,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setValue("lowStockLevel", products?.lowStockLevel?.toString());
         setValue("outStockLevel", products?.outStockLevel?.toString());
         setValue("expiredAt", products?.expiredAt);
+        setValue("status", products?.status);
     }, [products]);
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -261,6 +265,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     control={control}
                                     errors={errors}
                                     isLoading={isLoading}
+                                    setValue={setValue}
+                                    watch={watch}
                                 />
                         default:
                             break;
@@ -275,6 +281,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
             routeUrl="/admin/products"
             isEditing={true}
             routeUrl2="/admin/product/new"
+            reset={reset}
+            setSteps={setSteps}
         />
     </div>
   )

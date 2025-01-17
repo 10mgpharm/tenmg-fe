@@ -77,15 +77,15 @@ export function ColumsProductFN(
         );
       },
     }),
-    columnHelper.accessor("weight", {
+    columnHelper.accessor("company", {
       header: ({ column }) => (
-        <p>Weight</p>
+        <p>Supplier</p>
       ),
       cell: (info) => {
         return (
           <div>
            <p className="font-medium">
-            {info?.row?.original?.medicationType?.variations[0]?.weight}
+            {info?.row?.original?.company}
           </p>
           </div>
         );
@@ -108,10 +108,11 @@ export function ColumsProductFN(
         <p>Price</p>
       ),
       cell: (info) => {
+        const productPrice = Number(info.row.original?.actualPrice) - Number(info.row.original?.discountPrice);
         return (
           <div>
            <p className="font-medium">
-           {Number(info.row.original?.actualPrice)?.toLocaleString()}
+           {productPrice?.toLocaleString()}
           </p>
           </div>
         );
@@ -137,7 +138,7 @@ export function ColumsProductFN(
         return (
           <div>
             <p className={classNames(
-            info?.row?.original?.status === "PENDING"
+            (info?.row?.original?.status === "PENDING" || info.row.original.status === "INACTIVE")
             ? "bg-[#FEF3F2] text-[#B42318]" 
             : info?.row?.original?.status === "ACTIVE"
             ? "text-[#027A48] bg-[#ECFDF3]"
