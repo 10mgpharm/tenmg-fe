@@ -136,7 +136,7 @@ const StoreFrontPharmacy = ({
       <div className="p-8 px-6 md:px-20 max-w-screen-2xl">
         <Carousel />
       </div>
-      {isLoading && <div className="w-full h-1/2 flex items-center justify-center">
+      {isLoading && <div className="w-full h-64 flex items-center justify-center">
         <Spinner />
       </div>}
       <Skeleton isLoaded={!isLoading} fadeDuration={0.4}>
@@ -156,7 +156,7 @@ const StoreFrontPharmacy = ({
         <ModalContent>
           <ModalBody>
             <Flex direction="column" align="center" textAlign="center">
-              <Image src="/assets/images/verification.png" alt="Verification"  />
+              <Image src="/assets/images/verification.png" alt="Verification" />
               <Text fontWeight="bold" fontSize="lg" mb={2} mt={5}>
                 Verify your account
               </Text>
