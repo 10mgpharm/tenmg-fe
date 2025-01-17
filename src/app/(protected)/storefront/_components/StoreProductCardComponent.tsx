@@ -7,14 +7,22 @@ import React from "react";
 import { useCartStore } from "../useCartStore";
 import { Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { BusinessStatus } from "@/constants";
 
 export default function StoreProductCardComponent({ product }: any) {
-
   const router = useRouter();
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
   const { addToCart, cart } = useCartStore();
+
+  const businessStatus = userData?.user?.businessStatus;
+
+  const isProductClickable = ![
+    BusinessStatus.PENDING_VERIFICATION,
+    BusinessStatus.PENDING_APPROVAL,
+    BusinessStatus.REJECTED,
+  ].includes(businessStatus as BusinessStatus);
 
   function isValidUrl(url) {
     try {
@@ -26,8 +34,6 @@ export default function StoreProductCardComponent({ product }: any) {
   }
 
   const addCartFunction = (prod_id) => {
-
-    console.log("adding")
     const data = {
       productId: prod_id,
       qty: 1,
@@ -45,67 +51,145 @@ export default function StoreProductCardComponent({ product }: any) {
 
   return (
     <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md ">
-      <Link href={`/storefront/product/${product?.slug}`}>
-        <div
-          // style={{ backgroundImage: "url('/assets/images/pillImage.png')" }}
-          style={{
-            backgroundImage: `url(${product?.thumbnailUrl && isValidUrl(product?.thumbnailUrl)
-              ? product.thumbnailUrl
-              : '/assets/images/pillImage.png'
-              })`
-          }}
-          className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
-        />
-        <div className="w-full">
-          <div className="flex items-center justify-between my-2">
-            <p className="text-gray-950 font-semibold text-sm capitalize">{product?.name}</p>
-            <HeartIcon className="w-6 stroke-primary fill-primary-50" />
-          </div>
-          {/* <p className="text-gray-500 text-xs my-2">Pentazocine (NEML 23.1)</p> */}
-          <div className="relative flex items-center gap-x-2">
-            {product?.discountPrice > 0 && <p className="text-gray-900 font-semibold my-2 text-sm left-1/4">₦{product?.discountPrice}</p>}
 
-            <p className={` font-semibold my-2 text-sm ${product?.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>₦{product?.actualPrice}</p>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <StarIcon className="w-5 fill-warning-400 stroke-none" />
-              <StarIcon className="w-5 fill-warning-400 stroke-none" />
-              <StarIcon className="w-5 fill-warning-400 stroke-none" />
-              <StarIcon className="w-5 fill-warning-400 stroke-none" />
-              <StarIcon className="w-5 fill-warning-400 stroke-none" />
+      {/* TODO: Build a component for the Products */}
+      {isProductClickable ? (
+        <Link href={`/storefront/product/${product?.slug}`}>
+          <div
+            style={{
+              backgroundImage: `url(${product?.thumbnailFile})`,
+            }}
+            className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
+          />
+          <div className="w-full">
+            <div className="flex items-center justify-between my-2">
+              <p className="text-gray-950 font-semibold text-sm capitalize">
+                {product?.name}
+              </p>
+              <HeartIcon className="w-6 stroke-primary fill-primary-50" />
             </div>
-
-            {product?.inventory?.toLowerCase() === "in stock" ? <Tag
-              size="sm"
-              ml="1"
-              borderRadius={"full"}
-              color={"green.500"}
-              bgColor={"green.100"}
-            >
-              <TagLabel>{"in stock"}</TagLabel>
-            </Tag> :
-              <Tag
-                size="sm"
-                ml="1"
-                borderRadius={"full"}
-                color={"error.500"}
-                bgColor={"error.100"}
+            <div className="relative flex items-center gap-x-2">
+              {product?.discountPrice > 0 && (
+                <p className="text-gray-900 font-semibold my-2 text-sm left-1/4">
+                  ₦{product?.discountPrice}
+                </p>
+              )}
+              <p
+                className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
+                  ? "text-gray-400 line-through"
+                  : "text-gray-900"
+                  }`}
               >
-                <TagLabel>{"in stock"}</TagLabel>
-              </Tag>}
-
+                ₦{product?.actualPrice}
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+              </div>
+              {product?.inventory?.toLowerCase() === "in stock" ? (
+                <Tag
+                  size="sm"
+                  ml="1"
+                  borderRadius={"full"}
+                  color={"green.500"}
+                  bgColor={"green.100"}
+                >
+                  <TagLabel>in stock</TagLabel>
+                </Tag>
+              ) : (
+                <Tag
+                  size="sm"
+                  ml="1"
+                  borderRadius={"full"}
+                  color={"error.500"}
+                  bgColor={"error.100"}
+                >
+                  <TagLabel>out of stock</TagLabel>
+                </Tag>
+              )}
+            </div>
+          </div>
+        </Link>
+      ) : (
+        // If product is not clickable:
+        <div className="pointer-events-none cursor-not-allowed">
+          <div
+            style={{
+              backgroundImage: `url(${product?.thumbnailFile})`,
+            }}
+            className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
+          />
+          <div className="w-full">
+            <div className="flex items-center justify-between my-2">
+              <p className="text-gray-950 font-semibold text-sm capitalize">
+                {product?.name}
+              </p>
+              <HeartIcon className="w-6 stroke-primary fill-primary-50" />
+            </div>
+            <div className="relative flex items-center gap-x-2">
+              {product?.discountPrice > 0 && (
+                <p className="text-gray-900 font-semibold my-2 text-sm left-1/4">
+                  ₦{product?.discountPrice}
+                </p>
+              )}
+              <p
+                className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
+                  ? "text-gray-400 line-through"
+                  : "text-gray-900"
+                  }`}
+              >
+                ₦{product?.actualPrice}
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+                <StarIcon className="w-5 fill-warning-400 stroke-none" />
+              </div>
+              {product?.inventory?.toLowerCase() === "in stock" ? (
+                <Tag
+                  size="sm"
+                  ml="1"
+                  borderRadius={"full"}
+                  color={"green.500"}
+                  bgColor={"green.100"}
+                >
+                  <TagLabel>in stock</TagLabel>
+                </Tag>
+              ) : (
+                <Tag
+                  size="sm"
+                  ml="1"
+                  borderRadius={"full"}
+                  color={"error.500"}
+                  bgColor={"error.100"}
+                >
+                  <TagLabel>out of stock</TagLabel>
+                </Tag>
+              )}
+            </div>
           </div>
         </div>
-      </Link>
+      )}
 
       <div className="flex items-center justify-between w-full gap-4 my-2">
 
         <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => router.push(`/storefront/product/${product?.slug}`)}>
           Buy Now
         </button>
-        <button className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold" onClick={() => addCartFunction(product.id)}>
+        <button
+          disabled={!isProductClickable}
+          className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
+          onClick={() => addCartFunction(product.id)}
+        >
           Add To Cart
         </button>
       </div>

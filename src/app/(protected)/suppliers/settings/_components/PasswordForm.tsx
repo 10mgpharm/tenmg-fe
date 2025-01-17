@@ -34,10 +34,6 @@ interface IFormInput {
 
 const PasswordForm = () => {
   // Separate states for each password field
-  const [currentPassword, setCurrentPassword] = useState<string>("");
-  const [newPassword, setNewPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-
   const [showCurrent, setShowCurrent] = useState<boolean>(false);
   const [showNew, setShowNew] = useState<boolean>(false);
 
