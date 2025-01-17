@@ -59,7 +59,16 @@ export default function ProductDetailPage() {
 
   }, [userData?.user?.token, product]);
 
-  console.log("productData", productData);
+
+  const [count, setCount] = useState(1);
+
+  const decrement = () => {
+    if (count >= 1) {
+      setCount(prev => prev--)
+    }
+
+  }
+
 
   return (
     <section className=' '>
@@ -76,7 +85,7 @@ export default function ProductDetailPage() {
                   width={568}
                   height={611}
                   // src={'/assets/images/productImgDetails.png'}
-                  src={productData?.thumbnailUrl ? productData?.thumbnailUrl : '/assets/images/productImgDetails.png'}
+                  src={productData?.thumbnailFile}
                   alt=''
                   className='w-full'
                 />
@@ -106,8 +115,8 @@ export default function ProductDetailPage() {
 
                 <div className=' space-y-4'>
                   <div className='flex bg-primary-50 text-xs items-center gap-4 px-3 py-2 w-fit'>
-                    <Minus className='w-3' />
-                    <span>1</span>
+                    <Minus className='w-3' onClick={decrement} />
+                    <span>{count}</span>
                     <Plus className='w-3' />
                   </div>
 
@@ -116,7 +125,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            <div className='w-full'>
+            {/* <div className='w-full'>
               <div className='text-center space-y-1 my-14'>
                 <h3 className='text-3xl font-semibold text-gray-900'>Reviews</h3>
                 <p className='text-gray-500'>Read reviews from our satisfied customers.</p>
@@ -133,7 +142,7 @@ export default function ProductDetailPage() {
               <div className='w-fit mx-auto my-10'>
                 <button className='border border-primary-500 text-primary-500 w-fit py-2 px-4 mx-auto rounded-md text-sm mt-3 font-semibold'>Read More</button>
               </div>
-            </div>
+            </div> */}
 
 
             <div className='w-full mx-auto'>

@@ -49,10 +49,7 @@ export default function StoreProductCardComponent({ product }: any) {
         <div
           // style={{ backgroundImage: "url('/assets/images/pillImage.png')" }}
           style={{
-            backgroundImage: `url(${product?.thumbnailUrl && isValidUrl(product?.thumbnailUrl)
-              ? product.thumbnailUrl
-              : '/assets/images/pillImage.png'
-              })`
+            backgroundImage: `url(${product?.thumbnailFile})`
           }}
           className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
         />
