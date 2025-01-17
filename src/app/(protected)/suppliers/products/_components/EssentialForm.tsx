@@ -54,7 +54,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                     `/admin/settings/presentations`
                 );
                 if(response.status === 200){
-                    setPresentationData(response.data.data);
+                    setPresentationData(response.data.data.data);
                 }
             } else {
                 const response = await requestClient({ token: token }).get(
@@ -140,7 +140,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     value={value}
                                     name={"medicationTypeName"}
                                     placeholder={'Select...'}
-                                    options={convertCreateOptionArray(medications)}
+                                    options={medications && convertCreateOptionArray(medications)}
                                     onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                         if(selectedOption?.value){
                                             onChange(selectedOption?.value);
@@ -250,7 +250,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                             name={"presentationName"}
                                             placeholder={'Select...'}
                                             isDisabled={isEditing && !newVariation}
-                                            options={convertCreateOptionArray(presentationData)}
+                                            options={presentationData && convertCreateOptionArray(presentationData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                 onChange(selectedOption?.value);
                                             }}

@@ -28,6 +28,7 @@ const GridList = (
         isLoading,
         deleteFn,
         onOpenFlag,
+        onOpenUnflag,
         onOpenDeactivate,
         onOpenActivate,
         setPageCount
@@ -44,6 +45,7 @@ const GridList = (
         deleteFn: () => void,
         onOpen: () => void,
         onOpenFlag?: () => void,
+        onOpenUnflag?: () => void,
         onOpenDeactivate: () => void,
         onOpenActivate: () => void,
     }
@@ -94,16 +96,31 @@ const GridList = (
                                         Restock
                                     </MenuItem>
                                     {
-                                        type === "admin" &&
-                                        <MenuItem 
-                                            fontSize={"sm"}
-                                            onClick={() => {
-                                                setSelectedProduct(item)
-                                                onOpenFlag();
-                                            }}
-                                        >
-                                            Flag Product
-                                        </MenuItem>
+                                        (type === "admin") &&
+                                        <>
+                                        {
+                                            item.status === "FLAGGED" ? 
+                                            <MenuItem 
+                                                fontSize={"sm"}
+                                                onClick={() => {
+                                                    setSelectedProduct(item)
+                                                    onOpenUnflag();
+                                                }}
+                                            >
+                                                Unflag Product
+                                            </MenuItem>
+                                            : 
+                                            <MenuItem 
+                                                fontSize={"sm"}
+                                                onClick={() => {
+                                                    setSelectedProduct(item)
+                                                    onOpenFlag();
+                                                }}
+                                            >
+                                                Flag Product
+                                            </MenuItem>
+                                        }
+                                        </>
                                     }
                                     {
                                         (item?.status === "ACTIVE" || item?.status === "APPROVED") ? 
