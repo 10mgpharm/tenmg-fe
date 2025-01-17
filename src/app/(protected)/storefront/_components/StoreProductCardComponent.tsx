@@ -34,7 +34,6 @@ export default function StoreProductCardComponent({ product }: any) {
   }
 
   const addCartFunction = (prod_id) => {
-    console.log("adding");
     const data = {
       productId: prod_id,
       qty: 1,
@@ -49,8 +48,6 @@ export default function StoreProductCardComponent({ product }: any) {
   //   "qty": 1,
   //   "action": "add" //add or minus or remove
   // }
-
-  console.log("product", product);
 
   return (
     <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md ">
