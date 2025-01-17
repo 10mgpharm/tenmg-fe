@@ -69,6 +69,7 @@ const Page = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [comment, setComment] = useState<string>("");
+    const [error, setError] = useState<boolean>(false);
     
     const [status, setStatus] = useState<string[]>([]);
     const [brandQuery, setBrandQuery] = useState<string[]>([]);
@@ -205,6 +206,7 @@ const Page = () => {
 
     const handleProductDeactivate = async(type: string) => {
         if(!selectedProduct) return;
+        setError(false);
         setIsLoading(true);
         const formdata = new FormData();
         if(type === "deactivate"){
@@ -487,15 +489,26 @@ const Page = () => {
                 <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
                 , this product will appear not in your public shop.
                 </p>
-                <textarea 
-                onChange={(e) => setComment(e.target.value)}
-                className="w-full border rounded-md my-5 placeholder:text-gray-400 p-2" 
-                placeholder="Enter reason"></textarea>
+                <div className="my-5">
+                    <textarea 
+                    onChange={(e) => setComment(e.target.value)}
+                    required
+                    className="w-full border rounded-md placeholder:text-gray-400 p-2" 
+                    placeholder="Enter reason"></textarea>
+                    {
+                        error && <span className="text-sm text-red-500 mt-1">Reason is required</span>
+                    }
+                </div>
                 <div className="flex flex-col gap-2">
                     <Button 
                     isLoading={isLoading}
                     loadingText={"Submitting..."}
-                    onClick={() => handleProductDeactivate("flagged")} 
+                    onClick={() => {
+                        if(comment === "") {
+                            return setError(true)
+                        };
+                        handleProductDeactivate("flagged")
+                    }} 
                     className='bg-primary-600 text-white p-3 rounded-md'>
                         Proceed
                     </Button>
