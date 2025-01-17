@@ -1,9 +1,6 @@
 "use client";
 
 import { 
-    Avatar, 
-    Divider, 
-    Flex, 
     SimpleGrid, 
     Stack, 
     Text,
@@ -14,14 +11,9 @@ import {
     Th,
     Thead, 
     Tr, 
-    HStack
+    HStack,
  } from "@chakra-ui/react"
 import DashboardCard from "./_components/DashboardCard"
-import salesIcon from '@public/assets/images/Emphasis.svg'
-import pharmIcon from '@public/assets/images/Emphasis1.svg'
-import productIcon from '@public/assets/images/Emphasis2.svg'
-import categoryIcon from '@public/assets/images/Emphasis3.svg'
-import Image from "next/image"
 import Link from "next/link"
 import { 
     ColumnOrderState, 
@@ -35,6 +27,7 @@ import {
 import { ColumsFN } from "./_components/table"
 import { useState } from "react"
 import { loanData, records } from "@/data/mockdata"
+import ActivityCharts from './_components/ActivityCharts';
 
 const Admin = () => {
 
@@ -42,8 +35,6 @@ const Admin = () => {
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
-    // const memoizedData = useMemo(() => data, [data]);
 
     const table = useReactTable({
         data: loanData,
@@ -82,89 +73,10 @@ const Admin = () => {
                 }
             </SimpleGrid>
         </Stack>
-        <Flex mt={6} gap={5}>
-            <Stack flex={1} bg={"white"} px={6} py={3} borderRadius={"10px"} border={"1px solid #EAECF0"}>
-                <Text fontWeight={"600"} mb={3} fontSize={"large"}>Store Statistics</Text>
-                <Stack gap={4}>
-                    <Flex justify={"space-between"}>
-                        <Stack>
-                            <Text color={"gray.500"}>Sales</Text>
-                            <Text fontSize={"large"} fontWeight={"600"}>1,784</Text>
-                        </Stack>
-                        <Image src={salesIcon} alt=""/>
-                    </Flex>
-                    <Flex justify={"space-between"}>
-                        <Stack>
-                            <Text color={"gray.500"}>Pharmacist</Text>
-                            <Text fontSize={"large"} fontWeight={"600"}>1,784</Text>
-                        </Stack>
-                        <Image src={pharmIcon} alt=""/>
-                    </Flex>
-                    <Flex justify={"space-between"}>
-                        <Stack>
-                            <Text color={"gray.500"}>Products</Text>
-                            <Text fontSize={"large"} fontWeight={"600"}>164</Text>
-                        </Stack>
-                        <Image src={productIcon} alt=""/>
-                    </Flex>
-                    <Flex justify={"space-between"}>
-                        <Stack>
-                            <Text color={"gray.500"}>Categories</Text>
-                            <Text fontSize={"large"} fontWeight={"600"}>65</Text>
-                        </Stack>
-                        <Image src={categoryIcon} alt=""/>
-                    </Flex>
-                </Stack>
-            </Stack>
-            <Stack flex={1} bg={"white"} borderRadius={"10px"} border={"1px solid #EAECF0"}>
-                <Flex justify={"space-between"} px={5} py={3}>
-                    <Text fontWeight={"600"}>New Pharmacies</Text>
-                    <Link href={'#'} className="text-primary-600 text-sm">View All</Link>
-                </Flex>
-                <Divider />
-                <Stack>
-                    <Flex align={"center"} px={5} gap={2}>
-                        <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
-                        <Stack gap={0.5}>
-                            <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
-                        </Stack>
-                    </Flex>
-                    <Divider />
-                </Stack>
-                <Stack>
-                    <Flex align={"center"} py={2} px={5} gap={2}>
-                        <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
-                        <Stack gap={0.5}>
-                            <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
-                        </Stack>
-                    </Flex>
-                    <Divider />
-                </Stack>
-                <Stack>
-                    <Flex align={"center"} py={2} px={5} gap={2}>
-                        <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
-                        <Stack gap={0.5}>
-                            <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
-                        </Stack>
-                    </Flex>
-                    <Divider />
-                </Stack>
-                <Stack>
-                    <Flex align={"center"} py={2} px={5} gap={2}>
-                        <Avatar size={"sm"} colorScheme={"green"} name="Chidi Victor"/>
-                        <Stack gap={0.5}>
-                            <Text fontWeight={"500"}>Chudi Victor</Text>
-                            <Text fontSize={"14px"} color={"gray.500"}>info@softeni.com</Text>
-                        </Stack>
-                    </Flex>
-                    <Divider />
-                </Stack>
-            </Stack>
-        </Flex>
-        <Stack mt={8}>
+        <Stack mt={6}>
+            <ActivityCharts />
+        </Stack>
+        <Stack mt={6}>
             <HStack justify={"space-between"} mb={3}>
                 <Text fontSize={"xl"} fontWeight={"500"}>Loan Managment</Text>
                 <Link href={'/dashboard/loans'} className="text-gray-600 text-sm px-4 py-2 font-medium bg-white border border-[#D0D5DD] rounded-md">View all</Link>

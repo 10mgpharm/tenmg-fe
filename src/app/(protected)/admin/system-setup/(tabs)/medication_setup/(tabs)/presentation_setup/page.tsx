@@ -26,7 +26,7 @@ const PresentationSetup = () => {
             `/admin/settings/presentations?page=${pageCount}&search=${debouncedSearch}`
         );
         if (response.status === 200) {
-            setPresentationData(response.data);
+            setPresentationData(response.data.data);
             setPresentationLoading(false)
         }
         } catch (error) {
