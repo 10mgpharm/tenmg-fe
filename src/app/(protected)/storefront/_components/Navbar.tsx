@@ -58,8 +58,6 @@ const Navbar = () => {
     fetchCart(userData?.user?.token);
   }, [isCartOpen, fetchCart, userData?.user?.token]);
 
-  console.log("Printing...", userData?.user?.name);
-
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
       {/* Mobile View */}
