@@ -34,14 +34,11 @@ interface IFormInput {
 
 const PersonalInformation = () => {
   const session = useSession();
-  const sessionData = session.data as NextAuthUserSession;
+  const sessionData = session?.data as NextAuthUserSession;
   const chakraToast = useToast();
 
   const [iconFile, setIconFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>(
-    sessionData?.user?.avatar || avatar
-  );
-  const [userInformation, setUserInformation] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState<string>(avatar);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUserInfo, setIsUserInfo] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>("");
@@ -127,6 +124,7 @@ const PersonalInformation = () => {
       }).get("/supplier/settings");
 
       const data = response.data.data;
+
       setValue("businessName", data.businessName);
       setValue("contactEmail", data.contactEmail);
       setValue("contactPerson", data.contactPerson);
@@ -135,7 +133,7 @@ const PersonalInformation = () => {
       setValue("contactPersonPosition", data.contactPersonPosition || "");
       setUserEmail(data.contactEmail);
       setUserName(data.businessName);
-      setPreviewUrl(data.owner.avatar);
+      setPreviewUrl(data.owner.avatar ?? avatar);
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
@@ -245,9 +243,9 @@ const PersonalInformation = () => {
                 required: "Contact Name is required",
               })}
             />
-            <FormErrorMessage>{errors.contactPerson?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.contactPerson?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors.businessName?.message}>
+          <FormControl isInvalid={!!errors?.businessName?.message}>
             <FormLabel>Business Name</FormLabel>
             <Input
               placeholder="Enter business name"
@@ -255,11 +253,11 @@ const PersonalInformation = () => {
                 required: "Business Name is required",
               })}
             />
-            <FormErrorMessage>{errors.businessName?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.businessName?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
         <HStack gap={5}>
-          <FormControl isInvalid={!!errors.contactEmail?.message}>
+          <FormControl isInvalid={!!errors?.contactEmail?.message}>
             <FormLabel>Business email</FormLabel>
             <Input
               type="email"
@@ -268,9 +266,9 @@ const PersonalInformation = () => {
                 required: "Business Email is required",
               })}
             />
-            <FormErrorMessage>{errors.contactEmail?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.contactEmail?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors.contactPhone?.message}>
+          <FormControl isInvalid={!!errors?.contactPhone?.message}>
             <FormLabel>Contact Phone Number</FormLabel>
             <Input
               type="number"
@@ -279,10 +277,10 @@ const PersonalInformation = () => {
                 required: "Contact Phone Number is required",
               })}
             />
-            <FormErrorMessage>{errors.contactPhone?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.contactPhone?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
-        <FormControl isInvalid={!!errors.businessAddress?.message}>
+        <FormControl isInvalid={!!errors?.businessAddress?.message}>
           <FormLabel>Business Address</FormLabel>
           <Textarea
             placeholder="Enter business address"
@@ -290,7 +288,7 @@ const PersonalInformation = () => {
               required: "Business Address is required",
             })}
           />
-          <FormErrorMessage>{errors.businessAddress?.message}</FormErrorMessage>
+          <FormErrorMessage>{errors?.businessAddress?.message}</FormErrorMessage>
         </FormControl>
         <HStack justify={"end"}>
           <Flex>
