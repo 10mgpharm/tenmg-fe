@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Button,
   Flex,
@@ -10,6 +10,9 @@ import {
   Stack,
   Text,
   FormErrorMessage,
+  Avatar,
+  Box,
+  Icon,
 } from "@chakra-ui/react";
 import { HiddenFileUpload } from "../../../_components/(settings-component)/HiddenFileUpload";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -20,6 +23,7 @@ import requestClient from "@/lib/requestClient";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
+import { FaCamera } from "react-icons/fa6";
 
 interface IFormInput {
   businessName: string;
@@ -27,16 +31,21 @@ interface IFormInput {
   contactPerson: string;
   contactPhone: string;
   businessAddress: string;
+  contactPersonPosition: string;
 }
 
 export default function ProfileInformation() {
   const [filePreview, setFilePreview] = useState(null);
   const [file, setFile] = useState(null);
+  const [fileError, setFileError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInfoLoading, setIsInfoLoading] = useState<boolean>(false);
+  const [isShowUpload, setIsShowUpload] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const chakraToast = useToast();
 
   const {
@@ -53,11 +62,41 @@ export default function ProfileInformation() {
       contactPerson: "",
       contactPhone: "",
       businessAddress: "",
+      contactPersonPosition: "",
     },
   });
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
+
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      setFileError(null);
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError(null);
+    const selectedFile = event.target.files?.[0];
+    if (!selectedFile) return;
+
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      setFileError("File size must be less than 5MB");
+      event.target.value = "";
+      return;
+    }
+
+    if (!selectedFile.type.startsWith("image/")) {
+      setFileError("Only image files are allowed");
+      event.target.value = "";
+      return;
+    }
+
+    setIsShowUpload(true);
+    setFile(selectedFile);
+    setFilePreview(URL.createObjectURL(selectedFile));
+  };
 
   const uploadProfileImage = async () => {
     if (!file) return;
@@ -67,6 +106,8 @@ export default function ProfileInformation() {
     formdata.append("email", userEmail);
     formdata.append("name", userName);
 
+    setIsUploading(true);
+
     try {
       const response = await requestClient({
         token: sessionData.user.token,
@@ -74,11 +115,22 @@ export default function ProfileInformation() {
 
       if (response.status === 200) {
         toast.success(response?.data?.message);
-        fetchUserInformation();
+
+        //  update session here
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            picture: response?.data?.data?.avatar,
+          },
+        });
+        // fetchUserInformation();
       }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -96,6 +148,7 @@ export default function ProfileInformation() {
       setValue("contactPerson", data.contactPerson);
       setValue("contactPhone", data.contactPhone);
       setValue("businessAddress", data.businessAddress);
+      setValue("contactPersonPosition", data.contactPersonPosition);
       setUserEmail(data.contactEmail);
       setUserName(data.businessName);
       setFilePreview(data.owner.avatar);
@@ -114,9 +167,6 @@ export default function ProfileInformation() {
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
     try {
       setIsLoading(true);
-      if (file) {
-        await uploadProfileImage();
-      }
 
       const response = await requestClient({
         token: sessionData.user.token,
@@ -126,6 +176,14 @@ export default function ProfileInformation() {
 
       if (response.status === 200) {
         toast.success("Personal information successfully updated");
+        //  update session here
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            businessName: value.businessName,
+          },
+        });
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -138,16 +196,54 @@ export default function ProfileInformation() {
   };
 
   return (
-    <Stack>
+    <Stack p={4}>
       <div className="flex gap-4 items-center">
-        <div
+        {/* <div
           className="size-28 rounded-full bg-cover bg-center bg-no-repeat shadow-gray-400 shadow-md"
           style={{
             backgroundImage: `url(${
               filePreview ? filePreview : "/assets/images/avatar.jpg"
             })`,
           }}
-        />
+        /> */}
+
+        <Box
+          position="relative"
+          role="group"
+          w="fit-content"
+          cursor="pointer"
+          onClick={handleButtonClick}
+        >
+          <Avatar
+            size="2xl"
+            name={sessionData?.user?.name}
+            src={filePreview ?? sessionData?.user?.picture}
+          />
+          {/* Camera icon shown on hover */}
+          <Box
+            position="absolute"
+            bottom="2"
+            right="50"
+            left="50"
+            bg="gray.600"
+            rounded="full"
+            p="6px"
+            cursor="pointer"
+            display="none"
+            _groupHover={{ display: "block" }}
+          >
+            <Icon as={FaCamera} boxSize="15px" color="white" />
+          </Box>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+            accept="image/*"
+            id="file-input"
+          />
+        </Box>
+
         <div className="flex flex-col justify-between gap-3">
           <Text fontSize={"1rem"} fontWeight={600} color="gray.700">
             Profile Image
@@ -156,7 +252,22 @@ export default function ProfileInformation() {
             Min 400x400px, PNG or JPEG
           </Text>
 
-          <HiddenFileUpload setFilePreview={setFilePreview} setFile={setFile} />
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={uploadProfileImage}
+              isLoading={isUploading}
+              loadingText="Uploading..."
+              isDisabled={!isShowUpload || isUploading}
+            >
+              Upload
+            </Button>
+          </div>
+
+          <p className="text-xs text-red-500">{fileError}</p>
+
+          {/* <HiddenFileUpload setFilePreview={setFilePreview} setFile={setFile} /> */}
         </div>
       </div>
       <form className="space-y-5 mt-6" onSubmit={handleSubmit(onSubmit)}>
@@ -216,7 +327,16 @@ export default function ProfileInformation() {
             />
           </FormControl>
 
-          <div className="w-full" />
+          <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
+            <FormLabel>Contact Person Position</FormLabel>
+            <Input
+              type="tel"
+              placeholder={"Managing Director"}
+              {...register("contactPersonPosition", {
+                required: "Contact Person Position is required",
+              })}
+            />
+          </FormControl>
         </HStack>
         <div className="w-fit mx-auto mt-10">
           <Flex className="flex items-center gap-3">

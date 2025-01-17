@@ -58,8 +58,6 @@ const CartDrawer = ({
     }
   }, [cart])
 
-  console.log("userCartData", cartItems);
-
   const subtotal = 0;
   // const subtotal = cartItems.reduce(
   //   (acc, item) => acc + item.price * item.quantity,
