@@ -1,3 +1,5 @@
+"use client";
+
 import GroupedBarChart from './GroupedBarChart'
 import { Select } from '@headlessui/react'
 import DonutChart from './DonutChart'

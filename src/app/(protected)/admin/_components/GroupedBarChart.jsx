@@ -1,4 +1,4 @@
-import React from 'react';
+"use client";
 import Chart from 'react-apexcharts';
 
 const GroupedBarChart = () => {
