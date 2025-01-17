@@ -37,11 +37,11 @@ export default function StoreProductCardComponent({ product }: any) {
     const data = {
       productId: prod_id,
       qty: 1,
-      action: "add",
-    };
-    addToCart(data, userData?.user?.token);
-  };
-  const buyNowFunction = async (prod_id) => {};
+      action: "add"
+    }
+    addToCart(data, userData?.user?.token)
+  }
+
 
   // {
   //   "productId": 20,
@@ -54,7 +54,7 @@ export default function StoreProductCardComponent({ product }: any) {
 
       {/* TODO: Build a component for the Products */}
       {isProductClickable ? (
-        <Link href={`/storefront/product/${product?.name}`}>
+        <Link href={`/storefront/product/${product?.slug}`}>
           <div
             style={{
               backgroundImage: `url(${
@@ -191,14 +191,8 @@ export default function StoreProductCardComponent({ product }: any) {
       )}
 
       <div className="flex items-center justify-between w-full gap-4 my-2">
-        <button
-          disabled={
-            product?.inventory?.toLowerCase() !== "in stock" ||
-            !isProductClickable
-          }
-          className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer disabled:cursor-not-allowed"
-          onClick={() => router.push(`/storefront/product/${product?.name}`)}
-        >
+
+        <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => router.push(`/storefront/product/${product?.slug}`)}>
           Buy Now
         </button>
         <button

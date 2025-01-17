@@ -313,7 +313,7 @@ export default function EditAddressModal({
                       variant="outline"
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
-                      colorScheme="gray.400"
+                      colorScheme="gray.200"
                     >
                       {countryPlaceholder}
                     </MenuButton>
@@ -346,7 +346,7 @@ export default function EditAddressModal({
                       variant="outline"
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
-                      colorScheme="gray.400"
+                      colorScheme="gray.200"
                     >
                       {statePlaceholder}
                     </MenuButton>
@@ -374,7 +374,7 @@ export default function EditAddressModal({
                       variant="outline"
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
-                      colorScheme="gray.400"
+                      colorScheme="gray.200"
                     >
                       {cityPlaceholder}
                     </MenuButton>

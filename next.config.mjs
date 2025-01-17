@@ -5,6 +5,7 @@ const nextConfig = {
           {
             protocol: 'https',
             hostname: 'tenmg-sanbox-bucket.s3.eu-west-1.amazonaws.com',
+            pathname: '/uploads/files/**',
           },
         ]
     }

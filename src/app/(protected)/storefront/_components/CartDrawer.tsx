@@ -73,7 +73,7 @@ const CartDrawer = ({
     console.log("item qty", item)
     const data = {
       productId: itemId,
-      qty: item + 1,
+      qty: 1,
       action: 'add'
     }
 
@@ -129,7 +129,7 @@ const CartDrawer = ({
         <Box p={4} mt={2}>
           {/* Cart Items */}
           {cartItems?.items?.length > 0 ? (
-            <VStack align="start" spacing={4}>
+            <VStack align="start" spacing={4} className="overflow-y-scroll">
               {cartItems?.items?.map((item) => (
                 <HStack
                   key={item?.id}
