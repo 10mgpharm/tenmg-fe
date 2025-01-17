@@ -172,7 +172,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
         formdata.append("quantity", data?.quantity);
-        formdata.append("status", "ACTIVE");
+        formdata.append("status", data?.status);
 
         try {
             const response = await requestClient({token: token}).post(
