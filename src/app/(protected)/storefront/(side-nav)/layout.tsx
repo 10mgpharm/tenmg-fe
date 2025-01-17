@@ -34,7 +34,7 @@ export default function VendorSettingsLayout({
 
   // console.log("pathname", pathname);
   const activeIndex = link_arr.findIndex((link) => pathname.startsWith(link.href));
-  console.log("activeIndex", activeIndex);
+  // console.log("activeIndex", activeIndex);
 
 
   const breadCrumb = [

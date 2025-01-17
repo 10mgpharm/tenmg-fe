@@ -35,10 +35,7 @@ export default function StoreProductCardComponent({ product }: any) {
     }
     addToCart(data, userData?.user?.token)
   }
-  const buyNowFunction = async (prod_id) => {
 
-
-  }
 
   // {
   //   "productId": 20,
@@ -46,15 +43,13 @@ export default function StoreProductCardComponent({ product }: any) {
   //   "action": "add" //add or minus or remove
   // }
 
-  console.log('product', product)
-
   return (
     <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md ">
-      <Link href={`/storefront/product/${product?.name}`}>
+      <Link href={`/storefront/product/${product?.slug}`}>
         <div
           // style={{ backgroundImage: "url('/assets/images/pillImage.png')" }}
           style={{
-            backgroundImage: `url(${product?.thumbnailUrl && isValidUrl(product.thumbnailUrl)
+            backgroundImage: `url(${product?.thumbnailUrl && isValidUrl(product?.thumbnailUrl)
               ? product.thumbnailUrl
               : '/assets/images/pillImage.png'
               })`
@@ -107,7 +102,7 @@ export default function StoreProductCardComponent({ product }: any) {
 
       <div className="flex items-center justify-between w-full gap-4 my-2">
 
-        <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => router.push(`/storefront/product/${product?.name}`)}>
+        <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => router.push(`/storefront/product/${product?.slug}`)}>
           Buy Now
         </button>
         <button className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold" onClick={() => addCartFunction(product.id)}>

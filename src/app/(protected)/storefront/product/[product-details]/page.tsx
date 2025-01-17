@@ -154,11 +154,10 @@ export default function ProductDetailPage() {
                   'scrollbar-width': 'none'
                 }}
               >
-                {Array(6)
-                  .fill(null)
-                  .map((_, i: number) => (
+                {productData?.relatedProducts
+                  .map((product, i: number) => (
                     // <p key={i}>Item {i}</p>
-                    <StoreProductCardComponent key={1} />
+                    <StoreProductCardComponent key={i} product={product} />
                   ))}
               </Flex>
             </div>
