@@ -36,8 +36,6 @@ const Admin = () => {
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    // const memoizedData = useMemo(() => data, [data]);
-
     const table = useReactTable({
         data: loanData,
         columns: ColumsFN(),
