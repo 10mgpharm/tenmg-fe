@@ -102,7 +102,7 @@ export default function ProductDetailPage() {
 
               {/* description container */}
               <div className='w-full lg:w-1/2 flex flex-col gap-6 px-8'>
-                <h2 className='text-6xl font-semibold'>{productData?.name}</h2>
+                <h2 className='text-6xl font-semibold'>{productData?.name} ({productData?.variation?.strengthValue})</h2>
                 <div className='flex items-center gap-x-2'>
                   {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-3xl font-semibold'>{productData?.discountPrice}</p>}
                   <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-red-500 line-through"}`}>{productData?.actualPrice}</p>
@@ -112,6 +112,14 @@ export default function ProductDetailPage() {
                   gut environment, promoting smooth digestion and overall digestive wellness for a
                   happier, healthier you.</p>
 
+                <div className="flex items-center gap-3">
+                  <h4>Brand:</h4>
+                  <p className="font-semibold">{productData?.brand?.name}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <h4>Category:</h4>
+                  <p className="font-semibold">{productData?.category?.name}</p>
+                </div>
 
                 <div className=' space-y-4'>
                   <div className='flex bg-primary-50 text-xs items-center gap-4 px-3 py-2 w-fit'>
@@ -145,7 +153,7 @@ export default function ProductDetailPage() {
             </div> */}
 
 
-            <div className='w-full mx-auto'>
+            <div className='w-full mx-auto mt-10'>
               <h3 className='text-3xl font-semibold text-gray-900 my-3'>Related Products</h3>
 
               {/* <div className=' flex items-center justify-between gap-x-8 '> */}
