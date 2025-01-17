@@ -16,7 +16,7 @@ import {
   Button,
   Avatar,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+
 import { Search, UserCircle2Icon, UserCircleIcon } from "lucide-react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useRouter } from "next/navigation";
@@ -56,8 +56,9 @@ const Navbar = () => {
 
   useEffect(() => {
     fetchCart(userData?.user?.token);
+  }, [isCartOpen, fetchCart, userData?.user?.token]);
 
-  }, [isCartOpen, fetchCart, userData?.user?.token])
+  console.log("Printing...", userData?.user?.name);
 
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
@@ -147,23 +148,17 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem py={3}>
                 <Text cursor="pointer">
-                  <Link href={"/storefront/orders"}>
-                    My Orders
-                  </Link>
+                  <Link href={"/storefront/orders"}>My Orders</Link>
                 </Text>
               </MenuItem>
               <MenuItem py={3}>
                 <Text cursor="pointer">
-                  <Link href={"/storefront/my-wishlist"}>
-                    My Wishlist
-                  </Link>
+                  <Link href={"/storefront/my-wishlist"}>My Wishlist</Link>
                 </Text>
               </MenuItem>
               <MenuItem py={3}>
                 <Text cursor="pointer">
-                  <Link href={"/storefront/shopping-list"}>
-                    Shopping List
-                  </Link>
+                  <Link href={"/storefront/shopping-list"}>Shopping List</Link>
                 </Text>
               </MenuItem>
               <MenuItem py={3}>
@@ -258,7 +253,11 @@ const Navbar = () => {
           <Menu>
             <MenuButton as="button">
               <Stack align="center" spacing={1}>
-                <Image src={avatar} alt="User Avatar" width={24} height={24} />
+                <Avatar
+                  size="sm"
+                  name={userData?.user?.name}
+                  src={userData?.user?.picture}
+                />
                 <Text>Account</Text>
               </Stack>
             </MenuButton>
@@ -273,13 +272,21 @@ const Navbar = () => {
             >
               <Box borderBottomWidth="thin" px={4} py={3}>
                 <HStack spacing={4}>
-                  <Avatar size="md" name="Bubbles Pharmacy" src={avatar.src} />
+                  <Avatar
+                    size="md"
+                    name={userData?.user?.name}
+                    src={userData?.user?.picture}
+                  />
                   <VStack align="start" spacing={0}>
                     <Text fontWeight="medium" fontSize="md">
-                      Bubbles Pharmacy
+                      {userData?.user?.name
+                        ? userData?.user?.name
+                        : "Bubbles Pharmacy"}
                     </Text>
                     <Text fontSize="sm" color="gray.500">
-                      hello@bubbles.com
+                      {userData?.user?.email
+                        ? userData?.user?.email
+                        : "hello@bubbles.com"}
                     </Text>
                   </VStack>
                 </HStack>
@@ -293,26 +300,26 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem py={3} px={4}>
                 <Text cursor="pointer">
-                  <Link href={"/storefront/orders"}>
-                    My Orders
-                  </Link>
+                  <Link href={"/storefront/orders"}>My Orders</Link>
                 </Text>
               </MenuItem>
               <MenuItem py={3} px={4}>
                 <Text cursor="pointer">
-                  <Link href={"/storefront/my-wishlist"}>
-                    My Wishlist
-                  </Link>
+                  <Link href={"/storefront/my-wishlist"}>My Wishlist</Link>
                 </Text>
               </MenuItem>
               <MenuItem py={3} px={4}>
                 <Text cursor="pointer">
-                  <Link href={"/storefront/shopping-list"}>
-                    Shopping List
-                  </Link>
+                  <Link href={"/storefront/shopping-list"}>Shopping List</Link>
                 </Text>
               </MenuItem>
-              <MenuItem py={3} px={4} color="error.500" borderTopWidth="thin" onClick={async () => await signOut()}>
+              <MenuItem
+                py={3}
+                px={4}
+                color="error.500"
+                borderTopWidth="thin"
+                onClick={async () => await signOut()}
+              >
                 Log Out
               </MenuItem>
             </MenuList>

@@ -21,6 +21,7 @@ import {
   Input,
   Flex,
   Divider,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "lucide-react";
 import { toast } from "react-toastify";
@@ -72,13 +73,13 @@ export default function EditAddressModal({
   const sessionData = session.data as NextAuthUserSession;
   const userToken = sessionData?.user?.token;
 
-  // React Hook Form
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm<IShippingAddressInput>({
+    mode: "onChange",
     defaultValues: {
       name: "",
       address: "",
@@ -271,6 +272,7 @@ export default function EditAddressModal({
                       required: "Name is required",
                     })}
                   />
+                  <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
                 </FormControl>
               </HStack>
 
@@ -284,6 +286,7 @@ export default function EditAddressModal({
                       required: "Address is required",
                     })}
                   />
+                  <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
                 </FormControl>
                 <FormControl isInvalid={!!errors.phoneNumber?.message}>
                   <FormLabel>Phone Number</FormLabel>
@@ -294,6 +297,9 @@ export default function EditAddressModal({
                       required: "Phone number is required",
                     })}
                   />
+                  <FormErrorMessage>
+                    {errors.phoneNumber?.message}
+                  </FormErrorMessage>
                 </FormControl>
               </HStack>
 
@@ -392,6 +398,7 @@ export default function EditAddressModal({
                       required: "Zip code is required",
                     })}
                   />
+                  <FormErrorMessage>{errors.zipCode?.message}</FormErrorMessage>
                 </FormControl>
               </HStack>
 
