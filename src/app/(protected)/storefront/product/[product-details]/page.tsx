@@ -104,8 +104,8 @@ export default function ProductDetailPage() {
               <div className='w-full lg:w-1/2 flex flex-col gap-6 px-8'>
                 <h2 className='text-6xl font-semibold'>{productData?.name} ({productData?.variation?.strengthValue}{productData?.measurement?.name})</h2>
                 <div className='flex items-center gap-x-2'>
-                  {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-3xl font-semibold'>{productData?.discountPrice}</p>}
-                  <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-red-500 line-through"}`}>{productData?.actualPrice}</p>
+                  {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-3xl font-semibold'>₦{productData?.discountPrice}</p>}
+                  <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-red-500 line-through"}`}>₦{productData?.actualPrice}</p>
                 </div>
 
                 <p className='text-sm'>Expertly formulated with a blend of probiotics, these tablets support a harmonious
