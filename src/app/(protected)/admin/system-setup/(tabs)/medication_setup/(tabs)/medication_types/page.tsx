@@ -40,8 +40,6 @@ export default function ProductMedicationTypeSetupPage() {
     fetchingMedicationTypes();
 }, [token, fetchingMedicationTypes]);
 
-console.log(medicationData)
-
   return (
     <MedicationTypes
       data={medicationData?.data}

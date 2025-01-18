@@ -367,7 +367,7 @@ const AddMedicationType = (
                                                             {...register(`variations.${index}.package`, {
                                                                 required: "Package is required",
                                                             })}
-                                                            placeholder="e.g 1x100 Pieces"
+                                                            placeholder="e.g 1*100 Pieces"
                                                             type="text"
                                                         />
                                                         {errors.variations?.[index]?.package?.message &&
