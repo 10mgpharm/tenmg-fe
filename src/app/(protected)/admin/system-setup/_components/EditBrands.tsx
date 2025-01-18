@@ -70,9 +70,19 @@ const EditBrands = (
           )
         }else if(type === "Category"){
           response = await requestClient({token: token}).patch(
-            `/admin/settings/categories/${brand?.id}`,
+              `/admin/settings/categories/${brand?.id}`,
+              data
+          )
+        } else if (type === "Measurement") {
+          response = await requestClient({ token: token }).patch(
+            `/admin/settings/measurements/${brand?.id}`,
             data
-        )
+          )
+        } else if (type === "Presentation") {
+          response = await requestClient({ token: token }).patch(
+            `/admin/settings/presentations/${brand?.id}`,
+            data
+          )
         }
         if(response.status === 200){
             toast.success(response.data?.message);
