@@ -47,7 +47,7 @@ const CartDrawer = ({
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const { cart, addToCart, updateLoading } = useCartStore();
 
@@ -74,10 +74,7 @@ const CartDrawer = ({
       qty: 1,
       action: 'add'
     }
-
     addToCart(data, userData?.user?.token)
-
-
   };
 
   // Function to decrease quantity
@@ -127,7 +124,7 @@ const CartDrawer = ({
         <Box p={4} mt={2}>
           {/* Cart Items */}
           {cartItems?.items?.length > 0 ? (
-            <VStack align="start" spacing={4} className="overflow-y-scroll">
+            <VStack align="start" spacing={4} className="overflow-y-scroll h-screen lg:h-[50vh]">
               {cartItems?.items?.map((item) => (
                 <HStack
                   key={item?.id}
