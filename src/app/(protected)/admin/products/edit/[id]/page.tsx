@@ -152,7 +152,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         if(dateString.includes('Z')){
             formattedDate = data?.expiredAt;
         } else {
-            formattedDate = data?.expiredAt.toISOString();
+            formattedDate = new Date(data?.expiredAt).toLocaleDateString('en-CA');
         }
         const formdata = new FormData();
         formdata.append("productName", data.productName);

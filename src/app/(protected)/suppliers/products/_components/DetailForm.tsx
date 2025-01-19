@@ -181,52 +181,69 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                     />
                 </FormControl>
             </HStack>
-            <div className="mb-8">
-                <p className="font-medium text-gray-800 mb-3">Upload Product Image</p>
-                <Center 
-                    mt={3}
-                    as="button" 
-                    py={4}
-                    border={"1px solid rgb(238, 238, 238)"} 
-                    w={"full"} 
-                    rounded={"md"} 
-                    flexDir={"column"} 
-                    pos={"relative"} 
-                    overflow={"hidden"}
-                    >
-                    <input
-                    type="file"
-                    id="image_uploads"
-                    name="image"
-                    onChange={onLoadImage}
-                    accept=".jpeg, .png, .jpg"
-                    style={{
-                        opacity: "0",
-                        position: "absolute",
-                        width: "100%",
-                        height: "100%",
-                        cursor: "pointer",
-                    }}
-                    />
-                    <div className='flex flex-col gap-2 cursor-pointer'
-                    >
-                        <div className="bg-gray-50 p-2 rounded-full mx-auto max-w-max mb-4">
-                            <IoCloudDoneOutline className="w-6 h-6 text-gray-700"/>
+            <FormControl isInvalid={!!errors.thumbnailFile}>
+                {/* <FormLabel>Brand</FormLabel> */}
+                <Controller
+                    control={control}
+                    name={"thumbnailFile"}
+                    rules={{ required: 'Image is required' }}
+                    render={({ field: { onChange, value } }) => {
+                        return( 
+                        <div className="mb-8">
+                            <p className="font-medium text-gray-800 mb-3">Upload Product Image</p>
+                            <Center 
+                                mt={3}
+                                as="button" 
+                                py={4}
+                                border={"1px solid rgb(238, 238, 238)"} 
+                                w={"full"} 
+                                rounded={"md"} 
+                                flexDir={"column"} 
+                                pos={"relative"} 
+                                overflow={"hidden"}
+                                >
+                                <input
+                                type="file"
+                                id="thumbnailFile"
+                                name="thumbnailFile"
+                                onChange={onLoadImage}
+                                accept=".jpeg, .png, .jpg"
+                                style={{
+                                    opacity: "0",
+                                    position: "absolute",
+                                    width: "100%",
+                                    height: "100%",
+                                    cursor: "pointer",
+                                }}
+                                />
+                                <div className='flex flex-col gap-2 cursor-pointer'
+                                >
+                                    <div className="bg-gray-50 p-2 rounded-full mx-auto max-w-max mb-4">
+                                        <IoCloudDoneOutline className="w-6 h-6 text-gray-700"/>
+                                    </div>
+                                    <p className='text-sm font-normal text-center'>
+                                        <span className="font-semibold text-primary-500">Click to upload</span> 
+                                        {" "} or drag and drop
+                                    </p>
+                                    <p className="text-gray-500 text-center">JPEG, PNG or JPG 
+                                        <span className="text-sm ml-1">(Max size 5MB, 800x400px)</span>
+                                    </p>
+                                </div>
+                            </Center>
+                            {errors.thumbnailFile &&
+                                <Text as={"span"} className="text-red-500 text-sm">
+                                    {errors?.thumbnailFile?.message}
+                                </Text>
+                            }
+                            {
+                                iconFile &&
+                                <img src={iconFile} alt="" className="w-10 h-10 mt-3 rounded-sm" />
+                            }
                         </div>
-                        <p className='text-sm font-normal text-center'>
-                            <span className="font-semibold text-primary-500">Click to upload</span> 
-                            {" "} or drag and drop
-                        </p>
-                        <p className="text-gray-500 text-center">JPEG, PNG or JPG 
-                            <span className="text-sm ml-1">(Max size 5MB, 800x400px)</span>
-                        </p>
-                    </div>
-                </Center>
-                {
-                    iconFile &&
-                    <img src={iconFile} alt="" className="w-10 h-10 mt-3 rounded-sm" />
-                }
-            </div>
+                        )
+                    }}
+                />
+            </FormControl>
         </div>
         <div className="flex gap-4 justify-end mt-5 mb-6">
             <button 

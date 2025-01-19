@@ -326,9 +326,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     _focus={{
                                         border: !!errors.packageName ? "red.300" : "border-gray-300",
                                     }}
-                                    {...register("packageName", {
-                                        required: true,
-                                    })}
+                                    {...register("packageName")}
                                 />
                             </FormControl>
                             <FormControl isInvalid={!!errors.weight}>
@@ -364,7 +362,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <Input 
                             id="actualPrice"
                             placeholder="" 
-                            type="text"
+                            type="number"
                             isInvalid={!!errors.actualPrice}
                             _focus={{
                                 border: !!errors.actualPrice ? "red.300" : "border-gray-300",
@@ -380,13 +378,11 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             id="discountPrice"
                             placeholder="" 
                             type="number"
-                            isInvalid={!!errors.actualPrice}
+                            isInvalid={!!errors.discountPrice}
                             _focus={{
-                                border: !!errors.actualPrice ? "red.300" : "border-gray-300",
+                                border: !!errors.discountPrice ? "red.300" : "border-gray-300",
                             }}
-                            {...register("discountPrice", {
-                                required: true,
-                            })}
+                            {...register("discountPrice")}
                             />
                         </FormControl>
                     </HStack>
