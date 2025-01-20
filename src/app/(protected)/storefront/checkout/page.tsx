@@ -9,6 +9,7 @@ import { useCartStore } from '../useCartStore'
 import { FiTrash2 } from 'react-icons/fi'
 import DeleteModal from '../_components/DeleteModal'
 import emptyCart from "@public/assets/images/emptyOrder.png";
+import { useRouter } from 'next/navigation'
 
 export default function CheckoutPage() {
   const session = useSession();
@@ -20,8 +21,7 @@ export default function CheckoutPage() {
 
   const { cart, addToCart, updateLoading } = useCartStore();
 
-  console.log("cart", cart);
-  console.log("cartItems", cartItems);
+  const router = useRouter()
 
   useEffect(() => {
     if (cart) {
@@ -219,10 +219,10 @@ export default function CheckoutPage() {
               {/* Action Buttons */}
               <Stack mt={6} spacing={4}>
                 <Button width="full" colorScheme="blue">
-                  Checkout
+                  Proceed to payment
                 </Button>
-                <Button width="full" variant="outline">
-                  View cart
+                <Button width="full" variant="outline" onClick={() => router.push('/storefront')}>
+                  Continue shopping
                 </Button>
               </Stack>
             </>
