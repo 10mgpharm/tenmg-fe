@@ -81,3 +81,15 @@ export const formatText = (text: string) : string => {
       .toLowerCase() // Convert to lowercase: "in stock"
       .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letters: "In Stock"
 };
+
+export const toQueryString = (params: Record<string, any>): string => {
+    return Object.entries(params)
+        .filter(([_, value]) => value && value.length !== 0) // Remove empty values
+        .map(([key, value]) => {
+            if (Array.isArray(value)) {
+                return `${encodeURIComponent(key)}=${encodeURIComponent(value.join(","))}`;
+            }
+            return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+        })
+        .join("&");
+};

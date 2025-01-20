@@ -96,6 +96,8 @@ const FilterDrawer = ({
         });
         clearFilters();
     };
+
+    console.log(watch());
     
     return (
     <Drawer

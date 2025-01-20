@@ -216,6 +216,7 @@ const AddProducts = () => {
                                     medications={medicationData?.data}
                                     control={control}
                                     errors={errors}
+                                    watch={watch}
                                 />
                         case 'inventory':
                             return <InventoryForm 

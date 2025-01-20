@@ -264,6 +264,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     medications={medicationData?.data}
                                     errors={errors}
                                     setValue={setValue}
+                                    watch={watch}
                                 />
                         case 'inventory':
                             return <InventoryForm 
