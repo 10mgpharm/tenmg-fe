@@ -63,10 +63,10 @@ export default function OrderDetailsPage() {
 
         {/*  */}
 
-        <Stepper index={activeStep} size={'sm'} className='mt-4'>
+        <Stepper index={activeStep} size={'sm'} className='mt-4  px-6 '>
           {steps.map((step, index) => (
             <Step key={index} className='' >
-              <div className='flex flex-col items-center '>
+              <div className='flex flex-col items-center relative'>
                 <StepIndicator
                   className='border-none'
                 >
@@ -76,11 +76,11 @@ export default function OrderDetailsPage() {
                     active={<FaDotCircle className='w-full h-full fill-primary' />}
                   />
                 </StepIndicator>
-                <StepDescription className='text-xs mt-2'>{step.title}</StepDescription>
+                <StepDescription className='text-xs mt-2 absolute text-nowrap top-3/4'>{step.title}</StepDescription>
 
               </div>
 
-              <StepSeparator className='mb-5 w-full' />
+              <StepSeparator className=' w-full' />
             </Step>
           ))}
         </Stepper>
