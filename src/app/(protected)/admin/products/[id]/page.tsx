@@ -1,4 +1,6 @@
 "use client";
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
     Flex,
@@ -7,17 +9,15 @@ import {
     Spinner, 
     Text 
 } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@heroicons/react/20/solid';
-import Statistics from '../_components/Statistics';
 import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
-import { useSession } from 'next-auth/react';
-import { NextAuthUserSession, ProductDataProps } from '@/types';
-import ExploreData from '../_components/ExploreData';
-import { convertDate } from '@/utils/formatDate';
-import productImage from '../../../../../../public/assets/images/product.svg'
-import Link from 'next/link';
 import { classNames, formatText } from '@/utils';
+import { convertDate } from '@/utils/formatDate';
+import Statistics from '../_components/Statistics';
+import ExploreData from '../_components/ExploreData';
+import { ArrowLeftIcon } from '@heroicons/react/20/solid';
+import { NextAuthUserSession, ProductDataProps } from '@/types';
+import productImage from '../../../../../../public/assets/images/product.svg'
 
 const ProductDetail = ({params}: {params: {id: string}} ) => {
     const router = useRouter();
