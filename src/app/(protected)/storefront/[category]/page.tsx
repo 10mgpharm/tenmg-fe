@@ -26,7 +26,7 @@ export default function StoreFrontByCategory() {
   const [categoryData, setCategoryData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  console.log("categoryData", categoryData);
+  // console.log("categoryData", categoryData);
 
   const breadCrumb = [
     {
@@ -49,7 +49,7 @@ export default function StoreFrontByCategory() {
     const fetchCategoryData = async () => {
       try {
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/categories/${category}`);
-        console.log("data", data?.data?.data?.category);
+        // console.log("data", data?.data?.data?.category);
         // setCategoryData([]);
         setCategoryData(data?.data?.data?.category);
       } catch (e) {
