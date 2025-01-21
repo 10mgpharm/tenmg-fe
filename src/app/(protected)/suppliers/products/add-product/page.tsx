@@ -113,11 +113,16 @@ const AddProducts = () => {
         watch
     } = useForm<IFormInput>({
         mode: "onChange",
+        defaultValues: {
+            discountPrice: '0',
+            status: "INACTIVE",
+            thumbnailFile: "",
+        }
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
-        const expiryDate = data?.expiredAt.toISOString();
+        const expiryDate = new Date(data?.expiredAt).toLocaleDateString('en-CA');
         const formdata = new FormData();
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
@@ -136,7 +141,7 @@ const AddProducts = () => {
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
         formdata.append("quantity", data?.quantity);
-        formdata.append("status", "ACTIVE");
+        formdata.append("status", data.status);
         
         try {
             const response = await requestClient({token: token}).post(
@@ -206,10 +211,8 @@ const AddProducts = () => {
                                 "measurementName", 
                                 "presentationName", 
                                 "strengthValue", 
-                                "packageName", 
                                 "weight", 
                                 "actualPrice", 
-                                "discountPrice"
                             ]);
                             if (isValid) setSteps("inventory");
                         }}
@@ -219,6 +222,7 @@ const AddProducts = () => {
                         medications={medicationData?.data}
                         control={control}
                         errors={errors}
+                        watch={watch}
                     />
                     );
                 case "inventory":

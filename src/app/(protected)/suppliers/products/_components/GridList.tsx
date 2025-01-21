@@ -153,12 +153,14 @@ const GridList = (
                                 </MenuList>
                             </Menu>
                         </div>
-                        <Image 
-                        src={item.thumbnailFile} 
-                        fallbackSrc=''
-                        alt=''  
-                        className='rounded-md w-full h-[200px]'
-                        />
+                        {
+                            item.thumbnailFile &&
+                            <img 
+                            src={item.thumbnailFile}
+                            alt=''  
+                            className='rounded-md w-full h-[200px]'
+                            />
+                        }
                         <div className="mt-3 mb-6 px-2">
                             <div className="flex items-center justify-between">
                                 <h3 className='font-semibold capitalize'>{item?.name}</h3>

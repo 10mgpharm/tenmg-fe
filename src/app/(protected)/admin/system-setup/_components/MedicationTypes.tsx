@@ -106,7 +106,7 @@ const MedicationTypes = (
           heading={`No Medication Type Yet`} 
           content={`You currently have no medication type. All medication types will appear here.`}
         /> : 
-        <TableContainer mt={5} minH={"500px"} rounded={"md"}>
+        <TableContainer mt={5} minH={"500px"} rounded={"md"} maxWidth={"830px"} overflowX={"scroll"}>
           <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"} shadow={"sm"}>
             <Thead bg={"#E8F1F8"}>
               <Tr color={"primary.500"} roundedTop={"md"}>

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { createColumnHelper } from "@tanstack/react-table";
 import { 
   Flex, 
-  Image, 
   Menu, 
   MenuButton, 
   MenuItem, 
@@ -33,17 +32,19 @@ export function ColumsProductFN(
       ),
       cell: (info) => (
         <div className="flex items-center gap-2">
-            <Image 
+          {
+            info.row.original?.thumbnailFile && 
+            <img 
             src={info?.row?.original?.thumbnailFile} 
             alt="" 
             width={35} 
             height={35} 
-            fallbackSrc=""
             className="w-8 h-8 rounded-full"
             />
-            <Link className="capitalize font-medium" href={`/suppliers/products/${info.row.original.id}`}>
-              {info?.row?.original?.name}
-            </Link>
+          }
+          <Link className="capitalize font-medium" href={`/suppliers/products/${info.row.original.id}`}>
+            {info?.row?.original?.name}
+          </Link>
         </div>
       ),
     }),

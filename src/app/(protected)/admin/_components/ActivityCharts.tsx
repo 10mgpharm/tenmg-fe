@@ -183,7 +183,7 @@ const ActivityCharts = () => {
     return (
     <div className=''>
         <div className="grid grid-cols-1 md:grid-cols-6 gap-5">
-            <div className="col-span-6 md:col-span-4">
+            <div className="col-span-6 md:col-span-4 bg-white py-5 px-3 rounded-md">
                 <ChartComponent
                     options={chartOptions}
                     series={chartSeries}

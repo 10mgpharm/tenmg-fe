@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
@@ -48,7 +47,7 @@ export function ColumsProductFN(
         <div className="flex items-center gap-2">
           {
             info?.row?.original?.thumbnailFile && 
-            <Image 
+            <img 
               src={info?.row?.original?.thumbnailFile} 
               alt="" 
               width={35} 

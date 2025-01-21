@@ -37,7 +37,7 @@ const ResetPassword = () => {
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState<boolean>(false);
-  const [isPasswordReset, setIsPasswordReset] = useState<boolean>(false); // change to true after the password reset is successful
+  const [isPasswordReset, setIsPasswordReset] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>(null);
   const [otp, setOtp] = useState<string>(null);

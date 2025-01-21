@@ -27,7 +27,7 @@ import {
 } from "@tanstack/react-table";
 
 import { PRODUCTVIEW } from "@/app/globalTypes";
-import { classNames, handleServerErrorMessage } from "@/utils";
+import { classNames, handleServerErrorMessage, toQueryString } from "@/utils";
 import Link from "next/link";
 import EmptyOrder from "../../suppliers/orders/_components/EmptyOrder";
 import GridList from "../../suppliers/products/_components/GridList";
@@ -106,19 +106,12 @@ const Page = () => {
             search: debouncedSearch ?? "",
             variation: "",
             medicationType: [],
-            from: createdAtStart ? createdAtStart.toISOString().split("T")[0] : "",
-            to: createdAtEnd ? createdAtEnd.toISOString().split("T")[0] : "",
+            from: createdAtStart ? new Date(createdAtStart).toLocaleDateString('en-CA') : "",
+            to: createdAtEnd ? new Date(createdAtEnd).toLocaleDateString('en-CA') : "",
         };
 
-        // Convert the payload into query parameters
-        const queryString = new URLSearchParams(
-            Object.entries(params).flatMap(([key, value]) => 
-            Array.isArray(value) 
-                ? value.map((v) => [key, v]) 
-                : [[key, value]]
-            )
-        ).toString();
-  
+        const queryString = toQueryString(params)
+        
         try {
         const response = await requestClient({ token: token }).get(`${query}&${queryString}`);
             if (response.status === 200) {
@@ -257,6 +250,14 @@ const Page = () => {
             toast.error(handleServerErrorMessage(error));
         }
     }
+
+    if(loading){
+        return(
+        <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+        </Flex>
+        )
+    }
     
     return (
     <div className="p-8">
@@ -317,11 +318,6 @@ const Page = () => {
         </div>
         <div className="">
         {
-            loading ? (
-                <Flex justify="center" align="center" height="200px">
-                  <Spinner size="xl" />
-                </Flex>
-            ) :
             memoizedData?.length === 0 
             ? <EmptyOrder 
                 heading={`No Product Found`} 

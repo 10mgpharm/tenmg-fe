@@ -32,7 +32,7 @@ import Link from "next/link";
 import { ColumsProductFN } from "./_components/table";
 import { PRODUCTVIEW } from "@/app/globalTypes";
 import GridList from "./_components/GridList";
-import { classNames, handleServerErrorMessage } from "@/utils";
+import { classNames, handleServerErrorMessage, toQueryString } from "@/utils";
 import DeleteModal from "./_components/DeleteModal";
 import RestockModal from "./_components/RestockModal";
 import ModalWrapper from "../_components/ModalWrapper";
@@ -107,14 +107,7 @@ const Products = () => {
             from: createdAtStart ? createdAtStart.toISOString().split("T")[0] : "",
             to: createdAtEnd ? createdAtEnd.toISOString().split("T")[0] : "",
         };
-        // Convert the payload into query parameters
-        const queryString = new URLSearchParams(
-            Object.entries(params).flatMap(([key, value]) => 
-            Array.isArray(value) 
-                ? value.map((v) => [key, v]) 
-                : [[key, value]]
-            )
-        ).toString();
+        const queryString = toQueryString(params)
         try {
         const response = await requestClient({ token: token }).get(`${query}&${queryString}`);
             if (response.status === 200) {
@@ -243,6 +236,14 @@ const Products = () => {
         }
     }
 
+    if(loading){
+        return(
+        <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+        </Flex>
+        )
+    }
+
     return (
     <div className="p-8">
         <div className="flex justify-between">
@@ -307,11 +308,6 @@ const Products = () => {
         </div>
         <div className="">
         {
-            loading ? (
-                <Flex justify="center" align="center" height="200px">
-                  <Spinner size="xl" />
-                </Flex>
-            ) :
             memoizedData?.length === 0 
             ? <EmptyOrder 
             heading={`No Product Yet`} 
