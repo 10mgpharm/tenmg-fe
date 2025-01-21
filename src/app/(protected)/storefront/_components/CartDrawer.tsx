@@ -70,7 +70,7 @@ const CartDrawer = ({
   const increaseQuantity = async (itemId: number) => {
 
     const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
-    console.log("item qty", item)
+
     const data = {
       productId: itemId,
       qty: 1,
@@ -83,7 +83,7 @@ const CartDrawer = ({
   const decreaseQuantity = (itemId: number) => {
 
     const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
-    console.log("item qty", item)
+
     const data = {
       productId: itemId,
       qty: 1,
@@ -96,7 +96,7 @@ const CartDrawer = ({
   // Function to remove item from cart
   const removeItem = (itemId: number) => {
     const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
-    console.log("item qty", item)
+
     const data = {
       productId: itemId,
       qty: 1,
