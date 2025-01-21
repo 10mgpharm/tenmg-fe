@@ -28,6 +28,7 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { useCartStore } from "../useCartStore";
+import { useRouter } from "next/navigation";
 
 const CartDrawer = ({
   isOpen,
@@ -44,10 +45,11 @@ const CartDrawer = ({
 }) => {
   const [cartItems, setCartItems] = useState<any>({});
 
+  const router = useRouter();
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const { cart, addToCart, updateLoading } = useCartStore();
 
@@ -68,23 +70,20 @@ const CartDrawer = ({
   const increaseQuantity = async (itemId: number) => {
 
     const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
-    console.log("item qty", item)
+
     const data = {
       productId: itemId,
       qty: 1,
       action: 'add'
     }
-
     addToCart(data, userData?.user?.token)
-
-
   };
 
   // Function to decrease quantity
   const decreaseQuantity = (itemId: number) => {
 
     const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
-    console.log("item qty", item)
+
     const data = {
       productId: itemId,
       qty: 1,
@@ -97,7 +96,7 @@ const CartDrawer = ({
   // Function to remove item from cart
   const removeItem = (itemId: number) => {
     const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
-    console.log("item qty", item)
+
     const data = {
       productId: itemId,
       qty: 1,
@@ -124,10 +123,17 @@ const CartDrawer = ({
           </Text>
         </DrawerHeader>
 
-        <Box p={4} mt={2}>
+        <Box mt={2}>
           {/* Cart Items */}
           {cartItems?.items?.length > 0 ? (
-            <VStack align="start" spacing={4} className="overflow-y-scroll">
+            <VStack align="start" spacing={4} className=" h-screen lg:h-[50vh] px-2 mx-2 overflow-y-auto
+  [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:rounded-full
+  [&::-webkit-scrollbar-track]:bg-primary-100
+  [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb]:bg-primary-300
+  dark:[&::-webkit-scrollbar-track]:bg-primary-700
+  dark:[&::-webkit-scrollbar-thumb]:bg-primary-500">
               {cartItems?.items?.map((item) => (
                 <HStack
                   key={item?.id}
@@ -217,16 +223,17 @@ const CartDrawer = ({
                     as={FiTrash2}
                     _hover={{ cursor: "pointer" }}
                     color="error.500"
-                    onClick={handleOpenRemove}
+                    // onClick={handleOpenRemove}
+                    onClick={() => removeItem(item?.product?.id)}
                   />
-
-                  <DeleteModal
+                  {/* delete modal no longer in use here */}
+                  {/* <DeleteModal
                     isOpen={isRemoveOpen}
                     onClose={handleCloseRemove}
                     title="Remove Item"
                     description="remove this item from your shopping cart?"
                     handleDelete={() => removeItem(item?.product?.id)}
-                  />
+                  /> */}
                 </HStack>
               ))}
             </VStack>
@@ -246,7 +253,7 @@ const CartDrawer = ({
           {/* Subtotal */}
           {cartItems.items?.length > 0 && (
             <>
-              <Flex mt={20} justifyContent="flex-end">
+              <Flex mt={10} justifyContent="flex-end">
                 <Stack mb={4}>
                   <Text fontWeight="medium" fontSize="sm">
                     Subtotal
@@ -259,12 +266,12 @@ const CartDrawer = ({
 
               <Divider />
               {/* Action Buttons */}
-              <Stack mt={6} spacing={4}>
-                <Button width="full" colorScheme="blue">
+              <Stack mt={6} mx={4} spacing={4}>
+                <Button width="full" colorScheme="blue" onClick={() => router.push('/storefront/checkout')}>
                   Checkout
                 </Button>
-                <Button width="full" variant="outline">
-                  View cart
+                <Button width="full" variant="outline" disabled>
+                  Clear Cart
                 </Button>
               </Stack>
             </>
