@@ -3,7 +3,7 @@ import { Minus, Plus } from 'lucide-react'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import requestClient from '@/lib/requestClient'
 import { useSession } from 'next-auth/react'
 import { NextAuthUserSession } from '@/types'
@@ -11,6 +11,8 @@ import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
 import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
 import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
 import { Flex, Spinner, Tag, TagLabel } from '@chakra-ui/react'
+import { useCartStore } from '../../useCartStore'
+import { toast } from 'react-toastify'
 export default function ProductDetailPage() {
 
   const breadCrumb = [
@@ -38,6 +40,7 @@ export default function ProductDetailPage() {
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const { addToCart, updateLoading } = useCartStore();
 
   useEffect(() => {
 
@@ -62,11 +65,32 @@ export default function ProductDetailPage() {
 
   const [count, setCount] = useState(1);
 
-  const decrement = () => {
-    if (count >= 1) {
-      setCount(prev => prev--)
-    }
 
+  const decrement = () => {
+    if (count > 1) {
+      setCount(prev => prev - 1);
+    }
+  };
+
+  const increment = () => {
+    setCount(prev => prev + 1);
+  };
+
+  const router = useRouter();
+  const buy = (id) => {
+    const data = {
+      productId: id,
+      qty: count,
+      action: 'add'
+    }
+    try {
+      addToCart(data, userData?.user?.token).then((res) => {
+        router.push('/storefront/checkout');
+      })
+    } catch (e) {
+      console.log("e", e)
+      toast.error("something went wrong")
+    }
   }
 
 
@@ -102,33 +126,44 @@ export default function ProductDetailPage() {
 
               {/* description container */}
               <div className='w-full lg:w-1/2 flex flex-col gap-6 px-8'>
-                <h2 className='text-6xl font-semibold'>{productData?.name} ({productData?.variation?.strengthValue}{productData?.measurement?.name})</h2>
+                <h2 className='text-5xl font-semibold'>{productData?.name} {productData?.variation?.strengthValue}{productData?.measurement?.name}</h2>
                 <div className='flex items-center gap-x-2'>
                   {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-3xl font-semibold'>₦{productData?.discountPrice}</p>}
-                  <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-red-500 line-through"}`}>₦{productData?.actualPrice}</p>
+                  <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-gray-300 line-through"}`}>₦{productData?.actualPrice}</p>
                 </div>
 
-                <p className='text-sm'>Expertly formulated with a blend of probiotics, these tablets support a harmonious
-                  gut environment, promoting smooth digestion and overall digestive wellness for a
-                  happier, healthier you.</p>
+                <p className='text-sm'>{productData?.description}</p>
 
-                <div className="flex items-center gap-3">
-                  <h4>Brand:</h4>
-                  <p className="font-semibold">{productData?.brand?.name}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <h4>Category:</h4>
-                  <p className="font-semibold">{productData?.category?.name}</p>
+                <div className="flex flex-col space-y-1">
+                  <div className="flex items-center gap-x-3">
+                    <h4>Brand:</h4>
+                    <p className="font-semibold">{productData?.brand?.name}</p>
+                  </div>
+
+                  <div className="flex items-center gap-x-3">
+                    <h4>Presentation Type:</h4>
+                    <p className="font-semibold">{productData?.presentation?.name}</p>
+                  </div>
+
+                  <div className="flex items-center gap-x-3">
+                    <h4>Category:</h4>
+                    <p className="font-semibold">{productData?.category?.name}</p>
+                  </div>
+
+                  <div className="flex items-center gap-x-3">
+                    <h4>Expiry Date:</h4>
+                    <p className="font-semibold">{productData?.expiredAt.split('T')[0]}</p>
+                  </div>
                 </div>
 
                 <div className=' space-y-4'>
                   <div className='flex bg-primary-50 text-xs items-center gap-4 px-3 py-2 w-fit'>
-                    <Minus className='w-3' onClick={decrement} />
+                    <Minus className='w-3 cursor-pointer' onClick={decrement} />
                     <span>{count}</span>
-                    <Plus className='w-3' />
+                    <Plus className='w-3 cursor-pointer' onClick={increment} />
                   </div>
 
-                  <button className='bg-primary-500 text-white w-fit p-3  rounded-md text-xs font-semibold'>Buy Now</button>
+                  <button className='bg-primary-500 text-white w-fit p-3  rounded-md text-xs font-semibold' onClick={() => buy(productData?.id)}>Buy Now</button>
                 </div>
               </div>
             </div>

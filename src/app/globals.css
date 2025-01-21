@@ -5,46 +5,46 @@
 body {
   font-family: var(--font-sans);
 }
-.css-1kbqedj{
-  border-radius: 0px!important;
+.css-1kbqedj {
+  border-radius: 0px !important;
 }
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
- /* Hide scrollbar for IE, Edge and Firefox */
+  /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
-}
-.enable-2fa svg{
+.enable-2fa svg {
   margin: 0px auto;
 }
 
 /* Target the calendar icon */
-.react-datepicker-wrapper{
+.react-datepicker-wrapper {
   width: 100%;
   /* display: block!important; */
 }
 .react-datepicker__input-container {
-  display: flex!important;
+  display: flex !important;
   flex-direction: row-reverse;
   border: 1px solid #eaecf0;
   border-radius: 5px;
   padding: 5px;
 }
-.react-datepicker__view-calendar-icon input{
+.react-datepicker__view-calendar-icon input {
   flex: 1;
-  padding: 6px 5px 5px 5px!important;
+  padding: 6px 5px 5px 5px !important;
 }
 
 .react-datepicker__input-container svg {
-  width: 24px; 
+  width: 24px;
   height: 24px;
   color: gray;
-  padding: 4px 0.5rem!important;
+  padding: 4px 0.5rem !important;
 }
 
 .autocomplete-wrapper {

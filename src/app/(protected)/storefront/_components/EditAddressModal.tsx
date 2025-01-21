@@ -313,7 +313,9 @@ export default function EditAddressModal({
                       variant="outline"
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
-                      colorScheme="gray.200"
+                      colorScheme="gray"
+                      size={`${selectedCountry && countryPlaceholder?.length > 14 ? "sm" : "md"}`}
+                      className={`${selectedCountry && countryPlaceholder?.length > 14 ? "py-[23px]" : ""}`}
                     >
                       {countryPlaceholder}
                     </MenuButton>
@@ -346,7 +348,9 @@ export default function EditAddressModal({
                       variant="outline"
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
-                      colorScheme="gray.200"
+                      colorScheme="gray"
+                      size={`${selectedState && statePlaceholder?.length > 14 ? "sm" : "md"}`}
+                      className={`${selectedState && statePlaceholder?.length > 14 ? "py-[23px]" : ""}`}
                     >
                       {statePlaceholder}
                     </MenuButton>
@@ -374,7 +378,9 @@ export default function EditAddressModal({
                       variant="outline"
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
-                      colorScheme="gray.200"
+                      colorScheme="gray"
+                      size={`${selectedCity && cityPlaceholder?.length > 14 ? "sm" : "md"}`}
+                      className={`${selectedCity && cityPlaceholder?.length > 14 ? "py-[23px]" : ""}`}
                     >
                       {cityPlaceholder}
                     </MenuButton>
