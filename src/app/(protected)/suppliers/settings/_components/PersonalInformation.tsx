@@ -35,7 +35,7 @@ interface IFormInput {
 
 const PersonalInformation = () => {
   const session = useSession();
-  const sessionData = session.data as NextAuthUserSession;
+  const sessionData = session?.data as NextAuthUserSession;
   const chakraToast = useToast();
 
   const [file, setFile] = useState(null);
@@ -133,6 +133,7 @@ const PersonalInformation = () => {
       }).get("/supplier/settings");
 
       const data = response.data.data;
+
       setValue("businessName", data.businessName);
       setValue("contactEmail", data.contactEmail);
       setValue("contactPerson", data.contactPerson);
@@ -192,49 +193,6 @@ const PersonalInformation = () => {
 
   return (
     <div className="p-5 rounded-md bg-white max-w-3xl">
-      {/* <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Image
-            src={previewUrl}
-            width={50}
-            height={50}
-            alt=""
-            className="rounded-full h-[55px] w-[55px]"
-          />
-          <div className="">
-            <h3 className="font-medium text-gray-500">Profile Picture</h3>
-            <p className="text-gray-400 text-sm">
-              {" "}
-              PNG or JPG
-              <br></br>
-              <span className="text-xs">(Max size 5MB, 800x400px)</span>
-            </p>
-          </div>
-        </div>
-        <Center
-          as="button"
-          flexDir={"column"}
-          width={"98px"}
-          pos={"relative"}
-          overflow={"hidden"}
-        >
-          <input
-            type="file"
-            id="image_uploads"
-            name="image"
-            onChange={onLoadImage}
-            accept=".png, .jpg, .jpeg"
-            style={{
-              opacity: "0",
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              cursor: "pointer",
-            }}
-          />
-          <span className="border p-2 rounded-md px-4 text-center">Upload</span>
-        </Center>
-      </div> */}
       <ProfileImageUploader
         filePreview={filePreview}
         sessionData={sessionData}
@@ -254,9 +212,9 @@ const PersonalInformation = () => {
                 required: "Contact Name is required",
               })}
             />
-            <FormErrorMessage>{errors.contactPerson?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.contactPerson?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors.businessName?.message}>
+          <FormControl isInvalid={!!errors?.businessName?.message}>
             <FormLabel>Business Name</FormLabel>
             <Input
               placeholder="Enter business name"
@@ -264,11 +222,11 @@ const PersonalInformation = () => {
                 required: "Business Name is required",
               })}
             />
-            <FormErrorMessage>{errors.businessName?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.businessName?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
         <HStack gap={5}>
-          <FormControl isInvalid={!!errors.contactEmail?.message}>
+          <FormControl isInvalid={!!errors?.contactEmail?.message}>
             <FormLabel>Business email</FormLabel>
             <Input
               type="email"
@@ -277,9 +235,9 @@ const PersonalInformation = () => {
                 required: "Business Email is required",
               })}
             />
-            <FormErrorMessage>{errors.contactEmail?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.contactEmail?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors.contactPhone?.message}>
+          <FormControl isInvalid={!!errors?.contactPhone?.message}>
             <FormLabel>Contact Phone Number</FormLabel>
             <Input
               type="number"
@@ -288,7 +246,7 @@ const PersonalInformation = () => {
                 required: "Contact Phone Number is required",
               })}
             />
-            <FormErrorMessage>{errors.contactPhone?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.contactPhone?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
         <HStack gap={5}>

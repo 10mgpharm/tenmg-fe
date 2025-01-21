@@ -58,11 +58,7 @@ export default function StoreProductCardComponent({ product }: any) {
         <Link href={`/storefront/product/${product?.slug}`}>
           <div
             style={{
-              backgroundImage: `url(${
-                product?.thumbnailUrl && isValidUrl(product.thumbnailUrl)
-                  ? product.thumbnailUrl
-                  : "/assets/images/pillImage.png"
-              })`,
+              backgroundImage: `url(${product?.thumbnailFile})`,
             }}
             className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
           />
@@ -80,11 +76,10 @@ export default function StoreProductCardComponent({ product }: any) {
                 </p>
               )}
               <p
-                className={`font-semibold my-2 text-sm ${
-                  product?.discountPrice > 0
-                    ? "text-gray-400 line-through"
-                    : "text-gray-900"
-                }`}
+                className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
+                  ? "text-gray-400 line-through"
+                  : "text-gray-900"
+                  }`}
               >
                 ₦{product?.actualPrice}
               </p>
@@ -126,11 +121,7 @@ export default function StoreProductCardComponent({ product }: any) {
         <div className="pointer-events-none cursor-not-allowed">
           <div
             style={{
-              backgroundImage: `url(${
-                product?.thumbnailUrl && isValidUrl(product.thumbnailUrl)
-                  ? product.thumbnailUrl
-                  : "/assets/images/pillImage.png"
-              })`,
+              backgroundImage: `url(${product?.thumbnailFile})`,
             }}
             className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
           />
@@ -148,11 +139,10 @@ export default function StoreProductCardComponent({ product }: any) {
                 </p>
               )}
               <p
-                className={`font-semibold my-2 text-sm ${
-                  product?.discountPrice > 0
-                    ? "text-gray-400 line-through"
-                    : "text-gray-900"
-                }`}
+                className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
+                  ? "text-gray-400 line-through"
+                  : "text-gray-900"
+                  }`}
               >
                 ₦{product?.actualPrice}
               </p>

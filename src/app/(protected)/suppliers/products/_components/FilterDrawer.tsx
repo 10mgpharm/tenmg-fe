@@ -96,6 +96,8 @@ const FilterDrawer = ({
         });
         clearFilters();
     };
+
+    console.log(watch());
     
     return (
     <Drawer
@@ -204,20 +206,20 @@ const FilterDrawer = ({
                             <Tag colorScheme={"orange"} size={"sm"}>Inactive</Tag>
                         </Checkbox>
                         <Checkbox 
-                        isChecked={watch("status").includes("pending")} 
+                        isChecked={watch("status").includes("flagged")} 
                         onChange={(e) => {
                             const currentValues = getValues("status") || [];
                             if(e.target.checked){
-                                const newArr = [...currentValues, "pending"]
+                                const newArr = [...currentValues, "flagged"]
                                 setValue("status", newArr);
                             }else{
-                                const removeItem = currentValues.filter((item) => item !== "pending")
+                                const removeItem = currentValues.filter((item) => item !== "flagged")
                                 setValue("status", removeItem);
                             }
                             trigger("status");
                         }}  
                         >
-                            <Tag colorScheme={"red"} size={"sm"}>Pending</Tag>
+                            <Tag colorScheme={"red"} size={"sm"}>Flagged</Tag>
                         </Checkbox>
                         <Checkbox 
                         isChecked={watch("status").includes("approved")} 

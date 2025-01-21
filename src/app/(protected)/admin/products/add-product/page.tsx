@@ -101,7 +101,7 @@ const AddProducts = () => {
     const {
         control,
         register,
-        formState: { errors, isValid },
+        formState: { errors },
         handleSubmit,
         setValue,
         trigger,
@@ -111,13 +111,15 @@ const AddProducts = () => {
     } = useForm<IFormInput>({
         mode: "onChange",
         defaultValues: {
-            status: "INACTIVE"
+            status: "INACTIVE",
+            thumbnailFile: "",
+            discountPrice: '0'
         }
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
-        const expiryDate = data?.expiredAt.toISOString();
+        const expiryDate = new Date(data?.expiredAt).toLocaleDateString('en-CA');
         const formdata = new FormData();
         formdata.append("productName", data.productName);
         formdata.append("productDescription", data.productDescription);
@@ -203,10 +205,8 @@ const AddProducts = () => {
                                             "measurementName", 
                                             "presentationName", 
                                             "strengthValue", 
-                                            "packageName", 
                                             "weight", 
                                             "actualPrice", 
-                                            "discountPrice"
                                         ]);
                                         if (isValid) setSteps("inventory");
                                     }}
@@ -216,6 +216,7 @@ const AddProducts = () => {
                                     medications={medicationData?.data}
                                     control={control}
                                     errors={errors}
+                                    watch={watch}
                                 />
                         case 'inventory':
                             return <InventoryForm 

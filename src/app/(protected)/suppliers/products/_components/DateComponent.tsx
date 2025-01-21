@@ -25,6 +25,7 @@ const DateComponent = ({
       minDate={!isMinDate ? new Date() : minDate}
       maxDate={isMaxDate ? new Date() : null}
       showIcon
+      showYearDropdown
       icon={<FiCalendar className="w-5 h-5 text-gray-600" />}
       onChange={(date: Date | null) => setStartDate(date)}
       className="text-sm outline-none placeholder:text-gray-500"

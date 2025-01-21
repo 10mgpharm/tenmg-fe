@@ -22,6 +22,7 @@ interface IChildComponentProps {
     setValue: UseFormSetValue<IFormInput>;
     isEditing: boolean;
     type: string;
+    watch?: any;
 }
 
 const EssentialForm: React.FC<IChildComponentProps> = ({
@@ -33,7 +34,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     setValue,
     handleStepValidation,
     isEditing,
-    type
+    type,
+    watch
 }) => {
 
     const session = useSession();
@@ -113,6 +115,8 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         fetchingPresentationTypes();
         fetchingMeasurementTypes();
     }, [fetchingPresentationTypes, fetchingMeasurementTypes]);
+
+    const actualPrice = Number(watch("actualPrice")) - Number(watch("discountPrice"));
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -249,7 +253,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                             value={value}
                                             name={"presentationName"}
                                             placeholder={'Select...'}
-                                            isDisabled={isEditing && !newVariation}
+                                            // isDisabled={isEditing && !newVariation}
                                             options={presentationData && convertCreateOptionArray(presentationData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                 onChange(selectedOption?.value);
@@ -268,7 +272,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <FormLabel color={"gray.500"}>Strength Value</FormLabel>
                             <Input 
                                 id="strengthValue"
-                                disabled={isEditing && !newVariation}
+                                // disabled={isEditing && !newVariation}
                                 placeholder="" 
                                 {...register("strengthValue", {
                                     required: "Strength is required",
@@ -296,7 +300,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                             value={value}
                                             name={"measurementName"}
                                             placeholder={'Select...'}
-                                            isDisabled={isEditing && !newVariation}
+                                            // isDisabled={isEditing && !newVariation}
                                             options={measurementData && convertCreateOptionArray(measurementData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                                 onChange(selectedOption?.value);
@@ -321,14 +325,12 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     id="packageName"
                                     placeholder="" 
                                     type="text"
-                                    disabled={isEditing && !newVariation}
+                                    // disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.packageName}
                                     _focus={{
                                         border: !!errors.packageName ? "red.300" : "border-gray-300",
                                     }}
-                                    {...register("packageName", {
-                                        required: true,
-                                    })}
+                                    {...register("packageName")}
                                 />
                             </FormControl>
                             <FormControl isInvalid={!!errors.weight}>
@@ -337,7 +339,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                     id="weight"
                                     placeholder="" 
                                     type="text"
-                                    disabled={isEditing && !newVariation}
+                                    // disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.weight}
                                     _focus={{
                                         border: !!errors.weight ? "red.300" : "border-gray-300",
@@ -364,7 +366,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <Input 
                             id="actualPrice"
                             placeholder="" 
-                            type="text"
+                            type="number"
                             isInvalid={!!errors.actualPrice}
                             _focus={{
                                 border: !!errors.actualPrice ? "red.300" : "border-gray-300",
@@ -380,16 +382,17 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             id="discountPrice"
                             placeholder="" 
                             type="number"
-                            isInvalid={!!errors.actualPrice}
+                            isInvalid={!!errors.discountPrice}
                             _focus={{
-                                border: !!errors.actualPrice ? "red.300" : "border-gray-300",
+                                border: !!errors.discountPrice ? "red.300" : "border-gray-300",
                             }}
-                            {...register("discountPrice", {
-                                required: true,
-                            })}
+                            {...register("discountPrice")}
                             />
                         </FormControl>
                     </HStack>
+                    {
+                        <Text color={"blue.500"} fontWeight={"medium"} fontSize={"sm"}>Actual Price: ₦{actualPrice?.toLocaleString()}</Text>
+                    }
                 </Stack>
             </Stack>
         </div>

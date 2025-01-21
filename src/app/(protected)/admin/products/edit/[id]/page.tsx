@@ -152,7 +152,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         if(dateString.includes('Z')){
             formattedDate = data?.expiredAt;
         } else {
-            formattedDate = data?.expiredAt.toISOString();
+            formattedDate = new Date(data?.expiredAt).toLocaleDateString('en-CA');
         }
         const formdata = new FormData();
         formdata.append("productName", data.productName);
@@ -172,7 +172,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         formdata.append("actualPrice", data?.actualPrice);
         formdata.append("discountPrice", data?.discountPrice);
         formdata.append("quantity", data?.quantity);
-        formdata.append("status", "ACTIVE");
+        formdata.append("status", data?.status);
 
         try {
             const response = await requestClient({token: token}).post(
@@ -255,6 +255,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
                                     setValue={setValue}
                                     control={control}
                                     errors={errors}
+                                    watch={watch}
                                 />
                         case 'inventory':
                             return <InventoryForm 

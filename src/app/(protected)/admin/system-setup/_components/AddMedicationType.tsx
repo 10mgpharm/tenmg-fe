@@ -142,7 +142,7 @@ const AddMedicationType = (
         const fetchPresentations = async () => {
             try {
                 const response = await requestClient({ token: token })
-                    .get("/admin/settings/presentations");
+                    .get("/admin/settings/presentations/dropdown");
 
                 if (response.status === 200) {
                     const data = response.data.data;
@@ -162,7 +162,7 @@ const AddMedicationType = (
         const fetchMeasurements = async () => {
             try {
                 const response = await requestClient({ token: token })
-                    .get("/admin/settings/measurements");
+                    .get("/admin/settings/measurements/dropdown");
 
                 if (response.status === 200) {
                     const data = response.data.data;
@@ -367,7 +367,7 @@ const AddMedicationType = (
                                                             {...register(`variations.${index}.package`, {
                                                                 required: "Package is required",
                                                             })}
-                                                            placeholder="e.g 1x100 Pieces"
+                                                            placeholder="e.g 1*100 Pieces"
                                                             type="text"
                                                         />
                                                         {errors.variations?.[index]?.package?.message &&

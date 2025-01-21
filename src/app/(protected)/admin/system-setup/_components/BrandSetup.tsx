@@ -74,7 +74,16 @@ const BrandSetup = (
         response = await requestClient({token: token}).delete(
           `/admin/settings/categories/${selectedId}`,
         )
+      }else if (type === "Measurement") {
+        response = await requestClient({ token: token }).delete(
+          `/admin/settings/measurements/${selectedId}`,
+        )
+      }else if (type === "Presentation") {
+        response = await requestClient({ token: token }).delete(
+          `/admin/settings/presentations/${selectedId}`,
+        )
       }
+      
       if(response.status === 200){
         setIsLoading(false);
         toast.success(response.data?.message);
