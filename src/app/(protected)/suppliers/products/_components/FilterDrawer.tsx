@@ -63,7 +63,7 @@ const FilterDrawer = ({
 
     const {
         handleSubmit,
-        formState: {},
+        formState: {errors},
         control,
         reset,
         setValue,
@@ -96,8 +96,6 @@ const FilterDrawer = ({
         });
         clearFilters();
     };
-
-    console.log(watch());
     
     return (
     <Drawer
