@@ -254,7 +254,7 @@ const PersonalInformation = () => {
             <FormLabel>Business Address</FormLabel>
             <Input
               type="text"
-              placeholder={"Plot 360 Obafemi Awolowo way, Jabi District, Abuja"}
+              placeholder={"Enter business address"}
               {...register("businessAddress", {
                 required: "business Address is required",
               })}
