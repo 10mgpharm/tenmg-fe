@@ -22,6 +22,9 @@ export default function StoreProductCardComponent({ product }: any) {
     BusinessStatus.PENDING_VERIFICATION,
     BusinessStatus.PENDING_APPROVAL,
     BusinessStatus.REJECTED,
+    BusinessStatus.LICENSE_EXPIRED,
+    BusinessStatus.SUSPENDED,
+    BusinessStatus.BANNED,
   ].includes(businessStatus as BusinessStatus);
 
   function isValidUrl(url) {
@@ -37,11 +40,10 @@ export default function StoreProductCardComponent({ product }: any) {
     const data = {
       productId: prod_id,
       qty: 1,
-      action: "add"
-    }
-    addToCart(data, userData?.user?.token)
-  }
-
+      action: "add",
+    };
+    addToCart(data, userData?.user?.token);
+  };
 
   // {
   //   "productId": 20,
@@ -51,7 +53,6 @@ export default function StoreProductCardComponent({ product }: any) {
 
   return (
     <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md ">
-
       {/* TODO: Build a component for the Products */}
       {isProductClickable ? (
         <Link href={`/storefront/product/${product?.slug}`}>
@@ -191,8 +192,14 @@ export default function StoreProductCardComponent({ product }: any) {
       )}
 
       <div className="flex items-center justify-between w-full gap-4 my-2">
-
-        <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => router.push(`/storefront/product/${product?.slug}`)}>
+        <button
+          disabled={
+            !isProductClickable ||
+            product?.inventory?.toLowerCase() !== "in stock"
+          }
+          className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer  disabled:cursor-not-allowed"
+          onClick={() => router.push(`/storefront/product/${product?.slug}`)}
+        >
           Buy Now
         </button>
         <button

@@ -22,6 +22,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import Loader from "@/app/(protected)/admin/_components/Loader";
+import { ProfileImageUploader } from "@/app/(protected)/_components/ProfileImageUploader";
 
 interface IFormInput {
   businessName: string;
@@ -37,8 +38,9 @@ const PersonalInformation = () => {
   const sessionData = session.data as NextAuthUserSession;
   const chakraToast = useToast();
 
-  const [iconFile, setIconFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>(
+  const [file, setFile] = useState(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [filePreview, setFilePreview] = useState<string>(
     sessionData?.user?.avatar || avatar
   );
   const [userInformation, setUserInformation] = useState([]);
@@ -46,38 +48,8 @@ const PersonalInformation = () => {
   const [isUserInfo, setIsUserInfo] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
-
-  const onLoadImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files || event.target.files.length === 0) return;
-
-    const file = event.target.files[0];
-
-    if (file.size >= 5 * 1024 * 1024) {
-      chakraToast({
-        title: "Warning",
-        status: "warning",
-        description:
-          "The selected file is larger than the maximum 5MB limit. Please select a file smaller than 5MB.",
-        duration: 2000,
-        position: "bottom",
-      });
-      return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-      chakraToast({
-        title: "Warning",
-        status: "warning",
-        description: "The selected file must be an image.",
-        duration: 2000,
-        position: "bottom",
-      });
-      return;
-    }
-
-    setIconFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-  };
+  const [isShowUpload, setIsShowUpload] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const {
     register,
@@ -95,13 +67,37 @@ const PersonalInformation = () => {
     },
   });
 
-  const uploadProfileImage = async () => {
-    if (!iconFile) return;
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError(null);
+    const selectedFile = event.target.files?.[0];
+    if (!selectedFile) return;
+
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      setFileError("File size must be less than 5MB");
+      event.target.value = "";
+      return;
+    }
+
+    if (!selectedFile.type.startsWith("image/")) {
+      setFileError("Only image files are allowed");
+      event.target.value = "";
+      return;
+    }
+
+    setIsShowUpload(true);
+    setFile(selectedFile);
+    setFilePreview(URL.createObjectURL(selectedFile));
+  };
+
+  const uploadProfileImage = useCallback(async () => {
+    if (!file) return;
 
     const formdata = new FormData();
-    formdata.append("profilePicture", iconFile);
+    formdata.append("profilePicture", file);
     formdata.append("email", userEmail);
     formdata.append("name", userName);
+
+    setIsUploading(true);
 
     try {
       const response = await requestClient({
@@ -110,13 +106,23 @@ const PersonalInformation = () => {
 
       if (response.status === 200) {
         toast.success(response?.data?.message);
-        fetchUserInformation();
+
+        //  update session here
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            picture: response?.data?.data?.avatar,
+          },
+        });
       }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
+    } finally {
+      setIsUploading(false);
     }
-  };
+  }, [file, userEmail, userName, sessionData, session]);
 
   const fetchUserInformation = useCallback(async () => {
     try {
@@ -135,7 +141,7 @@ const PersonalInformation = () => {
       setValue("contactPersonPosition", data.contactPersonPosition || "");
       setUserEmail(data.contactEmail);
       setUserName(data.businessName);
-      setPreviewUrl(data.owner.avatar);
+      setFilePreview(data.owner.avatar);
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
@@ -151,9 +157,6 @@ const PersonalInformation = () => {
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
     try {
       setIsLoading(true);
-      if (iconFile) {
-        await uploadProfileImage();
-      }
 
       const response = await requestClient({
         token: sessionData.user.token,
@@ -170,7 +173,6 @@ const PersonalInformation = () => {
           user: {
             ...sessionData.user,
             businessName: value.businessName,
-            picture: response?.data?.data?.owner?.avatar,
           },
         });
       } else {
@@ -185,14 +187,12 @@ const PersonalInformation = () => {
   };
 
   if (isUserInfo) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
     <div className="p-5 rounded-md bg-white max-w-3xl">
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Image
             src={previewUrl}
@@ -234,7 +234,16 @@ const PersonalInformation = () => {
           />
           <span className="border p-2 rounded-md px-4 text-center">Upload</span>
         </Center>
-      </div>
+      </div> */}
+      <ProfileImageUploader
+        filePreview={filePreview}
+        sessionData={sessionData}
+        handleFileChange={handleFileChange}
+        uploadProfileImage={uploadProfileImage}
+        isUploading={isUploading}
+        isShowUpload={isShowUpload}
+        fileError={fileError}
+      />
       <form className="space-y-5 mt-5 mb-8" onSubmit={handleSubmit(onSubmit)}>
         <HStack gap={5}>
           <FormControl isInvalid={!!errors.contactPerson?.message}>
@@ -282,16 +291,36 @@ const PersonalInformation = () => {
             <FormErrorMessage>{errors.contactPhone?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
-        <FormControl isInvalid={!!errors.businessAddress?.message}>
-          <FormLabel>Business Address</FormLabel>
-          <Textarea
-            placeholder="Enter business address"
-            {...register("businessAddress", {
-              required: "Business Address is required",
-            })}
-          />
-          <FormErrorMessage>{errors.businessAddress?.message}</FormErrorMessage>
-        </FormControl>
+        <HStack gap={5}>
+          <FormControl isInvalid={!!errors.businessAddress?.message}>
+            <FormLabel>Business Address</FormLabel>
+            <Input
+              type="text"
+              placeholder={"Plot 360 Obafemi Awolowo way, Jabi District, Abuja"}
+              {...register("businessAddress", {
+                required: "business Address is required",
+              })}
+            />
+            <FormErrorMessage>
+              {errors.businessAddress?.message}
+            </FormErrorMessage>
+          </FormControl>
+
+          <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
+            <FormLabel>Contact Person Position</FormLabel>
+            <Input
+              type="tel"
+              placeholder={"Managing Director"}
+              {...register("contactPersonPosition", {
+                required: "Contact Person Position is required",
+              })}
+            />
+            <FormErrorMessage>
+              {errors.contactPersonPosition?.message}
+            </FormErrorMessage>
+          </FormControl>
+        </HStack>
+
         <HStack justify={"end"}>
           <Flex>
             <Button

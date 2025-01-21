@@ -31,6 +31,7 @@ import SearchModal from "./SearchModal";
 import Link from "next/link";
 import { useCartStore } from "../useCartStore";
 import { NextAuthUserSession } from "@/types";
+import { BusinessStatus } from "@/constants";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -53,6 +54,17 @@ const Navbar = () => {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
   const { fetchCart, cartSize } = useCartStore();
+
+  const businessStatus = userData?.user?.businessStatus;
+
+  const isRestrictedStatus = [
+    BusinessStatus.PENDING_VERIFICATION,
+    BusinessStatus.PENDING_APPROVAL,
+    BusinessStatus.REJECTED,
+    BusinessStatus.LICENSE_EXPIRED,
+    BusinessStatus.SUSPENDED,
+    BusinessStatus.BANNED,
+  ].includes(businessStatus);
 
   useEffect(() => {
     fetchCart(userData?.user?.token);
@@ -80,14 +92,22 @@ const Navbar = () => {
         {/* Navigation Icons */}
         <HStack spacing={4} color="primary.500">
           {/* Search Icon */}
-          <Box cursor="pointer" onClick={handleOpenSearch}>
+          <Box
+            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+            onClick={!isRestrictedStatus ? handleOpenSearch : undefined}
+            opacity={isRestrictedStatus ? 0.5 : 1}
+          >
             <Stack align="center">
               <Icon as={Search} boxSize={5} />
             </Stack>
           </Box>
 
           {/* Cart Icon */}
-          <Box cursor="pointer" onClick={handleOpenCart}>
+          <Box
+            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+            onClick={!isRestrictedStatus ? handleOpenCart : undefined}
+            opacity={isRestrictedStatus ? 0.5 : 1}
+          >
             <Stack align="center">
               <Box position="relative" display="flex" alignItems="center">
                 <Icon as={PiShoppingBagBold} boxSize={5} />
@@ -144,26 +164,45 @@ const Navbar = () => {
                   </Link>
                 </Text>
               </MenuItem>
-              <MenuItem py={3}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/orders"}>My Orders</Link>
-                </Text>
+              <MenuItem
+                py={3}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/storefront/orders")}
+              >
+                <Text>My Orders</Text>
               </MenuItem>
-              <MenuItem py={3}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/my-wishlist"}>My Wishlist</Link>
-                </Text>
+              <MenuItem
+                py={3}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/storefront/my-wishlist")}
+              >
+                <Text>My Wishlist</Text>
               </MenuItem>
-              <MenuItem py={3}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/shopping-list"}>Shopping List</Link>
-                </Text>
+              <MenuItem
+                py={3}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/storefront/shopping-list")}
+              >
+                <Text>Shopping List</Text>
               </MenuItem>
-              <MenuItem py={3}>
-                <Text cursor="pointer">Product Reviews</Text>
+              <MenuItem
+                py={3}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/product-reviews")}
+              >
+                <Text>Product Reviews</Text>
               </MenuItem>
-              <MenuItem py={3}>
-                <Text cursor="pointer">Help</Text>
+              <MenuItem
+                py={3}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/help")}
+              >
+                <Text>Help</Text>
               </MenuItem>
               <Box py={3}>
                 <Button
@@ -205,14 +244,22 @@ const Navbar = () => {
           alignItems="center"
         >
           {/* Search */}
-          <Box cursor="pointer" onClick={handleOpenSearch}>
+          <Box
+            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+            onClick={!isRestrictedStatus ? handleOpenSearch : undefined}
+            opacity={isRestrictedStatus ? 0.5 : 1}
+          >
             <Stack align="center" spacing={1}>
               <Icon as={Search} boxSize={5} /> <Text>Search</Text>
             </Stack>
           </Box>
 
           {/* Cart */}
-          <Box cursor="pointer" onClick={handleOpenCart}>
+          <Box
+            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+            onClick={!isRestrictedStatus ? handleOpenCart : undefined}
+            opacity={isRestrictedStatus ? 0.5 : 1}
+          >
             <Stack align="center" spacing={1}>
               <Box position="relative" display="flex" alignItems="center">
                 <Icon as={PiShoppingBagBold} boxSize={5} />{" "}
@@ -236,10 +283,9 @@ const Navbar = () => {
 
           {/* FAQs */}
           <Box
-            cursor="pointer"
-            onClick={() => {
-              router.push("/faq");
-            }}
+            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+            onClick={!isRestrictedStatus ? () => router.push("/faq") : undefined}
+            opacity={isRestrictedStatus ? 0.5 : 1}
           >
             <Stack align="center" spacing={1}>
               <Icon as={FaRegCircleQuestion} boxSize={5} />
@@ -296,20 +342,32 @@ const Navbar = () => {
                   </Link>
                 </Text>
               </MenuItem>
-              <MenuItem py={3} px={4}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/orders"}>My Orders</Link>
-                </Text>
+              <MenuItem
+                py={3}
+                px={4}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/storefront/orders")}
+              >
+                <Text>My Orders</Text>
               </MenuItem>
-              <MenuItem py={3} px={4}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/my-wishlist"}>My Wishlist</Link>
-                </Text>
+              <MenuItem
+                py={3}
+                px={4}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/storefront/my-wishlist")}
+              >
+                <Text>My Wishlist</Text>
               </MenuItem>
-              <MenuItem py={3} px={4}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/shopping-list"}>Shopping List</Link>
-                </Text>
+              <MenuItem
+                py={3}
+                px={4}
+                opacity={isRestrictedStatus ? 0.5 : 1}
+                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
+                onClick={isRestrictedStatus ? undefined : () => router.push("/storefront/shopping-list")}
+              >
+                <Text>Shopping List</Text>
               </MenuItem>
               <MenuItem
                 py={3}
