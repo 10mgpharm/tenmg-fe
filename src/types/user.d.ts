@@ -317,6 +317,7 @@ export interface ProductDataProps {
   maxDeliveryDuration: string | null;
   lowStockLevel: number;
   outStockLevel: number;
+  variation: any;
   measurement: MeasurementType;
   medicationType: MeasurementType;
   package: MeasurementType;

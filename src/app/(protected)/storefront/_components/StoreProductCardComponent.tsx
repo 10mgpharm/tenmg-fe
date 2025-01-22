@@ -14,7 +14,7 @@ export default function StoreProductCardComponent({ product }: any) {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const { addToCart, cart } = useCartStore();
+  const { addToCart, updateLoading } = useCartStore();
 
   const businessStatus = userData?.user?.businessStatus;
 
@@ -193,7 +193,7 @@ export default function StoreProductCardComponent({ product }: any) {
           Buy Now
         </button>
         <button
-          disabled={!isProductClickable}
+          disabled={!isProductClickable || updateLoading}
           className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
           onClick={() => addCartFunction(product.id)}
         >

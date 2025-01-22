@@ -1,4 +1,6 @@
 "use client";
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
     Flex,
@@ -7,17 +9,15 @@ import {
     Spinner, 
     Text 
 } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@heroicons/react/20/solid';
-import Statistics from '../_components/Statistics';
 import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
-import { useSession } from 'next-auth/react';
-import { NextAuthUserSession, ProductDataProps } from '@/types';
-import ExploreData from '../_components/ExploreData';
-import { convertDate } from '@/utils/formatDate';
-import productImage from '../../../../../../public/assets/images/product.svg'
-import Link from 'next/link';
 import { classNames, formatText } from '@/utils';
+import { convertDate } from '@/utils/formatDate';
+import Statistics from '../_components/Statistics';
+import ExploreData from '../_components/ExploreData';
+import { ArrowLeftIcon } from '@heroicons/react/20/solid';
+import { NextAuthUserSession, ProductDataProps } from '@/types';
+import productImage from '../../../../../../public/assets/images/product.svg'
 
 const ProductDetail = ({params}: {params: {id: string}} ) => {
     const router = useRouter();
@@ -129,7 +129,7 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
                             <h2 className='text-lg font-semibold capitalize'>
                                 {`${products?.brand?.name} 
                                 ${products?.name} 
-                                ${products?.medicationType?.variations?.[0].strengthValue}${products?.medicationType?.variations?.[0].measurement} 
+                                ${products?.variation?.strengthValue}${products?.measurement.name ?? ""}
                                 - ${products?.presentation?.name}`}
                             </h2>
                             <p className='max-w-sm text-gray-500 text-sm'>{products?.description}</p>
@@ -141,7 +141,8 @@ const ProductDetail = ({params}: {params: {id: string}} ) => {
                     </div>
                     <ul className='list-disc mt-5 space-y-2 list-inside ml-4'>
                         <li className='text-sm'>Brand: <span className='font-semibold ml-1'>{products?.brand?.name}</span></li>
-                        <li className='text-sm'>Value (strength):<span className='font-semibold ml-1'>{products?.measurement?.name}</span></li>
+                        <li className='text-sm'>Value (strength):<span className='font-semibold ml-1'>{products?.variation?.strengthValue}</span></li>
+                        <li className='text-sm'>Measurement:<span className='font-semibold ml-1'>{products?.measurement?.name}</span></li>
                         <li className='text-sm'>Category:<span className='font-semibold ml-1'>{products?.category?.name}</span></li>
                         <li className='text-sm'>Presentation:<span className='font-semibold ml-1'>{products?.presentation?.name}</span></li>
                         <li className='text-sm'>Medication Type:<span className='font-semibold ml-1'>{products?.medicationType?.name}</span></li>
