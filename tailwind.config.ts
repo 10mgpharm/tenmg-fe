@@ -13,7 +13,7 @@ const addVariablesForColors = ({ addBase, theme }: any) => {
   addBase({
     ":root": newVars,
   });
-}
+};
 
 const config: Config = {
   content: [
@@ -43,8 +43,6 @@ const config: Config = {
     },
   },
   darkMode: "class",
-  plugins: [
-    addVariablesForColors
-  ],
+  plugins: [addVariablesForColors],
 };
 export default config;

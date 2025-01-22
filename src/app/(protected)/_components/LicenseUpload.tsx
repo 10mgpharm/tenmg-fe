@@ -36,6 +36,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import pdfFileIcon from "@public/assets/images/file_fomat_icon.png";
 import reviewDocIcon from "@public/assets/images/review_ongoing.png";
 import successIcon from "@public/assets/images/licence_success.png";
+import { dateToString } from "@/utils/formatDate";
 
 interface IFormInput {
   licenseNumber: string;
@@ -176,7 +177,7 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
     }
 
     const date = new Date(value.expiryDate);
-    const formattedDate = date.toISOString().split("T")[0];
+    const formattedDate = dateToString(date);
 
     const formData = new FormData();
     formData.append("licenseNumber", value.licenseNumber);

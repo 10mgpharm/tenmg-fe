@@ -99,7 +99,7 @@ export default function CheckoutPage() {
 
             {/* Cart Items */}
             {cartItems?.items?.length > 0 ? (
-              <VStack align="start" spacing={4} className="">
+              <VStack align="start" spacing={4} className="p-5 ">
                 {cartItems?.items?.map((item) => (
                   <HStack
                     key={item?.id}
@@ -107,7 +107,8 @@ export default function CheckoutPage() {
                     align="flex-start"
                     width="full"
                     justifyContent="space-between"
-                    h={{ md: 32 }}
+                    // h={{ md: 36 }}
+                    className='hover:bg-primary-50 p-4 rounded-lg'
                   >
                     {/* Product Image */}
                     <Image
@@ -185,7 +186,7 @@ export default function CheckoutPage() {
                       w={5}
                       h={5}
                       mb={2}
-                      alignSelf="flex-end"
+                      alignSelf="center"
                       as={FiTrash2}
                       _hover={{ cursor: "pointer" }}
                       color="error.500"
@@ -223,7 +224,7 @@ export default function CheckoutPage() {
             <div className='px-6'>
               {cartItems.items?.length > 0 && (
                 <>
-                  <Flex mt={20} justifyContent="flex-end">
+                  <Flex mt={20}>
                     <Stack mb={4}>
                       <Text fontWeight="medium" fontSize="sm">
                         Subtotal
@@ -238,10 +239,10 @@ export default function CheckoutPage() {
                   {/* Action Buttons */}
                   <Stack mt={6} spacing={4}>
                     <Button width="full" colorScheme="blue" onClick={() => router.push('/storefront/checkout/payment')}>
-                      Proceed to payment
+                      Proceed to Payment
                     </Button>
                     <Button width="full" variant="outline" onClick={() => router.push('/storefront')}>
-                      Continue shopping
+                      Continue Shopping
                     </Button>
                   </Stack>
                 </>
