@@ -72,9 +72,7 @@ const ResetPassword = () => {
 
       if (response.status === 200) {
         toast.success(response?.data?.message);
-
         setTimeout(async () => {
-          // signout so user can login with the newly created account
           router.push("/");
         }, 5000);
       }

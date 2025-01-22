@@ -63,7 +63,7 @@ const FilterDrawer = ({
 
     const {
         handleSubmit,
-        formState: {},
+        formState: {errors},
         control,
         reset,
         setValue,
@@ -96,8 +96,6 @@ const FilterDrawer = ({
         });
         clearFilters();
     };
-
-    console.log(watch());
     
     return (
     <Drawer
@@ -255,9 +253,8 @@ const FilterDrawer = ({
                         }} 
                     />
                 </InputGroup>
-                {/* <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>Searched results.</Text> */}
                 {
-                    (brands?.data?.length > 0) && brands?.data?.map((brand: MedicationData) => (
+                    (brands?.data?.length > 0 && brandFilter !== "") && brands?.data?.map((brand: MedicationData) => (
                         <Stack key={brand.id}>
                             <Checkbox 
                             value={brand?.name}

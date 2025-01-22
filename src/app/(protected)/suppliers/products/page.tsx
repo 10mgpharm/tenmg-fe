@@ -166,6 +166,7 @@ const Products = () => {
     });
 
     const applyFilters = (filters: IFilterInput) => {
+        setPageCount(1);
         setCreatedAtStart(filters.startDate);
         setCreatedAtEnd(filters.endDate);
         setStatus(filters.status);

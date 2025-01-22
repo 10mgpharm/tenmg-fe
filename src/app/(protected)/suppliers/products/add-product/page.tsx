@@ -58,7 +58,7 @@ const AddProducts = () => {
     const fetchingMedicationTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/medication-types`
+                `/supplier/medication-types?active=active`
             );
         if(response.status === 200){
             setMedicationData(response.data.data);
@@ -71,7 +71,7 @@ const AddProducts = () => {
     const fetchingBrandTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/brands`
+                `/supplier/brands?active=active`
             );
         if(response.status === 200){
             setBrandData(response.data.data);
@@ -84,7 +84,7 @@ const AddProducts = () => {
     const fetchingCategoriesTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/categories`
+                `/supplier/categories?active=active`
             );
         if(response.status === 200){
             setCategoryData(response.data.data);
@@ -104,7 +104,7 @@ const AddProducts = () => {
     const {
         control,
         register,
-        formState: { errors, isValid },
+        formState: { errors },
         handleSubmit,
         setValue,
         reset,

@@ -53,14 +53,14 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         try {
             if(type === "admin"){
                 const response = await requestClient({ token: token }).get(
-                    `/admin/settings/presentations`
+                    `/admin/settings/presentations?active=active&status=approved`
                 );
                 if(response.status === 200){
                     setPresentationData(response.data.data.data);
                 }
             } else {
                 const response = await requestClient({ token: token }).get(
-                    `/supplier/presentations`
+                    `/supplier/presentations?active=active`
                 );
                 if(response.status === 200){
                     setPresentationData(response.data.data.data);
@@ -75,14 +75,14 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         try {
             if(type === "admin"){
                 const response = await requestClient({ token: token }).get(
-                    `/admin/settings/measurements`
+                    `/admin/settings/measurements?active=active&status=approved`
                 );
                 if(response.status === 200){
                     setMeasurementData(response.data.data);
                 }
             } else {
                 const response = await requestClient({ token: token }).get(
-                    `/supplier/measurements`
+                    `/supplier/measurements?active=active`
                 );
                 if(response.status === 200){
                     setMeasurementData(response.data.data.data);
@@ -373,6 +373,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             }}
                             {...register("actualPrice", {
                                 required: true,
+                                min: { value: 1, message: "Price must be greater than zero" },
                             })}
                             />
                         </FormControl>
@@ -386,8 +387,12 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             _focus={{
                                 border: !!errors.discountPrice ? "red.300" : "border-gray-300",
                             }}
-                            {...register("discountPrice")}
+                            {...register("discountPrice", {
+                                validate: (value) =>
+                                    !value || Number(value) <= Number(watch("actualPrice")) || "Discount price cannot be higher than actual price",
+                            })}
                             />
+                            {errors.discountPrice && <Text color="red.500" fontSize={"sm"}>{errors.discountPrice.message}</Text>}
                         </FormControl>
                     </HStack>
                     {

@@ -174,6 +174,7 @@ const Page = () => {
     });
 
     const applyFilters = (filters: IFilterInput) => {
+        setPageCount(1);
         setCreatedAtStart(filters.fromDate);
         setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
