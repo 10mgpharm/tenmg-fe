@@ -3,16 +3,18 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useCartStore } from "../useCartStore";
 import { Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { BusinessStatus } from "@/constants";
+import { BusinessStatus } from "@/constants"; import { FaHeart } from "react-icons/fa";
 
 export default function StoreProductCardComponent({ product }: any) {
   const router = useRouter();
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
+
+  const [addedToWishlist, setAddToWishList] = useState(false)
 
   const { addToCart, updateLoading } = useCartStore();
 
@@ -23,15 +25,6 @@ export default function StoreProductCardComponent({ product }: any) {
     BusinessStatus.PENDING_APPROVAL,
     BusinessStatus.REJECTED,
   ].includes(businessStatus as BusinessStatus);
-
-  function isValidUrl(url) {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  }
 
   const addCartFunction = (prod_id) => {
     const data = {
@@ -54,7 +47,8 @@ export default function StoreProductCardComponent({ product }: any) {
 
       {/* TODO: Build a component for the Products */}
       {isProductClickable ? (
-        <Link href={`/storefront/product/${product?.slug}`}>
+        <div >
+          {/* <Link href={`/storefront/product/${product?.slug}`}> */}
           <div
             style={{
               backgroundImage: `url(${product?.thumbnailFile})`,
@@ -66,12 +60,16 @@ export default function StoreProductCardComponent({ product }: any) {
               <p className="text-gray-950 font-semibold text-sm capitalize">
                 {product?.name}
               </p>
-              <HeartIcon className="w-6 stroke-primary fill-primary-50" />
+              <div className="relative z-10" onClick={() => setAddToWishList(!addedToWishlist)}>
+                {addCartFunction ? <HeartIcon className="w-6 stroke-primary fill-primary-50" /> :
+                  <HeartIcon className="w-6 stroke-primary fill-primary-500" />
+                }
+              </div>
             </div>
             <div className="relative flex items-center gap-x-2">
               {product?.discountPrice > 0 && (
                 <p className="text-gray-900 font-semibold my-2 text-sm left-1/4">
-                  ₦{product?.discountPrice}
+                  ₦{parseInt(product?.actualPrice) - parseInt(product?.discountPrice)}
                 </p>
               )}
               <p
@@ -114,7 +112,8 @@ export default function StoreProductCardComponent({ product }: any) {
               )}
             </div>
           </div>
-        </Link>
+          {/* </Link> */}
+        </div>
       ) : (
         // If product is not clickable:
         <div className="pointer-events-none cursor-not-allowed">
@@ -129,7 +128,12 @@ export default function StoreProductCardComponent({ product }: any) {
               <p className="text-gray-950 font-semibold text-sm capitalize">
                 {product?.name}
               </p>
-              <HeartIcon className="w-6 stroke-primary fill-primary-50" />
+              <div className="relative z-10" onClick={() => setAddToWishList(!addedToWishlist)}>
+                {addCartFunction ? <HeartIcon className="w-6 stroke-primary fill-primary-50" /> :
+                  <HeartIcon className="w-6 stroke-primary fill-primary-500" />
+                }
+              </div>
+
             </div>
             <div className="relative flex items-center gap-x-2">
               {product?.discountPrice > 0 && (
@@ -178,11 +182,12 @@ export default function StoreProductCardComponent({ product }: any) {
             </div>
           </div>
         </div>
-      )}
+      )
+      }
 
       <div className="flex items-center justify-between w-full gap-4 my-2">
 
-        <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => router.push(`/storefront/product/${product?.slug}`)}>
+        <button disabled={product?.inventory?.toLowerCase() !== "in stock"} className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer" onClick={() => { addCartFunction(product.id); router.push(`/storefront/checkout`) }}>
           Buy Now
         </button>
         <button
@@ -193,7 +198,7 @@ export default function StoreProductCardComponent({ product }: any) {
           Add To Cart
         </button>
       </div>
-    </div>
+    </div >
   );
 }
 //

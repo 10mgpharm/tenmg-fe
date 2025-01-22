@@ -1,6 +1,6 @@
 'use client'
 import { Minus, Plus } from 'lucide-react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
 import { usePathname, useRouter } from 'next/navigation'
@@ -10,7 +10,7 @@ import { NextAuthUserSession } from '@/types'
 import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
 import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
 import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
-import { Flex, Spinner, Tag, TagLabel } from '@chakra-ui/react'
+import { Divider, Flex, Image, Spinner, Tag, TagLabel } from '@chakra-ui/react'
 import { useCartStore } from '../../useCartStore'
 import { toast } from 'react-toastify'
 export default function ProductDetailPage() {
@@ -125,34 +125,36 @@ export default function ProductDetailPage() {
               </div>
 
               {/* description container */}
-              <div className='w-full lg:w-1/2 flex flex-col gap-6 px-8'>
-                <h2 className='text-5xl font-semibold capitalize'>{productData?.name} {productData?.variation?.strengthValue}{productData?.measurement?.name}</h2>
-                <div className='flex items-center gap-x-2'>
-                  {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-3xl font-semibold'>₦{productData?.discountPrice}</p>}
-                  <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-gray-300 line-through"}`}>₦{productData?.actualPrice}</p>
+              <div className='w-full lg:w-1/2 flex flex-col gap-3 px-8'>
+                <h2 className='text-2xl font-semibold capitalize'>{productData?.name} {productData?.variation?.strengthValue}{productData?.measurement?.name}</h2>
+                <div className='flex items-center gap-x-1'>
+                  {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-base font-semibold'>₦{productData?.actualPrice - productData?.discountPrice}</p>}
+                  <p className={`text-base font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-gray-300 line-through"}`}>₦{productData?.actualPrice}</p>
                 </div>
 
                 <p className='text-sm'>{productData?.description.charAt(0).toUpperCase() + productData?.description.slice(1)}</p>
 
+                <Divider />
+
                 <div className="flex flex-col space-y-1">
                   <div className="flex items-center gap-x-3">
-                    <h4>Brand:</h4>
-                    <p className="font-semibold capitalize">{productData?.brand?.name}</p>
+                    <h4 className=' text-sm'>Brand:</h4>
+                    <p className=" text-sm font-semibold capitalize">{productData?.brand?.name}</p>
                   </div>
 
                   <div className="flex items-center gap-x-3">
-                    <h4>Presentation Type:</h4>
-                    <p className="font-semibold capitalize">{productData?.presentation?.name}</p>
+                    <h4 className=' text-sm'>Presentation Type:</h4>
+                    <p className=" text-sm font-semibold capitalize">{productData?.presentation?.name}</p>
                   </div>
 
                   <div className="flex items-center gap-x-3">
-                    <h4>Category:</h4>
-                    <p className="font-semibold capitalize">{productData?.category?.name}</p>
+                    <h4 className=' text-sm'>Category:</h4>
+                    <p className=" text-sm font-semibold capitalize">{productData?.category?.name}</p>
                   </div>
 
                   <div className="flex items-center gap-x-3">
-                    <h4>Expiry Date:</h4>
-                    <p className="font-semibold">{productData?.expiredAt.split('T')[0]}</p>
+                    <h4 className=' text-sm'>Expiry Date:</h4>
+                    <p className=" text-sm font-semibold">{productData?.expiredAt.split('T')[0]}</p>
                   </div>
                 </div>
 
