@@ -213,7 +213,11 @@ const PasswordForm = () => {
             </Box>
           </FormControl>
 
-          <FormControl display="flex" alignItems="center" justifyContent="space-between">
+          <FormControl
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <FormLabel htmlFor="2fa" mb="0">
               <Text fontWeight={"medium"}>Multi-Factor Authenticator</Text>
               <Text fontSize={"13px"} maxW={"60%"} color={"gray.400"}>
@@ -322,14 +326,9 @@ const PasswordForm = () => {
           <Switch id="2fa" />
         </FormControl> */}
         <HStack justify={"end"} my={6}>
-          <Flex>
-            <Button variant="outline" mr={3}>
-              Cancel
-            </Button>
-            <Button type="submit"  colorScheme="blue">
-              Save Changes
-            </Button>
-          </Flex>
+          <Button type="submit" colorScheme="blue">
+            Save Changes
+          </Button>
         </HStack>
       </form>
 

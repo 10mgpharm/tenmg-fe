@@ -48,7 +48,7 @@ type BusinessLicense = {
   expiryDate: string;
   licenseFile: string;
   licenseNumber: string;
-  licenseVerificationStatus: "PENDING" | "APPROVED" | "REJECTED";
+  licenseVerificationStatus: "PENDING" | "APPROVED" | "REJECTED" | null;
 };
 
 interface LicenseUploadProps {
