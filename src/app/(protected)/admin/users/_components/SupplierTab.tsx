@@ -21,12 +21,26 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { ColumsSupplierFN } from "./table";
 import { ColumsVendorFN } from "./VendorTable";
 import { ColumsPharmFN } from "./PharmacyTable";
-import { MemberDataProp } from "@/types";
+import { MemberDataProp, NextAuthUserSession, User } from "@/types";
 import { FaSpinner } from "react-icons/fa6";
+import DeleteModal from "@/app/(protected)/_components/DeleteModal";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
+import { useSession } from "next-auth/react";
+import requestClient from "@/lib/requestClient";
+import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
+import { ActionType } from "@/constants";
+import ViewUserModal from "./ViewUserModal";
 
 const SupplierTab = ({
   data,
@@ -36,6 +50,7 @@ const SupplierTab = ({
   pageCount,
   globalFilter,
   setGlobalFilter,
+  fetchTeamUser,
 }: {
   data: MemberDataProp;
   type: string;
@@ -44,12 +59,15 @@ const SupplierTab = ({
   pageCount: number;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
+  fetchTeamUser: (type: string, pageCount: number) => void;
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
+  const [userId, setUserId] = useState<number>();
+  const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
+  const [actionType, setActionType] = useState<ActionType | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenDeactivate,
@@ -57,14 +75,115 @@ const SupplierTab = ({
     onClose: onCloseDeactivate,
   } = useDisclosure();
 
+  const {
+    onOpen: onOpenDelete,
+    isOpen: isOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
+
+  const {
+    onOpen: onOpenView,
+    isOpen: isOpenView,
+    onClose: onCloseView,
+  } = useDisclosure();
+
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
+
+  const handleDeleteModal = useCallback(
+    (id: any) => {
+      const numericId = Number(id);
+      setUserId(numericId);
+      onOpenDelete();
+    },
+    [onOpenDelete]
+  );
+
+  const confirmDelete = useCallback(async () => {
+    if (userId !== undefined) {
+      if (!token || !userId) return;
+      setIsLoadingAction(true);
+      try {
+        const response = await requestClient({ token }).delete(
+          `admin/users/${userId}`
+        );
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onCloseDelete();
+          fetchTeamUser("supplier", 1);
+          fetchTeamUser("pharmacy", 1);
+          fetchTeamUser("vendor", 1);
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      } finally {
+        setIsLoadingAction(false);
+      }
+    }
+  }, [userId, token, onCloseDelete, fetchTeamUser]);
+
+  const handleViewModal = useCallback(
+    (id: number) => {
+      setUserId(id);
+      onOpenView();
+    },
+    [onOpenView]
+  );
+
+  const handleOpenModal = useCallback(
+    (id: number, action: ActionType) => {
+      setUserId(id);
+      setActionType(action);
+      onOpen();
+    },
+    [onOpen]
+  );
+
+  const handleStatusToggle = useCallback(
+    async (actionType: ActionType) => {
+      if (!token || !userId) return;
+      setIsLoadingAction(true);
+      try {
+        const response = await requestClient({
+          token: token,
+        }).patch(`/admin/users/${userId}/status`, {
+          status: actionType?.toUpperCase(),
+        });
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          fetchTeamUser("supplier", 1);
+          fetchTeamUser("pharmacy", 1);
+          fetchTeamUser("vendor", 1);
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      } finally {
+        setIsLoadingAction(false);
+        onClose();
+      }
+    },
+    [token, userId, fetchTeamUser, onClose]
+  );
+
   const records = useMemo(() => data?.data, [data?.data]);
 
-  const renderedColumn =
-    type === "vendor"
-      ? ColumsVendorFN(onOpen, onOpenDeactivate, pageCount, 15)
-      : type === "pharmacies"
-      ? ColumsPharmFN(onOpen, onOpenDeactivate, pageCount, 15)
-      : ColumsSupplierFN(onOpen, onOpenDeactivate, pageCount, 15);
+  const renderedColumn = useMemo(
+    () =>
+      ColumsSupplierFN(
+        onOpen,
+        onOpenDeactivate,
+        handleDeleteModal,
+        pageCount,
+        15,
+        handleOpenModal,
+        handleViewModal
+      ),
+    [handleDeleteModal, handleOpenModal, onOpen, onOpenDeactivate, pageCount]
+  );
 
   const table = useReactTable({
     data: records,
@@ -136,6 +255,28 @@ const SupplierTab = ({
           <Pagination meta={data?.meta} setPageCount={setPageCount} />
         </TableContainer>
       )}
+
+      <ViewUserModal
+        isOpen={isOpenView}
+        onClose={onCloseView}
+        id={userId}
+      />
+
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={"User"}
+        actionType={actionType}
+        onConfirm={() => handleStatusToggle(actionType)}
+      />
+
+      <DeleteModal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        title={"User"}
+        handleRequest={confirmDelete}
+        isLoading={isLoadingAction}
+      />
     </div>
   );
 };
