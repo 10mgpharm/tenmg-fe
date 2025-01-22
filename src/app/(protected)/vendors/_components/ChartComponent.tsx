@@ -21,7 +21,8 @@ interface ChartComponentProps {
     | "scatter"
     | "bubble"
     | "heatmap"
-    | "candlestick";
+    | "candlestick"
+    | "radialBar";
   width?: number | string;
   height?: number | string;
 }

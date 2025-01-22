@@ -12,14 +12,20 @@ const buttonTheme = {
         },
     },
     variants: {
-        solid: (props: { colorMode: string; }) => ({
-            bg: props.colorMode === 'dark' ? 'primary.500' : 'primary.500',
+        solid: (props: { colorMode: string; colorScheme: string }) => ({
+            bg: props.colorScheme === 'red' 
+                ? 'red.500'
+                : props.colorMode === 'dark' ? 'primary.500' : 'primary.500',
             color: 'white',
             _hover: {
-                bg: props.colorMode === 'dark' ? 'blue.200' : 'blue.600',
+                bg: props.colorScheme === 'red'
+                    ? 'red.600'
+                    : props.colorMode === 'dark' ? 'blue.200' : 'blue.600',
             },
             _active: {
-                bg: props.colorMode === 'dark' ? 'blue.400' : 'blue.700',
+                bg: props.colorScheme === 'red'
+                    ? 'red.700'
+                    : props.colorMode === 'dark' ? 'blue.400' : 'blue.700',
             },
         }),
     },
