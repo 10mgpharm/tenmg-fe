@@ -126,28 +126,28 @@ export default function ProductDetailPage() {
 
               {/* description container */}
               <div className='w-full lg:w-1/2 flex flex-col gap-6 px-8'>
-                <h2 className='text-5xl font-semibold'>{productData?.name} {productData?.variation?.strengthValue}{productData?.measurement?.name}</h2>
+                <h2 className='text-5xl font-semibold capitalize'>{productData?.name} {productData?.variation?.strengthValue}{productData?.measurement?.name}</h2>
                 <div className='flex items-center gap-x-2'>
                   {productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && <p className='text-3xl font-semibold'>₦{productData?.discountPrice}</p>}
                   <p className={`text-3xl font-semibold ${productData?.discountPrice > 0 && productData?.discountPrice !== productData?.actualPrice && "text-gray-300 line-through"}`}>₦{productData?.actualPrice}</p>
                 </div>
 
-                <p className='text-sm'>{productData?.description}</p>
+                <p className='text-sm'>{productData?.description.charAt(0).toUpperCase() + productData?.description.slice(1)}</p>
 
                 <div className="flex flex-col space-y-1">
                   <div className="flex items-center gap-x-3">
                     <h4>Brand:</h4>
-                    <p className="font-semibold">{productData?.brand?.name}</p>
+                    <p className="font-semibold capitalize">{productData?.brand?.name}</p>
                   </div>
 
                   <div className="flex items-center gap-x-3">
                     <h4>Presentation Type:</h4>
-                    <p className="font-semibold">{productData?.presentation?.name}</p>
+                    <p className="font-semibold capitalize">{productData?.presentation?.name}</p>
                   </div>
 
                   <div className="flex items-center gap-x-3">
                     <h4>Category:</h4>
-                    <p className="font-semibold">{productData?.category?.name}</p>
+                    <p className="font-semibold capitalize">{productData?.category?.name}</p>
                   </div>
 
                   <div className="flex items-center gap-x-3">

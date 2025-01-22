@@ -267,7 +267,7 @@ const CartDrawer = ({
               <Divider />
               {/* Action Buttons */}
               <Stack mt={6} mx={4} spacing={4}>
-                <Button width="full" colorScheme="blue" onClick={() => router.push('/storefront/checkout')}>
+                <Button width="full" colorScheme="blue" onClick={() => { router.push('/storefront/checkout'); onClose(); }}>
                   Checkout
                 </Button>
                 <Button width="full" variant="outline" disabled>
