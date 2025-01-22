@@ -40,15 +40,6 @@ const StoreFrontPharmacy = ({
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  // const productTitle = [
-  //   "FREQUENTLY BOUGHT ITEMS",
-  //   "CHRONIC CONDITIONS",
-  //   "VACCINE & SPECIAL MEDICATIONS",
-  //   "REPRODUCTIVE HEALTH & FERTILITY SOLUTIONS",
-  //   "ASTHMA & ALLERGIES",
-  //   "HOSPITALS AND CLINICS",
-  // ];
-
   const [storeFrontData, setStoreFrontData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,6 +81,9 @@ const StoreFrontPharmacy = ({
         BusinessStatus.PENDING_VERIFICATION,
         BusinessStatus.PENDING_APPROVAL,
         BusinessStatus.REJECTED,
+        BusinessStatus.LICENSE_EXPIRED,
+        BusinessStatus.SUSPENDED,
+        BusinessStatus.BANNED,
       ].includes(businessStatus) &&
         isBannerVisible && (
           <Box

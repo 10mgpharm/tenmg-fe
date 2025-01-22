@@ -63,11 +63,11 @@ const AddNewDrawer = (
       if (response.status === 200) {
         toast.success(response?.data?.message);
         if(type === 'pharmacy'){
-          fetchTeamUser('Pharmacies', 1);
+          fetchTeamUser('pharmacy', 1);
           }else if(type === 'vendor'){
-            fetchTeamUser('Vendor', 1);
+            fetchTeamUser('vendor', 1);
           }else{
-          fetchTeamUser('Supplier', 1);
+          fetchTeamUser('supplier', 1);
         }
         onClose();
       }

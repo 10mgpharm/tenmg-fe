@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { FaCamera } from "react-icons/fa6";
+import { ProfileImageUploader } from "@/app/(protected)/_components/ProfileImageUploader";
 
 interface IFormInput {
   businessName: string;
@@ -45,8 +46,6 @@ export default function ProfileInformation() {
   const [userEmail, setUserEmail] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const chakraToast = useToast();
 
   const {
     register,
@@ -68,13 +67,6 @@ export default function ProfileInformation() {
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
-
-  const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      setFileError(null);
-      fileInputRef.current.click();
-    }
-  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileError(null);
@@ -98,7 +90,7 @@ export default function ProfileInformation() {
     setFilePreview(URL.createObjectURL(selectedFile));
   };
 
-  const uploadProfileImage = async () => {
+  const uploadProfileImage = useCallback(async () => {
     if (!file) return;
 
     const formdata = new FormData();
@@ -124,7 +116,6 @@ export default function ProfileInformation() {
             picture: response?.data?.data?.avatar,
           },
         });
-        // fetchUserInformation();
       }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
@@ -132,7 +123,7 @@ export default function ProfileInformation() {
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [file, userEmail, userName, sessionData, session]);
 
   const fetchUserInformation = useCallback(async () => {
     try {
@@ -197,86 +188,22 @@ export default function ProfileInformation() {
 
   return (
     <Stack p={4}>
-      <div className="flex gap-4 items-center">
-        {/* <div
-          className="size-28 rounded-full bg-cover bg-center bg-no-repeat shadow-gray-400 shadow-md"
-          style={{
-            backgroundImage: `url(${
-              filePreview ? filePreview : "/assets/images/avatar.jpg"
-            })`,
-          }}
-        /> */}
-
-        <Box
-          position="relative"
-          role="group"
-          w="fit-content"
-          cursor="pointer"
-          onClick={handleButtonClick}
-        >
-          <Avatar
-            size="2xl"
-            name={sessionData?.user?.name}
-            src={filePreview ?? sessionData?.user?.picture}
-          />
-          {/* Camera icon shown on hover */}
-          <Box
-            position="absolute"
-            bottom="2"
-            right="50"
-            left="50"
-            bg="gray.600"
-            rounded="full"
-            p="6px"
-            cursor="pointer"
-            display="none"
-            _groupHover={{ display: "block" }}
-          >
-            <Icon as={FaCamera} boxSize="15px" color="white" />
-          </Box>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: "none" }}
-            onChange={handleFileChange}
-            accept="image/*"
-            id="file-input"
-          />
-        </Box>
-
-        <div className="flex flex-col justify-between gap-3">
-          <Text fontSize={"1rem"} fontWeight={600} color="gray.700">
-            Profile Image
-          </Text>
-          <Text fontSize={"14px"} fontWeight={400} color="gray.700">
-            Min 400x400px, PNG or JPEG
-          </Text>
-
-          <div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={uploadProfileImage}
-              isLoading={isUploading}
-              loadingText="Uploading..."
-              isDisabled={!isShowUpload || isUploading}
-            >
-              Upload
-            </Button>
-          </div>
-
-          <p className="text-xs text-red-500">{fileError}</p>
-
-          {/* <HiddenFileUpload setFilePreview={setFilePreview} setFile={setFile} /> */}
-        </div>
-      </div>
+      <ProfileImageUploader
+        filePreview={filePreview}
+        sessionData={sessionData}
+        handleFileChange={handleFileChange}
+        uploadProfileImage={uploadProfileImage}
+        isUploading={isUploading}
+        isShowUpload={isShowUpload}
+        fileError={fileError}
+      />
       <form className="space-y-5 mt-6" onSubmit={handleSubmit(onSubmit)}>
         <HStack gap={5}>
           <FormControl isInvalid={!!errors.businessName?.message}>
             <FormLabel>Business Name</FormLabel>
             <Input
               type="text"
-              placeholder={"Jacquelyn’s Pharmacy"}
+              placeholder={"Jacquelyn's Pharmacy"}
               {...register("businessName", {
                 required: "Business Name is required",
               })}

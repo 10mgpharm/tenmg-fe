@@ -107,7 +107,7 @@ export function ColumsSupplierFN(
                 </MenuButton>
                 <MenuList>
                     <MenuItem>
-                        <Link href={`/admin/users/${info?.row?.original?.name}`}>View User</Link>
+                        <Link href={`/admin/users/${info?.row?.original?.id}`}>View User</Link>
                     </MenuItem>
                     <MenuItem>Login as user</MenuItem>
                     {
