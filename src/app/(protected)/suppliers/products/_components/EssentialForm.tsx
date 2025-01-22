@@ -143,7 +143,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <CustomCreatableSelectComponent
                                     value={value}
                                     name={"medicationTypeName"}
-                                    placeholder={'Select...'}
+                                    placeholder={'(E.g Over-the-Counter (OTC))'}
                                     options={medications && convertCreateOptionArray(medications)}
                                     onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                         if(selectedOption?.value){
@@ -252,7 +252,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                         <CustomCreatableSelectComponent
                                             value={value}
                                             name={"presentationName"}
-                                            placeholder={'Select...'}
+                                            placeholder={'(E.g Tablet)'}
                                             // isDisabled={isEditing && !newVariation}
                                             options={presentationData && convertCreateOptionArray(presentationData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
@@ -273,7 +273,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <Input 
                                 id="strengthValue"
                                 // disabled={isEditing && !newVariation}
-                                placeholder="" 
+                                placeholder="(E.g 500)" 
                                 {...register("strengthValue", {
                                     required: "Strength is required",
                                     // validate value can either be number only e.g 90 or number with sepearor between 90/80
@@ -299,7 +299,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                         <CustomCreatableSelectComponent
                                             value={value}
                                             name={"measurementName"}
-                                            placeholder={'Select...'}
+                                            placeholder={'(E.g MG)'}
                                             // isDisabled={isEditing && !newVariation}
                                             options={measurementData && convertCreateOptionArray(measurementData)}
                                             onOptionSelected={(selectedOption: CreatableSelectOption) => {
@@ -323,7 +323,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <FormLabel color={"gray.500"}>Package Per Roll</FormLabel>
                                 <Input 
                                     id="packageName"
-                                    placeholder="" 
+                                    placeholder="(E.g 10 tablets per roll)" 
                                     type="text"
                                     // disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.packageName}
@@ -337,7 +337,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <FormLabel color={"gray.500"}>Weight (Kg)</FormLabel>
                                 <Input 
                                     id="weight"
-                                    placeholder="" 
+                                    placeholder="(E.g 10g)" 
                                     type="text"
                                     // disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.weight}
@@ -365,7 +365,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <FormLabel color={"gray.500"}>Price(₦)</FormLabel>
                             <Input 
                             id="actualPrice"
-                            placeholder="" 
+                            placeholder="(E.g ₦1000)" 
                             type="number"
                             isInvalid={!!errors.actualPrice}
                             _focus={{
@@ -380,7 +380,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                             <FormLabel color={"gray.500"}>Discount Price(₦)</FormLabel>
                             <Input 
                             id="discountPrice"
-                            placeholder="" 
+                            placeholder="(E.g ₦20)" 
                             type="number"
                             isInvalid={!!errors.discountPrice}
                             _focus={{
