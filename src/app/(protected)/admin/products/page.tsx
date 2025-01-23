@@ -159,7 +159,7 @@ const Page = () => {
                     onOpenDeactivate, 
                     onOpenActivate, 
                     pageCount, 
-                    15,
+                    10,
                     setSelectedProduct
                 ),
         onSortingChange: setSorting,
@@ -526,8 +526,9 @@ const Page = () => {
                     onClick={() => {
                         if(comment === "") {
                             return setError(true)
-                        };
-                        handleProductDeactivate("flagged")
+                        }else{
+                            handleProductDeactivate("flagged")
+                        }
                     }} 
                     className='bg-primary-600 text-white p-3 rounded-md'>
                         Proceed
