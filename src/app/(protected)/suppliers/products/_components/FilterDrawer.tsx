@@ -18,7 +18,12 @@ import {
     FormControl,
     CheckboxGroup,
   } from '@chakra-ui/react';
-import { Controller, UseFormGetValues, UseFormReset, UseFormSetValue } from 'react-hook-form';
+import { 
+    Controller, 
+    UseFormGetValues, 
+    UseFormReset, 
+    UseFormSetValue 
+} from 'react-hook-form';
 import { FaSearch } from 'react-icons/fa';
 import DateComponent from './DateComponent';
 import { Dispatch, SetStateAction } from 'react';

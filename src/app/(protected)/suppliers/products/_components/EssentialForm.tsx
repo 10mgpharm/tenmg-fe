@@ -323,7 +323,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <FormLabel color={"gray.500"}>Package Per Roll</FormLabel>
                                 <Input 
                                     id="packageName"
-                                    placeholder="" 
+                                    placeholder="1*10" 
                                     type="text"
                                     // disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.packageName}
@@ -338,7 +338,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <Input 
                                     id="weight"
                                     placeholder="" 
-                                    type="text"
+                                    type="number"
                                     // disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.weight}
                                     _focus={{
