@@ -28,6 +28,12 @@ export interface User {
   dateJoined?: string;
 }
 
+export interface SingleUser {
+  user: User & {
+    business: Vendor;
+  };
+}
+
 export interface NextAuthUserSession extends Session {
   user: User & {
     account: Account;

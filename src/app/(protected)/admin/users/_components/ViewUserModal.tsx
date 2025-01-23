@@ -16,8 +16,9 @@ import {
   Stack,
   Skeleton,
   Button,
+  Link,
 } from "@chakra-ui/react";
-import { NextAuthUserSession, User } from "@/types";
+import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
@@ -26,6 +27,7 @@ import { classNames, handleServerErrorMessage } from "@/utils";
 import Image from "next/image";
 import shape from "@public/assets/images/Rectangle.svg";
 import { convertDate } from "@/utils/formatDate";
+import pdfFileIcon from "@public/assets/images/file_fomat_icon.png";
 
 interface ViewUserModalProps {
   isOpen: boolean;
@@ -39,7 +41,7 @@ export default function ViewUserModal({
   id,
 }: ViewUserModalProps) {
   const [isUserLoading, setIsUserLoading] = useState<boolean>(false);
-  const [userData, setUserData] = useState<User | null>(null);
+  const [userData, setUserData] = useState(null);
 
   // Grab the NextAuth session and extract the token
   const { data: session } = useSession();
@@ -120,24 +122,27 @@ export default function ViewUserModal({
               <Skeleton height="20px" />
               <Skeleton height="20px" />
               <Skeleton height="20px" />
+              <Skeleton height="20px" />
             </Stack>
           ) : (
             <>
               {/* Business Information */}
               <Box>
                 <Heading as="h3" fontSize="xl" fontWeight="semibold" mb={4}>
-                  User Information
+                  Business Information
                 </Heading>
 
                 <Stack spacing={4}>
-                  {/* <Flex mb={2}>
+                  <Flex mb={2}>
                     <Box w="50%" className="space-y-2">
                       <Text fontSize="sm" color="gray.600">
                         User Type
                       </Text>
-                      <Text fontWeight="medium">{"N/A"}</Text>
+                      <Text fontWeight="medium">
+                        {userData?.business?.type || "N/A"}
+                      </Text>
                     </Box>
-                  </Flex> */}
+                  </Flex>
 
                   <Flex mb={2}>
                     <Box w="50%" className="space-y-2">
@@ -145,7 +150,7 @@ export default function ViewUserModal({
                         Business Name
                       </Text>
                       <Text fontWeight="medium">
-                        {userData?.businessName || "N/A"}
+                        {userData?.business?.businessName || "N/A"}
                       </Text>
                     </Box>
                     <Box w="50%" className="space-y-2">
@@ -161,27 +166,120 @@ export default function ViewUserModal({
                   <Flex mb={2}>
                     <Box w="50%" className="space-y-2">
                       <Text fontSize="sm" color="gray.600">
-                        Phone Number
+                        Contact Phone Number
                       </Text>
                       <Text fontWeight="medium">
-                        {userData?.phone || "N/A"}
+                        {userData?.business?.contactPhone || "N/A"}
                       </Text>
                     </Box>
+                    <Box w="50%" className="space-y-2">
+                      <Text fontSize="sm" color="gray.600">
+                        Contact Person’s Name
+                      </Text>
+                      <Text fontWeight="medium">
+                        {userData?.business?.contactPerson || "N/A"}
+                      </Text>
+                    </Box>
+                  </Flex>
+
+                  <Flex mb={2}>
+                    <Box w="50%" className="space-y-2">
+                      <Text fontSize="sm" color="gray.600">
+                        Position
+                      </Text>
+                      <Text fontWeight="medium">
+                        {userData?.business?.contactPersonPosition || "N/A"}
+                      </Text>
+                    </Box>
+
                     <Box w="50%" className="space-y-2">
                       <Text fontSize="sm" color="gray.600">
                         Date Joined
                       </Text>
                       <Text fontWeight="medium">
-                        {convertDate(userData?.dateJoined) || "N/A"}
+                        {(userData?.dateJoined &&
+                          convertDate(userData?.dateJoined)) ||
+                          "N/A"}
                       </Text>
                     </Box>
                   </Flex>
+                  <Box className="space-y-2">
+                    <Text fontSize="sm" color="gray.600">
+                      Business Address
+                    </Text>
+                    <Text fontWeight="medium">
+                      {userData?.business?.businessAddress || "N/A"}
+                    </Text>
+                  </Box>
+                </Stack>
+              </Box>
+
+              {/* License Information */}
+              <Box>
+                <Heading as="h3" fontSize="xl" fontWeight="semibold" mb={4}>
+                  License Information
+                </Heading>
+                <Stack spacing={4}>
+                  <Flex mb={2}>
+                    <Box w="50%" className="space-y-2">
+                      <Text fontSize="sm" color="gray.600">
+                        License Number
+                      </Text>
+                      <Text fontWeight="medium">
+                        {userData?.business?.licenseNumber || "N/A"}
+                      </Text>
+                    </Box>
+                    <Box w="50%" className="space-y-2">
+                      <Text fontSize="sm" color="gray.600">
+                        Expiry Date
+                      </Text>
+                      <Text fontWeight="medium">
+                        {userData?.business?.expiryDate
+                          ? convertDate(userData?.business?.expiryDate)
+                          : "N/A"}
+                      </Text>
+                    </Box>
+                  </Flex>
+
+                  <Box w="100%" className="space-y-2">
+                    <Text fontSize="sm" color="gray.600">
+                      Date Submitted
+                    </Text>
+                    <Text fontWeight="medium">
+                      {userData?.business?.updatedAt
+                        ? convertDate(userData?.business?.updatedAt)
+                        : "N/A"}
+                    </Text>
+                  </Box>
                 </Stack>
               </Box>
 
               <Divider />
 
-              {/* Additional sections if needed */}
+              {/* Document Section */}
+              {userData?.business?.cacDocument && (
+                <Box className="space-y-2">
+                  <Flex gap={2} alignItems="center" wordBreak="break-word">
+                    <Image src={pdfFileIcon} width={40} height={40} alt="pdf" />
+                    <Text fontWeight="medium" flex={1}>
+                      {userData?.business?.cacDocument
+                        .split("/")
+                        .pop()
+                        ?.split("?")[0] || "document.pdf"}
+                    </Text>
+                    <Link
+                      target="_blank"
+                      href={userData?.business?.cacDocument}
+                      className="text-primary-600 text-sm"
+                    >
+                      View
+                    </Link>
+                  </Flex>
+                  <Text fontSize="sm" color="gray.500">
+                    Size: {userData?.business?.cacFileSize || 0} KB
+                  </Text>
+                </Box>
+              )}
             </>
           )}
         </DrawerBody>
