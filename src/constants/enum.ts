@@ -14,3 +14,11 @@ export enum BusinessType {
     ADMIN = "ADMIN",
     CUSTOMER_PHARMACY = "CUSTOMER_PHARMACY",
 }
+
+export enum ActionType {
+    ACTIVE = "ACTIVE",
+    SUSPENDED = "SUSPENDED",
+    INACTIVE = "INACTIVE",
+    REJECT = "REJECT",
+    APPROVE = "APPROVE",
+  }

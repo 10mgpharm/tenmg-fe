@@ -8,6 +8,7 @@ const columnHelper = createColumnHelper<any>();
 export function ColumsVendorFN(
   onOpen: () => void, 
   onOpenDeactivate: () => void,
+  handleDeleteModal: (id: number) => void,
   pageIndex: number, 
   pageSize: number
 ) {

@@ -267,7 +267,7 @@ export default function ProfileInformation() {
         </HStack>
         <div className="w-fit mx-auto mt-10">
           <Flex className="flex items-center gap-3">
-            <Button variant={"outline"}>Discard</Button>
+        
             <Button bg={"blue.700"} type="submit">
               Save Changes
             </Button>

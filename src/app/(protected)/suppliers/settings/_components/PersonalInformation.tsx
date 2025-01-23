@@ -43,7 +43,6 @@ const PersonalInformation = () => {
   const [filePreview, setFilePreview] = useState<string>(
     sessionData?.user?.avatar || avatar
   );
-  const [userInformation, setUserInformation] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUserInfo, setIsUserInfo] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>("");
