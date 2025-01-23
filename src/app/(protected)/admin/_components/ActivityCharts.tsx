@@ -131,11 +131,6 @@ const ActivityCharts = () => {
             labels: {
                 colors: '#000',
             },
-            // markers: {
-            // width: 12,
-            // height: 12,
-            // radius: 12, // Make legend markers circular
-            // },
             formatter: (seriesName, opts) => {
                 const value = opts.w.globals.series[opts.seriesIndex];
                 return `
@@ -168,7 +163,7 @@ const ActivityCharts = () => {
                   total: {
                     show: true,
                     label: '50%, 25%, 15%, 10%',
-                    // formatter: (total) => `${total}`,
+                    formatter: (total) => `Ratio`,
                     color: '#333',
                     fontSize: '14px',
                     fontFamily: 'Arial, sans-serif',

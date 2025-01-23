@@ -49,10 +49,9 @@ import FilterDrawer from "./_components/FilterDrawer";
 import SearchInput from "../../vendors/_components/SearchInput";
 import { toast } from "react-toastify";
 import Pagination from "../../admin/products/_components/Pagination";
+import { useForm } from "react-hook-form";
 
 interface IFilterInput {
-    endDate?: Date | null;
-    startDate?: Date | null;
     toDate?: Date | null;
     fromDate?: Date | null;
     status?: string[];
@@ -76,7 +75,6 @@ const Products = () => {
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [inventoryQuery, setInventoryQuery] = useState<string[]>();
-    const [selectedBrand, setSelectedBrand] = useState("");
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
@@ -95,17 +93,17 @@ const Products = () => {
 
     const fetchProducts = useCallback(async () => {
         setLoading(true);
-        let query = `/supplier/products?page=${pageCount}`;
+        let query = `/supplier/products/search?page=${pageCount}`;
         const params = {
+            search: debouncedSearch ?? "",
             inventory: inventoryQuery ?? [""],
             status: status ?? [""],
             category: [],
             brand: brandQuery ?? [],
-            search: debouncedSearch ?? "",
             variation: "",
             medicationType: [],
-            from: createdAtStart ? createdAtStart.toISOString().split("T")[0] : "",
-            to: createdAtEnd ? createdAtEnd.toISOString().split("T")[0] : "",
+            fromDate: createdAtStart ? new Date(createdAtStart).toLocaleDateString('en-CA') : "",
+            toDate: createdAtEnd ? new Date(createdAtEnd).toLocaleDateString('en-CA') : "",
         };
         const queryString = toQueryString(params)
         try {
@@ -165,10 +163,30 @@ const Products = () => {
         getFilteredRowModel: getFilteredRowModel(),
     });
 
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+        reset,
+        setValue,
+        getValues,
+        trigger,
+        watch
+    } = useForm<IFilterInput>({
+        mode: "onChange",
+        defaultValues: {
+            inventory: [],
+            status: [],
+            brand: [],
+            toDate: null,
+            fromDate: null
+        }
+    });
+
     const applyFilters = (filters: IFilterInput) => {
         setPageCount(1);
-        setCreatedAtStart(filters.startDate);
-        setCreatedAtEnd(filters.endDate);
+        setCreatedAtStart(filters.fromDate);
+        setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
         setBrandQuery(filters.brand);
         setInventoryQuery(filters.inventory)
@@ -182,7 +200,6 @@ const Products = () => {
         setBrandFilter("");
         setInventoryQuery([])
         setGlobalFilter("");
-        setSelectedBrand("");
     };
 
     const filterOptions = [
@@ -195,7 +212,7 @@ const Products = () => {
         setIsLoading(true);
         const formdata = new FormData();
         if(type === "deactivate"){
-            formdata.append("status", "PENDING");
+            formdata.append("status", "INACTIVE");
         }else{
             formdata.append("status", "ACTIVE");
         }
@@ -251,7 +268,6 @@ const Products = () => {
             <div className="mb-5">
                 <h3 className="font-semibold text-2xl">
                     Products
-                    {/* <span className="font-light text-gray-600">(10/10)</span> */}
                 </h3>
                 <div className="flex items-center gap-3 mt-5">
                     <SearchInput
@@ -311,8 +327,8 @@ const Products = () => {
         {
             memoizedData?.length === 0 
             ? <EmptyOrder 
-            heading={`No Product Yet`} 
-            content={globalFilter ? "All products will appear here." : "You currently have no product. All products will appear here."}
+            heading={`No Product Found`} 
+            content={globalFilter ? "All products will appear here." : "You currently have no product for this search. All products will appear here."}
             /> : 
             currentView === PRODUCTVIEW.LIST ?
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -484,8 +500,13 @@ const Products = () => {
             filterOptions={filterOptions}
             brandFilter={brandFilter}
             setBrandFilter={setBrandFilter}
-            selectedBrand={selectedBrand}
-            setSelectedBrand={setSelectedBrand}
+            handleSubmit={handleSubmit}
+            control={control}
+            reset={reset}
+            setValue={setValue}
+            getValues={getValues}
+            trigger={trigger}
+            watch={watch}
         />
     </div>
   )

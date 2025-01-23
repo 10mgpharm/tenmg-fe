@@ -48,10 +48,9 @@ import { useDebouncedValue } from "@/utils/debounce";
 import SearchInput from "../../vendors/_components/SearchInput";
 import { toast } from "react-toastify";
 import Pagination from "./_components/Pagination";
+import { useForm } from "react-hook-form";
 
 interface IFilterInput {
-    endDate?: Date | null;
-    startDate?: Date | null;
     toDate?: Date | null;
     fromDate?: Date | null;
     status?: string[];
@@ -76,7 +75,7 @@ const Page = () => {
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [inventoryQuery, setInventoryQuery] = useState<string[]>([]);
-    const [selectedBrand, setSelectedBrand] = useState("");
+    // const [selectedBrand, setSelectedBrand] = useState("");
     const [brands, setBrands] = useState<MedicationResponseData>();
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
@@ -99,15 +98,15 @@ const Page = () => {
         setLoading(true);
         let query = `/admin/settings/products/search?page=${pageCount}`;
         const params = {
+            search: debouncedSearch ?? "",
             inventory: inventoryQuery ?? [""],
             status: status ?? [""],
             category: [],
             brand: brandQuery ?? [],
-            search: debouncedSearch ?? "",
             variation: "",
             medicationType: [],
-            from: createdAtStart ? new Date(createdAtStart).toLocaleDateString('en-CA') : "",
-            to: createdAtEnd ? new Date(createdAtEnd).toLocaleDateString('en-CA') : "",
+            fromDate: createdAtStart ? new Date(createdAtStart).toLocaleDateString('en-CA') : "",
+            toDate: createdAtEnd ? new Date(createdAtEnd).toLocaleDateString('en-CA') : "",
         };
 
         const queryString = toQueryString(params)
@@ -173,6 +172,26 @@ const Page = () => {
         getFilteredRowModel: getFilteredRowModel(),
     });
 
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+        reset,
+        setValue,
+        getValues,
+        trigger,
+        watch
+    } = useForm<IFilterInput>({
+        mode: "onChange",
+        defaultValues: {
+            inventory: [],
+            status: [],
+            brand: [],
+            toDate: null,
+            fromDate: null
+        }
+    });
+
     const applyFilters = (filters: IFilterInput) => {
         setPageCount(1);
         setCreatedAtStart(filters.fromDate);
@@ -190,7 +209,6 @@ const Page = () => {
         setBrandFilter("");
         setInventoryQuery([])
         setGlobalFilter("");
-        setSelectedBrand("")
     };
 
     const filterOptions = [
@@ -322,7 +340,7 @@ const Page = () => {
             memoizedData?.length === 0 
             ? <EmptyOrder 
                 heading={`No Product Found`} 
-                content={globalFilter ? "All products will appear here." : "You currently have no product. All products will appear here."}
+                content={globalFilter ? "All products will appear here." : "You currently have no product for this search. All products will appear here."}
             /> : 
             memoizedData?.length > 0 && (
             currentView === PRODUCTVIEW.LIST ? (
@@ -413,9 +431,14 @@ const Page = () => {
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
-            selectedBrand={selectedBrand}
             setBrandFilter={setBrandFilter}
-            setSelectedBrand={setSelectedBrand}
+            handleSubmit={handleSubmit}
+            control={control}
+            reset={reset}
+            setValue={setValue}
+            getValues={getValues}
+            trigger={trigger}
+            watch={watch}
         />
         <ModalWrapper
         isOpen={isOpenDeactivate} 
