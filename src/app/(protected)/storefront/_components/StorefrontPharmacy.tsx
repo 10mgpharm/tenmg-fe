@@ -31,6 +31,7 @@ import {
 import { FiX } from "react-icons/fi";
 import { BusinessStatus } from "@/constants";
 import { toast } from "react-toastify";
+import { useWishlistStore } from "../storeFrontState/useWIshlist";
 
 const StoreFrontPharmacy = ({
   businessStatus,
@@ -74,6 +75,11 @@ const StoreFrontPharmacy = ({
     fetchStoreFront();
   }, [userData?.user?.token]);
 
+  const { fetchWishlist, } = useWishlistStore()
+
+  useEffect(() => {
+    fetchWishlist(userData?.user?.token);
+  }, [fetchWishlist, userData?.user?.token])
 
   return (
     <div className="">

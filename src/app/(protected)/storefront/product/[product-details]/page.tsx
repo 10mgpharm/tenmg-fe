@@ -11,7 +11,7 @@ import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
 import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
 import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
 import { Divider, Flex, Image, Spinner, Tag, TagLabel } from '@chakra-ui/react'
-import { useCartStore } from '../../useCartStore'
+import { useCartStore } from '../../storeFrontState/useCartStore'
 import { toast } from 'react-toastify'
 export default function ProductDetailPage() {
 

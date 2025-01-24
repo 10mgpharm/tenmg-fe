@@ -5,7 +5,7 @@ import { Box, Button, Divider, Flex, HStack, Icon, Image, Stack, Text, VStack } 
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
-import { useCartStore } from '../useCartStore';
+import { useCartStore } from '../storeFrontState/useCartStore';
 import { FiTrash2 } from 'react-icons/fi';
 import DeleteModal from '../_components/DeleteModal';
 import emptyCart from '@public/assets/images/emptyOrder.png';

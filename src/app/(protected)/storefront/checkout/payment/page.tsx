@@ -8,7 +8,7 @@ import requestClient from '@/lib/requestClient';
 import { toast } from 'react-toastify';
 import { handleServerErrorMessage } from '@/utils';
 import { Radio, RadioGroup } from '@chakra-ui/react'
-import { useCartStore } from '../../useCartStore';
+import { useCartStore } from '../../storeFrontState/useCartStore';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
