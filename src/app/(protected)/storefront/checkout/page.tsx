@@ -5,7 +5,7 @@ import { Box, Button, Divider, Flex, HStack, Icon, Image, Stack, Text, VStack } 
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
-import { useCartStore } from '../useCartStore';
+import { useCartStore } from '../storeFrontState/useCartStore';
 import { FiTrash2 } from 'react-icons/fi';
 import DeleteModal from '../_components/DeleteModal';
 import emptyCart from '@public/assets/images/emptyOrder.png';
@@ -20,8 +20,10 @@ export default function CheckoutPage() {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
-  const { cart, addToCart, updateLoading } = useCartStore();
+  const { cart, addToCart, updateLoading, sycnCart } = useCartStore();
   const router = useRouter();
+
+  // console.log("cart checkout", cart)
 
   useEffect(() => {
     if (cart) {
@@ -40,7 +42,7 @@ export default function CheckoutPage() {
     if (cartItems?.items) {
       let total = 0;
       cartItems.items.forEach((item) => {
-        const price = item.discountPrice > 0 ? item.discountPrice : item.actualPrice;
+        const price = item.product?.discountPrice > 0 && item?.product?.actualPrice !== item?.product?.discountPrice ? item?.product?.actualPrice - item.product?.discountPrice : item?.product?.actualPrice;
         total += price * localQuantities[item.product.id];
       });
       setSubtotal(total);
@@ -80,6 +82,33 @@ export default function CheckoutPage() {
       action: 'remove',
     };
     addToCart(data, userData?.user?.token);
+  };
+
+  const handleCheckout = () => {
+    const data_array = [];
+
+
+    // Update the global state with the local quantities
+    cartItems?.items?.forEach((item) => {
+      console.log("item", item);
+      const data = {
+        itemId: item.id,
+        quantity: localQuantities[item.product.id],
+        // action: "update",
+      };
+
+      data_array.push(data)
+      console.log("updated", data)
+    });
+
+    console.log("data_array", data_array);
+    const data_obj = {
+      cartId: cartItems?.id,
+      items: data_array
+    }
+    console.log("data_obj", data_obj);
+    sycnCart(data_obj, userData?.user?.token);
+    router.push("/storefront/checkout/payment");
   };
 
   const breadCrumb = [
@@ -151,7 +180,7 @@ export default function CheckoutPage() {
                             {item?.product?.quantity} units left
                           </Text>
                           <Text fontSize="md" fontWeight="medium">
-                            ₦{item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}
+                            ₦{item?.product?.discountPrice > 0 ? item?.product?.actualPrice - item.product?.discountPrice : item?.product?.actualPrice}
                           </Text>
                         </Box>
 
