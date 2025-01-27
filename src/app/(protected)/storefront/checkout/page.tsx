@@ -23,8 +23,6 @@ export default function CheckoutPage() {
   const { cart, addToCart, updateLoading, sycnCart } = useCartStore();
   const router = useRouter();
 
-  // console.log("cart checkout", cart)
-
   useEffect(() => {
     if (cart) {
       setCartItems(cart);
@@ -90,7 +88,6 @@ export default function CheckoutPage() {
 
     // Update the global state with the local quantities
     cartItems?.items?.forEach((item) => {
-      console.log("item", item);
       const data = {
         itemId: item.id,
         quantity: localQuantities[item.product.id],
@@ -98,15 +95,13 @@ export default function CheckoutPage() {
       };
 
       data_array.push(data)
-      console.log("updated", data)
+
     });
 
-    console.log("data_array", data_array);
     const data_obj = {
       cartId: cartItems?.id,
       items: data_array
     }
-    console.log("data_obj", data_obj);
     sycnCart(data_obj, userData?.user?.token);
     router.push("/storefront/checkout/payment");
   };
@@ -171,7 +166,7 @@ export default function CheckoutPage() {
                       <Stack align="start" spacing={2} flex="1" h="full" justify="space-between">
                         {/* Product Name */}
                         <Text fontWeight="medium" fontSize="md">
-                          {item?.product?.name}
+                          {item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}
                         </Text>
 
                         {/* Stock Information and Price */}
@@ -179,9 +174,17 @@ export default function CheckoutPage() {
                           <Text fontSize="sm" fontWeight="medium" color="red.500">
                             {item?.product?.quantity} units left
                           </Text>
-                          <Text fontSize="md" fontWeight="medium">
-                            ₦{item?.product?.discountPrice > 0 ? item?.product?.actualPrice - item.product?.discountPrice : item?.product?.actualPrice}
-                          </Text>
+                          <div className="flex items-center gap-x-2 ">
+                            {item?.product.discountPrice > 0 && (
+                              <p className="text-gray-900 font-semibold my-2 text-sm">
+                                ₦{parseInt(item?.product.actualPrice) - parseInt(item?.product.discountPrice)}
+                              </p>
+                            )}
+                            <p className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                              ₦{item?.product.actualPrice}
+                            </p>
+                            {/* ₦{item?.product?.discountPrice > 0 ? item?.product?.actualPrice - item.product?.discountPrice : item?.product?.actualPrice} */}
+                          </div>
                         </Box>
 
                         {/* Quantity Controls */}

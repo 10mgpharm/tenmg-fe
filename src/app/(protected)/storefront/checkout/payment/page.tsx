@@ -26,7 +26,6 @@ export default function PaymentPage() {
     }
   }, [cart])
 
-  console.log("cartItems", cartItems)
 
   const breadCrumb = [
     {
@@ -84,8 +83,9 @@ export default function PaymentPage() {
 
         <div className='col-span-1 lg:col-span-4 '>
           <div className='w-full border border-r-gray-100 rounded-t-2xl overflow-hidden'>
-            <div className='p-4 bg-primary-100'>
+            <div className='flex items-center justify-between p-4 bg-primary-100'>
               <h3 className='font-semibold text-lg'>Order Summary</h3>
+              <Button onClick={() => router.push('/storefront/settings/shipping-address')} variant={'outline'} colorScheme={'primary'} size={'sm'}>Edit</Button>
             </div>
             <div>
               <div
@@ -97,17 +97,6 @@ export default function PaymentPage() {
                   {shippingAddresses.address}, {shippingAddresses.city}, {shippingAddresses.state}, {shippingAddresses.country}
                 </p>
 
-                {/* <HStack pt={4}>
-              <EditAddressModal
-                id={address.id}
-                existingData={address}
-                onSuccess={refreshAddresses}
-              />
-              <DeleteAddressModal
-                id={address.id}
-                onSuccess={refreshAddresses}
-              />
-            </HStack> */}
               </div>
             </div>
           </div>
@@ -162,9 +151,19 @@ export default function PaymentPage() {
                     rounded={'md'}
                   />
                   <div>
-                    <p className='font-semibold'>{item?.product?.name}</p>
+                    <p className='font-semibold'>{item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}</p>
                     <p>Qty: {item?.quantity}</p>
-                    <p className='font-semibold'>₦ {item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}</p>
+                    <div className='flex items-center gap-x-1'>
+                      {item?.discountPrice > 0 && (
+                        <p className="text-gray-900 font-semibold my-2 text-sm">
+                          ₦{parseInt(item?.discountPrice)}
+                        </p>
+                      )}
+                      <p className={`font-semibold my-2 text-sm ${item?.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                        ₦{item?.actualPrice}
+                      </p>
+                    </div>
+                    {/* <p className='font-semibold'>₦ {item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}</p> */}
                   </div>
                 </div>)
                 )
@@ -184,14 +183,14 @@ export default function PaymentPage() {
             <Divider my={5} />
 
             <div>
-              <div>
+              <div className='flex items-center gap-x-2'>
                 <p>Cart Total:</p>
-                <p></p>
+                <p className='font-semibold'>{cartItems?.orderTotal}</p>
               </div>
-              <div>
+              {/* <div>
                 <p>Discount Total:</p>
                 <p></p>
-              </div>
+              </div> */}
               <div>
                 <p>Shipping fee:</p>
                 <p></p>
@@ -199,9 +198,9 @@ export default function PaymentPage() {
             </div>
             <Divider my={5} />
 
-            <div>
-              <p>Total</p>
-              <p></p>
+            <div className='flex items-center gap-x-2'>
+              <p>Total:</p>
+              <p className='font-semibold'>{cartItems?.orderTotal}</p>
             </div>
 
             <Divider my={5} />

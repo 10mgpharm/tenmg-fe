@@ -268,7 +268,7 @@ const CartItemComp = ({
       <Stack align="start" spacing={2} flex="1" h="full" justify="space-between">
         {/* Product Name */}
         <Text fontWeight="medium" fontSize="md">
-          {item?.product?.name}
+          {item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}
         </Text>
 
         {/* Stock Information and Price */}
@@ -276,9 +276,17 @@ const CartItemComp = ({
           <Text fontSize="sm" fontWeight="medium" color="red.500">
             {item?.product?.quantity} units left
           </Text>
-          <Text fontSize="md" fontWeight="medium">
-            ₦{parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice)}
-          </Text>
+          <div className="flex items-center gap-x-2 ">
+            {item?.product.discountPrice > 0 && (
+              <p className="text-gray-900 font-semibold my-2 text-sm">
+                ₦{parseInt(item?.product.actualPrice) - parseInt(item?.product.discountPrice)}
+              </p>
+            )}
+            <p className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+              ₦{item?.product.actualPrice}
+            </p>
+            {/* ₦{parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice)} */}
+          </div>
         </Box>
 
         {/* Quantity Controls */}
