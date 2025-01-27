@@ -31,12 +31,9 @@ import {
 import { FiX } from "react-icons/fi";
 import { BusinessStatus } from "@/constants";
 import { toast } from "react-toastify";
+import NoticeCard from "./NoticeCard";
 
-const StoreFrontPharmacy = ({
-  businessStatus,
-}: {
-  businessStatus: BusinessStatus;
-}) => {
+const StoreFrontPharmacy = () => {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
@@ -45,7 +42,6 @@ const StoreFrontPharmacy = ({
 
   const [isEmpty, setIsEmpty] = useState(false);
 
-  const [isBannerVisible, setIsBannerVisible] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const router = useRouter();
@@ -74,7 +70,6 @@ const StoreFrontPharmacy = ({
     fetchStoreFront();
   }, [userData?.user?.token]);
 
-
   return (
     <div className="">
       {[
@@ -84,63 +79,32 @@ const StoreFrontPharmacy = ({
         BusinessStatus.LICENSE_EXPIRED,
         BusinessStatus.SUSPENDED,
         BusinessStatus.BANNED,
-      ].includes(businessStatus) &&
-        isBannerVisible && (
-          <Box
-            bg="red.500"
-            color="white"
-            py={4}
-            px={6}
-            position="relative"
-            textAlign="center"
-          >
-            <Text
-              fontSize={{ base: "sm", md: "md" }}
-              maxW="700px"
-              mx="auto"
-              fontWeight={500}
-            >
-              Complete Your Verification to Unlock Full Access.{" "}
-              <Button
-                variant="link"
-                color="white"
-                onClick={onOpen}
-                textDecoration="underline"
-                fontWeight={500}
-              >
-                Click here to Proceed.
-              </Button>
-            </Text>
-
-            <IconButton
-              size="sm"
-              aria-label="Close banner"
-              icon={<FiX />}
-              onClick={() => setIsBannerVisible(false)}
-              variant="ghost"
-              color="white"
-              _hover={{ bg: "red.700" }}
-              position="absolute"
-              right="4"
-              top="50%"
-              transform="translateY(-50%)"
-            />
-          </Box>
-        )}
+      ].includes(userData?.user?.businessStatus) && (
+        <NoticeCard
+          setOpen={onOpen}
+          url="/storefront/settings/license-upload"
+          status={userData?.user?.businessStatus}
+        />
+      )}
       <div className="p-8 px-6 md:px-20 max-w-screen-2xl">
         <Carousel />
       </div>
-      {isLoading && <div className="w-full h-64 flex items-center justify-center">
-        <Spinner />
-      </div>}
+      {isLoading && (
+        <div className="w-full h-64 flex items-center justify-center">
+          <Spinner />
+        </div>
+      )}
       <Skeleton isLoaded={!isLoading} fadeDuration={0.4}>
         {isEmpty ? (
           <EmptyStoreFront />
         ) : (
           <>
-            {storeFrontData?.data?.map((category, i) => (
-              category?.products?.length > 0 && <ProductField key={i} category={category} />
-            ))}
+            {storeFrontData?.data?.map(
+              (category, i) =>
+                category?.products?.length > 0 && (
+                  <ProductField key={i} category={category} />
+                )
+            )}
           </>
         )}
       </Skeleton>

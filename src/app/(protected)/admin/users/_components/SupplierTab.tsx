@@ -182,7 +182,7 @@ const SupplierTab = ({
         handleOpenModal,
         handleViewModal
       ),
-    [handleDeleteModal, handleOpenModal, onOpen, onOpenDeactivate, pageCount]
+    [handleDeleteModal, handleOpenModal, onOpen, onOpenDeactivate, pageCount, handleViewModal]
   );
 
   const table = useReactTable({
