@@ -32,6 +32,11 @@ interface IFormInput {
   role: "admin" | "operator" | "support";
 }
 
+const INVITE_PATHS: { [key in "admin" | "vendor"]: string } = {
+  admin: "/admin/settings/invite",
+  vendor: "/vendor/settings/invite",
+};
+
 const InviteMember = ({
   isOpen,
   onClose,
@@ -41,7 +46,7 @@ const InviteMember = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  accountType?: "vendor";
+  accountType?: "vendor" | "admin";
   onSubmit?: SubmitHandler<IFormInput>;
   isLoading?: boolean;
   fetchTeamMembers?: () => void;
@@ -57,25 +62,25 @@ const InviteMember = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isDetailsVisible, setIsDetailsVisible] = useState(false); // Toggle state for Role Details
+  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const endpoint = INVITE_PATHS[accountType] ?? INVITE_PATHS.vendor;
     try {
       setIsLoading(true);
       const response = await requestClient({ token: token }).post(
-        "/vendor/settings/invite",
+        endpoint,
         data
       );
       if (response.status === 200) {
         toast.success(response?.data?.message);
-        fetchTeamMembers();
-        setIsLoading(false);
         reset();
         onClose();
       }
     } catch (error) {
-      setIsLoading(false);
       toast.error(handleServerErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -132,7 +137,7 @@ const InviteMember = ({
               <Flex alignItems={"center"} gap={10}>
                 <Select {...register("role", { required: true })} w={"70%"}>
                   <option value="admin">Admin</option>
-                  <option value="operator">Operator</option>
+                  <option value="operation">Operation</option>
                   <option value="support">Support</option>
                 </Select>
                 <chakra.span

@@ -81,7 +81,7 @@ const Members = () => {
             setAllMembersData(response.data.data);
         }
         } catch (error) {
-        console.error(error);
+            toast.error(handleServerErrorMessage(error));
         }
     }, [token]);
 
@@ -195,7 +195,7 @@ const Members = () => {
             </TableContainer>
         }
         </div>
-        <InviteMember onClose={onClose} isOpen={isOpen} onSubmit={onSubmit} isLoading={isLoading}/>
+        <InviteMember onClose={onClose} isOpen={isOpen} onSubmit={onSubmit} isLoading={isLoading} token={token} accountType="admin" />
         <CreateRole isOpen={isOpenRole} onClose={onCloseRole} />
         <ConfirmModal isOpen={isOpenRemove} onClose={onCloseRemove}/>
     </div>
