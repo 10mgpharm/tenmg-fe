@@ -25,9 +25,9 @@ import {
   Spinner,
   Center,
 } from "@chakra-ui/react";
-import Pagination from "../../suppliers/_components/Pagination";
+// import Pagination from "../../suppliers/_components/Pagination";
 import { ColumsLogFN } from "./_components/table";
-import requestClient from "@/lib/requestClient"; // Adjust the path as necessary
+import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 
@@ -156,36 +156,45 @@ const Page = () => {
             </Table>
           </TableContainer>
         )}
-
+{/* 
         <Pagination
           meta={{
             currentPage,
             totalPages,
-            first: `?page=1`,
-            last: `?page=${totalPages}`,
-            prev: currentPage > 1 ? `?page=${currentPage - 1}` : null,
-            next: currentPage < totalPages ? `?page=${currentPage + 1}` : null,
+            first: data.length > 0 ? `?page=1` : null,
+            last: data.length > 0 ? `?page=${totalPages}` : null,
+            prev:
+              data.length > 0 && currentPage > 1
+                ? `?page=${currentPage - 1}`
+                : null,
+            next:
+              data.length > 0 && currentPage < totalPages
+                ? `?page=${currentPage + 1}`
+                : null,
             links: [
-              {
-                url: currentPage > 1 ? `?page=${currentPage - 1}` : null,
-                label: "Previous",
-                active: false,
-              },
-              ...Array.from({ length: totalPages }, (_, i) => ({
-                label: (i + 1).toString(),
-                url: `?page=${i + 1}`,
-                active: currentPage === i + 1,
-              })),
-              {
-                url:
-                  currentPage < totalPages ? `?page=${currentPage + 1}` : null,
-                label: "Next",
-                active: false,
-              },
-            ],
+              ...(data.length > 0
+                ? [
+                    currentPage > 1 && {
+                      url: `?page=${currentPage - 1}`,
+                      label: "Previous",
+                      active: false,
+                    },
+                    ...Array.from({ length: totalPages }, (_, i) => ({
+                      label: (i + 1).toString(),
+                      url: `?page=${i + 1}`,
+                      active: currentPage === i + 1,
+                    })),
+                    currentPage < totalPages && {
+                      url: `?page=${currentPage + 1}`,
+                      label: "Next",
+                      active: false,
+                    },
+                  ]
+                : []),
+            ].filter(Boolean), // Removes null/undefined items from the array
           }}
           setPageCount={setCurrentPage}
-        />
+        /> */}
       </div>
     </div>
   );
