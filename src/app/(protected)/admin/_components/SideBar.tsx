@@ -65,20 +65,22 @@ const SideBar = () => {
                 </button>
               </div>
             </TransitionChild>
-            {/* Sidebar component, swap this element with another sidebar if you like */}
             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
               <nav className="flex flex-1 flex-col">
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
                       <ul role="list" className="-mx-2 space-y-6">
                           {navigation.map((item) => {
-                          const isActive = item.href === pathname;
+                          const isActive = (href: string) => {
+                            if (href === '/admin') return pathname === href; // Exact match for Dashboard
+                            return pathname.startsWith(href); // Allow dynamic routes
+                          };
                           return(
                             <li key={item.name}>
                                 <a
                                 href={item.href}
                                 className={classNames(
-                                  isActive
+                                  isActive(item.href)
                                   ? 'bg-indigo-700 text-white'
                                   : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
                                   'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -87,7 +89,7 @@ const SideBar = () => {
                                 <item.icon
                                   aria-hidden="true"
                                   className={classNames(
-                                  isActive ? 'text-white' : 'text-indigo-200 group-hover:text-white',
+                                  isActive(item.href) ? 'text-white' : 'text-indigo-200 group-hover:text-white',
                                   'h-6 w-6 shrink-0',
                                   )}
                                 />
@@ -116,20 +118,22 @@ const SideBar = () => {
         </div>
       </Dialog>
       <div className="hidden lg:mt-[98px] lg:fixed lg:z-50 lg:flex lg:w-72 lg:flex-col h-[calc(100vh-98px)]">
-        {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 pt-8">
           <nav className="flex flex-1 flex-col">
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
                 <ul role="list" className="-mx-2 space-y-8">
                   {navigation.map((item) => {
-                  const isActive = item.href === pathname;
+                  const isActive = (href: string) => {
+                    if (href === '/admin') return pathname === href; // Exact match for Dashboard
+                    return pathname.startsWith(href); // Allow dynamic routes
+                  };
                   return(
                     <li key={item.name}>
                       <a
                         href={item.href}
                         className={classNames(
-                          isActive
+                          isActive(item.href)
                           ? 'bg-primary-50 text-primary-500 p-0.5'
                           : 'text-gray-500 px-3',
                           'group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6',
@@ -138,7 +142,7 @@ const SideBar = () => {
                         <item.icon
                           aria-hidden="true"
                           className={classNames(
-                            isActive ? 'text-white bg-primary-500 rounded-full p-2 w-10 h-10' : 'text-gray-500 h-6 w-6',
+                            isActive(item.href) ? 'text-white bg-primary-500 rounded-full p-2 w-10 h-10' : 'text-gray-500 h-6 w-6',
                             'shrink-0',
                           )}
                         />
