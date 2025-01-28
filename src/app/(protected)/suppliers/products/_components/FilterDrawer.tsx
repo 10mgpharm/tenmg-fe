@@ -18,7 +18,12 @@ import {
     FormControl,
     CheckboxGroup,
   } from '@chakra-ui/react';
-import { Controller, UseFormGetValues, UseFormReset, UseFormSetValue } from 'react-hook-form';
+import { 
+    Controller, 
+    UseFormGetValues, 
+    UseFormReset, 
+    UseFormSetValue 
+} from 'react-hook-form';
 import { FaSearch } from 'react-icons/fa';
 import DateComponent from './DateComponent';
 import { Dispatch, SetStateAction } from 'react';
@@ -29,6 +34,7 @@ interface IFormInput {
     toDate?: Date | null;
     inventory?: string[];
     brand?: string[];
+    category?: string[];
     status?: string[];
 }
 interface FilterOptions {
@@ -42,6 +48,9 @@ const FilterDrawer = ({
     applyFilters,
     clearFilters,
     brands,
+    category,
+    categoryFilter,
+    setCategoryFilter,
     setBrandFilter,
     brandFilter,
     setValue,
@@ -59,8 +68,11 @@ const FilterDrawer = ({
     filterOptions?: FilterOptions[];
     isNotDate?: boolean;
     brandFilter: string;
+    categoryFilter: string;
     setBrandFilter: Dispatch<SetStateAction<string>>;
+    setCategoryFilter: Dispatch<SetStateAction<string>>;
     brands: MedicationResponseData;
+    category: any;
     setValue: UseFormSetValue<IFormInput>;
     getValues: UseFormGetValues<IFormInput>;
     handleSubmit: any;
@@ -79,6 +91,7 @@ const FilterDrawer = ({
         reset({
             brand: [],
             inventory: [],
+            category: [],
             toDate: null,
             fromDate: null,
             status: [],
@@ -212,14 +225,14 @@ const FilterDrawer = ({
                 </CheckboxGroup>
             </Stack>
             <Stack mt={5}>
-                <Text mb={4}>Brand</Text>
+                <Text mb={1}>Brand</Text>
                 <InputGroup>
                     <InputLeftElement pointerEvents='none'>
                         <FaSearch className='text-gray-400' />
                     </InputLeftElement>
                     <Input 
                         type='text' 
-                        placeholder='Search' 
+                        placeholder='Search brand' 
                         value={brandFilter} 
                         onChange={(e) => {
                             setBrandFilter(e.target.value);
@@ -245,6 +258,45 @@ const FilterDrawer = ({
                             }}
                             >
                                 {brand.name}
+                            </Checkbox>
+                        </Stack>
+                    ))
+                }
+            </Stack>
+            <Stack mt={5}>
+                <Text mb={1}>Category</Text>
+                <InputGroup>
+                    <InputLeftElement pointerEvents='none'>
+                        <FaSearch className='text-gray-400' />
+                    </InputLeftElement>
+                    <Input 
+                        type='text' 
+                        placeholder='Search category' 
+                        value={categoryFilter} 
+                        onChange={(e) => {
+                            setCategoryFilter(e.target.value);
+                        }} 
+                    />
+                </InputGroup>
+                {
+                    (category?.data?.length > 0 && categoryFilter !== "") && category?.data?.map((category: MedicationData) => (
+                        <Stack key={category.id}>
+                            <Checkbox 
+                            value={category?.name}
+                            isChecked={watch("category")?.includes(category.name)}
+                            onChange={(e) => {
+                                const currentValues = getValues("category") || [];
+                                if(e.target.checked){
+                                    const newArr = [...currentValues, e.target.value]
+                                    setValue("category", newArr);
+                                }else{
+                                    const removeItem = currentValues.filter((item) => item !== e.target.value)
+                                    setValue("category", removeItem);
+                                }
+                                trigger("category");
+                            }}
+                            >
+                                {category.name}
                             </Checkbox>
                         </Stack>
                     ))

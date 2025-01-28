@@ -27,7 +27,7 @@ import emptyCart from "@public/assets/images/emptyOrder.png";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { useCartStore } from "../useCartStore";
+import { useCartStore } from "../storeFrontState/useCartStore";
 import { useRouter } from "next/navigation";
 
 const CartDrawer = ({
@@ -51,7 +51,7 @@ const CartDrawer = ({
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const { cart, addToCart, updateLoading } = useCartStore();
+  const { cart, addToCart, updateLoading, sycnCart } = useCartStore();
 
   useEffect(() => {
     if (cart) {
@@ -84,12 +84,15 @@ const CartDrawer = ({
 
   const handleCheckout = () => {
     const data_array = [];
+
+
     // Update the global state with the local quantities
     cartItems?.items?.forEach((item) => {
+      console.log("item", item);
       const data = {
-        productId: item.product.id,
-        qty: localQuantities[item.product.id],
-        action: "update",
+        itemId: item.id,
+        quantity: localQuantities[item.product.id],
+        // action: "update",
       };
 
       data_array.push(data)
@@ -97,9 +100,14 @@ const CartDrawer = ({
     });
 
     console.log("data_array", data_array);
-    // addToCart(data, userData?.user?.token);
-    // router.push("/storefront/checkout");
-    // onClose();
+    const data_obj = {
+      cartId: cartItems?.id,
+      items: data_array
+    }
+    console.log("data_obj", data_obj);
+    sycnCart(data_obj, userData?.user?.token);
+    router.push("/storefront/checkout");
+    onClose();
   };
 
   const updateLocalQuantity = (itemId: number, quantity: number) => {
@@ -260,7 +268,7 @@ const CartItemComp = ({
       <Stack align="start" spacing={2} flex="1" h="full" justify="space-between">
         {/* Product Name */}
         <Text fontWeight="medium" fontSize="md">
-          {item?.product?.name}
+          {item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}
         </Text>
 
         {/* Stock Information and Price */}
@@ -268,9 +276,17 @@ const CartItemComp = ({
           <Text fontSize="sm" fontWeight="medium" color="red.500">
             {item?.product?.quantity} units left
           </Text>
-          <Text fontSize="md" fontWeight="medium">
-            ₦{parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice)}
-          </Text>
+          <div className="flex items-center gap-x-2 ">
+            {item?.product.discountPrice > 0 && (
+              <p className="text-gray-900 font-semibold my-2 text-sm">
+                ₦{parseInt(item?.product.actualPrice) - parseInt(item?.product.discountPrice)}
+              </p>
+            )}
+            <p className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+              ₦{item?.product.actualPrice}
+            </p>
+            {/* ₦{parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice)} */}
+          </div>
         </Box>
 
         {/* Quantity Controls */}

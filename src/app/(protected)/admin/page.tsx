@@ -13,7 +13,7 @@ import {
     Tr, 
     HStack,
  } from "@chakra-ui/react"
-import DashboardCard from "./_components/DashboardCard"
+
 import Link from "next/link"
 import { 
     ColumnOrderState, 
@@ -24,10 +24,11 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table"
-import { ColumsFN } from "./_components/table"
 import { useState } from "react"
 import { loanData, records } from "@/data/mockdata"
-import ActivityCharts from './_components/ActivityCharts';
+import { ColumsFN } from "./_components/table";
+import DashboardCard from "./_components/DashboardCard";
+import ActivityCharts from "./_components/ActivityCharts";
 
 const Admin = () => {
 
@@ -126,4 +127,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default Admin;

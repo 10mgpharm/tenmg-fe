@@ -11,7 +11,7 @@ import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
 import StoreProductReviewComponent from '../../_components/StoreProductReviewComponent'
 import StoreProductCardComponent from '../../_components/StoreProductCardComponent'
 import { Divider, Flex, Image, Spinner, Tag, TagLabel } from '@chakra-ui/react'
-import { useCartStore } from '../../useCartStore'
+import { useCartStore } from '../../storeFrontState/useCartStore'
 import { toast } from 'react-toastify'
 export default function ProductDetailPage() {
 
@@ -49,10 +49,8 @@ export default function ProductDetailPage() {
       try {
         // storefront/products/quidins
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/products/${product.toLocaleLowerCase()}`);
-        console.log(data);
         setProductData(data?.data?.data);
       } catch (e) {
-        console.log(e)
       } finally {
         setLoading(false);
       }
@@ -88,7 +86,6 @@ export default function ProductDetailPage() {
         router.push('/storefront/checkout');
       })
     } catch (e) {
-      console.log("e", e)
       toast.error("something went wrong")
     }
   }
@@ -105,13 +102,17 @@ export default function ProductDetailPage() {
 
               {/* product iamge container */}
               <div className='w-full lg:w-1/2 rounded-lg overflow-hidden relative '>
-                <Image
+                {/* <Image
                   width={568}
                   height={611}
                   // src={'/assets/images/productImgDetails.png'}
                   src={productData?.thumbnailFile}
                   alt=''
                   className='w-full'
+                /> */}
+                <div
+                  className="w-[568px] h-[600px] bg-contain bg-center bg-no-repeat"
+                  style={{ backgroundImage: `url(${productData?.thumbnailFile})` }}
                 />
                 <div className='absolute top-4 right-4'> <Tag
                   size="sm"
@@ -140,6 +141,11 @@ export default function ProductDetailPage() {
                   <div className="flex items-center gap-x-3">
                     <h4 className=' text-sm'>Brand:</h4>
                     <p className=" text-sm font-semibold capitalize">{productData?.brand?.name}</p>
+                  </div>
+
+                  <div className="flex items-center gap-x-3">
+                    <h4 className=' text-sm'>Medication Type:</h4>
+                    <p className=" text-sm font-semibold capitalize">{productData?.medicationType?.name}</p>
                   </div>
 
                   <div className="flex items-center gap-x-3">

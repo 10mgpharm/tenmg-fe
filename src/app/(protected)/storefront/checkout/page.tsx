@@ -5,7 +5,7 @@ import { Box, Button, Divider, Flex, HStack, Icon, Image, Stack, Text, VStack } 
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
-import { useCartStore } from '../useCartStore';
+import { useCartStore } from '../storeFrontState/useCartStore';
 import { FiTrash2 } from 'react-icons/fi';
 import DeleteModal from '../_components/DeleteModal';
 import emptyCart from '@public/assets/images/emptyOrder.png';
@@ -20,7 +20,7 @@ export default function CheckoutPage() {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
-  const { cart, addToCart, updateLoading } = useCartStore();
+  const { cart, addToCart, updateLoading, sycnCart } = useCartStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function CheckoutPage() {
     if (cartItems?.items) {
       let total = 0;
       cartItems.items.forEach((item) => {
-        const price = item.discountPrice > 0 ? item.discountPrice : item.actualPrice;
+        const price = item.product?.discountPrice > 0 && item?.product?.actualPrice !== item?.product?.discountPrice ? item?.product?.actualPrice - item.product?.discountPrice : item?.product?.actualPrice;
         total += price * localQuantities[item.product.id];
       });
       setSubtotal(total);
@@ -80,6 +80,31 @@ export default function CheckoutPage() {
       action: 'remove',
     };
     addToCart(data, userData?.user?.token);
+  };
+
+  const handleCheckout = () => {
+    const data_array = [];
+
+
+    // Update the global state with the local quantities
+    cartItems?.items?.forEach((item) => {
+      const data = {
+        itemId: item.id,
+        quantity: localQuantities[item.product.id],
+        // action: "update",
+      };
+
+      data_array.push(data)
+
+    });
+
+    const data_obj = {
+      cartId: cartItems?.id,
+      items: data_array
+    }
+    sycnCart(data_obj, userData?.user?.token);
+    router.push('/storefront/checkout/payment')
+    // router.push("/storefront/checkout/payment");
   };
 
   const breadCrumb = [
@@ -142,7 +167,7 @@ export default function CheckoutPage() {
                       <Stack align="start" spacing={2} flex="1" h="full" justify="space-between">
                         {/* Product Name */}
                         <Text fontWeight="medium" fontSize="md">
-                          {item?.product?.name}
+                          {item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}
                         </Text>
 
                         {/* Stock Information and Price */}
@@ -150,9 +175,17 @@ export default function CheckoutPage() {
                           <Text fontSize="sm" fontWeight="medium" color="red.500">
                             {item?.product?.quantity} units left
                           </Text>
-                          <Text fontSize="md" fontWeight="medium">
-                            ₦{item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}
-                          </Text>
+                          <div className="flex items-center gap-x-2 ">
+                            {item?.product.discountPrice > 0 && (
+                              <p className="text-gray-900 font-semibold my-2 text-sm">
+                                ₦{parseInt(item?.product.actualPrice) - parseInt(item?.product.discountPrice)}
+                              </p>
+                            )}
+                            <p className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                              ₦{item?.product.actualPrice}
+                            </p>
+                            {/* ₦{item?.product?.discountPrice > 0 ? item?.product?.actualPrice - item.product?.discountPrice : item?.product?.actualPrice} */}
+                          </div>
                         </Box>
 
                         {/* Quantity Controls */}
@@ -169,7 +202,9 @@ export default function CheckoutPage() {
                           <Icon
                             as={AiOutlineMinus}
                             _hover={{
-                              cursor: localQuantities[item.product.id] === 1 || updateLoading ? 'not-allowed' : 'pointer',
+                              cursor:
+                                //  localQuantities[item.product.id] === 1 || 
+                                updateLoading ? 'not-allowed' : 'pointer',
                             }}
                             aria-label="Decrease quantity"
                             onClick={() => decreaseQuantity(item?.product?.id)}
@@ -180,7 +215,8 @@ export default function CheckoutPage() {
                             as={AiOutlinePlus}
                             _hover={{
                               cursor:
-                                localQuantities[item.product.id] === item?.product?.quantity || updateLoading
+                                // localQuantities[item.product.id] === item?.product?.quantity ||  
+                                updateLoading
                                   ? 'not-allowed'
                                   : 'pointer',
                             }}
@@ -253,7 +289,8 @@ export default function CheckoutPage() {
                   {/* Action Buttons */}
                   <Stack mt={6} spacing={4}>
                     {/* update cart here */}
-                    <Button width="full" colorScheme="blue" onClick={() => { router.push('/storefront/checkout/payment') }}>
+                    <Button width="full" colorScheme="blue" onClick={handleCheckout}>
+                      {/* <Button width="full" colorScheme="blue" onClick={() => { router.push('/storefront/checkout/payment') }}> */}
                       Proceed to Payment
                     </Button>
                     <Button width="full" variant="outline" onClick={() => router.push('/storefront')}>

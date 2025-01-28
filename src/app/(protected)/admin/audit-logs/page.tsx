@@ -30,6 +30,7 @@ import { ColumsLogFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import Pagination from "../products/_components/Pagination";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -156,45 +157,49 @@ const Page = () => {
             </Table>
           </TableContainer>
         )}
-{/* 
-        <Pagination
-          meta={{
-            currentPage,
-            totalPages,
-            first: data.length > 0 ? `?page=1` : null,
-            last: data.length > 0 ? `?page=${totalPages}` : null,
-            prev:
-              data.length > 0 && currentPage > 1
-                ? `?page=${currentPage - 1}`
-                : null,
-            next:
-              data.length > 0 && currentPage < totalPages
-                ? `?page=${currentPage + 1}`
-                : null,
-            links: [
-              ...(data.length > 0
+        {data?.length > 0 && (
+          <Pagination
+            links={[
+              ...(currentPage > 1 && data.length > 0
                 ? [
-                    currentPage > 1 && {
+                    {
                       url: `?page=${currentPage - 1}`,
                       label: "Previous",
                       active: false,
                     },
-                    ...Array.from({ length: totalPages }, (_, i) => ({
-                      label: (i + 1).toString(),
-                      url: `?page=${i + 1}`,
-                      active: currentPage === i + 1,
-                    })),
-                    currentPage < totalPages && {
+                  ]
+                : []),
+              ...Array.from({ length: totalPages }, (_, i) => ({
+                label: (i + 1).toString(),
+                url: `?page=${i + 1}`,
+                active: currentPage === i + 1,
+              })),
+              ...(currentPage < totalPages && data.length > 0
+                ? [
+                    {
                       url: `?page=${currentPage + 1}`,
                       label: "Next",
                       active: false,
                     },
                   ]
                 : []),
-            ].filter(Boolean), // Removes null/undefined items from the array
-          }}
-          setPageCount={setCurrentPage}
-        /> */}
+            ]}
+            setPageCount={setCurrentPage}
+            prevPageUrl={
+              currentPage > 1 && data.length > 0
+                ? `?page=${currentPage - 1}`
+                : null
+            }
+            nextPageUrl={
+              currentPage < totalPages && data.length > 0
+                ? `?page=${currentPage + 1}`
+                : null
+            }
+            currentPage={currentPage}
+            firstPageUrl={data.length > 0 ? `?page=1` : null}
+            lastPageUrl={data.length > 0 ? `?page=${totalPages}` : null}
+          />
+        )}
       </div>
     </div>
   );

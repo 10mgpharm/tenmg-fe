@@ -29,7 +29,7 @@ import { FaRegCircleQuestion } from "react-icons/fa6";
 import CartDrawer from "./CartDrawer";
 import SearchModal from "./SearchModal";
 import Link from "next/link";
-import { useCartStore } from "../useCartStore";
+import { useCartStore } from "../storeFrontState/useCartStore";
 import { NextAuthUserSession } from "@/types";
 import { BusinessStatus } from "@/constants";
 
@@ -79,7 +79,7 @@ const Navbar = () => {
         display={{ base: "flex", md: "none" }}
       >
         {/* Logo */}
-        <HStack>
+        <HStack onClick={() => router.push("/storefront")} cursor="pointer">
           <Image
             src={Logo}
             alt="10mg Health Logo"
@@ -225,7 +225,7 @@ const Navbar = () => {
         display={{ base: "none", md: "flex" }}
       >
         {/* Logo */}
-        <HStack className="h-16 my-4">
+        <HStack className="h-16 my-4" onClick={() => router.push("/storefront")} cursor="pointer">
           <Image
             src={Logo}
             alt="10mg Health Logo"
