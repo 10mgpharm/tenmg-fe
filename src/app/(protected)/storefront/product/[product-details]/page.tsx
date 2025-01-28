@@ -112,7 +112,7 @@ export default function ProductDetailPage() {
                 /> */}
                 <div
                   className="w-[568px] h-[600px] bg-contain bg-center bg-no-repeat"
-                  style={{ background: `url(${productData?.thumbnailFile})` }}
+                  style={{ backgroundImage: `url(${productData?.thumbnailFile})` }}
                 />
                 <div className='absolute top-4 right-4'> <Tag
                   size="sm"

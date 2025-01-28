@@ -12,13 +12,23 @@ import { useCartStore } from '../../storeFrontState/useCartStore';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 export default function PaymentPage() {
 
   const [cartItems, setCartItems] = useState<any>({});
-  const { cart, } = useCartStore();
+  const { cart, fetchCart } = useCartStore();
+
+
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
+  const userToken = sessionData?.user?.token;
 
   const router = useRouter();
+
+  useEffect(() => {
+    fetchCart(userToken)
+  }, [fetchCart, userToken])
 
   useEffect(() => {
     if (cart) {
@@ -26,6 +36,7 @@ export default function PaymentPage() {
     }
   }, [cart])
 
+  console.log("cartItems", cartItems)
 
   const breadCrumb = [
     {
@@ -42,9 +53,7 @@ export default function PaymentPage() {
     }
   ]
 
-  const session = useSession();
-  const sessionData = session.data as NextAuthUserSession;
-  const userToken = sessionData?.user?.token;
+
   const [shippingAddresses, setShippingAddresses] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = useState('1')
@@ -75,6 +84,35 @@ export default function PaymentPage() {
     fetchAddresses();
   }, [userToken]);
 
+  const [loadingPayment, setLoadingPayment] = useState(false);
+  // !Note that this function is not the same as the order payment. This is a temporary fucntion to test the payment page
+  const submiOrder = async () => {
+
+    const orderData = {
+      "orderId": cartItems?.id,
+      "paymentMethodId": 1,
+      "deliveryAddress": "My address",
+      "deliveryType": "STANDARD"
+    }
+    setLoadingPayment(true);
+    try {
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/checkout",
+        orderData
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        router.push('/storefront')
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+      setLoadingPayment(false);
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+      setLoadingPayment(false);
+    }
+  }
 
   return (
     <>
@@ -204,7 +242,7 @@ export default function PaymentPage() {
             </div>
 
             <Divider my={5} />
-            <Button colorScheme={'primary'}>Pay Now</Button>
+            <Button colorScheme={'primary'} onClick={submiOrder}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button>
           </div>
         </div>
       </Box>

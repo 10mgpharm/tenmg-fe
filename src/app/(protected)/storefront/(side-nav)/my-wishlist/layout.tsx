@@ -14,7 +14,7 @@ export default function OrdersSettingsLayout({
 
     <div className="mt-4 ">
       <h2 className="font-semibold text-2xl text-gray-600">Wishlist</h2>
-      <p className="text-sm font-normal text-gray-500">All your previous purchases, you can purchase these items again.</p>
+      <p className="text-sm font-normal text-gray-500">List of your favorite items, ready for purchase anytime.</p>
       <Divider my={[2, 5]} border="1px solid gray.200" />
       <div className="mt-2 md:mt-4">
 

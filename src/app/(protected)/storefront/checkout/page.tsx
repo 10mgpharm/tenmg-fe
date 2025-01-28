@@ -103,7 +103,8 @@ export default function CheckoutPage() {
       items: data_array
     }
     sycnCart(data_obj, userData?.user?.token);
-    router.push("/storefront/checkout/payment");
+    router.push('/storefront/checkout/payment')
+    // router.push("/storefront/checkout/payment");
   };
 
   const breadCrumb = [
@@ -201,7 +202,9 @@ export default function CheckoutPage() {
                           <Icon
                             as={AiOutlineMinus}
                             _hover={{
-                              cursor: localQuantities[item.product.id] === 1 || updateLoading ? 'not-allowed' : 'pointer',
+                              cursor:
+                                //  localQuantities[item.product.id] === 1 || 
+                                updateLoading ? 'not-allowed' : 'pointer',
                             }}
                             aria-label="Decrease quantity"
                             onClick={() => decreaseQuantity(item?.product?.id)}
@@ -212,7 +215,8 @@ export default function CheckoutPage() {
                             as={AiOutlinePlus}
                             _hover={{
                               cursor:
-                                localQuantities[item.product.id] === item?.product?.quantity || updateLoading
+                                // localQuantities[item.product.id] === item?.product?.quantity ||  
+                                updateLoading
                                   ? 'not-allowed'
                                   : 'pointer',
                             }}
@@ -285,7 +289,8 @@ export default function CheckoutPage() {
                   {/* Action Buttons */}
                   <Stack mt={6} spacing={4}>
                     {/* update cart here */}
-                    <Button width="full" colorScheme="blue" onClick={() => { router.push('/storefront/checkout/payment') }}>
+                    <Button width="full" colorScheme="blue" onClick={handleCheckout}>
+                      {/* <Button width="full" colorScheme="blue" onClick={() => { router.push('/storefront/checkout/payment') }}> */}
                       Proceed to Payment
                     </Button>
                     <Button width="full" variant="outline" onClick={() => router.push('/storefront')}>
