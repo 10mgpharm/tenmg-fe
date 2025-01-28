@@ -56,6 +56,7 @@ interface IFilterInput {
     fromDate?: Date | null;
     status?: string[];
     inventory?: string[];
+    category?: string[];
     brand?: string[];
 }
 
@@ -74,6 +75,9 @@ const Products = () => {
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
     const [brands, setBrands] = useState<MedicationResponseData>();
+    const [category, setCategory] = useState<MedicationResponseData>();
+    const [categoryFilter, setCategoryFilter] = useState<string>("");
+    const [categoryQuery, setCategoryQuery] = useState<string[]>([]);
     const [inventoryQuery, setInventoryQuery] = useState<string[]>();
     const [products, setProducts] = useState<ProductResponseData>();
     const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
@@ -84,6 +88,7 @@ const Products = () => {
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
+    const debouncedCategorySearch = useDebouncedValue(categoryFilter, 500)
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
@@ -98,7 +103,7 @@ const Products = () => {
             search: debouncedSearch ?? "",
             inventory: inventoryQuery ?? [""],
             status: status ?? [""],
-            category: [],
+            category: categoryQuery ?? [],
             brand: brandQuery ?? [],
             variation: "",
             medicationType: [],
@@ -132,6 +137,20 @@ const Products = () => {
         }
     },[token, debouncedBrandSearch, brandFilter]);
 
+    const fetchingCategory = useCallback(async() => {
+        if(!categoryFilter) return;
+        try {
+            const response = await requestClient({ token: token }).get(
+                `/supplier/categories?search=${debouncedCategorySearch}`
+            );
+            if(response.status === 200){
+                setCategory(response.data.data);
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    },[token, debouncedCategorySearch, categoryFilter]);
+
     useEffect(() => {
         if(!token) return;
         fetchProducts();
@@ -140,7 +159,8 @@ const Products = () => {
     useEffect(() => {
         if(!token) return;
         fetchingBrands();
-    }, [fetchingBrands, token])
+        fetchingCategory();
+    }, [fetchingBrands, fetchingCategory, token])
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 
@@ -189,7 +209,8 @@ const Products = () => {
         setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
         setBrandQuery(filters.brand);
-        setInventoryQuery(filters.inventory)
+        setCategoryQuery(filters.category);
+        setInventoryQuery(filters.inventory);
     };
 
     const clearFilters = () => {
@@ -198,6 +219,8 @@ const Products = () => {
         setStatus([]);
         setBrandQuery([])
         setBrandFilter("");
+        setCategoryQuery([]);
+        setCategoryFilter("");
         setInventoryQuery([])
         setGlobalFilter("");
     };
@@ -493,12 +516,15 @@ const Products = () => {
         </ModalWrapper>
         <FilterDrawer 
             brands={brands}
+            category={category}
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
             applyFilters={applyFilters}
             clearFilters={clearFilters}
             filterOptions={filterOptions}
             brandFilter={brandFilter}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
             setBrandFilter={setBrandFilter}
             handleSubmit={handleSubmit}
             control={control}

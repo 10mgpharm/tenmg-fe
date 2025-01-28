@@ -1,11 +1,22 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { Flex } from "@chakra-ui/react";
+import { classNames, formatAmountString } from "@/utils";
+import { OrderData } from "@/types";
+import { convertDate } from "@/utils/formatDate";
+import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
-import { classNames } from "@/utils";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<OrderData>();
 
-export function ColumsOrderFN(onOpen: () => void) {
+export function ColumsOrderFN(
+  pageIndex: number, 
+  pageSize: number, 
+  type: string,
+  onOpenProcess: () => void,
+  onOpenCancelled: () => void,
+  onOpenRefunded: () => void,
+  setSelectedOrder: (item: any) => void,
+) {
 
   return [
     columnHelper.accessor("id", {
@@ -14,19 +25,18 @@ export function ColumsOrderFN(onOpen: () => void) {
           <p>S/N</p>
         </div>
       ),
-      cell: (info) => (
-        <div
-          onClick={() => {
-            onOpen();
-          }}
-        >
-          <p className="pl-6">
-            {info.row.original?.id} 
-          </p>
-        </div>
-      ),
+      cell: (info) => {
+        const serialNumber = pageIndex > 1 ? (pageIndex - 1) * pageSize + info?.row.index + 1 : info?.row.index + 1;
+        return(
+          <div>
+            <p className="pl-6">
+              {serialNumber}
+            </p>
+          </div>
+        )
+      }
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("customer", {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -36,44 +46,63 @@ export function ColumsOrderFN(onOpen: () => void) {
       ),
       cell: (info) => (
         <div>
-            <p>{info.row.original?.name} </p>
+            <p>{info.row.original?.customer?.name} </p>
         </div>
       ),
     }),
-    columnHelper.accessor("orderId", {
+    columnHelper.accessor("id", {
       header: ({ column }) => (
         <p>Order ID</p>
       ),
       cell: (info) => (
        <div className="">
-        <p>{info.row.original?.orderId}</p>
+        <p>{info.row.original?.id}</p>
        </div>
       ),
     }),
-    columnHelper.accessor("cost", {
+    columnHelper.accessor("grandTotal", {
       header: ({ column }) => (
         <p>Cost</p>
       ),
       cell: (info) => (
        <div className="">
-        <p>{info.row.original?.cost}</p>
+        <p>₦{formatAmountString(info.row.original?.grandTotal)}</p>
        </div>
       ),
     }),
-    columnHelper.accessor("date", {
+    columnHelper.accessor("qtyTotal", {
+      header: ({ column }) => (
+        <p>Quantity</p>
+      ),
+      cell: (info) => (
+       <div>
+        <p className="pl-4">{info.row.original?.qtyTotal}</p>
+       </div>
+      ),
+    }),
+    columnHelper.accessor("deliveryType", {
+      header: ({ column }) => (
+        <p>Delivery Type</p>
+      ),
+      cell: (info) => (
+       <div>
+        <p className="">{info.row.original?.deliveryType}</p>
+       </div>
+      ),
+    }),
+    columnHelper.accessor("createdAt", {
         header: ({ column }) => (
           <p>Date</p>
         ),
         cell: (info) => {
           return (
             <div>
-             <p>{info?.row?.original?.date}</p>
-             <p className="text-gray-500">{info?.row?.original?.time}</p>
+             <p>{convertDate(info?.row?.original?.createdAt)}</p>
             </div>
           );
         },
     }),
-    columnHelper.accessor("isPublic", {
+    columnHelper.accessor("status", {
       header: ({ column }) => (
         <p>Status</p>
       ),
@@ -81,22 +110,106 @@ export function ColumsOrderFN(onOpen: () => void) {
         return (
           <div>
             <p className={classNames(
-            info?.row?.original?.status === "Pending" 
+            info?.row?.original?.status === "PENDING" 
             ? "bg-[#FFFAEB] text-[#F79009]" 
-            : info?.row?.original?.status === "Cancelled" 
+            : info?.row?.original?.status === "CANCELED" 
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "Shipped"
+            : info?.row?.original?.status === "SHIPPED"
             ? "text-[#027A48] bg-[#ECFDF3]"
-            : info?.row?.original?.status === "Completed"
+            : info?.row?.original?.status === "COMPLETED"
             ? "text-blue-500 bg-blue-50"
             : "text-gray-500", 
-            " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+            " max-w-min p-1 px-2 rounded-2xl text-xs font-medium"
             )}>
                 <span className="rounded-full text-[1.2rem]">•</span>
                 {" "}
                {info?.row?.original?.status}
             </p>
           </div>
+        );
+      },
+    }),
+    columnHelper.accessor("status", {
+      header: ({ column }) => <p>Action</p>,
+      cell: (info) => {
+        return (
+          <Flex justify={"flex-start"}>
+            <Menu placement="bottom-start">
+              <MenuButton>
+                <BsThreeDotsVertical className="" />
+              </MenuButton>
+              <MenuList>
+                <MenuItem>
+                  <Link href={`/admin/products/${info.row.original.id}`}>View Order</Link>
+                </MenuItem>
+                {
+                  info.row.original.status === "PENDING" && (
+                    <>
+                      <MenuItem
+                      onClick={() => {
+                        setSelectedOrder(info.row.original)
+                        onOpenProcess()
+                      }}
+                      >
+                        Process Order
+                      </MenuItem>
+                      <MenuItem
+                      color={"red.500"}
+                      onClick={() => {
+                        setSelectedOrder(info.row.original)
+                        onOpenCancelled()
+                      }}
+                      >
+                        Cancel Order
+                      </MenuItem>
+                    </>
+                  )
+                }
+                {
+                  info.row.original.status === "CONFIRMED" && (
+                    <>
+                      <MenuItem
+                      onClick={() => {
+                        setSelectedOrder(info.row.original)
+                        onOpenProcess()
+                      }}
+                      >
+                        Shipping Order
+                      </MenuItem>
+                    </>
+                  )
+                }
+                {
+                  info.row.original.status === "SHIPPED" && (
+                    <>
+                      <MenuItem
+                      onClick={() => {
+                        setSelectedOrder(info.row.original)
+                        onOpenProcess()
+                      }}
+                      >
+                        Complete Order
+                      </MenuItem>
+                    </>
+                  )
+                }
+                {
+                  info.row.original.status === "CANCELED" && (
+                    <>
+                      <MenuItem
+                      onClick={() => {
+                        setSelectedOrder(info.row.original)
+                        onOpenRefunded()
+                      }}
+                      >
+                        Refund Order
+                      </MenuItem>
+                    </>
+                  )
+                }
+              </MenuList>
+            </Menu>
+          </Flex>
         );
       },
     }),

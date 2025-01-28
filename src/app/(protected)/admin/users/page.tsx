@@ -70,7 +70,6 @@ const Users = () => {
     async (type: string, pageCount: number) => {
       try {
         setIsLoading(true);
-
         const query = `/admin/users?page=${pageCount}&type=${type}&status=${selectedStatuses.join(
           ","
         )}&user=${debouncedSearch}`;
