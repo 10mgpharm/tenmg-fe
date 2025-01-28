@@ -224,7 +224,7 @@ export default function Password() {
 
           <div className="w-fit mx-auto mt-10">
             <Flex className="flex items-center gap-3">
-              <Button bg={"blue.700"} type="submit" isDisabled={isLoading}>
+              <Button variant="solid" type="submit" isDisabled={isLoading}>
                 Save Changes
               </Button>
             </Flex>
