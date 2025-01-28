@@ -225,6 +225,7 @@ export default function ProfileInformation() {
             <FormLabel>Business Email</FormLabel>
             <Input
               type="email"
+              isDisabled
               placeholder={"olivia@untitledui.com"}
               {...register("contactEmail", {
                 required: "Business Email is required",
