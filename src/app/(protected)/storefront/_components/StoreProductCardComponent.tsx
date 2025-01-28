@@ -11,6 +11,7 @@ import { BusinessStatus } from "@/constants";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { useWishlistStore } from "../storeFrontState/useWIshlist";
+import { LoaderIcon } from "lucide-react";
 
 
 export default function StoreProductCardComponent({ product }: any) {
@@ -25,7 +26,7 @@ export default function StoreProductCardComponent({ product }: any) {
   const { addToWishlist, wishlist, loading, removeWishlistItem } = useWishlistStore();
 
   useEffect(() => {
-    setAddedToWishlist(wishlist.findIndex((item) => item?.productId === product?.id) >= 0)
+    setAddedToWishlist(wishlist?.findIndex((item) => item?.productId === product?.id) >= 0)
   }, [wishlist, product])
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function StoreProductCardComponent({ product }: any) {
         className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
         onClick={() => { handleAddToCart(product?.id, addedTocart ? "remove" : "add") }}
       >
-        {addedTocart ? "Remove From Cart" : "Add To Cart"}
+        {updateLoading ? <LoaderIcon /> : addedTocart ? "Remove From Cart" : "Add To Cart"}
       </button>
     </div>
   );

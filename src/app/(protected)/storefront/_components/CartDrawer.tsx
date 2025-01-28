@@ -153,7 +153,7 @@ const CartDrawer = ({
             <VStack
               align="start"
               spacing={4}
-              className="h-screen lg:h-[50vh] px-2 mx-2  overflow-y-auto  [&::-webkit-scrollbar]:w-2
+              className="h-screen lg:h-[50vh] px-2 mx-2 my-2  overflow-y-auto  [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-primary-100
   [&::-webkit-scrollbar-thumb]:rounded-full
