@@ -338,7 +338,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                                 <Input 
                                     id="weight"
                                     placeholder="(E.g 10g)" 
-                                    type="text"
+                                    type="number"
                                     // disabled={isEditing && !newVariation}
                                     isInvalid={!!errors.weight}
                                     _focus={{

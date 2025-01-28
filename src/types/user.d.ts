@@ -340,6 +340,32 @@ export interface ProductResponseData {
   lastPageUrl?: any;
 }
 
+export interface OrderData {
+  createdAt: string;
+  customer: CustomerData;
+  deliveryAddress: string;
+  deliveryType: string;
+  grandTotal: string;
+  id: number;
+  logisticTotal: string;
+  orderTotal: string;
+  qtyTotal: number;
+  status: string;
+  totalWeight: number;
+  updatedAt: string;
+  item: any
+}
+export interface OrderResponseData {
+  data: OrderData[];
+  links: any;
+  meta?: MetaDataProp;
+  prevPageUrl?: string | null, 
+  nextPageUrl?: string | null,
+  currentPage?: number;
+  firstPageUrl?: any;
+  lastPageUrl?: any;
+}
+
 /**
  * Interfaces for the Credit Score
  */

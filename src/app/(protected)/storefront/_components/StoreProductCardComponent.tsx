@@ -25,10 +25,7 @@ export default function StoreProductCardComponent({ product }: any) {
   const { addToWishlist, wishlist, loading, removeWishlistItem } = useWishlistStore();
 
   useEffect(() => {
-    // console.log("wishlist", wishlist);
-    // console.log("product", product);
     setAddedToWishlist(wishlist.findIndex((item) => item?.productId === product?.id) >= 0)
-    // console.log("ind", ind)
   }, [wishlist, product])
 
   useEffect(() => {
@@ -40,7 +37,6 @@ export default function StoreProductCardComponent({ product }: any) {
   useEffect(() => {
     if (cartList) {
       setAddedToCart(cartList?.items.findIndex((item) => item?.product.id === product?.id) >= 0)
-      // console.log("ind", cartList?.items.findIndex((item) => item?.product.id === product?.id) >= 0)
     }
   }, [cartList, product])
 
@@ -90,8 +86,8 @@ export default function StoreProductCardComponent({ product }: any) {
   const renderProductDetails = () => (
     <div className="w-full">
       <div className="flex items-center justify-between my-2">
-        <p className="text-gray-950 font-semibold text-sm capitalize">{product.name}</p>
-        <div className="relative z-10" onClick={(e) => handleWishlistClick(e, product?.id)}>
+        <p className="text-gray-950 font-semibold text-sm capitalize">{product.name} {product?.variation?.strengthValue}{product?.measurement?.name}</p>
+        <div className="relative z-10 cursor-pointer" onClick={(e) => handleWishlistClick(e, product?.id)}>
           <HeartIcon className={`w-6 stroke-primary ${addedToWishlist ? "fill-primary-500" : "fill-primary-50"}`} />
         </div>
       </div>

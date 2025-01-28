@@ -156,36 +156,38 @@ const Page = () => {
             </Table>
           </TableContainer>
         )}
-
-        <Pagination
-          meta={{
-            currentPage,
-            totalPages,
-            first: `?page=1`,
-            last: `?page=${totalPages}`,
-            prev: currentPage > 1 ? `?page=${currentPage - 1}` : null,
-            next: currentPage < totalPages ? `?page=${currentPage + 1}` : null,
-            links: [
-              {
-                url: currentPage > 1 ? `?page=${currentPage - 1}` : null,
-                label: "Previous",
-                active: false,
-              },
-              ...Array.from({ length: totalPages }, (_, i) => ({
-                label: (i + 1).toString(),
-                url: `?page=${i + 1}`,
-                active: currentPage === i + 1,
-              })),
-              {
-                url:
-                  currentPage < totalPages ? `?page=${currentPage + 1}` : null,
-                label: "Next",
-                active: false,
-              },
-            ],
-          }}
-          setPageCount={setCurrentPage}
-        />
+        {
+          data?.length > 0 &&
+          <Pagination
+            meta={{
+              currentPage,
+              totalPages,
+              first: `?page=1`,
+              last: `?page=${totalPages}`,
+              prev: currentPage > 1 ? `?page=${currentPage - 1}` : null,
+              next: currentPage < totalPages ? `?page=${currentPage + 1}` : null,
+              links: [
+                {
+                  url: currentPage > 1 ? `?page=${currentPage - 1}` : null,
+                  label: "Previous",
+                  active: false,
+                },
+                ...Array.from({ length: totalPages }, (_, i) => ({
+                  label: (i + 1).toString(),
+                  url: `?page=${i + 1}`,
+                  active: currentPage === i + 1,
+                })),
+                {
+                  url:
+                    currentPage < totalPages ? `?page=${currentPage + 1}` : null,
+                  label: "Next",
+                  active: false,
+                },
+              ],
+            }}
+            setPageCount={setCurrentPage}
+          />
+        }
       </div>
     </div>
   );

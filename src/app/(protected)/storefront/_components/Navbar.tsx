@@ -79,7 +79,7 @@ const Navbar = () => {
         display={{ base: "flex", md: "none" }}
       >
         {/* Logo */}
-        <HStack>
+        <HStack onClick={() => router.push("/storefront")} cursor="pointer">
           <Image
             src={Logo}
             alt="10mg Health Logo"
@@ -225,7 +225,7 @@ const Navbar = () => {
         display={{ base: "none", md: "flex" }}
       >
         {/* Logo */}
-        <HStack className="h-16 my-4">
+        <HStack className="h-16 my-4" onClick={() => router.push("/storefront")} cursor="pointer">
           <Image
             src={Logo}
             alt="10mg Health Logo"
