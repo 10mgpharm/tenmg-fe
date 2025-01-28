@@ -98,7 +98,6 @@ const Members = () => {
       );
     
       const confirmDelete = useCallback(async () => {
-        console.log(userId, "Checking Token", token)
         if (userId !== undefined) {
           if (!token || !userId) return;
           setIsLoadingAction(true);
