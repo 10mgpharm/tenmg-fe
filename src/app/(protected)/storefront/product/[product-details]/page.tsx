@@ -101,8 +101,9 @@ export default function ProductDetailPage() {
             <div className='flex items-center justify-between gap-6 mx-auto w-11/12 flex-col lg:flex-row'>
 
               {/* product iamge container */}
-              <div className='w-full lg:w-1/2 rounded-lg overflow-hidden relative '>
-                {/* <Image
+              <div className='w-full lg:w-1/2 rounded-lg overflow-hidden '>
+                <div className='w-fit  relative mx-auto'>
+                  {/* <Image
                   width={568}
                   height={611}
                   // src={'/assets/images/productImgDetails.png'}
@@ -110,19 +111,26 @@ export default function ProductDetailPage() {
                   alt=''
                   className='w-full'
                 /> */}
-                <div
+                  {/* <div
                   className="w-[568px] h-[600px] bg-contain bg-center bg-no-repeat"
                   style={{ backgroundImage: `url(${productData?.thumbnailFile})` }}
-                />
-                <div className='absolute top-4 right-4'> <Tag
-                  size="sm"
-                  ml="1"
-                  // borderRadius={"50%"}
-                  color={"green.500"}
-                  bgColor={"green.50"}
-                >
-                  <TagLabel>{`${productData?.inventory}: ${productData?.quantity} items left`}</TagLabel>
-                </Tag></div>
+                /> */}
+                  <Image
+                    src={productData?.thumbnailFile}
+                    alt={productData?.name}
+                    boxSize={{ base: "400px", md: "500px" }}
+                    borderRadius="xl"
+                  />
+                  <div className='absolute top-4 right-4'> <Tag
+                    size="sm"
+                    ml="1"
+                    // borderRadius={"50%"}
+                    color={"green.500"}
+                    bgColor={"green.50"}
+                  >
+                    <TagLabel>{`${productData?.inventory}: ${productData?.quantity} items left`}</TagLabel>
+                  </Tag></div>
+                </div>
               </div>
 
               {/* description container */}
