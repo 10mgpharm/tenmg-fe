@@ -115,7 +115,12 @@ export default function StoreProductCardComponent({ product }: any) {
           color={product?.inventory?.toLowerCase() === "in stock" ? "green.500" : "error.500"}
           bgColor={product?.inventory?.toLowerCase() === "in stock" ? "green.100" : "error.100"}
         >
-          <TagLabel>{product?.inventory?.toLowerCase()}</TagLabel>
+
+          <TagLabel className="">{product?.inventory.toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
+          }</TagLabel>
         </Tag>
       </div>
     </div>
@@ -138,7 +143,7 @@ export default function StoreProductCardComponent({ product }: any) {
         className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
         onClick={() => { handleAddToCart(product?.id, addedTocart ? "remove" : "add") }}
       >
-        {updateLoading ? <LoaderIcon /> : addedTocart ? "Remove From Cart" : "Add To Cart"}
+        {updateLoading ? <LoaderIcon className="size-3 mx-auto" /> : addedTocart ? "Remove From Cart" : "Add To Cart"}
       </button>
     </div>
   );
