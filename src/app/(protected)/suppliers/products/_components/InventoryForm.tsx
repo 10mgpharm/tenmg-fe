@@ -60,6 +60,7 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                     <Input 
                         type="text" 
                         id="quantity"
+                        placeholder="(E.g ₦500)" 
                         isInvalid={!!errors.quantity}
                         _focus={{
                             border: !!errors.quantity ? "red.300" : "border-gray-300",
@@ -73,7 +74,7 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                     <FormLabel color={"gray.600"}>Low Stock Level</FormLabel>
                     <Input  
                     id="lowStockLevel"
-                    placeholder="" 
+                    placeholder="(E.g ₦10)" 
                     type="text"
                     isInvalid={!!errors.lowStockLevel}
                     _focus={{
@@ -88,7 +89,7 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                     <FormLabel color={"gray.600"}>Out of Stock Level</FormLabel>
                     <Input 
                     id="outStockLevel"
-                    placeholder="" 
+                    placeholder="(E.g ₦0)" 
                     type="text"
                     isInvalid={!!errors.outStockLevel}
                     _focus={{

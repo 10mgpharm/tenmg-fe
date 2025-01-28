@@ -245,6 +245,7 @@ const Users = () => {
               data={supplierData}
               type="Suppliers"
               pageCount={pageCount}
+              fetchTeamUser={fetchTeamUser}
               setPageCount={setPageCount}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
@@ -256,6 +257,7 @@ const Users = () => {
               data={pharmData}
               type="Pharmacies"
               pageCount={pageCount}
+              fetchTeamUser={fetchTeamUser}
               setPageCount={setPageCount}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
@@ -267,6 +269,7 @@ const Users = () => {
               data={vendorData}
               type="Vendors"
               pageCount={pageCount}
+              fetchTeamUser={fetchTeamUser}
               setPageCount={setPageCount}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}

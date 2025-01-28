@@ -10,6 +10,7 @@ import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import {
+  Avatar,
   Badge,
   FormControl,
   FormLabel,
@@ -103,7 +104,11 @@ const TopNavBar = () => {
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">
               <span className="sr-only">Open user menu</span>
-              <Image className= "rounded-full w-12 h-12" src={data?.user?.picture ? data?.user?.picture : avatar} alt="" width={48} height={48} />
+              <Avatar
+                size="md"
+                name={data?.user?.name}
+                src={data?.user?.picture}
+              />
               <span className="hidden lg:flex lg:items-center">
                 <div className="text-left ml-4">
                   <div className="flex gap-2">
@@ -139,7 +144,7 @@ const TopNavBar = () => {
                       router.push("/vendors/settings/general_settings");
                     } else if (data?.user?.entityType === "ADMIN") {
                       router.push("/admin/settings/general_settings");
-                    }else {
+                    } else {
                       router.push("/"); // Fallback route if no entity type matches
                     }
                   }}

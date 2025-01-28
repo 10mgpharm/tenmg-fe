@@ -20,6 +20,7 @@ type CartState = {
   updateLoading: boolean;
   addToCart: (item, token: string) => Promise<void>;
   cartSize: string | number | null;
+  sycnCart: (data, token) => Promise<void>;
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -76,6 +77,21 @@ export const useCartStore = create<CartState>((set, get) => ({
         error: err.response?.data?.message || "Failed to add item to cart",
         updateLoading: false,
       });
+    }
+  },
+  sycnCart: async (data, token) => {
+    try {
+      set({ updateLoading: true });
+      const resp = await requestClient({ token }).post(
+        "/storefront/sync-cart",
+        data
+      );
+
+      console.log("resp", resp);
+      // return
+    } catch (e) {
+      console.log(e);
+      set({ updateLoading: false });
     }
   },
 }));

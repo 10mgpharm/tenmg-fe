@@ -2,16 +2,19 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { classNames } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import Link from "next/link";
 import { convertDate } from "@/utils/formatDate";
 import { AdminMemers } from "@/types";
+import { ActionType } from "@/constants";
 
 const columnHelper = createColumnHelper<AdminMemers>();
 export function ColumsSupplierFN(
   onOpen: () => void, 
   onOpenDeactivate: () => void, 
+  handleDeleteModal: (id: number) => void,
   pageIndex: number, 
-  pageSize: number
+  pageSize: number,
+  handleOpenModal: (id: number, action: ActionType) => void,
+  handleView: (id: number) => void
 ) {
   return [
     columnHelper.accessor("id", {
@@ -106,22 +109,22 @@ export function ColumsSupplierFN(
                     <BsThreeDotsVertical className="w-5 h-auto"/>
                 </MenuButton>
                 <MenuList>
-                    <MenuItem>
-                        <Link href={`/admin/users/${info?.row?.original?.id}`}>View User</Link>
+                    <MenuItem onClick={() => handleView(info?.row?.original?.id)}>
+                        View User
                     </MenuItem>
                     <MenuItem>Login as user</MenuItem>
                     {
                       info?.row?.original?.status === 0 ? 
-                      <MenuItem onClick={() => onOpenDeactivate()}>Unsuspend User</MenuItem>
+                      <MenuItem onClick={() => handleOpenModal(info?.row?.original?.id, ActionType.ACTIVE)}>Unsuspend User</MenuItem>
                       : info?.row?.original?.status === 1 ?
-                      <MenuItem onClick={() => onOpenDeactivate()}>Suspend User</MenuItem>
+                      <MenuItem onClick={() => handleOpenModal(info?.row?.original?.id, ActionType.SUSPENDED)}>Suspend User</MenuItem>
                       :
                         <>
                         <MenuItem onClick={() => onOpenDeactivate()}>Approve</MenuItem>
                         <MenuItem onClick={() => onOpenDeactivate()}>Disapprove</MenuItem>
                         </>
                     }
-                    <MenuItem onClick={() => onOpen()} color="red.500">Delete</MenuItem>
+                    <MenuItem onClick={() => handleDeleteModal(info?.row?.original?.id)} color="red.500">Delete</MenuItem>
                 </MenuList>
             </Menu>
           </Flex>

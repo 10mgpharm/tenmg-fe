@@ -49,19 +49,17 @@ export default function InvitationField() {
   const searchParams = useSearchParams();
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
-  const decodedUrl = currentUrl.replace(/&amp;/g, "&");
-  const urlObj = decodedUrl ? new URL(decodedUrl) : null;
+  // const decodedUrl = currentUrl.replace(/&amp;/g, "&");
+  const urlObj = currentUrl ? new URL(currentUrl) : null;
 
   const inviteId = urlObj?.searchParams.get("inviteId");
   const token = urlObj?.searchParams.get("inviteToken");
-  const expires = urlObj?.searchParams.get("expires");
-  const signature = urlObj?.searchParams.get("signature");
+  // const expires = currentUrl?.searchParams.get("expires");
+  // const signature = currentUrl?.searchParams.get("signature");
 
   let inviteQuery = "/auth/invite/view?";
   if (inviteId) inviteQuery += `inviteId=${inviteId}`;
   if (token) inviteQuery += `&inviteToken=${token}`;
-  if (expires) inviteQuery += `&expires=${expires}`;
-  if (signature) inviteQuery += `&signature=${signature}`;
 
   const {
     register,
@@ -126,12 +124,12 @@ export default function InvitationField() {
 
   useEffect(() => {
     // Fetch invite details on component mount
-    if (inviteId && token && expires && signature) {
+    if (inviteId && token) {
       fetchInvite();
     } else {
       setError("Invalid or missing query parameters.");
     }
-  }, [inviteId, token, expires, signature, fetchInvite]);
+  }, [inviteId, token, fetchInvite]);
 
   const firstName = inviteData?.fullName?.split(" ")[0] ?? "Guest";
 

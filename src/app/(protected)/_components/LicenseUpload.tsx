@@ -48,7 +48,7 @@ type BusinessLicense = {
   expiryDate: string;
   licenseFile: string;
   licenseNumber: string;
-  licenseVerificationStatus: "PENDING" | "APPROVED" | "REJECTED";
+  licenseVerificationStatus: "PENDING" | "APPROVED" | "REJECTED" | null;
 };
 
 interface LicenseUploadProps {
@@ -265,7 +265,7 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
       }
     };
     if (sessionData?.user?.token) fetchLicense();
-  }, [sessionData?.user?.token]);
+  }, [sessionData?.user?.token, endpoint]);
 
   if (sessionData?.user?.businessStatus === BusinessStatus.PENDING_APPROVAL) {
     return (

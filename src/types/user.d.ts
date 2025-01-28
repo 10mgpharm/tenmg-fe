@@ -14,6 +14,7 @@ export interface User {
   email: string;
   phone?: string;
   active: boolean;
+  status?: number;
   avatar?: string;
   picture?: string;
   owner: boolean;
@@ -22,6 +23,15 @@ export interface User {
   businessName: string;
   businessStatus: BusinessStatus;
   completeProfile: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  dateJoined?: string;
+}
+
+export interface SingleUser {
+  user: User & {
+    business: Vendor;
+  };
 }
 
 export interface NextAuthUserSession extends Session {
