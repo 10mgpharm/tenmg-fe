@@ -55,6 +55,7 @@ interface IFilterInput {
     fromDate?: Date | null;
     status?: string[];
     inventory?: string[];
+    category?: string[];
     brand?: string[];
 }
 
@@ -72,19 +73,22 @@ const Page = () => {
     
     const [status, setStatus] = useState<string[]>([]);
     const [brandQuery, setBrandQuery] = useState<string[]>([]);
-    const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
-    const [inventoryQuery, setInventoryQuery] = useState<string[]>([]);
-    // const [selectedBrand, setSelectedBrand] = useState("");
+    const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brands, setBrands] = useState<MedicationResponseData>();
+    const [category, setCategory] = useState<MedicationResponseData>();
     const [products, setProducts] = useState<ProductResponseData>();
-    const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+    const [categoryFilter, setCategoryFilter] = useState<string>("");
+    const [categoryQuery, setCategoryQuery] = useState<string[]>([]);
+    const [inventoryQuery, setInventoryQuery] = useState<string[]>([]);
     const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+    const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
     const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
     const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
     const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
+    const debouncedCategorySearch = useDebouncedValue(categoryFilter, 500);
 
     const { isOpen, onClose, onOpen } = useDisclosure();
     const { isOpen: isOpenFlag, onClose: onCloseFlag, onOpen: onOpenFlag } = useDisclosure();
@@ -100,8 +104,8 @@ const Page = () => {
         const params = {
             search: debouncedSearch ?? "",
             inventory: inventoryQuery ?? [""],
+            category: categoryQuery ?? [""],
             status: status ?? [""],
-            category: [],
             brand: brandQuery ?? [],
             variation: "",
             medicationType: [],
@@ -137,6 +141,20 @@ const Page = () => {
         }
     },[token, debouncedBrandSearch, brandFilter]);
 
+    const fetchingCategory = useCallback(async() => {
+        if(!categoryFilter) return;
+        try {
+            const response = await requestClient({ token: token }).get(
+                `/admin/settings/categories?search=${debouncedCategorySearch}`
+            );
+            if(response.status === 200){
+                setCategory(response.data.data);
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    },[token, debouncedCategorySearch, categoryFilter]);
+
     useEffect(() => {
         if(!token) return;
         fetchProducts();
@@ -145,7 +163,8 @@ const Page = () => {
     useEffect(() => {
         if(!token) return;
         fetchingBrands();
-    }, [fetchingBrands, token]);
+        fetchingCategory();
+    }, [fetchingBrands, fetchingCategory, token]);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
     
@@ -159,7 +178,7 @@ const Page = () => {
                     onOpenDeactivate, 
                     onOpenActivate, 
                     pageCount, 
-                    15,
+                    10,
                     setSelectedProduct
                 ),
         onSortingChange: setSorting,
@@ -198,6 +217,7 @@ const Page = () => {
         setCreatedAtEnd(filters.toDate);
         setStatus(filters.status);
         setBrandQuery(filters.brand);
+        setCategoryQuery(filters.category);
         setInventoryQuery(filters.inventory)
     };
 
@@ -208,6 +228,8 @@ const Page = () => {
         setBrandQuery([])
         setBrandFilter("");
         setInventoryQuery([])
+        setCategoryQuery([]);
+        setCategoryFilter("");
         setGlobalFilter("");
     };
 
@@ -425,6 +447,7 @@ const Page = () => {
         />
         <FilterDrawer 
             brands={brands}
+            category={category}
             isOpen={isOpenFilter} 
             onClose={onCloseFilter} 
             brandFilter={brandFilter}
@@ -432,6 +455,8 @@ const Page = () => {
             clearFilters={clearFilters}
             filterOptions={filterOptions}
             setBrandFilter={setBrandFilter}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
             handleSubmit={handleSubmit}
             control={control}
             reset={reset}
@@ -526,8 +551,9 @@ const Page = () => {
                     onClick={() => {
                         if(comment === "") {
                             return setError(true)
-                        };
-                        handleProductDeactivate("flagged")
+                        }else{
+                            handleProductDeactivate("flagged")
+                        }
                     }} 
                     className='bg-primary-600 text-white p-3 rounded-md'>
                         Proceed
