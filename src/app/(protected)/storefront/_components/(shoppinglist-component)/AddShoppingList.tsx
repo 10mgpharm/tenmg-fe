@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -18,9 +18,15 @@ import {
   Textarea
   // useDisclosure,
 } from '@chakra-ui/react'
-import { useForm } from 'react-hook-form';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 import { IoCloudDoneOutline } from 'react-icons/io5';
 import { FiUploadCloud } from 'react-icons/fi';
+import { useSession } from 'next-auth/react';
+import { NextAuthUserSession } from '@/types';
+import requestClient from '@/lib/requestClient';
+import Select from 'react-select/dist/declarations/src/Select';
+import CreatableSelect from 'react-select/creatable';
+import { Braah_One } from 'next/font/google';
 
 
 interface IShoppingListInput {
@@ -34,6 +40,54 @@ interface IShoppingListInput {
 
 export default function AddShoppingList() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  // const { formState: { errors: formContextErrors } } = useFormContext();
+
+
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+
+  const [products, setProducts] = useState<any>([]);
+  const [loading, setIsLoading] = useState<any>(false);
+
+  // fetch products here
+  useEffect(() => {
+    const fetchStoreFront = async () => {
+      setIsLoading(true);
+      try {
+        const data = await requestClient({ token: userData?.user?.token }).get(
+          "/storefront"
+        );
+
+
+        const allProduct = data?.data?.data?.data?.flatMap(
+          (item) => item.products
+        );
+
+        const conciseProducts = allProduct.map((product) => {
+          return {
+            label: product?.name + " " + product?.variation?.strengthValue + "" + product?.measurement?.name,
+            value: product?.id,
+            // value: product?.name + " " + product?.variation?.strengthValue + "" + product?.measurement?.name,
+            productBrand: product?.brand,
+          }
+
+
+        })
+
+
+        setProducts(conciseProducts);
+      } catch (e) {
+        // !Todo: handle error
+        // toast.error("Could not fetch store, please try again")
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchStoreFront();
+  }, [userData?.user?.token]);
+
+  console.log("products", products);
+
 
 
   const {
@@ -42,6 +96,7 @@ export default function AddShoppingList() {
     handleSubmit,
     setValue,
     watch,
+    control
   } = useForm<IShoppingListInput>({
     mode: "onChange",
     defaultValues: {
@@ -54,6 +109,48 @@ export default function AddShoppingList() {
     },
   });
 
+  // handling product selection / creation
+  const [nameValue, setNameValue] = useState<any>();
+
+  const handleOptionSelect = (selectedOption) => {
+    if (selectedOption) {
+      console.log("Selected product:", selectedOption);
+      setNameValue(selectedOption);
+      setValue('brandName', selectedOption.productBrand?.name);
+    }
+  };
+
+  const handleCreate = (inputValue) => {
+    console.log("Creating product:", inputValue);
+    // Trigger your custom logic here
+    setNameValue({ label: inputValue, value: inputValue });
+  };
+
+  // handling file upload
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      // You can also handle the file upload logic here, e.g., sending it to a server
+      console.log('Selected file:', file);
+    }
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      setSelectedFile(file);
+      // You can also handle the file upload logic here, e.g., sending it to a server
+      console.log('Dropped file:', file);
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <>
@@ -71,14 +168,32 @@ export default function AddShoppingList() {
               {/* <HStack gap={5}> */}
               <FormControl isInvalid={!!errors.productName?.message}>
                 <FormLabel>Product Name</FormLabel>
-                <Input
-                  type="text"
-                  placeholder={""}
-                  {...register("productName", {
-                    required: "Product Name is required",
-                  })}
+                <Controller
+                  name="productName"
+                  control={control}
+                  rules={{ required: "Product Name is required" }}
+                  render={({ field }) => (
+                    <CreatableSelect
+                      {...field}
+                      options={products}
+                      isClearable
+                      isSearchable
+                      placeholder="Select or type a product name"
+                      onChange={(newValue) => { handleOptionSelect(newValue) }}
+                      onCreateOption={handleCreate}
+                      value={nameValue}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderColor: errors.productName ? "red" : base.borderColor,
+                        }),
+                      }}
+                    />
+                  )}
                 />
               </FormControl>
+
+
               <FormControl isInvalid={!!errors.brandName?.message}>
                 <FormLabel>Brand Name</FormLabel>
                 <Input
@@ -120,38 +235,41 @@ export default function AddShoppingList() {
               {/* </HStack> */}
               {/* <HStack gap={5}> */}
               <div>
-                <FormLabel>Images(Optional)</FormLabel>
-                <div className='flex flex-col gap-2 cursor-pointer border border-dashed border-slate-300 rounded-md p-4'              >
+                <FormLabel>Images (Optional)</FormLabel>
+                <div
+                  className='flex flex-col gap-2 cursor-pointer border border-dashed border-slate-300 rounded-md p-4'
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                >
                   <div className="bg-gray-50 p-2 rounded-full mx-auto max-w-max mb-4">
-                    {/* <IoCloudDoneOutline className="w-6 h-6 text-gray-700" /> */}
                     <FiUploadCloud className="w-6 h-6 text-gray-700" />
                   </div>
                   <p className='text-sm font-normal text-center'>
                     <span className="font-semibold text-primary-500">Select a PNG or JPEG to upload</span>
-                    <br /> or drag and drop</p>
-                  {/* <p className="text-gray-500 text-center">JPEG, PNG or JPG
-                  <span className="text-sm ml-1">(Max size 5MB, 800x400px)</span>
-                </p> */}
+                    <br /> or drag and drop
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="file-upload"
+                  />
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    {selectedFile ? selectedFile.name : 'Choose a file'}
+                  </label>
                 </div>
               </div>
-              {/* </HStack> */}
-              {/* <div className="w-fit mx-auto mt-10">
-                <Flex className="flex items-center gap-3">
-
-                  <Button bg={"blue.700"} type="submit">
-                    Save Changes
-                  </Button>
-                </Flex>
-              </div> */}
+              <Button colorScheme='blue' size={'sm'} onClick={onClose} className='mr-0 ml-auto'>
+                Save Item
+              </Button>
             </form>
           </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme='blue' size={'sm'} onClick={onClose} className='mr-0 ml-auto'>
-              Save Item
-            </Button>
+          <ModalFooter />
 
-          </ModalFooter>
+
+
         </ModalContent>
       </Modal >
     </>
