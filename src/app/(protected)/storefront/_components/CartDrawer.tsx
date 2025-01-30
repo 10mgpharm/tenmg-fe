@@ -52,7 +52,7 @@ const CartDrawer = ({
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const { cart, addToCart, updateLoading, sycnCart } = useCartStore();
+  const { cart, addToCart, updateLoading, sycnCart, fetchCart } = useCartStore();
 
   useEffect(() => {
     if (cart) {
@@ -134,10 +134,12 @@ const CartDrawer = ({
 
   const handleClearCart = async () => {
     try {
-
-      const resp = await requestClient({ token: userData?.user?.token }).get('/storefront/clear-cart')
+      console.log('here ')
+      const resp = await requestClient({ token: userData?.user?.token }).post('/storefront/clear-cart')
+      console.log("resp", resp);
       if (resp?.data?.status === 'success') {
         toast.success('Cart cleared successfully')
+        fetchCart(userData?.user?.token)
         onClose()
       }
     } catch (e) {

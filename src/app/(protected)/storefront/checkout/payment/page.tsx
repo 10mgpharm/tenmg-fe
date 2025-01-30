@@ -103,7 +103,7 @@ export default function PaymentPage() {
       );
       if (response.status === 200) {
         toast.success(response.data.message);
-        const resp = await requestClient({ token: userToken }).get('/storefront/clear-cart')
+        await requestClient({ token: userToken }).post('/storefront/clear-cart');
         router.push('/storefront')
       } else {
         toast.error(`Error: ${response.data.message}`);
