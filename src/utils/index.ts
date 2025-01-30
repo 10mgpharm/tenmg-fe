@@ -6,9 +6,7 @@ export function classNames(...classes: any) {
 
 export const handleServerErrorMessage = (errorResponse: any) => {
     if (errorResponse instanceof AxiosError) {
-        const errorData = errorResponse?.response?.data;
-
-        console.log("Printinf jkbsd ", errorResponse)
+        const errorData = errorResponse.response.data;
 
         if (Object.keys(errorData).includes('data')) {
             return errorData.message
