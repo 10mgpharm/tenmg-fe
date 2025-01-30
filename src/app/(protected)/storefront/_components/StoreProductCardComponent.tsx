@@ -52,13 +52,18 @@ export default function StoreProductCardComponent({ product }: any) {
     BusinessStatus.BANNED,
   ].includes(businessStatus as BusinessStatus);
 
-  const handleAddToCart = (productId: string, action: string) => {
+  const [loadingAddToCart, setLoadingAddToCart] = useState(false);
+
+  const handleAddToCart = async (productId: string, action: string) => {
+    setLoadingAddToCart(true);
     const data = {
       productId,
       qty: 1,
       action,
     };
-    addToCart(data, userData?.user?.token);
+    await addToCart(data, userData?.user?.token).then((res) =>
+      setLoadingAddToCart(false)
+    )
   };
 
 
@@ -143,7 +148,7 @@ export default function StoreProductCardComponent({ product }: any) {
         className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
         onClick={() => { handleAddToCart(product?.id, addedTocart ? "remove" : "add") }}
       >
-        {updateLoading ? <LoaderIcon className="size-3 mx-auto" /> : addedTocart ? "Remove From Cart" : "Add To Cart"}
+        {loadingAddToCart ? <LoaderIcon className="size-3 mx-auto" /> : addedTocart ? "Remove From Cart" : "Add To Cart"}
       </button>
     </div>
   );

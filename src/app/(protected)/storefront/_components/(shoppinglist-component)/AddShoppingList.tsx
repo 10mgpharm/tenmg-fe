@@ -28,6 +28,8 @@ import Select from 'react-select/dist/declarations/src/Select';
 import CreatableSelect from 'react-select/creatable';
 import { Braah_One } from 'next/font/google';
 import { toast } from 'react-toastify';
+import { useShoppingList } from '../../storeFrontState/useShoppingList';
+import { MdLabel } from 'react-icons/md';
 
 
 interface IShoppingListInput {
@@ -39,9 +41,8 @@ interface IShoppingListInput {
 
 export default function AddShoppingList() {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  // const { formState: { errors: formContextErrors } } = useFormContext();
 
-
+  const { addShoppingList, loading: shoppingListLoading, shoppingList } = useShoppingList();
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
@@ -53,35 +54,32 @@ export default function AddShoppingList() {
     const fetchStoreFront = async () => {
       setIsLoading(true);
       try {
-        const data = await requestClient({ token: userData?.user?.token }).get(
-          "/storefront"
+        const response = await requestClient({ token: userData?.user?.token }).get("/storefront");
+        const allProducts = response?.data?.data?.data?.flatMap((item) => item.products) || [];
+
+        // Filter out products that exist in the shopping list
+        const filteredProducts = allProducts.filter(
+          (product) => !shoppingList?.some((item) => item?.productId === product?.id)
         );
 
-
-        const allProduct = data?.data?.data?.data?.flatMap(
-          (item) => item.products
-        );
-
-        const conciseProducts = allProduct.map((product) => {
-          return {
-            label: product?.name + " " + product?.variation?.strengthValue + "" + product?.measurement?.name,
-            value: product?.id,
-            // value: product?.name + " " + product?.variation?.strengthValue + "" + product?.measurement?.name,
-            productBrand: product?.brand,
-          }
-        })
-
+        // Map the remaining products to concise format
+        const conciseProducts = filteredProducts.map((product) => ({
+          label: `${product.name} ${product.variation?.strengthValue || ""} ${product.measurement?.name || ""}`,
+          value: product.id,
+          productBrand: product.brand || "Unknown Brand",
+        }));
 
         setProducts(conciseProducts);
-      } catch (e) {
-        // !Todo: handle error
-        // toast.error("Could not fetch store, please try again")
+      } catch (error) {
+        console.error("Could not fetch store:", error);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchStoreFront();
-  }, [userData?.user?.token]);
+  }, [userData?.user?.token, shoppingList]);
+
 
 
   const {
@@ -148,7 +146,8 @@ export default function AddShoppingList() {
     event.preventDefault();
   };
 
-  const [loadingShoppingList, setIsLoadingShoppingList] = useState<boolean>(false);
+  // const [loadingShoppingList, setIsLoadingShoppingList] = useState<boolean>(false);
+
 
 
   const onSubmit = async (data) => {
@@ -169,26 +168,16 @@ export default function AddShoppingList() {
 
     }
 
-    try {
-      const response = await requestClient({
-        token: userData?.user?.token,
-      }).post("/storefront/shopping-list/add-shopping-list", formData);
+    const res = await addShoppingList(formData, userData?.user?.token);
 
-      console.log('response', response);
-      if (response.status === 200) {
-        toast.success("Item added to shopping list successfully");
-        onClose();
-        setValue('productName', '');
-        setValue('brandName', '');
-        setValue('purchaseDate', '');
-        setValue('description', '');
-        setSelectedFile(null);
-        window.location.reload();
-      }
-    } catch (error) {
-      toast.error("Could not add item to shopping list, please try again");
-      console.log('error', error);
-
+    if (res === "200") {
+      toast.success("Item added to shopping list successfully");
+      onClose();
+      setValue('productName', '');
+      setValue('brandName', '');
+      setValue('purchaseDate', '');
+      setValue('description', '');
+      setSelectedFile(null);
     }
   }
 
@@ -240,7 +229,7 @@ export default function AddShoppingList() {
                 <FormLabel>Brand Name</FormLabel>
                 <Input
                   type="text"
-                  placeholder={""}
+                  placeholder={"Brand Name of the Product"}
                   {...register("brandName", {
                     required: "Product Brand is required",
                   })}
@@ -250,7 +239,7 @@ export default function AddShoppingList() {
 
               {/* <HStack gap={5}> */}
               <FormControl isInvalid={!!errors.purchaseDate?.message}>
-                <FormLabel>Date</FormLabel>
+                <FormLabel>Expected Purchase Date</FormLabel>
                 <Input
                   type="date"
                   placeholder={""}
@@ -287,7 +276,7 @@ export default function AddShoppingList() {
                     <FiUploadCloud className="w-6 h-6 text-gray-700" />
                   </div>
                   <p className='text-sm font-normal text-center'>
-                    <span className="font-semibold text-primary-500">Select a PNG or JPEG to upload</span>
+                    <label htmlFor="file-upload" className="cursor-pointer font-semibold text-primary-500">Select a PNG or JPEG to upload</label>
                     <br /> or drag and drop
                   </p>
                   <input
@@ -297,15 +286,17 @@ export default function AddShoppingList() {
                     className="hidden"
                     id="file-upload"
                   />
-                  <label htmlFor="file-upload" className="cursor-pointer">
-                    {selectedFile ? selectedFile.name : 'Choose a file'}
+                  <label className="cursor-text text-center">
+                    {selectedFile && selectedFile.name}
                   </label>
                 </div>
               </div>
-              <Button colorScheme='blue' size={'sm'}
-                className='mr-0 ml-auto' type="submit">
-                Save Item
-              </Button>
+              <div className='w-full flex items-center gap-4'>
+                <Button colorScheme='blue' size={'sm'}
+                  className='mx-auto w-fit my-2' type="submit">
+                  Save Item
+                </Button>
+              </div>
             </form>
           </ModalBody>
 

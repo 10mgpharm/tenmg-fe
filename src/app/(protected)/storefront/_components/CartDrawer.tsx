@@ -29,6 +29,7 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { useCartStore } from "../storeFrontState/useCartStore";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const CartDrawer = ({
   isOpen,
@@ -51,7 +52,7 @@ const CartDrawer = ({
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const { cart, addToCart, updateLoading, sycnCart } = useCartStore();
+  const { cart, addToCart, updateLoading, sycnCart, fetchCart } = useCartStore();
 
   useEffect(() => {
     if (cart) {
@@ -130,6 +131,22 @@ const CartDrawer = ({
     addToCart(data, userData?.user?.token)
   };
 
+
+  const handleClearCart = async () => {
+    try {
+      console.log('here ')
+      const resp = await requestClient({ token: userData?.user?.token }).post('/storefront/clear-cart')
+      console.log("resp", resp);
+      if (resp?.data?.status === 'success') {
+        toast.success('Cart cleared successfully')
+        fetchCart(userData?.user?.token)
+        onClose()
+      }
+    } catch (e) {
+      toast.error('Could not clear cart, please try again')
+    }
+  }
+
   return (
     <Drawer
       isOpen={isOpen}
@@ -205,7 +222,7 @@ const CartDrawer = ({
                   <Button width="full" colorScheme="blue" onClick={handleCheckout}>
                     Checkout
                   </Button>
-                  <Button width="full" variant="outline" disabled>
+                  <Button width="full" variant="outline" onClick={handleClearCart}>
                     Clear Cart
                   </Button>
                 </Stack>
@@ -247,6 +264,7 @@ const CartItemComp = ({
       updateQuantity(item?.product?.id, newQuantity);
     }
   };
+
 
   return (
     <HStack
