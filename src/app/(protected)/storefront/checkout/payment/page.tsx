@@ -36,7 +36,6 @@ export default function PaymentPage() {
     }
   }, [cart])
 
-  console.log("cartItems", cartItems)
 
   const breadCrumb = [
     {
@@ -84,6 +83,7 @@ export default function PaymentPage() {
     fetchAddresses();
   }, [userToken]);
 
+
   const [loadingPayment, setLoadingPayment] = useState(false);
   // !Note that this function is not the same as the order payment. This is a temporary fucntion to test the payment page
   const submiOrder = async () => {
@@ -122,7 +122,7 @@ export default function PaymentPage() {
 
         <div className='col-span-1 lg:col-span-4 '>
           <div className='w-full border border-r-gray-100 rounded-t-2xl overflow-hidden'>
-            {shippingAddresses?.length > 0 ?
+            {shippingAddresses ?
 
               <>
                 <div className='flex items-center justify-between p-4 bg-primary-100'>

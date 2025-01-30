@@ -27,15 +27,14 @@ import requestClient from '@/lib/requestClient';
 import Select from 'react-select/dist/declarations/src/Select';
 import CreatableSelect from 'react-select/creatable';
 import { Braah_One } from 'next/font/google';
+import { toast } from 'react-toastify';
 
 
 interface IShoppingListInput {
   productName: string;
-  date: string;
+  purchaseDate: string;
   brandName: string;
-  productDescription: string;
-  businessAddress: string;
-  contactPersonPosition: string;
+  description: string;
 }
 
 export default function AddShoppingList() {
@@ -70,8 +69,6 @@ export default function AddShoppingList() {
             // value: product?.name + " " + product?.variation?.strengthValue + "" + product?.measurement?.name,
             productBrand: product?.brand,
           }
-
-
         })
 
 
@@ -86,9 +83,6 @@ export default function AddShoppingList() {
     fetchStoreFront();
   }, [userData?.user?.token]);
 
-  console.log("products", products);
-
-
 
   const {
     register,
@@ -101,29 +95,31 @@ export default function AddShoppingList() {
     mode: "onChange",
     defaultValues: {
       productName: "",
-      date: "",
+      purchaseDate: "",
       brandName: "",
-      productDescription: "",
-      businessAddress: "",
-      contactPersonPosition: "",
+      description: "",
     },
   });
 
   // handling product selection / creation
   const [nameValue, setNameValue] = useState<any>();
 
+
+
   const handleOptionSelect = (selectedOption) => {
     if (selectedOption) {
       console.log("Selected product:", selectedOption);
       setNameValue(selectedOption);
       setValue('brandName', selectedOption.productBrand?.name);
+      setValue('productName', selectedOption?.label);
     }
   };
 
   const handleCreate = (inputValue) => {
-    console.log("Creating product:", inputValue);
+    // console.log("Creating product:", inputValue);
     // Trigger your custom logic here
     setNameValue({ label: inputValue, value: inputValue });
+    setValue('productName', inputValue);
   };
 
   // handling file upload
@@ -152,6 +148,52 @@ export default function AddShoppingList() {
     event.preventDefault();
   };
 
+  const [loadingShoppingList, setIsLoadingShoppingList] = useState<boolean>(false);
+
+
+  const onSubmit = async (data) => {
+    console.log('submitted', data)
+
+    const formData = new FormData();
+
+    formData.append('productName', data.productName);
+    formData.append('brandName', data.brandName);
+    formData.append('purchaseDate', data.purchaseDate);
+    formData.append('description', data.description);
+    formData.append('file', selectedFile);
+
+    if (nameValue?.value === nameValue?.label) {
+      formData.append('existIn10mgStore', 'NON-EXIST');
+    } else {
+      formData.append('productId', nameValue?.value);
+
+    }
+
+    try {
+      const response = await requestClient({
+        token: userData?.user?.token,
+      }).post("/storefront/shopping-list/add-shopping-list", formData);
+
+      console.log('response', response);
+      if (response.status === 200) {
+        toast.success("Item added to shopping list successfully");
+        onClose();
+        setValue('productName', '');
+        setValue('brandName', '');
+        setValue('purchaseDate', '');
+        setValue('description', '');
+        setSelectedFile(null);
+        window.location.reload();
+      }
+    } catch (error) {
+      toast.error("Could not add item to shopping list, please try again");
+      console.log('error', error);
+
+    }
+  }
+
+
+
   return (
     <>
       <Button onClick={onOpen}>Add Item</Button>
@@ -163,7 +205,7 @@ export default function AddShoppingList() {
           <ModalCloseButton />
           <ModalBody>
             <form className="space-y-3 mt-2"
-            // onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(onSubmit)}
             >
               {/* <HStack gap={5}> */}
               <FormControl isInvalid={!!errors.productName?.message}>
@@ -207,27 +249,27 @@ export default function AddShoppingList() {
               {/* </HStack> */}
 
               {/* <HStack gap={5}> */}
-              <FormControl isInvalid={!!errors.date?.message}>
+              <FormControl isInvalid={!!errors.purchaseDate?.message}>
                 <FormLabel>Date</FormLabel>
                 <Input
                   type="date"
                   placeholder={""}
-                  {...register("date", {
+                  {...register("purchaseDate", {
                     required: "Select Purchase Date",
                   })}
                 />
               </FormControl>
-              <FormControl isInvalid={!!errors.productDescription}>
+              <FormControl isInvalid={!!errors.description}>
                 <FormLabel>Product Description</FormLabel>
                 <Textarea
-                  id="productDescription"
+                  id="description"
                   // defaultValue={data?.description}
                   placeholder="Enter a description"
-                  isInvalid={!!errors.productDescription}
+                  isInvalid={!!errors.description}
                   _focus={{
-                    border: !!errors.productDescription ? "red.300" : "border-gray-300",
+                    border: !!errors.description ? "red.300" : "border-gray-300",
                   }}
-                  {...register("productDescription", {
+                  {...register("description", {
                     required: true,
                   })}
                 />
@@ -260,7 +302,8 @@ export default function AddShoppingList() {
                   </label>
                 </div>
               </div>
-              <Button colorScheme='blue' size={'sm'} onClick={onClose} className='mr-0 ml-auto'>
+              <Button colorScheme='blue' size={'sm'}
+                className='mr-0 ml-auto' type="submit">
                 Save Item
               </Button>
             </form>
@@ -275,3 +318,5 @@ export default function AddShoppingList() {
     </>
   )
 }
+
+//  onClick={onClose}
