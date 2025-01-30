@@ -74,7 +74,7 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                     <FormLabel color={"gray.600"}>Low Stock Level</FormLabel>
                     <Input  
                     id="lowStockLevel"
-                    placeholder="e.g ₦10" 
+                    placeholder="e.g 10" 
                     type="text"
                     isInvalid={!!errors.lowStockLevel}
                     _focus={{
