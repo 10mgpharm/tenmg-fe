@@ -12,13 +12,23 @@ import { useCartStore } from '../../storeFrontState/useCartStore';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 export default function PaymentPage() {
 
   const [cartItems, setCartItems] = useState<any>({});
-  const { cart, } = useCartStore();
+  const { cart, fetchCart } = useCartStore();
+
+
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
+  const userToken = sessionData?.user?.token;
 
   const router = useRouter();
+
+  useEffect(() => {
+    fetchCart(userToken)
+  }, [fetchCart, userToken])
 
   useEffect(() => {
     if (cart) {
@@ -26,7 +36,6 @@ export default function PaymentPage() {
     }
   }, [cart])
 
-  console.log("cartItems", cartItems)
 
   const breadCrumb = [
     {
@@ -43,9 +52,7 @@ export default function PaymentPage() {
     }
   ]
 
-  const session = useSession();
-  const sessionData = session.data as NextAuthUserSession;
-  const userToken = sessionData?.user?.token;
+
   const [shippingAddresses, setShippingAddresses] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = useState('1')
@@ -61,7 +68,7 @@ export default function PaymentPage() {
         );
         if (response.status === 200) {
           const data = response.data.data;
-          setShippingAddresses(data[0] || []);
+          setShippingAddresses(data?.find(item => item?.isDefault === true));
         } else {
           toast.error(`Error: ${response.data.message}`);
         }
@@ -77,6 +84,37 @@ export default function PaymentPage() {
   }, [userToken]);
 
 
+  const [loadingPayment, setLoadingPayment] = useState(false);
+  // !Note that this function is not the same as the order payment. This is a temporary fucntion to test the payment page
+  const submiOrder = async () => {
+
+    const orderData = {
+      "orderId": cartItems?.id,
+      "paymentMethodId": 1,
+      "deliveryAddress": shippingAddresses?.id,
+      // "deliveryAddress": "My address",
+      "deliveryType": "STANDARD"
+    }
+    setLoadingPayment(true);
+    try {
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/checkout",
+        orderData
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        router.push('/storefront')
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+      setLoadingPayment(false);
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+      setLoadingPayment(false);
+    }
+  }
+
   return (
     <>
       <BreadCrumbBanner breadCrumbsData={breadCrumb} />
@@ -84,32 +122,29 @@ export default function PaymentPage() {
 
         <div className='col-span-1 lg:col-span-4 '>
           <div className='w-full border border-r-gray-100 rounded-t-2xl overflow-hidden'>
-            <div className='p-4 bg-primary-100'>
-              <h3 className='font-semibold text-lg'>Order Summary</h3>
-            </div>
-            <div>
-              <div
-                className="p-5 flex flex-col gap-2 mx-auto w-full"
-              >
-                <h2 className="text-xl font-bold">{shippingAddresses.name}</h2>
-                <p className="text-base font-bold">{shippingAddresses.phoneNumber}</p>
-                <p className="text-sm text-gray-500">
-                  {shippingAddresses.address}, {shippingAddresses.city}, {shippingAddresses.state}, {shippingAddresses.country}
-                </p>
+            {shippingAddresses ?
 
-                {/* <HStack pt={4}>
-              <EditAddressModal
-                id={address.id}
-                existingData={address}
-                onSuccess={refreshAddresses}
-              />
-              <DeleteAddressModal
-                id={address.id}
-                onSuccess={refreshAddresses}
-              />
-            </HStack> */}
+              <>
+                <div className='flex items-center justify-between p-4 bg-primary-100'>
+                  <h3 className='font-semibold text-lg'>Order Summary</h3>
+                  <Button onClick={() => router.push('/storefront/settings/shipping-address')} variant={'outline'} colorScheme={'primary'} size={'sm'}>Edit</Button>
+                </div>
+                <div
+                  className="p-5 flex flex-col gap-2 mx-auto w-full"
+                >
+                  <h2 className="text-xl font-bold">{shippingAddresses.name}</h2>
+                  <p className="text-base font-bold">{shippingAddresses.phoneNumber}</p>
+                  <p className="text-sm text-gray-500">
+                    {shippingAddresses.address}, {shippingAddresses.city}, {shippingAddresses.state}, {shippingAddresses.country}
+                  </p>
+
+                </div>
+              </>
+              : <div className='flex flex-col items-center justify-center p-4'>
+                <p className="text-center py-4">You have not set a default shipping address</p>
+                <Button onClick={() => router.push('/storefront/settings/shipping-address')} variant={'outline'} colorScheme={'primary'} size={'sm'}>Set Address</Button>
               </div>
-            </div>
+            }
           </div>
 
           <div className='w-full border border-r-gray-100 rounded-t-2xl overflow-hidden mt-10'>
@@ -162,9 +197,19 @@ export default function PaymentPage() {
                     rounded={'md'}
                   />
                   <div>
-                    <p className='font-semibold'>{item?.product?.name}</p>
+                    <p className='font-semibold'>{item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}</p>
                     <p>Qty: {item?.quantity}</p>
-                    <p className='font-semibold'>₦ {item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}</p>
+                    <div className='flex items-center gap-x-1'>
+                      {item?.discountPrice > 0 && (
+                        <p className="text-gray-900 font-semibold my-2 text-sm">
+                          ₦{parseInt(item?.discountPrice)}
+                        </p>
+                      )}
+                      <p className={`font-semibold my-2 text-sm ${item?.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                        ₦{item?.actualPrice}
+                      </p>
+                    </div>
+                    {/* <p className='font-semibold'>₦ {item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}</p> */}
                   </div>
                 </div>)
                 )
@@ -184,14 +229,14 @@ export default function PaymentPage() {
             <Divider my={5} />
 
             <div>
-              <div>
+              <div className='flex items-center gap-x-2'>
                 <p>Cart Total:</p>
-                <p></p>
+                <p className='font-semibold'>{cartItems?.orderTotal}</p>
               </div>
-              <div>
+              {/* <div>
                 <p>Discount Total:</p>
                 <p></p>
-              </div>
+              </div> */}
               <div>
                 <p>Shipping fee:</p>
                 <p></p>
@@ -199,13 +244,13 @@ export default function PaymentPage() {
             </div>
             <Divider my={5} />
 
-            <div>
-              <p>Total</p>
-              <p></p>
+            <div className='flex items-center gap-x-2'>
+              <p>Total:</p>
+              <p className='font-semibold'>{cartItems?.orderTotal}</p>
             </div>
 
             <Divider my={5} />
-            <Button colorScheme={'primary'}>Pay Now</Button>
+            <Button colorScheme={'primary'} onClick={submiOrder}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button>
           </div>
         </div>
       </Box>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { HStack } from "@chakra-ui/react";
+import { Button, HStack, Tag } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 
@@ -67,6 +67,28 @@ export default function ShippingAddressList() {
     }
   };
 
+  const setDefaultAddress = async (addressId: string) => {
+
+    setIsLoading(true);
+
+    try {
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/shipping-addresses/set-default", { addressId }
+      );
+      if (response.status === 200) {
+        refreshAddresses()
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   if (isLoading) {
     return <div className="text-center py-8">Loading addresses...</div>;
   }
@@ -89,8 +111,14 @@ export default function ShippingAddressList() {
         {shippingAddresses.map((address) => (
           <div
             key={address.id}
-            className="border border-gray-300 p-5 flex flex-col gap-2 rounded-md mx-auto w-full"
+            className="border border-gray-300 p-5 flex flex-col gap-2 rounded-md mx-auto w-full relative"
           >
+            <div className="absolute top-4 right-4 w-fit ">
+              {address?.isDefault ? <Tag size={"sm"} variant='solid' colorScheme='green' p={2} className="w-fit">
+                Default
+              </Tag> :
+                <Button size={'xs'} variant={'solid'} colorScheme={'success'} className="w-fit " onClick={() => setDefaultAddress(address?.id)}>Set as Preferred</Button>}
+            </div>
             <h2 className="text-xl font-bold">{address.name}</h2>
             <p className="text-base font-bold">{address.phoneNumber}</p>
             <p className="text-sm text-gray-500">

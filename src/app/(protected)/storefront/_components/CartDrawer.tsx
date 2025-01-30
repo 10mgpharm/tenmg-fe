@@ -88,7 +88,7 @@ const CartDrawer = ({
 
     // Update the global state with the local quantities
     cartItems?.items?.forEach((item) => {
-      console.log("item", item);
+
       const data = {
         itemId: item.id,
         quantity: localQuantities[item.product.id],
@@ -96,15 +96,15 @@ const CartDrawer = ({
       };
 
       data_array.push(data)
-      console.log("updated", data)
+
     });
 
-    console.log("data_array", data_array);
+
     const data_obj = {
       cartId: cartItems?.id,
       items: data_array
     }
-    console.log("data_obj", data_obj);
+
     sycnCart(data_obj, userData?.user?.token);
     router.push("/storefront/checkout");
     onClose();
@@ -153,7 +153,7 @@ const CartDrawer = ({
             <VStack
               align="start"
               spacing={4}
-              className="h-screen lg:h-[50vh] px-2 mx-2  overflow-y-auto  [&::-webkit-scrollbar]:w-2
+              className="h-screen lg:h-[50vh] px-2 mx-2 my-2  overflow-y-auto  [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-primary-100
   [&::-webkit-scrollbar-thumb]:rounded-full
@@ -255,6 +255,7 @@ const CartItemComp = ({
       width="full"
       justifyContent="space-between"
       h={{ md: 32 }}
+      my={2}
     >
       {/* Product Image */}
       <Image
@@ -265,10 +266,10 @@ const CartItemComp = ({
       />
 
       {/* Product Details */}
-      <Stack align="start" spacing={2} flex="1" h="full" justify="space-between">
+      <Stack align="start" spacing={1} flex="1" h="full" justify="space-between">
         {/* Product Name */}
         <Text fontWeight="medium" fontSize="md">
-          {item?.product?.name}
+          {item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}
         </Text>
 
         {/* Stock Information and Price */}
@@ -276,9 +277,17 @@ const CartItemComp = ({
           <Text fontSize="sm" fontWeight="medium" color="red.500">
             {item?.product?.quantity} units left
           </Text>
-          <Text fontSize="md" fontWeight="medium">
-            ₦{parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice)}
-          </Text>
+          <div className="flex items-center gap-x-2 ">
+            {item?.product.discountPrice > 0 && (
+              <p className="text-gray-900 font-semibold my-2 text-sm">
+                ₦{parseInt(item?.product.actualPrice) - parseInt(item?.product.discountPrice)}
+              </p>
+            )}
+            <p className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+              ₦{item?.product.actualPrice}
+            </p>
+            {/* ₦{parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice)} */}
+          </div>
         </Box>
 
         {/* Quantity Controls */}
@@ -287,7 +296,7 @@ const CartItemComp = ({
           borderColor="gray.300"
           gap={6}
           px={4}
-          py={2}
+          py={1}
           bgColor="#F0F2F5"
           color="primary.500"
           rounded="lg"

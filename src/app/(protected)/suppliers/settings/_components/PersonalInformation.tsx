@@ -229,6 +229,7 @@ const PersonalInformation = () => {
             <FormLabel>Business email</FormLabel>
             <Input
               type="email"
+              isDisabled
               placeholder="Enter business email"
               {...register("contactEmail", {
                 required: "Business Email is required",

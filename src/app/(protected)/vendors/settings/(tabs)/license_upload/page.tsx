@@ -1,8 +1,9 @@
+import LicenseUpload from '@/app/(protected)/_components/LicenseUpload'
 import React from 'react'
-import LicenseUpload from '../../_components/LicenseUpload'
+
 
 export default function LicenseUploadPage() {
     return (
-        <LicenseUpload />
+        <LicenseUpload endpoint='vendor' />
   )
 }

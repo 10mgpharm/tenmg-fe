@@ -98,7 +98,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                 id="productName"
                 // defaultValue={data?.name}
                 name="productName"
-                placeholder="E.g Panadol" 
+                placeholder="e.g Panadol" 
                 type="text"
                 isInvalid={!!errors.productName}
                 _focus={{
@@ -137,7 +137,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                                     <CustomCreatableSelectComponent
                                         value={value}
                                         name={"brandName"}
-                                        placeholder={'E.g (GlaxoSmithKline (GSK)'}
+                                        placeholder={'e.g GlaxoSmithKline (GSK)'}
                                         options={convertCreateOptionArray(brands)}
                                         onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                             onChange(selectedOption?.value);
@@ -165,7 +165,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                                 <CustomCreatableSelectComponent
                                     value={value}
                                     name={"categoryName"}
-                                    placeholder={'E.g (Analgesics)'}
+                                    placeholder={'e.g Analgesics'}
                                     options={convertCreateOptionArray(categories)}
                                     onOptionSelected={(selectedOption: CreatableSelectOption) => {
                                         onChange(selectedOption?.value);

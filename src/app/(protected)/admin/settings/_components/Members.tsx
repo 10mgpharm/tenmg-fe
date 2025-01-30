@@ -51,26 +51,29 @@ const Members = () => {
 
     const { onOpen, onClose, isOpen } = useDisclosure();
     const { 
-        onOpen: onOpenRole, 
-        onClose: onCloseRole, 
-        isOpen: isOpenRole 
-    } = useDisclosure();
-    const { 
         onOpen: onOpenRemove, 
         onClose: onCloseRemove, 
         isOpen: isOpenRemove 
     } = useDisclosure();
+    const {
+        onOpen: onOpenView,
+        isOpen: isOpenView,
+        onClose: onCloseView,
+      } = useDisclosure();
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [allMembersData, setAllMembersData] = useState<any>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [userId, setUserId] = useState<number>();
+    const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
+    const [actionType, setActionType] = useState<any | null>(null);
 
     const session = useSession();
     // const sessionData = session?.data?.user as User;
     const sessionToken = session?.data as NextAuthUserSession;
     const token = sessionToken?.user?.token;
-    const [allMembersData, setAllMembersData] = useState<any>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const fetchTeamMembers = useCallback(async () => {
         try {
@@ -85,6 +88,56 @@ const Members = () => {
         }
     }, [token]);
 
+    const handleDeleteModal = useCallback(
+        (id: any) => {
+          const numericId = Number(id);
+          setUserId(numericId);
+          onOpenRemove();
+        },
+        [onOpenRemove]
+      );
+    
+      const confirmDelete = useCallback(async () => {
+        if (userId !== undefined) {
+          if (!token || !userId) return;
+          setIsLoadingAction(true);
+          try {
+            const response = await requestClient({ token }).delete(
+              `admin/users/${userId}`
+            );
+    
+            if (response.status === 200) {
+              toast.success(response.data.message);
+              onCloseRemove();
+              fetchTeamMembers();
+            }
+          } catch (error) {
+            const errorMessage = handleServerErrorMessage(error);
+            toast.error(errorMessage);
+          } finally {
+            setIsLoadingAction(false);
+          }
+        }
+      }, [userId, token, onCloseRemove, fetchTeamMembers]);
+    
+      const handleViewModal = useCallback(
+        (id: number) => {
+          setUserId(id);
+          onOpenView();
+        },
+        [onOpenView]
+      );
+    
+      const handleOpenModal = useCallback(
+        (id: number, action: any) => {
+          setUserId(id);
+          setActionType(action);
+          onOpen();
+        },
+        [onOpen]
+      );
+
+
     useEffect(() => {
         if(!token) return;
         fetchTeamMembers();
@@ -94,7 +147,9 @@ const Members = () => {
 
     const table = useReactTable({
         data: memoizedData,
-        columns: ColumsMemberFN(onOpenRemove),
+        columns: ColumsMemberFN(onOpenRemove,    handleDeleteModal,
+            
+            handleOpenModal),
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -141,10 +196,6 @@ const Members = () => {
                 </InputGroup>
             </Stack>
             <Flex gap={3}>
-                <Button onClick={onOpenRole} fontSize={"15px"} h={"38px"} px={3} variant={"outline"}>
-                    <Plus className="w-5 h-auto mr-1"/>
-                    Create Role
-                </Button>
                 <Button onClick={onOpen} fontSize={"15px"} h={"38px"} px={3} bg={"blue.700"}>Invite Members</Button>
             </Flex>
         </HStack>
@@ -196,8 +247,7 @@ const Members = () => {
         }
         </div>
         <InviteMember onClose={onClose} isOpen={isOpen} onSubmit={onSubmit} isLoading={isLoading} token={token} accountType="admin" />
-        <CreateRole isOpen={isOpenRole} onClose={onCloseRole} />
-        <ConfirmModal isOpen={isOpenRemove} onClose={onCloseRemove}/>
+        <ConfirmModal isOpen={isOpenRemove} onClose={onCloseRemove}  handleRequest={confirmDelete}/>
     </div>
   )
 }

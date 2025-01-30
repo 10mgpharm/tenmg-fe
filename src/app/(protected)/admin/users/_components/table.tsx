@@ -91,7 +91,7 @@ export function ColumsSupplierFN(
             : "text-yellow-500 bg-yellow-50", " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}>
                 {"• "}
-               {info?.row?.original?.status === 1 ?  "Active" : info?.row?.original?.status === 2 ? "Suspended" : "Invited"}
+               {info?.row?.original?.status === 1 ?  "Active" : info?.row?.original?.status === 2 ? "Invited" : "Suspended"}
             </p>
           </div>
         );
@@ -112,7 +112,6 @@ export function ColumsSupplierFN(
                     <MenuItem onClick={() => handleView(info?.row?.original?.id)}>
                         View User
                     </MenuItem>
-                    <MenuItem>Login as user</MenuItem>
                     {
                       info?.row?.original?.status === 0 ? 
                       <MenuItem onClick={() => handleOpenModal(info?.row?.original?.id, ActionType.ACTIVE)}>Unsuspend User</MenuItem>
@@ -124,7 +123,7 @@ export function ColumsSupplierFN(
                         <MenuItem onClick={() => onOpenDeactivate()}>Disapprove</MenuItem>
                         </>
                     }
-                    <MenuItem onClick={() => handleDeleteModal(info?.row?.original?.id)} color="red.500">Delete</MenuItem>
+                    <MenuItem onClick={() => handleDeleteModal(info?.row?.original?.id)} color="red.500">Delete User</MenuItem>
                 </MenuList>
             </Menu>
           </Flex>
