@@ -150,6 +150,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 </InputLeftElement>
                 <Input
                   type="email"
+                  isDisabled
                   placeholder="Enter business email"
                   pl={10}
                   {...register("contactEmail", {

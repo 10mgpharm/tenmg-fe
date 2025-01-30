@@ -25,11 +25,12 @@ import {
   Spinner,
   Center,
 } from "@chakra-ui/react";
-import Pagination from "../../suppliers/_components/Pagination";
+// import Pagination from "../../suppliers/_components/Pagination";
 import { ColumsLogFN } from "./_components/table";
-import requestClient from "@/lib/requestClient"; // Adjust the path as necessary
+import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import Pagination from "../products/_components/Pagination";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -156,38 +157,49 @@ const Page = () => {
             </Table>
           </TableContainer>
         )}
-        {
-          data?.length > 0 &&
+        {data?.length > 0 && (
           <Pagination
-            meta={{
-              currentPage,
-              totalPages,
-              first: `?page=1`,
-              last: `?page=${totalPages}`,
-              prev: currentPage > 1 ? `?page=${currentPage - 1}` : null,
-              next: currentPage < totalPages ? `?page=${currentPage + 1}` : null,
-              links: [
-                {
-                  url: currentPage > 1 ? `?page=${currentPage - 1}` : null,
-                  label: "Previous",
-                  active: false,
-                },
-                ...Array.from({ length: totalPages }, (_, i) => ({
-                  label: (i + 1).toString(),
-                  url: `?page=${i + 1}`,
-                  active: currentPage === i + 1,
-                })),
-                {
-                  url:
-                    currentPage < totalPages ? `?page=${currentPage + 1}` : null,
-                  label: "Next",
-                  active: false,
-                },
-              ],
-            }}
+            links={[
+              ...(currentPage > 1 && data.length > 0
+                ? [
+                    {
+                      url: `?page=${currentPage - 1}`,
+                      label: "Previous",
+                      active: false,
+                    },
+                  ]
+                : []),
+              ...Array.from({ length: totalPages }, (_, i) => ({
+                label: (i + 1).toString(),
+                url: `?page=${i + 1}`,
+                active: currentPage === i + 1,
+              })),
+              ...(currentPage < totalPages && data.length > 0
+                ? [
+                    {
+                      url: `?page=${currentPage + 1}`,
+                      label: "Next",
+                      active: false,
+                    },
+                  ]
+                : []),
+            ]}
             setPageCount={setCurrentPage}
+            prevPageUrl={
+              currentPage > 1 && data.length > 0
+                ? `?page=${currentPage - 1}`
+                : null
+            }
+            nextPageUrl={
+              currentPage < totalPages && data.length > 0
+                ? `?page=${currentPage + 1}`
+                : null
+            }
+            currentPage={currentPage}
+            firstPageUrl={data.length > 0 ? `?page=1` : null}
+            lastPageUrl={data.length > 0 ? `?page=${totalPages}` : null}
           />
-        }
+        )}
       </div>
     </div>
   );

@@ -225,6 +225,7 @@ export default function ProfileInformation() {
             <FormLabel>Business Email</FormLabel>
             <Input
               type="email"
+              isDisabled
               placeholder={"olivia@untitledui.com"}
               {...register("contactEmail", {
                 required: "Business Email is required",
@@ -268,7 +269,7 @@ export default function ProfileInformation() {
         <div className="w-fit mx-auto mt-10">
           <Flex className="flex items-center gap-3">
         
-            <Button bg={"blue.700"} type="submit">
+            <Button variant="solid" type="submit">
               Save Changes
             </Button>
           </Flex>

@@ -24,7 +24,7 @@ import {
     isLoading,
   }: DeleteModalProps) => {
     return (
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Delete {title}</ModalHeader>
