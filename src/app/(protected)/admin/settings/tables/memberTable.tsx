@@ -8,10 +8,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 const columnHelper = createColumnHelper<any>();
 
 export function ColumsMemberFN(
-  onOpen: () => void,
   handleDeleteModal: (id: number) => void,
-  handleOpenModal: (id: number, action: any) => void,
-  handleView: (id: number) => void
+  handleOpenModal: (userId: number, action: any) => void,
 ) {
   return [
     columnHelper.accessor("email", {
@@ -43,7 +41,7 @@ export function ColumsMemberFN(
             )}
           >
             {info?.row?.original?.status === "ACCEPTED"
-              ? "Active"
+              ? "Accepted"
               : info?.row.original.status === "INVITED"
               ? "Invited"
               : "Suspended"}
@@ -99,15 +97,13 @@ export function ColumsMemberFN(
               <MenuList>
                 {info?.row?.original?.status === "ACCEPTED" ? (
                   <>
-                    <MenuItem
-                      onClick={() => handleView(info?.row?.original?.id)}
-                    >
-                      View Details
-                    </MenuItem>
+                    <Link href={`/admin/users/${info?.row?.original?.userId}`}>
+                      <MenuItem>View Details</MenuItem>
+                    </Link>
 
                     <MenuItem
                       onClick={() =>
-                        handleOpenModal(info.row.original?.id, "SUSPENDED")
+                        handleOpenModal(info.row.original?.userId, "SUSPENDED")
                       }
                     >
                       Suspend Member
