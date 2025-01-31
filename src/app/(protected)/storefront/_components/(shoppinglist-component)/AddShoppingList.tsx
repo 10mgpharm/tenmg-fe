@@ -262,7 +262,7 @@ export default function AddShoppingList() {
                   {...register("description", {
                     required: true,
                   })}
-                />
+                >Leave a note for the item</Textarea>
               </FormControl>
               {/* </HStack> */}
               {/* <HStack gap={5}> */}

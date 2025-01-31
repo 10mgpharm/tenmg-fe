@@ -135,7 +135,7 @@ const CartDrawer = ({
   const handleClearCart = async () => {
     clearCart(userData?.user?.token);
     onClose();
-    // window
+    window.location.reload();
   }
 
   return (
