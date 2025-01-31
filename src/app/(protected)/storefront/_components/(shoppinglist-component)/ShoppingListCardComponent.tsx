@@ -36,6 +36,7 @@ export default function ShoppingListCardComponent({ product }) {
       action,
     };
     addToCart(data, userData?.user?.token);
+    router.push('/storefront/checkout')
   };
 
   {/* Is there a way to chck if the product is available before proceeding to buy 
@@ -56,7 +57,7 @@ export default function ShoppingListCardComponent({ product }) {
         </div>
         <div className='space-x-4 '>
           {product?.productId && <Button className='' variant={"outline"} colorScheme={"blue"} size="sm" onClick={() => handleAddToCart(product?.productId, "add")}>{updateLoading ? <Spinner /> : "Buy Now"}</Button>}
-          <Button variant={"outline"} colorScheme={"red"} size="sm" onClick={() => { handleRemove(product?.id); router.push('/storefront/checkout') }}>Remove</Button>
+          <Button variant={"outline"} colorScheme={"red"} size="sm" onClick={() => { handleRemove(product?.id); }}>Remove</Button>
         </div>
       </div>
     </div>
