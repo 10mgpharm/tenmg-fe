@@ -13,5 +13,6 @@ export interface IConfig {
     appUrl: string;
     apiBaseUrl: string;
     nextAuthSecret: string;
+    fincraPublicKey: string;
     email: EmailConfig;
 }
