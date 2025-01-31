@@ -1,4 +1,5 @@
 import { classNames } from "@/utils";
+import { convertDate } from "@/utils/formatDate";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
@@ -9,7 +10,8 @@ const columnHelper = createColumnHelper<any>();
 export function ColumsMemberFN(
   onOpen: () => void,
   handleDeleteModal: (id: number) => void,
-  handleOpenModal: (id: number, action: any) => void
+  handleOpenModal: (id: number, action: any) => void,
+  handleView: (id: number) => void
 ) {
   return [
     columnHelper.accessor("email", {
@@ -30,21 +32,21 @@ export function ColumsMemberFN(
         <div>
           <p
             className={classNames(
-              info?.row?.original?.active === 0
+              info?.row?.original?.active === ""
                 ? "bg-[#FEF3F2] text-[#B42318]"
-                : info?.row?.original?.active === 1
+                : info?.row?.original?.status === "ACCEPTED"
                 ? "text-[#027A48] bg-[#ECFDF3]"
-                : info?.row?.original?.active === "Invited"
+                : info?.row?.original?.status === "INVITED"
                 ? "text-blue-500 bg-blue-50"
                 : "text-gray-500",
               " max-w-min p-0.5 px-3 rounded-2xl text-sm"
             )}
           >
-            {info?.row?.original?.active === 1
+            {info?.row?.original?.status === "ACCEPTED"
               ? "Active"
-              : info?.row.original.active === 0
-              ? "Suspended"
-              : "Invited"}
+              : info?.row.original.status === "INVITED"
+              ? "Invited"
+              : "Suspended"}
           </p>
         </div>
       ),
@@ -59,7 +61,7 @@ export function ColumsMemberFN(
       ),
       cell: (info) => (
         <div>
-          <p>{info.row.original?.name} </p>
+          <p>{info.row.original?.fullName} </p>
         </div>
       ),
     }),
@@ -67,7 +69,11 @@ export function ColumsMemberFN(
       header: ({ column }) => <p>Date Invited</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.date}</p>
+          <p>
+            {info.row.original?.createdAt
+              ? convertDate(info.row.original?.createdAt)
+              : "NA"}
+          </p>
         </div>
       ),
     }),
@@ -91,13 +97,30 @@ export function ColumsMemberFN(
                 <BsThreeDotsVertical className="w-5 h-auto" />
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <Link href={"/admin/settings/member"}>View Details</Link>
-                </MenuItem>
-                <MenuItem>Suspend Member</MenuItem>
-                <MenuItem onClick={() => handleDeleteModal(info.row.original?.id)} color="red.500">
-                  Remove Member
-                </MenuItem>
+                {info?.row?.original?.status === "ACCEPTED" ? (
+                  <>
+                    <MenuItem
+                      onClick={() => handleView(info?.row?.original?.id)}
+                    >
+                      View Details
+                    </MenuItem>
+
+                    <MenuItem
+                      onClick={() =>
+                        handleOpenModal(info.row.original?.id, "SUSPENDED")
+                      }
+                    >
+                      Suspend Member
+                    </MenuItem>
+                  </>
+                ) : (
+                  <MenuItem
+                    onClick={() => handleDeleteModal(info.row.original?.id)}
+                    color="red.500"
+                  >
+                    Revoke Invite
+                  </MenuItem>
+                )}
               </MenuList>
             </Menu>
           </Flex>

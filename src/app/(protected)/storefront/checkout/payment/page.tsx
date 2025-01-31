@@ -103,6 +103,7 @@ export default function PaymentPage() {
       );
       if (response.status === 200) {
         toast.success(response.data.message);
+        await requestClient({ token: userToken }).post('/storefront/clear-cart');
         router.push('/storefront')
       } else {
         toast.error(`Error: ${response.data.message}`);
@@ -233,12 +234,14 @@ export default function PaymentPage() {
                 <p>Cart Total:</p>
                 <p className='font-semibold'>{cartItems?.orderTotal}</p>
               </div>
-              {/* <div>
-                <p>Discount Total:</p>
-                <p></p>
-              </div> */}
+
               <div>
                 <p>Shipping fee:</p>
+                <p></p>
+              </div>
+
+              <div>
+                <p>TenMg Commission:</p>
                 <p></p>
               </div>
             </div>
