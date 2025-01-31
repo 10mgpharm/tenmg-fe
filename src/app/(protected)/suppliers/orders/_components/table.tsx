@@ -1,57 +1,103 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { Flex } from "@chakra-ui/react";
+import { classNames, formatAmountString } from "@/utils";
+import { OrderData } from "@/types";
+import { convertDate } from "@/utils/formatDate";
+import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
-import { classNames } from "@/utils";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<OrderData>();
 
-export function ColumsOrderFN(onOpen: () => void) {
+export function ColumsOrderFN(
+  pageIndex: number, 
+  pageSize: number, 
+) {
 
   return [
-    columnHelper.accessor("createdAt", {
+    columnHelper.accessor("id", {
       header: () => (
         <div className="pl-6">
-          <p>ID</p>
+          <p>S/N</p>
         </div>
       ),
-      cell: (info) => (
-        <div
-          onClick={() => {
-            onOpen();
-          }}
-        >
-          <p className="pl-6">
-            {info.row.original?.id} 
-          </p>
-        </div>
-      ),
+      cell: (info) => {
+        const serialNumber = pageIndex > 1 ? (pageIndex - 1) * pageSize + info?.row.index + 1 : info?.row.index + 1;
+        return(
+          <div>
+            <p className="pl-6">
+              {serialNumber}
+            </p>
+          </div>
+        )
+      }
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("customer", {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          <p>Customer</p>
+          <p>Customer Name</p>
         </div>
       ),
       cell: (info) => (
         <div>
-            <p>{info.row.original?.customer} </p>
-            <p>{info.row.original?.phone} </p>
+            <p>{info.row.original?.customer?.name} </p>
         </div>
       ),
     }),
-    columnHelper.accessor("products", {
+    columnHelper.accessor("id", {
       header: ({ column }) => (
-        <p>Date</p>
+        <p>Order ID</p>
       ),
       cell: (info) => (
        <div className="">
-        <p>{info.row.original?.date}</p>
+        <p>{info.row.original?.id}</p>
        </div>
       ),
     }),
-    columnHelper.accessor("isPublic", {
+    columnHelper.accessor("grandTotal", {
+      header: ({ column }) => (
+        <p>Cost</p>
+      ),
+      cell: (info) => (
+       <div className="">
+        <p>₦{formatAmountString(info.row.original?.grandTotal)}</p>
+       </div>
+      ),
+    }),
+    columnHelper.accessor("qtyTotal", {
+      header: ({ column }) => (
+        <p>Quantity</p>
+      ),
+      cell: (info) => (
+       <div>
+        <p className="pl-4">{info.row.original?.qtyTotal}</p>
+       </div>
+      ),
+    }),
+    columnHelper.accessor("deliveryType", {
+      header: ({ column }) => (
+        <p>Delivery Type</p>
+      ),
+      cell: (info) => (
+       <div>
+        <p className="">{info.row.original?.deliveryType}</p>
+       </div>
+      ),
+    }),
+    columnHelper.accessor("createdAt", {
+        header: ({ column }) => (
+          <p>Date</p>
+        ),
+        cell: (info) => {
+          return (
+            <div>
+             <p>{convertDate(info?.row?.original?.createdAt)}</p>
+            </div>
+          );
+        },
+    }),
+    columnHelper.accessor("status", {
       header: ({ column }) => (
         <p>Status</p>
       ),
@@ -59,15 +105,20 @@ export function ColumsOrderFN(onOpen: () => void) {
         return (
           <div>
             <p className={classNames(
-            info?.row?.original?.status === "Pending" 
+            info?.row?.original?.status === "PENDING" 
             ? "bg-[#FFFAEB] text-[#F79009]" 
-            : info?.row?.original?.status === "Cancelled" 
+            : info?.row?.original?.status === "CANCELED" 
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "Completed"
+            : info?.row?.original?.status === "SHIPPED"
             ? "text-[#027A48] bg-[#ECFDF3]"
-            : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
+            : info?.row?.original?.status === "COMPLETED"
+            ? "text-blue-500 bg-blue-50"
+            : info?.row?.original?.status === "PROCESSING"
+            ? "text-purple-500 bg-purple-50"
+            : "text-gray-500", 
+            " max-w-min p-1 px-2 rounded-2xl text-xs font-medium"
             )}>
-                <span className="w-3 h-3 rounded-full"></span>
+                <span className="rounded-full text-[1.2rem]">•</span>
                 {" "}
                {info?.row?.original?.status}
             </p>
@@ -76,39 +127,20 @@ export function ColumsOrderFN(onOpen: () => void) {
       },
     }),
     columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p>Total</p>
-      ),
+      header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
-          <div>
-           <p>{info?.row?.original?.total}</p>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p>Delivery Address</p>
-      ),
-      cell: (info) => {
-        return (
-          <div>
-           <p>{info?.row?.original?.address}</p>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p className="-pl-10">Action</p>
-      ),
-      cell: (info) => {
-        return (
-          <Flex>
-            <Link href={'/suppliers/orders/3066'} className="text-primary-500">
-                View
-            </Link>
+          <Flex justify={"flex-start"}>
+            <Menu placement="bottom-start">
+              <MenuButton>
+                <BsThreeDotsVertical className="" />
+              </MenuButton>
+              <MenuList>
+                <MenuItem>
+                  <Link href={`/suppliers/orders/${info.row.original.id}`}>View Order</Link>
+                </MenuItem>
+              </MenuList>
+            </Menu>
           </Flex>
         );
       },

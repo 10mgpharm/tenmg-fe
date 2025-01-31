@@ -72,7 +72,7 @@ export function ColumnsMemberFN(
         return (
           <Flex justify={"center"} alignItems={"center"} gap={8}>
             <Icon as={IoTrashOutline} w={6} h={6} cursor={"pointer"} onClick={() => onOpen()}/>
-            <Icon as={LuPen} w={5} h={5} cursor={"pointer"} />
+            {/* <Icon as={LuPen} w={5} h={5} cursor={"pointer"} /> */}
           </Flex>
         );
       },

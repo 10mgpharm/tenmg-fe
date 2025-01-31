@@ -32,7 +32,6 @@ import EmptyOrder from '@/app/(protected)/suppliers/orders/_components/EmptyOrde
 import { MemberData } from "@/data/mockdata";
 import { ColumsMemberFN } from "../tables/memberTable";
 import InviteMember from "./InviteMember";
-import CreateRole from "./CreateRole";
 import ConfirmModal from "./ConfirmModal";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
@@ -40,6 +39,9 @@ import { NextAuthUserSession, User } from "@/types";
 import { SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
+import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
+import ViewUserModal from "../../users/_components/ViewUserModal";
+
 
 interface IFormInput {
     fullName: string;
@@ -78,7 +80,7 @@ const Members = () => {
     const fetchTeamMembers = useCallback(async () => {
         try {
         const response = await requestClient({ token: token }).get(
-            "/admin/settings/invite/team-members"
+            "/admin/settings/invite"
         );
         if (response.status === 200) {
             setAllMembersData(response.data.data);
@@ -86,7 +88,7 @@ const Members = () => {
         } catch (error) {
             toast.error(handleServerErrorMessage(error));
         }
-    }, [token]);
+    }, [token, setAllMembersData]);
 
     const handleDeleteModal = useCallback(
         (id: any) => {
@@ -103,7 +105,7 @@ const Members = () => {
           setIsLoadingAction(true);
           try {
             const response = await requestClient({ token }).delete(
-              `admin/users/${userId}`
+              `/admin/settings/invite/${userId}`
             );
     
             if (response.status === 200) {
@@ -127,6 +129,31 @@ const Members = () => {
         },
         [onOpenView]
       );
+
+      const handleStatusToggle = useCallback(
+        async (actionType) => {
+          if (!token || !userId) return;
+          setIsLoadingAction(true);
+          try {
+            const response = await requestClient({
+              token: token,
+            }).patch(`/admin/users/${userId}/status`, {
+              status: actionType?.toUpperCase(),
+            });
+            if (response.status === 200) {
+              toast.success(response.data.message);
+              fetchTeamMembers();
+            }
+          } catch (error) {
+            const errorMessage = handleServerErrorMessage(error);
+            toast.error(errorMessage);
+          } finally {
+            setIsLoadingAction(false);
+            onClose();
+          }
+        },
+        [token, userId, fetchTeamMembers, onClose]
+      );
     
       const handleOpenModal = useCallback(
         (id: number, action: any) => {
@@ -147,9 +174,11 @@ const Members = () => {
 
     const table = useReactTable({
         data: memoizedData,
-        columns: ColumsMemberFN(onOpenRemove,    handleDeleteModal,
-            
-            handleOpenModal),
+        columns: ColumsMemberFN(
+            onOpenRemove,    
+            handleDeleteModal,
+            handleOpenModal,
+            handleViewModal),
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -248,6 +277,20 @@ const Members = () => {
         </div>
         <InviteMember onClose={onClose} isOpen={isOpen} onSubmit={onSubmit} isLoading={isLoading} token={token} accountType="admin" />
         <ConfirmModal isOpen={isOpenRemove} onClose={onCloseRemove}  handleRequest={confirmDelete}/>
+        
+        <ViewUserModal
+        isOpen={isOpenView}
+        onClose={onCloseView}
+        id={userId}
+      />
+
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={"User"}
+        actionType={actionType}
+        onConfirm={() => handleStatusToggle(actionType)}
+      />
     </div>
   )
 }
