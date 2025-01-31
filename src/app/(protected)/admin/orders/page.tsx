@@ -10,7 +10,6 @@ import {
     Button, 
     Flex,
 } from '@chakra-ui/react'
-import { adminOrderData } from '@/data/mockdata'
 import OrderPage from './_components/OrderPage';
 import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -20,11 +19,6 @@ import { useDebouncedValue } from '@/utils/debounce';
 import SearchInput from '../../vendors/_components/SearchInput';
 
 const Orders = () => {
-
-    const pendingOrder = adminOrderData.filter((order) => order.status === "Pending");
-    const completedOrder = adminOrderData.filter((order) => order.status === "Completed");
-    const cancelledOrder = adminOrderData.filter((order) => order.status === "Cancelled");
-    const shippedOrders = adminOrderData.filter((order) => order.status === "Shipped");
 
     const session = useSession();
     const sessionData = session?.data as NextAuthUserSession;
@@ -81,7 +75,7 @@ const Orders = () => {
                     <div className='flex items-center gap-3'>
                         <Text>All Orders</Text>
                         <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {adminOrderData?.length}
+                            20
                         </p>
                     </div>
                 </Tab>
@@ -89,7 +83,15 @@ const Orders = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Pending</Text>
                         <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {pendingOrder?.length}
+                            10
+                        </p>
+                    </div>
+                </Tab>
+                <Tab onClick={() => setStatus("processing")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
+                    <div className='flex items-center gap-3'>
+                        <Text>Processing</Text>
+                        <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            6
                         </p>
                     </div>
                 </Tab>
@@ -97,7 +99,7 @@ const Orders = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Cancelled</Text>
                         <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {cancelledOrder?.length}
+                            8
                         </p>
                     </div>
                 </Tab>
@@ -105,7 +107,7 @@ const Orders = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Shipped</Text>
                         <p className='bg-blue-50 text-blue-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {shippedOrders?.length}
+                            3
                         </p>
                     </div>
                 </Tab>
@@ -113,7 +115,7 @@ const Orders = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Completed</Text>
                         <p className='bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {completedOrder?.length}
+                            5
                         </p>
                     </div>
                 </Tab>
@@ -135,6 +137,17 @@ const Orders = () => {
                     orders={orders} 
                     loading={loading} 
                     type="pending" 
+                    fetchOrders={fetchOrders}
+                    pageCount={pageCount}
+                    globalFilter={globalFilter}
+                    setPageCount={setPageCount}
+                    />
+                </TabPanel>
+                <TabPanel>
+                    <OrderPage 
+                    orders={orders} 
+                    loading={loading} 
+                    type="processing" 
                     fetchOrders={fetchOrders}
                     pageCount={pageCount}
                     globalFilter={globalFilter}

@@ -12,7 +12,9 @@ export function ColumsOrderFN(
   pageIndex: number, 
   pageSize: number, 
   type: string,
+  onOpenShip: () => void,
   onOpenProcess: () => void,
+  onOpenComplete: () => void,
   onOpenCancelled: () => void,
   onOpenRefunded: () => void,
   setSelectedOrder: (item: any) => void,
@@ -118,6 +120,8 @@ export function ColumsOrderFN(
             ? "text-[#027A48] bg-[#ECFDF3]"
             : info?.row?.original?.status === "COMPLETED"
             ? "text-blue-500 bg-blue-50"
+            : info?.row?.original?.status === "PROCESSING"
+            ? "text-purple-500 bg-purple-50"
             : "text-gray-500", 
             " max-w-min p-1 px-2 rounded-2xl text-xs font-medium"
             )}>
@@ -140,7 +144,7 @@ export function ColumsOrderFN(
               </MenuButton>
               <MenuList>
                 <MenuItem>
-                  <Link href={`/admin/products/${info.row.original.id}`}>View Order</Link>
+                  <Link href={`/admin/orders/${info.row.original.id}`}>View Order</Link>
                 </MenuItem>
                 {
                   info.row.original.status === "PENDING" && (
@@ -152,6 +156,29 @@ export function ColumsOrderFN(
                       }}
                       >
                         Process Order
+                      </MenuItem>
+                      <MenuItem
+                      color={"red.500"}
+                      onClick={() => {
+                        setSelectedOrder(info.row.original)
+                        onOpenCancelled()
+                      }}
+                      >
+                        Cancel Order
+                      </MenuItem>
+                    </>
+                  )
+                }
+                {
+                  info.row.original.status === "PROCESSING" && (
+                    <>
+                      <MenuItem
+                      onClick={() => {
+                        setSelectedOrder(info.row.original)
+                        onOpenShip()
+                      }}
+                      >
+                        Ship Order
                       </MenuItem>
                       <MenuItem
                       color={"red.500"}
@@ -185,10 +212,10 @@ export function ColumsOrderFN(
                       <MenuItem
                       onClick={() => {
                         setSelectedOrder(info.row.original)
-                        onOpenProcess()
+                        onOpenComplete();
                       }}
                       >
-                        Complete Order
+                        Delivered
                       </MenuItem>
                     </>
                   )
