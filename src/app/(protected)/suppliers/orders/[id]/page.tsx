@@ -23,7 +23,7 @@ const OrderDetails = ({params}: {params : any}) => {
   const fetchOrderDetail = useCallback(async () => {
     setLoading(true);
     try {
-      let query = `/admin/orders/get-order-details/${params?.id}`
+      let query = `/supplier/orders/get-order-details/${params?.id}`
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
         setOrder(response.data.data);
