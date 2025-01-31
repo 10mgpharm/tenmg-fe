@@ -56,6 +56,8 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedOrder, setSelectedOrder] = useState<OrderData>();
 
+    const{  isOpen: isOpenship, onClose: onCloseShip, onOpen: onOpenShip } = useDisclosure();
+    const{  isOpen: isOpenComplete, onClose: onCloseComplete, onOpen: onOpenComplete } = useDisclosure();
     const{  isOpen: isOpenRefunded, onClose: onCloseRefunded, onOpen: onOpenRefunded } = useDisclosure();
     const { isOpen: isOpenProcess, onClose: onCloseProcess, onOpen: onOpenProcess } = useDisclosure();
     const { isOpen: isOpenCancelled, onClose: onCloseCancelled, onOpen: onOpenCancelled } = useDisclosure();
@@ -66,9 +68,11 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
         data: memoizedData,
         columns: ColumsOrderFN(
             pageCount, 
-            15, 
+            20, 
             type, 
+            onOpenShip,
             onOpenProcess, 
+            onOpenComplete,
             onOpenCancelled,
             onOpenRefunded,
             setSelectedOrder
@@ -89,7 +93,14 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
             if(status === "processing"){
                 formdata = {
                     "orderId": selectedOrder.id,
-                    "status": "PROCESSING"
+                    "status": "PROCESSING",
+                    "requiresRefund": false,
+                }
+            }else if(status === "shipping"){
+                formdata = {
+                    "orderId": selectedOrder.id,
+                    "status": "SHIPPED",
+                    "requiresRefund": false,
                 }
             }else if(status === "cancelled" && comment){
                 formdata = {
@@ -104,6 +115,12 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
                     "orderId": selectedOrder.id,
                     "status": "REFUNDED",
                 }
+            }else if(status === "completed"){
+                formdata = {
+                    "orderId": selectedOrder.id,
+                    "status": "COMPLETED",
+                    "requiresRefund": false,
+                }
             }
             const response = await requestClient({token: token}).post(
                 `/admin/orders/change-order-status`,
@@ -112,6 +129,10 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
             if(response.status === 200){
                 toast.success(response?.data?.message);
                 fetchOrders();
+                onCloseShip();
+                onCloseProcess();
+                onCloseRefunded();
+                onCloseCancelled();
                 setIsLoading(false);
             }
         } catch (error) {
@@ -208,6 +229,60 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
                     variant={"outline"}
                     className='cursor-pointer'
                     onClick={onCloseProcess}>
+                        Cancel
+                    </Button>
+                </div>
+            </div>
+        </ModalWrapper>
+        <ModalWrapper
+        isOpen={isOpenship} 
+        onClose={onCloseShip}
+        title="Change Order Status"
+        >
+            <div className="mb-8">
+                <p className='leading-6 text-gray-500 mt-2'>
+                You are about to change the status of this order to 
+                <span className='font-semibold text-gray-600'> Shipping</span>. Click proceed if you wish to continue.
+                </p>
+                <div className="flex justify-end gap-3 mt-8">
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleStatusChange("shipping")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
+                        Proceed
+                    </Button>
+                    <Button 
+                    variant={"outline"}
+                    className='cursor-pointer'
+                    onClick={onCloseShip}>
+                        Cancel
+                    </Button>
+                </div>
+            </div>
+        </ModalWrapper>
+        <ModalWrapper
+        isOpen={isOpenComplete} 
+        onClose={onCloseComplete}
+        title="Change Order Status"
+        >
+            <div className="mb-8">
+                <p className='leading-6 text-gray-500 mt-2'>
+                You are about to change the status of this order to 
+                <span className='font-semibold text-gray-600'> Completed</span>. Click proceed if you wish to continue.
+                </p>
+                <div className="flex justify-end gap-3 mt-8">
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    onClick={() => handleStatusChange("completed")} 
+                    className='bg-primary-600 text-white p-3 rounded-md'>
+                        Proceed
+                    </Button>
+                    <Button 
+                    variant={"outline"}
+                    className='cursor-pointer'
+                    onClick={onCloseComplete}>
                         Cancel
                     </Button>
                 </div>
