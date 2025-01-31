@@ -36,7 +36,6 @@ export default function PaymentPage() {
     }
   }, [cart])
 
-  console.log("cartItems", cartItems)
 
   const breadCrumb = [
     {
@@ -69,7 +68,7 @@ export default function PaymentPage() {
         );
         if (response.status === 200) {
           const data = response.data.data;
-          setShippingAddresses(data[0] || []);
+          setShippingAddresses(data?.find(item => item?.isDefault === true));
         } else {
           toast.error(`Error: ${response.data.message}`);
         }
@@ -84,6 +83,7 @@ export default function PaymentPage() {
     fetchAddresses();
   }, [userToken]);
 
+
   const [loadingPayment, setLoadingPayment] = useState(false);
   // !Note that this function is not the same as the order payment. This is a temporary fucntion to test the payment page
   const submiOrder = async () => {
@@ -91,7 +91,8 @@ export default function PaymentPage() {
     const orderData = {
       "orderId": cartItems?.id,
       "paymentMethodId": 1,
-      "deliveryAddress": "My address",
+      "deliveryAddress": shippingAddresses?.id,
+      // "deliveryAddress": "My address",
       "deliveryType": "STANDARD"
     }
     setLoadingPayment(true);
@@ -102,6 +103,7 @@ export default function PaymentPage() {
       );
       if (response.status === 200) {
         toast.success(response.data.message);
+        await requestClient({ token: userToken }).post('/storefront/clear-cart');
         router.push('/storefront')
       } else {
         toast.error(`Error: ${response.data.message}`);
@@ -121,22 +123,29 @@ export default function PaymentPage() {
 
         <div className='col-span-1 lg:col-span-4 '>
           <div className='w-full border border-r-gray-100 rounded-t-2xl overflow-hidden'>
-            <div className='flex items-center justify-between p-4 bg-primary-100'>
-              <h3 className='font-semibold text-lg'>Order Summary</h3>
-              <Button onClick={() => router.push('/storefront/settings/shipping-address')} variant={'outline'} colorScheme={'primary'} size={'sm'}>Edit</Button>
-            </div>
-            <div>
-              <div
-                className="p-5 flex flex-col gap-2 mx-auto w-full"
-              >
-                <h2 className="text-xl font-bold">{shippingAddresses.name}</h2>
-                <p className="text-base font-bold">{shippingAddresses.phoneNumber}</p>
-                <p className="text-sm text-gray-500">
-                  {shippingAddresses.address}, {shippingAddresses.city}, {shippingAddresses.state}, {shippingAddresses.country}
-                </p>
+            {shippingAddresses ?
 
+              <>
+                <div className='flex items-center justify-between p-4 bg-primary-100'>
+                  <h3 className='font-semibold text-lg'>Order Summary</h3>
+                  <Button onClick={() => router.push('/storefront/settings/shipping-address')} variant={'outline'} colorScheme={'primary'} size={'sm'}>Edit</Button>
+                </div>
+                <div
+                  className="p-5 flex flex-col gap-2 mx-auto w-full"
+                >
+                  <h2 className="text-xl font-bold">{shippingAddresses.name}</h2>
+                  <p className="text-base font-bold">{shippingAddresses.phoneNumber}</p>
+                  <p className="text-sm text-gray-500">
+                    {shippingAddresses.address}, {shippingAddresses.city}, {shippingAddresses.state}, {shippingAddresses.country}
+                  </p>
+
+                </div>
+              </>
+              : <div className='flex flex-col items-center justify-center p-4'>
+                <p className="text-center py-4">You have not set a default shipping address</p>
+                <Button onClick={() => router.push('/storefront/settings/shipping-address')} variant={'outline'} colorScheme={'primary'} size={'sm'}>Set Address</Button>
               </div>
-            </div>
+            }
           </div>
 
           <div className='w-full border border-r-gray-100 rounded-t-2xl overflow-hidden mt-10'>
@@ -225,12 +234,14 @@ export default function PaymentPage() {
                 <p>Cart Total:</p>
                 <p className='font-semibold'>{cartItems?.orderTotal}</p>
               </div>
-              {/* <div>
-                <p>Discount Total:</p>
-                <p></p>
-              </div> */}
+
               <div>
                 <p>Shipping fee:</p>
+                <p></p>
+              </div>
+
+              <div>
+                <p>TenMg Commission:</p>
                 <p></p>
               </div>
             </div>

@@ -75,6 +75,7 @@ const InviteMember = ({
       if (response.status === 200) {
         toast.success(response?.data?.message);
         reset();
+        fetchTeamMembers();
         onClose();
       }
     } catch (error) {

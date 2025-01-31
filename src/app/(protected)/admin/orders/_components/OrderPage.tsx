@@ -89,7 +89,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
             if(status === "processing"){
                 formdata = {
                     "orderId": selectedOrder.id,
-                    "status": "SHIPPED"
+                    "status": "PROCESSING"
                 }
             }else if(status === "cancelled" && comment){
                 formdata = {
