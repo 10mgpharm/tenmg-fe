@@ -133,7 +133,6 @@ const BrandSetup = (
                 <Tr color={"primary.500"} roundedTop={"md"}>
                   <Th>Date Created</Th>
                   <Th>Name</Th>
-                  <Th>Active</Th>
                   <Th>Status</Th>
                   <Th>Action</Th>
                 </Tr>
@@ -144,7 +143,6 @@ const BrandSetup = (
                     <Tr key={item.id}>
                       <Td py={1} lineHeight={3} fontSize={"14px"}>{item.createdAt}</Td>
                       <Td py={1} lineHeight={3} fontSize={"14px"}>{item.name}</Td>
-                      <Td py={1} lineHeight={3} fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
                       <Td py={1} lineHeight={3} fontSize={"13px"}>{item.status}</Td>
                       <Td py={1} lineHeight={3} fontSize={"14px"}>
                         <Flex gap={2}>
