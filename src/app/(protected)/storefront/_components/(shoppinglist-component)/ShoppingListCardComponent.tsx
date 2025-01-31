@@ -1,14 +1,20 @@
 import requestClient from '@/lib/requestClient'
 import { NextAuthUserSession } from '@/types';
-import { Badge, Button, Divider } from '@chakra-ui/react'
+import { Badge, Button, Divider, Spinner } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
 import React from 'react'
 import { toast } from 'react-toastify';
+import { useCartStore } from '../../storeFrontState/useCartStore';
+import { useRouter } from 'next/navigation';
 
 export default function ShoppingListCardComponent({ product }) {
 
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
+
+  const router = useRouter()
+
+  const { addToCart, updateLoading, } = useCartStore();
 
   const handleRemove = async (id) => {
     try {
@@ -23,6 +29,16 @@ export default function ShoppingListCardComponent({ product }) {
     }
   }
 
+  const handleAddToCart = (productId: string, action: string) => {
+    const data = {
+      productId,
+      qty: 1,
+      action,
+    };
+    addToCart(data, userData?.user?.token);
+    router.push('/storefront/checkout')
+  };
+
   {/* Is there a way to chck if the product is available before proceeding to buy 
   product description missing from the backend
   */}
@@ -36,16 +52,13 @@ export default function ShoppingListCardComponent({ product }) {
             <h4 className='text-lg font-medium text-gray-700 space-y-1'>{product?.productName}</h4>
             <p className='text-base  text-gray-500 my-1'>{product?.brandName}</p>
             <p className='text-sm  text-gray-500 my-1'>{product?.purchaseDate}</p>
-
             <p className='text-xs  text-gray-700 my-1'>{product?.description}</p>
           </div>
         </div>
         <div className='space-x-4 '>
-          <Button className='' variant={"outline"} colorScheme={"blue"} size="sm">Buy Now</Button>
-          <Button variant={"outline"} colorScheme={"red"} size="sm" onClick={() => handleRemove(product?.id)}>Remove</Button>
-
+          {product?.productId && <Button className='' variant={"outline"} colorScheme={"blue"} size="sm" onClick={() => handleAddToCart(product?.productId, "add")}>{updateLoading ? <Spinner /> : "Buy Now"}</Button>}
+          <Button variant={"outline"} colorScheme={"red"} size="sm" onClick={() => { handleRemove(product?.id); }}>Remove</Button>
         </div>
-
       </div>
     </div>
   )

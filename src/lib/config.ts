@@ -7,6 +7,7 @@ const config: IConfig = {
     appUrl: process.env.NEXT_PUBLIC_APP_URL ?? '',
     apiBaseUrl: process.env.NEXT_PUBLIC_API_URL ?? '',
     nextAuthSecret: process.env.NEXTAUTH_SECRET ?? '',
+    fincraPublicKey: process.env.NEXT_PUBLIC_FINCRA_PUBKEY ?? '',
     email: {
         host: process.env.EMAIL_SERVER_HOST,
         port: parseInt(process.env.EMAIL_SERVER_PORT as string, 10),

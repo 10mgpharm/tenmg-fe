@@ -29,6 +29,7 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { useCartStore } from "../storeFrontState/useCartStore";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const CartDrawer = ({
   isOpen,
@@ -51,7 +52,7 @@ const CartDrawer = ({
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const { cart, addToCart, updateLoading, sycnCart } = useCartStore();
+  const { cart, addToCart, updateLoading, sycnCart, fetchCart, clearCart } = useCartStore();
 
   useEffect(() => {
     if (cart) {
@@ -130,6 +131,13 @@ const CartDrawer = ({
     addToCart(data, userData?.user?.token)
   };
 
+
+  const handleClearCart = async () => {
+    clearCart(userData?.user?.token);
+    onClose();
+    window.location.reload();
+  }
+
   return (
     <Drawer
       isOpen={isOpen}
@@ -205,7 +213,7 @@ const CartDrawer = ({
                   <Button width="full" colorScheme="blue" onClick={handleCheckout}>
                     Checkout
                   </Button>
-                  <Button width="full" variant="outline" disabled>
+                  <Button width="full" variant="outline" onClick={handleClearCart}>
                     Clear Cart
                   </Button>
                 </Stack>
@@ -247,6 +255,7 @@ const CartItemComp = ({
       updateQuantity(item?.product?.id, newQuantity);
     }
   };
+
 
   return (
     <HStack

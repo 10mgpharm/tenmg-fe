@@ -353,7 +353,7 @@ export interface OrderData {
   status: string;
   totalWeight: number;
   updatedAt: string;
-  item: any
+  items: any;
 }
 export interface OrderResponseData {
   data: OrderData[];
