@@ -97,17 +97,17 @@ export function ColumsMemberFN(
               <MenuList>
                 {info?.row?.original?.status === "ACCEPTED" ? (
                   <>
-                    <Link href={`/admin/users/${info?.row?.original?.userId}`}>
+                    <Link href={`/admin/users/${info?.row?.original?.user?.id}`}>
                       <MenuItem>View Details</MenuItem>
                     </Link>
 
-                    <MenuItem
-                      onClick={() =>
-                        handleOpenModal(info.row.original?.userId, "SUSPENDED")
-                      }
-                    >
-                      Suspend Member
-                    </MenuItem>
+                    {
+                      info?.row?.original?.user?.active === 0 ? 
+                      <MenuItem  color="red.500" onClick={() => handleOpenModal(info.row.original?.user?.id, "ACTIVE")}>Activate Member</MenuItem>
+                      : 
+                      <MenuItem onClick={() => handleOpenModal(info.row.original?.user?.id, "SUSPENDED")}>Suspend Member</MenuItem>
+                      
+                    }
                   </>
                 ) : (
                   <MenuItem

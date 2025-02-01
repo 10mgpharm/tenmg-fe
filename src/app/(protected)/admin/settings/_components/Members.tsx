@@ -90,6 +90,7 @@ const Members = () => {
         setAllMembersData(response.data.data);
       }
     } catch (error) {
+      console.log("Printing Fetch Error", error);
       toast.error(handleServerErrorMessage(error));
     }
   }, [token, setAllMembersData]);
@@ -125,15 +126,6 @@ const Members = () => {
       }
     }
   }, [memberId, token, onCloseRemove, fetchTeamMembers]);
-
-  const handleViewModal = useCallback(
-    (id: number, usersId: number) => {
-      setMemberId(id);
-      setUserId(usersId);
-      onOpenView();
-    },
-    [onOpenView]
-  );
 
   const handleStatusToggle = useCallback(
     async (actionType) => {
@@ -193,24 +185,6 @@ const Members = () => {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    try {
-      setIsLoading(true);
-      const response = await requestClient({ token: token }).post(
-        "/admin/settings/invite",
-        data
-      );
-      if (response.status === 200) {
-        toast.success(response?.data?.message);
-        fetchTeamMembers();
-        onClose();
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error(handleServerErrorMessage(error));
-    }
-  };
 
   return (
     <div>
@@ -287,9 +261,8 @@ const Members = () => {
       <InviteMember
         onClose={onClose}
         isOpen={isOpen}
-        onSubmit={onSubmit}
-        isLoading={isLoading}
         token={token}
+        fetchTeamMembers={fetchTeamMembers}
         accountType="admin"
       />
       <ConfirmModal

@@ -44,7 +44,6 @@ const Page = ({ params }: { params: { id: string } }) => {
   const token = sessionData?.user?.token;
 
   const fetchUser = useCallback(async () => {
-    console.log(params.id, "dffdfdfd", token);
     if (!params.id || !token) {
       setLoading(false);
       return;
@@ -63,8 +62,6 @@ const Page = ({ params }: { params: { id: string } }) => {
       setLoading(false);
     }
   }, [token, params.id]);
-
-  console.log(userData);
 
   useEffect(() => {
     if (!token) return;
@@ -100,7 +97,7 @@ const Page = ({ params }: { params: { id: string } }) => {
               </Tag>
             ) : (
               <Tag size={"sm"} colorScheme={"red"} maxW={"max-content"}>
-                Disabled
+                Suspended
               </Tag>
             )}
           </Flex>
@@ -152,7 +149,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                     </Tag>
                   ) : (
                     <Tag size={"sm"} colorScheme={"red"} maxW={"max-content"}>
-                      Disabled
+                      Suspended
                     </Tag>
                   )}
                 </Stack>
