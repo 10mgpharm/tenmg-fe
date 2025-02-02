@@ -47,8 +47,6 @@ const InviteMember = ({
   isOpen: boolean;
   onClose: () => void;
   accountType?: "vendor" | "admin";
-  onSubmit?: SubmitHandler<IFormInput>;
-  isLoading?: boolean;
   fetchTeamMembers?: () => void;
   token?: string;
 }) => {
