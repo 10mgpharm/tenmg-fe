@@ -1,4 +1,5 @@
 import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
 import { create } from "zustand";
 
 type CartItem = {
@@ -21,6 +22,7 @@ type CartState = {
   addToCart: (item, token: string) => Promise<void>;
   cartSize: string | number | null;
   sycnCart: (data, token) => Promise<void>;
+  clearCart: (token: string) => Promise<void>;
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -92,6 +94,22 @@ export const useCartStore = create<CartState>((set, get) => ({
     } catch (e) {
       console.log(e);
       set({ updateLoading: false });
+    }
+  },
+  clearCart: async (token: string) => {
+    try {
+      console.log("here ");
+      const resp = await requestClient({ token }).post(
+        "/storefront/clear-cart"
+      );
+      console.log("resp", resp);
+      if (resp?.data?.status === "success") {
+        toast.success("Cart cleared successfully");
+        await get().fetchCart(token);
+        set({ cartSize: 0 });
+      }
+    } catch (e) {
+      toast.error("Could not clear cart, please try again");
     }
   },
 }));
