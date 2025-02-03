@@ -113,7 +113,10 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
             }else if(status === "refunded"){
                 formdata = {
                     "orderId": selectedOrder.id,
-                    "status": "REFUNDED",
+                    "status": "CANCELED",
+                    "reason": "refunded",
+                    "requiresRefund": true,
+                    "refundStatus": "REFUNDED"
                 }
             }else if(status === "completed"){
                 formdata = {
@@ -151,6 +154,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
         }
     }
 
+    console.log(selectedOrder)
     return (
     <div>
         {
