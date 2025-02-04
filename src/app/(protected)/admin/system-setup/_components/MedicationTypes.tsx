@@ -110,10 +110,10 @@ const MedicationTypes = (
           <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"} shadow={"sm"}>
             <Thead bg={"#E8F1F8"}>
               <Tr color={"primary.500"} roundedTop={"md"}>
-                <Th>Date Created</Th>
                 <Th>Name</Th>
                 <Th>Variations</Th>
                 <Th>Status</Th>
+                <Th>Date Created</Th>
                 <Th>Action</Th>
               </Tr>
             </Thead>
@@ -121,12 +121,13 @@ const MedicationTypes = (
               {
                 data?.map((item: MedicationData) => (
                   <Tr key={item.id}>
-                    <Td py={1} lineHeight={3} fontSize={"14px"}>{item.createdAt}</Td>
+                    
                     <Td py={1} lineHeight={3} fontSize={"14px"}>{item.name}</Td>
                     <Td py={1} lineHeight={3} fontSize={"14px"}>
                       <Tag colorScheme={"yellow"} size={"sm"}>View Variation</Tag>
                     </Td>
                     <Td py={1} lineHeight={3} fontSize={"14px"} className="text-sm">{item.status}</Td>
+                    <Td py={1} lineHeight={3} fontSize={"14px"}>{item.createdAt}</Td>
                     <Td py={1} lineHeight={3} fontSize={"14px"}>
                       <Flex gap={2}>
                         <Button 
