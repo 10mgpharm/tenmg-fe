@@ -1,14 +1,19 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { Flex, Icon } from "@chakra-ui/react";
+import {
+  Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
 import { classNames, convertLetterCase } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoTrashOutline } from "react-icons/io5";
-import { LuPen } from "react-icons/lu";
 
 const columnHelper = createColumnHelper<any>();
 
 export function ColumnsMemberFN(
-  onOpen: () => void,
+  handleDeleteModal: (id: number) => void,
+  handleOpenModal?: (userId: number, action: any) => void
 ) {
   return [
     columnHelper.accessor("name", {
@@ -26,15 +31,15 @@ export function ColumnsMemberFN(
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Status</p>,
       cell: (info) => {
-        const status = convertLetterCase(info?.row?.original?.status)
-       
+        const status = convertLetterCase(info?.row?.original?.status);
+
         return (
           <div>
             <p
               className={classNames(
                 info?.row?.original?.status === "Removed"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "Accepted"
+                  : info?.row?.original?.status === "ACCEPTED"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : info?.row?.original?.status === "INVITED"
                   ? "text-blue-500 bg-blue-50"
@@ -42,7 +47,7 @@ export function ColumnsMemberFN(
                 " max-w-min p-1 px-2 rounded-2xl text-xs font-medium"
               )}
             >
-               {"• "}
+              {"• "}
               {status}
             </p>
           </div>
@@ -54,7 +59,9 @@ export function ColumnsMemberFN(
       header: ({ column }) => <p className="px-5">Role</p>,
       cell: (info) => (
         <div className="px-5">
-          <p className="font-medium">{convertLetterCase(info.row.original?.role)}</p>
+          <p className="font-medium">
+            {convertLetterCase(info.row.original?.role)}
+          </p>
         </div>
       ),
     }),
@@ -70,9 +77,22 @@ export function ColumnsMemberFN(
       header: ({ column }) => <p></p>,
       cell: (info) => {
         return (
-          <Flex justify={"center"} alignItems={"center"} gap={8}>
-            <Icon as={IoTrashOutline} w={6} h={6} cursor={"pointer"} onClick={() => onOpen()}/>
-            {/* <Icon as={LuPen} w={5} h={5} cursor={"pointer"} /> */}
+          <Flex justify={"left"}>
+            {info?.row?.original?.status === "INVITED" && (
+              <Menu>
+                <MenuButton>
+                  <BsThreeDotsVertical className="w-5 h-auto" />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem
+                    onClick={() => handleDeleteModal(info.row.original?.id)}
+                    color="red.500"
+                  >
+                    Revoke Invite
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
           </Flex>
         );
       },

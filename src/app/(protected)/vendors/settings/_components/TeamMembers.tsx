@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ColumnOrderState,
   RowSelectionState,
@@ -32,6 +32,8 @@ import { toast } from "react-toastify";
 import { SubmitHandler } from "react-hook-form";
 import DeleteModal from "../../_components/DeleteModal";
 import EmptyResult from "../../_components/EmptyResult";
+import ConfirmModal from "@/app/(protected)/admin/settings/_components/ConfirmModal";
+import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
 
 interface IFormInput {
   fullName: string;
@@ -50,14 +52,90 @@ const TeamMembers = ({
 }) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { onOpen: onOpenRemove, onClose: onCloseRemove, isOpen: isOpenRemove } = useDisclosure();
+  const {
+    onOpen: onOpenSuspend,
+    isOpen: isOpenSuspend,
+    onClose: onCloseSuspend,
+  } = useDisclosure();
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [memberId, setMemberId] = useState<number>();
+  const [userId, setUserId] = useState<number>();
+  const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
+  const [actionType, setActionType] = useState<any | null>(null);
+
+  const handleDeleteModal = useCallback(
+    (id: any) => {
+      const numericId = Number(id);
+      setMemberId(numericId);
+      onOpenRemove();
+    },
+    [onOpenRemove]
+  );
+
+  const confirmDelete = useCallback(async () => {
+    if (memberId !== undefined) {
+      if (!token || !memberId) return;
+      setIsLoadingAction(true);
+      try {
+        const response = await requestClient({ token }).delete(
+          `/vendor/settings/invite/${memberId}`
+        );
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onCloseRemove();
+          fetchTeamMembers();
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      } finally {
+        setIsLoadingAction(false);
+      }
+    }
+  }, [memberId, token, onCloseRemove, fetchTeamMembers]);
+
+  const handleStatusToggle = useCallback(
+    async (actionType) => {
+      if (!token || !userId) return;
+      setIsLoadingAction(true);
+      try {
+        const response = await requestClient({
+          token: token,
+        }).patch(`/vendor/users/${userId}/status`, {
+          status: actionType?.toUpperCase(),
+        });
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          fetchTeamMembers();
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      } finally {
+        setIsLoadingAction(false);
+        onCloseSuspend();
+      }
+    },
+    [token, userId, fetchTeamMembers, onCloseSuspend]
+  );
+
+  const handleOpenModal = useCallback(
+    (usersId: number, action: any) => {
+      setUserId(usersId);
+      setActionType(action);
+      onOpenSuspend();
+    },
+    [onOpenSuspend]
+  );
 
   const table = useReactTable({
     data: allMembersData,
-    columns: ColumnsMemberFN(onOpenRemove),
+    columns: ColumnsMemberFN(handleDeleteModal, handleOpenModal),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -135,7 +213,21 @@ const TeamMembers = ({
         fetchTeamMembers={fetchTeamMembers}
         token={token}
       />
-      <DeleteModal onClose={onCloseRemove} isOpen={isOpenRemove} title="Team Member" />
+      {/* <DeleteModal onClose={onCloseRemove} isOpen={isOpenRemove} title="Team Member" /> */}
+
+      <ConfirmModal
+        isOpen={isOpenRemove}
+        onClose={onCloseRemove}
+        handleRequest={confirmDelete}
+      />
+
+      <ConfirmationModal
+        isOpen={isOpenSuspend}
+        onClose={onCloseSuspend}
+        title={"User"}
+        actionType={actionType}
+        onConfirm={() => handleStatusToggle(actionType)}
+      />
     </div>
   );
 };

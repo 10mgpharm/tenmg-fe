@@ -170,15 +170,16 @@ export default function AddShoppingList() {
 
     const res = await addShoppingList(formData, userData?.user?.token);
 
-    if (res === "200") {
-      toast.success("Item added to shopping list successfully");
-      onClose();
-      setValue('productName', '');
-      setValue('brandName', '');
-      setValue('purchaseDate', '');
-      setValue('description', '');
-      setSelectedFile(null);
-    }
+    // if (res === "200") {
+    toast.success("Item added to shopping list successfully");
+    setValue('productName', '');
+    setValue('brandName', '');
+    setValue('purchaseDate', '');
+    setValue('description', '');
+    setSelectedFile(null);
+    onClose();
+    window.location.reload();
+    // }
   }
 
 
@@ -249,7 +250,7 @@ export default function AddShoppingList() {
                 />
               </FormControl>
               <FormControl isInvalid={!!errors.description}>
-                <FormLabel>Product Description</FormLabel>
+                <FormLabel>Note</FormLabel>
                 <Textarea
                   id="description"
                   // defaultValue={data?.description}
@@ -261,7 +262,7 @@ export default function AddShoppingList() {
                   {...register("description", {
                     required: true,
                   })}
-                />
+                >Leave a note for the item</Textarea>
               </FormControl>
               {/* </HStack> */}
               {/* <HStack gap={5}> */}
