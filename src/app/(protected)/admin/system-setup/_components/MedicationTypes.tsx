@@ -106,11 +106,12 @@ const MedicationTypes = (
           heading={`No Medication Type Yet`} 
           content={`You currently have no medication type. All medication types will appear here.`}
         /> : 
-        <TableContainer mt={5} minH={"500px"} rounded={"md"} maxWidth={"830px"} overflowX={"scroll"}>
+        <TableContainer mt={5} minH={"500px"} rounded={"md"} overflowX={"scroll"}>
           <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"} shadow={"sm"}>
             <Thead bg={"#E8F1F8"}>
               <Tr color={"primary.500"} roundedTop={"md"}>
                 <Th>Name</Th>
+                <Th>Active</Th>
                 <Th>Variations</Th>
                 <Th>Status</Th>
                 <Th>Date Created</Th>
@@ -123,6 +124,7 @@ const MedicationTypes = (
                   <Tr key={item.id}>
                     
                     <Td py={1} lineHeight={3} fontSize={"14px"}>{item.name}</Td>
+                    <Td py={1} lineHeight={3} fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
                     <Td py={1} lineHeight={3} fontSize={"14px"}>
                       <Tag colorScheme={"yellow"} size={"sm"}>View Variation</Tag>
                     </Td>
