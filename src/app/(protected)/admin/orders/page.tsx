@@ -17,7 +17,7 @@ import { NextAuthUserSession, OrderResponseData } from '@/types';
 import requestClient from '@/lib/requestClient';
 import { useDebouncedValue } from '@/utils/debounce';
 import SearchInput from '../../vendors/_components/SearchInput';
-interface CountProps {
+export interface CountProps {
     status: string;
     total: number;
 }
@@ -32,6 +32,7 @@ const Orders = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [orders, setOrders] = useState<OrderResponseData>();
     const [globalFilter, setGlobalFilter] = useState<string>("");
+    const [allCount, setAllCount] = useState<number>(0)
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
@@ -45,6 +46,9 @@ const Orders = () => {
             const response = await requestClient({ token: token }).get(query);
             if (response.status === 200) {
                 setOrders(response.data.data);
+                if(!status || status === "all"){
+                    setAllCount(response.data?.data?.meta?.total)
+                }
             }
             setLoading(false);
         } catch (error) {
@@ -95,7 +99,7 @@ const Orders = () => {
                     <div className='flex items-center gap-3'>
                         <Text>All Orders</Text>
                         <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            20
+                        {allCount}
                         </p>
                     </div>
                 </Tab>
