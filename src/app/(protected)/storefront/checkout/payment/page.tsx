@@ -13,6 +13,7 @@ import { CheckIcon } from '@heroicons/react/20/solid';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import Script from "next/script";
 
 export default function PaymentPage() {
 
@@ -86,13 +87,75 @@ export default function PaymentPage() {
 
   const [loadingPayment, setLoadingPayment] = useState(false);
   // !Note that this function is not the same as the order payment. This is a temporary fucntion to test the payment page
-  const submiOrder = async () => {
+
+
+  const [paymentLoading, setPaymentLoading] = useState(false);
+
+  useEffect(() => {
+    // Dynamically load Fincra's SDK
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/@fincra-engineering/checkout@2.2.0/dist/inline.min.js";
+    script.async = true;
+    script.onload = () => console.log("Fincra script loaded");
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+
+  //   Card Number: 5319 3178 0136 6660
+  // Expiry Date: 10/26
+  // CVV: 000
+
+  const verifyPayment = async () => {
+    try {
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/checkout",
+
+      );
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const payFincra = (e: React.FormEvent<HTMLFormElement>, ref) => {
+    e.preventDefault();
+
+    if (!window.Fincra) {
+      alert("Fincra SDK not loaded. Please try again.");
+      return;
+    }
+
+    window.Fincra.initialize({
+      key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
+      amount: 100,
+      currency: "NGN",
+      reference: ref,
+      customer: {
+        name: sessionData?.user?.name,
+        email: sessionData?.user?.email,
+        phoneNumber: "08163177517",
+      },
+      feeBearer: "business", // or "customer"
+      onClose: () => alert("Transaction was not completed, window closed."),
+      onSuccess: (data: any) => {
+        console.log("Payment Success", data);
+        alert(`Payment complete! Reference: ${data.reference}`);
+        return data?.reference
+      },
+    });
+  };
+
+
+  const submiOrder = async (e) => {
 
     const orderData = {
       "orderId": cartItems?.id,
       "paymentMethodId": 1,
-      "deliveryAddress": shippingAddresses?.id,
-      // "deliveryAddress": "My address",
+      // "deliveryAddress": shippingAddresses?.id,
+      "deliveryAddress": "My address",
       "deliveryType": "STANDARD"
     }
     setLoadingPayment(true);
@@ -101,10 +164,13 @@ export default function PaymentPage() {
         "/storefront/checkout",
         orderData
       );
+      console.log("submit order res", response?.data?.data?.reference)
       if (response.status === 200) {
-        toast.success(response.data.message);
-        await requestClient({ token: userToken }).post('/storefront/clear-cart');
-        router.push('/storefront')
+        payFincra(e, response?.data?.data?.reference)
+
+        // toast.success(response.data.message);
+        // await requestClient({ token: userToken }).post('/storefront/clear-cart');
+        // router.push('/storefront')
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -118,6 +184,11 @@ export default function PaymentPage() {
 
   return (
     <>
+      {/* <Script
+        src="https://unpkg.com/@fincra-engineering/checkout@2.2.0/dist/inline.min.js" // Replace with the correct Fincra script URL
+        strategy="afterInteractive"
+        onLoad={() => console.log("Fincra script loaded.")}
+      /> */}
       <BreadCrumbBanner breadCrumbsData={breadCrumb} />
       <Box p={4} mt={2} className='grid grid-cols-1 lg:grid-cols-6 w-full lg:w-10/12 mx-auto gap-8'>
 
@@ -254,6 +325,7 @@ export default function PaymentPage() {
 
             <Divider my={5} />
             <Button colorScheme={'primary'} onClick={submiOrder}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button>
+            {/* <Button colorScheme={'primary'} onClick={payFincra}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button> */}
           </div>
         </div>
       </Box>
