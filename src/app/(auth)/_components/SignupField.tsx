@@ -388,7 +388,7 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
               color="primary.500"
             >
               Sign Up as a
-              {title !== "vendor" ? " Vendor" : " Supplier or Pharmacy"}
+              {title === "vendor" ? "Supplier or Pharmacy" : " Vendor"}
             </Link>
           </Text>
         </Box>

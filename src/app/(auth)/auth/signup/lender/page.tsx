@@ -12,7 +12,7 @@ const SignUpPharmacy = async () => {
   }
   return (
     <AuthWrapper type="others">
-      <section className="h-full md:w-1/2 w-full flex items-center">
+      <section className="h-auto md:w-1/2 w-full flex items-center">
         <SignUpField title="lender" />
       </section>
     </AuthWrapper>
