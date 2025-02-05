@@ -117,6 +117,10 @@ const OrderDetails = ({params}: {params : any}) => {
               <p className="text-sm text-gray-400">₦{formatAmountString(order?.orderTotal)}</p>
             </div>
             <div className="flex items-center justify-between py-1">
+              <p className="text-sm text-gray-400">Commission</p>
+              <p className="text-sm text-gray-400">₦{formatAmountString(order?.totalTenmgComission)}</p>
+            </div>
+            <div className="flex items-center justify-between py-1">
               <p className="font-semibold text-sm">Total</p>
               <p className="font-semibold text-sm">₦{formatAmountString(order?.grandTotal)}</p>
             </div>
