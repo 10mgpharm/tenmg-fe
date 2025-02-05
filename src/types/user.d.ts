@@ -353,6 +353,7 @@ export interface OrderData {
   status: string;
   refundStatus: string;
   totalWeight: number;
+  totalTenmgComission: number;
   updatedAt: string;
   items: any;
 }
