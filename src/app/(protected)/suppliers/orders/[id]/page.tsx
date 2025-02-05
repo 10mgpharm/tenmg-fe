@@ -9,6 +9,7 @@ import requestClient from '@/lib/requestClient';
 import { NextAuthUserSession, OrderData } from '@/types';
 import { convertDate } from '@/utils/formatDate';
 import { Avatar } from '@chakra-ui/react';
+import { formatAmountString } from '@/utils';
 
 const OrderDetails = ({params}: {params : any}) => {
 
@@ -99,12 +100,20 @@ const OrderDetails = ({params}: {params : any}) => {
             </div>
             <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
             <div className="flex items-center justify-between py-1">
-              <p className="text-xs text-gray-400">Subtotal</p>
-              <p className="text-xs text-gray-400">#{order?.orderTotal}</p>
+              <p className="text-sm text-gray-400">Total Order</p>
+              <p className="text-sm text-gray-400">₦{formatAmountString(order?.orderTotal)}</p>
             </div>
             <div className="flex items-center justify-between py-1">
-              <p className="font-semibold text-sm">Total</p>
-              <p className="font-semibold text-sm">#{order?.grandTotal}</p>
+              <p className="text-sm text-gray-400">10mg Commission</p>
+              <p className="text-sm text-gray-400">₦{formatAmountString(order?.totalTenmgComission)}</p>
+            </div>
+            <div className="flex items-center justify-between py-1">
+              <p className="text-sm text-gray-400">Shipping Fee</p>
+              <p className="text-sm text-gray-400">₦{formatAmountString(order?.logisticTotal)}</p>
+            </div>
+            <div className="flex items-center justify-between py-1">
+              <p className="font-semibold text-sm">Total for Supplier</p>
+              <p className="font-semibold text-sm">₦{formatAmountString(order?.grandTotal)}</p>
             </div>
           </div>
         </div>
