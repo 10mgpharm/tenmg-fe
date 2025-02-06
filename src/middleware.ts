@@ -41,6 +41,7 @@ export async function middleware(request: NextRequest) {
 
     // Define the allowed prefixes for each entity type
     const allowedRoutes: Record<string, string> = {
+      LENDER: '/lenders',
       VENDOR: '/vendors',
       SUPPLIER: '/suppliers',
       ADMIN: '/admin',
