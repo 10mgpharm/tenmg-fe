@@ -22,8 +22,8 @@ interface IFormInput {
 }
 
 const VerificationComponent = () => {
+  
   const router = useRouter();
-
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
