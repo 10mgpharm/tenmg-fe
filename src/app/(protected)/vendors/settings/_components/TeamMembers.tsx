@@ -106,7 +106,7 @@ const TeamMembers = ({
       try {
         const response = await requestClient({
           token: token,
-        }).patch(`/vendor/users/${userId}/status`, {
+        }).patch(`/vendor/settings/users/${userId}/status`, {
           status: actionType?.toUpperCase(),
         });
         if (response.status === 200) {
