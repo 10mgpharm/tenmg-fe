@@ -58,7 +58,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const fetchingMedicationTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/medication-types`
+                `/supplier/medication-types?active=active&status=approved`
             );
         if(response.status === 200){
             setMedicationData(response.data.data);
@@ -71,7 +71,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const fetchingBrandTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/brands`
+                `/supplier/brands?active=active&status=approved`
             );
         if(response.status === 200){
             setBrandData(response.data.data);
@@ -84,7 +84,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const fetchingCategoriesTypes = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/categories`
+                `/supplier/categories?active=active&status=approved`
             );
         if(response.status === 200){
             setCategoryData(response.data.data);

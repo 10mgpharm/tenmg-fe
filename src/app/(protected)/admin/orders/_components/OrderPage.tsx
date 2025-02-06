@@ -41,10 +41,11 @@ interface OrderPageProp {
     loading: boolean;
     pageCount: number;
     globalFilter: string;
+    fetchOrderCount?: () => void;
     setPageCount: Dispatch<SetStateAction<number>>
 }
 
-const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter, fetchOrders}: OrderPageProp) => {
+const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter, fetchOrders, fetchOrderCount }: OrderPageProp) => {
 
     const session = useSession();
     const sessionData = session?.data as NextAuthUserSession;
@@ -113,7 +114,10 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
             }else if(status === "refunded"){
                 formdata = {
                     "orderId": selectedOrder.id,
-                    "status": "REFUNDED",
+                    "status": "CANCELED",
+                    "reason": "refunded",
+                    "requiresRefund": true,
+                    "refundStatus": "REFUNDED"
                 }
             }else if(status === "completed"){
                 formdata = {
@@ -129,6 +133,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
             if(response.status === 200){
                 toast.success(response?.data?.message);
                 fetchOrders();
+                fetchOrderCount();
                 onCloseShip();
                 onCloseProcess();
                 onCloseRefunded();
@@ -151,6 +156,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
         }
     }
 
+    console.log(selectedOrder)
     return (
     <div>
         {

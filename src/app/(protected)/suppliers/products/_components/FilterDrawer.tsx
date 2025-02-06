@@ -332,6 +332,7 @@ const FilterDrawer = ({
                         <DateComponent
                             startDate={field.value}
                             setStartDate={field.onChange}
+                            minDate={watch("fromDate")}
                             isMaxDate
                             isMinDate
                         />
