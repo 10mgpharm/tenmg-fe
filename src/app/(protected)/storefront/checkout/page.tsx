@@ -1,7 +1,7 @@
 'use client';
 
 import { NextAuthUserSession } from '@/types';
-import { Box, Button, Divider, Flex, HStack, Icon, Image, Stack, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, HStack, Icon, Image, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
@@ -47,6 +47,7 @@ export default function CheckoutPage() {
     }
   }, [localQuantities, cartItems]);
 
+  const [delId, setDelId] = useState(null);
   const handleOpenRemove = () => setIsRemoveOpen(true);
   const handleCloseRemove = () => setIsRemoveOpen(false);
 
@@ -72,14 +73,18 @@ export default function CheckoutPage() {
     }
   };
 
+  const [loadingRemoveItem, setLoadingRemoveItem] = useState(false)
   // Function to remove item from cart
   const removeItem = (itemId: number) => {
+    setLoadingRemoveItem(true)
     const data = {
-      productId: itemId,
-      qty: 0,
+      productId: delId,
+      qty: 1,
       action: 'remove',
     };
     addToCart(data, userData?.user?.token);
+    setLoadingRemoveItem(false)
+    setDelId(null);
   };
 
   const handleCheckout = () => {
@@ -230,7 +235,7 @@ export default function CheckoutPage() {
                       </Stack>
 
                       {/* Delete Icon */}
-                      <Icon
+                      {loadingRemoveItem ? <Spinner className="size-3" /> : <Icon
                         w={5}
                         h={5}
                         mb={2}
@@ -238,8 +243,8 @@ export default function CheckoutPage() {
                         as={FiTrash2}
                         _hover={{ cursor: 'pointer' }}
                         color="error.500"
-                        onClick={handleOpenRemove}
-                      />
+                        onClick={() => { handleOpenRemove(); setDelId(item?.product?.id) }}
+                      />}
 
                       <DeleteModal
                         isOpen={isRemoveOpen}
