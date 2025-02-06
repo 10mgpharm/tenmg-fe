@@ -94,9 +94,9 @@ export default function PaymentPage() {
   useEffect(() => {
     // Dynamically load Fincra's SDK
     const script = document.createElement("script");
-    script.src = "https://unpkg.com/@fincra-engineering/checkout@2.2.0/dist/inline.min.js";
+    script.src = process.env.NEXT_PUBLIC_FINCRA_SDK_URL;
     script.async = true;
-    script.onload = () => console.log("Fincra script loaded");
+    // script.onload = () => console.log("Fincra script loaded");
     document.body.appendChild(script);
 
     return () => {
@@ -109,18 +109,34 @@ export default function PaymentPage() {
   // Expiry Date: 10/26
   // CVV: 000
 
-  const verifyPayment = async () => {
+  const verifyPayment = async (ref) => {
     try {
-      const response = await requestClient({ token: userToken }).post(
-        "/storefront/checkout",
-
+      const response = await requestClient({ token: userToken }).get(
+        `/storefront/payment/verify/${ref}`
       );
+
+      console.log("response", response);
     } catch (e) {
       console.log(e)
     }
   }
 
-  const payFincra = (e: React.FormEvent<HTMLFormElement>, ref) => {
+  const cancelOrder = async (ref) => {
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        `/storefront/payment/cancel/${ref}`
+      );
+      if (response?.status === 200) {
+        toast.success('Order Cancelled Successfully...!');
+      }
+      console.log("response", response);
+    } catch (e) {
+      // console.log("")
+      toast.error("Something went wrong, could not cancel order!")
+    }
+  }
+
+  const payFincra = (e: React.FormEvent<HTMLFormElement>, ref: string, totalAmount: string | number) => {
     e.preventDefault();
 
     if (!window.Fincra) {
@@ -130,7 +146,7 @@ export default function PaymentPage() {
 
     window.Fincra.initialize({
       key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
-      amount: 100,
+      amount: totalAmount,
       currency: "NGN",
       reference: ref,
       customer: {
@@ -139,11 +155,15 @@ export default function PaymentPage() {
         phoneNumber: "08163177517",
       },
       feeBearer: "business", // or "customer"
-      onClose: () => alert("Transaction was not completed, window closed."),
+      onClose: () => {
+        // alert("Transaction was not completed, window closed.")
+        cancelOrder(ref);
+      },
       onSuccess: (data: any) => {
-        console.log("Payment Success", data);
-        alert(`Payment complete! Reference: ${data.reference}`);
-        return data?.reference
+        // console.log("Payment Success", data);
+        // alert(`Payment complete! Reference: ${data.reference}`);
+        verifyPayment(ref)
+        // return data?.reference
       },
     });
   };
@@ -166,8 +186,8 @@ export default function PaymentPage() {
       );
       console.log("submit order res", response?.data?.data?.reference)
       if (response.status === 200) {
-        payFincra(e, response?.data?.data?.reference)
-
+        payFincra(e, response?.data?.data?.reference, response?.data?.data?.totalAmount)
+        console.log("submit order res", response)
         // toast.success(response.data.message);
         // await requestClient({ token: userToken }).post('/storefront/clear-cart');
         // router.push('/storefront')
