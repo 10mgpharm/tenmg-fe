@@ -21,6 +21,7 @@ export interface CountProps {
     status: string;
     total: number;
 }
+
 const Orders = () => {
 
     const session = useSession();
@@ -130,6 +131,7 @@ const Orders = () => {
                     pageCount={pageCount}
                     globalFilter={globalFilter}
                     setPageCount={setPageCount}
+                    fetchOrderCount={fetchOrderCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -141,6 +143,7 @@ const Orders = () => {
                     pageCount={pageCount}
                     globalFilter={globalFilter}
                     setPageCount={setPageCount}
+                    fetchOrderCount={fetchOrderCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -152,6 +155,7 @@ const Orders = () => {
                     pageCount={pageCount}
                     globalFilter={globalFilter}
                     setPageCount={setPageCount}
+                    fetchOrderCount={fetchOrderCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -163,6 +167,7 @@ const Orders = () => {
                     pageCount={pageCount}
                     globalFilter={globalFilter}
                     setPageCount={setPageCount}
+                    fetchOrderCount={fetchOrderCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -174,6 +179,7 @@ const Orders = () => {
                     pageCount={pageCount}
                     globalFilter={globalFilter}
                     setPageCount={setPageCount}
+                    fetchOrderCount={fetchOrderCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -185,6 +191,7 @@ const Orders = () => {
                     pageCount={pageCount}
                     globalFilter={globalFilter}
                     setPageCount={setPageCount}
+                    fetchOrderCount={fetchOrderCount}
                     />
                 </TabPanel>
             </TabPanels>
