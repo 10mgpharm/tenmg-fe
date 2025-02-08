@@ -16,59 +16,42 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { set, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { LuCopy } from "react-icons/lu";
-import { IoKey, IoTrashOutline } from "react-icons/io5";
+import { IoTrashOutline } from "react-icons/io5";
 import { FaEye, FaEyeSlash, FaKey } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "react-toastify";
-import DeleteModal from "../../_components/DeleteModal";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession, ApiKeyEnv, ApiKey } from "@/types";
+import { handleServerErrorMessage } from "@/utils";
+import { getApiKeyInfo, reGenerateApiKey, updateApiKeyUrls } from "../actions";
 
 interface IFormInput {
-  clientId: string;
-  clientSecret: string;
+  environment: string;
   webhookUrl?: string;
   callbackUrl?: string;
 }
 
 interface IKeyWrapperProps {
-  onSubmit: any;
+  pKey: string;
+  sKey: string;
+  callbcUrl: string;
+  webhkUrl: string;
   keyType: string;
+  token: string;
   copyToClipboard: (value: string) => void;
-  register: any;
-  getValues: any;
   onOpen: () => void;
 }
 
-const apiData: IFormInput = {
-  clientId: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
-  clientSecret: "sk_live_Y2xlcmsub2VyZFkYS5jYSQ",
-};
-
 const ApiKeys = () => {
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
+  const [token, setToken] = useState<string>(sessionData?.user?.token);
+
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const {
-    onOpen: onOpenRemove,
-    onClose: onCloseRemove,
-    isOpen: isOpenRemove,
-  } = useDisclosure();
-
-  const {
-    formState: { errors },
-    handleSubmit,
-    register,
-    getValues,
-  } = useForm<IFormInput>({
-    mode: "onChange",
-    defaultValues: {
-      clientId: apiData.clientId,
-      clientSecret: apiData.clientSecret,
-    },
-  });
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
-  };
+  const [isPending, startTransition] = useTransition();
+  const [apiKeyInfo, setApiKeyInfo] = useState<ApiKey>(null);
 
   const copyToClipboard = (value: string) => {
     navigator.clipboard
@@ -81,26 +64,54 @@ const ApiKeys = () => {
       });
   };
 
+  const handleGetApiKeyInfo = async () => {
+    startTransition(async () => {
+      try {
+        const { data, message, status } = await getApiKeyInfo(token);
+        if (status === 'success') {
+          console.log(data);
+          setApiKeyInfo(data);
+        } else {
+          toast.error(`Error: ${message}`);
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (sessionData?.user && !apiKeyInfo) {
+      setToken(sessionData.user.token)
+      handleGetApiKeyInfo();
+    }
+  }, [sessionData]);
+
   return (
     <div className="max-w-5xl md:p-5 space-y-8">
+      {isPending ? <>Loading...</> : <>
       <KeyWrapper
-        onSubmit={handleSubmit(onSubmit)}
         keyType={"Test Key"}
         copyToClipboard={copyToClipboard}
-        register={register}
-        getValues={getValues}
         onOpen={onOpen}
+        token={token}
+        pKey={apiKeyInfo?.testKey}
+        sKey={apiKeyInfo?.testSecret}
+        callbcUrl={apiKeyInfo?.testCallbackUrl}
+        webhkUrl={apiKeyInfo?.testWebhookUrl}
       />
       <KeyWrapper
-        onSubmit={handleSubmit(onSubmit)}
         keyType={"Live Key"}
         copyToClipboard={copyToClipboard}
-        register={register}
-        getValues={getValues}
         onOpen={onOpen}
+        token={token}
+        pKey={apiKeyInfo?.key}
+        sKey={apiKeyInfo?.secret}
+        callbcUrl={apiKeyInfo?.callbackUrl}
+        webhkUrl={apiKeyInfo?.webhookUrl}
       />
-
-      <DeleteModal isOpen={isOpen} onClose={onClose} title={"Key"} />
+      </>}
     </div>
   );
 };
@@ -108,17 +119,88 @@ const ApiKeys = () => {
 export default ApiKeys;
 
 function KeyWrapper({
-  onSubmit,
   keyType,
   copyToClipboard,
-  register,
-  getValues,
   onOpen,
+  token,
+  pKey,
+  sKey,
+  callbcUrl,
+  webhkUrl
 }: IKeyWrapperProps) {
-  const [showClientId, setShowClientId] = useState(false);
-  const [showClientSecret, setShowClientSecret] = useState(false);
-  const [showWebhookUrl, setShowWebhookUrl] = useState(false);
-  const [showCallbackUrl, setShowCallbackUrl] = useState(false);
+  const [showPublicKey, setShowPublicKey] = useState<boolean>(false);
+  const [showSecretKey, setShowSecretKey] = useState<boolean>(false);
+
+  const [showWebhookUrl, setShowWebhookUrl] = useState<boolean>(false);
+  const [showCallbackUrl, setShowCallbackUrl] = useState<boolean>(false);
+
+  const [publicKey, setPublicKey] = useState<string>(pKey);
+  const [secretKey, setSecretKey] = useState<string>(sKey);
+
+  const [isPending, startTransition] = useTransition();
+  const environment: ApiKeyEnv = keyType === "Test Key" ? "test" : "live";
+
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+    getValues,
+    setValue,
+  } = useForm<IFormInput>({
+    mode: "onChange",
+    defaultValues: {
+      environment,
+      webhookUrl: webhkUrl,
+      callbackUrl: callbcUrl,
+    },
+  });
+
+  const handleKeyGeneration = (type: 'public' | 'secret', environment: 'test' | 'live') => {
+    startTransition(async () => {
+      try {
+        const { data, message, status } = await reGenerateApiKey({ token, type, environment });
+        if (status === 'success') {
+          toast.success(message);
+          // update local state
+          type === 'public' ? setPublicKey(data.value) : setSecretKey(data.value);
+        } else {
+          toast.error(`Error: ${message}`);
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      }
+    })
+  }
+
+  const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
+    startTransition(async () => {
+      try {
+        const { data, message, status } = await updateApiKeyUrls({
+          token,
+          environment: formData.environment as ApiKeyEnv,
+          webhookUrl: formData.webhookUrl,
+          callbackUrl: formData.callbackUrl,
+        });
+        if (status === 'success') {
+          toast.success(message);
+          // update local state
+          if (environment === 'live') {
+            setValue('webhookUrl', data.value.webhookUrl);
+            setValue('callbackUrl', data.value.callbackUrl);
+          } else {
+            setValue('webhookUrl', data.value.testWebhookUrl);
+            setValue('callbackUrl', data.value.testCallbackUrl);
+          }
+        } else {
+          toast.error(`Error: ${message}`);
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      }
+    })
+  };
 
   return (
     <Box bg={"gray.200"} rounded={"2xl"} shadow={"md"}>
@@ -135,10 +217,10 @@ function KeyWrapper({
       </Box>
 
       <Box p={5} bg={"white"} rounded={"2xl"} borderWidth={2} px={6} py={8}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack direction={"column"} gap={5} divider={<Divider />}>
             <FormControl display={{ md: "flex" }}>
-              <FormLabel w={{ md: "30%" }}>Client ID</FormLabel>
+              <FormLabel w={{ md: "30%" }}>Public Key</FormLabel>
               <Flex
                 w={{ md: "70%" }}
                 direction={{ base: "column", md: "row" }}
@@ -147,26 +229,26 @@ function KeyWrapper({
                 <Box flex={1}>
                   <InputGroup size={"lg"}>
                     <Input
-                      type={showClientId ? "text" : "password"}
+                      type={showPublicKey ? "text" : "password"}
                       id="password"
                       size={"lg"}
                       color={"gray.500"}
                       readOnly
-                      {...register("clientId")}
+                      value={publicKey}
                       maxW="3xl"
                       _focus={{
                         color: "gray.800",
                       }}
                     />
                     <InputRightElement>
-                      {showClientId ? (
+                      {showPublicKey ? (
                         <FaEye
-                          onClick={() => setShowClientId(!showClientId)}
+                          onClick={() => setShowPublicKey(!showPublicKey)}
                           className="text-gray-500 w-5 h-5"
                         />
                       ) : (
                         <FaEyeSlash
-                          onClick={() => setShowClientId(!showClientId)}
+                          onClick={() => setShowPublicKey(!showPublicKey)}
                           className="text-gray-500 w-5 h-5"
                         />
                       )}
@@ -179,7 +261,7 @@ function KeyWrapper({
                     variant="outline"
                     color={"gray.500"}
                     px={3}
-                    onClick={() => copyToClipboard(getValues("clientId"))}
+                    onClick={() => copyToClipboard(publicKey)}
                   >
                     Copy
                   </Button>
@@ -189,6 +271,10 @@ function KeyWrapper({
                     bg={"green.500"}
                     _hover={{ bg: "green.300" }}
                     px={3}
+                    isLoading={isPending}
+                    onClick={() => {
+                      handleKeyGeneration('public', environment);
+                    }}
                   >
                     Generate
                   </Button>
@@ -196,34 +282,34 @@ function KeyWrapper({
               </Flex>
             </FormControl>
 
-            {/* Client Secret */}
+            {/* Secret Key */}
 
             <FormControl display={"flex"}>
-              <FormLabel w={"30%"}>Client Secret</FormLabel>
+              <FormLabel w={"30%"}>Secret Key</FormLabel>
               <Flex w={"70%"} gap={6}>
                 <Box flex={1}>
                   <InputGroup size={"lg"}>
                     <Input
-                      type={showClientSecret ? "text" : "password"}
+                      type={showSecretKey ? "text" : "password"}
                       id="password"
                       size={"lg"}
                       color={"gray.500"}
                       readOnly
-                      {...register("clientSecret")}
+                      value={secretKey}
                       maxW="3xl"
                       _focus={{
                         color: "gray.800",
                       }}
                     />
                     <InputRightElement>
-                      {showClientSecret ? (
+                      {showSecretKey ? (
                         <FaEye
-                          onClick={() => setShowClientSecret(!showClientSecret)}
+                          onClick={() => setShowSecretKey(!showSecretKey)}
                           className="text-gray-500 w-5 h-5"
                         />
                       ) : (
                         <FaEyeSlash
-                          onClick={() => setShowClientSecret(!showClientSecret)}
+                          onClick={() => setShowSecretKey(!showSecretKey)}
                           className="text-gray-500 w-5 h-5"
                         />
                       )}
@@ -236,7 +322,7 @@ function KeyWrapper({
                     variant="outline"
                     color={"gray.500"}
                     px={3}
-                    onClick={() => copyToClipboard(getValues("clientSecret"))}
+                    onClick={() => copyToClipboard(secretKey)}
                   >
                     Copy
                   </Button>
@@ -246,6 +332,10 @@ function KeyWrapper({
                     bg={"green.500"}
                     _hover={{ bg: "green.300" }}
                     px={3}
+                    isLoading={isPending}
+                    onClick={() => {
+                      handleKeyGeneration('secret', environment);
+                    }}
                   >
                     Generate
                   </Button>
@@ -298,14 +388,6 @@ function KeyWrapper({
                   </Button>
                 </Box>
                 <Box>
-                  <Icon
-                    as={IoTrashOutline}
-                    w={6}
-                    h={6}
-                    color="red.500"
-                    cursor={"pointer"}
-                    onClick={() => onOpen()}
-                  />
                 </Box>
               </Flex>
             </FormControl>
@@ -355,14 +437,6 @@ function KeyWrapper({
                   </Button>
                 </Box>
                 <Box>
-                  <Icon
-                    as={IoTrashOutline}
-                    w={6}
-                    h={6}
-                    color="red.500"
-                    cursor={"pointer"}
-                    onClick={() => onOpen()}
-                  />
                 </Box>
               </Flex>
             </FormControl>
