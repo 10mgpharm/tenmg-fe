@@ -69,7 +69,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         } catch (error) {
             console.error(error)
         }
-    },[token]);
+    },[token, type]);
 
     const fetchingMeasurementTypes = useCallback(async() => {
         try {
@@ -91,7 +91,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         } catch (error) {
             console.error(error)
         }
-    },[token]);
+    },[token, type]);
 
     const fetchingVarationByTypeId = useCallback(async(id: number) => {
         try {
@@ -108,13 +108,13 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
         } catch (error) {
             console.error(error)
         }
-    },[token]);
+    },[token, type]);
 
     useEffect(() => {
         if(!token) return;
         fetchingPresentationTypes();
         fetchingMeasurementTypes();
-    }, [fetchingPresentationTypes, fetchingMeasurementTypes]);
+    }, [fetchingPresentationTypes, fetchingMeasurementTypes, token]);
 
     const actualPrice = Number(watch("actualPrice")) - Number(watch("discountPrice"));
 

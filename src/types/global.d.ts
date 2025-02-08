@@ -1,3 +1,8 @@
+declare global {
+    interface Window {
+        Fincra: any;
+    }
+}
 
 export type AccessToken = {
     token: string;

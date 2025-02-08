@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
-import { Box, Button, Divider, Flex, FormLabel, Image, Input, Stack } from '@chakra-ui/react'
+import { Box, Button, Divider, FormLabel, Image, Input, Stack } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
 import requestClient from '@/lib/requestClient';
@@ -9,11 +9,9 @@ import { toast } from 'react-toastify';
 import { handleServerErrorMessage } from '@/utils';
 import { Radio, RadioGroup } from '@chakra-ui/react'
 import { useCartStore } from '../../storeFrontState/useCartStore';
-import { CheckIcon } from '@heroicons/react/20/solid';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import Script from "next/script";
 
 export default function PaymentPage() {
 

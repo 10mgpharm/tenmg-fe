@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { 
-    Box, 
-    Image, 
+    Box,
     Menu, 
     MenuButton, 
     MenuItem, 

@@ -41,31 +41,31 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const fetchData = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await requestClient({ token }).post(
-        "vendor/txn_history/view",
-        {
-          transactionHistoryId: parseInt(params.id, 10),
-        }
-      );
-
-      if (response.status === 200 && response.data.data) {
-        setData(response.data.data);
-      } else {
-        setError("Failed to load data. Please try again.");
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError("An unexpected error occurred while fetching data.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await requestClient({ token }).post(
+          "vendor/txn_history/view",
+          {
+            transactionHistoryId: parseInt(params.id, 10),
+          }
+        );
+
+        if (response.status === 200 && response.data.data) {
+          setData(response.data.data);
+        } else {
+          setError("Failed to load data. Please try again.");
+        }
+      } catch (err: any) {
+        console.error(err);
+        setError("An unexpected error occurred while fetching data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (token && params.id) {
       fetchData();
     }
