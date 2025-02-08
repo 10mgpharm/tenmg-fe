@@ -63,7 +63,7 @@ const Page = ({params}: {params: {snug: string}}) => {
     useEffect(() => {
         if(!token) return;
         fetchLoanApplicationById(params.snug);
-    }, [fetchLoanApplicationById, token]);
+    }, [fetchLoanApplicationById, params.snug, token]);
 
   return (
     <div className="p-8">

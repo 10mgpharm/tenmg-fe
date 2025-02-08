@@ -34,7 +34,7 @@ const OrderDetails = ({params}: {params : any}) => {
       console.error(error);
       setLoading(false);
     }
-  }, [token]);
+  }, [params?.id, token]);
 
   useEffect(() => {
     if(!token) return;

@@ -96,7 +96,7 @@ const Users = () => {
         console.error(error);
       }
     },
-    [token, pageCount, type, debouncedSearch]
+    [selectedStatuses, debouncedSearch, token]
   );
 
   useEffect(() => {

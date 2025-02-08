@@ -2,10 +2,11 @@ import React from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Home",
+    title: "Home",
 };
 
 export default async function Page() {
-  // handle fallback page
-  return <></>;
+    return <>
+        <h1>Welcome to 10mg</h1>
+    </>
 }

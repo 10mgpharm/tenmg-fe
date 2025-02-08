@@ -53,7 +53,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
             console.error(error);
             setIsLoading(false);
         }
-    }, [token]);
+    }, [params.id, token]);
 
     const fetchingMedicationTypes = useCallback(async() => {
         try {
@@ -143,7 +143,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
         setValue("outStockLevel", products?.outStockLevel?.toString());
         setValue("expiredAt", products?.expiredAt);
         setValue("status", products?.status);
-    }, [products]);
+    }, [products, setValue]);
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);

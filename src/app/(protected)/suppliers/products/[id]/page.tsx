@@ -36,7 +36,7 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
             console.error(error);
             setLoading(false);
         }
-    }, [token]);
+    }, [params.id, token]);
 
     useEffect(() => { 
         if(!token) return;

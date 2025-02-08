@@ -32,7 +32,6 @@ const getHeaders = (queryParamToken?: string, contentType?: string) => {
 
 const requestClient = (options: RequestOptions = {}) => {
   const headers = getHeaders(options?.token, options?.headers?.['Content-Type']);
-
   const opts: RequestOptions = Object.assign({}, options, { headers });
 
   const axiosInstance = axios.create({
