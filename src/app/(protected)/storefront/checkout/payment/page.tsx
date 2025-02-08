@@ -9,11 +9,12 @@ import { toast } from 'react-toastify';
 import { handleServerErrorMessage } from '@/utils';
 import { Radio, RadioGroup } from '@chakra-ui/react'
 import { useCartStore } from '../../storeFrontState/useCartStore';
-import { CheckIcon } from '@heroicons/react/20/solid';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import Script from "next/script";
+import { config } from 'process';
+
+
 
 export default function PaymentPage() {
 
@@ -95,6 +96,7 @@ export default function PaymentPage() {
     // Dynamically load Fincra's SDK
     const script = document.createElement("script");
     script.src = process.env.NEXT_PUBLIC_FINCRA_SDK_URL;
+    // script.src = config?.;
     script.async = true;
     // script.onload = () => console.log("Fincra script loaded");
     document.body.appendChild(script);
@@ -146,13 +148,14 @@ export default function PaymentPage() {
 
     window.Fincra.initialize({
       key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
+      // key: config,
       amount: totalAmount,
       currency: "NGN",
       reference: ref,
       customer: {
         name: sessionData?.user?.name,
         email: sessionData?.user?.email,
-        phoneNumber: "08163177517",
+        // phoneNumber: "",
       },
       feeBearer: "business", // or "customer"
       onClose: () => {
