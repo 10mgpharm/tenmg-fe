@@ -26,13 +26,23 @@ export function ColumnsMemberFN(
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Status</p>,
       cell: (info) => {
-        const status = convertLetterCase(info?.row?.original?.status);
+        const status = convertLetterCase(
+          info?.row?.original?.status === "ACCEPTED" &&
+            info?.row?.original?.user?.active === 1
+            ? "Active"
+            : info?.row?.original?.status === "ACCEPTED" &&
+              info?.row?.original?.user?.active === 0
+            ? "Suspended"
+            : info?.row.original.status === "INVITED"
+            ? "Invited"
+            : "Active"
+        );
 
         return (
           <div>
             <p
               className={classNames(
-                info?.row?.original?.status === "Removed"
+                info?.row?.original?.user?.active === 0
                   ? "bg-[#FEF3F2] text-[#B42318]"
                   : info?.row?.original?.status === "ACCEPTED"
                   ? "text-[#027A48] bg-[#ECFDF3]"
@@ -94,7 +104,6 @@ export function ColumnsMemberFN(
                     </Link>
                     {info?.row?.original?.user?.active === 0 ? (
                       <MenuItem
-                        color="red.500"
                         onClick={() =>
                           handleOpenModal(info.row.original?.user?.id, "ACTIVE")
                         }
@@ -103,6 +112,7 @@ export function ColumnsMemberFN(
                       </MenuItem>
                     ) : (
                       <MenuItem
+                        color="red.500"
                         onClick={() =>
                           handleOpenModal(
                             info.row.original?.user?.id,

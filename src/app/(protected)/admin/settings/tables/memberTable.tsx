@@ -9,7 +9,7 @@ const columnHelper = createColumnHelper<any>();
 
 export function ColumsMemberFN(
   handleDeleteModal: (id: number) => void,
-  handleOpenModal: (userId: number, action: any) => void,
+  handleOpenModal: (userId: number, action: any) => void
 ) {
   return [
     columnHelper.accessor("email", {
@@ -30,7 +30,7 @@ export function ColumsMemberFN(
         <div>
           <p
             className={classNames(
-              info?.row?.original?.active === ""
+              info?.row?.original?.user?.active === 0
                 ? "bg-[#FEF3F2] text-[#B42318]"
                 : info?.row?.original?.status === "ACCEPTED"
                 ? "text-[#027A48] bg-[#ECFDF3]"
@@ -40,11 +40,15 @@ export function ColumsMemberFN(
               " max-w-min p-0.5 px-3 rounded-2xl text-sm"
             )}
           >
-            {info?.row?.original?.status === "ACCEPTED"
-              ? "Accepted"
+            {info?.row?.original?.status === "ACCEPTED" &&
+            info?.row?.original?.user?.active === 1
+              ? "Active"
+              : info?.row?.original?.status === "ACCEPTED" &&
+                info?.row?.original?.user?.active === 0
+              ? "Suspended"
               : info?.row.original.status === "INVITED"
               ? "Invited"
-              : "Suspended"}
+              : "Active"}
           </p>
         </div>
       ),
@@ -97,17 +101,33 @@ export function ColumsMemberFN(
               <MenuList>
                 {info?.row?.original?.status === "ACCEPTED" ? (
                   <>
-                    <Link href={`/admin/users/${info?.row?.original?.user?.id}`}>
+                    <Link
+                      href={`/admin/users/${info?.row?.original?.user?.id}`}
+                    >
                       <MenuItem>View Details</MenuItem>
                     </Link>
 
-                    {
-                      info?.row?.original?.user?.active === 0 ? 
-                      <MenuItem  color="red.500" onClick={() => handleOpenModal(info.row.original?.user?.id, "ACTIVE")}>Activate Member</MenuItem>
-                      : 
-                      <MenuItem onClick={() => handleOpenModal(info.row.original?.user?.id, "SUSPENDED")}>Suspend Member</MenuItem>
-                      
-                    }
+                    {info?.row?.original?.user?.active === 0 ? (
+                      <MenuItem
+                        onClick={() =>
+                          handleOpenModal(info.row.original?.user?.id, "ACTIVE")
+                        }
+                      >
+                        Activate Member
+                      </MenuItem>
+                    ) : (
+                      <MenuItem
+                        color="red.500"
+                        onClick={() =>
+                          handleOpenModal(
+                            info.row.original?.user?.id,
+                            "SUSPENDED"
+                          )
+                        }
+                      >
+                        Suspend Member
+                      </MenuItem>
+                    )}
                   </>
                 ) : (
                   <MenuItem
