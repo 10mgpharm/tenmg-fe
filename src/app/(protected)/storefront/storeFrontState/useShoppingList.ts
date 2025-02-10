@@ -47,7 +47,7 @@ export const useShoppingList = create<ShoppingListState>((set, get) => ({
 
   addShoppingList: async (item, token) => {
     try {
-      set({ loading: true });
+      // set({ loading: true });
 
       const resp = await requestClient({ token }).post(
         "/storefront/shopping-list/add-shopping-list",
@@ -60,12 +60,12 @@ export const useShoppingList = create<ShoppingListState>((set, get) => ({
       }
       return resp?.status;
 
-      set({ loading: false });
+      // set({ loading: false });
     } catch (err: any) {
       set({
         error:
           err.response?.data?.message || "Failed to add item to shopping list",
-        loading: false,
+        // loading: false,
       });
     }
   },

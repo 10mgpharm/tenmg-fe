@@ -140,7 +140,7 @@ export default function AddShoppingList() {
     reset();
     setSelectedFile(null);
     onClose();
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleModalClose = () => {
@@ -149,6 +149,11 @@ export default function AddShoppingList() {
     setSelectedFile(null);
     onClose();
   };
+
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
 
   return (
     <>
@@ -202,7 +207,8 @@ export default function AddShoppingList() {
               <FormControl isInvalid={!!errors.purchaseDate?.message}>
                 <FormLabel>Expected Purchase Date</FormLabel>
                 <Input
-                  min={new Date().toISOString().split("T")[0]}
+                  // min={new Date().toISOString().split("T")[0]}
+                  min={minDate}
                   type="date"
                   placeholder={""}
                   {...register("purchaseDate", {
