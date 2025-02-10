@@ -67,7 +67,7 @@ const Navbar = () => {
   ].includes(businessStatus);
 
   useEffect(() => {
-    fetchCart(userData?.user?.token);
+    if (userData?.user?.token) fetchCart(userData?.user?.token);
   }, [isCartOpen, fetchCart, userData?.user?.token]);
 
   return (

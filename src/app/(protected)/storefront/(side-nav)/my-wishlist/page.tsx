@@ -16,7 +16,7 @@ export default function MyWishListPage() {
   console.log("wishlist", wishlist)
 
   useEffect(() => {
-    fetchWishlist(userData?.user?.token);
+    if (userData?.user?.token) fetchWishlist(userData?.user?.token);
   }, [fetchWishlist, userData?.user?.token])
 
   return (

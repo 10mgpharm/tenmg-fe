@@ -20,7 +20,7 @@ export default function ShoppingListPage() {
   const { fetchShoppingList, loading, shoppingList } = useShoppingList();
 
   useEffect(() => {
-    fetchShoppingList(userData?.user?.token)
+    if (userData?.user?.token) fetchShoppingList(userData?.user?.token);
   }, [fetchShoppingList, userData?.user?.token]);
 
 
