@@ -10,7 +10,7 @@ import "context-filter-polyfill";
 import { scaleDownImage } from "@/utils/scaleDownImage";
 
 interface ImgEditorProps {
-  UPLOAD_PRODUCT_IMAGES(files: File[]): Promise<void>;
+  UPLOAD_IMAGES(files: File[]): Promise<void>;
   inputRef: RefObject<HTMLInputElement>;
   onUpload: () => void;
   onLoadImage: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -20,7 +20,7 @@ interface ImgEditorProps {
 }
 export type ModeProps = "crop" | "brightness" | "hue" | "saturation" | "contrast";
 
-const ImgEditor = ({ UPLOAD_PRODUCT_IMAGES, inputRef, onUpload, onLoadImage, setImage, image, ...props }: ImgEditorProps) => {
+const ImgEditor = ({ UPLOAD_IMAGES, inputRef, onUpload, onLoadImage, setImage, image, ...props }: ImgEditorProps) => {
 
   const cropperRef = useRef<CropperRef | any>(null);
   const [mode, setMode] = useState<ModeProps>("crop");
@@ -80,9 +80,9 @@ const ImgEditor = ({ UPLOAD_PRODUCT_IMAGES, inputRef, onUpload, onLoadImage, set
       // IF IMAGE SIZE IS BIGGGER THAN 4MB SCALE IT DOWN,
       if (file?.size >= 4 * 1024 * 1024) {
         const scaledFile = await scaleDownImage(file);
-        UPLOAD_PRODUCT_IMAGES([scaledFile]);
+        UPLOAD_IMAGES([scaledFile]);
       } else {
-        UPLOAD_PRODUCT_IMAGES([file]);
+        UPLOAD_IMAGES([file]);
       }
     }
   };
