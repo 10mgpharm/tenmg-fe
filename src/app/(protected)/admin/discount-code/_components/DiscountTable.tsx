@@ -7,14 +7,21 @@ import {
     getSortedRowModel,
     useReactTable 
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ColumsDiscountFN } from "./table";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import { Flex, HStack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
+import { DiscountResponseData } from "@/types";
 
-const DiscountTable = ({data}: any) => {
+interface DiscountTableProp {
+    data: DiscountResponseData;
+    type: string;
+    pageCount: number;
+    loading: boolean
+    setPageCount: Dispatch<SetStateAction<number>>;
+}
+const DiscountTable = ({data, pageCount, setPageCount, type, loading}: DiscountTableProp) => {
 
     const onOpen = () => {}
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -22,11 +29,11 @@ const DiscountTable = ({data}: any) => {
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    // const memoizedData = useMemo(() => data, [data]);
+    const memoizedData = useMemo(() => data?.data, [data?.data]);
 
     const table = useReactTable({
-        data: data,
-        columns: ColumsDiscountFN(onOpen),
+        data: memoizedData,
+        columns: ColumsDiscountFN(onOpen, pageCount, 15),
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -45,10 +52,14 @@ const DiscountTable = ({data}: any) => {
     return (
     <div>
     {
-        data?.length === 0 
+        loading ? 
+        <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+        </Flex>: 
+        data?.data?.length === 0 
         ? <EmptyOrder 
-        heading={`No Discount Yet`} 
-        content={`You currently have no discount. All discounts will appear here.`} 
+        heading={`No ${type} Discount Yet`} 
+        content={`You currently have no ${type} discount. All discounts will appear here.`} 
         /> : 
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
@@ -73,7 +84,7 @@ const DiscountTable = ({data}: any) => {
                 ))}
                 </Thead>
                 <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
+                {data?.data && table?.getRowModel()?.rows?.map((row) => (
                     <Tr key={row.id}>
                     {row.getVisibleCells()?.map((cell) => (
                         <Td key={cell.id} px="0px">
@@ -87,7 +98,10 @@ const DiscountTable = ({data}: any) => {
                 ))}
                 </Tbody>
             </Table>
-            {/* <Pagination /> */}
+            <Pagination
+                meta={data?.meta}
+                setPageCount={setPageCount}
+            />
         </TableContainer>
     }
     </div>
