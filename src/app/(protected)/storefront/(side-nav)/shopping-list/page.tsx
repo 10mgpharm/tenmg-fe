@@ -29,23 +29,28 @@ export default function ShoppingListPage() {
       {loading ? <div className="w-full h-[50vh] flex items-center justify-center"><Spinner /></div>
         :
         <>
-          {shoppingList?.length === 0 && <div className="w-full h-[50vh] flex items-center justify-center">
-            <Stack textAlign="center" alignItems="center" mt={10} gap={6}>
-              <Image
-                src={emptyCart.src}
-                alt="Empty Cart"
-                boxSize={{ base: "120px", md: "160px" }}
-              />
-              <Text fontSize="xl" fontWeight="medium">
-                You do not have any items in your shopping list
-              </Text>
-            </Stack>
-          </div>}</>}
-      <div>
-        {shoppingList?.map((item) => (
-          <ShoppingListCardComponent key={item?.id} product={item} />
-        ))}
-      </div>
+          {shoppingList?.length >= 0 ?
+            <div>
+              {shoppingList?.map((item) => (
+                <ShoppingListCardComponent key={item?.id} product={item} />
+              ))}
+            </div>
+            :
+            <div className="w-full h-[50vh] flex items-center justify-center">
+              <Stack textAlign="center" alignItems="center" mt={10} gap={6}>
+                <Image
+                  src={emptyCart.src}
+                  alt="Empty Cart"
+                  boxSize={{ base: "120px", md: "160px" }}
+                />
+                <Text fontSize="xl" fontWeight="medium">
+                  You do not have any items in your shopping list
+                </Text>
+              </Stack>
+            </div>
+          }
+        </>
+      }
     </div>
   )
 }
