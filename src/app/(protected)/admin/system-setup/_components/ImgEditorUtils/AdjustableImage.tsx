@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, CSSProperties, useLayoutEffect } from "react";
+import React, { forwardRef, useRef, CSSProperties, useLayoutEffect, useCallback } from "react";
 import cn from "classnames";
 import { mergeRefs, CropperSource } from "react-advanced-cropper";
 import "./AdjustableImage.scss";
@@ -19,7 +19,7 @@ export const AdjustableImage = forwardRef<HTMLCanvasElement, Props>(
     const imageRef = useRef<HTMLImageElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const drawImage = () => {
+    const drawImage = useCallback(() => {
       const image = imageRef.current;
       const canvas = canvasRef.current;
       if (canvas && image && image.complete) {
@@ -38,11 +38,11 @@ export const AdjustableImage = forwardRef<HTMLCanvasElement, Props>(
           ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
         }
       }
-    };
+    }, [brightness, contrast, saturation, hue]);
 
     useLayoutEffect(() => {
       drawImage();
-    }, [src, brightness, saturation, hue, contrast]);
+    }, [src, brightness, saturation, hue, contrast, drawImage]);
 
     return (
       <>

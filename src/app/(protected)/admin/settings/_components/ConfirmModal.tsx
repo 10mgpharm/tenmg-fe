@@ -21,10 +21,10 @@ const ConfirmModal = ({isOpen, onClose, handleRequest}: {isOpen: boolean, onClos
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                <Text fontWeight={"semibold"} textAlign={"center"} fontSize={"x-large"}>Remove Member</Text>
-                <Text color={"gray.500"} textAlign={"center"} mt={2}>Are your sure you want to remove this member.</Text>
+                <Text fontWeight={"semibold"} textAlign={"center"} fontSize={"x-large"}>Revoke Invite</Text>
+                <Text color={"gray.500"} textAlign={"center"} mt={2}>Are your sure you want to revoke this invite.</Text>
                 <div className="my-6 flex flex-col gap-2">
-                    <button className='bg-red-500 text-white p-3 rounded-md' onClick={handleRequest}>Yes, Remove</button>
+                    <button className='bg-red-500 text-white p-3 rounded-md' onClick={handleRequest}>Yes, Revoke</button>
                     <button onClick={onClose} className='border rounded p-3'>Cancel</button>
                 </div>
             </ModalBody>

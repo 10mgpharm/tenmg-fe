@@ -57,7 +57,9 @@ export const authOptions: NextAuthOptions = {
           } else {
             console.error("An unknown error occurred");
           }
-          return null;
+          const errorMessage =  error.response?.data?.message ?? "Authentication failed. Please try again.";
+
+          throw new Error(errorMessage);
         }
       },
     }),

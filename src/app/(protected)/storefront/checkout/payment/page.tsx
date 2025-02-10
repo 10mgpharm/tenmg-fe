@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
-import { Box, Button, Divider, Flex, FormLabel, Image, Input, Stack } from '@chakra-ui/react'
+import { Box, Button, Divider, FormLabel, Image, Input, Stack } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
 import requestClient from '@/lib/requestClient';
@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import { handleServerErrorMessage } from '@/utils';
 import { Radio, RadioGroup } from '@chakra-ui/react'
 import { useCartStore } from '../../storeFrontState/useCartStore';
-import { CheckIcon } from '@heroicons/react/20/solid';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
@@ -86,13 +85,95 @@ export default function PaymentPage() {
 
   const [loadingPayment, setLoadingPayment] = useState(false);
   // !Note that this function is not the same as the order payment. This is a temporary fucntion to test the payment page
-  const submiOrder = async () => {
+
+
+  const [paymentLoading, setPaymentLoading] = useState(false);
+
+  useEffect(() => {
+    // Dynamically load Fincra's SDK
+    const script = document.createElement("script");
+    script.src = process.env.NEXT_PUBLIC_FINCRA_SDK_URL;
+    script.async = true;
+    // script.onload = () => console.log("Fincra script loaded");
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+
+  //   Card Number: 5319 3178 0136 6660
+  // Expiry Date: 10/26
+  // CVV: 000
+
+  const verifyPayment = async (ref) => {
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        `/storefront/payment/verify/${ref}`
+      );
+
+      console.log("response", response);
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const cancelOrder = async (ref) => {
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        `/storefront/payment/cancel/${ref}`
+      );
+      if (response?.status === 200) {
+        toast.success('Order Cancelled Successfully...!');
+      }
+      console.log("response", response);
+    } catch (e) {
+      // console.log("")
+      toast.error("Something went wrong, could not cancel order!")
+    }
+  }
+
+  const payFincra = (e: React.FormEvent<HTMLFormElement>, ref: string, totalAmount: string | number) => {
+    e.preventDefault();
+
+    if (!window.Fincra) {
+      alert("Fincra SDK not loaded. Please try again.");
+      return;
+    }
+
+    window.Fincra.initialize({
+      key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
+      amount: totalAmount,
+      currency: "NGN",
+      reference: ref,
+      customer: {
+        name: sessionData?.user?.name,
+        email: sessionData?.user?.email,
+        phoneNumber: "08163177517",
+      },
+      feeBearer: "business", // or "customer"
+      onClose: () => {
+        // alert("Transaction was not completed, window closed.")
+        cancelOrder(ref);
+      },
+      onSuccess: (data: any) => {
+        // console.log("Payment Success", data);
+        // alert(`Payment complete! Reference: ${data.reference}`);
+        verifyPayment(ref)
+        // return data?.reference
+      },
+    });
+  };
+
+
+  const submiOrder = async (e) => {
 
     const orderData = {
       "orderId": cartItems?.id,
       "paymentMethodId": 1,
-      "deliveryAddress": shippingAddresses?.id,
-      // "deliveryAddress": "My address",
+      // "deliveryAddress": shippingAddresses?.id,
+      "deliveryAddress": "My address",
       "deliveryType": "STANDARD"
     }
     setLoadingPayment(true);
@@ -101,10 +182,13 @@ export default function PaymentPage() {
         "/storefront/checkout",
         orderData
       );
+      console.log("submit order res", response?.data?.data?.reference)
       if (response.status === 200) {
-        toast.success(response.data.message);
-        await requestClient({ token: userToken }).post('/storefront/clear-cart');
-        router.push('/storefront')
+        payFincra(e, response?.data?.data?.reference, response?.data?.data?.totalAmount)
+        console.log("submit order res", response)
+        // toast.success(response.data.message);
+        // await requestClient({ token: userToken }).post('/storefront/clear-cart');
+        // router.push('/storefront')
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -118,6 +202,11 @@ export default function PaymentPage() {
 
   return (
     <>
+      {/* <Script
+        src="https://unpkg.com/@fincra-engineering/checkout@2.2.0/dist/inline.min.js" // Replace with the correct Fincra script URL
+        strategy="afterInteractive"
+        onLoad={() => console.log("Fincra script loaded.")}
+      /> */}
       <BreadCrumbBanner breadCrumbsData={breadCrumb} />
       <Box p={4} mt={2} className='grid grid-cols-1 lg:grid-cols-6 w-full lg:w-10/12 mx-auto gap-8'>
 
@@ -254,6 +343,7 @@ export default function PaymentPage() {
 
             <Divider my={5} />
             <Button colorScheme={'primary'} onClick={submiOrder}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button>
+            {/* <Button colorScheme={'primary'} onClick={payFincra}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button> */}
           </div>
         </div>
       </Box>

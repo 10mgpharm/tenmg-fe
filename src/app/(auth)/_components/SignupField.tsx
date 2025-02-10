@@ -30,7 +30,7 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 
 interface SignUpFieldProps {
-  title: "supplier" | "pharmacy" | "vendor";
+  title: "supplier" | "pharmacy" | "vendor" | "lender";
   tabIndex?: number;
 }
 
@@ -78,7 +78,7 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
   });
 
   const titleTabs =
-    tabIndex === 0 ? "supplier" : tabIndex === 1 ? "pharmacy" : "vendor";
+    tabIndex === 0 ? "supplier" : tabIndex === 1 ? "pharmacy" : tabIndex === 2 ? "vendor" : "lender";
 
   useEffect(() => {
     if (nameParams && emailParams && businessNameParams) {
@@ -157,7 +157,9 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
               ? " Supplier"
               : title === "pharmacy"
               ? " Pharmacy or Hospital"
-              : " Vendor"}
+              : title === "vendor"
+              ? " Vendor"
+              : " Lender"}
           </Heading>
           <Text fontSize="lg" color="gray.500">
             Create an account for free.
@@ -386,7 +388,7 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
               color="primary.500"
             >
               Sign Up as a
-              {title !== "vendor" ? " Vendor" : " Supplier or Pharmacy"}
+              {title === "vendor" ? "Supplier or Pharmacy" : " Vendor"}
             </Link>
           </Text>
         </Box>

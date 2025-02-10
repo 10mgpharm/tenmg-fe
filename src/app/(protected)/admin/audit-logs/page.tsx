@@ -25,7 +25,6 @@ import {
   Spinner,
   Center,
 } from "@chakra-ui/react";
-// import Pagination from "../../suppliers/_components/Pagination";
 import { ColumsLogFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
@@ -49,29 +48,29 @@ const Page = () => {
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  const fetchData = async (page: number) => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await requestClient({ token }).get(
-        `admin/settings/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`
-      );
-
-      if (response.status === 200 && response.data.data) {
-        setData(response.data.data.records || []);
-        setTotalItems(response.data.data.total || 0);
-      } else {
-        setError("Failed to load audit logs. Please try again.");
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError("An unexpected error occurred while fetching audit logs.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async (page: number) => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await requestClient({ token }).get(
+          `admin/settings/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`
+        );
+
+        if (response.status === 200 && response.data.data) {
+          setData(response.data.data.records || []);
+          setTotalItems(response.data.data.total || 0);
+        } else {
+          setError("Failed to load audit logs. Please try again.");
+        }
+      } catch (err: any) {
+        console.error(err);
+        setError("An unexpected error occurred while fetching audit logs.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (token) {
       fetchData(currentPage);
     }

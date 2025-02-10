@@ -33,7 +33,7 @@ export default function ErrorMessage({ error, onClose }: ErrorMessageProps) {
 
     useEffect(() => {
         if (error) {
-            setErrorMessage(getErrorMessage(error));
+            setErrorMessage(error);
         } else {
             (onClose && onClose());
         }

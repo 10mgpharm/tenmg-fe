@@ -1,13 +1,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import {
-  Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-} from "@chakra-ui/react";
+import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { classNames, convertLetterCase } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
@@ -78,21 +73,50 @@ export function ColumnsMemberFN(
       cell: (info) => {
         return (
           <Flex justify={"left"}>
-            {info?.row?.original?.status === "INVITED" && (
-              <Menu>
-                <MenuButton>
-                  <BsThreeDotsVertical className="w-5 h-auto" />
-                </MenuButton>
-                <MenuList>
+            <Menu>
+              <MenuButton>
+                <BsThreeDotsVertical className="w-5 h-auto" />
+              </MenuButton>
+              <MenuList>
+                {info?.row?.original?.status === "INVITED" ? (
                   <MenuItem
                     onClick={() => handleDeleteModal(info.row.original?.id)}
                     color="red.500"
                   >
                     Revoke Invite
                   </MenuItem>
-                </MenuList>
-              </Menu>
-            )}
+                ) : (
+                  <>
+                    <Link
+                      href={`/vendors/users/${info?.row?.original?.user?.id}`}
+                    >
+                      <MenuItem>View Details</MenuItem>
+                    </Link>
+                    {info?.row?.original?.user?.active === 0 ? (
+                      <MenuItem
+                        color="red.500"
+                        onClick={() =>
+                          handleOpenModal(info.row.original?.user?.id, "ACTIVE")
+                        }
+                      >
+                        Activate Member
+                      </MenuItem>
+                    ) : (
+                      <MenuItem
+                        onClick={() =>
+                          handleOpenModal(
+                            info.row.original?.user?.id,
+                            "SUSPENDED"
+                          )
+                        }
+                      >
+                        Suspend Member
+                      </MenuItem>
+                    )}{" "}
+                  </>
+                )}
+              </MenuList>
+            </Menu>
           </Flex>
         );
       },

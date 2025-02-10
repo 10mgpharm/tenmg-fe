@@ -125,7 +125,7 @@ const Page = () => {
             console.error(error);
             setLoading(false);
         }
-    }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd, inventoryQuery, brandQuery, status]);
+    }, [pageCount, debouncedSearch, inventoryQuery, categoryQuery, status, brandQuery, createdAtStart, createdAtEnd, token]);
 
     const fetchingBrands = useCallback(async() => {
         if(!brandFilter) return;
