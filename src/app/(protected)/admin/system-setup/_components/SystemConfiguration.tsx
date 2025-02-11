@@ -26,15 +26,14 @@ import DeleteMedication from "./DeleteMedication";
 
 const SystemConfiguration = () => {
 
-  const imagesUrls: any[] = [];
   const { dropZoneStyle } = useStyles();
   const [file, setFile] = useState("");
   const [image, setImage] = useState<string>("");
   const [selectedId, setSelectedId] = useState<number>();
-  const [imageUrl, setImageURL] = useState<Blob>();
+  const [imageUrl, setImageURL] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
-  const [imageSrcs, setImageSrcs] = useState<string>("");
+  const [imageSrcs, setImageSrcs] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -66,50 +65,69 @@ const SystemConfiguration = () => {
       fetchingStoreImages();
   }, [token, fetchingStoreImages]);
 
+  const MAX_IMAGES = 10;
   const MAX_FILE_SIZE = 5 * 1024 * 1024; //5MB in bytes
 
-  const onLoadImage = async (event: ChangeEvent<HTMLInputElement>) => {
+  const onLoadImage = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     if (event.target.files[0].size >= MAX_FILE_SIZE)
-      return alert(
+      toast.warn(
         "A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB."
       );
+
     const files = Array.from(event.target.files);
-    const inputFile = event.target.files[0];
-    setImageURL(inputFile);
-    setImageSrcs(URL.createObjectURL(inputFile))
-    // if (files.length > 0) {
-    //   const newImageSrcs = files.map((file) => URL.createObjectURL(file));
-    //   setImageSrcs((prevSrcs) => [...prevSrcs, ...newImageSrcs]);
-    // }
-    if (imagesUrls.length > 0) {
-      event.target.value = "";
-      UPLOAD_PRODUCT_IMAGES(files);
+    // Prevent adding more than MAX_IMAGES
+    if (imageUrl.length + files.length > MAX_IMAGES) {
+      toast.warn(
+        `You can upload a maximum of ${MAX_IMAGES} images`
+      );
       return;
     }
-    if (files?.length > 1) {
-      event.target.value = "";
-      UPLOAD_PRODUCT_IMAGES(files);
-    } else {
-      event.target.value = "";
-    }
+    setImageURL((prevSrcs) => [...prevSrcs, ...files]);
+    const previewsArray = files.map((file) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      return new Promise<string>((resolve) => {
+        reader.onload = () => resolve(reader.result as string);
+      });
+    });
+
+    Promise.all(previewsArray).then((results) => setImageSrcs((prevSrcs) => [...prevSrcs, ...results]));
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const droppedFile = event.dataTransfer.files?.[0];
-    if (droppedFile) {
-      if (droppedFile.size > MAX_FILE_SIZE) {
-        toast.error(
-          "File size exceeds the 10MB limit. Please upload a smaller file."
-        );
-        setImageURL(null);
-        setImageSrcs(null);
-      } else {
-        setImageURL(droppedFile);
-        setImageSrcs(URL.createObjectURL(droppedFile))
-      }
+    // const droppedFile = event.dataTransfer.files?.[0];
+    const droppedFiles = Array.from(event.dataTransfer.files);
+    if (droppedFiles.length === 0) return;
+    if (imageUrl.length + droppedFiles.length > MAX_IMAGES) {
+      toast.warn(
+        `You can upload a maximum of ${MAX_IMAGES} images`
+      );
+      return;
     }
+
+    const validFiles = droppedFiles.filter((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.warn(
+          "A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB."
+        );  
+        return false;
+      }
+      return true;
+    });
+  
+    if (validFiles.length === 0) return;
+    const previewsArray = validFiles.map((file) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      return new Promise<string>((resolve) => {
+        reader.onload = () => resolve(reader.result as string);
+      });
+    });
+
+    Promise.all(previewsArray).then((results) => setImageSrcs((prevSrcs) => [...prevSrcs, ...results]));
+    setImageURL((prev) => [...prev, ...validFiles]);
   };
 
   const onUpload = () => {
@@ -128,20 +146,17 @@ const SystemConfiguration = () => {
     }
   };
 
-  const UPLOAD_PRODUCT_IMAGES = async (file: File[]) => {
+  const UPLOAD_IMAGES = async (file: File[]) => {
     if (isOpen) onClose();
     // setImageUplaoding(true);
   }
 
-  // const REMOVE_IMAGES = (imageToRemove: string) => {
-  //   const removedImage = imageSrcs.filter((image) => image !== imageToRemove);
-  //   setImageSrcs(removedImage);
-  // }
-
   const uploadImages = async () => {
     if(imageUrl){
       const formdata = new FormData();
-      formdata.append("image", imageUrl);
+      imageUrl.forEach((image) => {
+        formdata.append("image", image);
+      });
       try {
         setLoading(true);
         const response = await requestClient({token: token}).post(
@@ -152,10 +167,10 @@ const SystemConfiguration = () => {
           toast.success(response?.data?.message);
           fetchingStoreImages();
           setLoading(false);
-          setImageSrcs("")
+          setImageSrcs([])
         }
       } catch (error) {
-        setLoading(false)
+        setLoading(false);
         console.error(error);
         toast.error(handleServerErrorMessage(error));
       }
@@ -209,16 +224,17 @@ const SystemConfiguration = () => {
               pos={"relative"}
               overflow={"hidden"}
               onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
+              onDragOver={(e: any) => e.preventDefault()}
+              onDrop={(e: any) => {
                 handleDrop(e);
               }}
             >
               <input
                 type="file"
-                ref={fileInputRef}
-                id="image_uploads"
+                // ref={fileInputRef}
+                // id="image_uploads"
                 name="image_uploads"
+                multiple
                 onChange={onLoadImage}
                 accept=".jpg, .jpeg, .png, .webp, .avif"
                 style={{
@@ -237,60 +253,58 @@ const SystemConfiguration = () => {
                 <p className="text-sm text-gray-500 text-center">(Max size, 5MB)</p>
               </Box>
             </Center>
-            {/* {imageSrcs?.map((e, index: number) => ( */}
-            {
-              imageSrcs && (
-                <Flex
+            {imageSrcs?.map((e, index: number) => (
+              <Flex
+                h={"140px"}
+                w="100%"
+                borderRadius="10px"
+                pos={"relative"}
+                key={index}
+              >
+                <Center
                   h={"140px"}
                   w="100%"
-                  // mt="10px"
-                  borderRadius="10px"
                   pos={"relative"}
-                  // key={index}
+                  alignItems={"center"}
+                  border={"1px solid #d7d7d7"}
+                  rounded={"md"}
                 >
-                  <Center
-                    h={"140px"}
-                    w="100%"
-                    pos={"relative"}
-                    alignItems={"center"}
-                    border={"1px solid #d7d7d7"}
-                    rounded={"md"}
+                  <Image
+                    src={e}
+                    alt=""
+                    width={400}
+                    height={400}
+                    className="object-cover rounded-md h-[140px] w-full mix-blend-darken"
+                  />
+                  <Flex 
+                  gap={2}
+                  bg={"white"}
+                  p={1}
+                  rounded={"md"}
+                  pos={"absolute"}
+                  right={3}
+                  top={2}
                   >
-                    <Image
-                      src={imageSrcs}
-                      alt=""
-                      width={400}
-                      height={400}
-                      className="object-cover rounded-md h-[140px] w-full mix-blend-darken"
-                    />
-                    <Flex 
-                    gap={2}
-                    bg={"white"}
-                    p={1}
-                    rounded={"md"}
-                    pos={"absolute"}
-                    right={3}
-                    top={2}
-                    >
-                      <PiNotePencil 
-                      cursor={"pointer"}
-                      onClick={() => {
-                        onSelectImgToEdit(imageSrcs);
-                        // setImgToEditUrl(e);
-                      }}
-                      className="w-4 h-auto" />
-                      <X 
-                      cursor={"pointer"}
-                      onClick={() => {
-                        setImageSrcs("")
-                      }}
-                      className="w-4 h-auto text-red-600"/>
-                    </Flex>
-                  </Center>
-                </Flex>
-              )
-            }
-            {/* ))} */}
+                    <PiNotePencil 
+                    cursor={"pointer"}
+                    onClick={() => {
+                      onSelectImgToEdit(e);
+                      // setImgToEditUrl(e);
+                    }}
+                    className="w-4 h-auto" />
+                    <X 
+                    cursor={"pointer"}
+                    onClick={() => {
+                      const removedImage = imageSrcs?.filter((_, i) => i !== index);
+                      const removedImageUrl = imageUrl?.filter((_, i) => i !== index);
+                      setImageSrcs(removedImage);
+                      setImageURL(removedImageUrl);
+                    }}
+                    className="w-4 h-auto text-red-600"/>
+                  </Flex>
+                </Center>
+              </Flex>
+            ))}
             {
               storeImages?.data && storeImages?.data?.map((image: StoreFrontImage) => (
                 <Flex
@@ -370,7 +384,7 @@ const SystemConfiguration = () => {
           </Text>
           <ImgEditor
             {...{
-              UPLOAD_PRODUCT_IMAGES,
+              UPLOAD_IMAGES,
               inputRef,
               onUpload,
               onLoadImage,

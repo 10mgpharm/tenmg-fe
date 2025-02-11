@@ -11,6 +11,7 @@ import { Control, Controller, FieldErrors, UseFormRegister, UseFormSetValue } fr
 import { convertCreateOptionArray, convertVariationArray } from "@/utils/convertSelectArray";
 import { MedicationData, NextAuthUserSession, PresentationProps } from "@/types";
 import CustomCreatableSelectComponent, { CreatableSelectOption } from "@/app/(protected)/_components/CustomCreatableSelect";
+import { toQueryString } from '@/utils';
 
 interface IChildComponentProps {
     register: UseFormRegister<IFormInput>;
@@ -50,6 +51,10 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     const [varationTypes, setVariationTypes] = useState<PresentationProps[]>([]);
 
     const fetchingPresentationTypes = useCallback(async() => {
+        const params = {
+            status: ["approved", "pending"],
+            active: "active"
+        };
         try {
             if(type === "admin"){
                 const response = await requestClient({ token: token }).get(
@@ -59,8 +64,9 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                     setPresentationData(response.data.data.data);
                 }
             } else {
+                const queryString = toQueryString(params);
                 const response = await requestClient({ token: token }).get(
-                    `/supplier/presentations?active=active`
+                    `/supplier/presentations?${queryString}`
                 );
                 if(response.status === 200){
                     setPresentationData(response.data.data.data);
@@ -72,6 +78,10 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     },[token, type]);
 
     const fetchingMeasurementTypes = useCallback(async() => {
+        const params = {
+            status: ["approved", "pending"],
+            active: "active"
+        };
         try {
             if(type === "admin"){
                 const response = await requestClient({ token: token }).get(
@@ -81,8 +91,9 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                     setMeasurementData(response.data.data);
                 }
             } else {
+                const queryString = toQueryString(params);
                 const response = await requestClient({ token: token }).get(
-                    `/supplier/measurements?active=active`
+                    `/supplier/measurements?${queryString}`
                 );
                 if(response.status === 200){
                     setMeasurementData(response.data.data.data);

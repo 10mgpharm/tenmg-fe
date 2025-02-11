@@ -133,7 +133,7 @@ export function ColumsProductFN(
             )}>
                 <span className="text-[1.2rem] rounded-full">•</span>
                 {" "}
-               {info?.row?.original?.status}
+                {info?.row?.original?.status === "APPROVED" ? "ACTIVE" : info.row.original?.status}
             </p>
           </div>
         );
