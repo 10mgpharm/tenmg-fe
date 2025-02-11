@@ -90,7 +90,6 @@ const Members = () => {
         setAllMembersData(response.data.data);
       }
     } catch (error) {
-      console.log("Printing Fetch Error", error);
       toast.error(handleServerErrorMessage(error));
     }
   }, [token, setAllMembersData]);
@@ -191,17 +190,6 @@ const Members = () => {
       <HStack justify={"space-between"}>
         <Stack>
           <Text>Members</Text>
-          <InputGroup>
-            <InputLeftElement>
-              <Search className="w-5 h-auto text-gray-500" />
-            </InputLeftElement>
-            <Input
-              type="text"
-              placeholder="search members"
-              outline={"none"}
-              pl={10}
-            />
-          </InputGroup>
         </Stack>
         <Flex gap={3}>
           <Button

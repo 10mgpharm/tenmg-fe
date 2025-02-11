@@ -78,7 +78,13 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
   });
 
   const titleTabs =
-    tabIndex === 0 ? "supplier" : tabIndex === 1 ? "pharmacy" : tabIndex === 2 ? "vendor" : "lender";
+    tabIndex === 0
+      ? "supplier"
+      : tabIndex === 1
+      ? "pharmacy"
+      : tabIndex === 2
+      ? "vendor"
+      : "lender";
 
   useEffect(() => {
     if (nameParams && emailParams && businessNameParams) {
@@ -392,6 +398,16 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
             </Link>
           </Text>
         </Box>
+
+        {title !== "lender" && (
+          <Box textAlign="center" mt={2}>
+            <Text color="gray.500">
+              <Link href={`/auth/signup/lender`} color="primary.500">
+                Sign Up as a Lender
+              </Link>
+            </Text>
+          </Box>
+        )}
       </Box>
     </>
   );
