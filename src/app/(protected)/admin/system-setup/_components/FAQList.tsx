@@ -152,6 +152,7 @@ const FAQList = () => {
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         questions={selectedItem}
+        setSelectedItem={setSelectedItem}
         />
         <DeleteMedication
         isOpen={isDeleteOpen}

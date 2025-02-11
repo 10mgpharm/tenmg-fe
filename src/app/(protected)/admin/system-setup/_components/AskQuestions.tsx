@@ -14,7 +14,7 @@ import { X } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
+import { NextAuthUserSession, faqProps } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
@@ -31,8 +31,8 @@ interface QuestionsProps {
 }
 
 const AskQuestions = (
-    {isOpen, onClose, refetch, questions, isEditing, setIsEditing}: 
-    {isOpen: boolean, onClose: () => void; refetch: () => void, questions?: QuestionsProps, isEditing: boolean, setIsEditing: Dispatch<SetStateAction<boolean>>}
+    {isOpen, onClose, refetch, questions, isEditing, setIsEditing, setSelectedItem}: 
+    {isOpen: boolean, onClose: () => void; refetch: () => void, questions?: QuestionsProps, isEditing: boolean, setIsEditing: Dispatch<SetStateAction<boolean>>, setSelectedItem: Dispatch<SetStateAction<faqProps>>}
 ) => {
 
     const session = useSession();
@@ -42,15 +42,15 @@ const AskQuestions = (
 
     const {
         register,
-        formState: { errors, isValid },
+        formState: { errors },
         handleSubmit,
         setValue,
         reset
       } = useForm<IFormInput>({
         mode: "onChange",
         defaultValues: {
-        question: "",
-        answer: "",
+        question: questions?.answer ?? "",
+        answer: questions?.answer ?? "",
     },
     });
 
@@ -93,6 +93,7 @@ const AskQuestions = (
     const handleClose = () => {
         reset();
         onClose();
+        setSelectedItem(null);
         setIsEditing(false);
     }
 
@@ -117,15 +118,15 @@ const AskQuestions = (
                 <X onClick={onClose} className="w-5 h-auto text-gray-600 cursor-pointer"/>
             </Flex>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <FormControl>
+                <FormControl isInvalid={!!errors.question}>
                     <FormLabel fontSize={"1rem"} color={"gray.600"}>{isEditing ? "Question" : "Add Question"}</FormLabel>
                     <Input 
-                     type={"text"}
-                     defaultValue={questions?.question}
-                     placeholder=""
-                     {...register("question", {
-                       required: "Question is required",
-                     })}
+                        type={"text"}
+                        id="question"
+                        placeholder=""
+                        {...register("question", {
+                        required: "Question is required",
+                        })}
                     />
                     {errors.question && (
                         <Text as={"span"} className="text-red-500 text-sm">
@@ -133,14 +134,14 @@ const AskQuestions = (
                         </Text>
                     )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!errors.answer}>
                     <FormLabel fontSize={"1rem"} color={"gray.600"}>Enter Answer</FormLabel>
                     <Textarea 
-                     placeholder=""
-                     defaultValue={questions?.answer}
-                     {...register("answer", {
-                       required: "Answer is required",
-                     })}
+                        id="answer"
+                        placeholder=""
+                        {...register("answer", {
+                        required: "Answer is required",
+                        })}
                     />
                     {errors.answer && (
                         <Text as={"span"} className="text-red-500 text-sm">
@@ -173,4 +174,4 @@ const AskQuestions = (
   )
 }
 
-export default AskQuestions
+export default AskQuestions;
