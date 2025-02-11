@@ -31,11 +31,10 @@ export default function VendorSettingsLayout({
 
   const businessStatus = userData?.user?.businessStatus;
 
-  // console.log("pathname", pathname);
+
   const activeIndex = link_arr.findIndex((link) =>
     pathname.startsWith(link.href)
   );
-  // console.log("activeIndex", activeIndex);
 
   const isRestrictedStatus = [
     BusinessStatus.PENDING_VERIFICATION,

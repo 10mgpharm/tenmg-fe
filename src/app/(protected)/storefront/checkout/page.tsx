@@ -22,8 +22,6 @@ export default function CheckoutPage() {
 
   const { cart, addToCart, sycnCart, isLoading } = useCartStore();
   const router = useRouter();
-  console.log("isLoading", isLoading);
-  console.log("",);
   useEffect(() => {
     if (cart) {
       setCartItems(cart);

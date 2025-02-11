@@ -26,12 +26,9 @@ export default function FaqPage() {
         const response = await requestClient({ token: userToken }).get(
           `/storefront/faqs`
         );
-
-        // console.log("response", response);
         setFaqList(response?.data?.data)
         setLoading(false);
       } catch (e) {
-        // console.log(e)
         setLoading(false);
       }
     }

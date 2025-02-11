@@ -98,7 +98,7 @@ export default function PaymentPage() {
     script.src = process.env.NEXT_PUBLIC_FINCRA_SDK_URL;
     // script.src = config?.;
     script.async = true;
-    // script.onload = () => console.log("Fincra script loaded");
+
     document.body.appendChild(script);
 
     return () => {
@@ -133,7 +133,7 @@ export default function PaymentPage() {
       }
       console.log("response", response);
     } catch (e) {
-      // console.log("")
+
       toast.error("Something went wrong, could not cancel order!")
     }
   }
@@ -163,8 +163,6 @@ export default function PaymentPage() {
         cancelOrder(ref);
       },
       onSuccess: (data: any) => {
-        // console.log("Payment Success", data);
-        // alert(`Payment complete! Reference: ${data.reference}`);
         verifyPayment(ref)
         // return data?.reference
       },
