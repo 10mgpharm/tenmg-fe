@@ -20,9 +20,10 @@ export default function CheckoutPage() {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
-  const { cart, addToCart, updateLoading, sycnCart, isLoading } = useCartStore();
+  const { cart, addToCart, sycnCart, isLoading } = useCartStore();
   const router = useRouter();
   console.log("isLoading", isLoading);
+  console.log("",);
   useEffect(() => {
     if (cart) {
       setCartItems(cart);
@@ -138,7 +139,7 @@ export default function CheckoutPage() {
                 <h3 className="font-semibold text-lg m-6">Order Summary</h3>
                 <Divider className="mt-3" />
               </div>
-              {updateLoading ? <div className="w-full h-[50vh] flex items-center justify-center"><Spinner /></div> :
+              {isLoading ? <div className="w-full h-[50vh] flex items-center justify-center"><Spinner /></div> :
                 <div
                   className="h-[60vh] lg:h-[50vh] overflow-y-auto
               [&::-webkit-scrollbar]:w-2
@@ -210,7 +211,7 @@ export default function CheckoutPage() {
                                   _hover={{
                                     cursor:
                                       //  localQuantities[item.product.id] === 1 || 
-                                      updateLoading ? 'not-allowed' : 'pointer',
+                                      isLoading ? 'not-allowed' : 'pointer',
                                   }}
                                   aria-label="Decrease quantity"
                                   onClick={() => decreaseQuantity(item?.product?.id)}
@@ -222,7 +223,7 @@ export default function CheckoutPage() {
                                   _hover={{
                                     cursor:
                                       // localQuantities[item.product.id] === item?.product?.quantity ||  
-                                      updateLoading
+                                      isLoading
                                         ? 'not-allowed'
                                         : 'pointer',
                                   }}
@@ -277,7 +278,7 @@ export default function CheckoutPage() {
               <h3 className="font-semibold text-lg m-6">Amount</h3>
               <Divider className="mt-3" />
               <div className="px-6">
-                {updateLoading ? <div className="w-full h-[50vh] flex items-center justify-center"><Spinner /></div> :
+                {isLoading ? <div className="w-full h-[50vh] flex items-center justify-center"><Spinner /></div> :
                   <>
                     {cartItems.items?.length > 0 && (
                       <>

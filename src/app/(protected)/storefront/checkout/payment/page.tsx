@@ -189,7 +189,7 @@ export default function PaymentPage() {
       );
       console.log("submit order res", response?.data?.data?.reference)
       if (response.status === 200) {
-        payFincra(e, response?.data?.data?.reference, response?.data?.data?.totalAmount)
+        await payFincra(e, response?.data?.data?.reference, response?.data?.data?.totalAmount)
         console.log("submit order res", response)
         // toast.success(response.data.message);
         // await requestClient({ token: userToken }).post('/storefront/clear-cart');
