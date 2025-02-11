@@ -1,15 +1,20 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import Link from "next/link";
 import { classNames } from "@/utils";
 import { DiscountDataType } from "@/types";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { Dispatch, SetStateAction } from "react";
 
 const columnHelper = createColumnHelper<DiscountDataType>();
 
 export function ColumsDiscountFN(
-  onOpen: () => void,
   pageIndex: number, 
   pageSize: number, 
+  setSelectedDiscount: Dispatch<SetStateAction<DiscountDataType>>,
+  onOpenDeactivate: () => void,
+  onOpenActivate: () => void,
+  onOpenDelete: () => void,
 ) {
   return [
     columnHelper.accessor("id", {
@@ -123,6 +128,47 @@ export function ColumsDiscountFN(
             </div>
           );
         },
+    }),
+    columnHelper.accessor("status", {
+      header: ({ column }) => <p>Action</p>,
+      cell: (info) => {
+        return (
+          <Flex justify={"flex-start"}>
+            <Menu placement="bottom-start">
+              <MenuButton>
+                <BsThreeDotsVertical className="w-5 h-auto" />
+              </MenuButton>
+              <MenuList>
+                <MenuItem>
+                  <Link href={`/admin/discount-code/edit/${info.row.original.id}`}>Edit Discount</Link>
+                </MenuItem>
+                {(info?.row?.original?.status === "ACTIVE") ? (
+                  <MenuItem onClick={() => {
+                    setSelectedDiscount(info.row.original);
+                    onOpenDeactivate()
+                    }}>
+                    Deactivate Discount
+                  </MenuItem>
+                ) : (
+                  <MenuItem onClick={() => {
+                    setSelectedDiscount(info.row.original);
+                    onOpenActivate()
+                    }}>
+                    Activate Discount
+                  </MenuItem>
+                )}
+                <MenuItem onClick={() => {
+                  setSelectedDiscount(info.row.original);
+                  onOpenDelete();
+                  }} 
+                  color="red.500">
+                  Delete Product
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        );
+      },
     }),
   ];
 }

@@ -7,7 +7,9 @@ import {
     TabList, 
     TabPanels, 
     Tab, 
-    TabPanel, 
+    TabPanel,
+    Button,
+    useDisclosure, 
 } from "@chakra-ui/react"
 import { discountData } from "@/data/mockdata"
 import DiscountTable from "./_components/DiscountTable";
@@ -18,6 +20,7 @@ import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import SearchInput from "../../vendors/_components/SearchInput";
 import Link from "next/link";
+import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 
 const Page = () => {
 
@@ -32,9 +35,6 @@ const Page = () => {
     const [allCount, setAllCount] = useState<number>(0)
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
-
-    const activeDiscount = discountData?.filter((discount) => discount.status === "Active");
-    const expiredDiscount = discountData?.filter((discount) => discount.status === "Expired");
 
     const fetchDiscounts = useCallback(async () => {
         setLoading(true);
@@ -85,7 +85,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>All Discount</Text>
                         <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {discountData?.length}
+                            {9}
                         </p>
                     </div>
                 </Tab>
@@ -93,7 +93,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Active</Text>
                         <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {activeDiscount?.length}
+                            {6}
                         </p>
                     </div>
                 </Tab>
@@ -101,7 +101,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Inactive</Text>
                         <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {expiredDiscount?.length}
+                            {1}
                         </p>
                     </div>
                 </Tab>
@@ -109,7 +109,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Expired</Text>
                         <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {expiredDiscount?.length}
+                            {0}
                         </p>
                     </div>
                 </Tab>
@@ -121,6 +121,7 @@ const Page = () => {
                     loading={loading} 
                     data={discount} 
                     pageCount={pageCount} 
+                    fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
                     />
                 </TabPanel>
@@ -130,6 +131,7 @@ const Page = () => {
                     loading={loading}
                     data={discount} 
                     pageCount={pageCount} 
+                    fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
                     />
                 </TabPanel>
@@ -139,6 +141,7 @@ const Page = () => {
                     loading={loading}
                     data={discount}
                     pageCount={pageCount} 
+                    fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
                     />
                 </TabPanel>
@@ -148,6 +151,7 @@ const Page = () => {
                     loading={loading} 
                     data={discount} 
                     pageCount={pageCount} 
+                    fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
                     />
                 </TabPanel>
