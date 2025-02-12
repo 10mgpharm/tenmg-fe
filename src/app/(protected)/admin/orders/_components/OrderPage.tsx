@@ -138,6 +138,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
                 onCloseProcess();
                 onCloseRefunded();
                 onCloseCancelled();
+                onCloseComplete();
                 setIsLoading(false);
             }
         } catch (error) {

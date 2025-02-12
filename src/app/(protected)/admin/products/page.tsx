@@ -259,7 +259,7 @@ const Page = () => {
             if (response.status === 200) {
                 toast.success(response.data.message);
                 fetchProducts();
-                setComment("")
+                setComment("");
                 setIsLoading(false);
                 onCloseFlag();
                 onCloseUnFlag();
