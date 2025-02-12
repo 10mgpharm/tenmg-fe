@@ -43,7 +43,6 @@ export const HiddenFileUpload = ({ setFilePreview, setFile }: HiddenFileUploadPr
 
       setFilePreview(fileURL);
 
-      console.log("File accepted:", file);
     }
   };
 

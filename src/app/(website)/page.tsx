@@ -6,6 +6,7 @@ import Herosection from "./_components/herosection";
 import Financepage from "./_components/financepage";
 import Testimonialsection from "./_components/testimonialsection";
 import Footer from "./_components/footer";
+import Navbar from "./_components/navbar";
 
 export const metadata: Metadata = {
     title: "Home",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default async function Page() {
     return (
       <>
+      <Navbar/>
       <Herosection/>
       <Financepage/>
       <Testimonialsection/>

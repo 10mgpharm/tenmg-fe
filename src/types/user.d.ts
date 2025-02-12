@@ -368,6 +368,28 @@ export interface OrderResponseData {
   lastPageUrl?: any;
 }
 
+export interface DiscountDataType {
+  amount: string;
+  applicationMethod: string;
+  couponCode: string;
+  customerLimit: string;
+  endDate: string;
+  id: number;
+  startDate: string;
+  status: string;
+  type: string;
+}
+export interface DiscountResponseData {
+  data: DiscountDataType[];
+  links: any;
+  meta?: MetaDataProp;
+  prevPageUrl?: string | null, 
+  nextPageUrl?: string | null,
+  currentPage?: number;
+  firstPageUrl?: any;
+  lastPageUrl?: any;
+}
+
 /**
  * Interfaces for the Credit Score
  */

@@ -110,7 +110,7 @@ const Products = () => {
             fromDate: createdAtStart ? new Date(createdAtStart).toLocaleDateString('en-CA') : "",
             toDate: createdAtEnd ? new Date(createdAtEnd).toLocaleDateString('en-CA') : "",
         };
-        const queryString = toQueryString(params)
+        const queryString = toQueryString(params);
         try {
         const response = await requestClient({ token: token }).get(`${query}&${queryString}`);
             if (response.status === 200) {

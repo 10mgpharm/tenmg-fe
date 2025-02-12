@@ -9,7 +9,7 @@ import { MedicationResponseData, NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { handleServerErrorMessage } from "@/utils";
+import { handleServerErrorMessage, toQueryString } from "@/utils";
 import SuccessModal from "../_components/SuccessModal";
 import { useDisclosure } from "@chakra-ui/react";
 
@@ -56,9 +56,14 @@ const AddProducts = () => {
     const [medicationData, setMedicationData] = useState<MedicationResponseData>();
 
     const fetchingMedicationTypes = useCallback(async() => {
+        const params = {
+            status: ["approved", "pending"],
+            active: "active"
+        };
+        const queryString = toQueryString(params);
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/medication-types?active=active`
+                `/supplier/medication-types?${queryString}`
             );
         if(response.status === 200){
             setMedicationData(response.data.data);
@@ -69,9 +74,13 @@ const AddProducts = () => {
     },[token]);
 
     const fetchingBrandTypes = useCallback(async() => {
+        const params = {
+            status: ["approved", "pending"],
+            active: "active"
+        };
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/brands?active=active`
+                `/supplier/brands?${params}`
             );
         if(response.status === 200){
             setBrandData(response.data.data);
@@ -82,9 +91,13 @@ const AddProducts = () => {
     },[token]);
 
     const fetchingCategoriesTypes = useCallback(async() => {
+        const params = {
+            status: ["approved", "pending"],
+            active: "active"
+        };
         try {
             const response = await requestClient({ token: token }).get(
-                `/supplier/categories?active=active`
+                `/supplier/categories?${params}`
             );
         if(response.status === 200){
             setCategoryData(response.data.data);
