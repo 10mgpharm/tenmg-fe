@@ -54,6 +54,12 @@ const TopNavBar = () => {
             {convertLetterCase(businessType)}
           </Tag>
         );
+        case "LENDER":
+          return (
+            <Tag size="sm" variant="solid" bg="blue.50" color={"blue.700"}>
+              {convertLetterCase(businessType)}
+            </Tag>
+          );
       default:
         return (
           <Tag size="sm" variant="solid" colorScheme="red">
@@ -144,6 +150,8 @@ const TopNavBar = () => {
                       router.push("/vendors/settings/general_settings");
                     } else if (data?.user?.entityType === "ADMIN") {
                       router.push("/admin/settings/general_settings");
+                    } else if (data?.user?.entityType === "LENDER") {
+                      router.push("/lenders/settings/personal_information");
                     } else {
                       router.push("/"); // Fallback route if no entity type matches
                     }
