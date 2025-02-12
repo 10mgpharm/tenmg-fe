@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import BreadCrumbBanner from '../../_components/BreadCrumbBanner'
-import { Box, Button, Divider, FormLabel, Image, Input, Stack } from '@chakra-ui/react'
+import { Box, Button, Divider, FormLabel, Image, Input, Stack, useDisclosure } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
 import requestClient from '@/lib/requestClient';
@@ -10,16 +10,18 @@ import { handleServerErrorMessage } from '@/utils';
 import { Radio, RadioGroup } from '@chakra-ui/react'
 import { useCartStore } from '../../storeFrontState/useCartStore';
 import { FaCheck } from 'react-icons/fa6';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { config } from 'process';
+
 
 
 
 export default function PaymentPage() {
 
   const [cartItems, setCartItems] = useState<any>({});
-  const { cart, fetchCart } = useCartStore();
+  const { cart, fetchCart, clearCart } = useCartStore();
+  // const cartItems = cart;
 
 
   const session = useSession();
@@ -30,6 +32,8 @@ export default function PaymentPage() {
 
   useEffect(() => {
     fetchCart(userToken)
+
+
   }, [fetchCart, userToken])
 
   useEffect(() => {
@@ -111,14 +115,18 @@ export default function PaymentPage() {
   // Expiry Date: 10/26
   // CVV: 000
 
+
   const verifyPayment = async (ref) => {
     try {
       const response = await requestClient({ token: userToken }).get(
         `/storefront/payment/verify/${ref}`
       );
-
+      clearCart(userToken)
+      toast.success('Order placed successfully');
+      router.push('/')
       console.log("response", response);
     } catch (e) {
+      toast.error('Oops... Something went wrong...!');
       console.log(e)
     }
   }
@@ -155,16 +163,14 @@ export default function PaymentPage() {
       customer: {
         name: sessionData?.user?.name,
         email: sessionData?.user?.email,
-        // phoneNumber: "",
       },
-      feeBearer: "business", // or "customer"
+      feeBearer: "business",
       onClose: () => {
-        // alert("Transaction was not completed, window closed.")
         cancelOrder(ref);
       },
       onSuccess: (data: any) => {
         verifyPayment(ref)
-        // return data?.reference
+
       },
     });
   };
@@ -175,7 +181,6 @@ export default function PaymentPage() {
     const orderData = {
       "orderId": cartItems?.id,
       "paymentMethodId": 1,
-      // "deliveryAddress": shippingAddresses?.id,
       "deliveryAddress": "My address",
       "deliveryType": "STANDARD"
     }
@@ -189,9 +194,7 @@ export default function PaymentPage() {
       if (response.status === 200) {
         await payFincra(e, response?.data?.data?.reference, response?.data?.data?.totalAmount)
         console.log("submit order res", response)
-        // toast.success(response.data.message);
-        // await requestClient({ token: userToken }).post('/storefront/clear-cart');
-        // router.push('/storefront')
+
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -205,11 +208,6 @@ export default function PaymentPage() {
 
   return (
     <>
-      {/* <Script
-        src="https://unpkg.com/@fincra-engineering/checkout@2.2.0/dist/inline.min.js" // Replace with the correct Fincra script URL
-        strategy="afterInteractive"
-        onLoad={() => console.log("Fincra script loaded.")}
-      /> */}
       <BreadCrumbBanner breadCrumbsData={breadCrumb} />
       <Box p={4} mt={2} className='grid grid-cols-1 lg:grid-cols-6 w-full lg:w-10/12 mx-auto gap-8'>
 
@@ -302,7 +300,7 @@ export default function PaymentPage() {
                         ₦{item?.actualPrice}
                       </p>
                     </div>
-                    {/* <p className='font-semibold'>₦ {item?.discountPrice > 0 ? item?.discountPrice : item?.actualPrice}</p> */}
+
                   </div>
                 </div>)
                 )
@@ -346,11 +344,9 @@ export default function PaymentPage() {
 
             <Divider my={5} />
             <Button colorScheme={'primary'} onClick={submiOrder}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button>
-            {/* <Button colorScheme={'primary'} onClick={payFincra}>{loadingPayment ? <Loader2 /> : "Pay Now"}</Button> */}
           </div>
         </div>
       </Box>
     </>
   )
 }
-// EditAddressModal
