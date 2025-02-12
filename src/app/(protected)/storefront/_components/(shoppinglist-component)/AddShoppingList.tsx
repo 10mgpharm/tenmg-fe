@@ -104,7 +104,7 @@ export default function AddShoppingList() {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
-      console.log('Selected file:', file);
+
     }
   };
 
@@ -113,7 +113,7 @@ export default function AddShoppingList() {
     const file = event.dataTransfer.files[0];
     if (file) {
       setSelectedFile(file);
-      console.log('Dropped file:', file);
+
     }
   };
 

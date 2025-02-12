@@ -13,8 +13,6 @@ export default function MyWishListPage() {
   const userData = session.data as NextAuthUserSession;
   const { fetchWishlist, wishlist, loading, removeWishlistItem } = useWishlistStore();
 
-  console.log("wishlist", wishlist)
-
   useEffect(() => {
     if (userData?.user?.token) fetchWishlist(userData?.user?.token);
   }, [fetchWishlist, userData?.user?.token])

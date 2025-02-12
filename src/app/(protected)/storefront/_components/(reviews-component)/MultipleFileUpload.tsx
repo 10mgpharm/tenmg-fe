@@ -18,10 +18,6 @@ interface HiddenFileUploadProps {
 export const MutipleFileUpload = ({ setFilePreview, setFile, filePreview, file, count, setFileError }: HiddenFileUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // console.log("filePreview", filePreview)
-  // console.log("count", count)
-  // console.log("count === filePreview.length", count === filePreview.length)
-
   const [fileError, setUploadError] = useState<string | null>(null);
 
   const handleButtonClick = () => {
@@ -59,7 +55,6 @@ export const MutipleFileUpload = ({ setFilePreview, setFile, filePreview, file, 
 
       setFilePreview((prevFiles) => [...prevFiles, fileURL]);
 
-      // console.log("File accepted:", file);
     }
   };
 

@@ -5,7 +5,7 @@ import { useCartStore } from '../../storeFrontState/useCartStore';
 import { useWishlistStore } from '../../storeFrontState/useWIshlist';
 
 export default function WishListCardComponent({ product, token }) {
-  console.log("product", product);
+
   const router = useRouter();
   // when user clicks checkout, the item is added to cart
   const { addToCart, updateLoading } = useCartStore();
