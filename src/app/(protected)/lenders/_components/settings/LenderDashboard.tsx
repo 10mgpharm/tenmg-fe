@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import NoticeCard from "../../suppliers/_components/NoticeCard";
+// import NoticeCard from "../../suppliers/_components/NoticeCard";
 import {
   Box,
   Card,
@@ -14,9 +14,10 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
-import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
-import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
+// import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
+// import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
 import { Badge } from "lucide-react";
+import OverviewCard from "@/app/(protected)/vendors/_components/OverviewCard";
 
 interface ILenderDashboardProps {
   isStatusApproved: boolean;
@@ -55,12 +56,12 @@ const LenderDashboard = ({
         gap={5}
         flexDirection={{ base: "column", md: "row" }}
       >
-        <Stack pb={6} w={{sm: "100%", lg: "60%"}} >
-          <Grid templateColumns={{lg: "repeat(2, 1fr)"}} gap={5}>
+        <Stack pb={6} w={{ sm: "100%", lg: "60%" }} >
+          <Grid templateColumns={{ lg: "repeat(2, 1fr)" }} gap={5}>
             <OverviewCard
               title="Total Balance"
               value="₦0"
-              icon=""  
+              icon=""
               fromColor="from-[#1A70B8]"
               toColor="to-[#1A70B8]"
               image=""

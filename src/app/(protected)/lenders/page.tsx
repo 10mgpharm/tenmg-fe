@@ -4,7 +4,7 @@ import VendorDashboard from "../vendors/_components/VendorDashboard";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { BusinessStatus } from "@/constants";
-import LenderDashboard from "./_components/LenderDashboard";
+import LenderDashboard from "./_components/settings/LenderDashboard";
 
 const Vendor = async () => {
   const data: NextAuthUserSession | null = await getServerSession(authOptions);
@@ -19,10 +19,10 @@ const Vendor = async () => {
         BusinessStatus.BANNED,
       ].includes(data?.user?.businessStatus) ?
         (
-        <LenderDashboard isStatusApproved={false} sessionData={data} />
-      ) : (
-        <LenderDashboard isStatusApproved={true} sessionData={data} />
-      )}
+          <LenderDashboard isStatusApproved={false} sessionData={data} />
+        ) : (
+          <LenderDashboard isStatusApproved={true} sessionData={data} />
+        )}
     </div>
   );
 };

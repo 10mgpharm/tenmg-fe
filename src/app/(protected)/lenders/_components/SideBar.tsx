@@ -27,7 +27,7 @@ const navigation = [
   { name: 'Loan Application', href: '/suppliers/orders', icon: LuFileText, current: false },
   { name: 'Transaction History', href: '/suppliers/products', icon: FiShoppingBag, current: false },
   { name: 'My Investment', href: '/suppliers/insight', icon: BsGraphUpArrow, current: false },
-  { name: 'Settings', href: '/suppliers/settings', icon: Cog6ToothIcon, current: false },
+  { name: 'Settings', href: '/lenders/settings', icon: Cog6ToothIcon, current: false },
 ]
 
 const mustAlwaysBeEnabled = (name: string) =>
@@ -91,7 +91,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                                 isActive
                                   ? 'bg-indigo-700 text-white'
                                   : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
-                                  disabled ? "pointer-events-none opacity-50" : "",
+                                disabled ? "pointer-events-none opacity-50" : "",
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                               )}
                             >
@@ -139,7 +139,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                     const disabled = isLinkDisabled(businessStatus, item.name);
                     // const isActive = pathname.includes(item.href);
                     // let isActive = new RegExp(`^${item.href.replace(/\d+/g, '\\d+')}.*$`).test(pathname);
-                    
+
                     return (
                       <li key={item.name}>
                         <Link
@@ -148,7 +148,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                             isActive
                               ? 'bg-primary-50 text-primary-500 p-0.5'
                               : 'text-gray-500 px-3',
-                              disabled ? "pointer-events-none opacity-50" : "",
+                            disabled ? "pointer-events-none opacity-50" : "",
                             'group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6',
                           )}
                         >
