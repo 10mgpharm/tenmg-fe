@@ -3,6 +3,7 @@ import React from "react";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear(); // Get the current year
   return (
     <div>
       {/* Footer Section */}
@@ -137,7 +138,9 @@ const Footer = () => {
 
           {/* Bottom Section */}
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p>© 2024 10MG Pharmacy. All rights reserved.</p>
+            <p className="text-[#ffff] text-center">
+              &copy; {currentYear} 10MG Pharmacy. All Rights Reserved.
+            </p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a
                 href="#"
