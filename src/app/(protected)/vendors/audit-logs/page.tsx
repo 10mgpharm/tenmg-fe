@@ -1,33 +1,61 @@
 "use client";
-import { CiFilter } from "react-icons/ci"
-import SearchInput from "../_components/SearchInput"
-import { useState } from "react";
+import { Button, Divider, Flex, HStack, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import ActivityLogs from "./_components/ActivityLogs";
+import ApiLogs from "./_components/ApiLogs";
+import Webhook from "./_components/Webhook";
 
 const AuditLogs = () => {
-
-    const [globalFilter, setGlobalFilter] = useState<string>("");
-
   return (
     <div className="p-8">
-      <h3 className="font-semibold text-2xl">Loan Repayment</h3>
-      <div className="flex justify-between">
-        <div className="mb-5">
-          <div className="flex items-center gap-3 mt-5">
-            <SearchInput
-              placeholder="Search for a loan"
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-            />
-            <div
-              // onClick={onOpenFilter}
-              className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
+        <HStack justifyContent={"space-between"}>
+            <h3 className="font-semibold text-2xl">Audit Logs</h3>
+            <Button 
+            h={"38px"} 
+            variant={"outline"} 
+            px={3} 
+            fontSize={"14px"} 
+            color={"gray.500"} 
+            border={"1px solid #D0D5DD"}
             >
-              <CiFilter className="w-5 h-5" />
-              <p className="text-gray-500 font-medium">Search</p>
-            </div>
-          </div>
-        </div>
-      </div>
+                Export Data
+            </Button>
+        </HStack>
+        <Divider my={2}/>
+        <Tabs>
+            <TabList borderBottom={"0"}>
+                <Tab _selected={{ color: 'blue.600', bg: 'blue.50' }}>
+                    <div className="px-8 rounded-sm">
+                        <p className="text-sm">Activity Logs</p>
+                    </div>
+                </Tab>
+                <Tab _selected={{ color: 'blue.600', bg: 'blue.50' }}>
+                    <div className="px-8 rounded-sm">
+                        <p className="text-sm text-gray-500">API Logs</p>
+                    </div>
+                </Tab>
+                <Tab _selected={{ color: 'blue.600', bg: 'blue.50' }}>
+                    <div className="px-8 rounded-sm">
+                        <p className="text-sm text-gray-500">Webhook Logs</p>
+                    </div>
+                </Tab>
+            </TabList>
+            <Divider mt={3}/>
+            <TabPanels>
+                <TabPanel>
+                    <ActivityLogs />
+                </TabPanel>
+                <TabPanel>
+                    <ApiLogs />
+                </TabPanel>
+                <TabPanel>
+                    <Webhook />
+                </TabPanel>
+            </TabPanels>
+        </Tabs>
+        <Flex>
+        </Flex>
+        <Divider my={2}/>
+        
     </div>
   )
 }

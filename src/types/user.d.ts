@@ -579,12 +579,16 @@ export interface StoreFrontImageResponse {
   meta: MetaDataProp;
 }
 
-// export interface LoanDataProp {
-//   currentPage: number;
-//   data: LoanData[];
-//   total: number;
-//   perPage: number;
-//   lastPage: number;
-//   nextPageUrl: string | null;
-//   prevPageUrl: string | null;
-// }
+export interface AuditLogData{
+ timestamp: string;
+ event: string;
+ user: string;
+ action: string;
+}
+export interface ApiLogData{
+ status: string;
+ event: string;
+ endpoint: string;
+ server_response: string;
+ timestamp: string;
+}

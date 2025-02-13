@@ -161,12 +161,6 @@ const CreditScore = () => {
             </div>
           </div>
         </div>
-        {/* <div className="flex items-center gap-4">
-          <Button variant="outline" color="primary.500" onClick={onOpen}>
-            Configure Affordability
-          </Button>
-          <Button onClick={onOpenBusiness}>Create Business Rule</Button>
-        </div> */}
       </div>
       <div className="">
         {!loading ? (

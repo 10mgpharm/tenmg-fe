@@ -215,3 +215,22 @@ export const loanRepaymentData = [
     {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Payment Overdue"},
     {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
 ]
+
+export const AuditLogData = [
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "File Upload", user: "Jude Bellingham", action: "Document Uploaded"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Logged Out"},
+]
+
+export const APILogData = [
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Credit Score Updated", endpoint: "POST /customer/credit", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Failed", event: "Payment Status Changed", endpoint: "POST /loan/apply", server_response: "500 Internal Error", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+]
