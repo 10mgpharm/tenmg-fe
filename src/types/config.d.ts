@@ -6,6 +6,12 @@ export interface EmailConfig {
     from: string | undefined;
 }
 
+export interface TenMgConfig {
+    url: string;
+    pkey: string;
+    skey: string;
+}
+
 export interface IConfig {
     appEnv: 'dev' | 'staging' | 'prod' | 'sandbox';
     nodeEnv: 'dev' | 'prod' | 'test';
@@ -16,4 +22,5 @@ export interface IConfig {
     fincraPublicKey: string;
     fincraSdkUrl: string;
     email: EmailConfig;
+    tenmg: TenMgConfig;
 }

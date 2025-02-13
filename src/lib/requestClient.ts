@@ -6,6 +6,8 @@ const apiBaseUrl = `${config.apiBaseUrl}/api/v1`;
 
 interface RequestOptions extends AxiosRequestConfig {
   token?: string;
+  'Public-Key'?: string;
+  'Secret-Key'?: string;
 }
 
 const getHeaders = (queryParamToken?: string, contentType?: string) => {
@@ -16,7 +18,6 @@ const getHeaders = (queryParamToken?: string, contentType?: string) => {
   if (contentType) {
     headers["Content-Type"] = contentType;
   }
-  // headers['Content-Type'] = 'application/json';
 
   if (token || queryParamToken) {
     const authToken = queryParamToken ? queryParamToken : token;
@@ -31,7 +32,16 @@ const getHeaders = (queryParamToken?: string, contentType?: string) => {
 };
 
 const requestClient = (options: RequestOptions = {}) => {
-  const headers = getHeaders(options?.token, options?.headers?.['Content-Type']);
+  let headers = getHeaders(options?.token, options?.headers?.['Content-Type']);
+
+  if (Object.keys(options).includes('Public-Key')) {
+    headers['Public-Key'] = options['Public-Key'];  
+  }
+
+  if (Object.keys(options).includes('Public-Key')) {
+    headers['Secret-Key'] = options['Secret-Key'];
+  }
+
   const opts: RequestOptions = Object.assign({}, options, { headers });
 
   const axiosInstance = axios.create({

@@ -40,9 +40,9 @@ const Herosection = () => {
                 saving lives.
               </p>
               <div className="flex justify-center items-center space-x-5 sm:space-x-4">
-                <button className="sm:w-auto px-6 py-3 bg-white text-[#344054] rounded-lg border border-gray-400">
+                <Link href={'/demo'} className="sm:w-auto px-6 py-3 bg-white text-[#344054] rounded-lg border border-gray-400">
                   Demo
-                </button>{" "}
+                </Link>{" "}
                 <div className="items-end space-x-4 sm:flex hidden">
                   <Link href="/auth/signup">
                     <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
