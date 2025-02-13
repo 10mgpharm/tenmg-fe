@@ -25,20 +25,7 @@ export default function ShoppingListCardComponent({ product }) {
 
     setLaodingRem(true)
     removeShoppingListItem(id, userData?.user?.token, setLaodingRem)
-    // try {
-    //   const resp = await requestClient({ token: userData?.user?.token }).delete(`/storefront/shopping-list/remove-item/${id}`)
-    //   if (resp?.data?.status === 'success') {
-    //     toast.success('Item removed successfully')
-    //     setLaodingRem(false);
-    //     // window.location.reload()
-    //   }
-    // } catch (e) {
-    //   console.log(e)
-    //   setLaodingRem(false);
-    //   toast.error('Could not remove item, please try again')
-    // } finally {
-    //   setLaodingRem(false);
-    // }
+
   }
 
 

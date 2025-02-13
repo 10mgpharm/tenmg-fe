@@ -4,7 +4,9 @@ import VendorDashboard from "../vendors/_components/VendorDashboard";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { BusinessStatus } from "@/constants";
-import LenderDashboard from "./_components/LenderDashboard";
+// import LenderDashboard from "./_components/LenderDashboard";
+import EmptyDashboard from "./_components/EmptyDashboard";
+import LenderDashboard from "./_components/settings/LenderDashboard";
 
 const Vendor = async () => {
   const data: NextAuthUserSession | null = await getServerSession(authOptions);
@@ -17,11 +19,10 @@ const Vendor = async () => {
         BusinessStatus.LICENSE_EXPIRED,
         BusinessStatus.SUSPENDED,
         BusinessStatus.BANNED,
-      ].includes(data?.user?.businessStatus) ?
-        (
-        <LenderDashboard isStatusApproved={false} sessionData={data} />
+      ].includes(data?.user?.businessStatus) ? (
+        <EmptyDashboard sessionData={data} />
       ) : (
-        <LenderDashboard isStatusApproved={true} sessionData={data} />
+        <LenderDashboard sessionData={data} />
       )}
     </div>
   );

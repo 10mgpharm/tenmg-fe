@@ -92,17 +92,17 @@ export const useCartStore = create<CartState>((set, get) => ({
       console.log("resp", resp);
       // return
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       set({ updateLoading: false });
     }
   },
   clearCart: async (token: string) => {
     try {
-      console.log("here ");
+      // console.log("here ");
       const resp = await requestClient({ token }).post(
         "/storefront/clear-cart"
       );
-      console.log("resp", resp);
+      // console.log("resp", resp);
       if (resp?.data?.status === "success") {
         toast.success("Cart cleared successfully");
         await get().fetchCart(token);
