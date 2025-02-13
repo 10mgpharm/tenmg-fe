@@ -4,8 +4,9 @@ import VendorDashboard from "../vendors/_components/VendorDashboard";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { BusinessStatus } from "@/constants";
-import LenderDashboard from "./_components/LenderDashboard";
+// import LenderDashboard from "./_components/LenderDashboard";
 import EmptyDashboard from "./_components/EmptyDashboard";
+import LenderDashboard from "./_components/settings/LenderDashboard";
 
 const Vendor = async () => {
   const data: NextAuthUserSession | null = await getServerSession(authOptions);

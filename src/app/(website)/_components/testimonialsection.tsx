@@ -15,11 +15,11 @@ const Testimonialsection = () => {
               Your Healthcare Financing Partner Starts Here
             </p>
             <div className="flex justify-center space-x-4">
-              <button className="px-6 py-3 bg-[#FFFFFF] text-[#344054] rounded-lg hover:bg-blue-700">
+              <button className="px-6 py-3 bg-[#FFFFFF] text-[#344054] rounded-lg hover:bg-[#D0D5DD]">
                 Contact Us
               </button>
-              <button className="px-6 py-3 bg-[#0B2F4D] text-[#FFFFFF] rounded-lg hover:bg-gray-300">
-                Get started
+              <button className="px-6 py-3 bg-[#1866A7] text-[#FFFFFF] rounded-lg hover:bg-gray-300">
+                Sign Up
               </button>
             </div>
           </div>
@@ -30,3 +30,4 @@ const Testimonialsection = () => {
 };
 
 export default Testimonialsection;
+

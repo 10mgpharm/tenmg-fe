@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import NoticeCard from "../../suppliers/_components/NoticeCard";
+// import NoticeCard from "../../suppliers/_components/NoticeCard";
 import {
   Badge,
   Box,
@@ -20,11 +20,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
-import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
-import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
+// import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
+// import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
 import { ApexOptions } from "apexcharts";
-import ChartComponent from "../../vendors/_components/ChartComponent";
+// import ChartComponent from "../../vendors/_components/ChartComponent";
 import NoRequest from "@public/assets/images/no_request.png";
+import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
+import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent";
+import CompleteAccountModal from "@/app/(protected)/vendors/_components/CompleteAccountModal";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
