@@ -61,8 +61,7 @@ export default function CheckoutPage() {
                     requestedAmount: grandTotal,
                 });
                 if (status === 'success') {
-                    console.log(data);
-                    window.open(data.url)
+                    window.open(data.url, '_blank' )
                 } else {
                     toast.error(`Error: ${message}`);
                 }
