@@ -115,7 +115,7 @@ const AskQuestions = (
                 >
                     { isEditing ? "Edit FAQs" : "Add FAQs"}
                 </Text>
-                <X onClick={onClose} className="w-5 h-auto text-gray-600 cursor-pointer"/>
+                <X onClick={handleClose} className="w-5 h-auto text-gray-600 cursor-pointer"/>
             </Flex>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <FormControl isInvalid={!!errors.question}>

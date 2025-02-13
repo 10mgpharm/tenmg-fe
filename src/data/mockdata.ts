@@ -205,3 +205,13 @@ export const creditScoreData = [
     {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "234", percentage: "29%", status: "Active"},
     {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "300", percentage: "86%", status: "Suspended"},
 ]
+export const loanRepaymentData = [
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Payment Overdue"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Pending Payment"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Payment Overdue"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+]

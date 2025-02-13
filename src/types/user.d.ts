@@ -578,3 +578,13 @@ export interface StoreFrontImageResponse {
   links: any;
   meta: MetaDataProp;
 }
+
+// export interface LoanDataProp {
+//   currentPage: number;
+//   data: LoanData[];
+//   total: number;
+//   perPage: number;
+//   lastPage: number;
+//   nextPageUrl: string | null;
+//   prevPageUrl: string | null;
+// }
