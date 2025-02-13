@@ -1,33 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import NoticeCard from "../../suppliers/_components/NoticeCard";
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Flex,
-  Grid,
-  Image,
-  Stack,
-  Tab,
-  TabList,
-  Tabs,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import React from "react";
+import { Box, Image, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
 import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
 import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
-import { ApexOptions } from "apexcharts";
-import ChartComponent from "../../vendors/_components/ChartComponent";
 import NoRequest from "@public/assets/images/no_request.png";
 import LenderActions from "./LenderActions";
 import LenderFeatureLayout from "./LenderFeatureLayout";
 import CompleteSetup from "./CompleteSetup";
+import EmptyCard from "../../suppliers/_components/EmptyCard";
+import SetupAccount from "./SetupAccount";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
@@ -48,7 +31,7 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
   return (
     <>
       {/* MAIN CONTENT */}
-      <div className="mt-6 w-full flex flex-col md:flex-row gap-5">
+      <div className="w-full flex flex-col md:flex-row gap-5">
         <div className="w-full lg:w-3/5">
           {/* -- MOBILE HORIZONTAL SCROLL -- */}
           <div className="md:hidden overflow-x-auto">
@@ -100,10 +83,48 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
           {/* COMPLETE SETUP */}
           <LenderFeatureLayout title="Complete Setup">
-           <CompleteSetup title="Bank Information" description="Add Account Details" status="completed"/>
-           <CompleteSetup title="Bank Information" description="Add Account Details" status="pending"/>
-           <CompleteSetup title="Bank Information" description="Add Account Details" status="completed"/>
+            <CompleteSetup
+              title="Bank Information"
+              description="Add Account Details"
+              status="completed"
+            />
+            <CompleteSetup
+              title="Bank Information"
+              description="Add Account Details"
+              status="pending"
+            />
+            <CompleteSetup
+              title="Bank Information"
+              description="Add Account Details"
+              status="completed"
+            />
           </LenderFeatureLayout>
+
+          {/* Mobile Setup Account */}
+
+          <SetupAccount />
+
+          <div className="flex flex-col gap-6">
+            {/* BALANCE ALLOCATION */}
+            <Box borderRadius="lg" p={5} borderWidth="1px" bg={"white"}>
+              <Stack gap={3} mt={2}>
+                <Text fontSize="lg" fontWeight="medium">
+                  Balance Allocation
+                </Text>
+                <EmptyCard />
+              </Stack>
+            </Box>
+
+            {/* INTEREST GROWTH */}
+            <Box borderRadius="lg" p={5} borderWidth="1px" bg={"white"}>
+              <Stack gap={3} mt={2}>
+                <Text fontSize="lg" fontWeight="medium">
+                  Interest Growth Over Time
+                </Text>
+                <EmptyCard />
+              </Stack>
+            </Box>
+          </div>
         </div>
 
         {/* LOAN RREQUEST */}
@@ -112,7 +133,7 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
             <h2 className="text-md font-medium text-gray-700 mb-2">
               Loan Requests
             </h2>
-            <div className="flex justify-center items-center h-full">
+            <div className="flex flex-col justify-center items-center h-full">
               <Image
                 className=""
                 src={NoRequest.src}
@@ -121,6 +142,13 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 height={160}
                 loading="lazy"
               />
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                No Request
+              </h3>
+              <p className="text-gray-500 mb-10 text-center">
+                You don’t have any loan request yet. <br /> When you do, they’ll
+                apper here.
+              </p>
             </div>
           </div>
         </div>

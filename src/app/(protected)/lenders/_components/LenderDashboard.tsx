@@ -96,7 +96,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   return (
     <>
       {/* MAIN CONTENT */}
-      <div className="mt-6 w-full flex flex-col md:flex-row gap-5">
+      <div className="w-full flex flex-col md:flex-row gap-5">
         <div className="w-full lg:w-3/5">
           {/* -- MOBILE HORIZONTAL SCROLL -- */}
           <div className="md:hidden overflow-x-auto">

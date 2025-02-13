@@ -8,7 +8,7 @@ interface LenderFeatureLayoutProps {
 
 const LenderFeatureLayout = ({ title, children }: LenderFeatureLayoutProps) => {
   return (
-    <Stack borderRadius="lg" p={6} borderWidth="1px" bg={"white"} spacing={6}>
+    <Stack borderRadius="lg" p={6} borderWidth="1px" bg={"white"} spacing={6} mb={6} display={{ base: "none", md: "flex" }}>
       <Text fontSize="lg" fontWeight="medium">
         {title}
       </Text>
