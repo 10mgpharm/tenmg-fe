@@ -592,3 +592,12 @@ export interface ApiLogData{
  server_response: string;
  timestamp: string;
 }
+
+export interface UserLoan {
+  loanId: string;
+  name: string;
+  amount: string;
+  date: string;
+  status: string;
+  repaymentStatus: string;
+}

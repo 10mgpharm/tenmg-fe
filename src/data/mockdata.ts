@@ -234,3 +234,13 @@ export const APILogData = [
     {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
     {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
 ]
+
+export const LoanByUser = [
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Open", repaymentStatus: "Ongoing"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Late Payment"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+]

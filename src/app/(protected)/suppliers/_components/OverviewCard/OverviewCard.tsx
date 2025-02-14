@@ -7,7 +7,7 @@ const OverviewCard = (
 ) => {
   return (
     <div className={classNames(`bg-gradient-to-r ${fromColor} ${toColor} rounded-xl relative`)}>
-        <div className="flex items-center justify-between py-16 px-6">
+        <div className="flex items-center justify-between py-12 px-6">
             <div className="">
                 <p className="text-white text-base mb-1">{title}</p>
                 <p className="font-medium text-white text-2xl">{value}</p>
