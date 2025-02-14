@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
+import MobileNavBar from "./_components/MobileNavBar";
 
 const appName = config.appName;
 
@@ -36,6 +37,7 @@ export default async function VendorLayout({
         </div>
         <Footer />
       </main>
+      <MobileNavBar />
     </>
   );
 }

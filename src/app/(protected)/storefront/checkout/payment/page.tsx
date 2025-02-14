@@ -121,9 +121,8 @@ export default function PaymentPage() {
       const response = await requestClient({ token: userToken }).get(
         `/storefront/payment/verify/${ref}`
       );
-      clearCart(userToken)
       toast.success('Order placed successfully');
-      router.push('/')
+      router.push('/');
       console.log("response", response);
     } catch (e) {
       toast.error('Oops... Something went wrong...!');
@@ -141,7 +140,6 @@ export default function PaymentPage() {
       }
       console.log("response", response);
     } catch (e) {
-
       toast.error("Something went wrong, could not cancel order!")
     }
   }

@@ -36,7 +36,7 @@ export default function GreetingComponent() {
     }, []);
 
     return (
-        <div className="hidden md:block text-xs md:text-base">
+        <div className="ml-6 md:ml-auto text-xs md:text-base">
             <h4 className="text-gray-700 font-semibold">{greeting} {data?.user?.name}</h4>
             <p className="text-gray-400 md:text-sm">{currentDateTime}</p>
         </div>

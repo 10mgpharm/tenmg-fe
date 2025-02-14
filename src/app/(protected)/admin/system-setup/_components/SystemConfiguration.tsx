@@ -18,7 +18,11 @@ import ModalComponent from "./ModalComponent";
 import ImgEditor from "./ImgEditor.create.product";
 import FAQList from "./FAQList";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession, StoreFrontImage, StoreFrontImageResponse } from "@/types";
+import { 
+  NextAuthUserSession, 
+  StoreFrontImage, 
+  StoreFrontImageResponse 
+} from "@/types";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
@@ -47,16 +51,16 @@ const SystemConfiguration = () => {
   const fetchingStoreImages = useCallback(async () => {
     setLoading(true)
     try {
-        const response = await requestClient({ token: token }).get(
-          `/admin/system-setup/storefront-images`
-        );
-        if (response.status === 200) {
-          setStoreImages(response.data.data);
-          setLoading(false);
-        }
-    } catch (error) {
-        console.error(error)
+      const response = await requestClient({ token: token }).get(
+        `/admin/system-setup/storefront-images`
+      );
+      if (response.status === 200) {
+        setStoreImages(response.data.data);
         setLoading(false);
+      }
+    } catch (error) {
+      console.error(error)
+      setLoading(false);
     }
   }, [token]);
 
@@ -65,7 +69,7 @@ const SystemConfiguration = () => {
       fetchingStoreImages();
   }, [token, fetchingStoreImages]);
 
-  const MAX_IMAGES = 10;
+  const MAX_IMAGES = 3;
   const MAX_FILE_SIZE = 5 * 1024 * 1024; //5MB in bytes
 
   const onLoadImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -138,7 +142,6 @@ const SystemConfiguration = () => {
   const onSelectImgToEdit = (img: string) => {
     // const imageBlob = URL.createObjectURL(img)
     // const result = fetchImageAsBlob(img);
-    // console.log(img)
     setImage(img);
     onOpen();
     if (inputRef.current) {
@@ -188,6 +191,7 @@ const SystemConfiguration = () => {
           toast.success(response.data?.message)
           fetchingStoreImages();
           setDeleteLoading(false);
+          onDeleteClose();
         }
       } catch (error) {
         console.error(error);
@@ -203,7 +207,7 @@ const SystemConfiguration = () => {
         <Stack bg={"white"} p={5} rounded={"lg"} gap={2} shadow={"sm"}>
           <HStack justifyContent={"space-between"} align={"center"}>
             <Text fontSize={"13px"} fontWeight={600} color={"gray.600"}>
-              Store Front Image ({storeImages?.data?.length}/10)
+              Store Front Image ({storeImages?.data?.length}/3)
             </Text>
             <Button 
             h={"34px"} 
@@ -232,11 +236,10 @@ const SystemConfiguration = () => {
               <input
                 type="file"
                 // ref={fileInputRef}
-                // id="image_uploads"
                 name="image_uploads"
                 multiple
                 onChange={onLoadImage}
-                accept=".jpg, .jpeg, .png, .webp, .avif"
+                accept=".jpg, .jpeg, .png"
                 style={{
                   opacity: "0",
                   position: "absolute",

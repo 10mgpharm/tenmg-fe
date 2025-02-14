@@ -30,7 +30,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation"
 import { useState } from "react";
-import { ColumsRepaymentFN } from "../_components/repaymentTable";
+import { ColumsRepaymentFN } from "@/app/(protected)/admin/loan-management/_components/repaymentTable";
 
 const theme = extendTheme({
     components: {
@@ -128,67 +128,67 @@ const Page = () => {
         </Stack>
         <Stack mt={6}>
             <Text fontWeight={600} fontSize={"1.2rem"} mb={2}>Repayment History</Text>
-            <div>
-        {
-            repaymentData?.length === 0 
-            ? <EmptyOrder 
-            heading={`No repayment history Yet`} 
-            content={`You currently have no repayment history. All repayment history will appear here.`}
-            /> : 
-            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-                <Table>
-                    <Thead bg={"#F2F4F7"}>
-                    {table?.getHeaderGroups()?.map((headerGroup) => (
-                        <Tr key={headerGroup.id}>
-                        {headerGroup.headers?.map((header) => (
-                            <Th
-                            textTransform={"initial"}
-                            px="0px"
-                            key={header.id}
-                            >
-                            {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
+            <div className="">
+            {
+                repaymentData?.length === 0 
+                ? <EmptyOrder 
+                heading={`No repayment history Yet`} 
+                content={`You currently have no repayment history. All repayment history will appear here.`}
+                /> : 
+                <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                    <Table>
+                        <Thead bg={"#F2F4F7"}>
+                        {table?.getHeaderGroups()?.map((headerGroup) => (
+                            <Tr key={headerGroup.id}>
+                            {headerGroup.headers?.map((header) => (
+                                <Th
+                                textTransform={"initial"}
+                                px="0px"
+                                key={header.id}
+                                >
+                                {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                    )}
+                                </Th>
+                            ))}
+                            </Tr>
+                        ))}
+                        </Thead>
+                        <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                        {table?.getRowModel()?.rows?.map((row) => (
+                            <Tr key={row.id}>
+                            {row.getVisibleCells()?.map((cell) => (
+                                <Td key={cell.id} px="0px">
+                                {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext()
                                 )}
-                            </Th>
+                                </Td>
+                            ))}
+                            </Tr>
                         ))}
-                        </Tr>
-                    ))}
-                    </Thead>
-                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {table?.getRowModel()?.rows?.map((row) => (
-                        <Tr key={row.id}>
-                        {row.getVisibleCells()?.map((cell) => (
-                            <Td key={cell.id} px="0px">
-                            {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                            )}
-                            </Td>
-                        ))}
-                        </Tr>
-                    ))}
-                    </Tbody>
-                </Table>
-                {/* <HStack mt={5} justify={"space-between"}>
-                    <Flex alignItems={"center"} gap={2}>
-                        <FaChevronLeft className='text-gray-500' />
-                        <Text className='text-gray-500'>Prev</Text>
-                    </Flex>
-                    {
-                        LoanData?.length > 10 ? <Pagination />
-                        :  <span className="bg-primary-50 py-2 px-4 rounded-md text-primary-600 cursor-pointer">1</span>
-                    }
-                    <Flex alignItems={"center"} gap={2}>
-                        <Text className='text-gray-500'>Next</Text>
-                        <FaChevronRight className='text-gray-500' />
-                    </Flex>
-                </HStack> */}
-            </TableContainer>
-        }
-        </div>
+                        </Tbody>
+                    </Table>
+                    {/* <HStack mt={5} justify={"space-between"}>
+                        <Flex alignItems={"center"} gap={2}>
+                            <FaChevronLeft className='text-gray-500' />
+                            <Text className='text-gray-500'>Prev</Text>
+                        </Flex>
+                        {
+                            LoanData?.length > 10 ? <Pagination />
+                            :  <span className="bg-primary-50 py-2 px-4 rounded-md text-primary-600 cursor-pointer">1</span>
+                        }
+                        <Flex alignItems={"center"} gap={2}>
+                            <Text className='text-gray-500'>Next</Text>
+                            <FaChevronRight className='text-gray-500' />
+                        </Flex>
+                    </HStack> */}
+                </TableContainer>
+            }
+            </div>
         </Stack>
     </div>
   )
