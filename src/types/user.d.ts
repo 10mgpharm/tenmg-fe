@@ -578,3 +578,26 @@ export interface StoreFrontImageResponse {
   links: any;
   meta: MetaDataProp;
 }
+
+export interface AuditLogData{
+ timestamp: string;
+ event: string;
+ user: string;
+ action: string;
+}
+export interface ApiLogData{
+ status: string;
+ event: string;
+ endpoint: string;
+ server_response: string;
+ timestamp: string;
+}
+
+export interface UserLoan {
+  loanId: string;
+  name: string;
+  amount: string;
+  date: string;
+  status: string;
+  repaymentStatus: string;
+}

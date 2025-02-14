@@ -205,3 +205,42 @@ export const creditScoreData = [
     {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "234", percentage: "29%", status: "Active"},
     {id: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", email: "chudivictor9@gmail.com", score: "300", percentage: "86%", status: "Suspended"},
 ]
+export const loanRepaymentData = [
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Payment Overdue"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Pending Payment"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Payment Overdue"},
+    {loanId: "REF-001-2024", name: "Adeola Oluwafumilayo Joy", amount: "130,000", repay: "130,000", date: "12/03/2025", status: "Completed"},
+]
+
+export const AuditLogData = [
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "File Upload", user: "Jude Bellingham", action: "Document Uploaded"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Logout", user: "Jude Bellingham", action: "Login Successful"},
+    {timestamp: "2024-09-08   12:45:32", event: "User Login", user: "Jude Bellingham", action: "Logged Out"},
+]
+
+export const APILogData = [
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Credit Score Updated", endpoint: "POST /customer/credit", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Failed", event: "Payment Status Changed", endpoint: "POST /loan/apply", server_response: "500 Internal Error", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+]
+
+export const LoanByUser = [
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Open", repaymentStatus: "Ongoing"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Late Payment"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+    {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
+]
