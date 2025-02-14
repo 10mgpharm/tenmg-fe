@@ -1,7 +1,17 @@
 import { Button } from "@chakra-ui/react";
 import React from "react";
 
-const LenderActions = () => {
+interface LenderActionsProps {
+  onOpenDeposit?: () => void;
+  onOpenWithdraw?: () => void;
+  onOpenGenerateStatement?: () => void;
+}
+
+const LenderActions = ({
+  onOpenDeposit,
+  onOpenWithdraw,
+  onOpenGenerateStatement,
+}: LenderActionsProps) => {
   return (
     <div className="flex justify-between gap-3 my-6">
       <Button
@@ -9,7 +19,7 @@ const LenderActions = () => {
         w={"full"}
         whiteSpace="normal"
         fontSize={{ base: "xs", md: "md" }}
-        onClick={() => console.log("Deposit Funds")}
+        onClick={() => onOpenDeposit()}
       >
         Deposit Funds
       </Button>
@@ -18,7 +28,7 @@ const LenderActions = () => {
         w={"full"}
         whiteSpace="normal"
         fontSize={{ base: "xs", md: "md" }}
-        onClick={() => console.log("Deposit Funds")}
+        onClick={() => onOpenWithdraw()}
       >
         Withdraw Funds
       </Button>
@@ -27,7 +37,7 @@ const LenderActions = () => {
         w={"full"}
         whiteSpace="normal"
         fontSize={{ base: "xs", md: "md" }}
-        onClick={() => console.log("Deposit Funds")}
+        onClick={() => onOpenGenerateStatement()}
       >
         Generate Statement
       </Button>

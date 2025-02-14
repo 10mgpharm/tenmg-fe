@@ -35,7 +35,9 @@ import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent
 import CompleteAccountModal from "@/app/(protected)/vendors/_components/CompleteAccountModal";
 import LenderActions from "./LenderActions";
 import SideBar from "../../admin/_components/SideBar";
-import DepositFunds from "./DepositFunds";
+import DepositFunds from "./drawers/DepositFunds";
+import WithdrawFunds from "./drawers/WithdrawFunds";
+import GenerateStatement from "./drawers/GenerateStatement";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
@@ -52,6 +54,22 @@ interface ILenderDashboard {
 
 const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const {
+    isOpen: isOpenDeposit,
+    onOpen: onOpenDeposit,
+    onClose: onCloseDeposit,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenWithdraw,
+    onOpen: onOpenWithdraw,
+    onClose: onCloseWithdraw,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenGenerate,
+    onOpen: onOpenGenerate,
+    onClose: onCloseGenerate,
+  } = useDisclosure();
 
   const balanceTimePeriods = [
     "12 months",
@@ -155,7 +173,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
             />
           </div>
 
-          <LenderActions />
+          <LenderActions
+            onOpenDeposit={onOpenDeposit}
+            onOpenWithdraw={onOpenWithdraw}
+            onOpenGenerateStatement={onOpenGenerate}
+          />
 
           {/* BALANCE ALLOCATION & INTEREST GROWTH CHARTS */}
           <div className="">
@@ -346,7 +368,9 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         </div>
       </div>
       <CompleteAccountModal isOpen={isOpen} onClose={onClose} />
-      <DepositFunds />
+      <DepositFunds isOpen={isOpenDeposit} onClose={onCloseDeposit} />
+      <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} />
+      <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
     </>
   );
 };

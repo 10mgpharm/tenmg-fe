@@ -46,13 +46,13 @@ export default function OperationLayout({
       <DrawerOverlay />
       <DrawerContent pt={4}>
         <DrawerCloseButton p={4} />
-        <DrawerHeader pb={4}>
-          <Heading as="h2" fontSize="2xl" fontWeight="semibold">
+        <DrawerHeader pb={4} mt={12}>
+          <Heading as="h2" fontSize="2xl" fontWeight="semibold" mb={2}>
             {title}
           </Heading>
-          <Heading as="h3" fontSize="xl" fontWeight="semibold" mb={4}>
+          <Text mb={4} color="gray.400" fontWeight={500} fontSize="md">
             {description}
-          </Heading>
+          </Text>
         </DrawerHeader>
 
         <DrawerBody>{children}</DrawerBody>
