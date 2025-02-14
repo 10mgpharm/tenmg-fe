@@ -215,7 +215,7 @@ const VendorDashboard = () => {
             <Flex justifyContent="space-between" direction={{ base: "column", md: "row" }} gap={4}>
               <Stack flex={1}>
                 <Text fontWeight="medium" fontSize="3xl">
-                  Welcome back, Adeola
+                  Welcome back, {sessionData?.user?.name}
                 </Text>
                 <Text fontSize="sm" color="#667085">
                   Keep track of vendors and their security ratings.

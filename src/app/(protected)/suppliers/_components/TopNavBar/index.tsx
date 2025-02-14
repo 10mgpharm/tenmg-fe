@@ -73,11 +73,11 @@ const TopNavBar = () => {
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
         <div className="flex items-center gap-8 md:gap-36">
-          <div className="flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
+          <div className="hidden md:flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
             <Image
               src={Logo}
               alt=""
-              className="w-10 h-10 md:w-[160px] md:h-auto"
+              className="w-24 h-10 md:w-[160px] md:h-auto"
               width={75}
               height={75}
             />
