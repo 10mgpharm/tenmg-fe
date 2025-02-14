@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import OperationLayout from "../OperationLayout";
 import {
+  Box,
   Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Image,
   Input,
   InputGroup,
   InputLeftElement,
+  Stack,
   Text,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import GenerateDateRange from "../GenerateDateRange";
+import GenerateIcon from "@public/assets/images/generate-image.png";
 
 interface IFormInput {
   amount: number;
@@ -25,15 +30,14 @@ const GenerateStatement = ({ isOpen, onClose }: GenerateStatementProps) => {
   const [step, setStep] = useState(1);
 
   const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
-  
+
   const handleClose = () => {
     setStep(1);
     onClose();
   };
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
+    nextStep();
   };
 
   const {
@@ -46,42 +50,49 @@ const GenerateStatement = ({ isOpen, onClose }: GenerateStatementProps) => {
   return (
     <OperationLayout
       isOpen={isOpen}
-      onClose={onClose}
-      title="Deposit Funds"
-      description="Enter an amount and a destination to save to"
+      onClose={handleClose}
+      title={step === 1 ? "Generate Statement" : "Account Statement Generated"}
+      description={
+        step === 1
+          ? "Enter an amount and a destination to save to"
+          : "Your account statement is now ready for your review, Also check your email for a copy."
+      }
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-5 text-gray mb-10">
-          <FormControl isInvalid={!!errors.amount} mb={6}>
-            <FormLabel htmlFor="amount">Enter Amount</FormLabel>
-            <InputGroup>
-              <InputLeftElement>₦</InputLeftElement>
-              <Input
-                id="amount"
-                type={"number"}
-                placeholder="E.g. N12,092,894"
-                {...register("amount", {
-                  required: "Amount is required",
-                  minLength: {
-                    value: 8,
-                    message: "Must be at least 8 characters.",
-                  },
-                })}
-              />
-            </InputGroup>
-            <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
-          </FormControl>
+      {step === 1 && (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-5 text-gray mb-10">
+            <FormControl isInvalid={!!errors.amount} mb={6}>
+              <GenerateDateRange />
+              <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
+            </FormControl>
 
-          <Button
-            size="lg"
-            w="full"
-            type="submit"
-            loadingText="Submitting..."
-          >
-            Continue
+            <Button
+              size="lg"
+              w="full"
+              type="submit"
+              loadingText="Submitting..."
+            >
+              Continue
+            </Button>
+          </div>
+        </form>
+      )}
+      {step === 2 && (
+        <Box>
+          <Stack spacing={4} align="center">
+            <Image
+              src={GenerateIcon.src}
+              alt="Success"
+              width={320}
+              height={320}
+            />
+          </Stack>
+
+          <Button size="lg" w="full" onClick={handleClose} mt={10}>
+            Save in Device
           </Button>
-        </div>
-      </form>
+        </Box>
+      )}
     </OperationLayout>
   );
 };

@@ -20,11 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { FiEye } from "react-icons/fi";
 import Image from "next/image";
-import shape from "@public/assets/images/Rectangle.svg";
-import { convertDate } from "@/utils/formatDate";
-import { AdminApprovals } from "@/types";
-import pdfFileIcon from "@public/assets/images/file_fomat_icon.png";
-import Link from "next/link";
+import shape from "@public/assets/images/Rectangle 43.svg";
 
 interface RequestDrawerProps {
   isOpen: boolean;
@@ -57,7 +53,7 @@ export default function OperationLayout({
 
         <DrawerBody>{children}</DrawerBody>
 
-        <DrawerFooter flexDirection="column" p={0}>
+        <DrawerFooter justifyContent="flex-end" p={0}>
           <Image src={shape} alt="" width={298} />
         </DrawerFooter>
       </DrawerContent>
