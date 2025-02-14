@@ -23,10 +23,10 @@ import { BusinessStatus } from "@/constants";
 import { LuFileText } from 'react-icons/lu'
 
 const navigation = [
-  { name: 'Dashboard', href: '/suppliers', icon: HomeIcon, current: true },
-  { name: 'Loan Application', href: '/suppliers/orders', icon: LuFileText, current: false },
-  { name: 'Transaction History', href: '/suppliers/products', icon: FiShoppingBag, current: false },
-  { name: 'My Investment', href: '/suppliers/insight', icon: BsGraphUpArrow, current: false },
+  { name: 'Dashboard', href: '/lenders', icon: HomeIcon, current: true },
+  { name: 'Loan Application', href: '/lenders/loan-application', icon: LuFileText, current: false },
+  { name: 'Transaction History', href: '/lenders/transaction-history', icon: FiShoppingBag, current: false },
+  { name: 'My Investment', href: '/lenders/investment', icon: BsGraphUpArrow, current: false },
   { name: 'Settings', href: '/lenders/settings', icon: Cog6ToothIcon, current: false },
 ]
 

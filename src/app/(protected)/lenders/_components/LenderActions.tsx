@@ -4,13 +4,31 @@ import React from "react";
 const LenderActions = () => {
   return (
     <div className="flex justify-between gap-3 my-6">
-      <Button variant="outline" w={"full"} whiteSpace="normal" fontSize={{ base: "xs", md: "md" }}>
+      <Button
+        variant="outline"
+        w={"full"}
+        whiteSpace="normal"
+        fontSize={{ base: "xs", md: "md" }}
+        onClick={() => console.log("Deposit Funds")}
+      >
         Deposit Funds
       </Button>
-      <Button variant="outline" w={"full"} whiteSpace="normal" fontSize={{ base: "xs", md: "md" }}>
+      <Button
+        variant="outline"
+        w={"full"}
+        whiteSpace="normal"
+        fontSize={{ base: "xs", md: "md" }}
+        onClick={() => console.log("Deposit Funds")}
+      >
         Withdraw Funds
       </Button>
-      <Button variant="outline" w={"full"} whiteSpace="normal" fontSize={{ base: "xs", md: "md" }}>
+      <Button
+        variant="outline"
+        w={"full"}
+        whiteSpace="normal"
+        fontSize={{ base: "xs", md: "md" }}
+        onClick={() => console.log("Deposit Funds")}
+      >
         Generate Statement
       </Button>
     </div>

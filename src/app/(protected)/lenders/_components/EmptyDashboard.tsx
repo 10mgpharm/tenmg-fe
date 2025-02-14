@@ -16,14 +16,34 @@ interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
 }
 
-interface ILenderDashboard {
-  totalCustomers: number;
-  applications: number;
-  creditVoucher: string;
-  txnHistoryEval: number;
-  apiCalls: number;
-  balance: number;
+interface CompleteSetupProps {
+  title: string;
+  description: string;
+  status: "completed" | "pending";
 }
+
+const completeSetupData: CompleteSetupProps[] = [
+  {
+    title: "Bank Information",
+    description: "Add Account Details",
+    status: "completed",
+  },
+  {
+    title: "Make a Deposit",
+    description: "Add Account Details",
+    status: "pending",
+  },
+  {
+    title: "Setup Loan Preference",
+    description: "Add Account Details",
+    status: "pending",
+  },
+  {
+    title: "Profile Settings",
+    description: "Add Account Details",
+    status: "pending",
+  },
+];
 
 const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -82,23 +102,18 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
           <LenderActions />
 
           {/* COMPLETE SETUP */}
-          <LenderFeatureLayout title="Complete Setup">
-            <CompleteSetup
-              title="Bank Information"
-              description="Add Account Details"
-              status="completed"
-            />
-            <CompleteSetup
-              title="Bank Information"
-              description="Add Account Details"
-              status="pending"
-            />
-            <CompleteSetup
-              title="Bank Information"
-              description="Add Account Details"
-              status="completed"
-            />
-          </LenderFeatureLayout>
+          <Box display={{ base: "none", md: "block" }} w="full" mb={6}>
+            <LenderFeatureLayout title="Complete Setup">
+              {completeSetupData.map((data, index) => (
+                <CompleteSetup
+                  key={index}
+                  title={data.title}
+                  description={data.description}
+                  status={data.status}
+                />
+              ))}
+            </LenderFeatureLayout>
+          </Box>
 
           {/* Mobile Setup Account */}
 
@@ -106,14 +121,10 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
           <div className="flex flex-col gap-6">
             {/* BALANCE ALLOCATION */}
-            <Box borderRadius="lg" p={5} borderWidth="1px" bg={"white"}>
-              <Stack gap={3} mt={2}>
-                <Text fontSize="lg" fontWeight="medium">
-                  Balance Allocation
-                </Text>
-                <EmptyCard />
-              </Stack>
-            </Box>
+
+            <LenderFeatureLayout title="Balance Allocation">
+              <EmptyCard />
+            </LenderFeatureLayout>
 
             {/* INTEREST GROWTH */}
             <Box borderRadius="lg" p={5} borderWidth="1px" bg={"white"}>
