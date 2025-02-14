@@ -31,8 +31,24 @@ interface QuestionsProps {
 }
 
 const AskQuestions = (
-    {isOpen, onClose, refetch, questions, isEditing, setIsEditing, setSelectedItem}: 
-    {isOpen: boolean, onClose: () => void; refetch: () => void, questions?: QuestionsProps, isEditing: boolean, setIsEditing: Dispatch<SetStateAction<boolean>>, setSelectedItem: Dispatch<SetStateAction<faqProps>>}
+    {
+        isOpen, 
+        onClose, 
+        refetch, 
+        questions, 
+        isEditing, 
+        setIsEditing, 
+        setSelectedItem
+    }: 
+    {
+        isOpen: boolean; 
+        onClose: () => void; 
+        refetch: () => void; 
+        questions?: QuestionsProps; 
+        isEditing: boolean; 
+        setIsEditing: Dispatch<SetStateAction<boolean>>; 
+        setSelectedItem: Dispatch<SetStateAction<faqProps>>;
+    }
 ) => {
 
     const session = useSession();
@@ -54,7 +70,7 @@ const AskQuestions = (
     },
     });
 
-    const onSubmit: SubmitHandler<IFormInput>  = async (data) => {
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true)
         try {
             let response: any;
@@ -113,13 +129,15 @@ const AskQuestions = (
                     alignSelf={"center"}
                     mb="5px"
                 >
-                    { isEditing ? "Edit FAQs" : "Add FAQs"}
+                    { isEditing ? "Edit FAQs" : "Add FAQs" }
                 </Text>
-                <X onClick={onClose} className="w-5 h-auto text-gray-600 cursor-pointer"/>
+                <X onClick={handleClose} className="w-5 h-auto text-gray-600 cursor-pointer"/>
             </Flex>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <FormControl isInvalid={!!errors.question}>
-                    <FormLabel fontSize={"1rem"} color={"gray.600"}>{isEditing ? "Question" : "Add Question"}</FormLabel>
+                    <FormLabel fontSize={"1rem"} color={"gray.600"}>
+                        {isEditing ? "Question" : "Add Question"}
+                    </FormLabel>
                     <Input 
                         type={"text"}
                         id="question"
@@ -135,7 +153,9 @@ const AskQuestions = (
                     )}
                 </FormControl>
                 <FormControl isInvalid={!!errors.answer}>
-                    <FormLabel fontSize={"1rem"} color={"gray.600"}>Enter Answer</FormLabel>
+                    <FormLabel fontSize={"1rem"} color={"gray.600"}>
+                        Enter Answer
+                    </FormLabel>
                     <Textarea 
                         id="answer"
                         placeholder=""
