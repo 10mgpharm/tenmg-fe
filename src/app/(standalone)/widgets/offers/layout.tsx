@@ -15,7 +15,7 @@ export default function OffersLayout({
     <>
       {" "}
       <main className="bg-blue-50 min-h-screen flex justify-center items-center gap-4 flex-col">
-        <LoanLayout>{children}</LoanLayout>
+        <LoanLayout name={""} logo={""}>{children}</LoanLayout>
         <LoanFooter />
       </main>
     </>
