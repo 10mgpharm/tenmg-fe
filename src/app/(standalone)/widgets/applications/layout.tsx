@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import config from "@/lib/config";
-import LoanFooter from "../_components/LoanFooter";
-import LoanLayout from "../_components/LoanLayout";
 
 const appName = config.appName;
 
@@ -10,17 +8,14 @@ export const metadata: Metadata = {
   description: "10MG Supplier Dashboard",
 };
 
-export default async function SupplierLayout({
+export default async function ApplicationLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <>
       <main className="bg-blue-50 min-h-screen flex justify-center items-center gap-4 flex-col">
-        <LoanLayout>{children}</LoanLayout>
-        <LoanFooter />
+        {children}
       </main>
-    </>
   );
 }

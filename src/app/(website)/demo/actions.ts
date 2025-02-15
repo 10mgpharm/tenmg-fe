@@ -28,7 +28,7 @@ export async function initializeLoanApplicationUrl(payload: StartApplicationPayl
         const response = await requestClient({
             'Public-Key': config.tenmg.pkey
         })
-            .post<ResponseDto<ApplicationUrl>>(`${CLIENT_BASE_URL}/application/start`, payload);
+            .post<ResponseDto<ApplicationUrl>>(`${CLIENT_BASE_URL}/applications/start`, payload);
         return response.data;
     } catch (error) {
         return {

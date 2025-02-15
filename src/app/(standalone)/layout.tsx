@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import LoadingScreen from "./widgets/applications/_components/LoadingScreen";
 
 export const metadata: Metadata = {
     title: "10MG Credit | 10MG",
@@ -10,10 +11,13 @@ export default function StandaloneLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    // validate external widget token here
-
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+            fallback={
+                <div className="grid place-items-center h-screen w-screen">
+                    <LoadingScreen message="Initializing Application..." />
+                </div>
+            }>
             {children}
         </Suspense>
     )
