@@ -61,7 +61,7 @@ const formSchema = z.object({
 
 type FormInput = z.infer<typeof formSchema>;
 
-export default function StepFourMandateForm({ token, defaultBankDetail, business, application, customer, navigateBackAction, onContinueAction }: Props) {
+export default function StepFourBankForm({ token, defaultBankDetail, business, application, customer, navigateBackAction, onContinueAction }: Props) {
     const [accountVerificationInProgress, startBankAccountVerification] = useTransition();
     const [saveBankLoading, startSaveBank] = useTransition();
     const [accountVerificationError, setAccountVerificationError] = useState<string | null>(null);
@@ -99,7 +99,7 @@ export default function StepFourMandateForm({ token, defaultBankDetail, business
         }
     }
 
-    const handleVerifyBankAccount = (accountNumber: number, bankCode: number) => {
+    const handleVerifyBankAccount = (accountNumber: string, bankCode: string) => {
         startBankAccountVerification(async () => {
             setAccountVerificationError(null);
             setValue('accountName', '');
@@ -145,7 +145,7 @@ export default function StepFourMandateForm({ token, defaultBankDetail, business
 
     useEffect(() => {
         if (accountNumber && accountNumber?.length === 10 && bankCode && bankName) {
-            handleVerifyBankAccount(Number(accountNumber), Number(bankCode));
+            handleVerifyBankAccount(accountNumber, bankCode);
         } else {
             setValue('accountName', '');
         }
@@ -205,6 +205,10 @@ export default function StepFourMandateForm({ token, defaultBankDetail, business
                                         await trigger(['accountNumber']);
                                     }}
                                     isDisabled={saveBankLoading}
+                                    inputMode='numeric'
+                                    keepWithinRange={false}
+                                    clampValueOnBlur={false}
+                                    // parse={(value: string | number) =>{ }}
                                 >
                                     <NumberInputField
                                         ref={accountNumberInputRef}

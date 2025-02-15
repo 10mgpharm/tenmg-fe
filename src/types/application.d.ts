@@ -61,8 +61,8 @@ export interface BankDto {
 }
 
 export interface VerifyAccountNumberPayload {
-    accountNumber: number;
-    bankCode: number;
+    accountNumber: string;
+    bankCode: string;
 }
 
 export interface VerifyBankAccountResponseDto {

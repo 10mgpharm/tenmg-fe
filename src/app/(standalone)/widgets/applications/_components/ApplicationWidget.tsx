@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react'
 import StepOneConsent from './StepOneConsent';
 import StepTwoCheckingEligibility from './StepTwoCheckingElegibility';
 import StepThreeApplicationForm from './StepThreeApplicationForm';
-import StepFourMandateForm from './StepFourMandateForm';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import StepFourBankForm from './StepFourBankForm';
 
 interface Props {
     business: BusinessDto;
@@ -111,7 +111,7 @@ export default function ApplicationWidget({ business, customer, application, ref
             );
         case 4:
             return (
-                <StepFourMandateForm
+                <StepFourBankForm
                     token={token}
                     defaultBankDetail={bankDetail}
                     business={business}
@@ -127,7 +127,7 @@ export default function ApplicationWidget({ business, customer, application, ref
                         setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
                         setValue('bankDetail.bankName', defaultBankAccount?.bankName);
 
-                        // setActiveStep(activeStep + 1);
+                        //TODO: setActiveStep(activeStep + 1); //show mandate flow or not
                     }}
                 />
             );
