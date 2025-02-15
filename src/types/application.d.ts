@@ -52,4 +52,40 @@ export interface ApplicationWidgetConfig {
     business: BusinessDto;
     customer: CustomerDto;
     application: ApplicationDto;
+    defaultBank: BankAccountDto;
+}
+
+export interface BankDto {
+    code: number;
+    name: string;
+}
+
+export interface VerifyAccountNumberPayload {
+    accountNumber: number;
+    bankCode: number;
+}
+
+export interface VerifyBankAccountResponseDto {
+    success: boolean;
+    message: string;
+    data: {
+        accountNumber: number;
+        accountName: string;
+    }
+}
+
+export interface CreateBankAccountPayload {
+    identifier: string;
+    accountNumber: string;
+    accountName: string;
+    bankCode: string;
+    bankName: string;
+}
+
+export interface BankAccountDto {
+    identifier: string;
+    accountNumber: string;
+    accountName: string;
+    bankCode: string;
+    bankName: string;
 }

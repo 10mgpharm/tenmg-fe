@@ -18,10 +18,10 @@ interface Props {
 }
 
 const steps = [
-    { id: 1, icon: DownloadIcon, title: "Fetching Your Transaction", description: "Retrieving and processing your last 6 months of transactions to assess your purchase pattern." },
-    { id: 2, icon: NotepadTextIcon, title: "Analyzing Transaction", description: "Using AI-driven insights to analyze your spending patterns and determine creditworthiness." },
-    { id: 3, icon: BookLockIcon, title: "AI-Credit Score Check", description: "Calculating your credit score based on transaction data and financial behavior." },
-    { id: 4, icon: UserCheck2, title: "Eligibility Check", description: `Verifying your eligibility for credit services with ${config.appName} while ensuring data privacy and compliance.` }
+    { id: 1, icon: DownloadIcon, title: "Fetching Your Transaction", description: "Retrieving and processing your last 6 months of transactions." },
+    { id: 2, icon: NotepadTextIcon, title: "Analyzing Transaction", description: "Using AI-driven insights to analyze your purchase patterns." },
+    { id: 3, icon: BookLockIcon, title: "AI-Credit Score Check", description: "Calculating your credit score based on transaction data." },
+    { id: 4, icon: UserCheck2, title: "Eligibility Check", description: `Verifying your eligibility for credit services with ${config.appName}` }
 ];
 
 export default function StepTwoCheckingEligibility({ customer, business, navigateBackAction, onContinueAction }: Props) {
@@ -37,7 +37,7 @@ export default function StepTwoCheckingEligibility({ customer, business, navigat
         const runSteps = async () => {
             for (let i = 0; i < steps.length; i++) {
                 setStepResults((prev) => ({ ...prev, [steps[i].id]: 'loading' }));
-                await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API call
+                await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate API call
                 setStepResults((prev) => ({ ...prev, [steps[i].id]: 'success' }));
                 setStepIndex(i + 1);
 
