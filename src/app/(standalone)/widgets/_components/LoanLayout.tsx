@@ -1,18 +1,25 @@
 import React from "react";
 import LoanHeader from "./LoanHeader";
+import LoanFooter from "./LoanFooter";
 
 interface LoanLayoutProps {
-  children: React.ReactNode;
-  type?: string;
+    children: React.ReactNode;
+    name: string;
+    logo: string;
+    title?: string;
+    navigateBackAction?: () => void;
 }
 
-const LoanLayout = ({ children, type }: LoanLayoutProps) => {
-  return (
-    <div className="w-full max-w-[300px] lg:max-w-[500px] bg-gray-25 rounded-xl">
-      <LoanHeader type={type} />
-      <div className="w-full p-8">{children}</div>
-    </div>
-  );
+const LoanLayout = ({ children, title, name, logo, navigateBackAction }: LoanLayoutProps) => {
+    return (
+        <>
+            <div className="w-full sm:max-w-[500px] bg-gray-25 rounded-xl">
+                <LoanHeader title={title} name={name} logo={logo} navigateBackAction={navigateBackAction} />
+                <div className="w-full p-8">{children}</div>
+            </div>
+            <LoanFooter />
+        </>
+    );
 };
 
 export default LoanLayout;

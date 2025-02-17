@@ -1,7 +1,23 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
-import React from "react";
+'use client';
 
-const LoadingScreen = () => {
+import { Flex, Spinner, Text } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+
+interface Props {
+  message?: string;
+  children?: React.ReactNode;
+  onLoadingComplete?: boolean;
+}
+const LoadingScreen = ({ message = 'Processing your request...', children, onLoadingComplete = false }: Props) => {
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (onLoadingComplete) {
+      setIsLoading(!onLoadingComplete);
+    }
+  }, [onLoadingComplete])
+
   return (
     <Flex
       direction="column"
@@ -10,7 +26,7 @@ const LoadingScreen = () => {
       gap={10}
       paddingY="120px"
     >
-      <Spinner
+      {isLoading && <Spinner
         thickness="28px"
         speed="0.65s"
         emptyColor="gray.200"
@@ -24,9 +40,11 @@ const LoadingScreen = () => {
           width: "8rem",
           height: "8rem",
         }}
-      />
+      />}
 
-      <Text fontSize="lg">Processing your request...</Text>
+      <Text fontSize="lg">{message}</Text>
+
+      {children}
     </Flex>
   );
 };

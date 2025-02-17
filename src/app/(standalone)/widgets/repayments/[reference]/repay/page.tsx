@@ -45,7 +45,7 @@ const data: IRepaymentSchedule[] = [
 
 export default function ExternalCreditRepayment() {
   return (
-    <LoanLayout type="Repay Loan">
+    <LoanLayout title="Repay Loan" name={""} logo={""}>
       <Text>How much would you like to repay?</Text>
 
       {/* TODO: Add Grouping for the radio button */}
