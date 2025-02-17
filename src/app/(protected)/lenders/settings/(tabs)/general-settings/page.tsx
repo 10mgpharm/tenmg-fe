@@ -26,7 +26,7 @@ export default function Page() {
         <div className='space-y-5'>
           <div>
             <h3 className='font-semibold text-lg'>Personal Information</h3>
-            <p className='text-sm'>Update your personal detials</p>
+            <p className='text-sm text-slate-300'>Update your personal detials</p>
           </div>
 
           <div className='rounded-full size-[100px] shadow-black shadow-md' />
@@ -82,7 +82,7 @@ export default function Page() {
       <div className='space-y-5 w-full flex justify-between p-5 '>
         <div>
           <h3 className='font-semibold text-lg'>Security</h3>
-          <p className='text-sm'>Manage your password and 2FA</p>
+          <p className='text-sm text-slate-300'>Manage your password and 2FA</p>
         </div>
         <Button size={'sm'} variant={'solid'} colorScheme={'primary'}>Save Changes</Button>
       </div>
@@ -91,7 +91,7 @@ export default function Page() {
           {/* <div className='space-y-5'> */}
           <div>
             <h3 className='font-semibold text-lg'>Password</h3>
-            <p className='text-sm'>Change your current password</p>
+            <p className='text-sm text-slate-300'>Change your current password</p>
           </div>
           <Button size={'sm'} variant={'outline'} colorScheme={'primary'}>Change Password</Button>
           {/* </div> */}
@@ -102,7 +102,7 @@ export default function Page() {
         <div className='space-y-5 w-full flex justify-between p-5 '>
           <div>
             <h3 className='font-semibold text-lg'>Enable Two-Factor Authentication</h3>
-            <p className='text-sm'>Two-Factor authentication adds another layer of security to your account.</p>
+            <p className='text-sm text-slate-300'>Two-Factor authentication adds another layer of security to your account.</p>
           </div>
           <Switch colorScheme='primary' />
         </div>

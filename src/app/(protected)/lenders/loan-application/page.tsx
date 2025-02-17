@@ -1,10 +1,10 @@
 'use client'
-import { Badge, Button, Menu, MenuButton, MenuItem, MenuList, Select } from "@chakra-ui/react";
+import { Badge, Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { Dot, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import React from "react";
 import { CiMenuKebab } from "react-icons/ci";
-import { LuDot } from "react-icons/lu";
+
 
 export default function LoanApplicationPage() {
 
@@ -65,11 +65,11 @@ export default function LoanApplicationPage() {
       <div className="flex items-center gap-3 justify-between mt-8 w-full lg:w-2/4">
         <div className="relative w-3/4">
           <SearchIcon className="absolute left-2 w-4 top-1/2 -translate-y-1/2" />
-          <input className="w-full py-2 rounded-md" />
+          <input className="w-full ps-6 pe-4 py-2 rounded-md" placeholder="Search by application ID or customer name" />
         </div>
         <Menu>
           <MenuButton as={Button} variant={'outline'} size={'sm'} className="w-1/4 flex items-center justify-center py-2 px-3" >
-            Actions
+            filters
           </MenuButton>
           <MenuList>
             <MenuItem>Date</MenuItem>
@@ -100,11 +100,13 @@ export default function LoanApplicationPage() {
                   <p>{item?.date}</p>
                 </td>
                 <td className="py-2">
+                  {item?.borrower_name}
+                </td>
+                <td className="py-2">
                   {item?.vendor}
                 </td>
                 <td className="py-2">                {item?.amount}              </td>
                 <td className="py-2">                {item?.creditScore}              </td>
-                <td className="py-2">                {item?.team}              </td>
                 <td>
                   {index % 3 === 0 ? (
                     <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="md">
@@ -126,7 +128,7 @@ export default function LoanApplicationPage() {
                       <CiMenuKebab />
                     </MenuButton>
                     <MenuList>
-                      <MenuItem onClick={() => router.push('/lenders/loan-application/view')}>View Details</MenuItem>
+                      <MenuItem onClick={() => router.push('/lenders/loan-application/details')}>View Details</MenuItem>
                       <MenuItem>Accept Loan Offer</MenuItem>
                       <MenuItem>Decline Loan Offer</MenuItem>
                     </MenuList>
@@ -149,55 +151,55 @@ export const table_data = [
   {
     id: "10MG-001 - 2024",
     date: "Aug 21, 2024",
-    vendor: "Medlife Hospital",
+    borrower_name: "Medlife Hospital",
+    vendor: "HealPro Inc.",
     amount: "₦ 1, 250,000",
     creditScore: "720(Good)",
-    team: "Design",
     status: "Pending",
   },
   {
     id: "10MG-001 - 2024",
     date: "Aug 21, 2024",
-    vendor: "Medlife Hospital",
+    borrower_name: "Medlife Hospital",
+    vendor: "HealPro Inc.",
     amount: "₦ 1, 250,000",
     creditScore: "720(Good)",
-    team: "Design",
     status: "Pending",
   },
   {
     id: "10MG-001 - 2024",
     date: "Aug 21, 2024",
-    vendor: "Medlife Hospital",
+    borrower_name: "Medlife Hospital",
+    vendor: "HealPro Inc.",
     amount: "₦ 1, 250,000",
     creditScore: "720(Good)",
-    team: "Design",
     status: "Pending",
   },
   {
     id: "10MG-001 - 2024",
     date: "Aug 21, 2024",
-    vendor: "Medlife Hospital",
+    borrower_name: "Medlife Hospital",
+    vendor: "HealPro Inc.",
     amount: "₦ 1, 250,000",
     creditScore: "720(Good)",
-    team: "Design",
     status: "Pending",
   },
   {
     id: "10MG-001 - 2024",
     date: "Aug 21, 2024",
-    vendor: "Medlife Hospital",
+    borrower_name: "Medlife Hospital",
+    vendor: "HealPro Inc.",
     amount: "₦ 1, 250,000",
     creditScore: "720(Good)",
-    team: "Design",
     status: "Pending",
   },
   {
     id: "10MG-001 - 2024",
     date: "Aug 21, 2024",
-    vendor: "Medlife Hospital",
+    borrower_name: "Medlife Hospital",
+    vendor: "HealPro Inc.",
     amount: "₦ 1, 250,000",
     creditScore: "720(Good)",
-    team: "Design",
     status: "Pending",
   },
 ]

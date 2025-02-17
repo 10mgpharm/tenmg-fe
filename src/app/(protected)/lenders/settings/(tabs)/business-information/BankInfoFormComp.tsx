@@ -26,7 +26,7 @@ export default function BankInfoFormComp() {
       <div className='space-y-5 w-full flex justify-between p-5 '>
         <div>
           <h3 className='font-semibold text-lg'>Bank Information</h3>
-          <p className='text-sm'>Manage your bank information and other information for payout</p>
+          <p className='text-sm text-slate-300'>Manage your bank information and other information for payout</p>
         </div>
         <Button size={'sm'} variant={'solid'} colorScheme={'primary'}>Save Changes</Button>
       </div>

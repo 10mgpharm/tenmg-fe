@@ -61,7 +61,7 @@ const Notification = ({ title, desc, tag, register, errors }) => {
       <div className='space-y-4 w-full flex justify-between p-5 '>
         <div>
           <h3 className='font-semibold text-lg'>{title}</h3>
-          <p className='text-sm'>{desc}</p>
+          <p className='text-sm text-slate-300'>{desc}</p>
         </div>
         <Switch colorScheme='primary' {...register(tag)} />
       </div>

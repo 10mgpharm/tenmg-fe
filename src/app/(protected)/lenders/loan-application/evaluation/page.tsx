@@ -1,9 +1,12 @@
+'use client'
 import { Button } from '@chakra-ui/react'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import { PiCaretLeftBold } from 'react-icons/pi'
 
 export default function LoanEvaluationPage() {
 
+  const router = useRouter();
   const options = {
     // series: [44, 55, 13, 33],
     // labels: ['Apple', 'Mango', 'Orange', 'Watermelon']
@@ -12,7 +15,7 @@ export default function LoanEvaluationPage() {
   return (
     <div className='px-10 py-4 bg-white border-l border-slate-300'>
       <div className='flex items-center justify-between w-full'>
-        <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' size={'sm'}>
+        <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' onClick={() => { router.push('/lenders/loan-application') }}>
           Back
         </Button>
 
@@ -34,7 +37,7 @@ export default function LoanEvaluationPage() {
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 my-10'>
         {/*  */}
         <div>
-          <div className='w-full rounded-t-xl overflow-hidden border border-slate-300'>
+          <div className='w-full rounded-t-xl rounded-b-md overflow-hidden border border-slate-300'>
             <div className='bg-[#F1F2F4] px-5 py-3 '>
               <h4 className="font-semibold">Customer Information</h4>
             </div>
@@ -42,27 +45,27 @@ export default function LoanEvaluationPage() {
             <div className="w-full p-3 bg-white">
 
               <div className="space-y-1 my-2">
-                <p className='text-xs'>Name</p>
+                <p className='text-sm font-light'>Name</p>
                 <h4 className="font-semibold text-xs">Sunday Ajayi</h4>
               </div>
 
               <div className="space-y-1 my-2">
-                <p className='text-xs'>Email Address</p>
+                <p className='text-sm font-light'>Email Address</p>
                 <h4 className="font-semibold text-xs">sundayajayi@lendsqr.com</h4>
               </div>
 
               <div className="space-y-1 my-2">
-                <p className='text-xs'>Evaluation ID</p>
+                <p className='text-sm font-light'>Evaluation ID</p>
                 <h4 className="font-semibold text-xs">Eval-20241030-1624-29404</h4>
               </div>
 
               <div className="space-y-1 my-2">
-                <p className='text-xs'>Customer ID</p>
+                <p className='text-sm font-light'>Customer ID</p>
                 <h4 className="font-semibold text-xs">10MG-C23404</h4>
               </div>
 
               <div className="space-y-1 my-2">
-                <p className='text-xs'>Vendor</p>
+                <p className='text-sm font-light'>Vendor</p>
                 <h4 className="font-semibold text-xs">Bubbles Pharmacy LTD</h4>
               </div>
 
@@ -74,17 +77,17 @@ export default function LoanEvaluationPage() {
         <div className='flex flex-col gap-4 h-full justify-between'>
 
           <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-            <p className='text-xs'>Average Transaction Volume</p>
+            <p className='text-sm font-light'>Average Transaction Volume</p>
             <p className='text-sm font-semibold'>₦161,060</p>
           </div>
 
           <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-            <p className='text-xs'>Average Transaction Volume</p>
+            <p className='text-sm font-light'>Average Transaction Volume</p>
             <p className='text-sm font-semibold'>₦161,060</p>
           </div>
 
           <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-            <p className='text-xs'>Average Transaction Volume</p>
+            <p className='text-sm font-light'>Average Transaction Volume</p>
             <p className='text-sm font-semibold'>₦161,060</p>
           </div>
 
@@ -97,11 +100,11 @@ export default function LoanEvaluationPage() {
               <h5 className='font-semibold text-sm'>Credit Score</h5>
 
               <div className='space-y-2'>
-                <p className='text-xs'>Score Category</p>
+                <p className='text-sm font-light'>Score Category</p>
                 <p className='text-sm font-semibold'>Category A</p>
               </div>
               <div className='space-y-2'>
-                <p className='text-xs'>Score Value</p>
+                <p className='text-sm font-light'>Score Value</p>
                 <p className='text-sm font-semibold'>855/950  </p>
               </div>
             </div>
@@ -116,11 +119,11 @@ export default function LoanEvaluationPage() {
               <p className='text-sm font-semibold'>Affordability Amount</p>
               <div className='flex justify-between items-center'>
                 <div>
-                  <p className='text-xs'>Min Amount</p>
+                  <p className='text-sm font-light'>Min Amount</p>
                   <p className='text-sm font-semibold'>₦161,060</p>
                 </div>
                 <div>
-                  <p className='text-xs'>Max Amount</p>
+                  <p className='text-sm font-light'>Max Amount</p>
                   <p className='text-sm font-semibold'>₦161,060</p>
                 </div>
               </div>
@@ -128,6 +131,73 @@ export default function LoanEvaluationPage() {
           </div>
         </div>
 
+      </div>
+
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 my-10'>
+        <div className='col-span-1'>
+          <div className='border border-slate-300 rounded-md p-5 space-y-2'>
+            <p className='text-sm font-semibold'>Result Breakdown</p>
+            <p className='text-sm font-light'>This outlines the breakdown of how the user score was computed</p>
+            <Button variant="outline" colorScheme="primary" size={"sm"} className='w-full'>View Breakdown</Button>
+          </div>
+        </div>
+        <div className='col-span-2'>
+          <h4>Transaction Sumamry</h4>
+
+          <div className='grid grid-cols-3'>
+            <div className='col-span-1'>
+              <div className='my-2'>
+                <p className='text-sm'>First Day in Transaction:</p>
+                <p className='text-sm'>  Feb 11, 2024  </p>
+              </div>
+              <div className='my-2'>
+                <p className='text-sm'>Last Day in Transaction:</p>
+                <p className='text-sm'>Feb 11, 2024  </p>
+              </div>
+
+              <Button className='my-2 text-[8px]' variant="outline" size="xs" py="2px" colorScheme="primary">Transaction is equal or above 6 months</Button>
+
+            </div>
+          </div>
+
+          <div className='grid grid-cols-5 my-5 gap-4'>
+            <div className='col-span-3'>
+              <div className='grid grid-cols-2 gap-3'>
+
+                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
+                  <p className='text-sm font-light'>Total Past Credit Amount</p>
+                  <p className='text-sm font-semibold'>₦161,060</p>
+                </div>
+                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
+                  <p className='text-sm font-light'>Total Past Credit Count</p>
+                  <p className='text-sm font-semibold'>5</p>
+                </div>
+                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
+                  <p className='text-sm font-light'>Active Credit Amount</p>
+                  <p className='text-sm font-semibold'>₦161,060</p>
+                </div>
+                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
+                  <p className='text-sm font-light'>Active Credit Count</p>
+                  <p className='text-sm font-semibold'>6</p>
+                </div>
+                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
+                  <p className='text-sm font-light'>No. of Late  Repayments</p>
+                  <p className='text-sm font-semibold'>6 months</p>
+                </div>
+                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
+                  <p className='text-xs '>No. of Late Repayments</p>
+                  <p className='text-sm font-semibold'>₦161,060</p>
+                </div>
+
+              </div>
+            </div>
+            <div className='col-span-2'>
+              <div className='flex items-center justify-center border border-slate-300 rounded-md'>
+                <p>Performing</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
