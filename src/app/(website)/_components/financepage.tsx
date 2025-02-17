@@ -26,7 +26,7 @@ const Financepage = () => {
             <h3 className="text-[28px] md:text-[40px] lg:text-[50px] leading-normal md:leading-[1.2] lg:leading-[1.2] font-bold text-gray-800 mb-4">
               Affordable Medicines at Your Fingertips
             </h3>
-            <p className="text-[#363F52] text-base md:text-lg lg:text-2xl max-w-[748px] mb-4">
+            <p className="text-[#363F52] text-base md:text-lg lg:text-2xl max-w-[728px] mb-4">
               Shop for trusted, high-quality medications from verified vendors.
               Browse, compare, and purchase with ease—all in one place.
             </p>
