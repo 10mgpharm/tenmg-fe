@@ -134,7 +134,7 @@ export default function StepFourBankForm({ token, defaultBankDetail, business, a
                 toast.success(message);
                 setDefaultBankAccount(data);
                 setEdit(false);
-                onContinueAction(defaultBankAccount);
+                onContinueAction(data);
             }
         });
     }
