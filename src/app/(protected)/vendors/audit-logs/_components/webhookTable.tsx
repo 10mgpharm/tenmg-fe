@@ -1,31 +1,32 @@
-import { AuditLogData } from "@/types";
+import { ApiLogData } from "@/types";
+import { classNames } from "@/utils";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const columnHelper = createColumnHelper<AuditLogData>();
+const columnHelper = createColumnHelper<ApiLogData>();
 
-export function ColumnsWebhookFN() {
+export function ColumnsWebhookLogFN() {
   return [
-    columnHelper.accessor("timestamp", {
+    columnHelper.accessor("status", {
       header: () => (
         <div className="pl-6">
-          <p>Timestamp</p>
+          <p>Status</p>
         </div>
       ),
       cell: (info) => (
         <div className="pl-6">
-          <p className="text-gray-500">{info.row.original?.timestamp}</p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("user", {
-      header: () => (
-        <div>
-          <p>User</p>
-        </div>
-      ),
-      cell: (info) => (
-        <div>
-          <p className="font-medium">{info.row.original?.user} </p>
+          <p className={classNames(
+            (info?.row?.original?.status === "Failed")
+            ? "bg-[#FEF3F2] text-[#B42318]" 
+            : info?.row?.original?.status === "Delivered"
+            ? "text-[#027A48] bg-[#ECFDF3]"
+            : info.row.original?.status === "Processing"
+            ? "bg-orange-50 text-orange-500"
+            : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl capitalize text-sm font-medium"
+            )}
+          >
+            {info.row.original?.status}
+          </p>
+          {/* <p className="text-gray-500"></p> */}
         </div>
       ),
     }),
@@ -41,15 +42,39 @@ export function ColumnsWebhookFN() {
         </div>
       ),
     }),
-    columnHelper.accessor("action", {
+    columnHelper.accessor("endpoint", {
+        header: () => (
+          <div>
+            <p>Endpoint</p>
+          </div>
+        ),
+        cell: (info) => (
+          <div>
+            <p className="font-medium">{info.row.original?.endpoint} </p>
+          </div>
+        ),
+      }),
+    columnHelper.accessor("server_response", {
+        header: () => (
+          <div>
+            <p>Service Response</p>
+          </div>
+        ),
+        cell: (info) => (
+          <div>
+            <p className="font-medium">{info.row.original?.server_response} </p>
+          </div>
+        ),
+      }),
+    columnHelper.accessor("timestamp", {
       header: () => (
         <div>
-          <p>Action</p>
+          <p>Timestamp</p>
         </div>
       ),
       cell: (info) => (
         <div>
-          <p className="font-medium">{info.row.original?.action}</p>
+          <p className="font-medium">{info.row.original?.timestamp}</p>
         </div>
       ),
     }),

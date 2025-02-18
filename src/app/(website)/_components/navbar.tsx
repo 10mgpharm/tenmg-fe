@@ -116,7 +116,8 @@ const Navbar = () => {
                 <Link href="#FAQs" className="text-black">
                   FAQs
                 </Link>
-                <Link href="#Lender" className="text-black">
+                <Link 
+                href="/auth/signup/lender" className="text-black">
                   Lender
                 </Link>
               </div>

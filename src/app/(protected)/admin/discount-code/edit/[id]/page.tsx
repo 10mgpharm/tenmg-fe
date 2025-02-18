@@ -12,102 +12,117 @@ import { toast } from 'react-toastify';
 import { handleServerErrorMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
 import DateComponent from '@/app/(protected)/suppliers/products/_components/DateComponent';
+
 interface OptionType {
-    label: string;
-    value: number
+  label: string;
+  value: number
 }
 interface IFormInput {
-    applicationMethod: string;
-    couponCode: string;
-    discountAmount: number;
-    discountType: string;
-    applicableProducts: number[];
-    customerLimit: string;
-    startDate?: Date | null;
-    endDate?: Date | null;
+  applicationMethod: string;
+  couponCode: string;
+  discountAmount: number;
+  discountType: string;
+  applicableProducts: number[];
+  customerLimit: string;
+  startDate?: Date | null;
+  endDate?: Date | null;
 }
-  
-const CreateDiscount = () => {
 
-    const navigate = useRouter();
-    const session = useSession();
-    const sessionData = session?.data as NextAuthUserSession;
-    const token = sessionData?.user?.token;
+const EditDiscount = () => {
+  const navigate = useRouter();
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [isEndDate, setIsEndDate] = useState(false);
-    const [isStartDate, setIsStartDate] = useState(false);
-    const [products, setProducts] = useState<ProductResponseData>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEndDate, setIsEndDate] = useState(false);
+  const [isStartDate, setIsStartDate] = useState(false);
+  const [products, setProducts] = useState<ProductResponseData>();
+  const [discount, setDiscount] = useState<ProductResponseData>();
 
-    const fetchingProducts = useCallback(async() => {
-        try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/products`
-            );
-            if(response.status === 200){
-                setProducts(response.data.data);
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    },[token]);
-
-    useEffect(() => {
-        if(!token) return;
-        fetchingProducts();
-    },[token, fetchingProducts]);
-
-    const {
-        control,
-        register,
-        formState: { errors },
-        handleSubmit,
-        setValue,
-        reset,
-        watch
-    } = useForm<IFormInput>({
-        mode: "onChange",
-        defaultValues: {
-            applicationMethod: "COUPON",
-            customerLimit: "LIMITED",
-            discountType: "PERCENTAGE",
-        }
-    });
-
-    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        setIsLoading(true);
-        try {
-            const response = await requestClient({token: token}).post(
-                "/admin/discounts",
-                data
-            )
-            if(response.status === 200){
-                setIsLoading(false);
-                toast.success(response.data.message);
-                navigate.push('/admin/discount-code');
-            }
-        } catch (error) {
-            setIsLoading(false);
-            console.error(error);
-            toast.error(handleServerErrorMessage(error));
-        }
+  const fetchingDiscount = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/discount/1`
+      );
+      if(response.status === 200){
+        setDiscount(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
     }
+  },[token]);
 
-    const [selectedOption, setSelectedOption] = useState([]);
+  const fetchingProducts = useCallback(async() => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/products`
+      );
+      if(response.status === 200){
+        setProducts(response.data.data);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  },[token]);
 
-    const discountType = watch("discountType");
-    const allProducts = products?.data && [{id: "", name: "All Products"}, ...products?.data]
-    const productOptions = convertArray(allProducts);
+  useEffect(() => {
+      if(!token) return;
+      fetchingProducts();
+      fetchingDiscount();
+  },[token, fetchingProducts, fetchingDiscount]);
 
-    // Disable all options except the selected ones when "All Products" is selected
-    const updatedOptions = productOptions?.map((opt: OptionType) => ({
-        ...opt,
-        isDisabled: selectedOption.some((sel) => sel.label === "All Products") && opt.label !== "All Products",
-    }));
+  const {
+    control,
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    reset,
+    watch
+  } = useForm<IFormInput>({
+    mode: "onChange",
+    defaultValues: {
+      applicationMethod: "COUPON",
+      customerLimit: "LIMITED",
+      discountType: "PERCENTAGE",
+    }
+  });
 
-    return (
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    // setIsLoading(true);
+    // try {
+    //   const response = await requestClient({token: token}).post(
+    //     "/admin/discounts",
+    //     data
+    //   )
+    //   if(response.status === 200){
+    //     setIsLoading(false);
+    //     toast.success(response.data.message);
+    //     navigate.push('/admin/discount-code');
+    //   }
+    // } catch (error) {
+    //   setIsLoading(false);
+    //   console.error(error);
+    //   toast.error(handleServerErrorMessage(error));
+    // }
+  }
+
+  const [selectedOption, setSelectedOption] = useState([]);
+
+  const discountType = watch("discountType");
+  const allProducts = products?.data && [{id: "", name: "All Products"}, ...products?.data]
+  const productOptions = convertArray(allProducts);
+
+  // Disable all options except the selected ones when "All Products" is selected
+  const updatedOptions = productOptions?.map((opt: OptionType) => ({
+    ...opt,
+    isDisabled: selectedOption.some((sel) => sel.label === "All Products") && opt.label !== "All Products",
+  }));
+
+  return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
-        <h2 className='font-semibold text-lg text-gray-700'>Create Discount</h2>
+        <h2 className='font-semibold text-lg text-gray-700'>Edit Discount</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack mt={5}>
                 <FormControl>
@@ -342,4 +357,4 @@ const CreateDiscount = () => {
   )
 }
 
-export default CreateDiscount
+export default EditDiscount

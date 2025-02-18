@@ -32,7 +32,7 @@ const ActivityLogs = () => {
         <div className="mb-5 mt-3">
             <div className="flex items-center gap-3">
                 <SearchInput
-                placeholder="Search for a loan"
+                placeholder="Search"
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 />

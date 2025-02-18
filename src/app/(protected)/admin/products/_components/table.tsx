@@ -148,9 +148,9 @@ export function ColumsProductFN(
             ? "bg-orange-50 text-orange-500"
             : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl capitalize text-[11px] font-medium"
             )}>
-                <span className="text-[1.2rem] rounded-full">•</span>
-                {" "}
-               {info?.row?.original?.status === "APPROVED" ? "ACTIVE" : info.row.original?.status}
+              <span className="text-[1.2rem] rounded-full">•</span>
+              {" "}
+              {info?.row?.original?.status === "APPROVED" ? "ACTIVE" : info.row.original?.status}
             </p>
           </div>
         );
