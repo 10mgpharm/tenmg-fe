@@ -1,8 +1,7 @@
-import { LoanData } from "@/types";
+import Link from "next/link";
 import { classNames } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
-import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
@@ -32,9 +31,6 @@ export function ColumnsLoanRepaymentFN() {
         </div>
       ),
     }),
-
-    // Contact Information
-
     columnHelper.accessor("amount", {
       header: () => <p>Loan Amount</p>,
       cell: (info) => (
@@ -51,9 +47,6 @@ export function ColumnsLoanRepaymentFN() {
         </div>
       ),
     }),
-
-    // Date Created
-
     columnHelper.accessor("date", {
       header: () => <p>Due Date</p>,
       cell: (info) => (
@@ -62,7 +55,6 @@ export function ColumnsLoanRepaymentFN() {
         </div>
       ),
     }),
-
     // Status
     columnHelper.accessor("status", {
       header: () => <p>Payment Status</p>,

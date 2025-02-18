@@ -41,9 +41,6 @@ const Page = () => {
             const response = await requestClient({ token: token }).get(query);
             if (response.status === 200) {
                 setDiscount(response.data.data);
-                // if(!status || status === "all"){
-                //     setAllCount(response.data?.data?.meta?.total)
-                // }
             }
             setLoading(false);
         } catch (error) {

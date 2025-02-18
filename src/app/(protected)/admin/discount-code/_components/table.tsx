@@ -162,7 +162,7 @@ export function ColumsDiscountFN(
                   onOpenDelete();
                   }} 
                   color="red.500">
-                  Delete Product
+                  Delete Discount
                 </MenuItem>
               </MenuList>
             </Menu>
