@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import CongratsModal from "./CongratsModal";
+import StatusBadge from "@/app/(protected)/_components/StatusBadge";
 
 interface IFormInput {
   amount: number;
@@ -76,9 +77,12 @@ const WithdrawFunds = ({ isOpen, onClose }: WithdrawFundsProps) => {
               </InputGroup>
               <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
               {!!!errors.amount && (
-                <Text fontSize="sm" color="gray.400" mt={2}>
-                  GTBank:39999292929292
-                </Text>
+                <StatusBadge
+                  status="GTBank:39999292929292"
+                  bgColor="green.50"
+                  color="green.500"
+                  isDot
+                />
               )}
             </FormControl>
 
