@@ -39,7 +39,7 @@ const StoreFrontPharmacy = () => {
   const userData = session.data as NextAuthUserSession;
 
   const [storeFrontData, setStoreFrontData] = useState<any>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isEmpty, setIsEmpty] = useState(false);
 

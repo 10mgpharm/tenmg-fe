@@ -8,9 +8,14 @@ import {
   Button,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
+  CloseButton,
+  Divider,
   Flex,
   Grid,
+  GridItem,
+  IconButton,
   Image,
   Stack,
   Tab,
@@ -28,6 +33,11 @@ import NoRequest from "@public/assets/images/no_request.png";
 import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
 import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent";
 import CompleteAccountModal from "@/app/(protected)/vendors/_components/CompleteAccountModal";
+import LenderActions from "./LenderActions";
+import SideBar from "../../admin/_components/SideBar";
+import DepositFunds from "./drawers/DepositFunds";
+import WithdrawFunds from "./drawers/WithdrawFunds";
+import GenerateStatement from "./drawers/GenerateStatement";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
@@ -44,6 +54,22 @@ interface ILenderDashboard {
 
 const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const {
+    isOpen: isOpenDeposit,
+    onOpen: onOpenDeposit,
+    onClose: onCloseDeposit,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenWithdraw,
+    onOpen: onOpenWithdraw,
+    onClose: onCloseWithdraw,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenGenerate,
+    onOpen: onOpenGenerate,
+    onClose: onCloseGenerate,
+  } = useDisclosure();
 
   const balanceTimePeriods = [
     "12 months",
@@ -99,7 +125,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   return (
     <>
       {/* MAIN CONTENT */}
-      <div className="mt-6 w-full flex flex-col md:flex-row gap-5">
+      <div className="w-full flex flex-col md:flex-row gap-5">
         <div className="w-full lg:w-3/5">
           {/* -- MOBILE HORIZONTAL SCROLL -- */}
           <div className="md:hidden overflow-x-auto">
@@ -147,17 +173,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
             />
           </div>
 
-          <div className="flex justify-between gap-3 my-6">
-            <Button variant="outline" w={"full"} whiteSpace="normal">
-              Deposit Funds
-            </Button>
-            <Button variant="outline" w={"full"} whiteSpace="normal">
-              Withdraw Funds
-            </Button>
-            <Button variant="outline" w={"full"} whiteSpace="normal">
-              Generate Statement
-            </Button>
-          </div>
+          <LenderActions
+            onOpenDeposit={onOpenDeposit}
+            onOpenWithdraw={onOpenWithdraw}
+            onOpenGenerateStatement={onOpenGenerate}
+          />
 
           {/* BALANCE ALLOCATION & INTEREST GROWTH CHARTS */}
           <div className="">
@@ -282,27 +302,123 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         </div>
 
         {/* LOAN RREQUEST */}
-        <div className="w-full lg:w-2/5 flex flex-col gap-4">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 h-full">
-            <h2 className="text-md font-medium text-gray-700 mb-2">
-              Loan Requests
-            </h2>
-            <div className="flex justify-center items-center h-full">
-              <Image
-                className=""
-                src={NoRequest.src}
-                alt="No Request"
-                width={160}
-                height={160}
-                loading="lazy"
-              />
+        <div className="w-full lg:w-2/5 flex flex-col gap-4 h-full">
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-md font-medium text-gray-700">
+                Loan Requests
+              </h2>
+              <Button variant="link" size="sm" colorScheme="primary">
+                See All
+              </Button>
             </div>
+
+            <Stack spacing={4}>
+              <LoanDetails />
+            </Stack>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg">
+            <Box p={4}>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={4}
+                color="white"
+              >
+                <GridItem
+                  colSpan={{ base: 1, md: 1 }}
+                  rowSpan={{ base: 1, md: 2 }}
+                  bg="teal.500"
+                  p={6}
+                  borderRadius="lg"
+                  boxShadow="md"
+                >
+                  <Text fontSize="sm">Loans Approved This Month</Text>
+                  <Flex
+                    alignItems="center"
+                    justifyContent={{ base: "left", md: "center" }}
+                    h={{ base: "100%", md: "100%" }}
+                  >
+                    <Text
+                      fontSize={{ base: "4xl", md: "8xl" }}
+                      lineHeight="short"
+                      pb={6}
+                    >
+                      5
+                    </Text>
+                  </Flex>
+                </GridItem>
+
+                <GridItem bg="blue.500" p={6} borderRadius="lg" boxShadow="md">
+                  <Text fontSize="sm" mb={2}>
+                    Pending Requests
+                  </Text>
+                  <Text fontSize="3xl">25</Text>
+                </GridItem>
+
+                <GridItem bg="green.500" p={6} borderRadius="lg" boxShadow="md">
+                  <Text fontSize="sm" mb={2}>
+                    Interest Earned
+                  </Text>
+                  <Text fontSize="3xl">₦12,092,894</Text>
+                </GridItem>
+              </Grid>
+            </Box>
           </div>
         </div>
       </div>
       <CompleteAccountModal isOpen={isOpen} onClose={onClose} />
+      <DepositFunds isOpen={isOpenDeposit} onClose={onCloseDeposit} />
+      <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} />
+      <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
     </>
   );
 };
 
 export default LenderDashboard;
+
+const LoanDetails = ({}) => {
+  return (
+    <Card boxShadow="none">
+      <CardHeader display="flex" justifyContent="flex-end" p={0}>
+        <CloseButton color="red.600" />
+      </CardHeader>
+      <CardBody p={0}>
+        <Stack
+          divider={<Divider />}
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="lg"
+          fontSize="sm"
+        >
+          <Box p={4} pb={1} fontWeight={500} color="gray.600">
+            <Flex gap={1} alignItems="center" mb={2}>
+              <Text>Loan Amount:</Text>
+              <Text fontWeight={700} color="gray.900">
+                ₦300,000
+              </Text>
+            </Flex>
+
+            <Flex justifyContent="space-between" alignItems="center">
+              <Text color="gray.900">Adeola Consode</Text>
+              <Flex gap={1} alignItems="center">
+                <Text color="gray.500">Credit Score:</Text>
+                <Text>45%</Text>
+              </Flex>
+            </Flex>
+          </Box>
+          <Flex justifyContent="flex-end" pb={2}>
+            <Button variant="ghost" size="sm" colorScheme="green">
+              Accept
+            </Button>
+            <Button variant="ghost" size="sm" colorScheme="gray">
+              View
+            </Button>
+          </Flex>
+        </Stack>
+      </CardBody>
+    </Card>
+  );
+};
+
+// TODO: Do an if statement to manage is number = or less than 25% or 50% or 75% or 100%. Assign different colors to the badge

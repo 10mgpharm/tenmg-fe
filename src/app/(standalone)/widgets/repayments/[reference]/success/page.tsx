@@ -17,7 +17,7 @@ const repayment: IRepayment = {
 
 export default function ExternalCreditRepayment() {
   return (
-    <LoanLayout>
+    <LoanLayout name={""} logo={""}>
       <LoanInnerWrapper
         headerIcon={<Text fontSize="7xl">🎉</Text>}
         heading="Payment Received! "

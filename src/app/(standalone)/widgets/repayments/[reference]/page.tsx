@@ -39,8 +39,8 @@ const data: IRepaymentSchedule[] = [
 
 export default function ExternalCreditRepayment() {
   return (
-    <LoanLayout type="Loan">
-      <LoanProfile />
+    <LoanLayout title="Loan" name={""} logo={""}>
+      <LoanProfile name={""} email={""} />
 
       <Stack
         spacing={5}

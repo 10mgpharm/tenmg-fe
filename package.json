@@ -22,6 +22,7 @@
     "@emotion/styled": "^11.13.0",
     "@headlessui/react": "^2.1.5",
     "@heroicons/react": "^2.1.5",
+    "@hookform/resolvers": "^4.0.0",
     "@internationalized/date": "^3.5.5",
     "@radix-ui/react-slot": "^1.1.0",
     "@tanstack/react-table": "^8.20.5",
@@ -65,8 +66,10 @@
     "tailwindcss-animate": "^1.0.7",
     "typeorm": "^0.3.20",
     "typeorm-naming-strategies": "^4.1.0",
+    "typewriter-effect": "^2.21.0",
     "xlsx": "^0.18.5",
     "yup": "^1.4.0",
+    "zod": "^3.24.2",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

@@ -6,9 +6,18 @@ const config: IConfig = {
     appName: process.env.NEXT_PUBLIC_APP_NAME ?? '10MG Health',
     appUrl: process.env.NEXT_PUBLIC_APP_URL ?? '',
     apiBaseUrl: process.env.NEXT_PUBLIC_API_URL ?? '',
+
     nextAuthSecret: process.env.NEXTAUTH_SECRET ?? '',
+
     fincraPublicKey: process.env.NEXT_PUBLIC_FINCRA_PUBKEY ?? '',
     fincraSdkUrl: process.env.NEXT_PUBLIC_FINCRA_SDK_URL ?? '',
+
+    tenmg: {
+        url: process.env.NEXT_PUBLIC_TENMG_URL ?? '',
+        pkey: process.env.NEXT_PUBLIC_TENMG_PUBKEY ?? '',
+        skey: process.env.TENMG_SECKEY ?? ''
+    },
+
     email: {
         host: process.env.EMAIL_SERVER_HOST,
         port: parseInt(process.env.EMAIL_SERVER_PORT as string, 10),

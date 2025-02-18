@@ -95,7 +95,7 @@ export default function ExternalCreditOffer() {
             </Badge>
           </Flex>
 
-          <LoanProfile />
+          <LoanProfile name={""} email={""} />
 
           <Flex alignItems="flex-end" justifyContent="center">
             <TbCurrencyNaira size="24px" />

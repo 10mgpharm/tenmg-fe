@@ -200,7 +200,8 @@ const Navbar = () => {
                 py={3}
                 opacity={isRestrictedStatus ? 0.5 : 1}
                 cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={isRestrictedStatus ? undefined : () => router.push("/help")}
+                // onClick={isRestrictedStatus ? undefined : () => router.push("/help")}
+                onClick={() => router.push("/storefront/faq")}
               >
                 <Text>Help</Text>
               </MenuItem>
@@ -284,10 +285,11 @@ const Navbar = () => {
           {/* FAQs */}
           <Box
             cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-            onClick={!isRestrictedStatus ? () => router.push("/faq") : undefined}
+            // onClick={!isRestrictedStatus ? () => router.push("/faq") : undefined}
+            onClick={() => router.push("/storefront/faq")}
             opacity={isRestrictedStatus ? 0.5 : 1}
           >
-            <Stack align="center" spacing={1}>
+            <Stack align="center" spacing={1} >
               <Icon as={FaRegCircleQuestion} boxSize={5} />
               <Text>FAQs</Text>
             </Stack>

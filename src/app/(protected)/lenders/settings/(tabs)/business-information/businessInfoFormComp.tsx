@@ -26,7 +26,7 @@ export default function BusinessInfoFormComp() {
       <div className='space-y-5 w-full flex justify-between p-5 '>
         <div>
           <h3 className='font-semibold text-lg'>Business Information</h3>
-          <p className='text-sm'>Manage your business information</p>
+          <p className='text-sm text-slate-300'>Manage your business information</p>
         </div>
         <Button size={'sm'} variant={'solid'} colorScheme={'primary'}>Save Changes</Button>
       </div>
@@ -37,7 +37,7 @@ export default function BusinessInfoFormComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className=''>
               <FormLabel>Business Name</FormLabel>
-              <p className='text-sm'>Registered name of Business</p>
+              <p className='text-sm text-slate-300'>Registered name of Business</p>
             </div>
 
             <FormControl className='col-span-2'>
@@ -69,7 +69,7 @@ export default function BusinessInfoFormComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className=''>
               <FormLabel>{`Email Address`}</FormLabel>
-              <p className='text-sm'>{`Associated business email address`}</p>
+              <p className='text-sm text-slate-300'>{`Associated business email address`}</p>
             </div>
 
             <FormControl className='col-span-2'>
@@ -85,7 +85,7 @@ export default function BusinessInfoFormComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className=''>
               <FormLabel>{`Phone Number`}</FormLabel>
-              <p className='text-sm'>{`Associated business phone number`}</p>
+              <p className='text-sm text-slate-300'>{`Associated business phone number`}</p>
             </div>
 
             <FormControl className='col-span-2'>
