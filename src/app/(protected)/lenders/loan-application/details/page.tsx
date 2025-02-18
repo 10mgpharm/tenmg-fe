@@ -1,12 +1,17 @@
+'use client'
 import { Badge, Button } from '@chakra-ui/react'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import { BiCaretLeft } from 'react-icons/bi'
 import { PiCaretLeftBold } from 'react-icons/pi'
 
 export default function LoanDetailsPage() {
+
+  const router = useRouter()
+
   return (
     <div className='mx-10 my-4'>
-      <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled'>
+      <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' onClick={() => { router.push('/lenders/loan-application') }}>
         Back
       </Button>
 
@@ -45,7 +50,7 @@ export default function LoanDetailsPage() {
             <h4 className="font-semibold text-sm">10MG-10212012</h4>
           </div>
           <div className="space-y-2">
-            <p className='text-sm'>Vendor Information</p>
+            <p className='text-sm'>Credit Score</p>
             <h4 className="font-semibold text-sm">720 (Good)</h4>
           </div>
           <div className="space-y-2">
@@ -59,6 +64,7 @@ export default function LoanDetailsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-10">
         <div className="rounded-t-xl overflow-hidden">
+          {/* loan request details */}
           <div className='bg-primary px-5 py-3 '>
             <h4 className="font-semibold text-white">Loan Request Details</h4>
           </div>
@@ -84,9 +90,10 @@ export default function LoanDetailsPage() {
         </div>
 
         <div className="rounded-t-xl overflow-hidden">
+          {/* Credit score */}
           <div className='bg-primary px-5 py-3 flex items-center justify-between'>
             <h4 className="font-semibold text-white">Credit Score</h4>
-            <p>View Results</p>
+            <p className="text-white">View Results</p>
           </div>
           <div className="gap-4 px-5 py-3 bg-white">
             <div className="space-y-0.5 my-2">
@@ -112,7 +119,6 @@ export default function LoanDetailsPage() {
       <div className="rounded-t-xl overflow-hidden">
         <div className='bg-primary px-5 py-3 '>
           <h4 className="font-semibold text-white">Loan History</h4>
-          <p>View Results</p>
         </div>
 
         <table className='w-full text-center'>

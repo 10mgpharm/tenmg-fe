@@ -34,7 +34,7 @@ export default function LoanPreferenceComp() {
       <div className='space-y-5 w-full flex justify-between p-5 '>
         <div>
           <h3 className='font-semibold text-lg'>Bank Information</h3>
-          <p className='text-sm'>Manage your bank information and other information for payout</p>
+          <p className='text-sm text-slate-300'>Manage your bank information and other information for payout</p>
         </div>
         <Button size={'sm'} variant={'solid'} colorScheme={'primary'}>Save Changes</Button>
       </div>
@@ -45,7 +45,7 @@ export default function LoanPreferenceComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className=''>
               <FormLabel>Loan Tenure Option</FormLabel>
-              <p className='text-sm'>Loan Duration</p>
+              <p className='text-sm text-slate-300'>Loan Duration</p>
             </div>
 
             <FormControl className="col-span-2">
@@ -69,7 +69,7 @@ export default function LoanPreferenceComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className=''>
               <FormLabel>{`Interest Rate`}</FormLabel>
-              <p className='text-sm'>{`System Default interest rate `}</p>
+              <p className='text-sm text-slate-300'>{`System Default interest rate `}</p>
             </div>
 
             <FormControl className='col-span-2'>
@@ -85,7 +85,7 @@ export default function LoanPreferenceComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className=''>
               <FormLabel>{`Customer Credit Score Category`}</FormLabel>
-              <p className='text-sm'>{`Specify the customer categories you would like to give credit to`}</p>
+              <p className='text-sm text-slate-300'>{`Specify the customer categories you would like to give credit to`}</p>
             </div>
             {/* category */}
             <FormControl className='col-span-2'>

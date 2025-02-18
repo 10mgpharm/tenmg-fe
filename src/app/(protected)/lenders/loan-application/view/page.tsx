@@ -1,12 +1,15 @@
+'use client'
 import { Badge, Button } from '@chakra-ui/react'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import { BiCaretLeft } from 'react-icons/bi'
 import { PiCaretLeftBold } from 'react-icons/pi'
 
 export default function LoanViewPage() {
+  const router = useRouter();
   return (
     <div className='mx-10 my-4'>
-      <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled'>
+      <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' onClick={() => { router.push('/lenders/loan-application') }}>
         Back
       </Button>
 
@@ -112,7 +115,7 @@ export default function LoanViewPage() {
       <div className="rounded-t-xl overflow-hidden">
         <div className='bg-primary px-5 py-3 '>
           <h4 className="font-semibold text-white">Loan History</h4>
-          <p>View Results</p>
+          <p className="text-white">View Results</p>
         </div>
 
         <table className='w-full text-center'>
