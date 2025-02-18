@@ -157,19 +157,22 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
         }
     }
 
-    console.log(selectedOrder)
+    if(loading){
+        return(
+        <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+        </Flex>
+        )
+    }
+
     return (
     <div>
         {
-            loading ? 
-                <Flex justify="center" align="center" height="200px">
-                <Spinner size="xl" />
-                </Flex>: 
-            memoizedData?.length === 0 
+            orders?.data?.length === 0 
             ? <EmptyOrder 
             heading={`No ${type} Order Yet`} 
             content={`You currently have no ${type} orders. All ${type} orders will appear here.`} 
-            /> : memoizedData?.length > 0 && (
+            /> : orders?.data?.length > 0 && (
                 <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                     <Table>
                         <Thead bg={"#F2F4F7"}>
@@ -208,8 +211,8 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
                         </Tbody>
                     </Table>
                     <Pagination 
-                    meta={orders?.meta}
-                    setPageCount={setPageCount}
+                        meta={orders?.meta}
+                        setPageCount={setPageCount}
                     />
                 </TableContainer>
             )

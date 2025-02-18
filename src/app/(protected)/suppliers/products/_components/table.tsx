@@ -169,14 +169,15 @@ export function ColumsProductFN(
                     }}>
                     Deactivate Product
                   </MenuItem>
-                ) : (
+                ) : (info.row.original.status === "PENDING" || info.row.original.status === "INACTIVE") ? (
                   <MenuItem onClick={() => {
                     setSelectedProduct(info.row.original);
                     onOpenActivate()
                     }}>
                     Activate Product
                   </MenuItem>
-                )}
+                ) : <></>
+              }
                 <MenuItem onClick={() => {
                   setSelectedProduct(info.row.original);
                   onOpen();
