@@ -120,7 +120,10 @@ export function ColumsOrderFN(
             )}>
                 <span className="rounded-full text-[1.2rem]">•</span>
                 {" "}
-               {info?.row?.original?.status}
+                {info?.row?.original?.status === "CANCELED" 
+                ? info.row.original?.refundStatus 
+                  : info.row.original?.status
+                }
             </p>
           </div>
         );

@@ -8,10 +8,7 @@ import {
     TabPanels, 
     Tab, 
     TabPanel,
-    Button,
-    useDisclosure, 
 } from "@chakra-ui/react"
-import { discountData } from "@/data/mockdata"
 import DiscountTable from "./_components/DiscountTable";
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -20,7 +17,6 @@ import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import SearchInput from "../../vendors/_components/SearchInput";
 import Link from "next/link";
-import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 
 const Page = () => {
 
@@ -28,11 +24,10 @@ const Page = () => {
     const sessionData = session?.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
     const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState<string>("ACTIVE");
+    const [status, setStatus] = useState<string>("");
     const [discount, setDiscount] = useState<DiscountResponseData>();
     const [pageCount, setPageCount] = useState<number>(1);
     const [globalFilter, setGlobalFilter] = useState<string>("");
-    const [allCount, setAllCount] = useState<number>(0)
 
     const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
@@ -46,9 +41,6 @@ const Page = () => {
             const response = await requestClient({ token: token }).get(query);
             if (response.status === 200) {
                 setDiscount(response.data.data);
-                // if(!status || status === "all"){
-                //     setAllCount(response.data?.data?.meta?.total)
-                // }
             }
             setLoading(false);
         } catch (error) {
@@ -61,8 +53,6 @@ const Page = () => {
         if(!token) return;
         fetchDiscounts();
     },[token, fetchDiscounts]);
-
-    console.log(discount)
 
     return (
     <div className='p-8'>

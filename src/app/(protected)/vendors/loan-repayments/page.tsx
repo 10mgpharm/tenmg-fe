@@ -77,7 +77,7 @@ const LoanRepayments = () => {
               className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
             >
               <CiFilter className="w-5 h-5" />
-              <p className="text-gray-500 font-medium">Search</p>
+              <p className="text-gray-500 font-medium">Filter</p>
             </div>
           </div>
         </div>

@@ -1,8 +1,7 @@
-import { LoanData } from "@/types";
+import Link from "next/link";
 import { classNames } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
-import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
@@ -32,14 +31,11 @@ export function ColumnsLoanRepaymentFN() {
         </div>
       ),
     }),
-
-    // Contact Information
-
     columnHelper.accessor("amount", {
       header: () => <p>Loan Amount</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.amount}</p>
+          <p>₦{info.row.original?.amount}</p>
         </div>
       ),
     }),
@@ -47,13 +43,10 @@ export function ColumnsLoanRepaymentFN() {
       header: () => <p>Repayment Amount</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.repay}</p>
+          <p className="pl-6">₦{info.row.original?.repay}</p>
         </div>
       ),
     }),
-
-    // Date Created
-
     columnHelper.accessor("date", {
       header: () => <p>Due Date</p>,
       cell: (info) => (
@@ -62,10 +55,9 @@ export function ColumnsLoanRepaymentFN() {
         </div>
       ),
     }),
-
     // Status
     columnHelper.accessor("status", {
-      header: () => <p>Loan Status</p>,
+      header: () => <p>Payment Status</p>,
       cell: (info) => (
         <div>
           <p
@@ -88,12 +80,12 @@ export function ColumnsLoanRepaymentFN() {
       ),
     }),
     columnHelper.accessor("id", {
-      header: () => <p>Actions</p>,
+      header: () => <p>Action</p>,
       cell: (info) => {
         return (
           <div className="flex gap-4">
             <Link 
-            href={`/vendors/loan-applications/${info.row.original?.customer?.id}`} 
+            href={`/vendors/loan-repayments/${info.row.original?.loanId}`} 
             className="text-primary font-medium">
               View
             </Link>

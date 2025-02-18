@@ -10,7 +10,7 @@ export function ColumnsLoanFN() {
     columnHelper.accessor("loanId", {
       header: () => (
         <div className="pl-6">
-          <p>LoanId</p>
+          <p>Loan ID</p>
         </div>
       ),
       cell: (info) => (
@@ -22,7 +22,7 @@ export function ColumnsLoanFN() {
     columnHelper.accessor("name", {
       header: () => (
         <div>
-          <p>Customer</p>
+          <p>Customer Name</p>
         </div>
       ),
       cell: (info) => (
@@ -40,6 +40,18 @@ export function ColumnsLoanFN() {
       cell: (info) => (
         <div>
           <p className="font-medium">{info.row.original?.amount}</p>
+        </div>
+      ),
+    }),
+    columnHelper.accessor("date", {
+      header: () => (
+        <div>
+          <p>Date</p>
+        </div>
+      ),
+      cell: (info) => (
+        <div>
+          <p className="font-medium">{info.row.original?.date}</p>
         </div>
       ),
     }),

@@ -131,8 +131,8 @@ const DiscountTable = ({data, pageCount, setPageCount, type, loading, fetchDisco
         </Flex>: 
         data?.data?.length === 0 
         ? <EmptyOrder 
-        heading={`No ${type} Discount Yet`} 
-        content={`You currently have no ${type} discount. All discounts will appear here.`} 
+        heading={`Nothing to show here`} 
+        content={`All ${type} results would appear hear.`} 
         /> : 
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>

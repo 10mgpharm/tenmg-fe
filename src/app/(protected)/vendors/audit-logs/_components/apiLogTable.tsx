@@ -1,4 +1,5 @@
 import { ApiLogData } from "@/types";
+import { classNames } from "@/utils";
 import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<ApiLogData>();
@@ -13,7 +14,19 @@ export function ColumnsApiLogFN() {
       ),
       cell: (info) => (
         <div className="pl-6">
-          <p className="text-gray-500">{info.row.original?.status}</p>
+          <p className={classNames(
+            (info?.row?.original?.status === "Failed")
+            ? "bg-[#FEF3F2] text-[#B42318]" 
+            : info?.row?.original?.status === "Successful"
+            ? "text-[#027A48] bg-[#ECFDF3]"
+            : info.row.original?.status === "Completed"
+            ? "bg-blue-50 text-blue-500"
+            : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl capitalize text-sm font-medium"
+            )}
+          >
+            {info.row.original?.status}
+          </p>
+          {/* <p className="text-gray-500"></p> */}
         </div>
       ),
     }),
@@ -56,7 +69,7 @@ export function ColumnsApiLogFN() {
     columnHelper.accessor("timestamp", {
       header: () => (
         <div>
-          <p>Action</p>
+          <p>Timestamp</p>
         </div>
       ),
       cell: (info) => (
