@@ -11,6 +11,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { handleServerErrorMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
+import DateComponent from '@/app/(protected)/suppliers/products/_components/DateComponent';
 interface OptionType {
     label: string;
     value: number
@@ -22,9 +23,10 @@ interface IFormInput {
     discountType: string;
     applicableProducts: number[];
     customerLimit: string;
-    startDate: string;
-    endDate: string;
+    startDate?: Date | null;
+    endDate?: Date | null;
 }
+  
 const CreateDiscount = () => {
 
     const navigate = useRouter();
@@ -91,7 +93,17 @@ const CreateDiscount = () => {
         }
     }
 
+    const [selectedOption, setSelectedOption] = useState([]);
+
     const discountType = watch("discountType");
+    const allProducts = products?.data && [{id: "", name: "All Products"}, ...products?.data]
+    const productOptions = convertArray(allProducts);
+
+    // Disable all options except the selected ones when "All Products" is selected
+    const updatedOptions = productOptions?.map((opt: OptionType) => ({
+        ...opt,
+        isDisabled: selectedOption.some((sel) => sel.label === "All Products") && opt.label !== "All Products",
+    }));
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -187,10 +199,19 @@ const CreateDiscount = () => {
                                 isClearable={true}
                                 isSearchable={true}
                                 isMulti
-                                options={convertArray(products?.data)}
-                                placeholder={"All Products"}
+                                options={updatedOptions}
+                                placeholder={"Select Products"}
+                                closeMenuOnSelect={false}
                                 onChange={(selectedOption: OptionType[]) => {
-                                    const productIds = selectedOption.map((item: OptionType) => item.value);
+                                    setSelectedOption([]);
+                                    const productIds = selectedOption.flatMap((item: OptionType) => {
+                                        if(item.label === "All Products"){
+                                            setSelectedOption([item]);
+                                            return products?.data.map((product) => product.id) ;
+                                        } else {
+                                            return [item.value];
+                                        }
+                                    });
                                     setValue("applicableProducts", productIds);
                                 }}
                             />
@@ -239,8 +260,7 @@ const CreateDiscount = () => {
                     <Controller 
                     control={control}
                     name='startDate'
-                    // rules={{ required: 'Start is required' }}
-                    render={({ field: { onChange, value } }) => {
+                    render={({ field }) => {
                         return(
                             <Stack>
                                 <Flex justify={"space-between"}>
@@ -253,21 +273,12 @@ const CreateDiscount = () => {
                                     <Switch size={"md"} onChange={(e) =>  setIsStartDate(e.target.checked)}/>
                                 </Flex>
                                 {
-                                    isStartDate && <Input 
-                                        id="startDate"
-                                        name="startDate"
-                                        placeholder="Start Date" 
-                                        type="date"
-                                        padding={"10px"}
-                                        width={"210px"}
-                                        mt={3}
-                                        flex={1}
-                                        isInvalid={!!errors.startDate}
-                                        _focus={{
-                                            border: !!errors.startDate ? "red.300" : "border-gray-300",
-                                        }}
-                                        value={value}
-                                        onChange={onChange}
+                                    isStartDate && 
+                                    <DateComponent
+                                    startDate={field.value}
+                                    setStartDate={field.onChange}
+                                    // isMinDate
+                                    // isMaxDate
                                     />
                                 }
                             </Stack>
@@ -280,34 +291,26 @@ const CreateDiscount = () => {
                     <Controller 
                     control={control}
                     name='endDate'
-                    render={({ field: { onChange, value } }) => {
+                    render={({ field }) => {
                         return(
                             <Stack>
                                 <Flex justify={"space-between"}>
                                     <Stack gap={0.5}>
-                                        <Text fontWeight={600}>Discount has a start date?</Text>
+                                        <Text fontWeight={600}>Discount has a expiry date?</Text>
                                         <Text fontSize={"14px"} color={"gray.500"}>
-                                            Schedule the discount to activate in the future
+                                            Schedule the discount to deactivate in the future
                                         </Text>
                                     </Stack>
                                     <Switch size={"md"} onChange={(e) =>  setIsEndDate(e.target.checked)}/>
                                 </Flex>
                                 {
-                                    isEndDate && <Input 
-                                        id="endDate"
-                                        name="endDate"
-                                        placeholder="End Date" 
-                                        type="date"
-                                        padding={"10px"}
-                                        width={"210px"}
-                                        mt={3}
-                                        flex={1}
-                                        isInvalid={!!errors.endDate}
-                                        _focus={{
-                                            border: !!errors.endDate ? "red.300" : "border-gray-300",
-                                        }}
-                                        value={value}
-                                        onChange={onChange}
+                                    isEndDate &&
+                                    <DateComponent
+                                        startDate={field.value}
+                                        setStartDate={field.onChange}
+                                        minDate={watch("startDate")}
+                                        // isMaxDate
+                                        isMinDate
                                     />
                                 }
                             </Stack>
@@ -320,6 +323,7 @@ const CreateDiscount = () => {
                 <Button 
                 type="button" 
                 variant={"outline"}
+                onClick={() => navigate.back()}
                 >
                     Cancel
                 </Button>

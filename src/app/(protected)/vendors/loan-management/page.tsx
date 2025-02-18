@@ -35,7 +35,7 @@ const LoanManagement = () => {
       <div className="grid grid-cols-4 gap-4 mt-5">
         <OverviewCard 
         title="Total Loans"
-        value="₦5,600"
+        value="5,600"
         fromColor="from-[#53389E]"
         toColor="to-[#7F56D9]"
         image={totalPattern}
@@ -56,7 +56,7 @@ const LoanManagement = () => {
         />
         <OverviewCard 
         title="Total Products"
-        value="₦50,000"
+        value="50,000"
         fromColor="from-[#E31B54]"
         toColor="to-[#E31B54]"
         image={productPattern}
@@ -64,7 +64,7 @@ const LoanManagement = () => {
       </div>
       <div className="flex items-center gap-3 mt-5">
         <SearchInput
-        placeholder="Search for a user"
+        placeholder="Search for a loan"
         value={globalFilter}
         onChange={(e) => setGlobalFilter(e.target.value)}
         />

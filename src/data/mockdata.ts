@@ -235,6 +235,16 @@ export const APILogData = [
     {status: "Successful", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
 ]
 
+export const WebhookLogData = [
+    {status: "Delivered", event: "Webhook Sent (Loan Status Update)", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Processing", event: "Credit Score Updated", endpoint: "POST /customer/credit", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Failed", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Delivered", event: "Webhook Sent (Loan Status Update)", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Failed", event: "Payment Status Changed", endpoint: "POST /loan/apply", server_response: "500 Internal Error", timestamp: "2024-09-08   12:45:32"},
+    {status: "Processing", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+    {status: "Delivered", event: "Loan Application Submitted", endpoint: "POST /loan/apply", server_response: "200 OK", timestamp: "2024-09-08   12:45:32"},
+]
+
 export const LoanByUser = [
     {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
     {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},

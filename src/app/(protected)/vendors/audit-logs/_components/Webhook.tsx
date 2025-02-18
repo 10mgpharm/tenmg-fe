@@ -6,8 +6,8 @@ import SearchInput from "../../_components/SearchInput"
 import { Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react"
 import EmptyResult from "../../_components/EmptyResult"
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
-import { APILogData } from "@/data/mockdata";
-import { ColumnsApiLogFN } from "./apiLogTable";
+import { WebhookLogData } from "@/data/mockdata";
+import { ColumnsWebhookLogFN } from "./webhookTable";
 
 const Webhook = () => {
 
@@ -15,8 +15,8 @@ const Webhook = () => {
     const [globalFilter, setGlobalFilter] = useState<string>("");
 
     const table = useReactTable({
-        data: APILogData ?? [],
-        columns: ColumnsApiLogFN(),
+        data: WebhookLogData ?? [],
+        columns: ColumnsWebhookLogFN(),
         state: {
           globalFilter,
         },
@@ -31,7 +31,7 @@ const Webhook = () => {
         <div className="mb-5 mt-3">
             <div className="flex items-center gap-3">
                 <SearchInput
-                placeholder="Search for a loan"
+                placeholder="Search"
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 />
@@ -46,7 +46,7 @@ const Webhook = () => {
         </div>
         <div className="">
             {!loading ? (
-            APILogData?.length !== 0 ? (
+            WebhookLogData?.length !== 0 ? (
                 <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"blue.50"}>
