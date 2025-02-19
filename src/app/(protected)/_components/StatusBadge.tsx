@@ -5,9 +5,10 @@ interface StatusBadgeProps {
   status: string;
   bgColor: string;
   color: string;
+  isDot?: boolean;
 }
 
-const StatusBadge = ({ status, bgColor, color }: StatusBadgeProps) => {
+const StatusBadge = ({ status, bgColor, color, isDot }: StatusBadgeProps) => {
   return (
     <Badge
       bgColor={bgColor}
@@ -18,7 +19,7 @@ const StatusBadge = ({ status, bgColor, color }: StatusBadgeProps) => {
       fontWeight="medium"
     >
       <Flex gap={2} alignItems="center" borderRadius="lg">
-        <Badge bgColor={color} p={1} rounded="lg" />
+        {!isDot && <Badge bgColor={color} p={1} rounded="lg" />}
         <Text color={color} fontSize="xs">
           {status}
         </Text>
