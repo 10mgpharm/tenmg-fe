@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import BankInfoFormComp from "./BankInfoFormComp";
 
 interface IFormInput {
   businessName: string;
@@ -26,6 +27,7 @@ interface IFormInput {
 export default function BusinessInfoFormComp() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInfoLoading, setIsInfoLoading] = useState<boolean>(false);
+  const [defaultBankDetail, setDefaultBankDetail] = useState<any>(null);
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
@@ -60,6 +62,7 @@ export default function BusinessInfoFormComp() {
         setValue("contactPhone", data.contactPhone);
         setValue("businessAddress", data.businessAddress);
         setValue("contactPersonPosition", data.contactPersonPosition || "");
+        setDefaultBankDetail(data.lenderBankAccount);
       } catch (error) {
         const errorMessage = handleServerErrorMessage(error);
         toast.error(errorMessage);
@@ -96,20 +99,26 @@ export default function BusinessInfoFormComp() {
 
   return (
     <div>
-      <div className="space-y-5 w-full flex justify-between p-5 ">
-        <div>
-          <h3 className="font-semibold text-lg">Business Information</h3>
-          <p className="text-sm text-slate-300">
-            Manage your business information
-          </p>
+      <form className="space-y-4 mb-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-5 w-full flex justify-between p-5 ">
+          <div>
+            <h3 className="font-semibold text-lg">Business Information</h3>
+            <p className="text-sm text-slate-300">
+              Manage your business information
+            </p>
+          </div>
+          <Button
+            size={"sm"}
+            variant={"solid"}
+            colorScheme={"primary"}
+            isLoading={isLoading}
+            type="submit"
+          >
+            Save Changes
+          </Button>
         </div>
-        <Button size={"sm"} variant={"solid"} colorScheme={"primary"}>
-          Save Changes
-        </Button>
-      </div>
 
-      <div className="p-5 rounded-lg bg-white/70 border border-slate-300">
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
               <FormLabel>Business Name</FormLabel>
@@ -179,8 +188,13 @@ export default function BusinessInfoFormComp() {
               />
             </FormControl>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
+
+      <BankInfoFormComp
+        sessionData={sessionData}
+        defaultBankDetail={defaultBankDetail}
+      />
     </div>
   );
 }
