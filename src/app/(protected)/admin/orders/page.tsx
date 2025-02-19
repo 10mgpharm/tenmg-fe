@@ -31,6 +31,7 @@ const Orders = () => {
     const [counts, setCount] = useState<CountProps[]>([]);
     const [pageCount, setPageCount] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
+    const [countLoading, setCountLoading] = useState<boolean>(false);
     const [orders, setOrders] = useState<OrderResponseData>();
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [allCount, setAllCount] = useState<number>(0)
@@ -50,8 +51,8 @@ const Orders = () => {
                 if(!status || status === "all"){
                     setAllCount(response.data?.data?.meta?.total)
                 }
+                setLoading(false);
             }
-            setLoading(false);
         } catch (error) {
             console.error(error);
             setLoading(false);
@@ -59,17 +60,17 @@ const Orders = () => {
     }, [token, status, pageCount, debouncedSearch]);
 
     const fetchOrderCount = useCallback(async () => {
-        setLoading(true);
+        setCountLoading(true);
         try {
             let query = `/admin/orders/get-orders-status-count`;
             const response = await requestClient({ token: token }).get(query);
             if (response.status === 200) {
                 setCount(response.data.data);
             }
-            setLoading(false);
+            setCountLoading(false);
         } catch (error) {
             console.error(error);
-            setLoading(false);
+            setCountLoading(false);
         }
     }, [token]);
 
