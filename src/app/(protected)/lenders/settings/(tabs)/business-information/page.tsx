@@ -1,5 +1,5 @@
 import { Button, Divider, Switch } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback } from 'react'
 import BusinessInfoFormComp from './businessInfoFormComp'
 import BankInfoFormComp from './BankInfoFormComp'
 
