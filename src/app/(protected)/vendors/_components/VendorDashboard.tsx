@@ -186,7 +186,8 @@ const VendorDashboard = () => {
     },
   };
 
-  const isVisible = sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
+  const isVisible =
+    sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
 
   return (
     <>
@@ -212,7 +213,11 @@ const VendorDashboard = () => {
             gap={6}
             justifyContent="space-between"
           >
-            <Flex justifyContent="space-between" direction={{ base: "column", md: "row" }} gap={4}>
+            <Flex
+              justifyContent="space-between"
+              direction={{ base: "column", md: "row" }}
+              gap={4}
+            >
               <Stack flex={1}>
                 <Text fontWeight="medium" fontSize="3xl">
                   Welcome back, {sessionData?.user?.name}
@@ -338,7 +343,11 @@ const VendorDashboard = () => {
           </Stack>
 
           {/* Right Side */}
-          <Stack w={{ base: "100%", md: "30%" }} gap={4} justifyContent={{ base: "normal", xl: "space-between" }}>
+          <Stack
+            w={{ base: "100%", md: "30%" }}
+            gap={4}
+            justifyContent={{ base: "normal", xl: "space-between" }}
+          >
             {/* Transaction History Evaluations */}
             <SideCard
               title="Transaction History Evaluations"
@@ -364,7 +373,13 @@ const VendorDashboard = () => {
               }
             />
             {/* Account Linking Report */}
-            <Stack borderRadius="lg" p={6} borderWidth="1px" bg={"white"} gap={5}>
+            <Stack
+              borderRadius="lg"
+              p={6}
+              borderWidth="1px"
+              bg={"white"}
+              gap={5}
+            >
               <Text fontSize="lg" fontWeight="semibold" mb={4}>
                 Account Linking Report
               </Text>
