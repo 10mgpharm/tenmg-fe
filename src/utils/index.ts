@@ -95,3 +95,16 @@ export const toQueryString = (params: Record<string, any>): string => {
     })
     .join("&");
 };
+
+export const generateRandomCoupon = (length = 6) => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let couponCode = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    couponCode += chars[randomIndex];
+  }
+
+  return couponCode;
+};
+

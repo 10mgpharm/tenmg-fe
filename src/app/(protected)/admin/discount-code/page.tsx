@@ -18,6 +18,11 @@ import requestClient from "@/lib/requestClient";
 import SearchInput from "../../vendors/_components/SearchInput";
 import Link from "next/link";
 
+interface CountProps {
+    active: number;
+    total: number;
+    inactive: number;
+}
 const Page = () => {
 
     const session = useSession();
@@ -25,7 +30,9 @@ const Page = () => {
     const token = sessionData?.user?.token;
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<string>("");
+    const [counts, setCount] = useState<CountProps>();
     const [discount, setDiscount] = useState<DiscountResponseData>();
+    const [countLoading, setCountLoading] = useState<boolean>(false);
     const [pageCount, setPageCount] = useState<number>(1);
     const [globalFilter, setGlobalFilter] = useState<string>("");
 
@@ -49,9 +56,25 @@ const Page = () => {
         }
     }, [token, status, pageCount, debouncedSearch]);
 
+    const fetchDiscountCount = useCallback(async () => {
+        setCountLoading(true);
+        try {
+            let query = `/admin/discounts/count`;
+            const response = await requestClient({ token: token }).get(query);
+            if (response.status === 200) {
+                setCount(response.data.data);
+            }
+            setCountLoading(false);
+        } catch (error) {
+            console.error(error);
+            setCountLoading(false);
+        }
+    }, [token]);
+
     useEffect(() => {
         if(!token) return;
         fetchDiscounts();
+        fetchDiscountCount();
     },[token, fetchDiscounts]);
 
     return (
@@ -75,7 +98,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>All Discount</Text>
                         <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {9}
+                            {counts?.total}
                         </p>
                     </div>
                 </Tab>
@@ -83,7 +106,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Active</Text>
                         <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {6}
+                            {counts?.active}
                         </p>
                     </div>
                 </Tab>
@@ -91,7 +114,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Inactive</Text>
                         <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {1}
+                            {counts?.inactive}
                         </p>
                     </div>
                 </Tab>
