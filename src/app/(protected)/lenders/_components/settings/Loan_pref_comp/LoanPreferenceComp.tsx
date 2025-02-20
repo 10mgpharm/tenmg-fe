@@ -5,6 +5,7 @@ import {
   FormLabel,
   Input,
   Select,
+  Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import LoanAutoAccept from "./LoanAutoAccept";
@@ -129,12 +130,13 @@ export default function LoanPreferenceComp() {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-5 w-full flex justify-between p-5">
+        <div className="space-y-5 w-full flex justify-between py-5">
           <div>
             <h3 className="font-semibold text-lg">Loan Information</h3>
-            <p className="text-sm text-slate-300">
+
+            <Text fontSize={"14px"} color={"gray.500"}>
               Define your preferences for loan disbursement.
-            </p>
+            </Text>
           </div>
           <Button
             type="submit"
@@ -154,7 +156,9 @@ export default function LoanPreferenceComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-4">
             <div>
               <FormLabel>Loan Tenure Option</FormLabel>
-              <p className="text-sm text-slate-300">Loan Duration</p>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Loan Duration
+              </Text>
             </div>
             <FormControl className="col-span-2" isInvalid={!!errors.loanTenure}>
               <Select
@@ -178,15 +182,13 @@ export default function LoanPreferenceComp() {
             </FormControl>
           </div>
 
-       
-
           {/* Customer Credit Score Category */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-4">
             <div>
               <FormLabel>Customer Credit Score Category</FormLabel>
-              <p className="text-sm text-slate-300">
+              <Text fontSize={"14px"} color={"gray.500"}>
                 Specify the customer categories you would like to give credit to
-              </p>
+              </Text>
             </div>
 
             <FormControl
@@ -215,13 +217,13 @@ export default function LoanPreferenceComp() {
               )}
             </FormControl>
           </div>
-             {/* Interest Rate (Disabled) */}
-             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* Interest Rate (Disabled) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
               <FormLabel>Interest Rate</FormLabel>
-              <p className="text-sm text-slate-300">
+              <Text fontSize={"14px"} color={"gray.500"}>
                 System Default interest rate
-              </p>
+              </Text>
             </div>
             <FormControl
               className="col-span-2"
@@ -239,7 +241,6 @@ export default function LoanPreferenceComp() {
             </FormControl>
           </div>
         </div>
-        
       </form>
 
       <LoanAutoAccept defaultStatus={status} />

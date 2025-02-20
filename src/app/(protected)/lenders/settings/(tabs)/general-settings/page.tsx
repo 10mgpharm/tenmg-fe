@@ -11,6 +11,7 @@ import {
   FormLabel,
   Input,
   Switch,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -154,9 +155,9 @@ export default function Page() {
         <div className="space-y-5">
           <div>
             <h3 className="font-semibold text-lg">Personal Information</h3>
-            <p className="text-sm text-slate-300">
-              Update your personal detials
-            </p>
+            <Text fontSize={"14px"} color={"gray.500"}>
+              Update your personal details.
+            </Text>
           </div>
 
           <ProfileImageUploader
@@ -209,7 +210,9 @@ export default function Page() {
       <div className="space-y-5 w-full flex justify-between p-5 ">
         <div>
           <h3 className="font-semibold text-lg">Security</h3>
-          <p className="text-sm text-slate-300">Manage your password and 2FA</p>
+          <Text fontSize={"14px"} color={"gray.500"}>
+            Manage your password and 2FA
+          </Text>
         </div>
         <Button size={"sm"} variant={"solid"} colorScheme={"primary"}>
           Save Changes
@@ -220,9 +223,9 @@ export default function Page() {
           {/* <div className='space-y-5'> */}
           <div>
             <h3 className="font-semibold text-lg">Password</h3>
-            <p className="text-sm text-slate-300">
+            <Text fontSize={"14px"} color={"gray.500"}>
               Change your current password
-            </p>
+            </Text>
           </div>
           <Button
             size={"sm"}
@@ -242,10 +245,10 @@ export default function Page() {
             <h3 className="font-semibold text-lg">
               Enable Two-Factor Authentication
             </h3>
-            <p className="text-sm text-slate-300">
+            <Text fontSize={"14px"} color={"gray.500"}>
               Two-Factor authentication adds another layer of security to your
               account.
-            </p>
+            </Text>
           </div>
           <Switch colorScheme="primary" />
         </div>

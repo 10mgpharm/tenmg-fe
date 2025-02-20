@@ -8,6 +8,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Text,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
@@ -100,7 +101,7 @@ export default function BusinessInfoFormComp() {
   return (
     <div>
       <form className="space-y-4 mb-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5 w-full flex justify-between p-5 ">
+        <div className="space-y-5 w-full flex justify-between py-5">
           <div>
             <h3 className="font-semibold text-lg">Business Information</h3>
             <p className="text-sm text-slate-300">
@@ -122,9 +123,10 @@ export default function BusinessInfoFormComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
               <FormLabel>Business Name</FormLabel>
-              <p className="text-sm text-slate-300">
+
+              <Text fontSize={"14px"} color={"gray.500"}>
                 Registered name of Business
-              </p>
+              </Text>
             </div>
 
             <FormControl className="col-span-2">
@@ -141,7 +143,9 @@ export default function BusinessInfoFormComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
               <FormLabel>{`Contact Person's Name`}</FormLabel>
-              <p className="text-sm">{`Contact person's name`}</p>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated name to this business
+              </Text>
             </div>
 
             <FormControl className="col-span-2">
@@ -158,7 +162,9 @@ export default function BusinessInfoFormComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
               <FormLabel>{`Email Address`}</FormLabel>
-              <p className="text-sm text-slate-300">{`Associated business email address`}</p>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated business email address
+              </Text>
             </div>
 
             <FormControl className="col-span-2">
@@ -175,7 +181,9 @@ export default function BusinessInfoFormComp() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
               <FormLabel>{`Phone Number`}</FormLabel>
-              <p className="text-sm text-slate-300">{`Associated business phone number`}</p>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated business phone number
+              </Text>
             </div>
 
             <FormControl className="col-span-2">

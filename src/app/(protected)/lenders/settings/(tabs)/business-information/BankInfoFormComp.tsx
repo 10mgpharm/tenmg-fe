@@ -202,7 +202,7 @@ export default function BankInfoFormComp({
   return (
     <div>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5 w-full flex justify-between p-5">
+        <div className="space-y-5 w-full flex justify-between py-5">
           <div>
             <h3 className="font-semibold text-lg">Bank Information</h3>
             <p className="text-sm text-slate-300">
@@ -224,6 +224,9 @@ export default function BankInfoFormComp({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
               <FormLabel>Account Number</FormLabel>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated Account Number
+              </Text>
             </div>
             <FormControl className="col-span-2">
               <NumberInput
@@ -234,9 +237,7 @@ export default function BankInfoFormComp({
                 }}
                 inputMode="numeric"
               >
-                <NumberInputField
-                  placeholder="0000000000"
-                />
+                <NumberInputField placeholder="0000000000" />
               </NumberInput>
               {errors.accountNumber && (
                 <Text fontSize="sm" color="red.500">
@@ -250,6 +251,9 @@ export default function BankInfoFormComp({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
               <FormLabel>Bank</FormLabel>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated Bank Name
+              </Text>
             </div>
             <FormControl className="col-span-2" isInvalid={!!errors.bankCode}>
               <Select
@@ -284,6 +288,9 @@ export default function BankInfoFormComp({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
               <FormLabel>Account Name</FormLabel>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated Account Name
+              </Text>
             </div>
             <FormControl
               className="col-span-2"
@@ -315,6 +322,9 @@ export default function BankInfoFormComp({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
               <FormLabel>BVN</FormLabel>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated BVN
+              </Text>
             </div>
             <FormControl className="col-span-2">
               <NumberInput

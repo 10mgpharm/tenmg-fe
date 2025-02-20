@@ -1,7 +1,7 @@
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
-import { Button, FormControl, Switch } from "@chakra-ui/react";
+import { Button, FormControl, Switch, Text } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { Form, SubmitHandler, useForm } from "react-hook-form";
@@ -57,12 +57,12 @@ export default function LoanAutoAccept({
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5 w-full flex justify-between p-5">
+        <div className="space-y-5 w-full flex justify-between py-5">
           <div>
-            <h3 className="font-semibold text-lg">Loan Security</h3>
-            <p className="text-sm text-slate-300">
-              Define your preferences for loan disbursement.
-            </p>
+            <h3 className="font-semibold text-lg">Loan Preference</h3>
+            <Text fontSize={"14px"} color={"gray.500"}>
+              Define your Loan Request Acceptance.
+            </Text>
           </div>
           <Button
             size={"sm"}
@@ -83,10 +83,10 @@ export default function LoanAutoAccept({
               Opt-in for manual acceptance of loan requests (default:
               auto-accept).
             </h3>
-            <p className="text-sm text-slate-300">
+            <Text fontSize={"14px"} color={"gray.500"}>
               Two-Factor authentication adds another layer of security to your
               account.
-            </p>
+            </Text>
           </div>
           <FormControl flex={1} display="flex" justifyContent="flex-end">
             <Switch colorScheme="primary" {...register("status")} />
