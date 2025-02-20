@@ -1,5 +1,6 @@
 "use client";
 import { ProfileImageUploader } from "@/app/(protected)/_components/ProfileImageUploader";
+import ChangePassword from "@/app/(protected)/admin/settings/_components/ChangePassword";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession, ResponseDto, User } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
@@ -10,6 +11,7 @@ import {
   FormLabel,
   Input,
   Switch,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -34,6 +36,8 @@ export default function Page() {
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
+
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const {
     register,
@@ -220,7 +224,12 @@ export default function Page() {
               Change your current password
             </p>
           </div>
-          <Button size={"sm"} variant={"outline"} colorScheme={"primary"}>
+          <Button
+            size={"sm"}
+            variant={"outline"}
+            colorScheme={"primary"}
+            onClick={onOpen}
+          >
             Change Password
           </Button>
           {/* </div> */}
@@ -240,6 +249,8 @@ export default function Page() {
           </div>
           <Switch colorScheme="primary" />
         </div>
+
+        <ChangePassword onClose={onClose} isOpen={isOpen} />
       </div>
     </div>
   );

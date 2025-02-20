@@ -72,12 +72,8 @@ export default function BankInfoFormComp({
     string | null
   >(null);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
-  const [defaultBankAccount, setDefaultBankAccount] =
-    useState<BankAccountDto>(defaultBankDetail);
 
   const token = sessionData?.user?.token;
-
-  console.log("Banck Account", defaultBankAccount);
 
   const {
     register,
@@ -155,7 +151,6 @@ export default function BankInfoFormComp({
     } else {
       setValue("accountName", "");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountNumber, bankCode]);
 
   useEffect(() => {
@@ -165,25 +160,22 @@ export default function BankInfoFormComp({
   }, [token]);
 
   useEffect(() => {
-    if (accountNumberInputRef.current) {
-      accountNumberInputRef.current.focus();
-    }
-  }, []);
-
-  useEffect(() => {
     if (defaultBankDetail) {
-      setDefaultBankAccount(defaultBankAccount);
+      setValue("accountName", defaultBankDetail.accountName);
+      setValue("accountNumber", defaultBankDetail.accountNumber);
+      setValue("bankCode", defaultBankDetail.bankCode);
+      setValue("bankName", defaultBankDetail.bankName);
     }
-  }, [defaultBankDetail]);
+  }, [defaultBankDetail, setValue]);
 
   useEffect(() => {
-    if (defaultBankAccount) {
-      setValue("accountName", defaultBankAccount.accountName);
-      setValue("accountNumber", defaultBankAccount.accountNumber);
-      setValue("bankCode", defaultBankAccount.bankCode);
-      setValue("bankName", defaultBankAccount.bankName);
+    if (banks && bankCode) {
+      const matchedBank = banks.find((b) => b.value === Number(bankCode));
+      if (matchedBank) {
+        setValue("bankName", matchedBank.label);
+      }
     }
-  }, [defaultBankAccount, setValue]);
+  }, [banks, bankCode, setValue]);
 
   const onSubmit: SubmitHandler<FormInput> = async (formData) => {
     try {
@@ -243,7 +235,6 @@ export default function BankInfoFormComp({
                 inputMode="numeric"
               >
                 <NumberInputField
-                  ref={accountNumberInputRef}
                   placeholder="0000000000"
                 />
               </NumberInput>
