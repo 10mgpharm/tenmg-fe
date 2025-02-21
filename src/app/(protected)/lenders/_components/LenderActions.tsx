@@ -18,7 +18,7 @@ const LenderActions = ({
         variant="outline"
         w={"full"}
         whiteSpace="normal"
-        fontSize={{ base: "xs", md: "md" }}
+        fontSize={{ base: "xs", md: "sm" }}
         onClick={() => onOpenDeposit()}
       >
         Deposit Funds
@@ -27,7 +27,7 @@ const LenderActions = ({
         variant="outline"
         w={"full"}
         whiteSpace="normal"
-        fontSize={{ base: "xs", md: "md" }}
+        fontSize={{ base: "xs", md: "sm" }}
         onClick={() => onOpenWithdraw()}
       >
         Withdraw Funds
@@ -36,7 +36,7 @@ const LenderActions = ({
         variant="outline"
         w={"full"}
         whiteSpace="normal"
-        fontSize={{ base: "xs", md: "md" }}
+        fontSize={{ base: "xs", md: "sm" }}
         onClick={() => onOpenGenerateStatement()}
       >
         Generate Statement
