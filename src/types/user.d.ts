@@ -371,6 +371,7 @@ export interface OrderResponseData {
 export interface DiscountDataType {
   amount: string;
   applicationMethod: string;
+  applicableProducts: number[];
   couponCode: string;
   customerLimit: string;
   endDate: string;
