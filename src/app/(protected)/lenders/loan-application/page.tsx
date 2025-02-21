@@ -142,15 +142,15 @@ export default function LoanApplicationPage() {
                 <Td className="py-2">{item?.creditScore}</Td>
                 <Td>
                   {index % 3 === 0 ? (
-                    <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="lg" variant={'subtle'}>
-                      Assigned
+                    <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
+                      • <span style={{ textTransform: 'capitalize' }}>  Assigned</span>
                     </Badge>
                   ) : index % 4 === 0 ? (
-                    <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="lg" variant={'subtle'}>
+                    <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
                       • <span style={{ textTransform: 'capitalize' }}>Declined</span>
                     </Badge>
                   ) : (
-                    <Badge colorScheme={"orange"} fontSize="10px" px="2" py="1" borderRadius="lg" variant={'subtle'}>
+                    <Badge colorScheme={"orange"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
                       • <span style={{ textTransform: 'capitalize' }}>Pending</span>
                     </Badge>
                   )}
