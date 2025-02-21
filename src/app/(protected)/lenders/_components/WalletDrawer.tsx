@@ -41,7 +41,7 @@ export default function WalletDrawer() {
           <DrawerBody>
             <div>
               <div>
-                <h4 className='font-semibold text-xl'>$ 9,000,000</h4>
+                <h4 className='font-semibold text-xl'>₦ 9,000,000</h4>
                 <p className='font-light text-xs'>Date Disbursed: Tue, 10 Sept 2024. 19:40</p>
                 <Divider my={3} />
               </div>
