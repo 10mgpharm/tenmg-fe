@@ -28,6 +28,7 @@ export default function TransactionHistoryDrawer() {
         isOpen={isOpen}
         placement='right'
         onClose={onClose}
+        size={'sm'}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
@@ -38,7 +39,7 @@ export default function TransactionHistoryDrawer() {
           <DrawerBody>
             <div>
               <div>
-                <h4 className='font-semibold text-xl'>$ 9000</h4>
+                <h4 className='font-semibold text-xl'>₦ 9000</h4>
                 <p className='font-light text-sm'>Tue, 10 Sept 2024. 19:40</p>
               </div>
 
