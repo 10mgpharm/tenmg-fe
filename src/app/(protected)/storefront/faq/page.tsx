@@ -104,6 +104,7 @@ const FaqCard = ({ faq }) => {
       </div>
       <div className='w-full overflow-y-hidden'>
         <h3 className='font-semibold'>{faq?.question?.charAt(0).toUpperCase() + faq?.question?.slice(1)}</h3>
+        {/* <h3 className='font-semibold'>{faq?.question?.charAt(0).toUpperCase() + faq?.question?.slice(1)}</h3> */}
         <div
           className={`transition-all duration-700 ease-in-out overflow-hidden ${open ? 'max-h-fit translate-y-0' : 'max-h-0 -translate-y-full'
             }`}
