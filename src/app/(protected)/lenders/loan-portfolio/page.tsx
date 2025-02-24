@@ -15,24 +15,26 @@ import {
   TableCaption,
   TableContainer,
 } from '@chakra-ui/react'
+import SearchInput from '../../vendors/_components/SearchInput';
+import Pagination from '../_components/Pagination';
 export default function TransactionWalletPage() {
 
   const card_info = [
     {
       title: "Total Active Loans",
-      value: "N150,000,000",
+      value: "1",
       bgColor: "#53389E",
       bgImg: "/assets/images/disb_bg.png",
     },
     {
       title: "Total Loaned Amount",
-      value: "N50,000,000",
+      value: "₦50,000,000",
       bgColor: "#DC6803",
       bgImg: "/assets/images/app_bg.png",
     },
     {
       title: "Total Outstanding Amount",
-      value: "N2,500,000",
+      value: "₦2,500,000",
       bgColor: "#3E4784",
       bgImg: "/assets/images/pend_bg.png",
     },
@@ -58,7 +60,7 @@ export default function TransactionWalletPage() {
               backgroundImage: `url(${item.bgImg})`,
             }}
           >
-            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor, opacity: 0.7 }}></div>
+            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor }}></div>
 
             {/* Card Content */}
             <div className="relative z-10 text-white">
@@ -71,19 +73,21 @@ export default function TransactionWalletPage() {
 
 
       <div className='my-8'>
-        <div className="flex items-center gap-3 justify-between  w-full lg:w-2/4 my-5">
-          <div className="relative w-3/4">
-            <SearchIcon className="absolute left-2 w-4 top-1/2 -translate-y-1/2" />
-            <input className="w-full ps-8 pe-4 py-2 rounded-md" placeholder="Search for a user" />
-          </div>
+
+        <div className="flex items-center gap-3 my-5">
+          <SearchInput
+            placeholder="Search for Borrower's name/Loan ID"
+          // value={globalFilter}
+          // onChange={(e) => setGlobalFilter(e.target.value)}
+          />
           <Menu>
-            <MenuButton as={Button} variant={'unstyled'} size={'sm'} px="8px" className=" cursor-pointer  " >
-              <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters </p>
+            <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
+              <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters</p>
             </MenuButton>
             <MenuList>
-              <MenuItem>By Date</MenuItem>
-              <MenuItem>Credit Score</MenuItem>
-              <MenuItem>Vendor Name</MenuItem>
+              {/* <MenuItem>By Date</MenuItem>
+                <MenuItem>Credit Score</MenuItem>
+                <MenuItem>Vendor Name</MenuItem> */}
             </MenuList>
           </Menu>
         </div>
@@ -129,11 +133,11 @@ export default function TransactionWalletPage() {
                   <Td className="py-4">{item?.end_date}</Td>
                   <Td>
                     {index % 2 === 0 ? (
-                      <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="md">
+                      <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="full">
                         • <span style={{ textTransform: 'capitalize' }}>Completed</span>
                       </Badge>
                     ) : (
-                      <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="md">
+                      <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="full">
                         • <span style={{ textTransform: 'capitalize' }}>Payment Overdue</span>
                       </Badge>
                     )}
@@ -146,6 +150,7 @@ export default function TransactionWalletPage() {
               ))}
             </Tbody>
           </Table>
+          <Pagination />
         </TableContainer>
 
       </div>
