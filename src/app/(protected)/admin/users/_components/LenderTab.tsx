@@ -2,11 +2,15 @@
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 import {
+    Button,
+  FormControl,
+  FormLabel,
   Stack,
   Table,
   TableContainer,
   Tbody,
   Td,
+  Textarea,
   Th,
   Thead,
   Tr,
@@ -23,26 +27,25 @@ import {
 } from "@tanstack/react-table";
 import {
   Dispatch,
+  FormEvent,
   SetStateAction,
   useCallback,
   useMemo,
   useState,
 } from "react";
-import { ColumsSupplierFN } from "./table";
 import { MemberDataProp, NextAuthUserSession } from "@/types";
 import { FaSpinner } from "react-icons/fa6";
-import DeleteModal from "@/app/(protected)/_components/DeleteModal";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { useSession } from "next-auth/react";
 import requestClient from "@/lib/requestClient";
-import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
+import { ColumsLenderFN } from "./tableLender";
+import ModalWrapper from "@/app/(protected)/suppliers/_components/ModalWrapper";
 import { ActionType } from "@/constants";
-import ViewUserModal from "./ViewUserModal";
+import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
 
-const SupplierTab = ({
+const LenderTab = ({
   data,
-  type,
   isLoading,
   setPageCount,
   pageCount,
@@ -51,7 +54,6 @@ const SupplierTab = ({
   fetchTeamUser,
 }: {
   data: MemberDataProp;
-  type: string;
   isLoading: boolean;
   setPageCount: Dispatch<SetStateAction<number>>;
   pageCount: number;
@@ -59,30 +61,20 @@ const SupplierTab = ({
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   fetchTeamUser: (type: string, pageCount: number) => void;
 }) => {
+  const [userId, setUserId] = useState<number>();
+  const [reason, setReason] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [userId, setUserId] = useState<number>();
-  const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
   const [actionType, setActionType] = useState<ActionType | null>(null);
+  const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
-    isOpen: isOpenDeactivate,
-    onOpen: onOpenDeactivate,
-    onClose: onCloseDeactivate,
-  } = useDisclosure();
-
-  const {
-    onOpen: onOpenDelete,
-    isOpen: isOpenDelete,
-    onClose: onCloseDelete,
-  } = useDisclosure();
-
-  const {
-    onOpen: onOpenView,
-    isOpen: isOpenView,
-    onClose: onCloseView,
+      onOpen: onOpenDelete,
+      isOpen: isOpenDelete,
+      onClose: onCloseDelete,
   } = useDisclosure();
 
   const session = useSession();
@@ -91,45 +83,11 @@ const SupplierTab = ({
 
   const handleDeleteModal = useCallback(
     (id: any) => {
-      const numericId = Number(id);
-      setUserId(numericId);
-      onOpenDelete();
+    const numericId = Number(id);
+    setUserId(numericId);
+    onOpenDelete();
     },
     [onOpenDelete]
-  );
-
-  const confirmDelete = useCallback(async () => {
-    if (userId !== undefined) {
-      if (!token || !userId) return;
-      setIsLoadingAction(true);
-      try {
-        const response = await requestClient({ token }).delete(
-          `admin/users/${userId}`
-        );
-
-        if (response.status === 200) {
-          toast.success(response.data.message);
-          onCloseDelete();
-          fetchTeamUser("supplier", 1);
-          fetchTeamUser("pharmacy", 1);
-          fetchTeamUser("vendor", 1);
-          fetchTeamUser("lender", 1);
-        }
-      } catch (error) {
-        const errorMessage = handleServerErrorMessage(error);
-        toast.error(errorMessage);
-      } finally {
-        setIsLoadingAction(false);
-      }
-    }
-  }, [userId, token, onCloseDelete, fetchTeamUser]);
-
-  const handleViewModal = useCallback(
-    (id: number) => {
-      setUserId(id);
-      onOpenView();
-    },
-    [onOpenView]
   );
 
   const handleOpenModal = useCallback(
@@ -153,9 +111,6 @@ const SupplierTab = ({
         });
         if (response.status === 200) {
           toast.success(response.data.message);
-          fetchTeamUser("supplier", 1);
-          fetchTeamUser("pharmacy", 1);
-          fetchTeamUser("vendor", 1);
           fetchTeamUser("lender", 1);
         }
       } catch (error) {
@@ -173,38 +128,57 @@ const SupplierTab = ({
 
   const renderedColumn = useMemo(
     () =>
-      ColumsSupplierFN(
-        onOpen,
-        onOpenDeactivate,
-        handleDeleteModal,
-        pageCount,
-        15,
-        handleOpenModal,
-        handleViewModal
-      ),
-    [handleDeleteModal, handleOpenModal, onOpen, onOpenDeactivate, pageCount, handleViewModal]
+      ColumsLenderFN(
+      handleDeleteModal,
+      pageCount,
+      15,
+      handleOpenModal
+    ),
+    [handleDeleteModal, pageCount]
   );
 
   const table = useReactTable({
-    data: records,
-    columns: renderedColumn,
-    onSortingChange: setSorting,
-    state: {
+      data: records,
+      columns: renderedColumn,
+      onSortingChange: setSorting,
+      state: {
       sorting,
       columnVisibility,
       columnOrder,
       rowSelection,
       globalFilter,
-    },
-    manualFiltering: true,
-    onGlobalFilterChange: setGlobalFilter,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+      },
+      manualFiltering: true,
+      onGlobalFilterChange: setGlobalFilter,
+      enableRowSelection: true,
+      onRowSelectionChange: setRowSelection,
+      onColumnVisibilityChange: setColumnVisibility,
+      onColumnOrderChange: setColumnOrder,
+      getCoreRowModel: getCoreRowModel(),
+      getSortedRowModel: getSortedRowModel(),
   });
+
+    const handleRemove = async (e: FormEvent) => {
+      e.preventDefault();
+      if(!reason) return;
+      setIsLoadingAction(true);
+      try {
+        const response = await requestClient({ token }).delete(
+        `admin/users/${userId}`
+        );
+
+        if (response.status === 200) {
+        toast.success(response.data.message);
+        onCloseDelete();
+        fetchTeamUser("lender", 1);
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      } finally {
+        setIsLoadingAction(false);
+      }
+    }
 
   return (
     <div className="">
@@ -254,31 +228,47 @@ const SupplierTab = ({
           </Table>
           <Pagination meta={data?.meta} setPageCount={setPageCount} />
         </TableContainer>
-      )}
+    )}
 
-      <ViewUserModal
-        isOpen={isOpenView}
-        onClose={onCloseView}
-        id={userId}
-      />
-
-      <ConfirmationModal
-        isOpen={isOpen}
-        onClose={onClose}
-        title={"User"}
-        actionType={actionType}
-        onConfirm={() => handleStatusToggle(actionType)}
-      />
-
-      <DeleteModal
-        isOpen={isOpenDelete}
+  <ConfirmationModal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={"User"}
+    actionType={actionType}
+    onConfirm={() => handleStatusToggle(actionType)}
+  />
+    <ModalWrapper
+        isOpen={isOpenDelete} 
         onClose={onCloseDelete}
-        title={"User"}
-        handleRequest={confirmDelete}
-        isLoading={isLoadingAction}
-      />
+        title="Remove Lender"
+        >
+            <form onSubmit={(e) => handleRemove(e)} className="mb-8">
+                <FormControl>
+                    <FormLabel>Enter reason for removal</FormLabel>
+                    <Textarea onChange={(e) => setReason(e.target.value) } />
+                </FormControl>
+                <div className="flex justify-end items-center gap-3 mt-8">
+                    <Button 
+                    variant={"outline"} 
+                    type="button"
+                    className='cursor-pointer' 
+                    onClick={onCloseDelete}>
+                      Cancel
+                    </Button>
+                    <Button 
+                    isLoading={isLoading}
+                    loadingText={"Submitting..."}
+                    type="submit"
+                    bg={"red.500"}
+                    _hover={{background: "red.300"}}
+                    >
+                      Remove Lender
+                    </Button>
+                </div>
+            </form>
+        </ModalWrapper>
     </div>
   );
 };
 
-export default SupplierTab;
+export default LenderTab;
