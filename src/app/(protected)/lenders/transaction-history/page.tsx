@@ -15,30 +15,31 @@ import {
   TableCaption,
   TableContainer,
 } from '@chakra-ui/react'
+import Pagination from '../_components/Pagination';
 
 export default function TransactionHistoryPage() {
 
   const card_info = [
     {
-      title: "Total Deposit",
-      value: "N150,000,000",
+      title: "Total Deposits",
+      value: "₦150,000,000",
       bgColor: "#53389E",
       bgImg: "/assets/images/disb_bg.png",
     },
     {
-      title: "Total Withdrawal",
-      value: "N50,000,000",
+      title: "Total Withdrawals",
+      value: "₦50,000,000",
       bgColor: "#DC6803",
       bgImg: "/assets/images/app_bg.png",
     },
     {
-      title: "Net Wallet Activities",
-      value: "N2,500,000",
+      title: "Net Wallet Balance",
+      value: "₦2,500,000",
       bgColor: "#3E4784",
       bgImg: "/assets/images/pend_bg.png",
     },
     {
-      title: "Last transaction Date",
+      title: "Last Transaction Date",
       value: "2024-12-7",
       bgColor: "#E31B54",
       bgImg: "/assets/images/tot_bg.png",
@@ -61,7 +62,7 @@ export default function TransactionHistoryPage() {
             }}
           >
             {/* Dark Overlay to Fade Background */}
-            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor, opacity: 0.7 }}></div>
+            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor, }}></div>
 
             {/* Card Content */}
             <div className="relative z-10 text-white">
@@ -83,12 +84,12 @@ export default function TransactionHistoryPage() {
 
           <div className="flex items-center gap-3 my-5">
             <SearchInput
-              placeholder="Search for a Customer"
+              placeholder="Search for Transaction Id"
             // value={globalFilter}
             // onChange={(e) => setGlobalFilter(e.target.value)}
             />
             <Menu>
-              <MenuButton as={Button} variant={'unstyled'} size={'sm'} px="8px" className=" cursor-pointer  " >
+              <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
                 <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters</p>
               </MenuButton>
               <MenuList>
@@ -144,11 +145,11 @@ export default function TransactionHistoryPage() {
                   <Td className="py-4">{item?.amount}</Td>
                   <Td>
                     {index % 2 === 0 ? (
-                      <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="md" className="">
+                      <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" className="">
                         • <span style={{ textTransform: 'capitalize' }}> successful</span>
                       </Badge>
                     ) : (
-                      <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="md">
+                      <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="xl">
                         • <span style={{ textTransform: 'capitalize' }}>failed</span>
                       </Badge>
                     )}
@@ -160,6 +161,7 @@ export default function TransactionHistoryPage() {
               ))}
             </Tbody>
           </Table>
+          <Pagination />
         </TableContainer>
       </div>
     </div>

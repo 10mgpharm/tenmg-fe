@@ -11,7 +11,7 @@ export default function LoanDetailsPage() {
 
   return (
     <div className='mx-10 my-4'>
-      <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' onClick={() => { router.push('/lenders/loan-application') }}>
+      <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' onClick={() => { router.push('/lenders/loan-application/details') }}>
         Back
       </Button>
 
@@ -26,7 +26,7 @@ export default function LoanDetailsPage() {
             <Button size='sm' colorScheme={'primary'} variant={'solid'}>
               View Loan
             </Button>
-            <Button size="sm" colorScheme={'primary'} variant={'outline'}>
+            <Button size="sm" colorScheme={'primary'} variant={'outline'} onClick={() => { router.push('/lenders/loan-application/evaluation') }}>
               View Credit Score
             </Button>
           </div>
@@ -58,7 +58,7 @@ export default function LoanDetailsPage() {
             </div>
             <div className="space-y-2">
               <p className='text-sm'>Status</p>
-              <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
+              <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'outline'}>
                 Active
               </Badge>
             </div>
@@ -138,8 +138,8 @@ export default function LoanDetailsPage() {
             <tr className="border-b border-b-slate-400 text-xs">
               <td className="py-2">20/11/2014</td>
               <td className="py-2">Purchase Supplies</td>
-              <td className="py-2">  <Badge colorScheme="warning" fontSize="10px" px="2" py="1" borderRadius="md">
-                Outstanding
+              <td className="py-2">  <Badge colorScheme="warning" fontSize="10px" px="2" py="1" borderRadius="full">
+                •<span>Outstanding</span>
               </Badge></td>
             </tr>
           </tbody>
