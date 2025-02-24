@@ -23,6 +23,7 @@ import { MemberDataProp, NextAuthUserSession } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { useDebouncedValue } from "@/utils/debounce";
+import LenderTab from "./_components/LenderTab";
 
 const Users = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,9 +47,11 @@ const Users = () => {
   const [supplierData, setSupplierData] = useState<MemberDataProp | null>();
   const [vendorData, setVendorData] = useState<MemberDataProp | null>();
   const [pharmData, setPharmData] = useState<MemberDataProp | null>();
+  const [lenderData, setLenderData] = useState<MemberDataProp | null>();
   const [supplierCount, setSupplierCount] = useState<MemberDataProp>();
   const [vendorCount, setVendorCount] = useState<MemberDataProp>();
   const [pharmCount, setPharmCount] = useState<MemberDataProp>();
+  const [lenderCount, setLenderCount] = useState<MemberDataProp>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
@@ -89,6 +92,10 @@ const Users = () => {
             setPharmCount(response.data.data);
             setPharmData(response.data.data);
             setTotal(response.data?.meta);
+          } else if (type === "lender") {
+            setLenderCount(response.data.data);
+            setLenderData(response.data.data);
+            setTotal(response.data?.meta);
           }
         }
       } catch (error) {
@@ -104,6 +111,7 @@ const Users = () => {
     fetchTeamUser("supplier", pageCount);
     fetchTeamUser("pharmacy", pageCount);
     fetchTeamUser("vendor", pageCount);
+    fetchTeamUser("lender", pageCount);
   }, [fetchTeamUser, token, pageCount, debouncedSearch, selectedStatuses]);
 
   const handleTabsChange = (index: number) => {
@@ -112,14 +120,22 @@ const Users = () => {
       fetchTeamUser("pharmacy", 1);
       setVendorData(null);
       setSupplierData(null);
+      setLenderData(null)
     } else if (index === 2) {
       fetchTeamUser("vendor", 1);
       setSupplierData(null);
       setPharmData(null);
+      setLenderData(null)
+    } else if (index === 3){
+      fetchTeamUser("lender", 1);
+      setSupplierData(null);
+      setPharmData(null);
+      setVendorData(null)
     } else {
       fetchTeamUser("supplier", 1);
       setVendorData(null);
       setPharmData(null);
+      setLenderData(null)
     }
   };
 
@@ -237,6 +253,16 @@ const Users = () => {
               </p>
             </div>
           </Tab>
+          <Tab
+            _selected={{ color: "white", bg: "#1A70B8", borderRadius: "10px" }}
+          >
+            <div className="flex items-center gap-3">
+              <Text>Lenders</Text>
+              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
+                {lenderCount?.meta.total || 0}
+              </p>
+            </div>
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel px={0}>
@@ -268,6 +294,17 @@ const Users = () => {
               isLoading={isLoading}
               data={vendorData}
               type="Vendors"
+              pageCount={pageCount}
+              fetchTeamUser={fetchTeamUser}
+              setPageCount={setPageCount}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          </TabPanel>
+          <TabPanel>
+            <LenderTab
+              isLoading={isLoading}
+              data={lenderData}
               pageCount={pageCount}
               fetchTeamUser={fetchTeamUser}
               setPageCount={setPageCount}
