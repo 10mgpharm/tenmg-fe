@@ -15,6 +15,7 @@ import {
     NumberInput,
     NumberInputField,
     Skeleton,
+    Stack,
 } from "@chakra-ui/react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useState } from "react";
@@ -317,6 +318,23 @@ export default function StepFourBankForm({ token, defaultBankDetail, business, a
                             {defaultBankAccount.bankName}
                         </Text>
                     </section>
+                    <Box
+                            bgColor="warning.100"
+                            borderColor="warning.400"
+                            border="1px solid var(--tenmg-colors-warning-400)"
+                            p={4}
+                            borderRadius="sm"
+                            my={6}
+                        >
+                            <Stack direction="column">
+                                <Text fontSize="sm" fontWeight="bold">
+                                This action is required to verify the bank account you have entered, ensuring it can be used for your loan repayment after your credit application is approved.
+                                </Text>
+                                <Text>
+                                Kindly note that a ₦50 charge applies to complete this process, so ensure your bank account is funded.
+                                </Text>
+                            </Stack>
+                        </Box>
                     <Flex justifyItems={'between'} alignItems={'center'} gap={5} mt={5} mb={8}>
                         <Button
                             variant={'ghost'}
@@ -336,11 +354,12 @@ export default function StepFourBankForm({ token, defaultBankDetail, business, a
                             colorScheme="blue"
                             size="lg"
                             w="full"
-                            type="submit"
+                            // type="submit"
+                            onClick={() => onContinueAction(defaultBankAccount)}
                             isLoading={saveBankLoading}
                             loadingText="Saving Account Details..."
                         >
-                            Submit Application
+                            Initiate Mandate
                         </Button>
                     </Flex>
                     <Center gap={2}>
