@@ -26,7 +26,7 @@ const navigation = [
   { name: 'Dashboard', href: '/lenders', icon: HomeIcon, current: true },
   { name: 'Loan Application', href: '/lenders/loan-application', icon: LuFileText, current: false },
   { name: 'Transaction History', href: '/lenders/transaction-history', icon: FiShoppingBag, current: false },
-  { name: 'My Investment', href: '/lenders/investment', icon: BsGraphUpArrow, current: false },
+  { name: 'Loan Portfolio', href: '/lenders/loan-portfolio', icon: BsGraphUpArrow, current: false },
   { name: 'Settings', href: '/lenders/settings', icon: Cog6ToothIcon, current: false },
 ]
 

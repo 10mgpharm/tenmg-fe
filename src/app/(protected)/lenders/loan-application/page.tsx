@@ -3,8 +3,20 @@ import { Badge, Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/
 import { useRouter } from "next/navigation";
 import { SearchIcon } from "lucide-react";
 import React from "react";
-import { CiMenuKebab } from "react-icons/ci";
-
+import { CiFilter, CiMenuKebab } from "react-icons/ci";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from '@chakra-ui/react'
+import { flexRender, useReactTable } from "@tanstack/react-table";
+import SearchInput from "../../vendors/_components/SearchInput";
 
 export default function LoanApplicationPage() {
 
@@ -37,8 +49,12 @@ export default function LoanApplicationPage() {
     },
   ];
 
+
   return (
     <div className="m-5">
+
+      <h3 className="font-semibold text-xl my-4">Loan Application</h3>
+
       <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
         {card_info.map((item, index) => (
           <div
@@ -62,69 +78,86 @@ export default function LoanApplicationPage() {
         ))}
       </div>
 
-      <div className="flex items-center gap-3 justify-between mt-8 w-full lg:w-2/4">
-        <div className="relative w-3/4">
-          <SearchIcon className="absolute left-2 w-4 top-1/2 -translate-y-1/2" />
-          <input className="w-full ps-6 pe-4 py-2 rounded-md" placeholder="Search by application ID or customer name" />
-        </div>
+      <div className="flex items-center gap-3 my-5">
+        <SearchInput
+          placeholder="Search for a Customer"
+        // value={globalFilter}
+        // onChange={(e) => setGlobalFilter(e.target.value)}
+        />
+
         <Menu>
-          <MenuButton as={Button} variant={'outline'} size={'sm'} className="w-1/4 flex items-center justify-center py-2 px-3" >
-            filters
+          <MenuButton as={Button} variant={'unstyled'} size={'sm'} px="8px" className=" cursor-pointer  " >
+            <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>            Filters            </p>
           </MenuButton>
           <MenuList>
-            <MenuItem>Date</MenuItem>
+            <MenuItem>By Date</MenuItem>
             <MenuItem>Credit Score</MenuItem>
             <MenuItem>Vendor Name</MenuItem>
           </MenuList>
         </Menu>
       </div>
 
-      <div className="rounded-t-lg overflow-hidden">
-        <table className="w-full mt-5 text-center">
-          <thead className="bg-[#E8F1F8] text-[#1A70B8]">
-            <tr className="">
-              <th className="px-4 py-3">Reference ID</th>
-              <th className="px-4 py-3">{`Borrower's Name`}</th>
-              <th className="px-4 py-3">Vendor</th>
-              <th className="px-4 py-3">Amount</th>
-              <th className="px-4 py-3">Credit Score</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Action</th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
+        <Table variant='simple'>
+          {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
+          <Thead bg="blue.50">
+            <Tr>
+              <Th textTransform="initial"
+                color="primary.500"
+                fontWeight="500">Reference ID</Th>
+              <Th textTransform="initial"
+                color="primary.500"
+                fontWeight="500">{`Borrower's Name`}</Th>
+              <Th textTransform="initial"
+                color="primary.500"
+                fontWeight="500">Vendor</Th>
+              <Th textTransform="initial"
+                color="primary.500"
+                fontWeight="500">Amount</Th>
+              <Th textTransform="initial"
+                color="primary.500"
+                fontWeight="500">Credit Score</Th>
+              <Th textTransform="initial"
+                color="primary.500"
+                fontWeight="500">Status</Th>
+              <Th textTransform="initial"
+                color="primary.500"
+                fontWeight="500">Action</Th>
+            </Tr>
+          </Thead>
+          <Tbody bg={"white"}>
             {table_data.map((item, index) => (
-              <tr key={index} className="border-b border-b-slate-400 text-xs">
-                <td className="py-2">
+              <Tr key={index} className="border-b border-b-slate-400 text-xs">
+                <Td className="py-2">
                   <p>{item?.id}</p>
                   <p>{item?.date}</p>
-                </td>
-                <td className="py-2">
+                </Td>
+                <Td className="py-2">
                   {item?.borrower_name}
-                </td>
-                <td className="py-2">
+                </Td>
+                <Td className="py-2">
                   {item?.vendor}
-                </td>
-                <td className="py-2">                {item?.amount}              </td>
-                <td className="py-2">                {item?.creditScore}              </td>
-                <td>
+                </Td>
+                <Td className="py-2">{item?.amount}</Td>
+                <Td className="py-2">{item?.creditScore}</Td>
+                <Td>
                   {index % 3 === 0 ? (
-                    <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="md">
-                      Assigned
+                    <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
+                      • <span style={{ textTransform: 'capitalize' }}>  Assigned</span>
                     </Badge>
                   ) : index % 4 === 0 ? (
-                    <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="md">
-                      Declined
+                    <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
+                      • <span style={{ textTransform: 'capitalize' }}>Declined</span>
                     </Badge>
                   ) : (
-                    <Badge colorScheme="yellow" fontSize="10px" px="2" py="1" borderRadius="md">
-                      Pending
+                    <Badge colorScheme={"orange"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
+                      • <span style={{ textTransform: 'capitalize' }}>Pending</span>
                     </Badge>
                   )}
-                </td>
-                <td className="py-2">
+                </Td>
+                <Td className="py-2">
                   <Menu>
-                    <MenuButton as={Button} variant={'unstyled'} size={'sm'} className="w-1/4 flex items-center justify-center py-2 px-3" >
+                    <MenuButton as={Button} variant={'unstyled'} size={'sm'}  >
                       <CiMenuKebab />
                     </MenuButton>
                     <MenuList>
@@ -133,12 +166,12 @@ export default function LoanApplicationPage() {
                       <MenuItem>Decline Loan Offer</MenuItem>
                     </MenuList>
                   </Menu>
-                </td>
-              </tr>
+                </Td>
+              </Tr>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </Tbody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }
