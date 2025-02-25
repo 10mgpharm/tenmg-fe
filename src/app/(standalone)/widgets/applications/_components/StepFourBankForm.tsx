@@ -135,7 +135,7 @@ export default function StepFourBankForm({ token, defaultBankDetail, business, a
                 toast.success(message);
                 setDefaultBankAccount(data);
                 setEdit(false);
-                onContinueAction(data);
+                // onContinueAction(data);
             }
         });
     }
@@ -318,6 +318,7 @@ export default function StepFourBankForm({ token, defaultBankDetail, business, a
                             {defaultBankAccount.bankName}
                         </Text>
                     </section>
+
                     <Box
                             bgColor="warning.100"
                             borderColor="warning.400"

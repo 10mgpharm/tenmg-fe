@@ -15,7 +15,14 @@ import {
   NumberInput,
   NumberInputField,
   Skeleton,
+  Stack,
+  Input,
+  useClipboard,
+  Icon,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
+import { LuCopy } from "react-icons/lu";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -28,11 +35,7 @@ import {
   BankDto,
   BankAccountDto,
 } from "@/types";
-import { createBankAccount, getBankList, verifyBankAccount } from "../actions";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-toastify";
-import { maskAccountNumber } from "@/lib/utils";
+import { CheckCircle, TimerIcon } from "lucide-react";
 
 interface Props {
   token: string;
@@ -44,28 +47,7 @@ interface Props {
   onContinueAction?: (defaultBankAccount: BankAccountDto) => void;
 }
 
-interface SelectOption {
-  label: string;
-  value: number;
-}
-
-const formSchema = z.object({
-  accountNumber: z
-    .string()
-    .nonempty("Account number cannot be empty.")
-    .length(10, "Account number must be exactly 10 digits.")
-    .regex(/^\d{10}$/, "Account number must contain only digits."),
-  accountName: z.string().min(1, "Account name cannot be empty."),
-  bankCode: z
-    .string({ invalid_type_error: "Please select a bank." })
-    .min(1, "Please select a valid bank."),
-  bankName: z.string().nonempty(),
-  address: z.string().optional(),
-});
-
-type FormInput = z.infer<typeof formSchema>;
-
-export default function StepFourBankForm({
+export default function StepFiveMandateScreen({
   token,
   defaultBankDetail,
   business,
@@ -74,130 +56,34 @@ export default function StepFourBankForm({
   navigateBackAction,
   onContinueAction,
 }: Props) {
-  const [accountVerificationInProgress, startBankAccountVerification] =
-    useTransition();
-  const [saveBankLoading, startSaveBank] = useTransition();
-  const [accountVerificationError, setAccountVerificationError] = useState<
-    string | null
-  >(null);
-  const [banks, setBanks] = useState<SelectOption[] | null>(null);
-
-  const [defaultBankAccount, setDefaultBankAccount] =
-    useState<BankAccountDto>(defaultBankDetail);
-  const [edit, setEdit] = useState<boolean>(false);
-
-  const {
-    register,
-    watch,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-    trigger,
-  } = useForm<FormInput>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
-  });
-
-  const accountNumber = watch("accountNumber");
-  const bankCode = watch("bankCode");
-  const bankName = watch("bankName");
-  const accountName = watch("accountName");
-
-  const accountNumberInputRef = useRef<HTMLInputElement>(null);
-
-  const handleGetBankList = async () => {
-    const response = await getBankList(token);
-    if (response.status === "error") {
-      setBanks([]);
-    } else {
-      const bankList: BankDto[] = response.data;
-      setBanks(
-        bankList?.map((bank) => ({ label: bank.name, value: bank.code }))
-      );
-    }
+  const bankDetails = {
+    accountName: "",
+    accountNumber: "1190217102",
+    bankName: "United Bank for Africa",
+    amount: application.requestedAmount,
   };
 
-  const handleVerifyBankAccount = (accountNumber: string, bankCode: string) => {
-    startBankAccountVerification(async () => {
-      setAccountVerificationError(null);
-      setValue("accountName", "");
+  const { hasCopied: copiedAccount, onCopy: copyAccount } = useClipboard(
+    bankDetails.accountNumber
+  );
+  const { hasCopied: copiedAmount, onCopy: copyAmount } = useClipboard(
+    bankDetails.amount.toString()
+  );
 
-      const { data, status, message } = await verifyBankAccount(token, {
-        accountNumber,
-        bankCode,
-      });
-      if (status === "error") {
-        setAccountVerificationError(message);
-      } else {
-        if (data.success) {
-          setValue("accountName", data?.data?.accountName);
-        } else {
-          setAccountVerificationError(data?.message);
-        }
-      }
-    });
-  };
-
-  const handleSaveBankAccount = (formInput: FormInput) => {
-    startSaveBank(async () => {
-      const { accountNumber, accountName, bankCode, bankName } = formInput;
-
-      const { data, status, message } = await createBankAccount(token, {
-        identifier: customer?.identifier,
-        accountNumber,
-        accountName,
-        bankCode,
-        bankName,
-      });
-      if (status === "error") {
-        toast.error(message);
-      } else {
-        toast.success(message);
-        setDefaultBankAccount(data);
-        setEdit(false);
-        onContinueAction(data);
-      }
-    });
-  };
-
-  const onSubmit: SubmitHandler<FormInput> = async (data) => {
-    handleSaveBankAccount(data);
-  };
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
 
   useEffect(() => {
-    if (accountNumber && accountNumber?.length === 10 && bankCode && bankName) {
-      handleVerifyBankAccount(accountNumber, bankCode);
-    } else {
-      setValue("accountName", "");
-    }
-  }, [accountNumber, bankCode]);
-
-  useEffect(() => {
-    if (token) {
-      handleGetBankList();
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (defaultBankDetail) {
-      setDefaultBankAccount(defaultBankAccount);
-    }
-  }, [defaultBankDetail]);
-
-  useEffect(() => {
-    if (accountNumberInputRef?.current) {
-      accountNumberInputRef?.current?.focus();
-    }
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    if (defaultBankAccount && edit) {
-      setValue("accountName", defaultBankAccount.accountName);
-      setValue("accountNumber", defaultBankAccount.accountNumber);
-      setValue("bankCode", defaultBankAccount.bankCode);
-      setValue("bankName", defaultBankAccount.bankName);
-    }
-  }, [edit, defaultBankAccount]);
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
 
   return (
     <LoanLayout
@@ -210,26 +96,81 @@ export default function StepFourBankForm({
           <LoanProfile name={customer?.name} email={customer?.email} />
           <IoMdInformationCircleOutline className="w-6 h-6" />
         </section>
-        <section className="pb-8 flex flex-col gap-5 justify-center items-center">
-          <Text fontSize="md" textAlign={"center"}>
-            Initiate Mandate of NGN 100
+
+        <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>
+          Initiate Mandate of NGN {bankDetails.amount}
+        </Text>
+
+        {/* Payment Details */}
+        <VStack spacing={4} bg="gray.50" p={4} borderRadius="md">
+          {/* Bank Name */}
+          <HStack w="full" justify="space-between">
+            <Text fontSize="sm" fontWeight="bold">
+              BANK NAME
+            </Text>
+            <Text fontSize="sm" color="blue.500" cursor="pointer">
+              CHANGE BANK
+            </Text>
+          </HStack>
+          <Text fontSize="lg" fontWeight="bold">
+            {bankDetails.bankName}
           </Text>
-          <Text
-            fontSize="sm"
-            className="bg-blue-50 rounded p-2 text-center text-xs mb-5"
-          >
-            Confirm the bank account below is still active
+
+          {/* Account Number */}
+          <HStack w="full" justify="space-between">
+            <Text fontSize="sm" fontWeight="bold">
+              ACCOUNT NUMBER
+            </Text>
+            <Button onClick={copyAccount} size="xs" variant="ghost">
+              <Icon
+                as={copiedAccount ? CheckCircle : LuCopy}
+                color={copiedAccount ? "green.500" : "gray.500"}
+              />
+            </Button>
+          </HStack>
+          <Input
+            value={bankDetails.accountNumber}
+            isReadOnly
+            variant="unstyled"
+            textAlign="center"
+            fontSize="xl"
+            fontWeight="bold"
+          />
+
+          {/* Amount */}
+          <HStack w="full" justify="space-between">
+            <Text fontSize="sm" fontWeight="bold">
+              AMOUNT
+            </Text>
+            <Button onClick={copyAmount} size="xs" variant="ghost">
+              <Icon
+                as={copiedAmount ? CheckCircle : LuCopy}
+                color={copiedAmount ? "green.500" : "gray.500"}
+              />
+            </Button>
+          </HStack>
+          <Text fontSize="lg" fontWeight="bold" color="green.600">
+            {bankDetails.amount}
           </Text>
-          <Text fontSize="lg" fontWeight={"bold"} textAlign={"center"}>
-            {defaultBankAccount.accountName}
+        </VStack>
+
+        {/* Instruction */}
+        <Text fontSize="xs" color="gray.500" textAlign="center" mt={4}>
+          Search for {bankDetails.bankName} on your bank app.
+          Use this account for this transaction only.
+        </Text>
+
+        {/* Countdown Timer */}
+        <VStack mt={4}>
+          <Icon as={TimerIcon} color="green.500" boxSize={6} />
+          <Text fontSize="sm" color="gray.600">
+            Expires in{" "}
+            <Text as="span" color="green.500">
+              {formatTime(timeLeft)}
+            </Text>
           </Text>
-          <Text fontSize="lg" textAlign={"center"}>
-            {maskAccountNumber(defaultBankAccount.accountNumber)}
-          </Text>
-          <Text fontSize="lg" textAlign={"center"}>
-            {defaultBankAccount.bankName}
-          </Text>
-        </section>
+        </VStack>
+
         <Flex
           justifyItems={"between"}
           alignItems={"center"}
@@ -238,28 +179,14 @@ export default function StepFourBankForm({
           mb={8}
         >
           <Button
-            variant={"ghost"}
-            size="lg"
-            w="full"
-            type="submit"
-            isLoading={saveBankLoading}
-            loadingText="Saving Account Details..."
-            className="!bg-blue-50"
-            onClick={() => {
-              setEdit(true);
-            }}
-          >
-            Edit
-          </Button>
-          <Button
             colorScheme="blue"
             size="lg"
             w="full"
             type="submit"
-            isLoading={saveBankLoading}
-            loadingText="Saving Account Details..."
+            // isLoading={saveBankLoading}
+            loadingText="Loading..."
           >
-            Initiate Mandate
+            I&apos;ve Sent the Money
           </Button>
         </Flex>
         <Center gap={2}>
