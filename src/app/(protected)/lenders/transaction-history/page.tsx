@@ -1,4 +1,4 @@
-import { Badge, Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { Badge, Button, Menu, MenuButton, MenuItem, MenuList, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react'
@@ -76,11 +76,25 @@ export default function TransactionHistoryPage() {
       <div>
         <div className='flex items-center justify-between flex-col lg:flex-row mt-8'>
 
-          <div className='grid grid-cols-3 text-center'>
-            <div className='border border-slate-300 px-2 py-2 text-sm font-semibold rounded-l-md'>All</div>
-            <div className='border border-slate-300 px-2 py-2 text-sm font-semibold rounded-none'>Incoming</div>
-            <div className='border border-slate-300 px-2 py-2 text-sm font-semibold rounded-r-md'>Outgoing</div>
-          </div>
+          <Tabs>
+            <TabList>
+              <Tab>All</Tab>
+              <Tab>Incoming</Tab>
+              <Tab>Outgoing</Tab>
+            </TabList>
+
+            {/* <TabPanels>
+              <TabPanel>
+                <p>one!</p>
+              </TabPanel>
+              <TabPanel>
+                <p>two!</p>
+              </TabPanel>
+              <TabPanel>
+                <p>three!</p>
+              </TabPanel>
+            </TabPanels> */}
+          </Tabs>
 
           <div className="flex items-center gap-3 my-5">
             <SearchInput
