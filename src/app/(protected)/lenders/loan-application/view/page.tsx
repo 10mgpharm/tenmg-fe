@@ -12,7 +12,7 @@ export default function LoanViewPage() {
       <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' onClick={() => { router.push('/lenders/loan-application') }}>
         Back
       </Button>
-      {true ?
+      {false ?
 
         <>
           <div className='flex items-center justify-between w-full'>
@@ -53,7 +53,7 @@ export default function LoanViewPage() {
               </div>
               <div className="space-y-2">
                 <p className='text-sm'>Status</p>
-                <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
+                <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
                   Active
                 </Badge>
               </div>
@@ -71,7 +71,7 @@ export default function LoanViewPage() {
               <Button size='sm' colorScheme={'primary'} variant={'solid'}>
                 View Loan
               </Button>
-              <Button size="sm" colorScheme={'primary'} variant={'outline'}>
+              <Button size="sm" colorScheme={'primary'} variant={'outline'} onClick={() => { router.push('/lenders/loan-application/evaluation') }}>
                 View Credit Score
               </Button>
             </div>
