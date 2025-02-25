@@ -36,6 +36,7 @@ import {
   BankAccountDto,
 } from "@/types";
 import { CheckCircle, TimerIcon } from "lucide-react";
+import { formatAmount } from "@/utils/formatAmount";
 
 interface Props {
   token: string;
@@ -60,7 +61,7 @@ export default function StepFiveMandateScreen({
     accountName: "",
     accountNumber: "1190217102",
     bankName: "United Bank for Africa",
-    amount: application.requestedAmount,
+    amount: formatAmount(application.requestedAmount),
   };
 
   const { hasCopied: copiedAccount, onCopy: copyAccount } = useClipboard(
@@ -98,7 +99,7 @@ export default function StepFiveMandateScreen({
         </section>
 
         <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>
-          Initiate Mandate of NGN {bankDetails.amount}
+          Initiate Mandate of {bankDetails.amount}
         </Text>
 
         {/* Payment Details */}
@@ -156,8 +157,8 @@ export default function StepFiveMandateScreen({
 
         {/* Instruction */}
         <Text fontSize="xs" color="gray.500" textAlign="center" mt={4}>
-          Search for {bankDetails.bankName} on your bank app.
-          Use this account for this transaction only.
+          Search for {bankDetails.bankName} on your bank app. Use this account
+          for this transaction only.
         </Text>
 
         {/* Countdown Timer */}
