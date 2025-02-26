@@ -63,7 +63,7 @@ export const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
           ref={fileInputRef}
           style={{ display: "none" }}
           onChange={handleFileChange}
-          accept="image/*"
+          accept="image/png, image/jpeg, image/jpg"
           id="file-input"
         />
       </Box>
