@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   ColumnOrderState,
   RowSelectionState,
@@ -34,6 +34,7 @@ import Pagination from "../../suppliers/_components/Pagination";
 const ITEMS_PER_PAGE = 10;
 
 const Page = () => {
+  
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);

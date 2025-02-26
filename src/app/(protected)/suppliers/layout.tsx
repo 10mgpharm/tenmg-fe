@@ -25,7 +25,7 @@ export default async function SupplierLayout({
 
   return(
     <>
-      <TopNavBar />
+      <TopNavBar route="/suppliers/notifications" />
       <SideBar businessStatus={session?.user?.businessStatus} />
       <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
         <div className="min-h-[calc(100vh-150px)]">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { MedicationResponseData, NextAuthUserSession } from '@/types';
 import { useSession } from 'next-auth/react';
 import requestClient from '@/lib/requestClient';
@@ -39,6 +39,11 @@ export default function ProductBrandSetupPage() {
         if (!token) return;
         fetchingBrandTypes();
     }, [token, fetchingBrandTypes]);
+
+    const metaData = {
+        "currentPage": brandData?.currentPage,
+        "links": brandData?.links
+    }
     
     return (
         <BrandSetup
@@ -47,7 +52,7 @@ export default function ProductBrandSetupPage() {
             searchWord={searchWord}
             setSearchWord={setSearchWord}
             loading={brandLoading}
-            meta={brandData?.links}
+            meta={metaData}
             setPageCount={setPageCount}
             refetchingTypes={fetchingBrandTypes}
         />
