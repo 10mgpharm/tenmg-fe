@@ -57,11 +57,10 @@ export default function LoanEvaluation() {
             >
               <Box maxW="lg">
                 <h3 className="font-semibold text-xl">
-                  {/* Reference No: {tnxHistoryData?.identifier}{" "} */}
+                  Evaluation Reference No:
                 </h3>
                 <p className="text-sm text-gray-500 mt-1">
-                  This provides a detailed breakdown of the customer’s evaluation
-                  reference, credit score, purchase and credit patterns.
+                  This provides a detailed breakdown of the customer’s evaluation reference, credit score, purchase and credit patterns.
                 </p>
               </Box>
               <Flex
