@@ -61,10 +61,6 @@ const MedicationTypes = (
     setSelectedItem(null)
   },[])
 
-  const metadata = {
-    "links": meta
-  }
-
   const handleDelete = async () => {
     setIsLoading(true);
     try {
@@ -160,7 +156,7 @@ const MedicationTypes = (
               }
             </Tbody>
           </Table>
-          <Pagination meta={metadata} setPageCount={setPageCount}/>
+          <Pagination meta={meta} setPageCount={setPageCount}/>
         </TableContainer>
       }
       <AddMedicationType 
