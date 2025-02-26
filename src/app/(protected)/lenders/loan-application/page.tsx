@@ -17,33 +17,33 @@ import {
 } from '@chakra-ui/react'
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import SearchInput from "../../vendors/_components/SearchInput";
-
+import Pagination from "../_components/Pagination";
 export default function LoanApplicationPage() {
 
   const router = useRouter();
 
   const card_info = [
     {
-      title: "Total Loan Application",
-      value: "N50,000",
+      title: "Total Loan Applications",
+      value: "5",
       bgColor: "#53389E",
       bgImg: "/assets/images/disb_bg.png",
     },
     {
-      title: "Pending Loan Application",
-      value: "N23,100",
+      title: "Pending Loan Applications",
+      value: "2",
       bgColor: "#DC6803",
       bgImg: "/assets/images/app_bg.png",
     },
     {
-      title: "Approved Loan Application",
-      value: "N12,423",
+      title: "Approved Loan Applications",
+      value: "1",
       bgColor: "#3E4784",
       bgImg: "/assets/images/pend_bg.png",
     },
     {
-      title: "Disbursed Loan Application",
-      value: "N40,321",
+      title: "Disbursed Amount",
+      value: "₦40,321",
       bgColor: "#E31B54",
       bgImg: "/assets/images/tot_bg.png",
     },
@@ -67,7 +67,7 @@ export default function LoanApplicationPage() {
             }}
           >
             {/* Dark Overlay to Fade Background */}
-            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor, opacity: 0.7 }}></div>
+            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor, }}></div>
 
             {/* Card Content */}
             <div className="relative z-10 text-white">
@@ -80,13 +80,13 @@ export default function LoanApplicationPage() {
 
       <div className="flex items-center gap-3 my-5">
         <SearchInput
-          placeholder="Search for a Customer"
+          placeholder="Search by borrower's name/reference Id"
         // value={globalFilter}
         // onChange={(e) => setGlobalFilter(e.target.value)}
         />
 
         <Menu>
-          <MenuButton as={Button} variant={'unstyled'} size={'sm'} px="8px" className=" cursor-pointer  " >
+          <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
             <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>            Filters            </p>
           </MenuButton>
           <MenuList>
@@ -161,7 +161,7 @@ export default function LoanApplicationPage() {
                       <CiMenuKebab />
                     </MenuButton>
                     <MenuList>
-                      <MenuItem onClick={() => router.push('/lenders/loan-application/details')}>View Details</MenuItem>
+                      <MenuItem onClick={() => router.push('/lenders/loan-application/view')}>View Details</MenuItem>
                       <MenuItem>Accept Loan Offer</MenuItem>
                       <MenuItem>Decline Loan Offer</MenuItem>
                     </MenuList>
@@ -171,6 +171,7 @@ export default function LoanApplicationPage() {
             ))}
           </Tbody>
         </Table>
+        <Pagination />
       </TableContainer>
     </div>
   );
@@ -186,7 +187,7 @@ export const table_data = [
     date: "Aug 21, 2024",
     borrower_name: "Medlife Hospital",
     vendor: "HealPro Inc.",
-    amount: "₦ 1, 250,000",
+    amount: "₦1, 250,000",
     creditScore: "720(Good)",
     status: "Pending",
   },
@@ -195,7 +196,7 @@ export const table_data = [
     date: "Aug 21, 2024",
     borrower_name: "Medlife Hospital",
     vendor: "HealPro Inc.",
-    amount: "₦ 1, 250,000",
+    amount: "₦1, 250,000",
     creditScore: "720(Good)",
     status: "Pending",
   },
@@ -204,7 +205,7 @@ export const table_data = [
     date: "Aug 21, 2024",
     borrower_name: "Medlife Hospital",
     vendor: "HealPro Inc.",
-    amount: "₦ 1, 250,000",
+    amount: "₦1, 250,000",
     creditScore: "720(Good)",
     status: "Pending",
   },
@@ -213,7 +214,7 @@ export const table_data = [
     date: "Aug 21, 2024",
     borrower_name: "Medlife Hospital",
     vendor: "HealPro Inc.",
-    amount: "₦ 1, 250,000",
+    amount: "₦1, 250,000",
     creditScore: "720(Good)",
     status: "Pending",
   },
@@ -222,7 +223,7 @@ export const table_data = [
     date: "Aug 21, 2024",
     borrower_name: "Medlife Hospital",
     vendor: "HealPro Inc.",
-    amount: "₦ 1, 250,000",
+    amount: "₦1, 250,000",
     creditScore: "720(Good)",
     status: "Pending",
   },
@@ -231,7 +232,7 @@ export const table_data = [
     date: "Aug 21, 2024",
     borrower_name: "Medlife Hospital",
     vendor: "HealPro Inc.",
-    amount: "₦ 1, 250,000",
+    amount: "₦1, 250,000",
     creditScore: "720(Good)",
     status: "Pending",
   },

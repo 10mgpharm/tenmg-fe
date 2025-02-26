@@ -7,6 +7,7 @@ import StepTwoCheckingEligibility from './StepTwoCheckingElegibility';
 import StepThreeApplicationForm from './StepThreeApplicationForm';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import StepFourBankForm from './StepFourBankForm';
+import StepFiveMandateScreen from './StepFiveMandateScreen';
 
 interface Props {
     business: BusinessDto;
@@ -127,9 +128,31 @@ export default function ApplicationWidget({ business, customer, application, ref
                         setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
                         setValue('bankDetail.bankName', defaultBankAccount?.bankName);
 
-                        //TODO: setActiveStep(activeStep + 1); //show mandate flow or not
+                        setActiveStep(activeStep + 1);
                     }}
                 />
             );
+        case 5:
+            return (
+                <StepFiveMandateScreen
+                    token={token}
+                        defaultBankDetail={bankDetail}
+                        business={business}
+                        customer={customer}
+                        application={application}
+                        navigateBackAction={() => {
+                            setActiveStep(activeStep - 1);
+                        }}
+                        onContinueAction={(defaultBankAccount: BankAccountDto) => {
+                            // set bank info for mandate creation
+                            setValue('bankDetail.accountName', defaultBankAccount?.accountName);
+                            setValue('bankDetail.accountNumber', defaultBankAccount?.accountNumber);
+                            setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
+                            setValue('bankDetail.bankName', defaultBankAccount?.bankName);
+    
+                         
+                    }}
+                />
+                );
     }
 }
