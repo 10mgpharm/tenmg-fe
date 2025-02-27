@@ -14,6 +14,7 @@ type OrderState = {
   pendingOrders: [];
   cancelledOrders: [];
   completedOrders: [];
+  order: {};
   loading: boolean;
   error: null | undefined | string;
 };
@@ -58,6 +59,23 @@ export const useOrdersStore = create<any>((set, get) => ({
         error: e?.response?.data?.message ?? "Error fetching orders",
       });
       toast.error(e?.response?.data?.message ?? "Error fetching orders");
+    }
+  },
+
+  getSingleOrder: async (token, id) => {
+    set({ order: {}, loading: true });
+    try {
+      const resp = await requestClient({ token }).get(
+        `/storefront/orders/${id}`
+      );
+      const order = resp?.data?.data || {};
+      set({ order, loading: false });
+    } catch (e) {
+      toast.error(e?.response?.data?.message ?? "Error fetching order");
+      set({
+        loading: false,
+        error: e?.response?.data?.message ?? "Error fetching orders",
+      });
     }
   },
 }));
