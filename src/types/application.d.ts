@@ -88,4 +88,5 @@ export interface BankAccountDto {
     accountName: string;
     bankCode: string;
     bankName: string;
+    bvn?: string;
 }
