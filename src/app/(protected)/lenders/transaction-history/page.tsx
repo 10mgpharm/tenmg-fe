@@ -16,6 +16,7 @@ import {
   TableContainer,
 } from '@chakra-ui/react'
 import Pagination from '../_components/Pagination';
+import LenderEmptyScreen from '../_components/EmptyScreen';
 
 export default function TransactionHistoryPage() {
 
@@ -72,18 +73,20 @@ export default function TransactionHistoryPage() {
           </div>
         ))}
       </div>
+      {
+        false ?
 
-      <div>
-        <div className='flex items-center justify-between flex-col lg:flex-row mt-8'>
+          <div>
+            <div className='flex items-center justify-between flex-col lg:flex-row mt-8'>
 
-          <Tabs>
-            <TabList>
-              <Tab>All</Tab>
-              <Tab>Incoming</Tab>
-              <Tab>Outgoing</Tab>
-            </TabList>
+              <Tabs>
+                <TabList>
+                  <Tab>All</Tab>
+                  <Tab>Incoming</Tab>
+                  <Tab>Outgoing</Tab>
+                </TabList>
 
-            {/* <TabPanels>
+                {/* <TabPanels>
               <TabPanel>
                 <p>one!</p>
               </TabPanel>
@@ -94,90 +97,92 @@ export default function TransactionHistoryPage() {
                 <p>three!</p>
               </TabPanel>
             </TabPanels> */}
-          </Tabs>
+              </Tabs>
 
-          <div className="flex items-center gap-3 my-5">
-            <SearchInput
-              placeholder="Search for Transaction Id"
-            // value={globalFilter}
-            // onChange={(e) => setGlobalFilter(e.target.value)}
-            />
-            <Menu>
-              <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
-                <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters</p>
-              </MenuButton>
-              <MenuList>
-                {/* <MenuItem>By Date</MenuItem>
+              <div className="flex items-center gap-3 my-5">
+                <SearchInput
+                  placeholder="Search for Transaction Id"
+                // value={globalFilter}
+                // onChange={(e) => setGlobalFilter(e.target.value)}
+                />
+                <Menu>
+                  <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
+                    <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters</p>
+                  </MenuButton>
+                  <MenuList>
+                    {/* <MenuItem>By Date</MenuItem>
                 <MenuItem>Credit Score</MenuItem>
                 <MenuItem>Vendor Name</MenuItem> */}
-              </MenuList>
-            </Menu>
-          </div>
-        </div>
+                  </MenuList>
+                </Menu>
+              </div>
+            </div>
 
-        <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-          <Table variant='simple'>
-            {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
-            <Thead bg="blue.50">
-              <Tr>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Transaction ID</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">{`Date`}</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Description</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Type</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Amount Paid</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Payment Status</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody bg={"white"}>
-              {TH_table_data.map((item, index) => (
-                <Tr key={index} className="border-b border-b-slate-400 text-xs">
-                  <Td className="py-4">
-                    <p>{item?.id}</p>
-                  </Td>
-                  <Td className="py-4">
-                    {item?.date}
-                  </Td>
-                  <Td className="py-4">
-                    {item?.desc}
-                  </Td>
-                  <Td className="py-4">{item?.type}</Td>
-                  <Td className="py-4">{item?.amount}</Td>
-                  <Td>
-                    {index % 2 === 0 ? (
-                      <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" className="">
-                        • <span style={{ textTransform: 'capitalize' }}> successful</span>
-                      </Badge>
-                    ) : (
-                      <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="xl">
-                        • <span style={{ textTransform: 'capitalize' }}>failed</span>
-                      </Badge>
-                    )}
-                  </Td>
-                  <Td className="py-4">
-                    <TransactionHistoryDrawer />
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <Pagination />
-        </TableContainer>
-      </div>
+            <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
+              <Table variant='simple'>
+                {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
+                <Thead bg="blue.50">
+                  <Tr>
+                    <Th textTransform="initial"
+                      color="primary.500"
+                      fontWeight="500">Transaction ID</Th>
+                    <Th textTransform="initial"
+                      color="primary.500"
+                      fontWeight="500">{`Date`}</Th>
+                    <Th textTransform="initial"
+                      color="primary.500"
+                      fontWeight="500">Description</Th>
+                    <Th textTransform="initial"
+                      color="primary.500"
+                      fontWeight="500">Type</Th>
+                    <Th textTransform="initial"
+                      color="primary.500"
+                      fontWeight="500">Amount Paid</Th>
+                    <Th textTransform="initial"
+                      color="primary.500"
+                      fontWeight="500">Payment Status</Th>
+                    <Th textTransform="initial"
+                      color="primary.500"
+                      fontWeight="500">Action</Th>
+                  </Tr>
+                </Thead>
+                <Tbody bg={"white"}>
+                  {TH_table_data.map((item, index) => (
+                    <Tr key={index} className="border-b border-b-slate-400 text-xs">
+                      <Td className="py-4">
+                        <p>{item?.id}</p>
+                      </Td>
+                      <Td className="py-4">
+                        {item?.date}
+                      </Td>
+                      <Td className="py-4">
+                        {item?.desc}
+                      </Td>
+                      <Td className="py-4">{item?.type}</Td>
+                      <Td className="py-4">{item?.amount}</Td>
+                      <Td>
+                        {index % 2 === 0 ? (
+                          <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" className="">
+                            • <span style={{ textTransform: 'capitalize' }}> successful</span>
+                          </Badge>
+                        ) : (
+                          <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="xl">
+                            • <span style={{ textTransform: 'capitalize' }}>failed</span>
+                          </Badge>
+                        )}
+                      </Td>
+                      <Td className="py-4">
+                        <TransactionHistoryDrawer />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              <Pagination />
+            </TableContainer>
+          </div>
+          :
+          <LenderEmptyScreen heading='Nothing to show here yet' content='You don’t have any transactions yet. When you do, they’ll appear here.' />}
     </div>
   )
 }

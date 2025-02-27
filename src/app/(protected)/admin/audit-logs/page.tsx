@@ -165,12 +165,12 @@ const Page = () => {
                 ))}
               </Tbody>
             </Table>
+            <Pagination
+              meta={meta}
+              setPageCount={setPageCount}
+            />
           </TableContainer>
         )}
-        <Pagination
-          meta={meta}
-          setPageCount={setPageCount}
-        />
       </div>
     </div>
   );
