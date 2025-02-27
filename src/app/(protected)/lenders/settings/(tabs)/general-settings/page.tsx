@@ -32,8 +32,6 @@ export default function Page() {
   const [isInfoLoading, setIsInfoLoading] = useState<boolean>(false);
   const [isShowUpload, setIsShowUpload] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [userEmail, setUserEmail] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
@@ -53,6 +51,9 @@ export default function Page() {
       email: "",
     },
   });
+
+  const userEmail = watch("email");
+  const userName = watch("name");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileError(null);
