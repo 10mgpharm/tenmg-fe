@@ -77,6 +77,12 @@ const LenderTab = ({
       onClose: onCloseDelete,
   } = useDisclosure();
 
+  const {
+    onOpen: onOpenView,
+    isOpen: isOpenView,
+    onClose: onCloseView,
+  } = useDisclosure();
+
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
@@ -97,6 +103,14 @@ const LenderTab = ({
       onOpen();
     },
     [onOpen]
+  );
+
+  const handleViewModal = useCallback(
+    (id: number) => {
+      setUserId(id);
+      onOpenView();
+    },
+    [onOpenView]
   );
 
   const handleStatusToggle = useCallback(
@@ -132,6 +146,7 @@ const LenderTab = ({
       handleDeleteModal,
       pageCount,
       15,
+      handleViewModal,
       handleOpenModal
     ),
     [handleDeleteModal, pageCount]
