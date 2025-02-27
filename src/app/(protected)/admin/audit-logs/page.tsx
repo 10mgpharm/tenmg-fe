@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   ColumnOrderState,
   RowSelectionState,
@@ -29,11 +29,12 @@ import { ColumsLogFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import Pagination from "../products/_components/Pagination";
+import Pagination from "../../suppliers/_components/Pagination";
 
 const ITEMS_PER_PAGE = 10;
 
 const Page = () => {
+  
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -43,6 +44,7 @@ const Page = () => {
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [pageCount, setPageCount] = useState<number>(1);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -58,7 +60,7 @@ const Page = () => {
         );
 
         if (response.status === 200 && response.data.data) {
-          setData(response.data.data.records || []);
+          setData(response.data.data.data || []);
           setTotalItems(response.data.data.total || 0);
         } else {
           setError("Failed to load audit logs. Please try again.");
@@ -75,6 +77,7 @@ const Page = () => {
       fetchData(currentPage);
     }
   }, [token, currentPage]);
+
 
   const table = useReactTable({
     data,
@@ -95,6 +98,15 @@ const Page = () => {
   });
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+  const meta = {
+    meta: {
+      links: [
+        { label: 'Previous', active: false },
+        { label: 1, active: true }
+      ]
+    }
+  }
 
   return (
     <div className="p-8">
@@ -121,29 +133,29 @@ const Page = () => {
         )}
 
         {!loading && !error && data.length > 0 && (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >
             <Table>
               <Thead bg={"#F2F4F7"}>
                 {table?.getHeaderGroups()?.map((headerGroup) => (
                   <Tr key={headerGroup.id}>
                     {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
+                      <Th textTransform={"initial"} px="16px" key={header.id}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>
                 ))}
               </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+              <Tbody bg={"white"} color="#606060" fontSize={"14px"} >
                 {table?.getRowModel()?.rows?.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
+                      <Td key={cell.id} px="16px">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -154,50 +166,11 @@ const Page = () => {
                 ))}
               </Tbody>
             </Table>
+            <Pagination
+              meta={meta}
+              setPageCount={setPageCount}
+            />
           </TableContainer>
-        )}
-        {data?.length > 0 && (
-          <Pagination
-            links={[
-              ...(currentPage > 1 && data.length > 0
-                ? [
-                    {
-                      url: `?page=${currentPage - 1}`,
-                      label: "Previous",
-                      active: false,
-                    },
-                  ]
-                : []),
-              ...Array.from({ length: totalPages }, (_, i) => ({
-                label: (i + 1).toString(),
-                url: `?page=${i + 1}`,
-                active: currentPage === i + 1,
-              })),
-              ...(currentPage < totalPages && data.length > 0
-                ? [
-                    {
-                      url: `?page=${currentPage + 1}`,
-                      label: "Next",
-                      active: false,
-                    },
-                  ]
-                : []),
-            ]}
-            setPageCount={setCurrentPage}
-            prevPageUrl={
-              currentPage > 1 && data.length > 0
-                ? `?page=${currentPage - 1}`
-                : null
-            }
-            nextPageUrl={
-              currentPage < totalPages && data.length > 0
-                ? `?page=${currentPage + 1}`
-                : null
-            }
-            currentPage={currentPage}
-            firstPageUrl={data.length > 0 ? `?page=1` : null}
-            lastPageUrl={data.length > 0 ? `?page=${totalPages}` : null}
-          />
         )}
       </div>
     </div>

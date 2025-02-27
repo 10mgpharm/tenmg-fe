@@ -33,6 +33,7 @@ const SystemConfiguration = () => {
   const { dropZoneStyle } = useStyles();
   const [file, setFile] = useState("");
   const [image, setImage] = useState<string>("");
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number>();
   const [imageUrl, setImageURL] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,7 +75,7 @@ const SystemConfiguration = () => {
 
   const onLoadImage = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
-    if (event.target.files[0].size >= MAX_FILE_SIZE)
+    if (event.target.files[0]?.size >= MAX_FILE_SIZE)
       toast.warn(
         "A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB."
       );
@@ -191,6 +192,7 @@ const SystemConfiguration = () => {
           toast.success(response.data?.message)
           fetchingStoreImages();
           setDeleteLoading(false);
+          setIsDisabled(false);
           onDeleteClose();
         }
       } catch (error) {
@@ -207,7 +209,7 @@ const SystemConfiguration = () => {
         <Stack bg={"white"} p={5} rounded={"lg"} gap={2} shadow={"sm"}>
           <HStack justifyContent={"space-between"} align={"center"}>
             <Text fontSize={"13px"} fontWeight={600} color={"gray.600"}>
-              Store Front Image ({storeImages?.data?.length}/3)
+              Store Front Image ({storeImages?.data?.length || 0}/3)
             </Text>
             <Button 
             h={"34px"} 
@@ -227,7 +229,15 @@ const SystemConfiguration = () => {
               flexDir={"column"}
               pos={"relative"}
               overflow={"hidden"}
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => {
+                if((imageSrcs?.length || storeImages?.data?.length) === MAX_IMAGES){
+                  setIsDisabled(true);
+                  return toast.warning(`You can upload a maximum of ${MAX_IMAGES} images`)
+                }else{
+                  setIsDisabled(false);
+                  fileInputRef.current?.click()
+                }
+              }}
               onDragOver={(e: any) => e.preventDefault()}
               onDrop={(e: any) => {
                 handleDrop(e);
@@ -235,7 +245,7 @@ const SystemConfiguration = () => {
             >
               <input
                 type="file"
-                // ref={fileInputRef}
+                disabled={isDisabled}
                 name="image_uploads"
                 multiple
                 onChange={onLoadImage}

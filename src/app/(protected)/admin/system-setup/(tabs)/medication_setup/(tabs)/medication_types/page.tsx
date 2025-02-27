@@ -40,6 +40,11 @@ export default function ProductMedicationTypeSetupPage() {
     fetchingMedicationTypes();
 }, [token, fetchingMedicationTypes]);
 
+  const metaData = {
+    "currentPage": medicationData?.currentPage,
+    "links": medicationData?.links
+  }
+
   return (
     <MedicationTypes
       data={medicationData?.data}
@@ -47,7 +52,7 @@ export default function ProductMedicationTypeSetupPage() {
       searchWord={searchWord}
       setSearchWord={setSearchWord}
       setPageCount={setPageCount}
-      meta={medicationData?.links}
+      meta={metaData}
       fetchingMedicationTypes={fetchingMedicationTypes} />
   )
 }

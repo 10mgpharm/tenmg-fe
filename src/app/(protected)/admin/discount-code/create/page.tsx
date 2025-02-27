@@ -2,29 +2,42 @@
 import { cn } from '@/lib/utils';
 import Select from 'react-select';
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Flex, FormControl, FormLabel, Input, Radio, RadioGroup, Stack, Switch, Text } from '@chakra-ui/react'
+import { 
+    Button, 
+    Flex, 
+    FormControl, 
+    FormLabel, 
+    Input, 
+    Radio, 
+    RadioGroup, 
+    Stack, 
+    Switch, 
+    Text 
+} from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
 import { NextAuthUserSession, ProductResponseData } from '@/types';
 import requestClient from '@/lib/requestClient';
 import { convertArray } from '@/utils/convertSelectArray';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { handleServerErrorMessage } from '@/utils';
+import { generateRandomCoupon, handleServerErrorMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
 import DateComponent from '@/app/(protected)/suppliers/products/_components/DateComponent';
+import { useDebouncedValue } from '@/utils/debounce';
 interface OptionType {
     label: string;
     value: number
 }
 interface IFormInput {
     applicationMethod: string;
-    couponCode: string;
+    couponCode?: string;
     discountAmount: number;
     discountType: string;
     applicableProducts: number[];
     customerLimit: string;
     startDate?: Date | null;
     endDate?: Date | null;
+    allProduct: boolean;
 }
   
 const CreateDiscount = () => {
@@ -37,12 +50,15 @@ const CreateDiscount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isEndDate, setIsEndDate] = useState(false);
     const [isStartDate, setIsStartDate] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState<string>("");
     const [products, setProducts] = useState<ProductResponseData>();
+
+    const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
     const fetchingProducts = useCallback(async() => {
         try {
             const response = await requestClient({ token: token }).get(
-                `/admin/settings/products`
+                `/admin/settings/products/search?search=${debouncedSearch}`
             );
             if(response.status === 200){
                 setProducts(response.data.data);
@@ -50,7 +66,7 @@ const CreateDiscount = () => {
         } catch (error) {
             console.error(error)
         }
-    },[token]);
+    },[token, debouncedSearch]);
 
     useEffect(() => {
         if(!token) return;
@@ -63,7 +79,6 @@ const CreateDiscount = () => {
         formState: { errors },
         handleSubmit,
         setValue,
-        reset,
         watch
     } = useForm<IFormInput>({
         mode: "onChange",
@@ -76,10 +91,15 @@ const CreateDiscount = () => {
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true);
+        const formdata = {
+            ...data,
+            startDate: new Date(data.startDate).toLocaleDateString('en-CA'),
+            endDate: new Date(data.endDate).toLocaleDateString('en-CA'),
+        }
         try {
             const response = await requestClient({token: token}).post(
                 "/admin/discounts",
-                data
+                formdata
             )
             if(response.status === 200){
                 setIsLoading(false);
@@ -96,7 +116,8 @@ const CreateDiscount = () => {
     const [selectedOption, setSelectedOption] = useState([]);
 
     const discountType = watch("discountType");
-    const allProducts = products?.data && [{id: "", name: "All Products"}, ...products?.data]
+    const methodType = watch("applicationMethod");
+    const allProducts = products?.data && [{id: "AllProduct", name: "All Products"}, ...products?.data]
     const productOptions = convertArray(allProducts);
 
     // Disable all options except the selected ones when "All Products" is selected
@@ -104,6 +125,11 @@ const CreateDiscount = () => {
         ...opt,
         isDisabled: selectedOption.some((sel) => sel.label === "All Products") && opt.label !== "All Products",
     }));
+
+    const handleRandomCoupon = () => {
+        const couponCode = generateRandomCoupon();
+        setValue("couponCode", couponCode);
+    }
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -120,7 +146,7 @@ const CreateDiscount = () => {
                         return(
                             <RadioGroup onChange={onChange} value={value}>
                                 <Stack gap={4}>
-                                    <Radio value='COUPON'>Discount Code</Radio>
+                                    <Radio value='COUPON'>Coupon Code</Radio>
                                     <Radio value='AUTOMATIC'>Automatic Discount</Radio>
                                 </Stack>
                             </RadioGroup>
@@ -129,31 +155,38 @@ const CreateDiscount = () => {
                     />
                 </FormControl>
             </Stack>
-            <Stack mt={5}>
-                <FormControl>
-                    <FormLabel className='font-medium text-lg'>Coupon Code</FormLabel>
-                    <Flex gap={3}>
-                        <Input 
-                            id="couponCode"
-                            name="couponCode"
-                            placeholder="e.g 10mg code" 
-                            type="text"
-                            height={"48px"}
-                            isInvalid={!!errors.couponCode}
-                            _focus={{
-                                border: !!errors.couponCode ? "red.300" : "border-gray-300",
-                            }}
-                            {...register("couponCode", {
-                                required: true,
-                            })}
-                        />
-                        <button className='text-medium bg-black p-3 text-white rounded-md w-36'>Generate</button>
-                    </Flex>
-                    <p className='text-sm text-gray-600 mt-1'>
-                        Customer must enter this code at checkout.
-                    </p>
-                </FormControl>
-            </Stack>
+            {
+                methodType === "COUPON" &&
+                <Stack mt={5}>
+                    <FormControl>
+                        <FormLabel className='font-medium text-lg'>Coupon Code</FormLabel>
+                        <Flex gap={3}>
+                            <Input 
+                                id="couponCode"
+                                name="couponCode"
+                                placeholder="e.g 10mg code" 
+                                type="text"
+                                height={"48px"}
+                                isInvalid={!!errors.couponCode}
+                                _focus={{
+                                    border: !!errors.couponCode ? "red.300" : "border-gray-300",
+                                }}
+                                {...register("couponCode", {
+                                    required: (methodType === "COUPON") ? true : false,
+                                })}
+                            />
+                            <button 
+                            onClick={handleRandomCoupon} 
+                            className='text-medium bg-black p-3 text-white rounded-md w-36'>
+                                Generate
+                            </button>
+                        </Flex>
+                        <p className='text-sm text-gray-600 mt-1'>
+                            Customer must enter this code at checkout.
+                        </p>
+                    </FormControl>
+                </Stack>
+            }
             <Stack mt={5}>
                 <FormControl isInvalid={!!errors.discountAmount}>
                     <FormLabel className='font-medium text-lg'>Value</FormLabel>
@@ -193,7 +226,7 @@ const CreateDiscount = () => {
                     control={control}
                     name='applicableProducts'
                     rules={{ required: 'Applied to product is required' }}
-                    render={({ field: { onChange, value } }) => {
+                    render={({ field }) => {
                         return(
                             <Select
                                 isClearable={true}
@@ -207,13 +240,16 @@ const CreateDiscount = () => {
                                     const productIds = selectedOption.flatMap((item: OptionType) => {
                                         if(item.label === "All Products"){
                                             setSelectedOption([item]);
-                                            return products?.data.map((product) => product.id) ;
+                                            setValue("allProduct", true);
+                                            return [item.value] ;
                                         } else {
+                                            setValue("allProduct", false);
                                             return [item.value];
                                         }
                                     });
                                     setValue("applicableProducts", productIds);
                                 }}
+                                onInputChange={(inputValue) => setGlobalFilter(inputValue) }
                             />
                         )
                     }}

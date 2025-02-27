@@ -1,204 +1,271 @@
 'use client'
-import { Button } from '@chakra-ui/react'
-import { useRouter } from 'next/navigation'
+import Records from '@/app/(protected)/vendors/transactions-history/_components/Records';
+import { formatAmountString } from '@/utils';
+import { Box, Button, Flex, Link, Spinner, Text } from '@chakra-ui/react';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React from 'react'
-import { PiCaretLeftBold } from 'react-icons/pi'
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 
-export default function LoanEvaluationPage() {
+export default function LoanEvaluation() {
 
-  const router = useRouter();
-  const options = {
-    // series: [44, 55, 13, 33],
-    // labels: ['Apple', 'Mango', 'Orange', 'Watermelon']
-  }
+  const loading = false;
+  const router = useRouter()
 
   return (
-    <div className='px-10 py-4 bg-white border-l border-slate-300'>
-      <div className='flex items-center justify-between w-full'>
-        <Button leftIcon={<PiCaretLeftBold />} colorScheme='primary' variant='unstyled' onClick={() => { router.push('/lenders/loan-application') }}>
-          Back
-        </Button>
-
-        <div className='flex items-center gap-3 my-4'>
-          <Button size='sm' colorScheme={'primary'} variant={'solid'}>
-            Download Transaction History
-          </Button>
-          <Button size="sm" colorScheme={'primary'} variant={'outline'}>
-            View Uploaded Transction History
-          </Button>
-        </div>
-      </div>
-
-      <div>
-        <h4 className="font-semibold">Application Details</h4>
-        <p className="text-sm">Overview of borrower’s loan details, including their evaluation reference and credit score.</p>
-      </div>
-
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 my-10'>
-        {/*  */}
-        <div>
-          <div className='w-full rounded-t-xl rounded-b-md overflow-hidden border border-slate-300'>
-            <div className='bg-[#F1F2F4] px-5 py-3 '>
-              <h4 className="font-semibold">Customer Information</h4>
-            </div>
-
-            <div className="w-full p-3 bg-white">
-
-              <div className="space-y-1 my-2">
-                <p className='text-sm font-light'>Name</p>
-                <h4 className="font-semibold text-xs">Sunday Ajayi</h4>
-              </div>
-
-              <div className="space-y-1 my-2">
-                <p className='text-sm font-light'>Email Address</p>
-                <h4 className="font-semibold text-xs">sundayajayi@lendsqr.com</h4>
-              </div>
-
-              <div className="space-y-1 my-2">
-                <p className='text-sm font-light'>Evaluation ID</p>
-                <h4 className="font-semibold text-xs">Eval-20241030-1624-29404</h4>
-              </div>
-
-              <div className="space-y-1 my-2">
-                <p className='text-sm font-light'>Customer ID</p>
-                <h4 className="font-semibold text-xs">10MG-C23404</h4>
-              </div>
-
-              <div className="space-y-1 my-2">
-                <p className='text-sm font-light'>Vendor</p>
-                <h4 className="font-semibold text-xs">Bubbles Pharmacy LTD</h4>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        {/*  */}
-        <div className='flex flex-col gap-4 h-full justify-between'>
-
-          <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-            <p className='text-sm font-light'>Average Transaction Volume</p>
-            <p className='text-sm font-semibold'>₦161,060</p>
-          </div>
-
-          <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-            <p className='text-sm font-light'>Average Transaction Volume</p>
-            <p className='text-sm font-semibold'>₦161,060</p>
-          </div>
-
-          <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-            <p className='text-sm font-light'>Average Transaction Volume</p>
-            <p className='text-sm font-semibold'>₦161,060</p>
-          </div>
-
-        </div>
-
-        <div className='flex flex-col gap-4 justify-between h-full'>
-          <div className='grid grid-cols-3'>
-
-            <div className='col-span-1 flex flex-col justify-between'>
-              <h5 className='font-semibold text-sm'>Credit Score</h5>
-
-              <div className='space-y-2'>
-                <p className='text-sm font-light'>Score Category</p>
-                <p className='text-sm font-semibold'>Category A</p>
-              </div>
-              <div className='space-y-2'>
-                <p className='text-sm font-light'>Score Value</p>
-                <p className='text-sm font-semibold'>855/950  </p>
-              </div>
-            </div>
-
-            <div className='col-span-2'>
-
-
-            </div>
-          </div>
-          <div>
-            <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-              <p className='text-sm font-semibold'>Affordability Amount</p>
-              <div className='flex justify-between items-center'>
-                <div>
-                  <p className='text-sm font-light'>Min Amount</p>
-                  <p className='text-sm font-semibold'>₦161,060</p>
+    <div className="p-8">
+      {loading ? (
+        <Flex justify="center" align="center" height="200px">
+          <Spinner size="xl" />
+        </Flex>
+      ) :
+        // tnxHistoryData === null ?
+        // <div className="">
+        //   <Flex
+        //     cursor={"pointer"}
+        //     onClick={() => router.back()}
+        //     align={"center"}
+        //     gap={2}
+        //   >
+        //     <ArrowLeft className="w-5 h-auto text-gray-500" />
+        //     <Text fontSize={"14px"} color={"gray.600"}>
+        //       Back
+        //     </Text>
+        //   </Flex>
+        //   <p className="mt-16 text-center font-semibold text-2xl text-gray-400">No evaluation result</p>
+        // </div>
+        // :
+        (
+          <Box>
+            <Flex
+              cursor={"pointer"}
+              onClick={() => router.back()}
+              align={"center"}
+              gap={2}
+            >
+              <ArrowLeft className="w-5 h-auto text-gray-500" />
+              <Text fontSize={"14px"} color={"gray.600"}>
+                Back
+              </Text>
+            </Flex>
+            <Flex
+              justify={"space-between"}
+              align={"center"}
+              mt={4}
+              flexWrap="wrap"
+              gap={2}
+            >
+              <Box maxW="lg">
+                <h3 className="font-semibold text-xl">
+                  Evaluation Reference No:
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  This provides a detailed breakdown of the customer’s evaluation reference, credit score, purchase and credit patterns.
+                </p>
+              </Box>
+              <Flex
+                gap={2}
+                align={"center"}
+                flexDir={{ base: "column", md: "row" }}
+                w={{ base: "full", md: "auto" }}
+              >
+                <Button
+                  variant={"outline"}
+                  height={"34px"}
+                  width={{ base: "100%", md: "auto" }}
+                // onClick={downloadCustomerTnx}
+                // isLoading={isDownloading}
+                // isDisabled={isDownloading}
+                >
+                  Download Transaction
+                </Button>
+                <Button
+                  as={Link}
+                  // href={`/vendors/transactions-history/${params.id}/records`}
+                  bg="primary.600"
+                  color="white"
+                  height="34px"
+                  width={{ base: "100%", md: "auto" }}
+                  _hover={{ bg: "primary.700" }}
+                >
+                  View Transaction History
+                </Button>
+              </Flex>
+            </Flex>
+            <div className="grid grid-cols-6 gap-5 mt-5">
+              <div className="col-span-2">
+                <div className="space-y-7">
+                  <div className="border rounded-md">
+                    <div className="border-t-md p-4 bg-gray-100">
+                      <p className="font-medium">Customer Information</p>
+                    </div>
+                    <div className="space-y-3 p-4 pb-10">
+                      <div className="">
+                        <p className="text-sm text-gray-500">Name</p>
+                        <p className="text-sm font-medium text-gray-700">
+                          {/* {tnxHistoryData?.customer.name} */}
+                        </p>
+                      </div>
+                      <div className="">
+                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="text-sm font-medium text-gray-700">
+                          {/* {tnxHistoryData?.customer?.email} */}
+                        </p>
+                      </div>
+                      <div className="">
+                        <p className="text-sm text-gray-500">Evaluation ID</p>
+                        <p className="text-sm font-medium text-gray-700">
+                          {/* {tnxHistoryData?.identifier} */}
+                        </p>
+                      </div>
+                      <div className="">
+                        <p className="text-sm text-gray-500">Customer ID</p>
+                        <p className="text-sm font-medium text-gray-700">
+                          {/* {tnxHistoryData?.customer?.identifier} */}
+                        </p>
+                      </div>
+                      <div className="">
+                        <p className="text-sm text-gray-500">Vendor</p>
+                        <p className="text-sm font-medium text-gray-700">
+                          {/* {tnxHistoryData?.vendor?.name} */}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className='text-sm font-light'>Max Amount</p>
-                  <p className='text-sm font-semibold'>₦161,060</p>
+              </div>
+              <div className="col-span-4 space-y-5">
+                <div className="flex gap-5">
+                  <div className="flex-1 space-y-2.5">
+                    <div className="border rounded-md p-6">
+                      <div className="space-y-2">
+                        <p className="text-gray-500">
+                          Average Transaction Volume
+                        </p>
+                        <h2 className="text-2xl font-semibold">
+                          ₦
+                          {/* {formatAmountString(
+                          tnxHistoryData?.evaluation?.purchasePattern
+                            ?.averageTransactionVolume
+                        )} */}
+                        </h2>
+                      </div>
+                    </div>
+                    <div className="border rounded-md p-6">
+                      <div className="space-y-2">
+                        <p className="text-gray-500">Total Transactions Volume</p>
+                        <h2 className="text-2xl font-semibold">
+                          ₦
+                          {/* {formatAmountString(
+                          tnxHistoryData?.evaluation?.purchasePattern
+                            ?.totalTransactionVolume
+                        )} */}
+                        </h2>
+                      </div>
+                    </div>
+                    <div className="border rounded-md p-6">
+                      <div className="space-y-2">
+                        <p className="text-gray-500">
+                          Total Months in Transaction History
+                        </p>
+                        <h2 className="text-2xl font-semibold">
+                          {/* {`${tnxHistoryData?.evaluation?.purchasePattern?.noOfTransactingMonths} Months`} */}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-1 space-y-2.5">
+                    <div className="border flex items-center gap-5 py-8 px-6 rounded-md">
+                      <div className="space-y-3 w-1/3">
+                        <h3 className="font-semibold">Credit Score</h3>
+                        <div className="space-y-1.5">
+                          <p className="text-sm text-gray-500">Score Category</p>
+                          <p className="text-xl font-semibold text-gray-800">
+                            {/* {tnxHistoryData?.affordability?.category ?? "N/A"} */}
+                          </p>
+                        </div>
+                        <div className="space-y-1.5">
+                          <p className="text-sm text-gray-500">Score Value</p>
+                          <p className="text-xl font-semibold text-gray-800">
+                            {/* {`${tnxHistoryData?.creditScoreResult?.scoreValue}/${tnxHistoryData?.creditScoreResult?.scoreTotal}`} */}
+                          </p>
+                        </div>
+                      </div>
+                      <div style={{ width: 140, height: 140 }}>
+                        <CircularProgressbar
+                          value={Math.round(50
+                            // tnxHistoryData?.creditScoreResult?.scorePercent
+                          )}
+                          text={
+                            `${Math.round(50
+                              // tnxHistoryData?.creditScoreResult?.scorePercent
+                            )}%` || "0%"
+                          }
+                          strokeWidth={12}
+                          styles={buildStyles({
+                            pathColor: "#E86C60",
+                            textColor: "#E86C60",
+                            trailColor: "#EFD358",
+                          })}
+                        />
+                      </div>
+                    </div>
+                    <div className="border rounded-md p-5">
+                      <h3 className="font-semibold mb-3">Affordability Amount</h3>
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <p className="text-sm text-gray-400">Min Amount</p>
+                          <h3 className="text-lg font-semibold text-gray-700">
+                            ₦
+                            {formatAmountString(50
+                              // tnxHistoryData?.affordability?.baseAmount
+                            )}
+                          </h3>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm text-gray-400">Max Amount</p>
+                          <h3 className="text-lg font-semibold text-gray-700">
+                            ₦
+                            {formatAmountString(50
+                              // tnxHistoryData?.affordability?.maxAmount
+                            )}
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div className="col-span-6">
+                {/* {tnxHistoryData && (
+                <TransactionSummary tnxHistoryData={tnxHistoryData} />
+              )} */}
+              </div>
+              <div className="col-span-2">
+                <div className="p-4 border rounded-md">
+                  <h4 className="font-medium mb-2">Result Breakdown</h4>
+                  <p className="text-gray-500 mb-4 text-sm">
+                    This outlines the breakdown of how the user score was computed
+                  </p>
+                  <button
+                    // onClick={onOpen}
+                    className="border-primary-600 border text-primary-500 font-medium bg-transparent p-2 w-full rounded-md mb-5"
+                  >
+                    View Breakdown
+                  </button>
+                </div>
+              </div>
+              <div className="col-span-4">
+                {/* <Records tnxHistoryData={{}} /> */}
+                {/* <BreakdownRecords
+                isOpen={isOpen}
+                onClose={onClose}
+                tnxHistoryData={tnxHistoryData}
+              /> */}
               </div>
             </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 my-10'>
-        <div className='col-span-1'>
-          <div className='border border-slate-300 rounded-md p-5 space-y-2'>
-            <p className='text-sm font-semibold'>Result Breakdown</p>
-            <p className='text-sm font-light'>This outlines the breakdown of how the user score was computed</p>
-            <Button variant="outline" colorScheme="primary" size={"sm"} className='w-full'>View Breakdown</Button>
-          </div>
-        </div>
-        <div className='col-span-2'>
-          <h4>Transaction Sumamry</h4>
-
-          <div className='grid grid-cols-3'>
-            <div className='col-span-1'>
-              <div className='my-2'>
-                <p className='text-sm'>First Day in Transaction:</p>
-                <p className='text-sm'>  Feb 11, 2024  </p>
-              </div>
-              <div className='my-2'>
-                <p className='text-sm'>Last Day in Transaction:</p>
-                <p className='text-sm'>Feb 11, 2024  </p>
-              </div>
-
-              <Button className='my-2 text-[8px]' variant="outline" size="xs" py="2px" colorScheme="primary">Transaction is equal or above 6 months</Button>
-
-            </div>
-          </div>
-
-          <div className='grid grid-cols-5 my-5 gap-4'>
-            <div className='col-span-3'>
-              <div className='grid grid-cols-2 gap-3'>
-
-                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-                  <p className='text-sm font-light'>Total Past Credit Amount</p>
-                  <p className='text-sm font-semibold'>₦161,060</p>
-                </div>
-                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-                  <p className='text-sm font-light'>Total Past Credit Count</p>
-                  <p className='text-sm font-semibold'>5</p>
-                </div>
-                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-                  <p className='text-sm font-light'>Active Credit Amount</p>
-                  <p className='text-sm font-semibold'>₦161,060</p>
-                </div>
-                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-                  <p className='text-sm font-light'>Active Credit Count</p>
-                  <p className='text-sm font-semibold'>6</p>
-                </div>
-                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-                  <p className='text-sm font-light'>No. of Late  Repayments</p>
-                  <p className='text-sm font-semibold'>6 months</p>
-                </div>
-                <div className='border border-slate-300 rounded-md p-5 space-y-3'>
-                  <p className='text-xs '>No. of Late Repayments</p>
-                  <p className='text-sm font-semibold'>₦161,060</p>
-                </div>
-
-              </div>
-            </div>
-            <div className='col-span-2'>
-              <div className='flex items-center justify-center border border-slate-300 rounded-md'>
-                <p>Performing</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+          </Box>
+        )}
     </div>
-  )
+  );
 }

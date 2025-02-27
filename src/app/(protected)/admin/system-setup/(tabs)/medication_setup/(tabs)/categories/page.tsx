@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import BrandSetup from '../../../../_components/BrandSetup'
 import requestClient from '@/lib/requestClient';
 import { useSession } from 'next-auth/react';
@@ -40,13 +40,18 @@ export default function ProductCategorySetupPage() {
     fetchingCategoriesTypes();
   }, [token, fetchingCategoriesTypes]);
 
+  const metaData = {
+    "currentPage": categoryData?.currentPage,
+    "links": categoryData?.links
+  }
+
   return (
     <BrandSetup
       data={categoryData?.data}
       type="Category"
       searchWord={searchWord}
       setSearchWord={setSearchWord}
-      meta={categoryData?.links}
+      meta={metaData}
       setPageCount={setPageCount}
       loading={categoryLoading}
       refetchingTypes={fetchingCategoriesTypes}

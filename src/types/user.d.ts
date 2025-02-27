@@ -257,6 +257,7 @@ export interface MedicationData {
 export interface MedicationResponseData {
   data: MedicationData[];
   links: any;
+  currentPage?: number;
   meta: MetaDataProp;
 }
 
@@ -371,6 +372,7 @@ export interface OrderResponseData {
 export interface DiscountDataType {
   amount: string;
   applicationMethod: string;
+  applicableProducts: number[];
   couponCode: string;
   customerLimit: string;
   endDate: string;

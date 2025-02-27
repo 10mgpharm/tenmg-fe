@@ -4,14 +4,15 @@ import Select from 'react-select';
 import { useCallback, useEffect, useState } from 'react'
 import { Button, Flex, FormControl, FormLabel, Input, Radio, RadioGroup, Stack, Switch, Text } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
-import { NextAuthUserSession, ProductResponseData } from '@/types';
+import { DiscountDataType, NextAuthUserSession, ProductResponseData } from '@/types';
 import requestClient from '@/lib/requestClient';
 import { convertArray } from '@/utils/convertSelectArray';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { handleServerErrorMessage } from '@/utils';
+import { generateRandomCoupon, handleServerErrorMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
 import DateComponent from '@/app/(protected)/suppliers/products/_components/DateComponent';
+import { useDebouncedValue } from '@/utils/debounce';
 
 interface OptionType {
   label: string;
@@ -26,9 +27,11 @@ interface IFormInput {
   customerLimit: string;
   startDate?: Date | null;
   endDate?: Date | null;
+  allProduct: boolean;
 }
 
-const EditDiscount = () => {
+const EditDiscount = ({params}: {params: {id: string}}) => {
+
   const navigate = useRouter();
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -37,13 +40,16 @@ const EditDiscount = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEndDate, setIsEndDate] = useState(false);
   const [isStartDate, setIsStartDate] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
   const [products, setProducts] = useState<ProductResponseData>();
-  const [discount, setDiscount] = useState<ProductResponseData>();
+  const [discount, setDiscount] = useState<DiscountDataType>();
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
   const fetchingDiscount = useCallback(async() => {
     try {
       const response = await requestClient({ token: token }).get(
-        `/admin/discount/1`
+        `/admin/discounts/${params?.id}`
       );
       if(response.status === 200){
         setDiscount(response.data.data);
@@ -51,12 +57,12 @@ const EditDiscount = () => {
     } catch (error) {
       console.error(error)
     }
-  },[token]);
+  },[token, params?.id]);
 
   const fetchingProducts = useCallback(async() => {
     try {
       const response = await requestClient({ token: token }).get(
-        `/admin/settings/products`
+        `/admin/settings/products/search?search=${debouncedSearch}`
       );
       if(response.status === 200){
         setProducts(response.data.data);
@@ -64,7 +70,7 @@ const EditDiscount = () => {
     } catch (error) {
       console.error(error)
     }
-  },[token]);
+  },[token, debouncedSearch]);
 
   useEffect(() => {
       if(!token) return;
@@ -78,7 +84,6 @@ const EditDiscount = () => {
     formState: { errors },
     handleSubmit,
     setValue,
-    reset,
     watch
   } = useForm<IFormInput>({
     mode: "onChange",
@@ -89,29 +94,53 @@ const EditDiscount = () => {
     }
   });
 
+
+  useEffect(() => {
+    setValue("applicationMethod", discount?.applicationMethod);
+    setValue("couponCode", discount?.couponCode);
+    setValue("customerLimit", discount?.customerLimit);
+    setValue("applicableProducts", discount?.applicableProducts);
+    setValue("discountAmount", Number(discount?.amount));
+    setValue("discountType", discount?.type);
+    setValue("endDate", discount?.endDate as any);
+    setValue("startDate", discount?.startDate as any);
+    if(discount?.startDate){
+      setIsStartDate(true)
+    }
+    if(discount?.endDate){
+      setIsEndDate(true)
+    }
+  }, [discount])
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    // setIsLoading(true);
-    // try {
-    //   const response = await requestClient({token: token}).post(
-    //     "/admin/discounts",
-    //     data
-    //   )
-    //   if(response.status === 200){
-    //     setIsLoading(false);
-    //     toast.success(response.data.message);
-    //     navigate.push('/admin/discount-code');
-    //   }
-    // } catch (error) {
-    //   setIsLoading(false);
-    //   console.error(error);
-    //   toast.error(handleServerErrorMessage(error));
-    // }
+    setIsLoading(true);
+    try {
+      const response = await requestClient({token: token}).patch(
+        `/admin/discounts/${params?.id}`,
+        data
+      )
+      if(response.status === 200){
+        setIsLoading(false);
+        toast.success(response.data.message);
+        navigate.push('/admin/discount-code');
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
+    }
+  }
+
+  const handleRandomCoupon = () => {
+    const couponCode = generateRandomCoupon();
+    setValue("couponCode", couponCode);
   }
 
   const [selectedOption, setSelectedOption] = useState([]);
-
   const discountType = watch("discountType");
-  const allProducts = products?.data && [{id: "", name: "All Products"}, ...products?.data]
+  const applicableProducts = watch("applicableProducts");
+  const defaultProductIds = convertArray(applicableProducts);
+  const allProducts = products?.data && [{id: "", name: "All Products"},{...defaultProductIds},...products?.data]
   const productOptions = convertArray(allProducts);
 
   // Disable all options except the selected ones when "All Products" is selected
@@ -119,6 +148,7 @@ const EditDiscount = () => {
     ...opt,
     isDisabled: selectedOption.some((sel) => sel.label === "All Products") && opt.label !== "All Products",
   }));
+
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -133,12 +163,12 @@ const EditDiscount = () => {
                     rules={{ required: 'Method is required' }}
                     render={({ field: { onChange, value } }) => {
                         return(
-                            <RadioGroup onChange={onChange} value={value}>
-                                <Stack gap={4}>
-                                    <Radio value='COUPON'>Discount Code</Radio>
-                                    <Radio value='AUTOMATIC'>Automatic Discount</Radio>
-                                </Stack>
-                            </RadioGroup>
+                        <RadioGroup onChange={onChange} value={value}>
+                          <Stack gap={4}>
+                            <Radio value='COUPON'>Discount Code</Radio>
+                            <Radio value='AUTOMATIC'>Automatic Discount</Radio>
+                          </Stack>
+                        </RadioGroup>
                         )
                     }}
                     />
@@ -149,23 +179,28 @@ const EditDiscount = () => {
                     <FormLabel className='font-medium text-lg'>Coupon Code</FormLabel>
                     <Flex gap={3}>
                         <Input 
-                            id="couponCode"
-                            name="couponCode"
-                            placeholder="e.g 10mg code" 
-                            type="text"
-                            height={"48px"}
-                            isInvalid={!!errors.couponCode}
-                            _focus={{
-                                border: !!errors.couponCode ? "red.300" : "border-gray-300",
-                            }}
-                            {...register("couponCode", {
-                                required: true,
-                            })}
+                          id="couponCode"
+                          name="couponCode"
+                          placeholder="e.g 10mg code" 
+                          type="text"
+                          height={"48px"}
+                          isInvalid={!!errors.couponCode}
+                          _focus={{
+                            border: !!errors.couponCode ? "red.300" : "border-gray-300",
+                          }}
+                          {...register("couponCode", {
+                            required: true,
+                          })}
                         />
-                        <button className='text-medium bg-black p-3 text-white rounded-md w-36'>Generate</button>
+                        <button 
+                        type='button'
+                        onClick={handleRandomCoupon} 
+                        className='text-medium bg-black p-3 text-white rounded-md w-36'>
+                          Generate
+                        </button>
                     </Flex>
                     <p className='text-sm text-gray-600 mt-1'>
-                        Customer must enter this code at checkout.
+                      Customer must enter this code at checkout.
                     </p>
                 </FormControl>
             </Stack>
@@ -184,19 +219,19 @@ const EditDiscount = () => {
                             Fixed Amount
                         </p>
                         <Input 
-                            id="discountAmount"
-                            name="discountAmount"
-                            placeholder="e.g 10mg code" 
-                            type="text"
-                            height={"48px"}
-                            flex={1}
-                            isInvalid={!!errors.discountAmount}
-                            _focus={{
-                                border: !!errors.discountAmount ? "red.300" : "border-gray-300",
-                            }}
-                            {...register("discountAmount", {
-                                required: true,
-                            })}
+                          id="discountAmount"
+                          name="discountAmount"
+                          placeholder="e.g 10mg code" 
+                          type="text"
+                          height={"48px"}
+                          flex={1}
+                          isInvalid={!!errors.discountAmount}
+                          _focus={{
+                              border: !!errors.discountAmount ? "red.300" : "border-gray-300",
+                          }}
+                          {...register("discountAmount", {
+                              required: true,
+                          })}
                         />
                     </Flex>
                 </FormControl>
@@ -204,35 +239,46 @@ const EditDiscount = () => {
             <Stack mt={5}>
                 <FormControl>
                     <FormLabel className='font-medium text-lg'>Applies to</FormLabel>
-                    <Controller 
-                    control={control}
-                    name='applicableProducts'
-                    rules={{ required: 'Applied to product is required' }}
-                    render={({ field: { onChange, value } }) => {
+                    {
+                      !!updatedOptions &&
+                      <Controller 
+                      control={control}
+                      name='applicableProducts'
+                      rules={{ required: 'Applied to product is required' }}
+                      render={({ field: {value} }) => {
+                        const defaultProducts = convertArray(value);
                         return(
-                            <Select
-                                isClearable={true}
-                                isSearchable={true}
-                                isMulti
-                                options={updatedOptions}
-                                placeholder={"Select Products"}
-                                closeMenuOnSelect={false}
-                                onChange={(selectedOption: OptionType[]) => {
-                                    setSelectedOption([]);
-                                    const productIds = selectedOption.flatMap((item: OptionType) => {
-                                        if(item.label === "All Products"){
-                                            setSelectedOption([item]);
-                                            return products?.data.map((product) => product.id) ;
-                                        } else {
-                                            return [item.value];
-                                        }
-                                    });
-                                    setValue("applicableProducts", productIds);
-                                }}
-                            />
+                          <Select
+                          isClearable={true}
+                          isSearchable={true}
+                          isMulti
+                          options={updatedOptions}
+                          placeholder={"Select Products"}
+                          closeMenuOnSelect={false}
+                          defaultValue={defaultProducts}
+                          // defaultValue={updatedOptions?.filter(
+                          //   (item: any) => item?.value === 83
+                          // )}
+                          onChange={(selectedOption: OptionType[]) => {
+                            setSelectedOption([]);
+                            const productIds = selectedOption.flatMap((item: OptionType) => {
+                              if(item.label === "All Products"){
+                                setSelectedOption([item]);
+                                setValue("allProduct", true);
+                                return [item.value] ;
+                              } else {
+                                setValue("allProduct", false);
+                                return [item.value];
+                              }
+                            });
+                            setValue("applicableProducts", productIds);
+                          }}
+                          onInputChange={(inputValue) => setGlobalFilter(inputValue) }
+                        />
                         )
-                    }}
-                    />
+                      }}
+                      />
+                    }
                 </FormControl>
             </Stack>
             <Stack mt={5}>
@@ -244,26 +290,26 @@ const EditDiscount = () => {
                     rules={{ required: 'Customer limit is required' }}
                     render={({ field: { onChange, value } }) => {
                         return(
-                            <RadioGroup mt={4} onChange={onChange} value={value}>
-                                <Stack gap={4}>
-                                    <Radio value='LIMITED'>
-                                        <Stack gap={0.5}>
-                                            <Text fontWeight={600}>Limit one per customer</Text>
-                                            <Text fontSize={"14px"} color={"gray.500"}>
-                                                Discount can be used once per email address
-                                            </Text>
-                                        </Stack>
-                                    </Radio>
-                                    <Radio value='UNLIMITED'>
-                                        <Stack gap={0.5}>
-                                            <Text fontWeight={600}>Unlimited offer</Text>
-                                            <Text fontSize={"14px"} color={"gray.500"}>
-                                                Discount can be used once per email address
-                                            </Text>
-                                        </Stack>
-                                    </Radio>
-                                </Stack>
-                            </RadioGroup>
+                        <RadioGroup mt={4} onChange={onChange} value={value}>
+                            <Stack gap={4}>
+                                <Radio value='LIMITED'>
+                                    <Stack gap={0.5}>
+                                        <Text fontWeight={600}>Limit one per customer</Text>
+                                        <Text fontSize={"14px"} color={"gray.500"}>
+                                            Discount can be used once per email address
+                                        </Text>
+                                    </Stack>
+                                </Radio>
+                                <Radio value='UNLIMITED'>
+                                    <Stack gap={0.5}>
+                                        <Text fontWeight={600}>Unlimited offer</Text>
+                                        <Text fontSize={"14px"} color={"gray.500"}>
+                                            Discount can be used once per email address
+                                        </Text>
+                                    </Stack>
+                                </Radio>
+                            </Stack>
+                        </RadioGroup>
                         )
                     }}
                     />
@@ -282,19 +328,19 @@ const EditDiscount = () => {
                                     <Stack gap={0.5}>
                                         <Text fontWeight={600}>Discount has a start date?</Text>
                                         <Text fontSize={"14px"} color={"gray.500"}>
-                                            Schedule the discount to activate in the future
+                                          Schedule the discount to activate in the future
                                         </Text>
                                     </Stack>
                                     <Switch size={"md"} onChange={(e) =>  setIsStartDate(e.target.checked)}/>
                                 </Flex>
                                 {
-                                    isStartDate && 
-                                    <DateComponent
-                                    startDate={field.value}
-                                    setStartDate={field.onChange}
-                                    // isMinDate
-                                    // isMaxDate
-                                    />
+                                  (isStartDate) && 
+                                  <DateComponent
+                                  startDate={field.value}
+                                  setStartDate={field.onChange}
+                                  // isMinDate
+                                  // isMaxDate
+                                  />
                                 }
                             </Stack>
                         )
@@ -319,14 +365,14 @@ const EditDiscount = () => {
                                     <Switch size={"md"} onChange={(e) =>  setIsEndDate(e.target.checked)}/>
                                 </Flex>
                                 {
-                                    isEndDate &&
-                                    <DateComponent
-                                        startDate={field.value}
-                                        setStartDate={field.onChange}
-                                        minDate={watch("startDate")}
-                                        // isMaxDate
-                                        isMinDate
-                                    />
+                                  (isEndDate) &&
+                                  <DateComponent
+                                    startDate={field.value}
+                                    setStartDate={field.onChange}
+                                    minDate={watch("startDate")}
+                                    // isMaxDate
+                                    isMinDate
+                                  />
                                 }
                             </Stack>
                         )
@@ -340,7 +386,7 @@ const EditDiscount = () => {
                 variant={"outline"}
                 onClick={() => navigate.back()}
                 >
-                    Cancel
+                  Cancel
                 </Button>
                 <Button 
                 isLoading={isLoading} 
@@ -349,7 +395,7 @@ const EditDiscount = () => {
                 bg={"primary.500"}
                 width={"158px"}
                 >
-                    Publish Code
+                  Save Changes
                 </Button>
             </Flex>
         </form>
