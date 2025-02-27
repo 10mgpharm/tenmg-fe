@@ -29,6 +29,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
+// import Pagination from "../../products/_components/Pagination";
 
 const BrandSetup = (
   {data, type, refetchingTypes, loading, searchWord, setSearchWord, meta, setPageCount}: 
@@ -105,9 +106,9 @@ const BrandSetup = (
   return (
     <Stack flex={1}>
       <Flex justify={"space-between"}>
-        <InputGroup size='md' width={"20rem"} shadow={"sm"}>
+        <InputGroup size="md" width={"20rem"} shadow={"sm"}>
           <InputLeftElement pl={1}>
-            <Icon as={Search} className="w-5 h-5"/>
+            <Icon as={Search} className="w-5 h-5" />
           </InputLeftElement>
           <Input
             type="text"
@@ -117,18 +118,26 @@ const BrandSetup = (
             placeholder={`Search for a ${type?.toLocaleLowerCase()}`}
           />
         </InputGroup>
-        <Button h="38px" onClick={onOpen} bg={"primary.500"}>Add New {type}</Button>
+        <Button h="38px" onClick={onOpen} bg={"primary.500"}>
+          Add New {type}
+        </Button>
       </Flex>
-      {
-        loading ? <Loader /> :
-        data?.length === 0 
-        ? <EmptyOrder 
-          heading={`No ${type} Yet`} 
+      {loading ? (
+        <Loader />
+      ) : data?.length === 0 ? (
+        <EmptyOrder
+          heading={`No ${type} Yet`}
           content={`You currently have no ${type}. All ${type} will appear here.`}
-        /> : 
+        />
+      ) : (
         <Stack minH={"500px"} mt={5}>
           <TableContainer rounded={"md"}>
-            <Table variant='simple' border={"1px solid #EAECF0"} shadow={"sm"} rounded={"md"}>
+            <Table
+              variant="simple"
+              border={"1px solid #EAECF0"}
+              shadow={"sm"}
+              rounded={"md"}
+            >
               <Thead bg={"#E8F1F8"}>
                 <Tr color={"primary.500"} roundedTop={"md"}>
                   <Th>Name</Th>
@@ -139,72 +148,79 @@ const BrandSetup = (
                 </Tr>
               </Thead>
               <Tbody>
-                {
-                  data?.map((item: MedicationData) => (
-                    <Tr key={item.id}>
-                      
-                      <Td py={1} lineHeight={3} fontSize={"14px"}>{item.name}</Td>
-                      <Td py={1} lineHeight={3} fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
-                      <Td py={1} lineHeight={3} fontSize={"13px"}>{item.status}</Td>
-                      <Td py={1} lineHeight={3} fontSize={"14px"}>{item.createdAt}</Td>
-                      <Td py={1} lineHeight={3} fontSize={"14px"}>
-                        <Flex gap={2}>
-                          <Button 
-                            onClick={() => {
+                {data?.map((item: MedicationData) => (
+                  <Tr key={item.id}>
+                    <Td py={1} lineHeight={3} fontSize={"14px"}>
+                      {item.name}
+                    </Td>
+                    <Td py={1} lineHeight={3} fontSize={"14px"}>
+                      {item.active ? "Yes" : "No"}
+                    </Td>
+                    <Td py={1} lineHeight={3} fontSize={"13px"}>
+                      {item.status}
+                    </Td>
+                    <Td py={1} lineHeight={3} fontSize={"14px"}>
+                      {item.createdAt}
+                    </Td>
+                    <Td py={1} lineHeight={3} fontSize={"14px"}>
+                      <Flex gap={2}>
+                        <Button
+                          onClick={() => {
                             setSelectedItem(item);
                             onEditOpen();
-                          }} 
-                          fontSize={"14px"} 
+                          }}
+                          fontSize={"14px"}
                           cursor={"pointer"}
-                          variant={"unstyled"} 
-                          color={"gray.500"}>
-                            Edit
-                          </Button>
-                          <Button 
-                          variant="unstyled" 
-                          fontSize={"14px"} 
+                          variant={"unstyled"}
+                          color={"gray.500"}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="unstyled"
+                          fontSize={"14px"}
                           color={"red.600"}
                           cursor={"pointer"}
                           onClick={() => {
-                            setSelectedId(item.id)
+                            setSelectedId(item.id);
                             onDeleteOpen();
                           }}
-                          >
-                            Delete
-                          </Button>
-                        </Flex>
-                      </Td>
-                    </Tr>
-                  ))
-                }
+                        >
+                          Delete
+                        </Button>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
-            <Pagination meta={metadata} setPageCount={setPageCount}/>
+            {/* <Pagination meta={orders?.meta} setPageCount={setPageCount} /> */}
+            <Pagination meta={metadata} setPageCount={setPageCount} />
           </TableContainer>
         </Stack>
-      }
-      <AddNewBrands 
-      isOpen={isOpen}
-      onClose={onClose} 
-      type={type}
-      refetchingTypes={refetchingTypes}
+      )}
+      <AddNewBrands
+        isOpen={isOpen}
+        onClose={onClose}
+        type={type}
+        refetchingTypes={refetchingTypes}
       />
-      <EditBrands 
-      isOpen={isEditOpen} 
-      onClose={onEditClose} 
-      brand={selectedItem}
-      type={type} 
-      refetchingTypes={refetchingTypes}
+      <EditBrands
+        isOpen={isEditOpen}
+        onClose={onEditClose}
+        brand={selectedItem}
+        type={type}
+        refetchingTypes={refetchingTypes}
       />
-      <DeleteMedication 
-      isOpen={isDeleteOpen}
-      onClose={onDeleteClose}
-      title={type}
-      isLoading={isLoading}
-      handleDelete={handleDelete}
+      <DeleteMedication
+        isOpen={isDeleteOpen}
+        onClose={onDeleteClose}
+        title={type}
+        isLoading={isLoading}
+        handleDelete={handleDelete}
       />
     </Stack>
-  )
+  );
 }
 
 export default BrandSetup;
