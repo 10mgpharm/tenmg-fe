@@ -9,6 +9,8 @@ import {
     ResponseDto,
     VerifyAccountNumberPayload,
     VerifyBankAccountResponseDto,
+    BankMandateDto,
+    CreateBankMandatePayload,
 } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
 
@@ -71,6 +73,35 @@ export async function getDefaultBankAccount(token: string, customerIdentifier: s
     try {
         const response = await requestClient({ token })
             .get<ResponseDto<BankAccountDto>>(`${CLIENT_BASE_URL}/banks/default/${customerIdentifier}`);
+        return response.data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: handleServerErrorMessage(error)
+        }
+    }
+}
+
+export async function createBankMandate(token: string, payload: CreateBankMandatePayload): Promise<ResponseDto<BankMandateDto>> {
+    try {
+        console.log('CreateBankMandate', payload)
+        const response = await requestClient({ token })
+            .post<ResponseDto<BankMandateDto>>(`${CLIENT_BASE_URL}/applications/mandate/create-mandate`, payload);
+            console.log(response.data)
+        return response.data;
+    } catch (error) {
+        console.log(error)
+        return {
+            status: 'error',
+            message: handleServerErrorMessage(error)
+        }
+    }
+}
+
+export async function getBankMandate(token: string, reference: string): Promise<ResponseDto<BankMandateDto>> {
+    try {
+        const response = await requestClient({ token })
+            .get<ResponseDto<BankMandateDto>>(`${CLIENT_BASE_URL}/applications/mandate/verify/${reference}`);
         return response.data;
     } catch (error) {
         return {

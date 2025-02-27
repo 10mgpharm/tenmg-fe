@@ -90,3 +90,23 @@ export interface BankAccountDto {
     bankName: string;
     bvn?: string;
 }
+
+export interface CreateBankMandatePayload {
+    duration: string;
+    loanApplicationIdentifier: string;
+    bank: string;
+    customerAccountName: string;
+    customerAccountNumber: string;
+    customerBankCode: string;
+}
+
+export interface BankMandateDto {
+    duration?: string;
+    reference: string;
+    responseDescription?: string;
+    startDate?: string
+    status: string;
+    amount: number;
+    description?: string;
+    endDate?: string;
+}
