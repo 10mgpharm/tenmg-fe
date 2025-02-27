@@ -151,32 +151,38 @@ export default function Page() {
 
   return (
     <div>
-      <div className="w-full flex justify-between p-5 ">
-        <div className="space-y-5">
-          <div>
-            <h3 className="font-semibold text-lg">Personal Information</h3>
-            <Text fontSize={"14px"} color={"gray.500"}>
-              Update your personal details.
-            </Text>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="w-full flex justify-between py-5 ">
+          <div className="space-y-5">
+            <div>
+              <h3 className="font-semibold text-lg">Personal Information</h3>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Update your personal details.
+              </Text>
+            </div>
+
+            <ProfileImageUploader
+              filePreview={filePreview}
+              sessionData={sessionData}
+              handleFileChange={handleFileChange}
+              uploadProfileImage={uploadProfileImage}
+              isUploading={isUploading}
+              isShowUpload={isShowUpload}
+              fileError={fileError}
+            />
           </div>
-
-          <ProfileImageUploader
-            filePreview={filePreview}
-            sessionData={sessionData}
-            handleFileChange={handleFileChange}
-            uploadProfileImage={uploadProfileImage}
-            isUploading={isUploading}
-            isShowUpload={isShowUpload}
-            fileError={fileError}
-          />
+          <Button
+            size={"sm"}
+            variant={"solid"}
+            colorScheme={"primary"}
+            type="submit"
+            isLoading={isLoading}
+            loadingText="Submitting..."
+          >
+            Save Changes
+          </Button>
         </div>
-        <Button size={"sm"} variant={"solid"} colorScheme={"primary"}>
-          Save Changes
-        </Button>
-      </div>
-
-      <div className="p-5 rounded-lg bg-white/70 border border-slate-200">
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="p-5 rounded-lg bg-white/70 border border-slate-200 space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <FormLabel>Name</FormLabel>
             <FormControl>
@@ -197,6 +203,7 @@ export default function Page() {
             <FormControl className="col-span-2">
               <Input
                 type="email"
+                isDisabled
                 placeholder={"olivia@untitledui.com"}
                 {...register("email", {
                   required: "email is required",
@@ -204,8 +211,8 @@ export default function Page() {
               />
             </FormControl>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
 
       <div className="space-y-5 w-full flex justify-between p-5 ">
         <div>
@@ -214,9 +221,6 @@ export default function Page() {
             Manage your password and 2FA
           </Text>
         </div>
-        <Button size={"sm"} variant={"solid"} colorScheme={"primary"}>
-          Save Changes
-        </Button>
       </div>
       <div className="p-5 rounded-lg bg-white/70 border border-slate-200">
         <div className="space-y-5 w-full flex justify-between p-5 ">
