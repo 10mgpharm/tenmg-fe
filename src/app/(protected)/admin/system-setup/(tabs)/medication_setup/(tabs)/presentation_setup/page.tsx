@@ -39,6 +39,11 @@ const PresentationSetup = () => {
         if (!token) return;
         fetchingPresentationTypes();
     }, [token, fetchingPresentationTypes]);
+
+    const metaData = {
+        "currentPage": presentationData?.currentPage,
+        "links": presentationData?.links
+    }
     
   return (
     <BrandSetup
@@ -47,7 +52,7 @@ const PresentationSetup = () => {
         loading={presentationLoading}
         searchWord={searchWord}
         setSearchWord={setSearchWord}
-        meta={presentationData?.links}
+        meta={metaData}
         setPageCount={setPageCount}
         refetchingTypes={fetchingPresentationTypes}
     />

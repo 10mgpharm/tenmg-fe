@@ -58,8 +58,7 @@ const BrandSetup = (
     onClose: onDeleteClose, 
     onOpen: onDeleteOpen 
   } = useDisclosure();
-
-  // const [inputValue, setInputValue] = useState<string>("");
+  
   const [selectedId, setSelectedId] = useState<number>();
   const [selectedItem, setSelectedItem] = useState<MedicationData>();
 
@@ -96,10 +95,6 @@ const BrandSetup = (
       console.error(error);
       toast.error(handleServerErrorMessage(error));
     }
-  }
-
-  const metadata = {
-    "links": meta
   }
 
   return (
@@ -179,7 +174,7 @@ const BrandSetup = (
                 }
               </Tbody>
             </Table>
-            <Pagination meta={metadata} setPageCount={setPageCount}/>
+            <Pagination meta={meta} setPageCount={setPageCount}/>
           </TableContainer>
         </Stack>
       }

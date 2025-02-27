@@ -254,3 +254,29 @@ export const LoanByUser = [
     {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
     {loanId: "10MG-2002", name: "Olivia Baker", amount: "₦1,300,000", date: "Sept 23, 2024", status: "Closed", repaymentStatus: "Complete"},
 ]
+export const notificationsMsgs = [
+    {
+        id: 1,
+        message: 'Your order for 500 units of paracetamol has been confirmed. Please ensure shipment by 05-12-2024.',
+        time: '9 hours ago',
+        type: 'payment'
+    },
+    {
+        id: 2,
+        message: 'Your order for 500 units of paracetamol has been confirmed. Please ensure shipment by 05-12-2024.',
+        time: '9 hours ago',
+        type: 'order'
+    },
+    {
+      id: 3,
+      message: 'Payment for your last shipment has been received. Thank you for your timely delivery.',
+      time: '9 hours ago',
+      type: 'payment'
+    },
+    {
+        id: 4,
+        message: 'Your current stock level for panadol is critically low. Please replenish your inventory as soon as possible.',
+        time: '9 hours ago',
+        type: 'stock'
+    }
+];

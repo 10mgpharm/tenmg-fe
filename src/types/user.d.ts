@@ -257,6 +257,7 @@ export interface MedicationData {
 export interface MedicationResponseData {
   data: MedicationData[];
   links: any;
+  currentPage?: number;
   meta: MetaDataProp;
 }
 
