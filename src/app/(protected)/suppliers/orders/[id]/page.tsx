@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
 import { NextAuthUserSession, OrderData } from '@/types';
 import { convertDate } from '@/utils/formatDate';
-import { Avatar } from '@chakra-ui/react';
+import { Avatar, Flex, Spinner } from '@chakra-ui/react';
 import { formatAmountString } from '@/utils';
 
 const OrderDetails = ({params}: {params : any}) => {
@@ -41,6 +41,14 @@ const OrderDetails = ({params}: {params : any}) => {
     fetchOrderDetail();
   },[fetchOrderDetail, token]);
 
+  if(loading){
+    return(
+      <Flex justify="center" align="center" height="200px">
+        <Spinner size="xl" />
+      </Flex>
+    )
+  }
+
   return (
     <div className=" p-8">
       <div className="flex items-center mb-5">
@@ -57,7 +65,7 @@ const OrderDetails = ({params}: {params : any}) => {
               </div>  
               <div className="flex items-center gap-3">
                 <div className='border px-2 py-1 rounded-md text-xs'>{order?.status}</div>
-                <div className="border px-2 py-1 rounded-md text-xs">Processing</div>
+                {/* <div className="border px-2 py-1 rounded-md text-xs">Processing</div> */}
               </div>  
             </div>
             <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-3" />
@@ -67,23 +75,31 @@ const OrderDetails = ({params}: {params : any}) => {
             </div>
           </div>
           <div className="w-full border rounded-lg shadow-sm p-4">
-            <h2 className='text-base font-semibold'>Order Items: 3</h2>
+            <h2 className='text-base font-semibold'>Order Items: {order?.items?.length}</h2>
             <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
             <table className='min-w-full divide-y table-auto px-3'>
               <tbody>
                 {order?.items?.map((item: any) => (
                   <tr key={item.id}>
-                    <td className='flex items-center gap-2'>
-                      <Image 
-                      src={item?.product?.thumbnailFile} 
-                      width={"60"} 
-                      height={"60"} 
-                      alt="img" 
-                      className="h-[30px] w-[30px] object-cover rounded-full" 
-                      />
-                      <p className='text-sm font-medium py-3'>{item?.product?.name}</p>
+                    <td className=''>
+                      <div className="">
+                        <div className='flex items-center gap-2'>
+                          <Image 
+                          src={item?.product?.thumbnailFile} 
+                          width={"60"} 
+                          height={"60"} 
+                          alt="img" 
+                          className="h-[30px] w-[30px] object-cover rounded-full" 
+                          />
+                          <p className='text-sm font-medium py-3'>{item?.product?.name}</p>
+                        </div>
+                        <p className='text-xs font-medium'>
+                          <span className='bg-green-100 px-0.5 rounded-sm max-w-max mr-1'>Commission:</span>
+                          <span className='font-semibold'>₦{formatAmountString(item?.tenmgCommission)}</span>
+                        </p>
+                      </div>
                     </td>
-                    <td className='text-sm font-medium'>₦{item?.discountPrice}</td>
+                    <td className='text-sm font-medium'>₦{item?.discountPrice/item?.quantity}</td>
                     <td className='text-sm font-medium'>x{item?.quantity}</td>
                     <td className='text-sm font-medium text-right'>₦{item.discountPrice}</td>
                   </tr>
@@ -113,7 +129,7 @@ const OrderDetails = ({params}: {params : any}) => {
             </div>
             <div className="flex items-center justify-between py-1">
               <p className="font-semibold text-sm">Total for Supplier</p>
-              <p className="font-semibold text-sm">₦{formatAmountString(order?.grandTotal)}</p>
+              <p className="font-semibold text-sm">₦{formatAmountString(Number(order?.orderTotal) - order?.totalTenmgComission)}</p>
             </div>
           </div>
         </div>
