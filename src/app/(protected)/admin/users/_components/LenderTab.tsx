@@ -43,6 +43,7 @@ import { ColumsLenderFN } from "./tableLender";
 import ModalWrapper from "@/app/(protected)/suppliers/_components/ModalWrapper";
 import { ActionType } from "@/constants";
 import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
+import ViewUserModal from "./ViewUserModal";
 
 const LenderTab = ({
   data,
@@ -252,37 +253,42 @@ const LenderTab = ({
     actionType={actionType}
     onConfirm={() => handleStatusToggle(actionType)}
   />
+  <ViewUserModal
+    isOpen={isOpenView}
+    onClose={onCloseView}
+    id={userId}
+  />
     <ModalWrapper
-        isOpen={isOpenDelete} 
-        onClose={onCloseDelete}
-        title="Remove Lender"
-        >
-            <form onSubmit={(e) => handleRemove(e)} className="mb-8">
-                <FormControl>
-                    <FormLabel>Enter reason for removal</FormLabel>
-                    <Textarea onChange={(e) => setReason(e.target.value) } />
-                </FormControl>
-                <div className="flex justify-end items-center gap-3 mt-8">
-                    <Button 
-                    variant={"outline"} 
-                    type="button"
-                    className='cursor-pointer' 
-                    onClick={onCloseDelete}>
-                      Cancel
-                    </Button>
-                    <Button 
-                    isLoading={isLoading}
-                    loadingText={"Submitting..."}
-                    type="submit"
-                    bg={"red.500"}
-                    _hover={{background: "red.300"}}
-                    >
-                      Remove Lender
-                    </Button>
-                </div>
-            </form>
-        </ModalWrapper>
-    </div>
+      isOpen={isOpenDelete} 
+      onClose={onCloseDelete}
+      title="Remove Lender"
+      >
+        <form onSubmit={(e) => handleRemove(e)} className="mb-8">
+            <FormControl>
+                <FormLabel>Enter reason for removal</FormLabel>
+                <Textarea onChange={(e) => setReason(e.target.value) } />
+            </FormControl>
+            <div className="flex justify-end items-center gap-3 mt-8">
+                <Button 
+                variant={"outline"} 
+                type="button"
+                className='cursor-pointer' 
+                onClick={onCloseDelete}>
+                  Cancel
+                </Button>
+                <Button 
+                isLoading={isLoading}
+                loadingText={"Submitting..."}
+                type="submit"
+                bg={"red.500"}
+                _hover={{background: "red.300"}}
+                >
+                  Remove Lender
+                </Button>
+            </div>
+        </form>
+    </ModalWrapper>
+  </div>
   );
 };
 

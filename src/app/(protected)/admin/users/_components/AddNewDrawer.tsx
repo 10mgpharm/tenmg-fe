@@ -43,7 +43,6 @@ const AddNewDrawer = (
     register,
     formState: { errors, isValid },
     handleSubmit,
-    getValues
   } = useForm<IFormInput>({
     mode: "onChange",
   });
@@ -63,12 +62,14 @@ const AddNewDrawer = (
       if (response.status === 200) {
         toast.success(response?.data?.message);
         if(type === 'pharmacy'){
-          fetchTeamUser('pharmacy', 1);
+            fetchTeamUser('pharmacy', 1);
           }else if(type === 'vendor'){
             fetchTeamUser('vendor', 1);
+          }else if(type === "supplier"){
+            fetchTeamUser('supplier', 1);
           }else{
-          fetchTeamUser('supplier', 1);
-        }
+            fetchTeamUser("lender", 1);
+          }
         onClose();
       }
     } catch (error) {

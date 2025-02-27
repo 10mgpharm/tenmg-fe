@@ -4,23 +4,29 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Link from 'next/link';
 
+export interface NotificationProps {
+    id: string;
+    readAt: string | null;
+    createdAt: string;
+    data: {
+        message: string;
+    } 
+}
 const NotificationModal = (
     { notificationsMsgs, route }: 
-    { notificationsMsgs: any, route: string}
+    { notificationsMsgs: NotificationProps[], route: string}
 ) => {
   return (
-    <div >
-        <div className="flex items-center justify-between px-4">
+    <div>
+        <div className="flex items-center justify-between px-5">
             <p className='font-bold text-lg'>Notifications</p>
             <Link
                 href={route}
                 className='text-sm font-semibold cursor-pointer text-primary-600'
-
             >
                 View all
             </Link>
         </div>
-
         {notificationsMsgs?.length === 0 ? (
            <div className="flex flex-col items-center justify-center mt-24 text-center">
                 <IoIosNotifications
@@ -38,9 +44,14 @@ const NotificationModal = (
                   key={notification?.id}
                   className="flex items-start border-b border-gray-200  mt-3"
                 >
-                    <div className='flex ml-4'>
+                    <div className='flex gap-3 px-5'>
                         <div>
-                            {notification?.type ===
+                            <div className="p-1 bg-blue-100 text-blue-600 rounded-full">
+                                <IoMdNotificationsOutline
+                                    className="w-6 h-6 cursor-pointer"
+                                />
+                            </div>
+                            {/* {notification?.type ===
                                 "payment" ? <div className="p-1 bg-blue-100 text-blue-600 rounded-full">
                                             <IoMdNotificationsOutline
                                                 className="w-5 h-5 cursor-pointer"
@@ -63,11 +74,11 @@ const NotificationModal = (
                                                 className="w-5 h-5 cursor-pointer"
                                             />
                                         </div>
-                            }
+                            } */}
                         </div>
-                        <div>
-                            <p className="font-normal text-sm px-4 leading-6 text-[#101828]">{notification?.message}</p>
-                            <p className="text-sm text-gray-500 my-2 px-4">{notification?.time}</p>
+                        <div className="space-y-1 mb-2">
+                            <p className="font-medium text-sm leading-6 text-[#101828]">{notification?.data?.message}</p>
+                            <p className="text-sm text-gray-400">{notification?.createdAt}</p>
                         </div>
                     </div>
                   </div>
