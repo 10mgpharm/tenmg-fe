@@ -40,6 +40,11 @@ const MeasurementSetup = () => {
         fetchingMeasurementTypes();
     }, [token, fetchingMeasurementTypes]);
 
+    const metaData = {
+        "currentPage": measurementData?.currentPage,
+        "links": measurementData?.links
+    }
+
   return (
     <BrandSetup
         data={measurementData?.data}
@@ -47,7 +52,7 @@ const MeasurementSetup = () => {
         loading={loading}
         searchWord={searchWord}
         setSearchWord={setSearchWord}
-        meta={measurementData?.links}
+        meta={metaData}
         setPageCount={setPageCount}
         refetchingTypes={fetchingMeasurementTypes}
     />

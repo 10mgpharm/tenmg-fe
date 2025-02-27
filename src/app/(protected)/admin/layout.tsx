@@ -7,7 +7,6 @@ import { NextAuthUserSession } from "@/types";
 import TopNavBar from "../suppliers/_components/TopNavBar";
 import Footer from "../suppliers/_components/Footer";
 import SideBar from "./_components/SideBar";
-// import { Suspense } from "react";
 
 const appName = config.appName;
 
@@ -28,7 +27,7 @@ export default async function AdminLayout({
 
   return (
     <>
-      <TopNavBar />
+      <TopNavBar route="/admin/notifications"/>
       <SideBar />
       {/* <Suspense fallback={<div>Loading...</div>}> */}
       <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">

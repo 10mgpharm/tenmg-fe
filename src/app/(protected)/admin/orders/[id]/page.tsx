@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
 import { NextAuthUserSession, OrderData } from '@/types';
 import { convertDate } from '@/utils/formatDate';
-import { Avatar } from '@chakra-ui/react';
+import { Avatar, Flex, Spinner } from '@chakra-ui/react';
 import { formatAmountString } from '@/utils';
 
 const OrderDetails = ({params}: {params : any}) => {
@@ -40,6 +40,14 @@ const OrderDetails = ({params}: {params : any}) => {
     if(!token) return;
     fetchOrderDetail();
   },[fetchOrderDetail, token]);
+
+  if(loading){
+    return(
+      <Flex justify="center" align="center" height="200px">
+        <Spinner size="xl" />
+      </Flex>
+    )
+  }
 
   return (
     <div className=" p-8">
@@ -126,7 +134,7 @@ const OrderDetails = ({params}: {params : any}) => {
             </div>
             <div className="flex items-center justify-between py-1">
               <p className="font-semibold text-sm">Total for Supplier</p>
-              <p className="font-semibold text-sm">₦{formatAmountString(order?.grandTotal)}</p>
+              <p className="font-semibold text-sm">₦{formatAmountString(Number(order?.orderTotal) - order?.totalTenmgComission)}</p>
             </div>
           </div>
         </div>

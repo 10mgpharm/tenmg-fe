@@ -1,32 +1,32 @@
 "use client";
 
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Image from "next/image";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
-
-import avatar from "@public/assets/images/Avatar.svg";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import {
   Avatar,
-  Badge,
   FormControl,
   FormLabel,
   Switch,
   Tag,
   TagLabel,
 } from "@chakra-ui/react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { convertLetterCase } from "@/utils";
 import GreetingComponent from "./GreetingComponent";
+import { useEffect, useState } from "react";
+import NotificationModal from "./NotificationModal";
+import requestClient from "@/lib/requestClient";
 
-const TopNavBar = () => {
-  const session = useSession();
-  const data = session.data as NextAuthUserSession;
+const TopNavBar = ({route}: {route: string}) => {
 
   const router = useRouter();
+  const session = useSession();
+  const data = session.data as NextAuthUserSession;
 
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
@@ -69,6 +69,40 @@ const TopNavBar = () => {
     }
   };
 
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+
+  const fetchingData = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await requestClient({ token }).get(
+      `/account/notifications`
+      );
+
+      if (response.status === 200) {
+        setNotifications(response.data?.data?.data || []);
+      } else {
+        setError("Failed to load audit logs. Please try again.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError("An unexpected error occurred while fetching audit logs.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchingData();
+    }
+  }, [token]);
+
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
@@ -99,14 +133,23 @@ const TopNavBar = () => {
             </FormControl>
           )}
           {/* <Badge content="1" color="danger"> */}
-          <button
-            type="button"
-            className="-m-2.5 p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500"
-          >
-            <span className="sr-only">View notifications</span>
-            <BellIcon aria-hidden="true" className="h-6 w-6" />
-          </button>
-          {/* </Badge> */}
+          <Menu as="div">
+            <MenuButton
+              type="button"
+              className="-m-2.5 p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500"
+            >
+              <span className="sr-only">View notifications</span>
+              <BellIcon aria-hidden="true" className="h-6 w-6" />
+            </MenuButton>
+            <MenuItems 
+            transition
+              className="absolute right-5 z-10 mt-5 w-full sm:w-[430px] h-[560px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
+              <NotificationModal 
+                notificationsMsgs={notifications}
+                route={route}
+              />
+            </MenuItems>
+          </Menu>
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">
               <span className="sr-only">Open user menu</span>

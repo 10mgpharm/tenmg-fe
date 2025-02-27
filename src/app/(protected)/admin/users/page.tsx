@@ -27,7 +27,7 @@ import LenderTab from "./_components/LenderTab";
 
 const Users = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [type, setType] = useState<"supplier" | "vendor" | "pharmacy">(
+  const [type, setType] = useState<"supplier" | "vendor" | "pharmacy" | "lender">(
     "supplier"
   );
   const {
@@ -39,6 +39,11 @@ const Users = () => {
     isOpen: isOpenVendor,
     onClose: onCloseVendor,
     onOpen: onOpenVendor,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenLender,
+    onClose: onCloseLender,
+    onOpen: onOpenLender,
   } = useDisclosure();
 
   const session = useSession();
@@ -61,7 +66,7 @@ const Users = () => {
 
   const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
-  const handleCheckboxChange = (status) => {
+  const handleCheckboxChange = (status: any) => {
     setSelectedStatuses((prevStatuses) =>
       prevStatuses.includes(status)
         ? prevStatuses.filter((item) => item !== status)
@@ -217,6 +222,14 @@ const Users = () => {
               >
                 Vendor
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setType("lender");
+                  onOpenLender();
+                }}
+              >
+                Lender
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>
@@ -329,6 +342,12 @@ const Users = () => {
       <AddNewDrawer
         isOpen={isOpenVendor}
         onClose={onCloseVendor}
+        type={type}
+        fetchTeamUser={fetchTeamUser}
+      />
+      <AddNewDrawer
+        isOpen={isOpenLender}
+        onClose={onCloseLender}
         type={type}
         fetchTeamUser={fetchTeamUser}
       />
