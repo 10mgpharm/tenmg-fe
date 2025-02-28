@@ -6,11 +6,15 @@ export default function OrderCardComponent({ product }) {
     <div className='m-4 border border-gray-200 rounded-md p-4'>
       <div className='flex justify-between '>
         <div>
-          <h4 className='text-lg font-medium text-gray-700'>Order #{product?.order_id}</h4>
-          <p className='text-sm  text-gray-500 my-1'>{product?.created_at}</p>
-          <p className={`text-xs  py-1 px-3 rounded-md  w-fit ${product?.status.toLowerCase() === 'completed' ? "text-green-100 bg-green-500" : product?.status.toLowerCase() === "pending" ? "text-amber-100 bg-amber-500" : "text-red-100 bg-red-500"} `}>{product?.status}</p>
+          <h4 className='text-lg font-medium text-gray-700'>Order #{product?.id}</h4>
+          <p className='text-sm  text-gray-500 my-1'>{product?.createdAt.split("T")[0]}</p>
+          {/* <p className={`text-xs  py-1 px-3 rounded-md  w-fit ${product?.status.toLowerCase() === 'completed' ? "text-green-100 bg-green-500" : product?.status.toLowerCase() === "pending" ? "text-amber-100 bg-amber-500" : "text-red-100 bg-red-500"} `}>{product?.status}</p> */}
+
+          <Badge colorScheme={product?.status.toLowerCase() === 'completed' ? "green" : product?.status.toLowerCase() === "pending" ? "warning" : "red"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
+            <span style={{ textTransform: 'capitalize' }}>{product?.status}</span>
+          </Badge>
         </div>
-        <p className='text-lg font-medium text-gray-900'>₦{product?.price}</p>
+        <p className='text-lg font-medium text-gray-900'>₦{product?.orderTotal}</p>
       </div>
       <Divider className='my-3' />
       <div>

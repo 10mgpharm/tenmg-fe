@@ -2,9 +2,9 @@
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession, NotificationProps, NotificationResponseData } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
-import { Button, Divider, Switch } from "@chakra-ui/react"
+import { Divider, Switch } from "@chakra-ui/react"
 import { useSession } from "next-auth/react";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const Notifications = () => {
@@ -19,7 +19,7 @@ const Notifications = () => {
         setLoading(true);
         try {
         const response = await requestClient({ token: token }).get(
-            `/account/notifications`
+            `/account/app-notifications`
         );
         if (response.status === 200) {
             setNotificationData(response.data.data);
@@ -40,7 +40,7 @@ const Notifications = () => {
     if(id){
         try {
             const response = await requestClient({ token: token }).patch(
-                `/account/notifications/${id}/subscription`
+                `/account/app-notifications/${id}/subscription`
             );
             if(response.status === 200){
                 toast.success(response.data?.message)

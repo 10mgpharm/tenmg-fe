@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react'
 import SearchInput from '../../vendors/_components/SearchInput';
 import Pagination from '../_components/Pagination';
+import LenderEmptyScreen from '../_components/EmptyScreen';
 export default function TransactionWalletPage() {
 
   const card_info = [
@@ -71,89 +72,92 @@ export default function TransactionWalletPage() {
         ))}
       </div>
 
+      {false ?
+        <div className='my-8'>
 
-      <div className='my-8'>
-
-        <div className="flex items-center gap-3 my-5">
-          <SearchInput
-            placeholder="Search for Borrower's name/Loan ID"
-          // value={globalFilter}
-          // onChange={(e) => setGlobalFilter(e.target.value)}
-          />
-          <Menu>
-            <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
-              <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters</p>
-            </MenuButton>
-            <MenuList>
-              {/* <MenuItem>By Date</MenuItem>
+          <div className="flex items-center gap-3 my-5">
+            <SearchInput
+              placeholder="Search for Borrower's name/Loan ID"
+            // value={globalFilter}
+            // onChange={(e) => setGlobalFilter(e.target.value)}
+            />
+            <Menu>
+              <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
+                <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters</p>
+              </MenuButton>
+              <MenuList>
+                {/* <MenuItem>By Date</MenuItem>
                 <MenuItem>Credit Score</MenuItem>
                 <MenuItem>Vendor Name</MenuItem> */}
-            </MenuList>
-          </Menu>
-        </div>
+              </MenuList>
+            </Menu>
+          </div>
 
-        <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-          <Table variant='simple'>
-            {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
-            <Thead bg="blue.50">
-              <Tr>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Loan ID</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">{`Borrower's Name`}</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Disbursment Date</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Loan Amount</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Due Date</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Payment Status</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Outstanding Balance</Th>
-                <Th textTransform="initial"
-                  color="primary.500"
-                  fontWeight="500">Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody bg={"white"}>
-              {TH_table_data.map((item, index) => (
-                <Tr key={index} className="border-b border-b-slate-400 text-xs">
-                  <Td className="py-4">{item?.id}</Td>
-                  <Td className="py-4">{item?.name}</Td>
-                  <Td className="py-4">{item?.date}</Td>
-                  <Td className="py-4">{item?.amount}</Td>
-                  <Td className="py-4">{item?.end_date}</Td>
-                  <Td>
-                    {index % 2 === 0 ? (
-                      <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="full">
-                        • <span style={{ textTransform: 'capitalize' }}>Completed</span>
-                      </Badge>
-                    ) : (
-                      <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="full">
-                        • <span style={{ textTransform: 'capitalize' }}>Payment Overdue</span>
-                      </Badge>
-                    )}
-                  </Td>
-                  <Td className="py-4">{item?.outstanding_amount}</Td>
-                  <Td className="py-4">
-                    <WalletDrawer />
-                  </Td>
+          <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
+            <Table variant='simple'>
+              {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
+              <Thead bg="blue.50">
+                <Tr>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">Loan ID</Th>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">{`Borrower's Name`}</Th>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">Disbursment Date</Th>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">Loan Amount</Th>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">Due Date</Th>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">Payment Status</Th>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">Outstanding Balance</Th>
+                  <Th textTransform="initial"
+                    color="primary.500"
+                    fontWeight="500">Action</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <Pagination />
-        </TableContainer>
+              </Thead>
+              <Tbody bg={"white"}>
+                {TH_table_data.map((item, index) => (
+                  <Tr key={index} className="border-b border-b-slate-400 text-xs">
+                    <Td className="py-4">{item?.id}</Td>
+                    <Td className="py-4">{item?.name}</Td>
+                    <Td className="py-4">{item?.date}</Td>
+                    <Td className="py-4">{item?.amount}</Td>
+                    <Td className="py-4">{item?.end_date}</Td>
+                    <Td>
+                      {index % 2 === 0 ? (
+                        <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="full">
+                          • <span style={{ textTransform: 'capitalize' }}>Completed</span>
+                        </Badge>
+                      ) : (
+                        <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="full">
+                          • <span style={{ textTransform: 'capitalize' }}>Payment Overdue</span>
+                        </Badge>
+                      )}
+                    </Td>
+                    <Td className="py-4">{item?.outstanding_amount}</Td>
+                    <Td className="py-4">
+                      <WalletDrawer />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            <Pagination />
+          </TableContainer>
 
-      </div>
+        </div>
+        :
+        <LenderEmptyScreen heading='Nothing to show here yet' content='You don’t have any transactions yet. When you do, they’ll appear here.' />
+      }
     </div>
   )
 }

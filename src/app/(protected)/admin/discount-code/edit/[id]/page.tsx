@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import Select from 'react-select';
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Flex, FormControl, FormLabel, Input, Radio, RadioGroup, Stack, Switch, Text } from '@chakra-ui/react'
+import { Button, Flex, FormControl, FormLabel, Input, Radio, RadioGroup, Stack, Text } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
 import { DiscountDataType, NextAuthUserSession, ProductResponseData } from '@/types';
 import requestClient from '@/lib/requestClient';
@@ -23,10 +23,10 @@ interface IFormInput {
   couponCode: string;
   discountAmount: number;
   discountType: string;
-  applicableProducts: number[];
+  applicableProducts?: number[];
   customerLimit: string;
-  startDate?: Date | null;
-  endDate?: Date | null;
+  startDate: Date | null;
+  endDate: Date | null;
   allProduct: boolean;
 }
 
@@ -38,8 +38,6 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
   const token = sessionData?.user?.token;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isEndDate, setIsEndDate] = useState(false);
-  const [isStartDate, setIsStartDate] = useState(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [products, setProducts] = useState<ProductResponseData>();
   const [discount, setDiscount] = useState<DiscountDataType>();
@@ -94,30 +92,49 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
     }
   });
 
-
   useEffect(() => {
     setValue("applicationMethod", discount?.applicationMethod);
     setValue("couponCode", discount?.couponCode);
     setValue("customerLimit", discount?.customerLimit);
-    setValue("applicableProducts", discount?.applicableProducts);
+    setValue("applicableProducts", discount?.applicableProducts?.length === 0 ? [0] : discount?.applicableProducts);
     setValue("discountAmount", Number(discount?.amount));
     setValue("discountType", discount?.type);
     setValue("endDate", discount?.endDate as any);
     setValue("startDate", discount?.startDate as any);
-    if(discount?.startDate){
-      setIsStartDate(true)
-    }
-    if(discount?.endDate){
-      setIsEndDate(true)
-    }
+    setValue("allProduct", discount?.applicableProducts?.length === 0 ? true : false);
   }, [discount])
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    let formdata: any;
     setIsLoading(true);
+    if(data.allProduct){
+        formdata = {
+          allProduct: true,
+          applicationMethod: data.applicationMethod,
+          couponCode: data.couponCode,
+          discountType: data?.discountType,
+          discountAmount: data?.discountAmount,
+          customerLimit: data?.customerLimit, 
+          startDate: new Date(data.startDate).toLocaleDateString('en-CA'),
+          endDate: new Date(data.endDate).toLocaleDateString('en-CA'),
+        }
+    }else{
+        formdata = {
+            allProduct: false,
+            applicationMethod: data.applicationMethod,
+            applicableProducts: data.applicableProducts,
+            couponCode: data.couponCode,
+            discountType: data?.discountType,
+            discountAmount: data?.discountAmount,
+            customerLimit: data?.customerLimit, 
+            startDate: new Date(data.startDate).toLocaleDateString('en-CA'),
+            endDate: new Date(data.endDate).toLocaleDateString('en-CA'),
+        }
+    }
     try {
       const response = await requestClient({token: token}).patch(
         `/admin/discounts/${params?.id}`,
-        data
+        formdata
       )
       if(response.status === 200){
         setIsLoading(false);
@@ -149,6 +166,11 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
     isDisabled: selectedOption.some((sel) => sel.label === "All Products") && opt.label !== "All Products",
   }));
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  console.log(watch())
+  console.log("erros",errors)
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -246,7 +268,9 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
                       name='applicableProducts'
                       rules={{ required: 'Applied to product is required' }}
                       render={({ field: {value} }) => {
-                        const defaultProducts = convertArray(value);
+                        const defaultProducts = Number(value) === 0 ? 
+                              convertArray([{id: "", name: "All Products"}]) 
+                              : convertArray(value);
                         return(
                           <Select
                           isClearable={true}
@@ -323,26 +347,20 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
                     name='startDate'
                     render={({ field }) => {
                         return(
-                            <Stack>
-                                <Flex justify={"space-between"}>
-                                    <Stack gap={0.5}>
-                                        <Text fontWeight={600}>Discount has a start date?</Text>
-                                        <Text fontSize={"14px"} color={"gray.500"}>
-                                          Schedule the discount to activate in the future
-                                        </Text>
-                                    </Stack>
-                                    <Switch size={"md"} onChange={(e) =>  setIsStartDate(e.target.checked)}/>
-                                </Flex>
-                                {
-                                  (isStartDate) && 
-                                  <DateComponent
-                                  startDate={field.value}
-                                  setStartDate={field.onChange}
-                                  // isMinDate
-                                  // isMaxDate
-                                  />
-                                }
+                          <Stack>
+                            <Stack gap={0.5}>
+                              <Text fontWeight={600}>Discount Start Date</Text>
+                              {/* <Text fontSize={"14px"} color={"gray.500"}>
+                                Schedule the discount to activate in the future
+                              </Text> */}
                             </Stack>
+                            <DateComponent
+                            startDate={field.value}
+                            setStartDate={field.onChange}
+                            isMinDate
+                            minDate={tomorrow}
+                            />
+                          </Stack>
                         )
                     }}
                     />
@@ -355,25 +373,19 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
                     render={({ field }) => {
                         return(
                             <Stack>
-                                <Flex justify={"space-between"}>
-                                    <Stack gap={0.5}>
-                                        <Text fontWeight={600}>Discount has a expiry date?</Text>
-                                        <Text fontSize={"14px"} color={"gray.500"}>
-                                            Schedule the discount to deactivate in the future
-                                        </Text>
-                                    </Stack>
-                                    <Switch size={"md"} onChange={(e) =>  setIsEndDate(e.target.checked)}/>
-                                </Flex>
-                                {
-                                  (isEndDate) &&
-                                  <DateComponent
-                                    startDate={field.value}
-                                    setStartDate={field.onChange}
-                                    minDate={watch("startDate")}
-                                    // isMaxDate
-                                    isMinDate
-                                  />
-                                }
+                              <Stack gap={0.5}>
+                                <Text fontWeight={600}>Discount Expiry Date</Text>
+                                {/* <Text fontSize={"14px"} color={"gray.500"}>
+                                    Schedule the discount to deactivate in the future
+                                </Text> */}
+                              </Stack>
+                              <DateComponent
+                                startDate={field.value}
+                                setStartDate={field.onChange}
+                                minDate={watch("startDate")}
+                                // isMaxDate
+                                isMinDate
+                              />
                             </Stack>
                         )
                     }}
