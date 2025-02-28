@@ -1,13 +1,14 @@
 'use client';
 
 import { ApplicationDto, BankAccountDto, BankMandateDto, BusinessDto, CustomerDto } from '@/types';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import StepOneConsent from './StepOneConsent';
 import StepTwoCheckingEligibility from './StepTwoCheckingElegibility';
 import StepThreeApplicationForm from './StepThreeApplicationForm';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import StepFourBankForm from './StepFourBankForm';
 import StepFiveMandateScreen from './StepFiveMandateScreen';
+import SuccessScreen from './SuccessScreen';
 
 interface Props {
     business: BusinessDto;
@@ -29,6 +30,7 @@ interface IFormInput {
 
 export default function ApplicationWidget({ business, customer, application, reference, token }: Props) {
     const [activeStep, setActiveStep] = useState<number>(1);
+    const mandateDetailRef = useRef<BankMandateDto | null>(null);
     const [mandateDetail, setMandateDetail] = useState<BankMandateDto | null>(null);
 
     const {
@@ -134,6 +136,7 @@ export default function ApplicationWidget({ business, customer, application, ref
                     application={application}
                     durationInMonth={durationInMonth}
                     setMandateDetail={setMandateDetail}
+                    mandateDetailRef={mandateDetailRef}
                     navigateBackAction={() => {
                         setActiveStep(activeStep - 1);
                     }}
@@ -161,6 +164,7 @@ export default function ApplicationWidget({ business, customer, application, ref
                         navigateBackAction={() => {
                             setActiveStep(activeStep - 1);
                         }}
+                        mandateDetailRef={mandateDetailRef}
                         mandateDetail={mandateDetail}
                         onContinueAction={(defaultBankAccount: BankAccountDto) => {
                             // set bank info for mandate creation
@@ -168,9 +172,21 @@ export default function ApplicationWidget({ business, customer, application, ref
                             setValue('bankDetail.accountNumber', defaultBankAccount?.accountNumber);
                             setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
                             setValue('bankDetail.bankName', defaultBankAccount?.bankName);
+
+                            setActiveStep(activeStep + 1);
                          
                     }}
                 />
-                );
+            );
+        case 6:
+            return (
+                <SuccessScreen   
+                token={token} 
+                business={business}
+                customer={customer}
+                application={application}  
+                />
+            );
+            
     }
 }
