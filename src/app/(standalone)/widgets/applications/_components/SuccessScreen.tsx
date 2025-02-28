@@ -21,12 +21,13 @@ interface Props {
   navigateBackAction?: () => void;
 }
 
-const SuccessScreen = ({token,
+const SuccessScreen = ({
+  token,
   business,
   application,
   customer,
   navigateBackAction,
-  }:Props ) => {
+}: Props) => {
   return (
     <LoanLayout
       name={business?.name}
@@ -47,7 +48,7 @@ const SuccessScreen = ({token,
           </Circle>
           <VStack spacing={4}>
             <Heading fontSize="xl" fontWeight="medium">
-              Credit Application Submitted!
+              Mandate Authentication Successful
             </Heading>
             <Text fontSize="sm" w="full">
               Congratulations! Your Credit Application was submitted. Please

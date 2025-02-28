@@ -225,7 +225,7 @@ export default function StepFiveMandateScreen({
                 // isLoading={saveBankLoading}
                 loadingText="Loading..."
               >
-                I&apos;ve Sent the Money
+                I have transferred the fund
               </Button>
             </Flex>
             <Center gap={2}>
