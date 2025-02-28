@@ -87,6 +87,15 @@ export default function BusinessInfoFormComp() {
 
       if (response.status === 200) {
         toast.success("Business information successfully updated");
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            businessName: value.businessName,
+            contactPerson: value.contactPerson,
+            contactPhone: value.contactPhone,
+          },
+        });
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -113,6 +122,7 @@ export default function BusinessInfoFormComp() {
             variant={"solid"}
             colorScheme={"primary"}
             isLoading={isLoading}
+            loadingText="Submitting..."
             type="submit"
           >
             Save Changes
@@ -170,6 +180,7 @@ export default function BusinessInfoFormComp() {
             <FormControl className="col-span-2">
               <Input
                 type="email"
+                isDisabled
                 placeholder={"olivia.bellingham@me.com"}
                 {...register("contactEmail", {
                   required: "Business email is required",

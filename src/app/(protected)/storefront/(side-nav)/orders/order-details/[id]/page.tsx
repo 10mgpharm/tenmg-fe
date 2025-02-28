@@ -1,6 +1,6 @@
 'use client'
-import { Box, Divider, Flex, HStack, Tag, TagLabel, VStack } from '@chakra-ui/react'
-import React from 'react'
+import { Badge, Box, Divider, Flex, HStack, Tag, TagLabel, VStack } from '@chakra-ui/react'
+import React, { useEffect } from 'react'
 import {
   Step,
   StepDescription,
@@ -14,10 +14,26 @@ import {
   useSteps,
 } from '@chakra-ui/react'
 import { FaDotCircle } from "react-icons/fa";
-import OrderDetailsCardComp from '../../_components/(my-orders-component)/OrderDetailsCardComponent';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { NextAuthUserSession } from '@/types';
+import { useOrdersStore } from '@/app/(protected)/storefront/storeFrontState/useMyOrders';
+import OrderDetailsCardComp from '@/app/(protected)/storefront/_components/(my-orders-component)/OrderDetailsCardComponent';
 
 
 export default function OrderDetailsPage() {
+
+  const { id } = useParams();
+
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+  const { getSingleOrder, loading, order } = useOrdersStore();
+
+  useEffect(() => {
+    if (userData?.user?.token) getSingleOrder(userData?.user?.token, id);
+  }, [getSingleOrder, userData?.user?.token, id])
+
+  console.log("order", order);
 
   const steps = [
     { title: 'Order Submitted', description: 'Order Submitted' },
@@ -35,29 +51,23 @@ export default function OrderDetailsPage() {
       <Box className='border border-gray-100 p-8 rounded-md'>
         <HStack>
           <h1 className='text-xl font-semibold'>Order Details</h1>
-          <Tag
-            size="sm"
-            ml="1"
-            borderRadius={"full"}
-            color={"warning.500"}
-            bgColor={"warning.100"}
-          >
-            <TagLabel>{"Pending"}</TagLabel>
-          </Tag>
-        </HStack>
+
+          <Badge colorScheme={order?.status?.toLowerCase() === 'completed' ? "green" : order?.status?.toLowerCase() === "pending" ? "warning" : "red"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
+            <span style={{ textTransform: 'capitalize' }}>{order?.status}</span>
+          </Badge>        </HStack>
 
         <Flex gap={'16px'} py={'8px'} my={'4px'} flexWrap={'wrap'}>
           <HStack>
             <h4 className='text-xs lg:text-sm '>Order Date:</h4>
-            <span className='text-sm lg:text-base font-semibold'>2024-08-17 18:37:05</span>
+            <span className='text-sm lg:text-base font-semibold'>{order?.createdAt?.split("T")[0]} {order?.createdAt?.split("T")[1].split(".")[0]}</span>
           </HStack>
           <HStack>
             <h4 className='text-xs lg:text-sm '>Order No:</h4>
-            <span className='text-sm lg:text-base font-semibold'>10MG240817627433</span>
+            <span className='text-sm lg:text-base font-semibold'>{order?.id}</span>
           </HStack>
           <HStack>
             <h4 className='text-xs lg:text-sm '>Waybill Number:</h4>
-            <span className='text-sm lg:text-base font-semibold'>NG020202587810</span>
+            <span className='text-sm lg:text-base font-semibold'></span>
           </HStack>
         </Flex>
 
@@ -93,14 +103,12 @@ export default function OrderDetailsPage() {
 
         <div>
           <h4 className='font-semibold'>
-            Pharmacy One
+            {order?.deliveryAddress}
           </h4>
-          <p>
-            +234-706-344-2345
-          </p>
-          <p>
+          <p>{order?.customer?.phone}</p>
+          {/* <p>
             Apt. 721 56357 Abshire Squares, Jonesbury, AR 66477
-          </p>
+          </p> */}
         </div>
       </Box>
       {/*  */}
@@ -109,7 +117,12 @@ export default function OrderDetailsPage() {
         <Divider className='' />
 
         <div>
-          <OrderDetailsCardComp />
+          {/* <div key={index} className='border border-gray-100 rounded-md p-4 mb-4'> */}
+          {
+            order?.items?.map((item, index) => (
+              <OrderDetailsCardComp key={index} prod={item} />
+            ))
+          }
         </div>
       </Box>
     </Box>

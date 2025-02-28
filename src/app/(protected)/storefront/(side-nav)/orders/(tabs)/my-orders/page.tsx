@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect } from 'react'
-import OrderCardComponent from '../../../_components/(my-orders-component)/OrderCardComponent'
 import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
-import { useOrdersStore } from '../../../storeFrontState/useMyOrders';
 import { Spinner } from '@chakra-ui/react';
-import EmptyScreenList from '../../../_components/(my-orders-component)/EmptyOrderScreen';
+import { useOrdersStore } from '@/app/(protected)/storefront/storeFrontState/useMyOrders';
+import OrderCardComponent from '@/app/(protected)/storefront/_components/(my-orders-component)/OrderCardComponent';
+import EmptyScreenList from '@/app/(protected)/storefront/_components/(my-orders-component)/EmptyOrderScreen';
 
 export default function MyOrdersPages() {
 
