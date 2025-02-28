@@ -1,37 +1,27 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useTransition } from "react";
+import React, { useState, useTransition, useCallback, useMemo } from "react";
 import {
   Box,
   Text,
-  FormControl,
-  FormLabel,
   Center,
-  Select,
   Button,
-  FormErrorMessage,
   Link,
   Flex,
-  NumberInput,
-  NumberInputField,
-  Skeleton,
-  Stack,
   Input,
-  useClipboard,
-  Icon,
   VStack,
   HStack,
+  Icon,
+  useClipboard,
 } from "@chakra-ui/react";
 import { LuCopy } from "react-icons/lu";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { useForm, SubmitHandler } from "react-hook-form";
 import LoanProfile from "../../_components/LoanProfile";
 import LoanLayout from "../../_components/LoanLayout";
 import {
   BusinessDto,
   CustomerDto,
   ApplicationDto,
-  BankDto,
   BankAccountDto,
   BankMandateDto,
 } from "@/types";
@@ -52,6 +42,24 @@ interface Props {
   mandateDetailRef: React.MutableRefObject<BankMandateDto | null>;
 }
 
+const parseResponseDescription = (description: string) => {
+  if (!description)
+    return { amount: null, accountNumber: null, bankName: null };
+  const amountMatch = description.match(/N(\d+):(\d{2})/);
+  const accountMatch = description.match(/account number[^0-9]*(\d+)/);
+  const bankMatch = description.match(/" with\s+(\w+)/);
+  return {
+    amount: amountMatch ? `${amountMatch[1]}.${amountMatch[2]}` : null,
+    accountNumber: accountMatch ? accountMatch[1] : null,
+    bankName: bankMatch ? bankMatch[1] : null,
+  };
+};
+
+const parseFullDescription = (description: string) => {
+  const convertedAmount = description.replace(/(N\d+):(\d{2})/g, "$1.$2");
+  return convertedAmount.replace(/"(\d+)"/g, "$1");
+};
+
 export default function StepFiveMandateScreen({
   token,
   defaultBankDetail,
@@ -64,73 +72,37 @@ export default function StepFiveMandateScreen({
   mandateDetailRef,
 }: Props) {
   const [isPending, startTransition] = useTransition();
-
-  const handleGetBankMandate = () => {
+  const handleGetBankMandate = useCallback(() => {
     startTransition(async () => {
       const response = await getBankMandate(
         token,
         mandateDetail?.reference ?? mandateDetailRef?.current?.reference
       );
       if (response.status === "error") {
-        console.log(response);
-        onContinueAction(defaultBankDetail);
+        console.error(response);
       } else {
-        console.log(response.data);
+        console.log("Mandate response:", response.data);
         if (response.data.status === "approved") {
           onContinueAction(defaultBankDetail);
         }
       }
     });
-  };
+  }, [token, mandateDetail, mandateDetailRef, startTransition]);
 
-  const amountRegex = /N(\d+):(\d{2})/;
-
-  const accountNumberRegex = /account number[^0-9]*(\d+)/;
-
-  const bankNameRegex = /" with\s+(\w+)/;
-
-  const parseResponseDescription = (description: string) => {
-    if (!description)
-      return { amount: null, accountNumber: null, bankName: null };
-    const amountMatch = description.match(amountRegex);
-    const accountMatch = description.match(accountNumberRegex);
-    const bankMatch = description.match(bankNameRegex);
-
-    return {
-      amount: amountMatch ? `${amountMatch[1]}.${amountMatch[2]}` : null,
-      accountNumber: accountMatch ? accountMatch[1] : null,
-      bankName: bankMatch ? bankMatch[1] : null,
-    };
-  };
-
-  const parseFullDescription = (description: string) => {
-    const textWithConvertedAmount = description.replace(
-      /(N\d+):(\d{2})/g,
-      "$1.$2"
-    );
-
-    const convertedText = textWithConvertedAmount.replace(/"(\d+)"/g, "$1");
-
-    return convertedText;
-  };
-
-  const mandateInfo = parseResponseDescription(
-    mandateDetailRef?.current?.responseDescription
+  const mandateInfo = useMemo(
+    () =>
+      parseResponseDescription(
+        mandateDetailRef?.current?.responseDescription || ""
+      ),
+    [mandateDetailRef?.current?.responseDescription]
   );
 
   const { hasCopied: copiedAccount, onCopy: copyAccount } = useClipboard(
-    mandateInfo?.accountNumber
+    mandateInfo.accountNumber || ""
   );
-
   const { hasCopied: copiedAmount, onCopy: copyAmount } = useClipboard(
-    mandateInfo?.amount
+    mandateInfo.amount || ""
   );
-
-  useEffect(() => {
-    if (token) {
-      handleGetBankMandate();
-    }
-  }, [token]);
 
   return (
     <LoanLayout
@@ -148,7 +120,6 @@ export default function StepFiveMandateScreen({
           <Loader />
         ) : (
           <>
-            {" "}
             <Text
               fontSize="base"
               fontWeight="bold"
@@ -157,22 +128,18 @@ export default function StepFiveMandateScreen({
               color="warning.500"
             >
               {parseFullDescription(
-                mandateDetailRef?.current?.responseDescription
+                mandateDetailRef?.current?.responseDescription || ""
               )}
             </Text>
-            {/* Payment Details */}
             <VStack spacing={4} bg="gray.50" p={4} borderRadius="md">
-              {/* Bank Name */}
               <HStack w="full" justify="space-between">
                 <Text fontSize="sm" fontWeight="bold">
                   BANK NAME
                 </Text>
               </HStack>
               <Text fontSize="lg" fontWeight="bold">
-                {mandateInfo?.bankName}
+                {mandateInfo.bankName}
               </Text>
-
-              {/* Account Number */}
               <HStack w="full" justify="space-between">
                 <Text fontSize="sm" fontWeight="bold">
                   ACCOUNT NUMBER
@@ -185,15 +152,13 @@ export default function StepFiveMandateScreen({
                 </Button>
               </HStack>
               <Input
-                value={mandateInfo.accountNumber}
+                value={mandateInfo.accountNumber || ""}
                 isReadOnly
                 variant="unstyled"
                 textAlign="center"
                 fontSize="xl"
                 fontWeight="bold"
               />
-
-              {/* Amount */}
               <HStack w="full" justify="space-between">
                 <Text fontSize="sm" fontWeight="bold">
                   AMOUNT
@@ -206,12 +171,12 @@ export default function StepFiveMandateScreen({
                 </Button>
               </HStack>
               <Text fontSize="lg" fontWeight="bold" color="green.600">
-                {mandateInfo?.amount ? formatAmount(mandateInfo?.amount) : ""}
+                {mandateInfo.amount ? formatAmount(mandateInfo.amount) : ""}
               </Text>
             </VStack>
             <Flex
-              justifyItems={"between"}
-              alignItems={"center"}
+              justifyItems="between"
+              alignItems="center"
               gap={5}
               mt={5}
               mb={8}
@@ -220,9 +185,9 @@ export default function StepFiveMandateScreen({
                 colorScheme="blue"
                 size="lg"
                 w="full"
-                type="submit"
+                type="button"
                 onClick={handleGetBankMandate}
-                // isLoading={saveBankLoading}
+                isLoading={isPending}
                 loadingText="Loading..."
               >
                 I have transferred the fund
@@ -230,7 +195,7 @@ export default function StepFiveMandateScreen({
             </Flex>
             <Center gap={2}>
               <Text fontSize="sm" lineHeight={5}>
-                By clicking on continue you agree with
+                By clicking on continue you agree with{" "}
                 <Link paddingLeft={1} color="blue.500" fontWeight="bold">
                   10MG User End Policy
                 </Link>
