@@ -73,6 +73,7 @@ export default function StepFiveMandateScreen({
       );
       if (response.status === "error") {
         console.log(response);
+        onContinueAction(defaultBankDetail);
       } else {
         console.log(response.data);
         if (response.data.status === "approved") {

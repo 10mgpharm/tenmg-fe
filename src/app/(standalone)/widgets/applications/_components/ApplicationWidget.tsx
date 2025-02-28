@@ -8,6 +8,7 @@ import StepThreeApplicationForm from './StepThreeApplicationForm';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import StepFourBankForm from './StepFourBankForm';
 import StepFiveMandateScreen from './StepFiveMandateScreen';
+import SuccessScreen from './SuccessScreen';
 
 interface Props {
     business: BusinessDto;
@@ -171,9 +172,21 @@ export default function ApplicationWidget({ business, customer, application, ref
                             setValue('bankDetail.accountNumber', defaultBankAccount?.accountNumber);
                             setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
                             setValue('bankDetail.bankName', defaultBankAccount?.bankName);
+
+                            setActiveStep(activeStep + 1);
                          
                     }}
                 />
-                );
+            );
+        case 6:
+            return (
+                <SuccessScreen   
+                token={token} 
+                business={business}
+                customer={customer}
+                application={application}  
+                />
+            );
+            
     }
 }
