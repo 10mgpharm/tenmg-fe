@@ -79,7 +79,6 @@ const Notifications = () => {
           </Flex>
         )
     }
-    console.log(notificationId);
 
     return (
     <div className='flex h-[calc(100vh-150px)] rounded-sm m-4 bg-white'>
