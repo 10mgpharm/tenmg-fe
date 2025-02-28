@@ -103,14 +103,14 @@ export default function CheckoutPage() {
         fontWeight="medium"
       >
         <Flex gap={2} alignItems="center" borderRadius="lg">
-          <Text color="error.600" fontSize="xl">Demo Checkout</Text>
+          <Text color="error.600" fontSize="lg">Test Mode</Text>
         </Flex>
       </Badge>
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-lg p-6 grid md:grid-cols-2 gap-6">
         {/* Customer Information */}
         <div>
           <Heading size="lg" mb={4}>
-            Checkout
+          Demo Checkout
           </Heading>
           <Divider mb={4} />
           <div className="flex flex-col space-y-4">

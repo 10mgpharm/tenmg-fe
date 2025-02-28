@@ -351,7 +351,7 @@ export default function StepFourBankForm({
           >
             <Stack direction="column">
               <Text fontSize="sm" fontWeight="bold">
-                This action is required to verify the bank account you have entered, ensuring it can be used for your loan repayment after your credit application is approved.
+                Initiate Mandate action is required to verify the bank account you have entered, ensuring it can be used for your loan repayment after your credit application is approved.
               </Text>
               <Text>
                 Kindly note that a ₦50 charge applies to complete this process, so ensure your bank account is funded.
