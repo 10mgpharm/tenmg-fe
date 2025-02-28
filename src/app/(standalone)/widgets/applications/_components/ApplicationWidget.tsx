@@ -1,7 +1,7 @@
 'use client';
 
 import { ApplicationDto, BankAccountDto, BankMandateDto, BusinessDto, CustomerDto } from '@/types';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import StepOneConsent from './StepOneConsent';
 import StepTwoCheckingEligibility from './StepTwoCheckingElegibility';
 import StepThreeApplicationForm from './StepThreeApplicationForm';
@@ -29,6 +29,7 @@ interface IFormInput {
 
 export default function ApplicationWidget({ business, customer, application, reference, token }: Props) {
     const [activeStep, setActiveStep] = useState<number>(1);
+    const mandateDetailRef = useRef<BankMandateDto | null>(null);
     const [mandateDetail, setMandateDetail] = useState<BankMandateDto | null>(null);
 
     const {
@@ -134,6 +135,7 @@ export default function ApplicationWidget({ business, customer, application, ref
                     application={application}
                     durationInMonth={durationInMonth}
                     setMandateDetail={setMandateDetail}
+                    mandateDetailRef={mandateDetailRef}
                     navigateBackAction={() => {
                         setActiveStep(activeStep - 1);
                     }}
@@ -161,6 +163,7 @@ export default function ApplicationWidget({ business, customer, application, ref
                         navigateBackAction={() => {
                             setActiveStep(activeStep - 1);
                         }}
+                        mandateDetailRef={mandateDetailRef}
                         mandateDetail={mandateDetail}
                         onContinueAction={(defaultBankAccount: BankAccountDto) => {
                             // set bank info for mandate creation

@@ -43,6 +43,7 @@ interface Props {
   defaultBankDetail?: BankAccountDto;
   durationInMonth?: number;
   setMandateDetail?:  Dispatch<SetStateAction<BankMandateDto>>;
+  mandateDetailRef?: React.MutableRefObject<BankMandateDto | null>;
   navigateBackAction?: () => void;
   onContinueAction?: (defaultBankAccount: BankAccountDto, mandateDetail: BankMandateDto) => void;
 }
@@ -78,6 +79,7 @@ export default function StepFourBankForm({
   onContinueAction,
   durationInMonth,
   setMandateDetail,
+  mandateDetailRef
 }: Props) {
   const [accountVerificationInProgress, startBankAccountVerification] = useTransition();
   const [saveBankLoading, startSaveBank] = useTransition();
@@ -171,7 +173,7 @@ export default function StepFourBankForm({
       console.log(response);
     } else {
       const mandateDetails: BankMandateDto = response.data;
-      setMandateDetail(mandateDetails);
+      mandateDetailRef.current = mandateDetails;
       onContinueAction && onContinueAction(defaultBankAccount, mandateDetails);
     }
   };

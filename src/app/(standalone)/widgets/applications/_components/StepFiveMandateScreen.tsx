@@ -49,6 +49,7 @@ interface Props {
   navigateBackAction?: () => void;
   onContinueAction?: (defaultBankAccount: BankAccountDto) => void;
   mandateDetail: BankMandateDto;
+  mandateDetailRef: React.MutableRefObject<BankMandateDto | null>;
 }
 
 export default function StepFiveMandateScreen({
@@ -60,33 +61,9 @@ export default function StepFiveMandateScreen({
   navigateBackAction,
   onContinueAction,
   mandateDetail,
+  mandateDetailRef,
 }: Props) {
-
-  const { hasCopied: copiedAccount, onCopy: copyAccount } = useClipboard(
-    defaultBankDetail.accountNumber
-  );
-  const { hasCopied: copiedAmount, onCopy: copyAmount } = useClipboard(
-    mandateDetail.amount.toString()
-  );
-
-  const [timeLeft, setTimeLeft] = useState(30 * 60);
-
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
-
-  const amount = formatAmount(mandateDetail?.amount);
 
   const handleGetBankMandate = () => {
     startTransition(async () => {
@@ -98,6 +75,53 @@ export default function StepFiveMandateScreen({
       }
     });
   };
+
+  // To extract monetary amount (e.g., "N50:00")
+  const amountRegex = /N(\d+):(\d{2})/;
+
+  // To extract account number (e.g., "0008787867")
+  const accountNumberRegex = /account number[^0-9]*(\d+)/;
+
+  // To extract bank name (e.g., "GTBank")
+  const bankNameRegex = /" with\s+(\w+)/;
+
+  const parseResponseDescription = (description: string) => {
+    if (!description)
+      return { amount: null, accountNumber: null, bankName: null };
+    const amountMatch = description.match(amountRegex);
+    const accountMatch = description.match(accountNumberRegex);
+    const bankMatch = description.match(bankNameRegex);
+
+    return {
+      amount: amountMatch ? `${amountMatch[1]}.${amountMatch[2]}` : null,
+      accountNumber: accountMatch ? accountMatch[1] : null,
+      bankName: bankMatch ? bankMatch[1] : null,
+    };
+  };
+
+  const parseFullDescription = (description: string) => {
+
+    console.log(description);
+    if (!description) return null;
+    const descriptionRegex =
+      /token payment of\s+(N\d+:\d{2})\s+into account number\s+"?(\d+)"?\s+with\s+(\w+)/i;
+    const match = description.match(descriptionRegex);
+    console.log(match);
+  };
+
+  // Usage example
+  const mandateInfo = parseResponseDescription(
+    mandateDetailRef?.current?.responseDescription
+  );
+
+  const { hasCopied: copiedAccount, onCopy: copyAccount } = useClipboard(
+    mandateInfo?.accountNumber
+  );
+
+  const { hasCopied: copiedAmount, onCopy: copyAmount } = useClipboard(
+    mandateInfo?.amount
+  );
+  // Output: { amount: "N50:00", accountNumber: "0008787867", bankName: "GTBank" }
 
   useEffect(() => {
     if (token) {
@@ -122,8 +146,16 @@ export default function StepFiveMandateScreen({
         ) : (
           <>
             {" "}
-            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>
-              Initiate Mandate of {amount}
+            <Text
+              fontSize="base"
+              fontWeight="bold"
+              textAlign="center"
+              mb={4}
+              color="warning.500"
+            >
+              {parseFullDescription(
+                mandateDetailRef?.current?.responseDescription
+              )}
             </Text>
             {/* Payment Details */}
             <VStack spacing={4} bg="gray.50" p={4} borderRadius="md">
@@ -137,7 +169,7 @@ export default function StepFiveMandateScreen({
               </Text> */}
               </HStack>
               <Text fontSize="lg" fontWeight="bold">
-                {defaultBankDetail.bankName}
+                {mandateInfo?.bankName}
               </Text>
 
               {/* Account Number */}
@@ -153,7 +185,7 @@ export default function StepFiveMandateScreen({
                 </Button>
               </HStack>
               <Input
-                value={defaultBankDetail.accountNumber}
+                value={mandateInfo.accountNumber}
                 isReadOnly
                 variant="unstyled"
                 textAlign="center"
@@ -174,16 +206,11 @@ export default function StepFiveMandateScreen({
                 </Button>
               </HStack>
               <Text fontSize="lg" fontWeight="bold" color="green.600">
-                {amount}
+                {mandateInfo?.amount ? formatAmount(mandateInfo?.amount) : ""}
               </Text>
             </VStack>
-            {/* Instruction */}
-            <Text fontSize="xs" color="gray.500" textAlign="center" mt={4}>
-              Search for {defaultBankDetail.bankName} on your bank app. Use this
-              account for this transaction only.
-            </Text>
             {/* Countdown Timer */}
-            <VStack mt={4}>
+            {/* <VStack mt={4}>
               <Icon as={TimerIcon} color="green.500" boxSize={6} />
               <Text fontSize="sm" color="gray.600">
                 Expires in{" "}
@@ -191,7 +218,7 @@ export default function StepFiveMandateScreen({
                   {formatTime(timeLeft)}
                 </Text>
               </Text>
-            </VStack>
+            </VStack> */}
             <Flex
               justifyItems={"between"}
               alignItems={"center"}
