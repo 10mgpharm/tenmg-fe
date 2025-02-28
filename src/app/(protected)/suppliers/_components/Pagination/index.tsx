@@ -1,3 +1,4 @@
+import { metadata } from "@/app/(protected)/admin/layout";
 import { classNames } from "@/utils";
 import { Button, HStack, Text } from "@chakra-ui/react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
@@ -28,6 +29,8 @@ const Pagination = (
 
   const handlePageChange = async (page: number) => {
     setPageCount(page);
+    console.log("displaying page",page)
+    console.log(meta)
   };
 
   return (
@@ -56,7 +59,8 @@ const Pagination = (
           paginateList ?
           (paginateList?.map((item: any, index: number) => (
             <li 
-            onClick={() => handlePageChange(Number(item.label))} 
+            onClick={() => handlePageChange(Number(item.label))
+            } 
             key={index} 
             className={classNames(
               item.active ? 
