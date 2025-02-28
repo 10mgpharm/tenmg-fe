@@ -67,22 +67,25 @@ export default function StepFiveMandateScreen({
 
   const handleGetBankMandate = () => {
     startTransition(async () => {
-      const response = await getBankMandate(token, mandateDetail?.reference);
+      const response = await getBankMandate(
+        token,
+        mandateDetail?.reference ?? mandateDetailRef?.current?.reference
+      );
       if (response.status === "error") {
         console.log(response);
       } else {
         console.log(response.data);
+        if (response.data.status === "approved") {
+          onContinueAction(defaultBankDetail);
+        }
       }
     });
   };
 
-  // To extract monetary amount (e.g., "N50:00")
   const amountRegex = /N(\d+):(\d{2})/;
 
-  // To extract account number (e.g., "0008787867")
   const accountNumberRegex = /account number[^0-9]*(\d+)/;
 
-  // To extract bank name (e.g., "GTBank")
   const bankNameRegex = /" with\s+(\w+)/;
 
   const parseResponseDescription = (description: string) => {
@@ -100,16 +103,16 @@ export default function StepFiveMandateScreen({
   };
 
   const parseFullDescription = (description: string) => {
+    const textWithConvertedAmount = description.replace(
+      /(N\d+):(\d{2})/g,
+      "$1.$2"
+    );
 
-    console.log(description);
-    if (!description) return null;
-    const descriptionRegex =
-      /token payment of\s+(N\d+:\d{2})\s+into account number\s+"?(\d+)"?\s+with\s+(\w+)/i;
-    const match = description.match(descriptionRegex);
-    console.log(match);
+    const convertedText = textWithConvertedAmount.replace(/"(\d+)"/g, "$1");
+
+    return convertedText;
   };
 
-  // Usage example
   const mandateInfo = parseResponseDescription(
     mandateDetailRef?.current?.responseDescription
   );
@@ -121,7 +124,6 @@ export default function StepFiveMandateScreen({
   const { hasCopied: copiedAmount, onCopy: copyAmount } = useClipboard(
     mandateInfo?.amount
   );
-  // Output: { amount: "N50:00", accountNumber: "0008787867", bankName: "GTBank" }
 
   useEffect(() => {
     if (token) {
@@ -164,9 +166,6 @@ export default function StepFiveMandateScreen({
                 <Text fontSize="sm" fontWeight="bold">
                   BANK NAME
                 </Text>
-                {/* <Text fontSize="sm" color="blue.500" cursor="pointer">
-                CHANGE BANK
-              </Text> */}
               </HStack>
               <Text fontSize="lg" fontWeight="bold">
                 {mandateInfo?.bankName}
@@ -209,16 +208,6 @@ export default function StepFiveMandateScreen({
                 {mandateInfo?.amount ? formatAmount(mandateInfo?.amount) : ""}
               </Text>
             </VStack>
-            {/* Countdown Timer */}
-            {/* <VStack mt={4}>
-              <Icon as={TimerIcon} color="green.500" boxSize={6} />
-              <Text fontSize="sm" color="gray.600">
-                Expires in{" "}
-                <Text as="span" color="green.500">
-                  {formatTime(timeLeft)}
-                </Text>
-              </Text>
-            </VStack> */}
             <Flex
               justifyItems={"between"}
               alignItems={"center"}
@@ -231,6 +220,7 @@ export default function StepFiveMandateScreen({
                 size="lg"
                 w="full"
                 type="submit"
+                onClick={handleGetBankMandate}
                 // isLoading={saveBankLoading}
                 loadingText="Loading..."
               >
