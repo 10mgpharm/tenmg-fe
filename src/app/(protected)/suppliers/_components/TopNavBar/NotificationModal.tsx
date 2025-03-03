@@ -40,9 +40,10 @@ const NotificationModal = (
         : 
         (<div className="space-y-4 mt-6">
               {notificationsMsgs?.map((notification) => (
-                <div
-                  key={notification?.id}
-                  className="flex items-start border-b border-gray-200  mt-3"
+                <Link
+                    href={route}
+                    key={notification?.id}
+                    className="flex items-start border-b border-gray-200  mt-3 cursor-pointer"
                 >
                     <div className='flex gap-3 px-5'>
                         <div>
@@ -81,7 +82,7 @@ const NotificationModal = (
                             <p className="text-sm text-gray-400">{notification?.createdAt}</p>
                         </div>
                     </div>
-                  </div>
+                  </Link>
               ))}
             </div>
         )}

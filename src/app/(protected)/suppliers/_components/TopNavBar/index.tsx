@@ -9,6 +9,7 @@ import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import {
   Avatar,
+  Badge,
   FormControl,
   FormLabel,
   Switch,
@@ -132,7 +133,7 @@ const TopNavBar = ({route}: {route: string}) => {
               </FormLabel>
             </FormControl>
           )}
-          {/* <Badge content="1" color="danger"> */}
+          {/* <Badge content="1" color="danger"/> */}
           <Menu as="div">
             <MenuButton
               type="button"
