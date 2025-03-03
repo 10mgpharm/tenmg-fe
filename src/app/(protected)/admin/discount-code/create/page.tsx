@@ -363,6 +363,7 @@ const CreateDiscount = () => {
                                     setStartDate={field.onChange}
                                     minDate={watch("startDate")}
                                     isMinDate
+                                    isDisabled={watch("startDate") ? false : true}
                                 />
                                 {errors.endDate?.message &&
                                     <Text as={"span"} className="text-red-500 text-sm">

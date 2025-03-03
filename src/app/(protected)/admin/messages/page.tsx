@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useState } from "react"
 
 import avatar from '@public/assets/images/Avatar.svg';
 import messageIcon from "@public/assets/images/message.svg"
-import { classNames } from "@/utils";
+import { classNames, handleServerErrorMessage } from "@/utils";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaPaperclip } from "react-icons/fa6";
 import { VscSend } from "react-icons/vsc";
@@ -109,6 +109,7 @@ const Message = () => {
             }
         } catch (err: any) {
             console.error(err);
+            toast.error(handleServerErrorMessage(err));
         } finally {
             setIsLoading(false);
         }
@@ -135,6 +136,7 @@ const Message = () => {
             console.error(err);
         } finally {
             setMessageLoading(false);
+            setNewMessage("");
         }
     }
 
@@ -172,7 +174,7 @@ const Message = () => {
                                 messages?.map((message) => (
                                     <li 
                                         onClick={() => {
-                                            fetchConversations(message?.latest?.conversationId);
+                                            fetchConversations(message?.id);
                                             setCurrentMessage(message)
                                         }}
                                         key={message?.id}
@@ -180,7 +182,7 @@ const Message = () => {
                                         <Image src={avatar} alt="" className=""/>
                                         <div className="space-y-2">
                                             <p className="font-medium text-lg text-gray-700">
-                                                {message?.receiver?.name}
+                                                {message?.sender?.name}
                                                 <span className="text-gray-500 text-[14px] ml-2">
                                                     {message?.latest?.sentAt}
                                                 </span>
@@ -238,7 +240,12 @@ const Message = () => {
                                         <div className="border rounded-full w-full flex items-center bg-white justify-between p-2">
                                             <div className="flex flex-1 items-center gap-2">
                                                 <FaPaperclip className="h-5 w-6 text-gray-600"/>
-                                                <input onChange={(e) => setNewMessage(e.target.value)} className="outline-none flex-1 bg-transparent" placeholder="Write messsage here ..."/>
+                                                <input 
+                                                onChange={(e) => setNewMessage(e.target.value)} 
+                                                className="outline-none flex-1 bg-transparent" 
+                                                placeholder="Write messsage here ..."
+                                                value={newMessage}
+                                                />
                                             </div>
                                             {
                                                 messageLoading ? 

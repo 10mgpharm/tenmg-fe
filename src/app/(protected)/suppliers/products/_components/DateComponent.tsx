@@ -9,18 +9,21 @@ interface DateProps {
   isMinDate?: boolean;
   isMaxDate?: boolean
   minDate?: Date | null;
+  isDisabled?: boolean;
 }
 const DateComponent = ({
   isMinDate,
   startDate,
   setStartDate,
   minDate,
-  isMaxDate
+  isMaxDate,
+  isDisabled
 }: DateProps) => {
   return (
     <DatePicker
       placeholderText="MM/DD/YYYY"
       selected={startDate}
+      disabled={isDisabled}
       toggleCalendarOnIconClick
       minDate={!isMinDate ? new Date() : minDate}
       maxDate={isMaxDate ? new Date() : null}

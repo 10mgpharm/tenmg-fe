@@ -23,6 +23,7 @@ interface CountProps {
     total: number;
     inactive: number;
 }
+
 const Page = () => {
 
     const session = useSession();
