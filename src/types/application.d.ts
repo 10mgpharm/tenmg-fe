@@ -110,3 +110,13 @@ export interface BankMandateDto {
     description?: string;
     endDate?: string;
 }
+
+interface SingleNotification {
+    createdAt: string;
+    id: string;
+    readAt: null | string;
+    data: {
+        subject: string;
+        message: string;
+    }
+}
