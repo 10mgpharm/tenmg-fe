@@ -32,7 +32,7 @@ interface IFormInput {
   contactPersonPosition: string;
 }
 
-const BusinessInformation = ({ user }: { user: User }) => {
+const BusinessInformation = ({ user }: { user?: User }) => {
 const [isLoading, setIsLoading] = useState<boolean>(false);
  const [isInfoLoading, setIsInfoLoading] = useState<boolean>(false);
  const session = useSession();
