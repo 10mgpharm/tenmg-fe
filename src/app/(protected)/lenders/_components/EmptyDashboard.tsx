@@ -3,7 +3,6 @@
 import React from "react";
 import { Box, Image, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
-import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
 import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
 import NoRequest from "@public/assets/images/no_request.png";
 import LenderActions from "./LenderActions";
@@ -11,6 +10,8 @@ import LenderFeatureLayout from "./LenderFeatureLayout";
 import CompleteSetup from "./CompleteSetup";
 import EmptyCard from "../../suppliers/_components/EmptyCard";
 import SetupAccount from "./SetupAccount";
+import NoticeCard from "../../suppliers/_components/NoticeCard";
+import CompleteAccountModal from "./CompleteAccountModal";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
@@ -50,10 +51,19 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
   return (
     <>
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT */}  
       <div className="w-full flex flex-col md:flex-row gap-5">
         <div className="w-full lg:w-3/5">
           {/* -- MOBILE HORIZONTAL SCROLL -- */}
+
+          <div className="hidden md:block">
+            <NoticeCard
+              setOpen={onOpen}
+              status={sessionData?.user?.businessStatus}
+              url="/lenders/settings/license-upload"
+            />
+          </div>
+
           <div className="md:hidden overflow-x-auto">
             <div className="flex gap-4 w-max">
               <div className="w-72 shrink-0">
@@ -80,7 +90,7 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
           </div>
 
           {/* -- DESKTOP VIEW -- */}
-          <div className="hidden md:grid grid-cols-2 gap-5">
+          <div className="hidden md:grid grid-cols-2 gap-5 mt-4">
             <OverviewCard
               title="Total Balance"
               value="₦0"

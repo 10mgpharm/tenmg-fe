@@ -1,10 +1,7 @@
 import { NextAuthUserSession } from "@/types";
-import EmptyStateDashboard from "../vendors/_components/EmptyStateDashboard";
-import VendorDashboard from "../vendors/_components/VendorDashboard";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { BusinessStatus } from "@/constants";
-// import LenderDashboard from "./_components/LenderDashboard";
 import EmptyDashboard from "./_components/EmptyDashboard";
 import LenderDashboard from "./_components/LenderDashboard";
 
@@ -20,7 +17,7 @@ const Vendor = async () => {
         BusinessStatus.SUSPENDED,
         BusinessStatus.BANNED,
       ].includes(data?.user?.businessStatus) ? (
-        <LenderDashboard sessionData={data} />
+        <EmptyDashboard sessionData={data} />
       ) : (
         <LenderDashboard sessionData={data} />
       )}
