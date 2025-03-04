@@ -7,7 +7,6 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
-import { LuCheckCircle } from "react-icons/lu";
 import LoanLayout from "../../_components/LoanLayout";
 import LoanProfile from "../../_components/LoanProfile";
 import { IoMdInformationCircleOutline } from "react-icons/io";
@@ -41,9 +40,9 @@ const FailureScreen = ({
         </section>
 
         <VStack spacing={10} textAlign="center" paddingY="50px">
-          <Circle size="90px" bg="success.100" color="green.500">
-            <Circle size="60px" bg="success.200">
-              <Icon as={LuCheckCircle} w={10} h={10} />
+          <Circle size="90px" bg="error.100" color="green.500">
+            <Circle size="60px" bg="error.200">
+              {/* <Icon as={LuCheckCircle} w={10} h={10} /> */}
             </Circle>
           </Circle>
           <VStack spacing={4}>
