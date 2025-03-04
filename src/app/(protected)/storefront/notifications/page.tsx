@@ -140,7 +140,14 @@ const Notifications = () => {
                                     "hover:bg-gray-100/10 font-semibold", 
                                     "cursor-pointer max-w-md border-b border-gray-200")}
                             >
-                            <div className='flex mx-4'>
+                            <div
+                            className={cn(
+                                selectedNotification?.id === notification.id
+                                 ? "border-r-4 border-primary-500 bg-gray-100" 
+                                 : "", 
+                                 "flex px-2 py-1.5"
+                             )}
+                            >
                                 <div className="p-1 bg-blue-100 text-blue-600 rounded-full max-h-max">
                                     <IoMdNotificationsOutline
                                     className="w-5 h-5 cursor-pointer"
