@@ -1,10 +1,7 @@
 import { SingleDataProps } from "./Records"
 import ChartComponent from "../../_components/ChartComponent"
 import { ApexOptions } from "apexcharts";
-import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
-
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const TransactionSummary: React.FC<SingleDataProps> = ({tnxHistoryData}) => {
 
