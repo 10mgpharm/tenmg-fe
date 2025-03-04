@@ -40,10 +40,10 @@ import { handleServerErrorMessage } from "@/utils";
 import { useSession } from "next-auth/react";
 import requestClient from "@/lib/requestClient";
 import { ColumsLenderFN } from "./tableLender";
-import ModalWrapper from "@/app/(protected)/suppliers/_components/ModalWrapper";
 import { ActionType } from "@/constants";
 import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
 import ViewUserModal from "./ViewUserModal";
+import DeleteModal from "@/app/(protected)/_components/DeleteModal";
 
 const LenderTab = ({
   data,
@@ -174,8 +174,7 @@ const LenderTab = ({
       getSortedRowModel: getSortedRowModel(),
   });
 
-    const handleRemove = async (e: FormEvent) => {
-      e.preventDefault();
+    const handleRemove = async () => {
       if(!reason) return;
       setIsLoadingAction(true);
       try {
@@ -258,36 +257,13 @@ const LenderTab = ({
     onClose={onCloseView}
     id={userId}
   />
-    <ModalWrapper
-      isOpen={isOpenDelete} 
-      onClose={onCloseDelete}
-      title="Remove Lender"
-      >
-        <form onSubmit={(e) => handleRemove(e)} className="mb-8">
-            <FormControl>
-                <FormLabel>Enter reason for removal</FormLabel>
-                <Textarea onChange={(e) => setReason(e.target.value) } />
-            </FormControl>
-            <div className="flex justify-end items-center gap-3 mt-8">
-                <Button 
-                variant={"outline"} 
-                type="button"
-                className='cursor-pointer' 
-                onClick={onCloseDelete}>
-                  Cancel
-                </Button>
-                <Button 
-                isLoading={isLoading}
-                loadingText={"Submitting..."}
-                type="submit"
-                bg={"red.500"}
-                _hover={{background: "red.300"}}
-                >
-                  Remove Lender
-                </Button>
-            </div>
-        </form>
-    </ModalWrapper>
+  <DeleteModal
+    isOpen={isOpenDelete}
+    onClose={onCloseDelete}
+    title={"User"}
+    handleRequest={handleRemove}
+    isLoading={isLoadingAction}
+  />
   </div>
   );
 };

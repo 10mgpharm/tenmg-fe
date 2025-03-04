@@ -245,7 +245,7 @@ export default function ViewUserModal({
                       Date Submitted
                     </Text>
                     <Text fontWeight="medium">
-                      {userData?.business?.updatedAt
+                      {userData?.business?.licenseNumber
                         ? convertDate(userData?.business?.updatedAt)
                         : "N/A"}
                     </Text>

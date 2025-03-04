@@ -133,13 +133,13 @@ const TopNavBar = ({route}: {route: string}) => {
               </FormLabel>
             </FormControl>
           )}
-          {/* <Badge content="1" color="danger"/> */}
           <Menu as="div">
             <MenuButton
               type="button"
-              className="-m-2.5 p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500"
+              className="-m-2.5 relative p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500"
             >
               <span className="sr-only">View notifications</span>
+              <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">1</div>
               <BellIcon aria-hidden="true" className="h-6 w-6" />
             </MenuButton>
             <MenuItems 
