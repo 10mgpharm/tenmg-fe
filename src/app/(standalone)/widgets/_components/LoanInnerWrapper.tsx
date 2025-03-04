@@ -9,7 +9,7 @@ interface InnerProps {
 
 const LoanInnerWrapper = ({ headerIcon, heading, text }: InnerProps) => {
   return (
-    <VStack spacing={10}>
+    <VStack spacing={10} py="50px">
       <Center mb={3}>{headerIcon}</Center>
       <Box>
         <Heading
@@ -18,7 +18,7 @@ const LoanInnerWrapper = ({ headerIcon, heading, text }: InnerProps) => {
           fontWeight="medium"
           textAlign="center"
           color="gray.900"
-          mb={2}
+          mb={4}
         >
           {heading}
         </Heading>

@@ -91,7 +91,7 @@ const CreateDiscount = () => {
         setIsLoading(true);
         if(data.allProduct){
             formdata = {
-                allProduct: true,
+                allProducts: true,
                 applicationMethod: data.applicationMethod,
                 couponCode: data.couponCode,
                 discountType: data?.discountType,
@@ -102,7 +102,7 @@ const CreateDiscount = () => {
             }
         }else{
             formdata = {
-                allProduct: false,
+                allProducts: false,
                 applicationMethod: data.applicationMethod,
                 applicableProducts: data.applicableProducts,
                 couponCode: data.couponCode,
@@ -363,6 +363,7 @@ const CreateDiscount = () => {
                                     setStartDate={field.onChange}
                                     minDate={watch("startDate")}
                                     isMinDate
+                                    isDisabled={watch("startDate") ? false : true}
                                 />
                                 {errors.endDate?.message &&
                                     <Text as={"span"} className="text-red-500 text-sm">

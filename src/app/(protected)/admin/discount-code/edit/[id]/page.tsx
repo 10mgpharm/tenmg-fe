@@ -109,7 +109,7 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
     setIsLoading(true);
     if(data.allProduct){
         formdata = {
-          allProduct: true,
+          allProducts: true,
           applicationMethod: data.applicationMethod,
           couponCode: data.couponCode,
           discountType: data?.discountType,
@@ -120,7 +120,7 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
         }
     }else{
         formdata = {
-            allProduct: false,
+            allProducts: false,
             applicationMethod: data.applicationMethod,
             applicableProducts: data.applicableProducts,
             couponCode: data.couponCode,
@@ -168,9 +168,6 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-
-  console.log(watch())
-  console.log("erros",errors)
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">

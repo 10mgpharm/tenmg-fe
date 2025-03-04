@@ -76,12 +76,13 @@ const SystemConfiguration = () => {
   const onLoadImage = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     if (event.target.files[0]?.size >= MAX_FILE_SIZE)
-      toast.warn(
+      return toast.warn(
         "A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB."
       );
 
     const files = Array.from(event.target.files);
     // Prevent adding more than MAX_IMAGES
+    console.log(imageUrl.length, files.length)
     if (imageUrl.length + files.length > MAX_IMAGES) {
       toast.warn(
         `You can upload a maximum of ${MAX_IMAGES} images`
@@ -304,7 +305,8 @@ const SystemConfiguration = () => {
                       onSelectImgToEdit(e);
                       // setImgToEditUrl(e);
                     }}
-                    className="w-4 h-auto" />
+                    className="w-4 h-auto" 
+                    />
                     <X 
                     cursor={"pointer"}
                     onClick={() => {
@@ -313,7 +315,8 @@ const SystemConfiguration = () => {
                       setImageSrcs(removedImage);
                       setImageURL(removedImageUrl);
                     }}
-                    className="w-4 h-auto text-red-600"/>
+                    className="w-4 h-auto text-red-600"
+                    />
                   </Flex>
                 </Center>
               </Flex>
@@ -356,14 +359,19 @@ const SystemConfiguration = () => {
                     onClick={() => {
                       onSelectImgToEdit(image.imageUrl);
                     }}
-                    className="w-4 h-auto" />
-                    <X 
-                    cursor={"pointer"}
-                    onClick={() => {
-                      setSelectedId(image.id)
-                      onDeleteOpen();
-                    }}
-                    className="w-4 h-auto text-red-600"/>
+                    className="w-4 h-auto" 
+                    />
+                    {
+                      storeImages?.data?.length > 1 &&
+                      <X 
+                      cursor={"pointer"}
+                      onClick={() => {
+                        setSelectedId(image.id)
+                        onDeleteOpen();
+                      }}
+                      className="w-4 h-auto text-red-600"
+                      />
+                    }
                   </Flex>
                 </Center>
               </Flex>
