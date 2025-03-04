@@ -113,9 +113,9 @@ export default function BusinessInfoFormComp() {
         <div className="space-y-5 w-full flex justify-between py-5">
           <div>
             <h3 className="font-semibold text-lg">Business Information</h3>
-            <p className="text-sm text-slate-300">
+            <Text fontSize={"14px"} color={"gray.500"}>
               Manage your business information
-            </p>
+            </Text>
           </div>
           <Button
             size={"sm"}
