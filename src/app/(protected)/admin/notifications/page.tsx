@@ -1,18 +1,16 @@
 "use client";
-import requestClient from "@/lib/requestClient";
 import { cn } from "@/lib/utils";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { Flex, Spinner } from "@chakra-ui/react";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { useCallback, useEffect, useState } from "react"
+import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession, SingleNotification } from "@/types";
 import { handleServerErrorMessage, truncateString } from "@/utils";
-import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react"
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaArrowTrendUp } from "react-icons/fa6"
 import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io"
-import { LuBox } from "react-icons/lu"
 import { NotificationProps } from "../../suppliers/_components/TopNavBar/NotificationModal";
-import { Flex, Spinner } from "@chakra-ui/react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { toast } from "react-toastify";
 
 const Notifications = () => {
 
@@ -110,6 +108,8 @@ const Notifications = () => {
         )
     }
 
+    console.log(data)
+
     return (
     <div className='h-[calc(100vh-150px)] rounded-sm m-4 bg-white'>
         {
@@ -135,9 +135,9 @@ const Notifications = () => {
                             <div
                                 key={notification?.id}
                                 className={cn(
-                                    selectedNotification?.id === notification.id 
+                                    (selectedNotification?.id === notification.id || notification?.readAt) 
                                     ? "text-black/50 font-normal" : 
-                                    "hover:bg-gray-100/10 font-medium", 
+                                    "hover:bg-gray-100/10 font-semibold", 
                                     "cursor-pointer max-w-md border-b border-gray-200")}
                             >
                             <div className='flex mx-4'>
@@ -148,7 +148,7 @@ const Notifications = () => {
                                 </div>
                                 <div className="flex-1 flex items-center">
                                     <div className="flex-1" onClick={() => fetchingDataById(notification.id)}>
-                                        <p className="px-4 text-sm">{truncateString(notification?.data?.message, 76)}</p>
+                                        <p className="px-4">{truncateString(notification?.data?.message, 76)}</p>
                                         <p className="text-sm text-gray-500 my-2 px-4">{notification?.createdAt}</p>
                                     </div>
                                     <Menu as="div" className="relative">

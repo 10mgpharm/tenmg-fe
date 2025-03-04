@@ -135,9 +135,9 @@ const Notifications = () => {
                             <div
                                 key={notification?.id}
                                 className={cn(
-                                    selectedNotification?.id === notification.id 
+                                    (selectedNotification?.id === notification.id || notification?.readAt) 
                                     ? "text-black/50 font-normal" : 
-                                    "hover:bg-gray-100/10 font-medium", 
+                                    "hover:bg-gray-100/10 font-semibold", 
                                     "cursor-pointer max-w-md border-b border-gray-200")}
                             >
                             <div className='flex mx-4'>
@@ -148,7 +148,7 @@ const Notifications = () => {
                                 </div>
                                 <div className="flex-1 flex items-center">
                                     <div className="flex-1" onClick={() => fetchingDataById(notification.id)}>
-                                        <p className="px-4 text-sm">{truncateString(notification?.data?.message, 76)}</p>
+                                        <p className="px-4">{truncateString(notification?.data?.message, 76)}</p>
                                         <p className="text-sm text-gray-500 my-2 px-4">{notification?.createdAt}</p>
                                     </div>
                                     <Menu as="div" className="relative">

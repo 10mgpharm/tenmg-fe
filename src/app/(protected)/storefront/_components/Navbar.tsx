@@ -154,7 +154,6 @@ const Navbar = () => {
               </Box>
             </Stack>
           </Box>
-
           {/* Avatar Icon */}
           <Box cursor="pointer">
             <Stack align="center">
