@@ -100,14 +100,6 @@ export function ColumsLenderFN(
                     <MenuItem onClick={() => handleView(info?.row?.original?.id)}>
                       View User
                     </MenuItem>
-                    <MenuItem>
-                      <a 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="https://drive.google.com/file/d/14VwaZzsBkYQ-KbWGOIWjQpDCBxeG0Pqy/view?usp=drive_link">
-                      View Document
-                      </a>
-                    </MenuItem>
                     {
                       info?.row?.original?.status === 0 ? 
                       <MenuItem onClick={() => handleOpenModal(info?.row?.original?.id, ActionType.ACTIVE)}>Unsuspend User</MenuItem>
