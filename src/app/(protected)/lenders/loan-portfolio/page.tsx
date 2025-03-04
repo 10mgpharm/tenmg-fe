@@ -156,7 +156,7 @@ export default function TransactionWalletPage() {
 
         </div>
         :
-        <LenderEmptyScreen heading='Nothing to show here yet' content='You don’t have any transactions yet. When you do, they’ll appear here.' />
+        <LenderEmptyScreen heading='Nothing to show here yet' content='You don’t have a loan in your portfolio yet, when you do, they’ll appear here.' />
       }
     </div>
   )

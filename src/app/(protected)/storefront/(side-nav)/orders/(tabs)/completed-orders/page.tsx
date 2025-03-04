@@ -10,9 +10,7 @@ import EmptyScreenList from '@/app/(protected)/storefront/_components/(my-orders
 export default function CompletedOrdersPages() {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
-  const { fetchOrders, loading,
-    cancelledOrders,
-    completedOrders } = useOrdersStore();
+  const { fetchOrders, loading, completedOrders } = useOrdersStore();
 
   useEffect(() => {
     if (userData?.user?.token) fetchOrders(userData?.user?.token);

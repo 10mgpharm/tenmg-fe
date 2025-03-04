@@ -10,9 +10,7 @@ import EmptyScreenList from '@/app/(protected)/storefront/_components/(my-orders
 export default function PendingOrdersPages() {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
-  const { fetchOrders, loading, pendingOrders,
-    cancelledOrders,
-    declinedOrders } = useOrdersStore();
+  const { fetchOrders, loading, pendingOrders, } = useOrdersStore();
 
   useEffect(() => {
     if (userData?.user?.token) fetchOrders(userData?.user?.token);

@@ -7,10 +7,10 @@ import { useOrdersStore } from '@/app/(protected)/storefront/storeFrontState/use
 import OrderCardComponent from '@/app/(protected)/storefront/_components/(my-orders-component)/OrderCardComponent';
 import EmptyScreenList from '@/app/(protected)/storefront/_components/(my-orders-component)/EmptyOrderScreen';
 
-export default function CompletedOrdersPages() {
+export default function PendingOrdersPages() {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
-  const { fetchOrders, loading, cancelledOrders } = useOrdersStore();
+  const { fetchOrders, loading, processingOrders, } = useOrdersStore();
 
   useEffect(() => {
     if (userData?.user?.token) fetchOrders(userData?.user?.token);
@@ -22,8 +22,8 @@ export default function CompletedOrdersPages() {
 
       {loading ? <div className='full h-full flex items-center justify-center'><Spinner /></div> : <>
         {
-          cancelledOrders?.length > 0 ? <>
-            {cancelledOrders.map((item, i) => (
+          processingOrders?.length > 0 ? <>
+            {processingOrders.map((item, i) => (
               <OrderCardComponent key={i} product={item} />
             ))}
           </>

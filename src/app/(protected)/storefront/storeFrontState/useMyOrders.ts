@@ -22,6 +22,8 @@ type OrderState = {
 export const useOrdersStore = create<any>((set, get) => ({
   orders: [],
   pendingOrders: [],
+  shippingOrders: [],
+  processingOrders: [],
   cancelledOrders: [],
   completedOrders: [],
   loading: true,
@@ -42,7 +44,7 @@ export const useOrdersStore = create<any>((set, get) => ({
           (item) => item.status.toLowerCase() === "cancelled"
         );
         const completedOrders = orders.filter(
-          (item) => item.status.toLowerCase() === "declined"
+          (item) => item.status.toLowerCase() === "completed"
         );
 
         set({

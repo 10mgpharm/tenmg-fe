@@ -6,9 +6,11 @@ import Link from 'next/link';
 
 const tabs = [
   { label: 'All Orders', href: '/storefront/orders/my-orders' },
-  { label: 'Pending Orders', href: '/storefront/orders/pending-orders' },
-  { label: 'Completed Orders', href: '/storefront/orders/completed-orders' },
-  { label: 'Cancelled Orders', href: '/storefront/orders/cancelled-orders' },
+  { label: 'Pending', href: '/storefront/orders/pending-orders' },
+  { label: 'Processing', href: '/storefront/orders/processing-orders' },
+  { label: 'Shipping', href: '/storefront/orders/shipping-orders' },
+  { label: 'Completed', href: '/storefront/orders/completed-orders' },
+  { label: 'Cancelled', href: '/storefront/orders/cancelled-orders' },
 ];
 
 
