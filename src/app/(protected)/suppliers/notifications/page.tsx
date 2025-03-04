@@ -9,7 +9,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaArrowTrendUp } from "react-icons/fa6"
 import { IoMdNotificationsOutline } from "react-icons/io"
 import { LuBox } from "react-icons/lu"
-import { NotificationProps } from "../../suppliers/_components/TopNavBar/NotificationModal";
+import { NotificationProps } from "../_components/TopNavBar/NotificationModal";
 import { Flex, Spinner } from "@chakra-ui/react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { toast } from "react-toastify";
@@ -79,6 +79,7 @@ const Notifications = () => {
           </Flex>
         )
     }
+    console.log(notificationId);
 
     return (
     <div className='flex h-[calc(100vh-150px)] rounded-sm m-4 bg-white'>

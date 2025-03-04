@@ -11,6 +11,7 @@ export function ColumsLenderFN(
   handleDeleteModal: (id: number) => void,
   pageIndex: number, 
   pageSize: number,
+  handleView: (id: number) => void,
   handleOpenModal: (id: number, action: ActionType) => void,
 ) {
   return [
@@ -96,13 +97,16 @@ export function ColumsLenderFN(
                     <BsThreeDotsVertical className="w-5 h-auto"/>
                 </MenuButton>
                 <MenuList>
+                    <MenuItem onClick={() => handleView(info?.row?.original?.id)}>
+                      View User
+                    </MenuItem>
                     <MenuItem>
-                        <a 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="https://drive.google.com/file/d/14VwaZzsBkYQ-KbWGOIWjQpDCBxeG0Pqy/view?usp=drive_link">
-                        View Document
-                        </a>
+                      <a 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://drive.google.com/file/d/14VwaZzsBkYQ-KbWGOIWjQpDCBxeG0Pqy/view?usp=drive_link">
+                      View Document
+                      </a>
                     </MenuItem>
                     {
                       info?.row?.original?.status === 0 ? 
@@ -111,7 +115,7 @@ export function ColumsLenderFN(
                       <MenuItem onClick={() => handleOpenModal(info?.row?.original?.id, ActionType.SUSPENDED)}>Suspend User</MenuItem>
                     }
                     <MenuItem onClick={() => handleDeleteModal(info?.row?.original?.id)} color="red.500">
-                        Remove Lender
+                        Delete User
                     </MenuItem>
                 </MenuList>
             </Menu>

@@ -1,11 +1,9 @@
 "use client";
 
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Image from "next/image";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
-
-import avatar from "@public/assets/images/Avatar.svg";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
@@ -26,10 +24,10 @@ import NotificationModal from "./NotificationModal";
 import requestClient from "@/lib/requestClient";
 
 const TopNavBar = ({route}: {route: string}) => {
-  const session = useSession();
-  const data = session.data as NextAuthUserSession;
 
   const router = useRouter();
+  const session = useSession();
+  const data = session.data as NextAuthUserSession;
 
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
@@ -87,8 +85,8 @@ const TopNavBar = ({route}: {route: string}) => {
       `/account/notifications`
       );
 
-      if (response.status === 200 && response.data.data) {
-        setNotifications(response.data.data.records || []);
+      if (response.status === 200) {
+        setNotifications(response.data?.data?.data || []);
       } else {
         setError("Failed to load audit logs. Please try again.");
       }
@@ -105,8 +103,6 @@ const TopNavBar = ({route}: {route: string}) => {
       fetchingData();
     }
   }, [token]);
-
-  console.log(notifications)
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
@@ -137,7 +133,7 @@ const TopNavBar = ({route}: {route: string}) => {
               </FormLabel>
             </FormControl>
           )}
-          {/* <Badge content="1" color="danger"> */}
+          {/* <Badge content="1" color="danger"/> */}
           <Menu as="div">
             <MenuButton
               type="button"
@@ -148,7 +144,7 @@ const TopNavBar = ({route}: {route: string}) => {
             </MenuButton>
             <MenuItems 
             transition
-              className="absolute right-5 z-10 mt-5 w-full sm:w-[430px] h-[560px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
+              className="absolute right-5 z-10 mt-5 w-full sm:w-[430px] h-[560px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
               <NotificationModal 
                 notificationsMsgs={notifications}
                 route={route}

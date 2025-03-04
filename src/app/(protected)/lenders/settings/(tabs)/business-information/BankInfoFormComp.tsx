@@ -1,5 +1,5 @@
 import requestClient from "@/lib/requestClient";
-import { BankAccountDto, NextAuthUserSession } from "@/types";
+import { BankAccountDto, NextAuthUserSession, BankDto } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
 import {
   Button,
@@ -17,17 +17,14 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BankDto } from "@/types";
-import {
-  createBankAccount,
-  getBankList,
-  verifyBankAccount,
-} from "@/app/(standalone)/widgets/applications/actions";
+import { getBankList, verifyBankAccount } from "@/app/(standalone)/widgets/applications/actions";
+import { FaCamera } from "react-icons/fa";
 
 interface Props {
   sessionData: NextAuthUserSession;
   defaultBankDetail: BankAccountDto;
 }
+
 interface IFormInput {
   bankName: string;
   accountName: string;
@@ -61,17 +58,13 @@ const formSchema = z.object({
 
 type FormInput = z.infer<typeof formSchema>;
 
-export default function BankInfoFormComp({
-  sessionData,
-  defaultBankDetail,
-}: Props) {
+export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Props) {
   const [isLoading, setIsLoading] = useState(false);
-  const [accountVerificationInProgress, startBankAccountVerification] =
-    useTransition();
-  const [accountVerificationError, setAccountVerificationError] = useState<
-    string | null
-  >(null);
+  const [accountVerificationInProgress, startBankAccountVerification] = useTransition();
+  const [accountVerificationError, setAccountVerificationError] = useState<string | null>(null);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [defaultBankAccount, setDefaultBankAccount] = useState<BankAccountDto>(defaultBankDetail);
 
   const token = sessionData?.user?.token;
 
@@ -98,9 +91,11 @@ export default function BankInfoFormComp({
   const bankCode = watch("bankCode");
   const bankName = watch("bankName");
   const accountName = watch("accountName");
+  const bvn = watch("bvn");
 
   const accountNumberInputRef = useRef<HTMLInputElement>(null);
 
+  // Get Bank List and convert bank.code to number (assuming API returns a number)
   const handleGetBankList = async () => {
     try {
       const response = await getBankList(token);
@@ -121,6 +116,7 @@ export default function BankInfoFormComp({
     }
   };
 
+  // Verify bank account based on accountNumber and bankCode
   const handleVerifyBankAccount = (accNumber: string, bCode: string) => {
     startBankAccountVerification(async () => {
       setAccountVerificationError(null);
@@ -145,29 +141,41 @@ export default function BankInfoFormComp({
     });
   };
 
+  // Sync defaultBankDetail when available
+  useEffect(() => {
+    if (defaultBankDetail) {
+      setDefaultBankAccount(defaultBankDetail);
+    }
+  }, [defaultBankDetail]);
+
+  // When account number reaches 10 digits and a bank is selected, verify account
   useEffect(() => {
     if (accountNumber && accountNumber.length === 10 && bankCode && bankName) {
       handleVerifyBankAccount(accountNumber, bankCode);
     } else {
       setValue("accountName", "");
     }
-  }, [accountNumber, bankCode]);
+  }, [accountNumber, bankCode, bankName, setValue]);
 
+  // Get Bank List on token change
   useEffect(() => {
     if (token) {
       handleGetBankList();
     }
   }, [token]);
 
+  // When editing, prefill the form with default bank detail
   useEffect(() => {
-    if (defaultBankDetail) {
-      setValue("accountName", defaultBankDetail.accountName);
-      setValue("accountNumber", defaultBankDetail.accountNumber);
-      setValue("bankCode", defaultBankDetail.bankCode);
-      setValue("bankName", defaultBankDetail.bankName);
+    if (defaultBankAccount && edit) {
+      setValue("accountName", defaultBankAccount.accountName);
+      setValue("accountNumber", defaultBankAccount.accountNumber);
+      setValue("bankCode", defaultBankAccount.bankCode);
+      setValue("bankName", defaultBankAccount.bankName);
+      setValue("bvn", defaultBankAccount.bvn);
     }
-  }, [defaultBankDetail, setValue]);
+  }, [defaultBankAccount, edit, setValue]);
 
+  // When banks are loaded and bankCode is selected, update bankName accordingly
   useEffect(() => {
     if (banks && bankCode) {
       const matchedBank = banks.find((b) => b.value === Number(bankCode));
@@ -177,6 +185,7 @@ export default function BankInfoFormComp({
     }
   }, [banks, bankCode, setValue]);
 
+  // Handler for form submission (Save)
   const onSubmit: SubmitHandler<FormInput> = async (formData) => {
     try {
       setIsLoading(true);
@@ -188,6 +197,8 @@ export default function BankInfoFormComp({
 
       if (response.status === 200) {
         toast.success("Bank Information successfully updated");
+        setDefaultBankAccount(response.data.data);
+        setEdit(false);
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -201,151 +212,208 @@ export default function BankInfoFormComp({
 
   return (
     <div>
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5 w-full flex justify-between py-5">
-          <div>
-            <h3 className="font-semibold text-lg">Bank Information</h3>
-            <p className="text-sm text-slate-300">
-              Manage your bank information and other information for payout
-            </p>
-          </div>
-          <Button
-            size="sm"
-            variant="solid"
-            colorScheme="primary"
-            isLoading={isLoading}
-            type="submit"
-          >
-            Save Changes
-          </Button>
-        </div>
-        <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
-          {/* Account Number */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {edit ? (
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          {/* Header */}
+          <div className="space-y-5 w-full flex justify-between py-5">
             <div>
-              <FormLabel>Account Number</FormLabel>
-              <Text fontSize={"14px"} color={"gray.500"}>
-                Associated Account Number
-              </Text>
+              <h3 className="font-semibold text-lg">Bank Information</h3>
+              <p className="text-sm text-slate-300">
+                Manage your bank information and details for payout.
+              </p>
             </div>
-            <FormControl className="col-span-2">
-              <NumberInput
-                value={accountNumber || ""}
-                onChange={(val) => {
-                  setValue("accountNumber", val);
-                  trigger("accountNumber");
-                }}
-                inputMode="numeric"
-              >
-                <NumberInputField placeholder="0000000000" />
-              </NumberInput>
-              {errors.accountNumber && (
-                <Text fontSize="sm" color="red.500">
-                  {errors.accountNumber.message}
-                </Text>
-              )}
-            </FormControl>
-          </div>
-
-          {/* Bank Selection */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div>
-              <FormLabel>Bank</FormLabel>
-              <Text fontSize={"14px"} color={"gray.500"}>
-                Associated Bank Name
-              </Text>
-            </div>
-            <FormControl className="col-span-2" isInvalid={!!errors.bankCode}>
-              <Select
-                placeholder="Choose Bank"
-                {...register("bankCode", {
-                  required: "Please select a bank",
-                })}
-                onChange={(e) => {
-                  const selectedValue = e.target.value;
-                  const selectedText =
-                    e.target.options[e.target.selectedIndex].text;
-                  setValue("bankCode", selectedValue);
-                  setValue("bankName", selectedText);
-                  trigger(["bankCode", "bankName"]);
-                }}
-              >
-                {banks?.map((bank, index) => (
-                  <option key={index} value={bank.value}>
-                    {bank.label}
-                  </option>
-                ))}
-              </Select>
-              {errors.bankCode && (
-                <Text fontSize="sm" color="red.500">
-                  {errors.bankCode.message}
-                </Text>
-              )}
-            </FormControl>
-          </div>
-
-          {/* Account Name */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div>
-              <FormLabel>Account Name</FormLabel>
-              <Text fontSize={"14px"} color={"gray.500"}>
-                Associated Account Name
-              </Text>
-            </div>
-            <FormControl
-              className="col-span-2"
-              isInvalid={!!errors.accountName || !!accountVerificationError}
+            <Button
+              size="sm"
+              variant="solid"
+              colorScheme="primary"
+              isLoading={isLoading}
+              loadingText="Submitting..."
+              type="submit"
             >
-              <Skeleton
-                isLoaded={!accountVerificationInProgress}
-                fadeDuration={0.5}
-                borderRadius="md"
-              >
-                <Text p={2} bg="gray.100" borderRadius="md">
-                  {accountName || "Account name will appear here"}
+              Save Changes
+            </Button>
+          </div>
+
+          <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
+            {/* Account Number Field */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div>
+                <FormLabel>Account Number</FormLabel>
+                <Text fontSize="14px" color="gray.500">
+                  Associated Account Number
                 </Text>
-                {accountVerificationError && (
+              </div>
+              <FormControl className="col-span-2">
+                <NumberInput
+                  value={accountNumber || ""}
+                  onChange={(val) => {
+                    setValue("accountNumber", val);
+                    trigger("accountNumber");
+                  }}
+                  inputMode="numeric"
+                >
+                  <NumberInputField placeholder="0000000000" />
+                </NumberInput>
+                {errors.accountNumber && (
                   <Text fontSize="sm" color="red.500">
-                    {accountVerificationError}
+                    {errors.accountNumber.message}
                   </Text>
                 )}
-              </Skeleton>
-              {!accountName && errors.accountName && (
-                <Text fontSize="sm" color="red.500">
-                  {errors.accountName.message}
-                </Text>
-              )}
-            </FormControl>
-          </div>
-
-          {/* BVN */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div>
-              <FormLabel>BVN</FormLabel>
-              <Text fontSize={"14px"} color={"gray.500"}>
-                Associated BVN
-              </Text>
+              </FormControl>
             </div>
-            <FormControl className="col-span-2">
-              <NumberInput
-                value={watch("bvn") || ""}
-                onChange={(val) => {
-                  setValue("bvn", val);
-                  trigger("bvn");
-                }}
-                inputMode="numeric"
-              >
-                <NumberInputField placeholder="0000000000" />
-              </NumberInput>
-              {errors.bvn && (
-                <Text fontSize="sm" color="red.500">
-                  {errors.bvn.message}
+
+            {/* Bank Selection Field */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div>
+                <FormLabel>Bank</FormLabel>
+                <Text fontSize="14px" color="gray.500">
+                  Associated Bank Name
                 </Text>
-              )}
-            </FormControl>
+              </div>
+              <FormControl className="col-span-2" isInvalid={!!errors.bankCode}>
+                <Select
+                  placeholder="Choose Bank"
+                  {...register("bankCode", {
+                    required: "Please select a bank",
+                  })}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    const selectedText = e.target.options[e.target.selectedIndex].text;
+                    setValue("bankCode", selectedValue);
+                    setValue("bankName", selectedText);
+                    trigger(["bankCode", "bankName"]);
+                  }}
+                >
+                  {banks?.map((bank, index) => (
+                    <option key={index} value={bank.value}>
+                      {bank.label}
+                    </option>
+                  ))}
+                </Select>
+                {errors.bankCode && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.bankCode.message}
+                  </Text>
+                )}
+              </FormControl>
+            </div>
+
+            {/* Account Name Field */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div>
+                <FormLabel>Account Name</FormLabel>
+                <Text fontSize="14px" color="gray.500">
+                  Account Name verified from bank
+                </Text>
+              </div>
+              <FormControl
+                className="col-span-2"
+                isInvalid={!!errors.accountName || !!accountVerificationError}
+              >
+                <Skeleton
+                  isLoaded={!accountVerificationInProgress}
+                  fadeDuration={0.5}
+                  borderRadius="md"
+                >
+                  <Text p={2} bg="gray.100" borderRadius="md">
+                    {accountName || "Account name will appear here"}
+                  </Text>
+                  {accountVerificationError && (
+                    <Text fontSize="sm" color="red.500">
+                      {accountVerificationError}
+                    </Text>
+                  )}
+                </Skeleton>
+                {!accountName && errors.accountName && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.accountName.message}
+                  </Text>
+                )}
+              </FormControl>
+            </div>
+
+            {/* BVN Field */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div>
+                <FormLabel>BVN</FormLabel>
+                <Text fontSize="14px" color="gray.500">
+                  Associated BVN
+                </Text>
+              </div>
+              <FormControl className="col-span-2">
+                <NumberInput
+                  value={bvn || ""}
+                  onChange={(val) => {
+                    setValue("bvn", val);
+                    trigger("bvn");
+                  }}
+                  inputMode="numeric"
+                >
+                  <NumberInputField placeholder="0000000000" />
+                </NumberInput>
+                {errors.bvn && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.bvn.message}
+                  </Text>
+                )}
+              </FormControl>
+            </div>
+          </div>
+        </form>
+      ) : (
+        // Display Mode
+        <div className="space-y-4">
+          <div className="space-y-5 w-full flex justify-between py-5">
+            <div>
+              <h3 className="font-semibold text-lg">Bank Information</h3>
+              <p className="text-sm text-slate-300">
+                Manage your bank information and details for payout.
+              </p>
+            </div>
+            <Button
+              size="sm"
+              variant="solid"
+              colorScheme="primary"
+              isLoading={isLoading}
+              loadingText="Submitting..."
+              type="button"
+              onClick={() => setEdit(true)}
+            >
+              Edit Changes
+            </Button>
+          </div>
+          <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
+            {/* Account Number */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
+              <div>
+                <FormLabel>Account Number</FormLabel>
+              </div>
+              <Text color="gray.800">{defaultBankDetail?.accountNumber}</Text>
+            </div>
+            {/* Bank */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
+              <div>
+                <FormLabel>Bank</FormLabel>
+              </div>
+              <Text color="gray.800">{defaultBankDetail?.bankName}</Text>
+            </div>
+            {/* Account Name */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
+              <div>
+                <FormLabel>Account Name</FormLabel>
+              </div>
+              <Text color="gray.800">{defaultBankDetail?.accountName}</Text>
+            </div>
+            {/* BVN */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
+              <div>
+                <FormLabel>BVN</FormLabel>
+              </div>
+              <Text color="gray.800">{defaultBankDetail?.bvn}</Text>
+            </div>
           </div>
         </div>
-      </form>
+      )}
     </div>
   );
 }

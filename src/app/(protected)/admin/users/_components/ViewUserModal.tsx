@@ -15,7 +15,6 @@ import {
   Flex,
   Stack,
   Skeleton,
-  Button,
   Link,
 } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
@@ -105,7 +104,7 @@ export default function ViewUserModal({
                     {"• "}
                     {userData?.status === 1
                       ? "Active"
-                      : userData?.status === 2
+                      : userData?.accountStatus === "SUSPENDED"
                       ? "Suspended"
                       : "Invited"}
                   </p>

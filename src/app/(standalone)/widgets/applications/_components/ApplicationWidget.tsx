@@ -1,13 +1,14 @@
 'use client';
 
-import { ApplicationDto, BankAccountDto, BusinessDto, CustomerDto } from '@/types';
-import React, { useEffect, useState } from 'react'
+import { ApplicationDto, BankAccountDto, BankMandateDto, BusinessDto, CustomerDto } from '@/types';
+import React, { useEffect, useRef, useState } from 'react'
 import StepOneConsent from './StepOneConsent';
 import StepTwoCheckingEligibility from './StepTwoCheckingElegibility';
 import StepThreeApplicationForm from './StepThreeApplicationForm';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import StepFourBankForm from './StepFourBankForm';
 import StepFiveMandateScreen from './StepFiveMandateScreen';
+import SuccessScreen from './SuccessScreen';
 
 interface Props {
     business: BusinessDto;
@@ -21,10 +22,16 @@ interface IFormInput {
     requestedAmount: number;
     durationInMonth: number;
     bankDetail: BankAccountDto;
+    mandateReference: string;
+    mandateAmount: number;
+    mandateDescription: string;
+    mandateStatus: string;
 }
 
 export default function ApplicationWidget({ business, customer, application, reference, token }: Props) {
     const [activeStep, setActiveStep] = useState<number>(1);
+    const mandateDetailRef = useRef<BankMandateDto | null>(null);
+    const [mandateDetail, setMandateDetail] = useState<BankMandateDto | null>(null);
 
     const {
         formState: { errors, isSubmitting },
@@ -36,11 +43,20 @@ export default function ApplicationWidget({ business, customer, application, ref
             requestedAmount: application.requestedAmount,
             durationInMonth: null,
             bankDetail: null,
+            mandateReference: null,
+            mandateAmount: null,
+            mandateDescription: null,
+            mandateStatus: null,
         },
         mode: "onChange",
     });
 
     const bankDetail = watch('bankDetail');
+    const durationInMonth = watch('durationInMonth');
+    const mandateReference = watch('mandateReference');
+    const mandateAmount = watch('mandateAmount');
+    const mandateDescription = watch('mandateDescription');
+    const mandateStatus = watch('mandateStatus');
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         // handle final submission of form data 
@@ -118,15 +134,20 @@ export default function ApplicationWidget({ business, customer, application, ref
                     business={business}
                     customer={customer}
                     application={application}
+                    durationInMonth={durationInMonth}
+                    setMandateDetail={setMandateDetail}
+                    mandateDetailRef={mandateDetailRef}
                     navigateBackAction={() => {
                         setActiveStep(activeStep - 1);
                     }}
-                    onContinueAction={(defaultBankAccount: BankAccountDto) => {
+                    onContinueAction={(defaultBankAccount: BankAccountDto, mandateDetail?: BankMandateDto) => {
                         // set bank info for mandate creation
                         setValue('bankDetail.accountName', defaultBankAccount?.accountName);
                         setValue('bankDetail.accountNumber', defaultBankAccount?.accountNumber);
                         setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
                         setValue('bankDetail.bankName', defaultBankAccount?.bankName);
+                        setValue("mandateReference", mandateDetail.reference);
+                        
 
                         setActiveStep(activeStep + 1);
                     }}
@@ -143,16 +164,29 @@ export default function ApplicationWidget({ business, customer, application, ref
                         navigateBackAction={() => {
                             setActiveStep(activeStep - 1);
                         }}
+                        mandateDetailRef={mandateDetailRef}
+                        mandateDetail={mandateDetail}
                         onContinueAction={(defaultBankAccount: BankAccountDto) => {
                             // set bank info for mandate creation
                             setValue('bankDetail.accountName', defaultBankAccount?.accountName);
                             setValue('bankDetail.accountNumber', defaultBankAccount?.accountNumber);
                             setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
                             setValue('bankDetail.bankName', defaultBankAccount?.bankName);
-    
+
+                            setActiveStep(activeStep + 1);
                          
                     }}
                 />
-                );
+            );
+        case 6:
+            return (
+                <SuccessScreen   
+                token={token} 
+                business={business}
+                customer={customer}
+                application={application}  
+                />
+            );
+            
     }
 }

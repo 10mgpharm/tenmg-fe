@@ -10,8 +10,7 @@ import {
     Input, 
     Radio, 
     RadioGroup, 
-    Stack, 
-    Switch, 
+    Stack,  
     Text 
 } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
@@ -35,8 +34,8 @@ interface IFormInput {
     discountType: string;
     applicableProducts: number[];
     customerLimit: string;
-    startDate?: Date | null;
-    endDate?: Date | null;
+    startDate: Date | null;
+    endDate: Date | null;
     allProduct: boolean;
 }
   
@@ -48,8 +47,6 @@ const CreateDiscount = () => {
     const token = sessionData?.user?.token;
 
     const [isLoading, setIsLoading] = useState(false);
-    const [isEndDate, setIsEndDate] = useState(false);
-    const [isStartDate, setIsStartDate] = useState(false);
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [products, setProducts] = useState<ProductResponseData>();
 
@@ -90,11 +87,31 @@ const CreateDiscount = () => {
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+        let formdata: any;
         setIsLoading(true);
-        const formdata = {
-            ...data,
-            startDate: new Date(data.startDate).toLocaleDateString('en-CA'),
-            endDate: new Date(data.endDate).toLocaleDateString('en-CA'),
+        if(data.allProduct){
+            formdata = {
+                allProducts: true,
+                applicationMethod: data.applicationMethod,
+                couponCode: data.couponCode,
+                discountType: data?.discountType,
+                discountAmount: data?.discountAmount,
+                customerLimit: data?.customerLimit, 
+                startDate: new Date(data.startDate).toLocaleDateString('en-CA'),
+                endDate: new Date(data.endDate).toLocaleDateString('en-CA'),
+            }
+        }else{
+            formdata = {
+                allProducts: false,
+                applicationMethod: data.applicationMethod,
+                applicableProducts: data.applicableProducts,
+                couponCode: data.couponCode,
+                discountType: data?.discountType,
+                discountAmount: data?.discountAmount,
+                customerLimit: data?.customerLimit, 
+                startDate: new Date(data.startDate).toLocaleDateString('en-CA'),
+                endDate: new Date(data.endDate).toLocaleDateString('en-CA'),
+            }
         }
         try {
             const response = await requestClient({token: token}).post(
@@ -130,6 +147,9 @@ const CreateDiscount = () => {
         const couponCode = generateRandomCoupon();
         setValue("couponCode", couponCode);
     }
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
     return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -176,6 +196,7 @@ const CreateDiscount = () => {
                                 })}
                             />
                             <button 
+                            type='button'
                             onClick={handleRandomCoupon} 
                             className='text-medium bg-black p-3 text-white rounded-md w-36'>
                                 Generate
@@ -296,26 +317,26 @@ const CreateDiscount = () => {
                     <Controller 
                     control={control}
                     name='startDate'
+                    rules={{ required: 'Start date is required' }}
                     render={({ field }) => {
                         return(
                             <Stack>
-                                <Flex justify={"space-between"}>
-                                    <Stack gap={0.5}>
-                                        <Text fontWeight={600}>Discount has a start date?</Text>
-                                        <Text fontSize={"14px"} color={"gray.500"}>
-                                            Schedule the discount to activate in the future
-                                        </Text>
-                                    </Stack>
-                                    <Switch size={"md"} onChange={(e) =>  setIsStartDate(e.target.checked)}/>
-                                </Flex>
-                                {
-                                    isStartDate && 
-                                    <DateComponent
-                                    startDate={field.value}
-                                    setStartDate={field.onChange}
-                                    // isMinDate
-                                    // isMaxDate
-                                    />
+                                <Stack gap={0.5}>
+                                    <Text fontWeight={600}>Discount Start Date</Text>
+                                    {/* <Text fontSize={"14px"} color={"gray.500"}>
+                                        Schedule the discount to activate in the future
+                                    </Text> */}
+                                </Stack>
+                                <DateComponent
+                                startDate={field.value}
+                                setStartDate={field.onChange}
+                                isMinDate
+                                minDate={tomorrow}
+                                />
+                                {errors.startDate?.message &&
+                                    <Text as={"span"} className="text-red-500 text-sm">
+                                        {errors?.startDate?.message}
+                                    </Text>
                                 }
                             </Stack>
                         )
@@ -327,27 +348,27 @@ const CreateDiscount = () => {
                     <Controller 
                     control={control}
                     name='endDate'
+                    rules={{ required: 'End date is required' }}
                     render={({ field }) => {
                         return(
                             <Stack>
-                                <Flex justify={"space-between"}>
-                                    <Stack gap={0.5}>
-                                        <Text fontWeight={600}>Discount has a expiry date?</Text>
-                                        <Text fontSize={"14px"} color={"gray.500"}>
-                                            Schedule the discount to deactivate in the future
-                                        </Text>
-                                    </Stack>
-                                    <Switch size={"md"} onChange={(e) =>  setIsEndDate(e.target.checked)}/>
-                                </Flex>
-                                {
-                                    isEndDate &&
-                                    <DateComponent
-                                        startDate={field.value}
-                                        setStartDate={field.onChange}
-                                        minDate={watch("startDate")}
-                                        // isMaxDate
-                                        isMinDate
-                                    />
+                                <Stack gap={0.5}>
+                                    <Text fontWeight={600}>Discount Expiry Date</Text>
+                                    {/* <Text fontSize={"14px"} color={"gray.500"}>
+                                        Schedule the discount to deactivate in the future
+                                    </Text> */}
+                                </Stack>
+                                <DateComponent
+                                    startDate={field.value}
+                                    setStartDate={field.onChange}
+                                    minDate={watch("startDate")}
+                                    isMinDate
+                                    isDisabled={watch("startDate") ? false : true}
+                                />
+                                {errors.endDate?.message &&
+                                    <Text as={"span"} className="text-red-500 text-sm">
+                                        {errors?.endDate?.message}
+                                    </Text>
                                 }
                             </Stack>
                         )
@@ -378,4 +399,4 @@ const CreateDiscount = () => {
   )
 }
 
-export default CreateDiscount
+export default CreateDiscount;

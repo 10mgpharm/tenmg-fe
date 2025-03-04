@@ -23,6 +23,7 @@ interface CountProps {
     total: number;
     inactive: number;
 }
+
 const Page = () => {
 
     const session = useSession();
@@ -88,7 +89,7 @@ const Page = () => {
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 />
                 <Link href={'/admin/discount-code/create'} className="border-primary-500 text-primary-600 border p-3 font-medium rounded-md bg-white">
-                    Create discount
+                    Create Discount
                 </Link>
             </Flex>
         </HStack>

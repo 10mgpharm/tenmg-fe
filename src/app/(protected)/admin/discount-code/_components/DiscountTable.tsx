@@ -10,7 +10,19 @@ import {
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ColumsDiscountFN } from "./table";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import { Button, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
+import { 
+    Button, 
+    Flex, 
+    Spinner, 
+    Table, 
+    TableContainer, 
+    Tbody, 
+    Td, 
+    Th, 
+    Thead, 
+    Tr, 
+    useDisclosure 
+} from "@chakra-ui/react";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import { DiscountDataType, DiscountResponseData, NextAuthUserSession } from "@/types";
 import ModalWrapper from "@/app/(protected)/suppliers/_components/ModalWrapper";
@@ -29,7 +41,7 @@ interface DiscountTableProp {
     setPageCount: Dispatch<SetStateAction<number>>;
 }
 
-const PAGESIZE = 15;
+const PAGESIZE = 10;
 
 const DiscountTable = ({data, pageCount, setPageCount, type, loading, fetchDiscounts}: DiscountTableProp) => {
 
@@ -122,6 +134,10 @@ const DiscountTable = ({data, pageCount, setPageCount, type, loading, fetchDisco
         }
     }
 
+    const metaData = {
+        "links" : data?.links
+    }
+
     return (
     <div>
     {
@@ -172,7 +188,7 @@ const DiscountTable = ({data, pageCount, setPageCount, type, loading, fetchDisco
                 </Tbody>
             </Table>
             <Pagination
-                meta={data?.meta}
+                meta={metaData}
                 setPageCount={setPageCount}
             />
         </TableContainer>
