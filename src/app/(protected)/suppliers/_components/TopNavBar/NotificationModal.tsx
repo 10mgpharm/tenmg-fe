@@ -17,7 +17,7 @@ const NotificationModal = (
     { notificationsMsgs: NotificationProps[], route: string}
 ) => {
   return (
-    <div>
+    <div className="flex-1">
         <div className="flex items-center justify-between px-5">
             <p className='font-bold text-lg'>Notifications</p>
             <Link
