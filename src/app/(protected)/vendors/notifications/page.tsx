@@ -6,7 +6,7 @@ import { handleServerErrorMessage, truncateString } from "@/utils";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react"
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaArrowTrendUp } from "react-icons/fa6"
+import { FaArrowTrendUp } from "react-icons/fa6";
 import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io"
 import { LuBox } from "react-icons/lu"
 import { NotificationProps } from "../../suppliers/_components/TopNavBar/NotificationModal";
