@@ -7,7 +7,6 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
-import { LuCheckCircle } from "react-icons/lu";
 import LoanLayout from "../../_components/LoanLayout";
 import LoanProfile from "../../_components/LoanProfile";
 import { IoMdInformationCircleOutline } from "react-icons/io";
