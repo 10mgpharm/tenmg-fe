@@ -17,6 +17,7 @@
     "migration:show": "npm run typeorm -- -d ./src/config/typeOrmDatasource.ts migration:show"
   },
   "dependencies": {
+    "@chakra-ui/layout": "^2.3.1",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
