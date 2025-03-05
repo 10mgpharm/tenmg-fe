@@ -21,12 +21,14 @@ import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { BusinessStatus } from "@/constants";
 import { LuFileText } from 'react-icons/lu'
+import { BiMessageDetail } from 'react-icons/bi'
 
 const navigation = [
   { name: 'Dashboard', href: '/lenders', icon: HomeIcon, current: true },
   { name: 'Loan Application', href: '/lenders/loan-application', icon: LuFileText, current: false },
   { name: 'Transaction History', href: '/lenders/transaction-history', icon: FiShoppingBag, current: false },
   { name: 'Loan Portfolio', href: '/lenders/loan-portfolio', icon: BsGraphUpArrow, current: false },
+  { name: 'Messages', href: '/lenders/messages', icon: BiMessageDetail, current: false },
   { name: 'Settings', href: '/lenders/settings', icon: Cog6ToothIcon, current: false },
 ]
 
@@ -47,8 +49,6 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
     ? false
     : false;
 };
-
-
 
 const SideBar = ({ businessStatus }: { businessStatus: string }) => {
   const pathname = usePathname();
