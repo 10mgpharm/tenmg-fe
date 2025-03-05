@@ -1,7 +1,12 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const SetupAccount = () => {
+
+  const router = useRouter();
+
+
   return (
     <Box
       bg="gray.200"
@@ -28,7 +33,7 @@ const SetupAccount = () => {
           </Text>
         </Box>
         <Box>
-          <Button colorScheme="primary.500" fontSize="xs" size="sm">
+          <Button colorScheme="primary.500" fontSize="xs" size="sm" onClick={() => router.push("/lenders/settings/license-upload")}>
             Complete Setup
           </Button>
         </Box>
