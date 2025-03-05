@@ -17,12 +17,12 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 
-import { Search, UserCircle2Icon, UserCircleIcon } from "lucide-react";
+import { BellIcon, Search, UserCircle2Icon } from "lucide-react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-import avatar from "@public/assets/images/Avatar.png";
+// import avatar from "@public/assets/images/Avatar.png";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { PiShoppingBagBold } from "react-icons/pi";
 import { FaRegCircleQuestion } from "react-icons/fa6";
@@ -32,6 +32,8 @@ import Link from "next/link";
 import { useCartStore } from "../storeFrontState/useCartStore";
 import { NextAuthUserSession } from "@/types";
 import { BusinessStatus } from "@/constants";
+import NotificationModal from "../../suppliers/_components/TopNavBar/NotificationModal";
+import requestClient from "@/lib/requestClient";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -50,6 +52,7 @@ const Navbar = () => {
   const handleCloseRemove = () => setIsRemoveOpen(false);
 
   const [cartDataCount, setCartDataCount] = useState(null);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
@@ -69,6 +72,30 @@ const Navbar = () => {
   useEffect(() => {
     if (userData?.user?.token) fetchCart(userData?.user?.token);
   }, [isCartOpen, fetchCart, userData?.user?.token]);
+
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+
+  const fetchingData = async () => {
+    try {
+      const response = await requestClient({ token }).get(
+      `/account/notifications`
+      );
+
+      if (response.status === 200) {
+        setNotifications(response.data?.data?.data || []);
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchingData();
+    }
+  }, [token]);
+
 
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
@@ -127,7 +154,6 @@ const Navbar = () => {
               </Box>
             </Stack>
           </Box>
-
           {/* Avatar Icon */}
           <Box cursor="pointer">
             <Stack align="center">
@@ -254,6 +280,39 @@ const Navbar = () => {
               <Icon as={Search} boxSize={5} /> <Text>Search</Text>
             </Stack>
           </Box>
+
+          {/* NOTIFICATIONS */}
+          <Menu>
+            <MenuButton className="relative">
+              <span className="sr-only">View notifications</span>
+              <BellIcon aria-hidden="true" className="h-6 w-6 mx-auto" />
+              <div className="px-1 rounded-full bg-red-500 absolute top-0 right-6 text-[9px] text-white">1</div>
+              <Text>Notifications</Text>
+            </MenuButton>
+            <MenuList
+              bg="white"
+              w="410px"
+              m={0}
+              rounded="xl"
+              color="gray.900"
+              fontSize="md"
+              fontWeight="medium"
+              h="560px"
+              overflowY={"scroll"}
+              sx={{
+                "::-webkit-scrollbar": { display: "none" },
+                "-ms-overflow-style": "none",
+                "scrollbar-width": "none"
+              }}
+            >
+              {/* <MenuItem py={3} px={0}> */}
+                <NotificationModal 
+                  notificationsMsgs={notifications}
+                  route={"/storefront/notifications"}
+                />
+              {/* </MenuItem> */}
+            </MenuList>
+          </Menu>
 
           {/* Cart */}
           <Box

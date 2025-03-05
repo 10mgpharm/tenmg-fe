@@ -7,7 +7,8 @@ import messageIcon from "@public/assets/images/message.svg"
 import { 
     classNames, 
     convertLetterCase, 
-    handleServerErrorMessage 
+    handleServerErrorMessage, 
+    truncateString
 } from "@/utils";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaPaperclip } from "react-icons/fa6";
@@ -160,7 +161,8 @@ const Message = () => {
                 className="bg-primary-600 text-white w-36 mx-auto p-2 rounded-md mt-5">
                     Start Message
                 </button>
-            </div>: 
+            </div>
+            : 
             <div className="">
                 <div className="grid grid-cols-5">
                     <div className="col-span-2 pr-5">
@@ -170,7 +172,7 @@ const Message = () => {
                                 New Message
                             </Button>
                         </div>
-                        <ul className="space-y-3">
+                        <ul className="">
                             {
                                 messages?.map((message) => (
                                     <li 
@@ -190,7 +192,7 @@ const Message = () => {
                                             name={message?.receiver?.name}
                                             src={message?.receiver?.name}
                                         />
-                                        <div className="space-y-1">
+                                        <div className="">
                                             <p className="font-medium text-lg text-gray-700">
                                                 <span className="capitalize">
                                                 {
@@ -202,7 +204,7 @@ const Message = () => {
                                                 </span>
                                             </p>
                                             <p className="text-sm text-gray-600">
-                                                You have a new message, click to view
+                                                {truncateString(message?.latest?.message, 76)}
                                             </p>
                                         </div>
                                     </li>

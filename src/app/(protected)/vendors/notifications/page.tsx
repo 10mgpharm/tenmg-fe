@@ -6,7 +6,7 @@ import { handleServerErrorMessage, truncateString } from "@/utils";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react"
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaArrowTrendUp } from "react-icons/fa6"
+import { FaArrowTrendUp } from "react-icons/fa6";
 import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io"
 import { LuBox } from "react-icons/lu"
 import { NotificationProps } from "../../suppliers/_components/TopNavBar/NotificationModal";
@@ -135,12 +135,19 @@ const Notifications = () => {
                             <div
                                 key={notification?.id}
                                 className={cn(
-                                    selectedNotification?.id === notification.id 
+                                    (selectedNotification?.id === notification.id || notification?.readAt) 
                                     ? "text-black/50 font-normal" : 
-                                    "hover:bg-gray-100/10 font-medium", 
+                                    "hover:bg-gray-100/10 font-semibold", 
                                     "cursor-pointer max-w-md border-b border-gray-200")}
                             >
-                            <div className='flex mx-4'>
+                            <div
+                            className={cn(
+                                selectedNotification?.id === notification.id
+                                 ? "border-r-4 border-primary-500 bg-gray-100" 
+                                 : "", 
+                                 "flex px-2 py-1.5"
+                             )}
+                            >
                                 <div className="p-1 bg-blue-100 text-blue-600 rounded-full max-h-max">
                                     <IoMdNotificationsOutline
                                     className="w-5 h-5 cursor-pointer"
@@ -148,7 +155,7 @@ const Notifications = () => {
                                 </div>
                                 <div className="flex-1 flex items-center">
                                     <div className="flex-1" onClick={() => fetchingDataById(notification.id)}>
-                                        <p className="px-4 text-sm">{truncateString(notification?.data?.message, 76)}</p>
+                                        <p className="px-4">{truncateString(notification?.data?.message, 76)}</p>
                                         <p className="text-sm text-gray-500 my-2 px-4">{notification?.createdAt}</p>
                                     </div>
                                     <Menu as="div" className="relative">
