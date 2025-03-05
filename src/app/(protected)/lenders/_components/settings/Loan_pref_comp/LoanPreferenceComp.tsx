@@ -4,42 +4,52 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Select,
+  Skeleton,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import LoanAutoAccept from "./LoanAutoAccept";
 import requestClient from "@/lib/requestClient";
 import { handleServerErrorMessage } from "@/utils";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import ReactSelect from "react-select";
+
+interface OptionType {
+  label: string;
+  value: number;
+}
+
+interface CreditScoreOption {
+  label: string;
+  value: string;
+}
+
+interface CategoryOptionType {
+  loanAbove: number;
+  value: string;
+  label: string;
+}
 
 interface IFormInput {
-  loanTenure: string;
+  loanTenure: OptionType[];
   loanInterest: string;
-  creditScoreCategory: string;
+  creditScoreCategory: CreditScoreOption[];
 }
 
 export default function LoanPreferenceComp() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [status, setStatus] = useState<boolean>(null);
+  const [isInfoLoading, setIsInfoLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<boolean>(false);
+  const [loanTenurePrefill, setLoanTenurePrefill] = useState<any>(null);
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
-  const loan_tenure = ["3 months", "6 months", "12 months"];
-
-  const category = [
-    "Category A  (Above 75%)",
-    "Category B  (Above 50%)",
-    "Category C  (Above 25%)",
-    "Category D  (Below 25%)",
-  ];
-
   const {
-    register,
+    control,
     formState: { errors },
     handleSubmit,
     setValue,
@@ -47,13 +57,52 @@ export default function LoanPreferenceComp() {
   } = useForm<IFormInput>({
     mode: "onChange",
     defaultValues: {
-      loanTenure: "",
+      loanTenure: [],
       loanInterest: "",
-      creditScoreCategory: "",
+      creditScoreCategory: [],
     },
   });
 
-  //TODO: Fetch saved loan preferences prefill (if available)
+  // Fetch prefill data (loan tenure options and categories)
+  const fetchLoanTenurePrefill = useCallback(async () => {
+    setIsInfoLoading(true);
+    try {
+      const response = await requestClient({
+        token: sessionData?.user?.token,
+      }).get(`/lender/settings/get-loan-preferences-prefill`);
+      if (response.status === 200) {
+        setLoanTenurePrefill(response.data.data);
+        setIsInfoLoading(false);
+      }
+    } catch (error) {
+      setIsInfoLoading(false);
+      console.error(error);
+    }
+  }, [sessionData?.user?.token]);
+
+  useEffect(() => {
+    if (sessionData?.user?.token) {
+      fetchLoanTenurePrefill();
+    }
+  }, [sessionData?.user?.token, fetchLoanTenurePrefill]);
+
+  // Compute loan tenure options from prefill data
+  const loanTenureOptions: OptionType[] =
+    loanTenurePrefill?.loanTenure || loanTenurePrefill?.data?.loanTenure || [];
+
+  // Use default categories if none are provided by the endpoint
+  const defaultCategories: CategoryOptionType[] = [
+    { value: "A", loanAbove: 75, label: "Category A (Above 75%)" },
+    { value: "B", loanAbove: 50, label: "Category B (Above 50%)" },
+    { value: "C", loanAbove: 25, label: "Category C (Above 25%)" },
+    { value: "D", loanAbove: 0, label: "Category D (Below 25%)" },
+  ];
+  const creditScoreCategoryOptions: CategoryOptionType[] =
+    loanTenurePrefill?.categories ||
+    loanTenurePrefill?.data?.categories ||
+    defaultCategories;
+
+  // Fetch existing loan preferences after prefill data is loaded
   useEffect(() => {
     const fetchLoanPreferences = async () => {
       try {
@@ -64,55 +113,80 @@ export default function LoanPreferenceComp() {
         const { loanTenure, loanInterest, creditScoreCategory, autoAccept } =
           response.data.data;
 
-        const tenureString =
+        // Map loanTenure numbers to OptionType objects
+        const tenureOptions =
           Array.isArray(loanTenure) && loanTenure.length > 0
-            ? `${loanTenure[0]} months`
-            : "";
+            ? loanTenure.map((t: number) => ({
+                value: t,
+                label: `${t} months`,
+              }))
+            : [];
 
-        const categoryOptions = [
-          "Category A  (Above 75%)",
-          "Category B  (Above 50%)",
-          "Category C  (Above 25%)",
-          "Category D  (Below 25%)",
-        ];
-        const categoryString =
-          Array.isArray(creditScoreCategory) && creditScoreCategory.length > 0
-            ? categoryOptions.find((opt) =>
-                opt.includes(creditScoreCategory[0])
-              ) || ""
-            : "";
+        // Map the returned credit score categories (e.g. ["A", "B"]) to option objects.
+        let selectedCategoryOptions: CreditScoreOption[] = [];
+        if (
+          Array.isArray(creditScoreCategory) &&
+          creditScoreCategory.length > 0
+        ) {
+          selectedCategoryOptions = creditScoreCategory.map(
+            (catVal: string) => {
+              const found = creditScoreCategoryOptions.find(
+                (cat: CategoryOptionType) => cat.value === catVal
+              );
+              return found
+                ? {
+                    value: found.value,
+                    label: `Category ${found.value} (Above ${found.loanAbove}%)`,
+                  }
+                : { value: catVal, label: `Category ${catVal}` };
+            }
+          );
+        }
 
-        setValue("loanTenure", tenureString);
+        setValue("loanTenure", tenureOptions);
         setValue("loanInterest", loanInterest);
-        setValue("creditScoreCategory", categoryString);
+        setValue("creditScoreCategory", selectedCategoryOptions);
         setStatus(autoAccept);
       } catch (error: any) {
         toast.error(handleServerErrorMessage(error));
       }
     };
 
-    if (sessionData?.user?.token) fetchLoanPreferences();
-  }, [setValue, sessionData?.user?.token]);
+    if (sessionData?.user?.token && loanTenurePrefill) {
+      fetchLoanPreferences();
+    }
+  }, [
+    setValue,
+    sessionData?.user?.token,
+    loanTenurePrefill,
+    creditScoreCategoryOptions,
+  ]);
 
   const selectedTenure = watch("loanTenure");
   const selectedCategory = watch("creditScoreCategory");
 
+  // Update the interest rate based on selected loan tenure and categories
   useEffect(() => {
-    if (selectedTenure && selectedCategory) {
-      setValue("loanInterest", "Your interest 15%, Processing fee (0%)");
+    if (selectedTenure.length && selectedCategory.length) {
+      setValue(
+        "loanInterest",
+        loanTenurePrefill?.interestRate ||
+          "Your interest 15%, Processing fee (0%)"
+      );
     } else {
       setValue("loanInterest", "");
     }
-  }, [selectedTenure, selectedCategory, setValue]);
+  }, [selectedTenure, selectedCategory, setValue, loanTenurePrefill]);
 
+  // onSubmit handler
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true);
     try {
-      const tenureMatch = data.loanTenure.match(/\d+/);
-      const creditMatch = data.creditScoreCategory.match(/Category\s+([A-Z])/);
       const payload = {
-        loanTenure: tenureMatch ? [parseInt(tenureMatch[0])] : [],
-        creditScoreCategory: creditMatch ? [creditMatch[1]] : [],
+        loanTenure: data.loanTenure.map((option) => option.value),
+        creditScoreCategory: data.creditScoreCategory.map(
+          (option) => option.value
+        ),
       };
 
       await requestClient({
@@ -133,7 +207,6 @@ export default function LoanPreferenceComp() {
         <div className="space-y-5 w-full flex justify-between py-5">
           <div>
             <h3 className="font-semibold text-lg">Loan Information</h3>
-
             <Text fontSize={"14px"} color={"gray.500"}>
               Define your preferences for loan disbursement.
             </Text>
@@ -152,7 +225,7 @@ export default function LoanPreferenceComp() {
         </div>
 
         <div className="p-5 rounded-lg bg-white/70 border border-slate-300">
-          {/* Loan Tenure Option */}
+          {/* Loan Tenure Multiselect */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-4">
             <div>
               <FormLabel>Loan Tenure Option</FormLabel>
@@ -160,29 +233,38 @@ export default function LoanPreferenceComp() {
                 Loan Duration
               </Text>
             </div>
-            <FormControl className="col-span-2" isInvalid={!!errors.loanTenure}>
-              <Select
-                {...register("loanTenure", {
-                  required: "Loan tenure option is required",
-                })}
-                defaultValue=""
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl
+                className="col-span-2"
+                isInvalid={!!errors.loanTenure}
               >
-                <option value="" disabled>
-                  Select loan tenure
-                </option>
-                {loan_tenure.map((option, i) => (
-                  <option value={option} key={i}>
-                    {option}
-                  </option>
-                ))}
-              </Select>
-              {errors.loanTenure && (
-                <p className="text-red-500">{errors.loanTenure.message}</p>
-              )}
-            </FormControl>
+                <Controller
+                  control={control}
+                  name="loanTenure"
+                  rules={{ required: "Loan Tenure is required" }}
+                  render={({ field: { onChange, value } }) => (
+                    <ReactSelect
+                      isClearable
+                      isSearchable
+                      isMulti
+                      options={loanTenureOptions}
+                      placeholder="Select Loan Tenure"
+                      closeMenuOnSelect={false}
+                      onChange={(selectedOptions: OptionType[]) =>
+                        onChange(selectedOptions)
+                      }
+                      value={value}
+                    />
+                  )}
+                />
+                {errors.loanTenure && (
+                  <p className="text-red-500">{errors.loanTenure.message}</p>
+                )}
+              </FormControl>
+            </Skeleton>
           </div>
 
-          {/* Customer Credit Score Category */}
+          {/* Customer Credit Score Category Multiselect */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-4">
             <div>
               <FormLabel>Customer Credit Score Category</FormLabel>
@@ -190,33 +272,44 @@ export default function LoanPreferenceComp() {
                 Specify the customer categories you would like to give credit to
               </Text>
             </div>
-
-            <FormControl
-              className="col-span-2"
-              isInvalid={!!errors.creditScoreCategory}
-            >
-              <Select
-                {...register("creditScoreCategory", {
-                  required: "Please specify customer category",
-                })}
-                defaultValue=""
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl
+                className="col-span-2"
+                isInvalid={!!errors.creditScoreCategory}
               >
-                <option value="" disabled>
-                  Select customer category
-                </option>
-                {category.map((option, i) => (
-                  <option value={option} key={i}>
-                    {option}
-                  </option>
-                ))}
-              </Select>
-              {errors.creditScoreCategory && (
-                <p className="text-red-500">
-                  {errors.creditScoreCategory.message}
-                </p>
-              )}
-            </FormControl>
+                <Controller
+                  control={control}
+                  name="creditScoreCategory"
+                  rules={{ required: "Credit Score Category is required" }}
+                  render={({ field: { onChange, value } }) => (
+                    <ReactSelect
+                      isClearable
+                      isSearchable
+                      isMulti
+                      options={creditScoreCategoryOptions.map(
+                        (cat: CategoryOptionType) => ({
+                          value: cat.value,
+                          label: `Category ${cat.value} (Above ${cat.loanAbove}%)`,
+                        })
+                      )}
+                      placeholder="Select Credit Score Category"
+                      closeMenuOnSelect={false}
+                      onChange={(selectedOptions: CreditScoreOption[]) =>
+                        onChange(selectedOptions)
+                      }
+                      value={value}
+                    />
+                  )}
+                />
+                {errors.creditScoreCategory && (
+                  <p className="text-red-500">
+                    {errors.creditScoreCategory.message}
+                  </p>
+                )}
+              </FormControl>
+            </Skeleton>
           </div>
+
           {/* Interest Rate (Disabled) */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
@@ -225,20 +318,22 @@ export default function LoanPreferenceComp() {
                 System Default interest rate
               </Text>
             </div>
-            <FormControl
-              className="col-span-2"
-              isInvalid={!!errors.loanInterest}
-            >
-              <Input
-                type="text"
-                placeholder="Interest Rate"
-                value={watch("loanInterest")}
-                disabled
-              />
-              {errors.loanInterest && (
-                <p className="text-red-500">{errors.loanInterest.message}</p>
-              )}
-            </FormControl>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl
+                className="col-span-2"
+                isInvalid={!!errors.loanInterest}
+              >
+                <Input
+                  type="text"
+                  placeholder="Interest Rate"
+                  value={watch("loanInterest")}
+                  disabled
+                />
+                {errors.loanInterest && (
+                  <p className="text-red-500">{errors.loanInterest.message}</p>
+                )}
+              </FormControl>
+            </Skeleton>
           </div>
         </div>
       </form>
