@@ -20,35 +20,17 @@ import { redirect, usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { BusinessStatus } from "@/constants";
-import { LuFileText } from "react-icons/lu";
+import { LuFileText } from 'react-icons/lu'
+import { BiMessageDetail } from 'react-icons/bi'
 
 const navigation = [
-  { name: "Dashboard", href: "/lenders", icon: HomeIcon, current: true },
-  {
-    name: "Loan Application",
-    href: "/lenders/loan-application",
-    icon: LuFileText,
-    current: false,
-  },
-  {
-    name: "Transaction History",
-    href: "/lenders/transaction-history",
-    icon: FiShoppingBag,
-    current: false,
-  },
-  {
-    name: "Loan Portfolio",
-    href: "/lenders/loan-portfolio",
-    icon: BsGraphUpArrow,
-    current: false,
-  },
-  {
-    name: "Settings",
-    href: "/lenders/settings",
-    icon: Cog6ToothIcon,
-    current: false,
-  },
-];
+  { name: 'Dashboard', href: '/lenders', icon: HomeIcon, current: true },
+  { name: 'Loan Application', href: '/lenders/loan-application', icon: LuFileText, current: false },
+  { name: 'Transaction History', href: '/lenders/transaction-history', icon: FiShoppingBag, current: false },
+  { name: 'Loan Portfolio', href: '/lenders/loan-portfolio', icon: BsGraphUpArrow, current: false },
+  { name: 'Messages', href: '/lenders/messages', icon: BiMessageDetail, current: false },
+  { name: 'Settings', href: '/lenders/settings', icon: Cog6ToothIcon, current: false },
+]
 
 const mustAlwaysBeEnabled = (name: string) =>
   ["Dashboard", "Settings"].includes(name);

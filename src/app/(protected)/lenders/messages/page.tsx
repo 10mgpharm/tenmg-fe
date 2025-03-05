@@ -18,9 +18,9 @@ import requestClient from "@/lib/requestClient";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { Avatar, Button, Flex, Icon, Input, InputGroup, InputRightElement, Spinner, Tag, TagLabel, useDisclosure } from "@chakra-ui/react";
+import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { SearchIcon } from "lucide-react";
 import { useDebouncedValue } from "@/utils/debounce";
-import ModalWrapper from "../_components/ModalWrapper";
 
 const Message = () => {
 
