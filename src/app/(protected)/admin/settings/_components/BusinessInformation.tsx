@@ -52,8 +52,8 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   });
 
   // Determine if the user is the main admin
-  const isMainAdmin = sessionData?.user?.role === "admin";
-  const isAdminMember = sessionData?.user?.role === "admin_member"; 
+  const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
+  // const isAdminMember = sessionData?.user?.role === "admin_member"; 
 
   useEffect(() => {
     const fetchUser = async () => {
