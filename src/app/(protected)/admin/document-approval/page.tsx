@@ -42,11 +42,15 @@ const DocumentApproval = () => {
     null
   );
   const [pharmData, setPharmData] = useState<AdminApprovalsProps | null>(null);
+  const [lenderData, setLenderData] = useState<AdminApprovalsProps | null>(
+    null
+  );
 
   const [requestTotal, setRequestTotal] = useState<number>(0);
   const [supplierTotal, setSupplierTotal] = useState<number>(0);
   const [vendorTotal, setVendorTotal] = useState<number>(0);
   const [pharmTotal, setPharmTotal] = useState<number>(0);
+  const [lenderTotal, setLenderTotal] = useState<number>(0);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(1);
@@ -80,6 +84,9 @@ const DocumentApproval = () => {
           } else if (requestType === "Vendor") {
             setVendorData(data);
             setVendorTotal(data.meta.total);
+          } else if (requestType === "Lender") {
+            setLenderData(data);
+            setLenderTotal(data.meta.total);
           }
         }
       } catch (error) {
@@ -97,6 +104,7 @@ const DocumentApproval = () => {
     fetchRequests("Supplier", pageCount);
     fetchRequests("Pharmacy", pageCount);
     fetchRequests("Vendor", pageCount);
+    fetchRequests("Lender", pageCount);
   }, [fetchRequests, token, pageCount, debouncedSearch]);
 
   const handleTabsChange = (index: number) => {
@@ -107,19 +115,29 @@ const DocumentApproval = () => {
       setSupplierData(null);
       setPharmData(null);
       setVendorData(null);
+      setLenderData(null);
     } else if (index === 1) {
       fetchRequests("Supplier", 1);
       setPharmData(null);
       setVendorData(null);
+      setLenderData(null);
       setRequestData(null);
     } else if (index === 2) {
       fetchRequests("Pharmacy", 1);
       setSupplierData(null);
       setVendorData(null);
+      setLenderData(null);
       setRequestData(null);
     } else if (index === 3) {
       fetchRequests("Vendor", 1);
       setSupplierData(null);
+      setPharmData(null);
+      setLenderData(null);
+      setRequestData(null);
+    } else if (index === 4) {
+      fetchRequests("Lender", 1);
+      setSupplierData(null);
+      setVendorData(null);
       setPharmData(null);
       setRequestData(null);
     }
@@ -200,6 +218,16 @@ const DocumentApproval = () => {
               </p>
             </div>
           </Tab>
+          <Tab
+            _selected={{ color: "white", bg: "#1A70B8", borderRadius: "10px" }}
+          >
+            <div className="flex items-center gap-3">
+              <Text>Lenders</Text>
+              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
+                {lenderTotal || 0}
+              </p>
+            </div>
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel px={0}>
@@ -243,6 +271,18 @@ const DocumentApproval = () => {
               isLoading={isLoading}
               data={vendorData}
               type="Vendor"
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+              pageCount={pageCount}
+              setPageCount={setPageCount}
+              fetchTeamUser={fetchRequests}
+            />
+          </TabPanel>
+          <TabPanel>
+            <UsersTab
+              isLoading={isLoading}
+              data={lenderData}
+              type="Lender"
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
               pageCount={pageCount}

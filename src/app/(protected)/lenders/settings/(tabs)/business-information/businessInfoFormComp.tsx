@@ -8,6 +8,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Skeleton,
   Text,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -139,15 +140,17 @@ export default function BusinessInfoFormComp() {
               </Text>
             </div>
 
-            <FormControl className="col-span-2">
-              <Input
-                type="text"
-                placeholder={"Business Name"}
-                {...register("businessName", {
-                  required: "Business name is required",
-                })}
-              />
-            </FormControl>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl className="col-span-2">
+                <Input
+                  type="text"
+                  placeholder={"Business Name"}
+                  {...register("businessName", {
+                    required: "Business name is required",
+                  })}
+                />
+              </FormControl>
+            </Skeleton>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -158,15 +161,17 @@ export default function BusinessInfoFormComp() {
               </Text>
             </div>
 
-            <FormControl className="col-span-2">
-              <Input
-                type="text"
-                placeholder={"Olivia Bellingham"}
-                {...register("contactPerson", {
-                  required: "Contact person name is required",
-                })}
-              />
-            </FormControl>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl className="col-span-2">
+                <Input
+                  type="text"
+                  placeholder={"Olivia Bellingham"}
+                  {...register("contactPerson", {
+                    required: "Contact person name is required",
+                  })}
+                />
+              </FormControl>
+            </Skeleton>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -177,16 +182,18 @@ export default function BusinessInfoFormComp() {
               </Text>
             </div>
 
-            <FormControl className="col-span-2">
-              <Input
-                type="email"
-                isDisabled
-                placeholder={"olivia.bellingham@me.com"}
-                {...register("contactEmail", {
-                  required: "Business email is required",
-                })}
-              />
-            </FormControl>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl className="col-span-2">
+                <Input
+                  type="email"
+                  isDisabled
+                  placeholder={"olivia.bellingham@me.com"}
+                  {...register("contactEmail", {
+                    required: "Business email is required",
+                  })}
+                />
+              </FormControl>
+            </Skeleton>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -196,16 +203,17 @@ export default function BusinessInfoFormComp() {
                 Associated business phone number
               </Text>
             </div>
-
-            <FormControl className="col-span-2">
-              <Input
-                type="tel"
-                placeholder={"(123) 456-7890"}
-                {...register("contactPhone", {
-                  required: "phone number is required",
-                })}
-              />
-            </FormControl>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl className="col-span-2">
+                <Input
+                  type="tel"
+                  placeholder={"(123) 456-7890"}
+                  {...register("contactPhone", {
+                    required: "phone number is required",
+                  })}
+                />
+              </FormControl>
+            </Skeleton>
           </div>
         </div>
       </form>
@@ -213,6 +221,7 @@ export default function BusinessInfoFormComp() {
       <BankInfoFormComp
         sessionData={sessionData}
         defaultBankDetail={defaultBankDetail}
+        isInfoLoading={isInfoLoading}
       />
     </div>
   );
