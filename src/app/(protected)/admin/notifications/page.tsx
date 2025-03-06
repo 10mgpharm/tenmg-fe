@@ -11,11 +11,16 @@ import { handleServerErrorMessage, truncateString } from "@/utils";
 import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io"
 import { NotificationProps } from "../../suppliers/_components/TopNavBar/NotificationModal";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Notifications = () => {
 
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
+
     const [selectedNotification, setSelectedNotification] = useState<SingleNotification>();
-    const [data, setData] = useState<NotificationProps[]>([]);
+    const [data, setData] = useState<NotificationProps[]>();
     const [loading, setLoading] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -23,7 +28,7 @@ const Notifications = () => {
     const sessionData = session?.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
 
-    const fetchingData = async () => {
+    const fetchingData = useCallback(async () => {
         setLoading(true);
         try {
             const response = await requestClient({ token: token }).get(
@@ -38,13 +43,33 @@ const Notifications = () => {
         } finally {
             setLoading(false);
         }
-    };
+    },[token])
+
+    const fetchingDataById = useCallback(async () => {
+        // setIsLoading(true);
+        if(!id) return;
+        try {
+            const response = await requestClient({ token: token }).get(
+            `/account/notifications/${id}`
+            );
+            if (response.status === 200) {
+                markAsRead(id, false)
+                setSelectedNotification(response?.data?.data);
+            }
+        } catch (err: any) {
+            console.error(err);
+            toast.error(handleServerErrorMessage(err));
+        } finally {
+            setIsLoading(false);
+        }
+    }, [token, id]) 
 
     useEffect(() => {
         if (token) {
             fetchingData();
+            fetchingDataById();
         }
-    }, [token]);
+    }, [token, fetchingData, fetchingDataById]);
 
     const markAsRead = async (id: string, reload: boolean) => {
         try {
@@ -65,24 +90,6 @@ const Notifications = () => {
         }
     }
 
-    const fetchingDataById = useCallback(async (id: string) => {
-        setIsLoading(true);
-        try {
-            const response = await requestClient({ token: token }).get(
-            `/account/notifications/${id}`
-            );
-            if (response.status === 200) {
-                markAsRead(id, false)
-                setSelectedNotification(response?.data?.data);
-            }
-        } catch (err: any) {
-            console.error(err);
-            toast.error(handleServerErrorMessage(err));
-        } finally {
-            setIsLoading(false);
-        }
-    }, [token]) 
-
     const handleDelete = useCallback(async (id: string) => {
         // setLoading(true);
         try {
@@ -98,38 +105,29 @@ const Notifications = () => {
         } finally {
             setLoading(false);
         }
-    }, [token]) 
+    }, [token]); 
 
-    if(loading){
-        return(
-          <Flex justify="center" align="center" height="200px">
-            <Spinner size="xl" />
-          </Flex>
-        )
-    }
-
-    console.log(data)
+    const handleItemClick = (id: string) => {
+        const currentParams = new URLSearchParams(searchParams.toString());
+        currentParams.set('id', id);
+        router.replace(`/admin/notifications?${currentParams.toString()}`, {scroll: false});
+    };
 
     return (
     <div className='h-[calc(100vh-150px)] rounded-sm m-4 bg-white'>
         {
-            data?.length === 0 ?
-            <div className="flex flex-col items-center justify-center pt-24 text-center">
-                <IoIosNotifications
-                    className="w-32 h-32 text-primary-500"
-                />
-                <p className="text-gray-500 font-medium mt-4">
-                This is where your notifications will appear.
-              </p>
-            </div>
-            : 
-            <div className="flex h-[calc(100vh-150px)] rounded-sm m-4 bg-white">
-                <div className="border-r">
+            loading ?
+                <Flex justify="center" align="center" height="200px">
+                    <Spinner size="xl" />
+                </Flex>
+            : data?.length > 0 ?
+            <div className="flex rounded-sm m-4 bg-white">
+                <div className="border-r h-[calc(100vh-150px)] overflow-y-scroll overflow-x-hidden">
                     <h2 className="text-xl font-semibold mb-2 px-4 mt-5">My Notifications</h2>
                     <button className="text-primary-500 font-medium text-sm mb-6 px-4">
                         Mark all as read
                     </button>
-                    <div className="space-y-3">
+                    <div>
                         {
                         data?.map((notification) => (
                             <div
@@ -154,7 +152,9 @@ const Notifications = () => {
                                     />
                                 </div>
                                 <div className="flex-1 flex items-center">
-                                    <div className="flex-1" onClick={() => fetchingDataById(notification.id)}>
+                                    <div className="flex-1" 
+                                    onClick={() => handleItemClick(notification.id)}
+                                    >
                                         <p className="px-4">{truncateString(notification?.data?.message, 76)}</p>
                                         <p className="text-sm text-gray-500 my-2 px-4">{notification?.createdAt}</p>
                                     </div>
@@ -235,6 +235,15 @@ const Notifications = () => {
                     )}
                 </div>
             </div>
+            : data?.length === 0 ? <div className="flex flex-col items-center justify-center pt-24 text-center">
+                <IoIosNotifications
+                    className="w-32 h-32 text-primary-500"
+                />
+                <p className="text-gray-500 font-medium mt-4">
+                This is where your notifications will appear.
+                </p>
+            </div>
+            : null
         }
     </div>
   )

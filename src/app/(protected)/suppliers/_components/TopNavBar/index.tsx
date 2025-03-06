@@ -9,7 +9,6 @@ import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import {
   Avatar,
-  Badge,
   FormControl,
   FormLabel,
   Switch,
@@ -17,11 +16,12 @@ import {
   TagLabel,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { convertLetterCase } from "@/utils";
+import { convertLetterCase, handleServerErrorMessage } from "@/utils";
 import GreetingComponent from "./GreetingComponent";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import NotificationModal from "./NotificationModal";
 import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
 
 const TopNavBar = ({route}: {route: string}) => {
 
@@ -72,14 +72,12 @@ const TopNavBar = ({route}: {route: string}) => {
 
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
 
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  const fetchingData = async () => {
+  const fetchingData = useCallback(async () => {
     setLoading(true);
-    setError("");
     try {
       const response = await requestClient({ token }).get(
       `/account/notifications`
@@ -87,22 +85,14 @@ const TopNavBar = ({route}: {route: string}) => {
 
       if (response.status === 200) {
         setNotifications(response.data?.data?.data || []);
-      } else {
-        setError("Failed to load audit logs. Please try again.");
       }
     } catch (err: any) {
       console.error(err);
-      setError("An unexpected error occurred while fetching audit logs.");
+      toast(handleServerErrorMessage(err));
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    if (token) {
-      fetchingData();
-    }
-  }, [token]);
+  },[token]);
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
@@ -136,20 +126,18 @@ const TopNavBar = ({route}: {route: string}) => {
           <Menu as="div">
             <MenuButton
               type="button"
+              onClick={fetchingData}
               className="-m-2.5 relative p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500"
             >
               <span className="sr-only">View notifications</span>
               <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">1</div>
               <BellIcon aria-hidden="true" className="h-6 w-6" />
             </MenuButton>
-            <MenuItems 
-            transition
-              className="absolute right-5 z-10 mt-5 w-full sm:w-[430px] h-[560px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
-              <NotificationModal 
-                notificationsMsgs={notifications}
-                route={route}
-              />
-            </MenuItems>
+            <NotificationModal 
+              notificationsMsgs={notifications}
+              route={route}
+              loading={loading}
+            />
           </Menu>
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">

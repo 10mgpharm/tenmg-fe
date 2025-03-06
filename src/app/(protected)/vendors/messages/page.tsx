@@ -32,7 +32,7 @@ const Message = () => {
     const [messageLoading, setMessageLoading] = useState(false);
     const [newMessage, setNewMessage] = useState<string>("");
     const [searchWord, setSearchWord] = useState<string>("");
-    const [messages, setMessages] = useState<MessageProps[]>([]);
+    const [messages, setMessages] = useState<MessageProps[]>();
     const [userList, setUserList] = useState<UserListProps[]>([]);
     const [conversation, setConversation] = useState<ConversationProps[]>([]);
     const [currentMessage, setCurrentMessage] = useState<MessageProps>();
