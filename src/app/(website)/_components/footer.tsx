@@ -26,6 +26,7 @@ const Footer = () => {
             </div>
 
             {/* Links Section */}
+            {/* Our company */}
             <div>
               <h3 className="font-bold mb-2">Our Company</h3>
               <ul className="space-y-1">
@@ -52,7 +53,7 @@ const Footer = () => {
               <h3 className="font-bold mb-2">Users</h3>
               <ul className="space-y-1">
                 <li>
-                  <a href="/auth/signin" className="hover:text-gray-300">
+                  <a href="#" className="hover:text-gray-300">
                     Suppliers
                   </a>
                 </li>
@@ -73,8 +74,6 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-
-            {/*Developers  */}
             <div>
               <h3 className="font-bold mb-2">Developers</h3>
               <ul className="space-y-1">

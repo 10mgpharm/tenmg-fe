@@ -61,7 +61,7 @@ const Footer = () => {
                 Users
               </Text>
               <VStack align="start" spacing={1}>
-                <Link href="/auth/signin" fontSize="sm" cursor="pointer">
+                <Link href="/auth/signup" fontSize="sm" cursor="pointer">
                   Suppliers
                 </Link>
                 <Link href="/auth/signin" fontSize="sm" cursor="pointer">
