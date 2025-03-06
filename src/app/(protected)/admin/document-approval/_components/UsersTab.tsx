@@ -111,6 +111,7 @@ const UsersTab = ({
         fetchTeamUser("Supplier", pageCount);
         fetchTeamUser("Vendor", pageCount);
         fetchTeamUser("Pharmacy", pageCount);
+        fetchTeamUser("Lender", pageCount);
       }
     } catch (error) {
       setIsApprovalLoading(false);
@@ -137,6 +138,7 @@ const UsersTab = ({
         fetchTeamUser("Supplier", pageCount);
         fetchTeamUser("Vendor", pageCount);
         fetchTeamUser("Pharmacy", pageCount);
+        fetchTeamUser("Lender", pageCount);
         onCloseDelete();
         if (onClose) onClose();
       }

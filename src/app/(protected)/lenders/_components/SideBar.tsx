@@ -1,32 +1,34 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   TransitionChild,
-} from '@headlessui/react'
+} from "@headlessui/react";
 import {
   Cog6ToothIcon,
   HomeIcon,
   XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { classNames } from '@/utils'
+} from "@heroicons/react/24/outline";
+import { classNames } from "@/utils";
 import { BsGraphUpArrow } from "react-icons/bs";
-import { FiShoppingBag } from 'react-icons/fi'
-import { CiLogout } from 'react-icons/ci'
-import { redirect, usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
-import Link from 'next/link'
+import { FiShoppingBag } from "react-icons/fi";
+import { CiLogout } from "react-icons/ci";
+import { redirect, usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
 import { BusinessStatus } from "@/constants";
 import { LuFileText } from 'react-icons/lu'
+import { BiMessageDetail } from 'react-icons/bi'
 
 const navigation = [
   { name: 'Dashboard', href: '/lenders', icon: HomeIcon, current: true },
   { name: 'Loan Application', href: '/lenders/loan-application', icon: LuFileText, current: false },
   { name: 'Transaction History', href: '/lenders/transaction-history', icon: FiShoppingBag, current: false },
   { name: 'Loan Portfolio', href: '/lenders/loan-portfolio', icon: BsGraphUpArrow, current: false },
+  { name: 'Messages', href: '/lenders/messages', icon: BiMessageDetail, current: false },
   { name: 'Settings', href: '/lenders/settings', icon: Cog6ToothIcon, current: false },
 ]
 
@@ -44,11 +46,9 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
   ];
   return disabledBusinessStatuses.includes(businessStatus as BusinessStatus) &&
     !mustAlwaysBeEnabled(name)
-    ? false
+    ? true
     : false;
 };
-
-
 
 const SideBar = ({ businessStatus }: { businessStatus: string }) => {
   const pathname = usePathname();
@@ -56,7 +56,11 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
 
   return (
     <div>
-      <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
+      <Dialog
+        open={sidebarOpen}
+        onClose={setSidebarOpen}
+        className="relative z-50 lg:hidden"
+      >
         <DialogBackdrop
           transition
           className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
@@ -68,9 +72,16 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
           >
             <TransitionChild>
               <div className="absolute left-full top-0 flex w-16 justify-center pt-5 duration-300 ease-in-out data-[closed]:opacity-0">
-                <button type="button" onClick={() => setSidebarOpen(false)} className="-m-2.5 p-2.5">
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen(false)}
+                  className="-m-2.5 p-2.5"
+                >
                   <span className="sr-only">Close sidebar</span>
-                  <XMarkIcon aria-hidden="true" className="h-6 w-6 text-white" />
+                  <XMarkIcon
+                    aria-hidden="true"
+                    className="h-6 w-6 text-white"
+                  />
                 </button>
               </div>
             </TransitionChild>
@@ -82,30 +93,37 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                     <ul role="list" className="-mx-2 space-y-6">
                       {navigation.map((item) => {
                         const isActive = pathname.includes(item.href);
-                        const disabled = isLinkDisabled(businessStatus, item.name);
+                        const disabled = isLinkDisabled(
+                          businessStatus,
+                          item.name
+                        );
                         return (
                           <li key={item.name}>
                             <Link
                               href={item.href}
                               className={classNames(
                                 isActive
-                                  ? 'bg-indigo-700 text-white'
-                                  : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
-                                disabled ? "pointer-events-none opacity-50" : "",
-                                'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+                                  ? "bg-indigo-700 text-white"
+                                  : "text-indigo-200 hover:bg-indigo-700 hover:text-white",
+                                disabled
+                                  ? "pointer-events-none opacity-50"
+                                  : "",
+                                "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
                               )}
                             >
                               <item.icon
                                 aria-hidden="true"
                                 className={classNames(
-                                  isActive ? 'text-white' : 'text-indigo-200 group-hover:text-white',
-                                  'h-6 w-6 shrink-0',
+                                  isActive
+                                    ? "text-white"
+                                    : "text-indigo-200 group-hover:text-white",
+                                  "h-6 w-6 shrink-0"
                                 )}
                               />
                               {item.name}
                             </Link>
                           </li>
-                        )
+                        );
                       })}
                     </ul>
                   </li>
@@ -146,23 +164,25 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                           href={item.href}
                           className={classNames(
                             isActive
-                              ? 'bg-primary-50 text-primary-500 p-0.5'
-                              : 'text-gray-500 px-3',
+                              ? "bg-primary-50 text-primary-500 p-0.5"
+                              : "text-gray-500 px-3",
                             disabled ? "pointer-events-none opacity-50" : "",
-                            'group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6',
+                            "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
                           )}
                         >
                           <item.icon
                             aria-hidden="true"
                             className={classNames(
-                              isActive ? 'text-white bg-primary-500 rounded-full p-2 w-10 h-10' : 'text-gray-500 h-6 w-6',
-                              'shrink-0',
+                              isActive
+                                ? "text-white bg-primary-500 rounded-full p-2 w-10 h-10"
+                                : "text-gray-500 h-6 w-6",
+                              "shrink-0"
                             )}
                           />
                           {item.name}
                         </Link>
                       </li>
-                    )
+                    );
                   })}
                 </ul>
               </li>
@@ -186,7 +206,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default SideBar;

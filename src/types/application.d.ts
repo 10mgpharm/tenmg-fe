@@ -110,3 +110,68 @@ export interface BankMandateDto {
     description?: string;
     endDate?: string;
 }
+
+export interface SingleNotification {
+    createdAt: string;
+    id: string;
+    readAt: null | string;
+    data: {
+        subject: string;
+        message: string;
+    }
+}
+
+export interface MessageProps {
+    id: number;
+    sender: {
+        id: number;
+        name: string;
+    },
+    receiver: {
+        id: number;
+        name: string;
+    },
+    latest?: {
+        id: number;
+        conversationId: number;
+        message: string;
+        readStatus: string;
+        sender: {
+            id: number;
+            name: string;
+        },
+        receiver: {
+            id: number;
+            name: string;
+        },
+        sentAt: string;
+    }
+}
+
+export interface ConversationProps {
+    conversationId: number;
+    id: number;
+    message: string;
+    readStatus: string;
+    sender: {
+        id: number;
+        name: string;
+    },
+    receiver: {
+        id: number;
+        name: string;
+    },
+    sentAt: string;
+}
+
+export interface UserListProps {
+    id: number;
+    name: string;
+    active: boolean;
+    businessName: null | string;
+    businessStatus: string;
+    avatar: null | string;
+    owner: boolean;
+    role: string;
+    email: string;
+}

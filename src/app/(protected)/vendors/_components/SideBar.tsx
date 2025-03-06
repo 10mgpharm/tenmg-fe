@@ -24,6 +24,7 @@ import {
 import { useBreakpointValue } from "@chakra-ui/react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Link from "next/link";
+import { BiMessageDetail } from "react-icons/bi";
 
 const navSections = [
   {
@@ -75,6 +76,11 @@ const navSections = [
   {
     title: "SYSTEM",
     items: [
+      {
+        name: "Messages",
+        href: "/vendors/messages",
+        icon: BiMessageDetail,
+      },
       {
         name: "Audit Logs",
         href: "/vendors/audit-logs",

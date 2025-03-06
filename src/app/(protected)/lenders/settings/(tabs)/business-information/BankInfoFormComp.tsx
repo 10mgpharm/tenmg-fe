@@ -13,16 +13,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState, useTransition } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { set, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getBankList, verifyBankAccount } from "@/app/(standalone)/widgets/applications/actions";
+import {
+  getBankList,
+  verifyBankAccount,
+} from "@/app/(standalone)/widgets/applications/actions";
 import { FaCamera } from "react-icons/fa";
 
 interface Props {
   sessionData: NextAuthUserSession;
   defaultBankDetail: BankAccountDto;
+  isInfoLoading: boolean;
 }
 
 interface IFormInput {
@@ -30,7 +34,7 @@ interface IFormInput {
   accountName: string;
   accountNumber: string;
   bankCode: string;
-  bvn: string;
+  bvn?: string;
 }
 
 interface SelectOption {
@@ -51,20 +55,25 @@ const formSchema = z.object({
   bankName: z.string().nonempty(),
   bvn: z
     .string()
-    .nonempty("BVN cannot be empty.")
-    .length(10, "BVN must be exactly 10 digits.")
-    .regex(/^\d{10}$/, "BVN must contain only digits."),
 });
 
 type FormInput = z.infer<typeof formSchema>;
 
-export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Props) {
+export default function BankInfoFormComp({
+  sessionData,
+  defaultBankDetail,
+  isInfoLoading,
+}: Props) {
   const [isLoading, setIsLoading] = useState(false);
-  const [accountVerificationInProgress, startBankAccountVerification] = useTransition();
-  const [accountVerificationError, setAccountVerificationError] = useState<string | null>(null);
+  const [accountVerificationInProgress, startBankAccountVerification] =
+    useTransition();
+  const [accountVerificationError, setAccountVerificationError] = useState<
+    string | null
+  >(null);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
-  const [edit, setEdit] = useState<boolean>(false);
-  const [defaultBankAccount, setDefaultBankAccount] = useState<BankAccountDto>(defaultBankDetail);
+  const [edit, setEdit] = useState<boolean>(true);
+  const [defaultBankAccount, setDefaultBankAccount] =
+    useState<BankAccountDto>(defaultBankDetail);
 
   const token = sessionData?.user?.token;
 
@@ -91,11 +100,7 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
   const bankCode = watch("bankCode");
   const bankName = watch("bankName");
   const accountName = watch("accountName");
-  const bvn = watch("bvn");
 
-  const accountNumberInputRef = useRef<HTMLInputElement>(null);
-
-  // Get Bank List and convert bank.code to number (assuming API returns a number)
   const handleGetBankList = async () => {
     try {
       const response = await getBankList(token);
@@ -116,7 +121,6 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
     }
   };
 
-  // Verify bank account based on accountNumber and bankCode
   const handleVerifyBankAccount = (accNumber: string, bCode: string) => {
     startBankAccountVerification(async () => {
       setAccountVerificationError(null);
@@ -141,7 +145,6 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
     });
   };
 
-  // Sync defaultBankDetail when available
   useEffect(() => {
     if (defaultBankDetail) {
       setDefaultBankAccount(defaultBankDetail);
@@ -175,7 +178,6 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
     }
   }, [defaultBankAccount, edit, setValue]);
 
-  // When banks are loaded and bankCode is selected, update bankName accordingly
   useEffect(() => {
     if (banks && bankCode) {
       const matchedBank = banks.find((b) => b.value === Number(bankCode));
@@ -185,7 +187,6 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
     }
   }, [banks, bankCode, setValue]);
 
-  // Handler for form submission (Save)
   const onSubmit: SubmitHandler<FormInput> = async (formData) => {
     try {
       setIsLoading(true);
@@ -193,6 +194,7 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
         token: sessionData.user.token,
       }).patch("/lender/settings/business-account", {
         ...formData,
+        bvn: "8335845871",
       });
 
       if (response.status === 200) {
@@ -218,9 +220,9 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
           <div className="space-y-5 w-full flex justify-between py-5">
             <div>
               <h3 className="font-semibold text-lg">Bank Information</h3>
-              <p className="text-sm text-slate-300">
+              <Text fontSize={"14px"} color={"gray.500"}>
                 Manage your bank information and details for payout.
-              </p>
+              </Text>
             </div>
             <Button
               size="sm"
@@ -243,23 +245,25 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
                   Associated Account Number
                 </Text>
               </div>
-              <FormControl className="col-span-2">
-                <NumberInput
-                  value={accountNumber || ""}
-                  onChange={(val) => {
-                    setValue("accountNumber", val);
-                    trigger("accountNumber");
-                  }}
-                  inputMode="numeric"
-                >
-                  <NumberInputField placeholder="0000000000" />
-                </NumberInput>
-                {errors.accountNumber && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.accountNumber.message}
-                  </Text>
-                )}
-              </FormControl>
+              <Skeleton isLoaded={!isInfoLoading}>
+                <FormControl className="col-span-2">
+                  <NumberInput
+                    value={accountNumber || ""}
+                    onChange={(val) => {
+                      setValue("accountNumber", val);
+                      trigger("accountNumber");
+                    }}
+                    inputMode="numeric"
+                  >
+                    <NumberInputField placeholder="0000000000" />
+                  </NumberInput>
+                  {errors.accountNumber && (
+                    <Text fontSize="sm" color="red.500">
+                      {errors.accountNumber.message}
+                    </Text>
+                  )}
+                </FormControl>
+              </Skeleton>
             </div>
 
             {/* Bank Selection Field */}
@@ -270,32 +274,38 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
                   Associated Bank Name
                 </Text>
               </div>
-              <FormControl className="col-span-2" isInvalid={!!errors.bankCode}>
-                <Select
-                  placeholder="Choose Bank"
-                  {...register("bankCode", {
-                    required: "Please select a bank",
-                  })}
-                  onChange={(e) => {
-                    const selectedValue = e.target.value;
-                    const selectedText = e.target.options[e.target.selectedIndex].text;
-                    setValue("bankCode", selectedValue);
-                    setValue("bankName", selectedText);
-                    trigger(["bankCode", "bankName"]);
-                  }}
+              <Skeleton isLoaded={!isInfoLoading}>
+                <FormControl
+                  className="col-span-2"
+                  isInvalid={!!errors.bankCode}
                 >
-                  {banks?.map((bank, index) => (
-                    <option key={index} value={bank.value}>
-                      {bank.label}
-                    </option>
-                  ))}
-                </Select>
-                {errors.bankCode && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.bankCode.message}
-                  </Text>
-                )}
-              </FormControl>
+                  <Select
+                    placeholder="Choose Bank"
+                    {...register("bankCode", {
+                      required: "Please select a bank",
+                    })}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value;
+                      const selectedText =
+                        e.target.options[e.target.selectedIndex].text;
+                      setValue("bankCode", selectedValue);
+                      setValue("bankName", selectedText);
+                      trigger(["bankCode", "bankName"]);
+                    }}
+                  >
+                    {banks?.map((bank, index) => (
+                      <option key={index} value={bank.value}>
+                        {bank.label}
+                      </option>
+                    ))}
+                  </Select>
+                  {errors.bankCode && (
+                    <Text fontSize="sm" color="red.500">
+                      {errors.bankCode.message}
+                    </Text>
+                  )}
+                </FormControl>
+              </Skeleton>
             </div>
 
             {/* Account Name Field */}
@@ -306,57 +316,32 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
                   Account Name verified from bank
                 </Text>
               </div>
-              <FormControl
-                className="col-span-2"
-                isInvalid={!!errors.accountName || !!accountVerificationError}
-              >
-                <Skeleton
-                  isLoaded={!accountVerificationInProgress}
-                  fadeDuration={0.5}
-                  borderRadius="md"
+              <Skeleton isLoaded={!isInfoLoading}>
+                <FormControl
+                  className="col-span-2"
+                  isInvalid={!!errors.accountName || !!accountVerificationError}
                 >
-                  <Text p={2} bg="gray.100" borderRadius="md">
-                    {accountName || "Account name will appear here"}
-                  </Text>
-                  {accountVerificationError && (
+                  <Skeleton
+                    isLoaded={!accountVerificationInProgress}
+                    fadeDuration={0.5}
+                    borderRadius="md"
+                  >
+                    <Text p={2} bg="gray.100" borderRadius="md">
+                      {accountName || "Account name will appear here"}
+                    </Text>
+                    {accountVerificationError && (
+                      <Text fontSize="sm" color="red.500">
+                        {accountVerificationError}
+                      </Text>
+                    )}
+                  </Skeleton>
+                  {!accountName && errors.accountName && (
                     <Text fontSize="sm" color="red.500">
-                      {accountVerificationError}
+                      {errors.accountName.message}
                     </Text>
                   )}
-                </Skeleton>
-                {!accountName && errors.accountName && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.accountName.message}
-                  </Text>
-                )}
-              </FormControl>
-            </div>
-
-            {/* BVN Field */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div>
-                <FormLabel>BVN</FormLabel>
-                <Text fontSize="14px" color="gray.500">
-                  Associated BVN
-                </Text>
-              </div>
-              <FormControl className="col-span-2">
-                <NumberInput
-                  value={bvn || ""}
-                  onChange={(val) => {
-                    setValue("bvn", val);
-                    trigger("bvn");
-                  }}
-                  inputMode="numeric"
-                >
-                  <NumberInputField placeholder="0000000000" />
-                </NumberInput>
-                {errors.bvn && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.bvn.message}
-                  </Text>
-                )}
-              </FormControl>
+                </FormControl>
+              </Skeleton>
             </div>
           </div>
         </form>
@@ -366,9 +351,10 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
           <div className="space-y-5 w-full flex justify-between py-5">
             <div>
               <h3 className="font-semibold text-lg">Bank Information</h3>
-              <p className="text-sm text-slate-300">
+
+              <Text fontSize={"14px"} color={"gray.500"}>
                 Manage your bank information and details for payout.
-              </p>
+              </Text>
             </div>
             <Button
               size="sm"
@@ -388,29 +374,29 @@ export default function BankInfoFormComp({ sessionData, defaultBankDetail }: Pro
               <div>
                 <FormLabel>Account Number</FormLabel>
               </div>
-              <Text color="gray.800">{defaultBankDetail?.accountNumber}</Text>
+              <Text color="gray.800">{defaultBankAccount?.accountNumber}</Text>
             </div>
             {/* Bank */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
               <div>
                 <FormLabel>Bank</FormLabel>
               </div>
-              <Text color="gray.800">{defaultBankDetail?.bankName}</Text>
+              <Text color="gray.800">{defaultBankAccount?.bankName}</Text>
             </div>
             {/* Account Name */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
               <div>
                 <FormLabel>Account Name</FormLabel>
               </div>
-              <Text color="gray.800">{defaultBankDetail?.accountName}</Text>
+              <Text color="gray.800">{defaultBankAccount?.accountName}</Text>
             </div>
             {/* BVN */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
+            {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
               <div>
                 <FormLabel>BVN</FormLabel>
               </div>
               <Text color="gray.800">{defaultBankDetail?.bvn}</Text>
-            </div>
+            </div> */}
           </div>
         </div>
       )}
