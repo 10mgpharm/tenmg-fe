@@ -40,6 +40,12 @@ export const useOrdersStore = create<any>((set, get) => ({
         const pendingOrders = orders.filter(
           (item) => item.status.toLowerCase() === "pending"
         );
+        const processingOrders = orders.filter(
+          (item) => item.status.toLowerCase() === "processing"
+        );
+        const shippingOrders = orders.filter(
+          (item) => item.status.toLowerCase() === "shipped"
+        );
         const cancelledOrders = orders.filter(
           (item) => item.status.toLowerCase() === "cancelled"
         );
@@ -52,6 +58,8 @@ export const useOrdersStore = create<any>((set, get) => ({
           pendingOrders,
           cancelledOrders,
           completedOrders,
+          processingOrders,
+          shippingOrders,
           loading: false,
         });
       }

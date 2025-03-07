@@ -23,7 +23,7 @@ import NotificationModal from "./NotificationModal";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 
-const TopNavBar = ({route}: {route: string}) => {
+const TopNavBar = ({ route }: { route: string }) => {
 
   const router = useRouter();
   const session = useSession();
@@ -55,12 +55,12 @@ const TopNavBar = ({route}: {route: string}) => {
             {convertLetterCase(businessType)}
           </Tag>
         );
-        case "LENDER":
-          return (
-            <Tag size="sm" variant="solid" bg="blue.50" color={"blue.700"}>
-              {convertLetterCase(businessType)}
-            </Tag>
-          );
+      case "LENDER":
+        return (
+          <Tag size="sm" variant="solid" bg="blue.50" color={"blue.700"}>
+            {convertLetterCase(businessType)}
+          </Tag>
+        );
       default:
         return (
           <Tag size="sm" variant="solid" colorScheme="red">
@@ -80,7 +80,7 @@ const TopNavBar = ({route}: {route: string}) => {
     setLoading(true);
     try {
       const response = await requestClient({ token }).get(
-      `/account/notifications`
+        `/account/notifications`
       );
 
       if (response.status === 200) {
@@ -92,7 +92,7 @@ const TopNavBar = ({route}: {route: string}) => {
     } finally {
       setLoading(false);
     }
-  },[token]);
+  }, [token]);
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
@@ -133,7 +133,7 @@ const TopNavBar = ({route}: {route: string}) => {
               <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">1</div>
               <BellIcon aria-hidden="true" className="h-6 w-6" />
             </MenuButton>
-            <NotificationModal 
+            <NotificationModal
               notificationsMsgs={notifications}
               route={route}
               loading={loading}

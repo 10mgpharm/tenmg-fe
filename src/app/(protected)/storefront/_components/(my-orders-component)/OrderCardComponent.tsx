@@ -15,7 +15,11 @@ export default function OrderCardComponent({ product }) {
           <p className='text-sm  text-gray-500 my-1'>{product?.createdAt.split("T")[0]}</p>
           {/* <p className={`text-xs  py-1 px-3 rounded-md  w-fit ${product?.status.toLowerCase() === 'completed' ? "text-green-100 bg-green-500" : product?.status.toLowerCase() === "pending" ? "text-amber-100 bg-amber-500" : "text-red-100 bg-red-500"} `}>{product?.status}</p> */}
 
-          <Badge colorScheme={product?.status.toLowerCase() === 'completed' ? "green" : product?.status.toLowerCase() === "pending" ? "warning" : "red"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
+          <Badge colorScheme={product?.status.toLowerCase() === 'completed' ? "blue"
+            : product?.status.toLowerCase() === "pending" ? "warning"
+              : product?.status.toLowerCase() === "processing" ? "purple"
+                : product?.status.toLowerCase() === "shipped" ? "green"
+                  : "red"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
             <span style={{ textTransform: 'capitalize' }}>{product?.status}</span>
           </Badge>
         </div>
