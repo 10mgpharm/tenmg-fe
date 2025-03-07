@@ -17,7 +17,19 @@ import { ConversationProps, MessageProps, NextAuthUserSession, UserListProps } f
 import requestClient from "@/lib/requestClient";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
-import { Avatar, Button, Flex, Icon, Input, InputGroup, InputRightElement, Spinner, Tag, TagLabel, useDisclosure } from "@chakra-ui/react";
+import { 
+    Avatar, 
+    Button, 
+    Flex, 
+    Icon, 
+    Input, 
+    InputGroup, 
+    InputRightElement, 
+    Spinner, 
+    Tag, 
+    TagLabel, 
+    useDisclosure 
+} from "@chakra-ui/react";
 import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { SearchIcon } from "lucide-react";
 import { useDebouncedValue } from "@/utils/debounce";
@@ -163,8 +175,10 @@ const Message = () => {
                 className="bg-primary-600 text-white w-36 mx-auto p-2 rounded-md mt-5">
                     Start Message
                 </button>
-            </div>: 
-            <div className="">
+            </div>
+            :
+            messages?.length > 1 ? 
+            <div>
                 <div className="grid grid-cols-5">
                     <div className="col-span-2 pr-5">
                         <div className="flex items-center justify-between">
@@ -287,6 +301,7 @@ const Message = () => {
                     </div>
                 </div>
             </div>
+            : null
         }
         <ModalWrapper
         isOpen={isOpen} 
