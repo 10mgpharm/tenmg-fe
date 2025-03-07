@@ -39,6 +39,7 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const router = useRouter();
 
@@ -77,6 +78,7 @@ const Navbar = () => {
   const token = sessionData?.user?.token;
 
   const fetchingData = async () => {
+    setLoading(true)
     try {
       const response = await requestClient({ token }).get(
       `/account/notifications`
@@ -84,9 +86,11 @@ const Navbar = () => {
 
       if (response.status === 200) {
         setNotifications(response.data?.data?.data || []);
+        setLoading(false);
       }
     } catch (err: any) {
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -95,7 +99,6 @@ const Navbar = () => {
       fetchingData();
     }
   }, [token]);
-
 
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
@@ -307,6 +310,7 @@ const Navbar = () => {
             >
               {/* <MenuItem py={3} px={0}> */}
                 <NotificationModal 
+                  loading={loading}
                   notificationsMsgs={notifications}
                   route={"/storefront/notifications"}
                 />

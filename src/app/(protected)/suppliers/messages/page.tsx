@@ -1,8 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { FormEvent, useCallback, useEffect, useState } from "react"
-
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import messageIcon from "@public/assets/images/message.svg"
 import { 
     classNames, 
@@ -18,8 +17,10 @@ import { ConversationProps, MessageProps, NextAuthUserSession, UserListProps } f
 import requestClient from "@/lib/requestClient";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
-import { Avatar, Button, Flex, Spinner, Tag, TagLabel, useDisclosure } from "@chakra-ui/react";
-import ModalWrapper from "../../suppliers/_components/ModalWrapper";
+import { Avatar, Button, Flex, Icon, Input, InputGroup, InputRightElement, Spinner, Tag, TagLabel, useDisclosure } from "@chakra-ui/react";
+import { SearchIcon } from "lucide-react";
+import { useDebouncedValue } from "@/utils/debounce";
+import ModalWrapper from "../_components/ModalWrapper";
 
 const Message = () => {
 
@@ -30,11 +31,13 @@ const Message = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [messageLoading, setMessageLoading] = useState(false);
     const [newMessage, setNewMessage] = useState<string>("");
-    const [messages, setMessages] = useState<MessageProps[]>([]);
+    const [searchWord, setSearchWord] = useState<string>("");
+    const [messages, setMessages] = useState<MessageProps[]>();
     const [userList, setUserList] = useState<UserListProps[]>([]);
     const [conversation, setConversation] = useState<ConversationProps[]>([]);
     const [currentMessage, setCurrentMessage] = useState<MessageProps>();
     const { isOpen, onClose, onOpen } = useDisclosure();
+    const debouncedSearch = useDebouncedValue(searchWord, 500);
 
     const fetchingData = async () => {
         setLoading(true);
@@ -57,7 +60,7 @@ const Message = () => {
         setIsLoading(true);
         try {
             const response = await requestClient({ token: token }).get(
-            `/account/messages/start-conversation`
+            `/account/messages/start-conversation?search=${debouncedSearch}`
             );
             if (response.status === 200) {
                 setUserList(response.data.data.data || []);
@@ -68,14 +71,14 @@ const Message = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [token])
+    }, [token, debouncedSearch])
 
     useEffect(() => {
         if (token) {
             fetchingData();
             fetchChatUsers();
         }
-    }, [token]);
+    }, [token, fetchChatUsers]);
 
     const refetchingData = async () => {
         try {
@@ -85,7 +88,6 @@ const Message = () => {
 
             if (response.status === 200) {
                 setMessages(response.data.data.data || []);
-                // setCurrentMessage(response?.data?.data?.data[0]);
             }
         } catch (err: any) {
             console.error(err);
@@ -161,8 +163,7 @@ const Message = () => {
                 className="bg-primary-600 text-white w-36 mx-auto p-2 rounded-md mt-5">
                     Start Message
                 </button>
-            </div>
-            : 
+            </div>: 
             <div className="">
                 <div className="grid grid-cols-5">
                     <div className="col-span-2 pr-5">
@@ -195,16 +196,15 @@ const Message = () => {
                                         <div className="">
                                             <p className="font-medium text-lg text-gray-700">
                                                 <span className="capitalize">
-                                                {
-                                                message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name
-                                                }
+                                                    {message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name
+                                                    }
                                                 </span>
                                                 <span className="text-gray-500 text-[14px] ml-2">
                                                     {message?.latest?.sentAt}
                                                 </span>
                                             </p>
                                             <p className="text-sm text-gray-600">
-                                                {truncateString(message?.latest?.message, 76)}
+                                                {message?.latest && truncateString(message?.latest?.message, 76)}
                                             </p>
                                         </div>
                                     </li>
@@ -295,6 +295,15 @@ const Message = () => {
         size={"lg"}
         >
             <div className="mb-8">
+                <InputGroup mb={5}>
+                    <Input 
+                    placeholder='Search user' 
+                    onChange={(e) => setSearchWord(e.target.value)} 
+                    />
+                    <InputRightElement>
+                        <Icon as={SearchIcon} color='gray.500' />
+                    </InputRightElement>
+                </InputGroup>
                 <div className="space-y-4">
                     {
                         userList?.map((user: UserListProps) => (
@@ -322,7 +331,8 @@ const Message = () => {
                                         readStatus: ""
                                     }
                                     setCurrentMessage(newMessageObj as any);
-                                    setConversation([newMessageObj])
+                                    setConversation([newMessageObj]);
+                                    setMessages((prev) => [...prev, newMessageObj]);
                                 }
                                 onClose();
                             }} 
@@ -345,11 +355,13 @@ const Message = () => {
                         ))
                     }
                 </div>
-                <div className="flex justify-end mt-5">
+                <div className="flex mt-5">
                     <Button 
                     variant={"outline"}
                     className='cursor-pointer'
-                    onClick={onClose}>
+                    onClick={onClose}
+                    flex={1}
+                    >
                         Cancel
                     </Button>
                 </div>

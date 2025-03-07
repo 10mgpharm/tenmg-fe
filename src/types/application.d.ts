@@ -131,7 +131,7 @@ export interface MessageProps {
         id: number;
         name: string;
     },
-    latest: {
+    latest?: {
         id: number;
         conversationId: number;
         message: string;
