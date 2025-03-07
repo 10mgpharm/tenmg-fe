@@ -61,7 +61,7 @@ export default function LoanAutoAccept({
           <div>
             <h3 className="font-semibold text-lg">Loan Preference</h3>
             <Text fontSize={"14px"} color={"gray.500"}>
-              Define your Loan Request Acceptance.
+              Define your loan request acceptance.
             </Text>
           </div>
           <Button
