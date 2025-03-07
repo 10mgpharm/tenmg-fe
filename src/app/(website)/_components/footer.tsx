@@ -10,7 +10,7 @@ const Footer = () => {
       <footer className="bg-[#1866A7] text-white text-sm">
         <div className="container mx-auto py-8 px-4">
           {/* Top Section */}
-          <div className="grid grid-cols-1 md:grid-cols-7">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-7">
             {/* Logo Section */}
             <div className="col-span-2 flex flex-col items-start">
               <div className="flex items-center mb-4">
@@ -46,26 +46,35 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
+
+            {/* Users */}
             <div>
-              <h3 className="font-bold mb-2">Features</h3>
+              <h3 className="font-bold mb-2">Users</h3>
               <ul className="space-y-1">
                 <li>
-                  <a href="#" className="hover:text-gray-300">
+                  <a href="/auth/signin" className="hover:text-gray-300">
                     Suppliers
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-gray-300">
+                  <a href="/auth/signin" className="hover:text-gray-300">
                     Pharmacies
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-gray-300">
+                  <a href="/auth/signup/vendor" className="hover:text-gray-300">
                     Vendors
+                  </a>
+                </li>
+                <li>
+                  <a href="/auth/signup/lender" className="hover:text-gray-300">
+                    Lenders
                   </a>
                 </li>
               </ul>
             </div>
+
+            {/*Developers  */}
             <div>
               <h3 className="font-bold mb-2">Developers</h3>
               <ul className="space-y-1">
@@ -86,6 +95,8 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
+
+            {/* Resources */}
             <div>
               <h3 className="font-bold mb-2">Resources</h3>
               <ul className="space-y-1">
@@ -106,6 +117,8 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
+
+            {/* Legal */}
             <div>
               <h3 className="font-bold mb-2">Legal</h3>
               <ul className="space-y-1">
