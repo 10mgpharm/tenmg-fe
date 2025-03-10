@@ -62,14 +62,14 @@ const BusinessInformation = ({ user }: { user: User }) => {
         const response = await requestClient({
           token: sessionData.user.token,
         }).get("/vendor/settings");
-  
+
         const data = response.data.data;
         setValue("businessName", data.businessName);
         setValue("contactEmail", data.contactEmail);
         setValue("contactPerson", data.contactPerson);
         setValue("contactPhone", data.contactPhone);
         setValue("businessAddress", data.businessAddress);
-        setValue("contactPersonPosition", data.contactPersonPosition || ""); 
+        setValue("contactPersonPosition", data.contactPersonPosition || "");
       } catch (error) {
         const errorMessage = handleServerErrorMessage(error);
         toast.error(errorMessage);
@@ -77,21 +77,20 @@ const BusinessInformation = ({ user }: { user: User }) => {
         setIsInfoLoading(false);
       }
     };
-  
+
     if (sessionData?.user?.token) fetchUser();
   }, [sessionData?.user?.token, setValue]);
-  
 
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
     try {
       setIsLoading(true);
-  
+
       const response = await requestClient({
         token: sessionData.user.token,
       }).patch("/vendor/settings/business-information", {
         ...value,
       });
-  
+
       if (response.status === 200) {
         toast.success("Business information successfully updated");
       } else {
@@ -117,6 +116,8 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 Business Name
               </FormLabel>
               <Input
+                type="name"
+                isDisabled
                 placeholder="Enter business name"
                 {...register("businessName", {
                   required: "Business Name is required",
@@ -129,6 +130,8 @@ const BusinessInformation = ({ user }: { user: User }) => {
                 Contact Person&apos;s Name
               </FormLabel>
               <Input
+                type="number"
+                isDisabled
                 placeholder="Enter contact name"
                 {...register("contactPerson", {
                   required: "Contact Person Name is required",
@@ -188,6 +191,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="text"
+                isDisabled
                 placeholder="Enter business address"
                 {...register("businessAddress", {
                   required: "Contact Business Address is required",
@@ -201,6 +205,7 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="text"
+                isDisabled
                 placeholder="Enter position"
                 {...register("contactPersonPosition", {
                   required: "Contact Person Position is required",
@@ -216,9 +221,9 @@ const BusinessInformation = ({ user }: { user: User }) => {
             flexDirection={{ base: "column", md: "row" }}
           >
             <Flex>
-              <Button variant="outline" mr={3}>
+              {/* <Button variant="outline" mr={3}>
                 Cancel
-              </Button>
+              </Button> */}
               <Button
                 colorScheme="blue"
                 type="submit"
