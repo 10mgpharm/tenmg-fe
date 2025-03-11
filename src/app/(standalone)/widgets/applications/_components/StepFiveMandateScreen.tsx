@@ -15,7 +15,6 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 import { LuCopy } from "react-icons/lu";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import LoanProfile from "../../_components/LoanProfile";
 import LoanLayout from "../../_components/LoanLayout";
 import {
