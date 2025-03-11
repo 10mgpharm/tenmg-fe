@@ -136,7 +136,7 @@ export default function BusinessInfoFormComp() {
               <FormLabel m={0}>Business Name</FormLabel>
 
               <Text fontSize={"14px"} color={"gray.500"}>
-                Registered name of Business
+                Registered name of business
               </Text>
             </div>
 
