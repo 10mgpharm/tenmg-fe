@@ -64,7 +64,7 @@ const Navbar = () => {
             <Link href="#API" className="text-black hover:text-blue-700">
               API
             </Link>
-            <Link href="#FAQs" className="text-black hover:text-blue-700">
+            <Link href="/faq" className="text-black hover:text-blue-700">
               FAQs
             </Link>
             <Link href="#Lender" className="text-black hover:text-blue-700">
@@ -116,8 +116,7 @@ const Navbar = () => {
                 <Link href="#FAQs" className="text-black">
                   FAQs
                 </Link>
-                <Link 
-                href="/auth/signup/lender" className="text-black">
+                <Link href="/auth/signup/lender" className="text-black">
                   Lender
                 </Link>
               </div>
