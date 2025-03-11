@@ -3,6 +3,10 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MutipleFileUpload } from './MultipleFileUpload';
 import { TrashIcon } from '@heroicons/react/20/solid';
+import { useSession } from 'next-auth/react';
+import { NextAuthUserSession } from '@/types';
+import requestClient from '@/lib/requestClient';
+import { toast } from 'react-toastify';
 
 
 
@@ -13,8 +17,13 @@ interface IReviewForm {
   product: string;
 }
 
-export default function ReviewForm({ onClose }: any) {
+export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
 
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+
+
+  // console.log('user', userData)
 
   const {
     register,
@@ -23,10 +32,10 @@ export default function ReviewForm({ onClose }: any) {
     watch,
   } = useForm({
     defaultValues: {
-      name: "",
-      email: "",
-      review: "",
-      product: "",
+      name: userData?.user?.name,
+      email: userData?.user?.email,
+      comment: "",
+      productId: prod_id,
     },
   })
 
@@ -37,12 +46,25 @@ export default function ReviewForm({ onClose }: any) {
   const [fileError, setFileError] = useState<string>(null);
   // const toast = useToast();
 
+  const onSubmit = async (data) => {
+    console.log(data);
+
+    try {
+      const res = await requestClient({ token: userData?.user?.token }).post(
+        "/storefront/reviews", data);
+      console.log(res)
+    } catch (e) {
+      console.log(e)
+      toast.error(e.response.data.message || "Failed to post review")
+    }
+  }
+
   return (
     <div>
 
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
 
-        <FormControl isInvalid={!!errors.name}>
+        <FormControl isInvalid={!!errors.name} >
           <FormLabel htmlFor="name">
             Your Name
           </FormLabel>
@@ -65,6 +87,7 @@ export default function ReviewForm({ onClose }: any) {
           </FormLabel>
           <Input
             id="email"
+            disabled
             placeholder="eg. johndoe@mail.com"
             {...register("email", {
               required: "Business Name is required",
@@ -75,7 +98,7 @@ export default function ReviewForm({ onClose }: any) {
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={!!errors.product}>
+        <FormControl >
           <FormLabel htmlFor="product">
             Product
           </FormLabel>
@@ -83,28 +106,29 @@ export default function ReviewForm({ onClose }: any) {
             id="product"
             placeholder="Enter your business product"
             disabled
-            {...register("product", {
-              required: "Business Name is required",
-            })}
+            value={prod_name}
+          // {...register("product", {
+          //   required: "Business Name is required",
+          // })}
           />
           <FormErrorMessage>
-            {errors.product?.message}
+            {/* {errors.product?.message} */}
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={!!errors.review}>
-          <FormLabel htmlFor="review">
+        <FormControl isInvalid={!!errors.comment}>
+          <FormLabel htmlFor="comment">
             Review
           </FormLabel>
           <Textarea
             id="review"
-            placeholder="Write your review here"
-            {...register("review", {
+            placeholder="Write your Comment here"
+            {...register("comment", {
               required: "review is required",
             })}
           />
           <FormErrorMessage>
-            {errors.review?.message}
+            {errors.comment?.message}
           </FormErrorMessage>
         </FormControl>
 
@@ -136,7 +160,7 @@ export default function ReviewForm({ onClose }: any) {
         </div>
 
         <div className='flex flex-row-reverse w-full my-4'>
-          <Button onClick={onClose} variant={"outline"} colorScheme={'blue'} size={'sm'}>Post Review</Button>
+          <Button variant={"outline"} colorScheme={'blue'} size={'sm'} type="submit">Post Review</Button>
         </div>
       </form>
     </div>
