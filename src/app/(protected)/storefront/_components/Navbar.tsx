@@ -55,7 +55,7 @@ const Navbar = () => {
   const handleOpenRemove = () => setIsRemoveOpen(true);
   const handleCloseRemove = () => setIsRemoveOpen(false);
 
-  const [cartDataCount, setCartDataCount] = useState(null);
+  // const [cartDataCount, setCartDataCount] = useState(null);
   const [notifications, setNotifications] = useState<any[]>([]);
 
   const session = useSession();
@@ -86,7 +86,6 @@ const Navbar = () => {
       const response = await requestClient({ token }).get(
       `/account/notifications`
       );
-
       if (response.status === 200) {
         const datal = response.data?.data?.data?.slice(0,5);
         setNotifications(datal || []);
@@ -106,8 +105,6 @@ const Navbar = () => {
 
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
-      {/* Mobile View */}
-
       <Box
         className="flex justify-between shadow-sm lg:pr-8 items-center h-16 px-6"
         display={{ base: "flex", md: "none" }}
@@ -122,10 +119,7 @@ const Navbar = () => {
             height={40}
           />
         </HStack>
-
-        {/* Navigation Icons */}
         <HStack spacing={4} color="primary.500">
-          {/* Search Icon */}
           <Box
             cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
             onClick={!isRestrictedStatus ? handleOpenSearch : undefined}
@@ -135,8 +129,6 @@ const Navbar = () => {
               <Icon as={Search} boxSize={5} />
             </Stack>
           </Box>
-
-          {/* Cart Icon */}
           <Box
             cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
             onClick={!isRestrictedStatus ? handleOpenCart : undefined}

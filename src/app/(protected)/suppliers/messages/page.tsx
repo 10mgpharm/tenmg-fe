@@ -183,7 +183,7 @@ const Message = () => {
             </div>: 
             <div className="">
                 <div className="grid grid-cols-5">
-                    <div className="col-span-2 pr-5">
+                    <div className="col-span-2 pr-5 h-[calc(100vh-150px)] no-scrollbar overflow-y-scroll">
                         <div className="flex items-center justify-between">
                             <h3 className="font-semibold text-2xl text-gray-800 my-4">Message</h3>
                             <Button onClick={onOpen} h={"35px"} px={4} fontSize={"14px"} variant={"outline"}>
