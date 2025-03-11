@@ -34,12 +34,13 @@ import Pagination from "../../suppliers/_components/Pagination";
 const ITEMS_PER_PAGE = 10;
 
 const Page = () => {
-  
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [data, setData] = useState<any[]>([]);
+  const [pagination_link, setPagination_link] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -50,17 +51,22 @@ const Page = () => {
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
+  const [searchValue, setSearchValue] = useState<string>("");
+
   useEffect(() => {
     const fetchData = async (page: number) => {
       setLoading(true);
       setError("");
+
+      //audit-logs?event=login
+      const url = searchValue ? `admin/settings/audit-logs?event=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `admin/settings/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
+
       try {
-        const response = await requestClient({ token }).get(
-          `admin/settings/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`
-        );
+        const response = await requestClient({ token }).get(url);
 
         if (response.status === 200 && response.data.data) {
           setData(response.data.data.data || []);
+          setPagination_link(response.data.data.links || []);
           setTotalItems(response.data.data.total || 0);
         } else {
           setError("Failed to load audit logs. Please try again.");
@@ -73,10 +79,11 @@ const Page = () => {
       }
     };
 
+
     if (token) {
       fetchData(currentPage);
     }
-  }, [token, currentPage]);
+  }, [token, currentPage, searchValue]);
 
 
   const table = useReactTable({
@@ -99,19 +106,15 @@ const Page = () => {
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
+
   const meta = {
-    meta: {
-      links: [
-        { label: 'Previous', active: false },
-        { label: 1, active: true }
-      ]
-    }
+    links: pagination_link
   }
 
   return (
     <div className="p-8">
       <h2 className="text-2xl font-semibold text-gray-700 mb-2">Audit Logs</h2>
-      <SearchComponent placeholder="Search" />
+      <SearchComponent placeholder="Search by action" onChange={(e) => setSearchValue(e.target.value)} />
       <div className="mt-5">
         {loading && (
           <Flex justify="center" align="center" height="200px">
