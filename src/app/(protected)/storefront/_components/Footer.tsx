@@ -7,13 +7,14 @@ import {
   Stack,
   Text,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 import { FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 import Image from "next/image";
 import Logo from "@public/assets/images/logoWhite.svg";
 
 const Footer = () => {
-    const currentYear = new Date().getFullYear(); // Get the current year
+  const currentYear = new Date().getFullYear(); // Get the current year
   return (
     <Box bg="primary.600" color="white" py={10}>
       <Box className="px-3 md:px-20">
@@ -57,18 +58,21 @@ const Footer = () => {
 
             <Stack spacing={4}>
               <Text fontWeight="bold" fontSize="md">
-                Features
+                Users
               </Text>
               <VStack align="start" spacing={1}>
-                <Text fontSize="sm" cursor="pointer">
+                <Link href="/auth/signin" fontSize="sm" cursor="pointer">
                   Suppliers
-                </Text>
-                <Text fontSize="sm" cursor="pointer">
+                </Link>
+                <Link href="/auth/signin" fontSize="sm" cursor="pointer">
                   Pharmacies
-                </Text>
-                <Text fontSize="sm" cursor="pointer">
+                </Link>
+                <Link href="/auth/signup/vendor" fontSize="sm" cursor="pointer">
                   Vendors
-                </Text>
+                </Link>
+                <Link href="/auth/signup/lender" fontSize="sm" cursor="pointer">
+                  Lenders
+                </Link>
               </VStack>
             </Stack>
 
@@ -80,9 +84,9 @@ const Footer = () => {
                 <Text fontSize="sm" cursor="pointer">
                   Blogs
                 </Text>
-                <Text fontSize="sm" cursor="pointer">
+                <Link href="/storefront/faq" fontSize="sm" cursor="pointer">
                   FAQs
-                </Text>
+                </Link>
                 <Text fontSize="sm" cursor="pointer">
                   Cookies
                 </Text>
@@ -124,7 +128,7 @@ const Footer = () => {
           justify="space-between"
           direction={{ base: "column", md: "row" }}
         >
-           <Text fontSize="sm" textAlign="center">
+          <Text fontSize="sm" textAlign="center">
             &copy; {currentYear} 10MG Pharmacy. All Rights Reserved.
           </Text>
           <HStack spacing={6}>

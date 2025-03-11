@@ -1,5 +1,5 @@
 'use client'
-import { Badge, Box, Divider, Flex, HStack, Spinner, Tag, TagLabel, VStack } from '@chakra-ui/react'
+import { Badge, Box, Divider, Flex, HStack, Progress, Spinner, Tag, TagLabel, VStack } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import {
   Step,
@@ -59,19 +59,15 @@ export default function OrderDetailsPage() {
       : status === "delivered" ? 3
         : status === "shipping" ? 2
           : status === "processing" ? 1
-            : status === "pending" ? 0
+            : status === "pending" ? 1
               : -1;
 
     setStepIndex(stepIndex)
     setActiveStep(stepIndex)
 
 
-  }, [order?.status])
+  }, [order?.status, setActiveStep])
 
-  console.log("status", status)
-  console.log("stepIndex", stepIndex)
-  console.log("stepcount", steps.length)
-  console.log("activeStep", activeStep)
   return (
     <>
       {loading ?
@@ -108,7 +104,7 @@ export default function OrderDetailsPage() {
 
             {/*  */}
 
-            <Stepper index={activeStep} size={'sm'} className='mt-4  px-6 '>
+            <Stepper index={activeStep} size={'sm'} className='mt-4 '>
               {steps.map((step, index) => (
                 <Step key={index} className='' >
                   <div className='flex flex-col items-center relative'>
@@ -124,9 +120,10 @@ export default function OrderDetailsPage() {
                     <StepDescription className='text-xs mt-2 absolute text-nowrap top-3/4'>{step.title}</StepDescription>
 
                   </div>
+                  <StepSeparator className=' w-[100%] absolute left-4' />
 
-                  <StepSeparator className=' w-full' />
                 </Step>
+
               ))}
             </Stepper>
           </Box>

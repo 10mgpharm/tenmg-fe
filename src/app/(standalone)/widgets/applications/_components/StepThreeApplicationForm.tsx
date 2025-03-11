@@ -124,7 +124,6 @@ export default function StepThreeApplicationForm({ token, business, application,
         <LoanLayout name={business?.name} logo={business?.logo} navigateBackAction={navigateBackAction}>
             <section className="flex justify-between items-center w-full pb-8">
                 <LoanProfile name={customer?.name} email={customer?.email} />
-                <IoMdInformationCircleOutline className="w-6 h-6" />
             </section>
 
             <section className="pb-8 flex flex-col gap-5 justify-center items-center">

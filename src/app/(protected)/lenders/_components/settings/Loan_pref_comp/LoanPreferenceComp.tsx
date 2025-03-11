@@ -228,7 +228,7 @@ export default function LoanPreferenceComp() {
           {/* Loan Tenure Multiselect */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-4">
             <div>
-              <FormLabel>Loan Tenure Option</FormLabel>
+              <FormLabel m={0}>Loan Tenure Option</FormLabel>
               <Text fontSize={"14px"} color={"gray.500"}>
                 Loan Duration
               </Text>
@@ -267,7 +267,7 @@ export default function LoanPreferenceComp() {
           {/* Customer Credit Score Category Multiselect */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-4">
             <div>
-              <FormLabel>Customer Credit Score Category</FormLabel>
+              <FormLabel m={0}>Customer Credit Score Category</FormLabel>
               <Text fontSize={"14px"} color={"gray.500"}>
                 Specify the customer categories you would like to give credit to
               </Text>
@@ -313,9 +313,9 @@ export default function LoanPreferenceComp() {
           {/* Interest Rate (Disabled) */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
-              <FormLabel>Interest Rate</FormLabel>
+              <FormLabel m={0}>Interest Rate</FormLabel>
               <Text fontSize={"14px"} color={"gray.500"}>
-                System Default interest rate
+                System default interest rate
               </Text>
             </div>
             <Skeleton isLoaded={!isInfoLoading}>

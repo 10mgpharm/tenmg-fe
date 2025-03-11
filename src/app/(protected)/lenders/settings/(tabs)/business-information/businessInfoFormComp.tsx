@@ -115,7 +115,7 @@ export default function BusinessInfoFormComp() {
           <div>
             <h3 className="font-semibold text-lg">Business Information</h3>
             <Text fontSize={"14px"} color={"gray.500"}>
-              Manage your business information
+              Manage your business information.
             </Text>
           </div>
           <Button
@@ -133,7 +133,7 @@ export default function BusinessInfoFormComp() {
         <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
-              <FormLabel>Business Name</FormLabel>
+              <FormLabel m={0}>Business Name</FormLabel>
 
               <Text fontSize={"14px"} color={"gray.500"}>
                 Registered name of Business
@@ -155,7 +155,7 @@ export default function BusinessInfoFormComp() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
-              <FormLabel>{`Contact Person's Name`}</FormLabel>
+              <FormLabel m={0}>{`Contact Person's Name`}</FormLabel>
               <Text fontSize={"14px"} color={"gray.500"}>
                 Associated name to this business
               </Text>
@@ -176,7 +176,7 @@ export default function BusinessInfoFormComp() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
-              <FormLabel>{`Email Address`}</FormLabel>
+              <FormLabel m={0}>{`Email Address`}</FormLabel>
               <Text fontSize={"14px"} color={"gray.500"}>
                 Associated business email address
               </Text>
@@ -198,7 +198,7 @@ export default function BusinessInfoFormComp() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="">
-              <FormLabel>{`Phone Number`}</FormLabel>
+              <FormLabel m={0}>{`Phone Number`}</FormLabel>
               <Text fontSize={"14px"} color={"gray.500"}>
                 Associated business phone number
               </Text>

@@ -240,7 +240,7 @@ export default function BankInfoFormComp({
             {/* Account Number Field */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div>
-                <FormLabel>Account Number</FormLabel>
+                <FormLabel m={0}>Account Number</FormLabel>
                 <Text fontSize="14px" color="gray.500">
                   Associated Account Number
                 </Text>
@@ -269,7 +269,7 @@ export default function BankInfoFormComp({
             {/* Bank Selection Field */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div>
-                <FormLabel>Bank</FormLabel>
+                <FormLabel m={0}>Bank</FormLabel>
                 <Text fontSize="14px" color="gray.500">
                   Associated Bank Name
                 </Text>
@@ -311,7 +311,7 @@ export default function BankInfoFormComp({
             {/* Account Name Field */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div>
-                <FormLabel>Account Name</FormLabel>
+                <FormLabel m={0}>Account Name</FormLabel>
                 <Text fontSize="14px" color="gray.500">
                   Account Name verified from bank
                 </Text>

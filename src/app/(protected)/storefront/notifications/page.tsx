@@ -127,7 +127,7 @@ const Notifications = () => {
     const handleItemClick = (id: string) => {
         const currentParams = new URLSearchParams(searchParams.toString());
         currentParams.set('id', id);
-        router.replace(`/admin/notifications?${currentParams.toString()}`, {scroll: false});
+        router.replace(`/storefront/notifications?${currentParams.toString()}`, {scroll: false});
     };
 
     return (
@@ -158,9 +158,9 @@ const Notifications = () => {
                             <div 
                             className={cn(
                                 selectedNotification?.id === notification.id
-                                 ? "border-r-4 border-primary-500 bg-gray-100" 
-                                 : "", 
-                                 "flex px-2 py-1.5"
+                                ? "border-r-4 border-primary-500 bg-gray-100" 
+                                : "", 
+                                "flex px-2 py-1.5"
                              )}
                             >
                                 <div className="p-1 bg-blue-100 text-blue-600 rounded-full max-h-max">
@@ -172,7 +172,7 @@ const Notifications = () => {
                                     <div className="flex-1" 
                                     onClick={() => handleItemClick(notification.id)}
                                     >
-                                        <p className="px-4">{truncateString(notification?.data?.subject, 76)}</p>
+                                        <p className="px-4">{truncateString(notification?.data?.message, 76)}</p>
                                         <p className="text-sm text-gray-500 my-2 px-4">{notification?.createdAt}</p>
                                     </div>
                                     <Menu as="div" className="relative">

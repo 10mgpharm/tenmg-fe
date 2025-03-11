@@ -113,70 +113,13 @@ const GeneralSettings = () => {
       },
     });
 
- const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-   setFileError(null);
-   const selectedFile = event.target.files?.[0];
-   if (!selectedFile) return;
-
-   if (selectedFile.size > 5 * 1024 * 1024) {
-     setFileError("File size must be less than 5MB");
-     event.target.value = "";
-     return;
-   }
-
-   if (!selectedFile.type.startsWith("image/")) {
-     setFileError("Only image files are allowed");
-     event.target.value = "";
-     return;
-   }
-
-   setIsShowUpload(true);
-   setFile(selectedFile);
-   setFilePreview(URL.createObjectURL(selectedFile));
- };
-
- const uploadProfileImage = useCallback(async () => {
-   if (!file) return;
-
-   const formdata = new FormData();
-   formdata.append("profilePicture", file);
-   formdata.append("email", userEmail);
-   formdata.append("name", userName);
-
-   setIsUploading(true);
-
-   try {
-     const response = await requestClient({
-       token: sessionData.user.token,
-     }).post("/account/profile", formdata);
-
-     if (response.status === 200) {
-       toast.success(response?.data?.message);
-
-       //  update session here
-       await session.update({
-         ...sessionData,
-         user: {
-           ...sessionData.user,
-           picture: response?.data?.data?.avatar,
-         },
-       });
-     }
-   } catch (error) {
-     const errorMessage = handleServerErrorMessage(error);
-     toast.error(errorMessage);
-   } finally {
-     setIsUploading(false);
-   }
- }, [file, userEmail, userName, sessionData, session]);
-
  const fetchUserInformation = useCallback(async () => {
    try {
      setIsUserInfo(true);
 
      const response = await requestClient({
        token: sessionData.user.token,
-     }).get("/supplier/settings");
+     }).get("/admin/settings");
 
      const data = response.data.data;
 
@@ -269,21 +212,13 @@ const GeneralSettings = () => {
             </Button>
           </HStack>
           <Box className="bg-white p-4 rounded-md border mt-5">
-            <ProfileImageUploader
-              filePreview={filePreview}
-              sessionData={sessionData}
-              handleFileChange={handleFileChange}
-              uploadProfileImage={uploadProfileImage}
-              isUploading={isUploading}
-              isShowUpload={isShowUpload}
-              fileError={fileError}
-            />
             <Grid templateColumns="repeat(3, 1fr)" gap={4}>
               <GridItem colSpan={1}>
                 <Text>Name</Text>
               </GridItem>
               <GridItem colSpan={1}>
                 <Input
+                  disabled
                   type="text"
                   {...register("name", {
                     required: "Name is required",
@@ -294,11 +229,6 @@ const GeneralSettings = () => {
                     {errors.name?.message}
                   </Text>
                 )}
-                <Input
-                  disabled
-                  type="text"
-                  value={sessionData?.user?.entityType}
-                />
               </GridItem>
             </Grid>
             <Divider my={3} />
