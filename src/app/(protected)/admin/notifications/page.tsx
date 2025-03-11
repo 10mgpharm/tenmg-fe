@@ -127,7 +127,7 @@ const Notifications = () => {
     const handleItemClick = (id: string) => {
         const currentParams = new URLSearchParams(searchParams.toString());
         currentParams.set('id', id);
-        router.replace(`/vendors/notifications?${currentParams.toString()}`, {scroll: false});
+        router.replace(`/admin/notifications?${currentParams.toString()}`, {scroll: false});
     };
 
     return (
