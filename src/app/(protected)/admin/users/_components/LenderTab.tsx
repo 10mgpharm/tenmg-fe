@@ -63,7 +63,6 @@ const LenderTab = ({
   fetchTeamUser: (type: string, pageCount: number) => void;
 }) => {
   const [userId, setUserId] = useState<number>();
-  const [reason, setReason] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -174,26 +173,25 @@ const LenderTab = ({
       getSortedRowModel: getSortedRowModel(),
   });
 
-    const handleRemove = async () => {
-      if(!reason) return;
-      setIsLoadingAction(true);
-      try {
-        const response = await requestClient({ token }).delete(
-        `admin/users/${userId}`
-        );
+  const handleRemove = async () => {
+    setIsLoadingAction(true);
+    try {
+      const response = await requestClient({ token }).delete(
+      `admin/users/${userId}`
+      );
 
-        if (response.status === 200) {
-        toast.success(response.data.message);
-        onCloseDelete();
-        fetchTeamUser("lender", 1);
-        }
-      } catch (error) {
-        const errorMessage = handleServerErrorMessage(error);
-        toast.error(errorMessage);
-      } finally {
-        setIsLoadingAction(false);
+      if (response.status === 200) {
+      toast.success(response.data.message);
+      onCloseDelete();
+      fetchTeamUser("lender", 1);
       }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoadingAction(false);
     }
+  }
 
   return (
     <div className="">

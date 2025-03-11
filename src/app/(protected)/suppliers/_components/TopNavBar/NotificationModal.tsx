@@ -5,12 +5,14 @@ import { MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter } from 'next/navigation';
 import { Flex } from '@chakra-ui/layout';
 import { Spinner } from '@chakra-ui/react';
+import { cn } from '@/lib/utils';
 export interface NotificationProps {
     id: string;
     readAt: string | null;
     createdAt: string;
     data: {
         message: string;
+        subject: string;
     } 
 }
 
@@ -18,12 +20,12 @@ const NotificationModal = (
     { notificationsMsgs, route, loading }: 
     { notificationsMsgs: NotificationProps[], route: string, loading: boolean}
 ) => {
-
     const navigate = useRouter();
+    console.log(notificationsMsgs)
     return (
     <MenuItems 
         transition
-        className="absolute right-5 z-10 mt-5 w-full sm:w-[430px] h-[560px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
+        className="absolute right-5 z-10 mt-5 pb-8 w-full sm:w-[430px] h-[560px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
         <div className="flex-1">
             <MenuItem>
                 <div className="flex items-center justify-between px-5">
@@ -92,7 +94,10 @@ const NotificationModal = (
                                     } */}
                                 </div>
                                 <div className="space-y-1 mb-2">
-                                    <p className="font-medium text-sm leading-6 text-[#101828]">{notification?.data?.message}</p>
+                                    <p 
+                                    className={cn(notification.readAt ? "text-black/50 font-normal" : "text-[#101828]" , "font-medium text-sm leading-6")}>{
+                                    notification?.data?.subject}
+                                    </p>
                                     <p className="text-sm text-gray-400">{notification?.createdAt}</p>
                                 </div>
                             </div>
