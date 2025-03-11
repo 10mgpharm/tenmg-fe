@@ -230,7 +230,7 @@ export default function LoanPreferenceComp() {
             <div>
               <FormLabel m={0}>Loan Tenure Option</FormLabel>
               <Text fontSize={"14px"} color={"gray.500"}>
-                Loan Duration
+                Loan duration
               </Text>
             </div>
             <Skeleton isLoaded={!isInfoLoading}>
