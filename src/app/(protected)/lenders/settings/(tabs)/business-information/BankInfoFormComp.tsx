@@ -242,7 +242,7 @@ export default function BankInfoFormComp({
               <div>
                 <FormLabel m={0}>Account Number</FormLabel>
                 <Text fontSize="14px" color="gray.500">
-                  Associated Account Number
+                  Associated account number
                 </Text>
               </div>
               <Skeleton isLoaded={!isInfoLoading}>
@@ -271,7 +271,7 @@ export default function BankInfoFormComp({
               <div>
                 <FormLabel m={0}>Bank</FormLabel>
                 <Text fontSize="14px" color="gray.500">
-                  Associated Bank Name
+                  Associated bank name
                 </Text>
               </div>
               <Skeleton isLoaded={!isInfoLoading}>
@@ -313,7 +313,7 @@ export default function BankInfoFormComp({
               <div>
                 <FormLabel m={0}>Account Name</FormLabel>
                 <Text fontSize="14px" color="gray.500">
-                  Account Name verified from bank
+                  Account name verified from bank
                 </Text>
               </div>
               <Skeleton isLoaded={!isInfoLoading}>
