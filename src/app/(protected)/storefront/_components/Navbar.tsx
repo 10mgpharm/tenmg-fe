@@ -88,7 +88,8 @@ const Navbar = () => {
       );
 
       if (response.status === 200) {
-        setNotifications(response.data?.data?.data || []);
+        const datal = response.data?.data?.data?.slice(0,5);
+        setNotifications(datal || []);
         setLoading(false);
       }
     } catch (err: any) {
@@ -318,7 +319,7 @@ const Navbar = () => {
                   onClick={() => router.push('/storefront/notifications')}
                     className='text-sm font-semibold cursor-pointer text-primary-600'
                   >
-                      View all
+                    View all
                   </div>
                 </div>
               {
@@ -340,12 +341,12 @@ const Navbar = () => {
                 : (
                 <div className="mt-6">
                   {notifications?.map((notification) => (
-                    <MenuItem key={notification?.id} display={"block"}>
+                    <MenuItem key={notification?.id} display={"block"} _hover={{bg: "none"}}>
                       <Link
                         href={`/storefront/notifications?id=${notification.id}`}
-                        className="flex items-start border-b border-gray-200 cursor-pointer"
+                        className="flex border-b border-gray-200 cursor-pointer pb-2"
                       >
-                        <div className='flex gap-3 px-5'>
+                        <div className='flex gap-3'>
                           <div>
                             <div className="p-1 bg-blue-100 text-blue-600 rounded-full">
                               <IoMdNotificationsOutline
@@ -353,10 +354,10 @@ const Navbar = () => {
                               />
                             </div>
                           </div>
-                          <div className="space-y-1 mb-2">
+                          <div className="space-y-1">
                               <p 
                               className={cn(notification.readAt ? "text-black/50 font-normal" : "text-[#101828]" , "font-medium text-sm leading-6")}>{
-                              notification?.data?.message}
+                              notification?.data?.subject}
                               </p>
                               <p className="text-sm text-gray-400">{notification?.createdAt}</p>
                           </div>

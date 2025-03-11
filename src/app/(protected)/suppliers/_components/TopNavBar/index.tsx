@@ -84,7 +84,8 @@ const TopNavBar = ({ route }: { route: string }) => {
       );
 
       if (response.status === 200) {
-        setNotifications(response.data?.data?.data || []);
+        const datal = response.data?.data?.data?.slice(0,5);
+        setNotifications(datal || []);
       }
     } catch (err: any) {
       console.error(err);
