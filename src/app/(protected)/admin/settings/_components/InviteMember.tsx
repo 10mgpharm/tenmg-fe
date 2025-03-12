@@ -37,18 +37,33 @@ const INVITE_PATHS: { [key in "admin" | "vendor"]: string } = {
   vendor: "/vendor/settings/invite",
 };
 
+const CHANGE_ROLE_PATHS: { [key in "admin" | "vendor"]: string } = {
+  admin: "/admin/users",
+  vendor: "/vendor/settings/users",
+};
+
 const InviteMember = ({
   isOpen,
   onClose,
   accountType,
   fetchTeamMembers,
   token,
+  editing,
+  userId,
+  setActionType,
+  userData,
+  setUserData,
 }: {
   isOpen: boolean;
   onClose: () => void;
   accountType?: "vendor" | "admin";
   fetchTeamMembers?: () => void;
   token?: string;
+  editing?: boolean;
+  userId?: number;
+  setActionType?: (value: any | null) => void;
+  userData?: IFormInput;
+  setUserData?: (value: any) => void;
 }) => {
   const {
     register,
@@ -57,12 +72,41 @@ const InviteMember = ({
     formState: { errors },
   } = useForm<IFormInput>({
     mode: "onBlur",
+    defaultValues: {
+      email: userData?.email,
+      fullName: userData?.fullName,
+      role: userData?.role,
+    },
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    if (editing) {
+      const endpoint = `${CHANGE_ROLE_PATHS[accountType]}/${userId}`;
+
+      try {
+        setIsLoading(true);
+        const response = await requestClient({ token: token }).patch(endpoint, {
+          role: data.role,
+        });
+        if (response.status === 200) {
+          toast.success(response?.data?.message);
+          reset();
+          fetchTeamMembers();
+          onClose();
+          setActionType("");
+        }
+      } catch (error) {
+        toast.error(handleServerErrorMessage(error));
+      } finally {
+        setIsLoading(false);
+      }
+
+      return;
+    }
+
     const endpoint = INVITE_PATHS[accountType] ?? INVITE_PATHS.vendor;
     try {
       setIsLoading(true);
@@ -84,11 +128,20 @@ const InviteMember = ({
   };
 
   return (
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
+    <Drawer
+      isOpen={isOpen}
+      placement="right"
+      onClose={() => {
+        onClose();
+        setActionType("");
+        setUserData("");
+      }}
+      size="md"
+    >
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Invite Member</DrawerHeader>
+        <DrawerHeader>{editing ? "Edit" : "Invite"} Member</DrawerHeader>
         <DrawerBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl mb={5} isInvalid={!!errors.fullName}>
@@ -110,6 +163,7 @@ const InviteMember = ({
                   ); // Remove non-letter characters
                 }}
                 placeholder="Enter full name"
+                disabled={editing}
               />
 
               <FormErrorMessage>{errors.fullName?.message}</FormErrorMessage>
@@ -127,6 +181,7 @@ const InviteMember = ({
                     message: "Invalid Email Address",
                   },
                 })}
+                disabled={editing}
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
@@ -167,7 +222,14 @@ const InviteMember = ({
             )}
 
             <HStack maxW="300px" ml="auto" gap={3} mt={6}>
-              <Button onClick={onClose} variant="outline">
+              <Button
+                onClick={() => {
+                  onClose();
+                  setActionType("");
+                  setUserData("");
+                }}
+                variant="outline"
+              >
                 Cancel
               </Button>
               <Button
@@ -176,7 +238,7 @@ const InviteMember = ({
                 isLoading={isLoading}
                 disabled={isLoading}
               >
-                Invite Member
+                {editing ? "Edit" : "Invite"} Member
               </Button>
             </HStack>
           </form>

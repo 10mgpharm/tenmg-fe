@@ -41,6 +41,7 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
 import ViewUserModal from "../../users/_components/ViewUserModal";
+import Email from "next-auth/providers/email";
 
 interface IFormInput {
   fullName: string;
@@ -75,6 +76,7 @@ const Members = () => {
   const [userId, setUserId] = useState<number>();
   const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
   const [actionType, setActionType] = useState<any | null>(null);
+  const [userData, setUserData] = useState<any>();
 
   const session = useSession();
   // const sessionData = session?.data?.user as User;
@@ -160,6 +162,14 @@ const Members = () => {
     [onOpenSuspend]
   );
 
+  // handle open Edit user modal
+  const handleOpenEdituser = (userData: any | null) => {
+    setUserId(userData?.user?.id);
+    setUserData(userData);
+    setActionType("edit");
+    onOpen();
+  };
+
   useEffect(() => {
     if (!token) return;
     fetchTeamMembers();
@@ -169,7 +179,11 @@ const Members = () => {
 
   const table = useReactTable({
     data: memoizedData,
-    columns: ColumsMemberFN(handleDeleteModal, handleOpenModal),
+    columns: ColumsMemberFN(
+      handleDeleteModal,
+      handleOpenEdituser,
+      handleOpenModal
+    ),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -204,7 +218,8 @@ const Members = () => {
         </Flex>
       </HStack>
       <div className="mt-5">
-        {MemberData?.length === 0 ? (
+        {/* {MemberData?.length === 0 ? ( */}
+        {memoizedData?.length === 0 ? (
           <EmptyOrder
             heading={`No Member Yet`}
             content={`You currently have no member added. All members will appear here.`}
@@ -246,13 +261,26 @@ const Members = () => {
           </TableContainer>
         )}
       </div>
-      <InviteMember
-        onClose={onClose}
-        isOpen={isOpen}
-        token={token}
-        fetchTeamMembers={fetchTeamMembers}
-        accountType="admin"
-      />
+
+      {isOpen && (
+        <InviteMember
+          onClose={onClose}
+          isOpen={isOpen}
+          token={token}
+          fetchTeamMembers={fetchTeamMembers}
+          accountType="admin"
+          editing={actionType === "edit"}
+          userId={userId}
+          setActionType={setActionType}
+          userData={{
+            email: userData?.email ?? "",
+            fullName: userData?.fullName ?? "",
+            role: userData?.role ?? null,
+          }}
+          setUserData={setUserData}
+        />
+      )}
+
       <ConfirmModal
         isOpen={isOpenRemove}
         onClose={onCloseRemove}
