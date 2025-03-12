@@ -15,6 +15,8 @@ import {
   IconButton,
   Button,
   Avatar,
+  Flex,
+  Spinner,
 } from "@chakra-ui/react";
 
 import { BellIcon, Search, UserCircle2Icon } from "lucide-react";
@@ -32,8 +34,9 @@ import Link from "next/link";
 import { useCartStore } from "../storeFrontState/useCartStore";
 import { NextAuthUserSession } from "@/types";
 import { BusinessStatus } from "@/constants";
-import NotificationModal from "../../suppliers/_components/TopNavBar/NotificationModal";
 import requestClient from "@/lib/requestClient";
+import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -52,7 +55,7 @@ const Navbar = () => {
   const handleOpenRemove = () => setIsRemoveOpen(true);
   const handleCloseRemove = () => setIsRemoveOpen(false);
 
-  const [cartDataCount, setCartDataCount] = useState(null);
+  // const [cartDataCount, setCartDataCount] = useState(null);
   const [notifications, setNotifications] = useState<any[]>([]);
 
   const session = useSession();
@@ -83,9 +86,9 @@ const Navbar = () => {
       const response = await requestClient({ token }).get(
       `/account/notifications`
       );
-
       if (response.status === 200) {
-        setNotifications(response.data?.data?.data || []);
+        const datal = response.data?.data?.data?.slice(0,5);
+        setNotifications(datal || []);
         setLoading(false);
       }
     } catch (err: any) {
@@ -102,8 +105,6 @@ const Navbar = () => {
 
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
-      {/* Mobile View */}
-
       <Box
         className="flex justify-between shadow-sm lg:pr-8 items-center h-16 px-6"
         display={{ base: "flex", md: "none" }}
@@ -118,10 +119,7 @@ const Navbar = () => {
             height={40}
           />
         </HStack>
-
-        {/* Navigation Icons */}
         <HStack spacing={4} color="primary.500">
-          {/* Search Icon */}
           <Box
             cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
             onClick={!isRestrictedStatus ? handleOpenSearch : undefined}
@@ -131,8 +129,6 @@ const Navbar = () => {
               <Icon as={Search} boxSize={5} />
             </Stack>
           </Box>
-
-          {/* Cart Icon */}
           <Box
             cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
             onClick={!isRestrictedStatus ? handleOpenCart : undefined}
@@ -308,13 +304,63 @@ const Navbar = () => {
                 "scrollbar-width": "none"
               }}
             >
-              {/* <MenuItem py={3} px={0}> */}
-                <NotificationModal 
-                  loading={loading}
-                  notificationsMsgs={notifications}
-                  route={"/storefront/notifications"}
-                />
-              {/* </MenuItem> */}
+              <div>
+                <div className="flex items-center justify-between px-5">
+                  <p className='font-bold text-lg'>Notifications</p>
+                  <div
+                  onClick={() => router.push('/storefront/notifications')}
+                    className='text-sm font-semibold cursor-pointer text-primary-600'
+                  >
+                    View all
+                  </div>
+                </div>
+              {
+                loading ? 
+                  <Flex justify="center" align="center" height="200px">
+                      <Spinner size="xl" />
+                  </Flex>
+                : 
+                notifications?.length === 0 ? (
+                <div className="flex flex-col items-center justify-center mt-24 text-center">
+                  <IoIosNotifications
+                    className="w-32 h-32 text-primary-500"
+                  />
+                  <p className="text-gray-600 font-medium mt-4">
+                  This is where your notifications will appear.
+                  </p>
+                </div>
+                )
+                : (
+                <div className="mt-6">
+                  {notifications?.map((notification) => (
+                    <MenuItem key={notification?.id} display={"block"} _hover={{bg: "none"}}>
+                      <Link
+                        href={`/storefront/notifications?id=${notification.id}`}
+                        className="flex border-b border-gray-200 cursor-pointer pb-2"
+                      >
+                        <div className='flex gap-3'>
+                          <div>
+                            <div className="p-1 bg-blue-100 text-blue-600 rounded-full">
+                              <IoMdNotificationsOutline
+                                className="w-6 h-6 cursor-pointer"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                              <p 
+                              className={cn(notification.readAt ? "text-black/50 font-normal" : "text-[#101828]" , "font-medium text-sm leading-6")}>{
+                              notification?.data?.subject}
+                              </p>
+                              <p className="text-sm text-gray-400">{notification?.createdAt}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </div>
+                )
+              }
+            </div>
             </MenuList>
           </Menu>
 

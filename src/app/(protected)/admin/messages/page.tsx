@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import messageIcon from "@public/assets/images/message.svg"
 import { 
     classNames, 
@@ -13,7 +13,12 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaPaperclip } from "react-icons/fa6";
 import { VscSend } from "react-icons/vsc";
 import { useSession } from "next-auth/react";
-import { ConversationProps, MessageProps, NextAuthUserSession, UserListProps } from "@/types";
+import { 
+    ConversationProps,
+     MessageProps, 
+     NextAuthUserSession, 
+     UserListProps 
+    } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
@@ -30,13 +35,14 @@ import {
     TagLabel, 
     useDisclosure 
 } from "@chakra-ui/react";
-import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 import { SearchIcon } from "lucide-react";
 import { useDebouncedValue } from "@/utils/debounce";
+import ModalWrapper from "../../suppliers/_components/ModalWrapper";
 
 const Message = () => {
 
     const session = useSession();
+    const chatEndRef = useRef(null);
     const sessionData = session?.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
     const [loading, setLoading] = useState(false);
@@ -50,6 +56,10 @@ const Message = () => {
     const [currentMessage, setCurrentMessage] = useState<MessageProps>();
     const { isOpen, onClose, onOpen } = useDisclosure();
     const debouncedSearch = useDebouncedValue(searchWord, 500);
+
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [conversation]); 
 
     const fetchingData = async () => {
         setLoading(true);
@@ -154,7 +164,7 @@ const Message = () => {
         }
     }
 
-  return (
+    return (
     <div className="px-8 h-[calc(100vh-150px)]">
         {
             loading ?
@@ -175,12 +185,10 @@ const Message = () => {
                 className="bg-primary-600 text-white w-36 mx-auto p-2 rounded-md mt-5">
                     Start Message
                 </button>
-            </div>
-            :
-            messages?.length > 1 ? 
-            <div>
+            </div>: 
+            <div className="">
                 <div className="grid grid-cols-5">
-                    <div className="col-span-2 pr-5">
+                    <div className="col-span-2 pr-5 h-[calc(100vh-150px)] no-scrollbar overflow-y-scroll">
                         <div className="flex items-center justify-between">
                             <h3 className="font-semibold text-2xl text-gray-800 my-4">Message</h3>
                             <Button onClick={onOpen} h={"35px"} px={4} fontSize={"14px"} variant={"outline"}>
@@ -204,13 +212,14 @@ const Message = () => {
                                         )}>
                                         <Avatar
                                             size="md"
-                                            name={message?.receiver?.name}
-                                            src={message?.receiver?.name}
+                                            name={message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name}
+                                            src={message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name}
                                         />
                                         <div className="">
                                             <p className="font-medium text-lg text-gray-700">
                                                 <span className="capitalize">
-                                                    {message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name
+                                                    {
+                                                    message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name
                                                     }
                                                 </span>
                                                 <span className="text-gray-500 text-[14px] ml-2">
@@ -235,11 +244,11 @@ const Message = () => {
                                 <div className="flex items-center gap-3 border-b p-4">
                                     <Avatar
                                         size="md"
-                                        name={currentMessage?.receiver?.name}
-                                        src={currentMessage?.receiver?.name}
+                                        name={currentMessage?.receiver?.id !== Number(sessionData?.user?.id) ? currentMessage?.receiver?.name : currentMessage?.sender?.name}
+                                        src={currentMessage?.receiver?.id !== Number(sessionData?.user?.id) ? currentMessage?.receiver?.name : currentMessage?.sender?.name}
                                     />
                                     <p className="font-semibold text-lg text-gray-700">
-                                        {currentMessage?.receiver?.name}
+                                        {currentMessage?.receiver?.id !== Number(sessionData?.user?.id) ? currentMessage?.receiver?.name : currentMessage?.sender?.name}
                                     </p>
                                 </div>
                                 <div className="my-4 px-4 relative">
@@ -267,6 +276,8 @@ const Message = () => {
                                                                 item.sender?.id === Number(sessionData?.user?.id) && <IoCheckmarkDoneSharp className="text-gray-400 w-5 h-5 ml-2" />
                                                             }
                                                             </p>
+                                                            {/* Invisible element to scroll into */}
+                                                            <div ref={chatEndRef} />
                                                         </div>
                                                     }
                                                 </div>
@@ -301,7 +312,6 @@ const Message = () => {
                     </div>
                 </div>
             </div>
-            : null
         }
         <ModalWrapper
         isOpen={isOpen} 
@@ -325,7 +335,7 @@ const Message = () => {
                             <div 
                             key={user?.id}
                             onClick={() => {
-                                const existChat = messages?.find((message) => message.receiver.id === user.id);
+                                const existChat = messages?.find((message) => (message.receiver.id === user.id || message.sender.id === user.id));
                                 if(existChat){
                                     fetchConversations(existChat?.id);
                                     setCurrentMessage(existChat)
@@ -386,4 +396,4 @@ const Message = () => {
   )
 }
 
-export default Message;
+export default Message

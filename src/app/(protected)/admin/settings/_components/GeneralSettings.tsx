@@ -140,8 +140,8 @@ const GeneralSettings = () => {
 
    const formdata = new FormData();
    formdata.append("profilePicture", file);
-   formdata.append("email", userEmail);
-   formdata.append("name", userName);
+   formdata.append("email",sessionData.user.email);
+   formdata.append("name",sessionData.user.name);
 
    setIsUploading(true);
 
@@ -176,11 +176,11 @@ const GeneralSettings = () => {
 
      const response = await requestClient({
        token: sessionData.user.token,
-     }).get("/supplier/settings");
+     }).get("/admin/settings");
 
      const data = response.data.data;
 
-     setValue("businessName", data.businessName);
+    setValue("businessName", data.businessName);
      setValue("contactEmail", data.contactEmail);
      setValue("contactPerson", data.contactPerson);
      setValue("contactPhone", data.contactPhone);
@@ -284,6 +284,7 @@ const GeneralSettings = () => {
               </GridItem>
               <GridItem colSpan={1}>
                 <Input
+                  disabled
                   type="text"
                   {...register("name", {
                     required: "Name is required",
@@ -294,11 +295,6 @@ const GeneralSettings = () => {
                     {errors.name?.message}
                   </Text>
                 )}
-                <Input
-                  disabled
-                  type="text"
-                  value={sessionData?.user?.entityType}
-                />
               </GridItem>
             </Grid>
             <Divider my={3} />

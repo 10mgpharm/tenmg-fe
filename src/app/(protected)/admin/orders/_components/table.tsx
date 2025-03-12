@@ -4,7 +4,7 @@ import { OrderData } from "@/types";
 import { convertDate } from "@/utils/formatDate";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const columnHelper = createColumnHelper<OrderData>();
 
@@ -19,6 +19,8 @@ export function ColumsOrderFN(
   onOpenRefunded: () => void,
   setSelectedOrder: (item: any) => void,
 ) {
+
+  const router = useRouter();
 
   return [
     columnHelper.accessor("id", {
@@ -146,8 +148,8 @@ export function ColumsOrderFN(
                 <BsThreeDotsVertical className="" />
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <Link href={`/admin/orders/${info.row.original.id}`}>View Order</Link>
+                <MenuItem onClick={() => router.push(`/admin/orders/${info.row.original.id}`) }>
+                  View Order
                 </MenuItem>
                 {
                   info.row.original.status === "PENDING" && (
