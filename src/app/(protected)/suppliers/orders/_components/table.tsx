@@ -1,10 +1,10 @@
+import { useRouter } from "next/navigation";
 import { createColumnHelper } from "@tanstack/react-table";
 import { classNames, formatAmountString } from "@/utils";
 import { OrderData } from "@/types";
 import { convertDate } from "@/utils/formatDate";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import Link from "next/link";
 
 const columnHelper = createColumnHelper<OrderData>();
 
@@ -12,7 +12,7 @@ export function ColumsOrderFN(
   pageIndex: number, 
   pageSize: number, 
 ) {
-
+  const router = useRouter();
   return [
     columnHelper.accessor("id", {
       header: () => (
@@ -139,8 +139,8 @@ export function ColumsOrderFN(
                 <BsThreeDotsVertical className="" />
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <Link href={`/suppliers/orders/${info.row.original.id}`}>View Order</Link>
+                <MenuItem onClick={() => router.push(`/suppliers/orders/${info.row.original.id}`)}>
+                  View Order
                 </MenuItem>
               </MenuList>
             </Menu>

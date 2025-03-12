@@ -12,7 +12,7 @@ export interface NotificationProps {
     createdAt: string;
     data: {
         message: string;
-        subject: string;
+        subject?: string;
     } 
 }
 

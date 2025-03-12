@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react"
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession, SingleNotification } from "@/types";
 import { handleServerErrorMessage, truncateString } from "@/utils";
-import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io"
+import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io";
 import { NotificationProps } from "../../suppliers/_components/TopNavBar/NotificationModal";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -172,7 +172,7 @@ const Notifications = () => {
                                     <div className="flex-1" 
                                     onClick={() => handleItemClick(notification.id)}
                                     >
-                                        <p className="px-4">{truncateString(notification?.data?.subject, 76)}</p>
+                                        <p className="px-4">{notification?.data?.subject && truncateString(notification?.data?.subject, 76)}</p>
                                         <p className="text-sm text-gray-500 my-2 px-4">{notification?.createdAt}</p>
                                     </div>
                                     <Menu as="div" className="relative">
