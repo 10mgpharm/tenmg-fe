@@ -15,7 +15,6 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 import { LuCopy } from "react-icons/lu";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import LoanProfile from "../../_components/LoanProfile";
 import LoanLayout from "../../_components/LoanLayout";
 import {
@@ -57,7 +56,9 @@ const parseResponseDescription = (description: string) => {
 
 const parseFullDescription = (description: string) => {
   const convertedAmount = description.replace(/(N\d+):(\d{2})/g, "$1.$2");
-  return convertedAmount.replace(/"(\d+)"/g, "$1");
+  const unquotedAccount = convertedAmount.split('\\"').join('');
+  
+  return unquotedAccount;
 };
 
 export default function StepFiveMandateScreen({
@@ -89,6 +90,7 @@ export default function StepFiveMandateScreen({
     });
   }, [token, mandateDetail, mandateDetailRef, startTransition]);
 
+  // Parse the response description to get the bank name, account number, and amount
   const mandateInfo = useMemo(
     () =>
       parseResponseDescription(

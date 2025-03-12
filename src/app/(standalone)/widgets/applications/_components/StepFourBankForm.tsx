@@ -17,7 +17,6 @@ import {
   Skeleton,
   Stack,
 } from "@chakra-ui/react";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useForm, SubmitHandler } from "react-hook-form";
 import LoanProfile from "../../_components/LoanProfile";
 import LoanLayout from "../../_components/LoanLayout";
@@ -320,7 +319,6 @@ export default function StepFourBankForm({
         <>
           <section className="flex justify-between items-center w-full pb-8">
             <LoanProfile name={customer?.name} email={customer?.email} />
-            <IoMdInformationCircleOutline className="w-6 h-6" />
           </section>
           <section className="pb-8 flex flex-col gap-5 justify-center items-center">
             <Text fontSize="md" textAlign={"center"}>
