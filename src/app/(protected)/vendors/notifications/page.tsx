@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react"
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession, SingleNotification } from "@/types";
 import { handleServerErrorMessage, truncateString } from "@/utils";
-import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io"
+import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io";
 import { NotificationProps } from "../../suppliers/_components/TopNavBar/NotificationModal";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter, useSearchParams } from "next/navigation";
