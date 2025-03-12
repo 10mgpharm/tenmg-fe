@@ -90,6 +90,23 @@ const Notifications = () => {
         }
     }
 
+    const markAllAsRead = useCallback(async () => {
+        try {
+            const res = await requestClient({ token: token }).patch(
+                `/account/notifications/mark-all-read`,
+            );
+            if (res.status === 200) {
+                toast.success(res?.data?.message)
+                fetchingData();
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        } finally {
+            setLoading(false);
+        }
+    }, [token]);
+
     const handleDelete = useCallback(async (id: string) => {
         // setLoading(true);
         try {
@@ -110,7 +127,7 @@ const Notifications = () => {
     const handleItemClick = (id: string) => {
         const currentParams = new URLSearchParams(searchParams.toString());
         currentParams.set('id', id);
-        router.replace(`/admin/notifications?${currentParams.toString()}`, {scroll: false});
+        router.replace(`/suppliers/notifications?${currentParams.toString()}`, {scroll: false});
     };
 
     return (
@@ -122,9 +139,9 @@ const Notifications = () => {
                 </Flex>
             : data?.length > 0 ?
             <div className="flex rounded-sm m-4 bg-white">
-                <div className="border-r h-[calc(100vh-150px)] overflow-y-scroll overflow-x-hidden">
+                <div className="border-r h-[calc(100vh-150px)] w-[380px] overflow-y-scroll overflow-x-hidden">
                     <h2 className="text-xl font-semibold mb-2 px-4 mt-5">My Notifications</h2>
-                    <button className="text-primary-500 font-medium text-sm mb-6 px-4">
+                    <button onClick={markAllAsRead} className="text-primary-500 font-medium text-sm mb-6 px-4">
                         Mark all as read
                     </button>
                     <div>
@@ -155,7 +172,7 @@ const Notifications = () => {
                                     <div className="flex-1" 
                                     onClick={() => handleItemClick(notification.id)}
                                     >
-                                        <p className="px-4">{truncateString(notification?.data?.message, 76)}</p>
+                                        <p className="px-4">{truncateString(notification?.data?.subject, 76)}</p>
                                         <p className="text-sm text-gray-500 my-2 px-4">{notification?.createdAt}</p>
                                     </div>
                                     <Menu as="div" className="relative">

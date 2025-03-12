@@ -15,7 +15,7 @@ export const ColumsLogFN = () => [
     header: "Description",
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor("createAt", {
+  columnHelper.accessor("createdAt", {
     header: "Timestamp",
     cell: (info) => info.getValue(),
   }),
