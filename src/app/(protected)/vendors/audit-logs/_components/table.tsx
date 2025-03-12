@@ -1,57 +1,23 @@
 import { AuditLogData } from "@/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const columnHelper = createColumnHelper<AuditLogData>();
+const columnHelper = createColumnHelper<any>();
 
-export function ColumnsAuditLogFN() {
-  return [
-    columnHelper.accessor("timestamp", {
-      header: () => (
-        <div className="pl-6">
-          <p>Timestamp</p>
-        </div>
-      ),
-      cell: (info) => (
-        <div className="pl-6">
-          <p className="text-gray-500">{info.row.original?.timestamp}</p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("user", {
-      header: () => (
-        <div>
-          <p>User</p>
-        </div>
-      ),
-      cell: (info) => (
-        <div>
-          <p className="font-medium">{info.row.original?.user} </p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("event", {
-      header: () => (
-        <div>
-          <p>Event</p>
-        </div>
-      ),
-      cell: (info) => (
-        <div>
-          <p className="font-medium">{info.row.original?.event} </p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("action", {
-      header: () => (
-        <div>
-          <p>Action</p>
-        </div>
-      ),
-      cell: (info) => (
-        <div>
-          <p className="font-medium">{info.row.original?.action}</p>
-        </div>
-      ),
-    }),
-  ];
-}
+export const ColumnsAuditLogFN = () => [
+  columnHelper.accessor("actor.name", {
+    header: "User",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("properties.action", {
+    header: "Action",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("description", {
+    header: "Description",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("createdAt", {
+    header: "Timestamp",
+    cell: (info) => info.getValue(),
+  }),
+]
