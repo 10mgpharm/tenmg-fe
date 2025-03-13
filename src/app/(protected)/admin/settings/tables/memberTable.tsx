@@ -9,6 +9,7 @@ const columnHelper = createColumnHelper<any>();
 
 export function ColumsMemberFN(
   handleDeleteModal: (id: number) => void,
+  handleOpenEdituser: (UserData: any) => void,
   handleOpenModal: (userId: number, action: any) => void
 ) {
   return [
@@ -106,6 +107,12 @@ export function ColumsMemberFN(
                     >
                       <MenuItem>View Details</MenuItem>
                     </Link>
+
+                    <MenuItem
+                      onClick={() => handleOpenEdituser(info.row.original)}
+                    >
+                      Change role
+                    </MenuItem>
 
                     {info?.row?.original?.user?.active === 0 ? (
                       <MenuItem

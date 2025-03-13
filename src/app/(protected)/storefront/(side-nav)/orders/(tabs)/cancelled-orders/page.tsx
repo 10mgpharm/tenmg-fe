@@ -16,7 +16,6 @@ export default function CompletedOrdersPages() {
     if (userData?.user?.token) fetchOrders(userData?.user?.token);
   }, [fetchOrders, userData?.user?.token])
 
-
   return (
     <div>
 

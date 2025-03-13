@@ -37,7 +37,6 @@ const SuccessScreen = ({
       <>
         <section className="flex justify-between items-center w-full pb-8">
           <LoanProfile name={customer?.name} email={customer?.email} />
-          <IoMdInformationCircleOutline className="w-6 h-6" />
         </section>
 
         <LoanInnerWrapper

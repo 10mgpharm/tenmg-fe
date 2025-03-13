@@ -184,7 +184,7 @@ const TopNavBar = ({ route }: { route: string }) => {
                     } else if (data?.user?.entityType === "ADMIN") {
                       router.push("/admin/settings/general_settings");
                     } else if (data?.user?.entityType === "LENDER") {
-                      router.push("/lenders/settings/personal_information");
+                      router.push("/lenders/settings/general-settings");
                     } else {
                       router.push("/"); // Fallback route if no entity type matches
                     }
