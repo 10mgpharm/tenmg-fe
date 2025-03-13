@@ -8,7 +8,7 @@ const Footer = () => {
     <div>
       {/* Footer Section */}
       <footer className="bg-[#1866A7] text-white text-sm">
-        <div className="container mx-auto py-8 px-4">
+        <div className="container mx-auto py-10 ">
           {/* Top Section */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-7">
             {/* Logo Section */}
