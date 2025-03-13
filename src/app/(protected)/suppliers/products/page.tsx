@@ -359,7 +359,7 @@ const Products = () => {
                     <Thead bg={"#F2F4F7"}>
                     {memoizedData?.length > 0 && table?.getHeaderGroups()?.map((headerGroup) => (
                         <Tr key={headerGroup.id}>
-                        <Th textTransform={"initial"} px="0px">
+                        {/* <Th textTransform={"initial"} px="0px">
                             <Checkbox
                             _checked={{
                                 "& .chakra-checkbox__control": {
@@ -371,7 +371,7 @@ const Products = () => {
                             isChecked={table.getIsAllRowsSelected()}
                             onChange={table.getToggleAllRowsSelectedHandler()}
                             />
-                        </Th>
+                        </Th> */}
                         {headerGroup.headers?.map((header) => (
                             <Th
                             textTransform={"initial"}
@@ -392,7 +392,7 @@ const Products = () => {
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
                     {(memoizedData?.length > 0) && table?.getRowModel()?.rows?.map((row) => (
                         <Tr key={row.id}>
-                        <Td px="0px">
+                        {/* <Td px="0px">
                             <Checkbox
                             _checked={{
                                 "& .chakra-checkbox__control": {
@@ -404,7 +404,7 @@ const Products = () => {
                             isChecked={row.getIsSelected()}
                             onChange={row.getToggleSelectedHandler()}
                             />
-                        </Td>
+                        </Td> */}
                         {row.getVisibleCells()?.map((cell) => (
                             <Td key={cell.id} px="0px">
                             {flexRender(

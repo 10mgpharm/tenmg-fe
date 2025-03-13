@@ -11,7 +11,7 @@ import {
   Text, 
   useDisclosure
 } from "@chakra-ui/react"
-import { X } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 import { PiNotePencil } from "react-icons/pi";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import ModalComponent from "./ModalComponent";
@@ -82,8 +82,7 @@ const SystemConfiguration = () => {
 
     const files = Array.from(event.target.files);
     // Prevent adding more than MAX_IMAGES
-    console.log(imageUrl.length, files.length)
-    if (imageUrl.length + files.length > MAX_IMAGES) {
+    if ((storeImages?.data.length + files.length + imageSrcs?.length) > MAX_IMAGES) {
       toast.warn(
         `You can upload a maximum of ${MAX_IMAGES} images`
       );
@@ -106,7 +105,7 @@ const SystemConfiguration = () => {
     // const droppedFile = event.dataTransfer.files?.[0];
     const droppedFiles = Array.from(event.dataTransfer.files);
     if (droppedFiles.length === 0) return;
-    if (imageUrl.length + droppedFiles.length > MAX_IMAGES) {
+    if ((storeImages?.data.length + droppedFiles.length + imageSrcs?.length) > MAX_IMAGES) {
       toast.warn(
         `You can upload a maximum of ${MAX_IMAGES} images`
       );
@@ -218,6 +217,7 @@ const SystemConfiguration = () => {
             color={"white"} 
             onClick={uploadImages}
             isLoading={loading}
+            disabled={(imageSrcs?.length || storeImages?.data?.length) === MAX_IMAGES}
             loadingText={"Saving..."}
             >
               Save Changes
@@ -307,7 +307,7 @@ const SystemConfiguration = () => {
                     }}
                     className="w-4 h-auto" 
                     />
-                    <X 
+                    <TrashIcon
                     cursor={"pointer"}
                     onClick={() => {
                       const removedImage = imageSrcs?.filter((_, i) => i !== index);
@@ -354,16 +354,16 @@ const SystemConfiguration = () => {
                   right={3}
                   top={2}
                   >
-                    <PiNotePencil 
+                    {/* <PiNotePencil 
                     cursor={"pointer"}
                     onClick={() => {
                       onSelectImgToEdit(image.imageUrl);
                     }}
                     className="w-4 h-auto" 
-                    />
+                    /> */}
                     {
                       storeImages?.data?.length > 1 &&
-                      <X 
+                      <TrashIcon 
                       cursor={"pointer"}
                       onClick={() => {
                         setSelectedId(image.id)
