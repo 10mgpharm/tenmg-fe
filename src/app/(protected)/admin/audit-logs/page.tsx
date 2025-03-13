@@ -43,7 +43,6 @@ const Page = () => {
   const [pagination_link, setPagination_link] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [pageCount, setPageCount] = useState<number>(1);
 
@@ -54,12 +53,12 @@ const Page = () => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async (page: number) => {
+    const fetchData = async () => {
       setLoading(true);
       setError("");
 
       //audit-logs?event=login
-      const url = searchValue ? `admin/settings/audit-logs?event=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `admin/settings/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
+      const url = searchValue ? `admin/settings/audit-logs?event=${searchValue}&page=${pageCount}&limit=${ITEMS_PER_PAGE}` : `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
 
       try {
         const response = await requestClient({ token }).get(url);
@@ -79,12 +78,10 @@ const Page = () => {
       }
     };
 
-
     if (token) {
-      fetchData(currentPage);
+      fetchData();
     }
-  }, [token, currentPage, searchValue]);
-
+  }, [token, searchValue, pageCount]);
 
   const table = useReactTable({
     data,
@@ -104,8 +101,7 @@ const Page = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
+  // const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   const meta = {
     links: pagination_link
