@@ -28,16 +28,11 @@ export default function LoanAutoAccept({
     setValue,
   } = useForm<IFormInput>({
     mode: "onChange",
-    defaultValues: {
-      status: false,
-    },
   });
 
   useEffect(() => {
-    if (defaultStatus) {
-      setValue("status", defaultStatus);
-    }
-  }, [defaultStatus]);
+    setValue("status", defaultStatus);
+  }, [defaultStatus, setValue]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true);

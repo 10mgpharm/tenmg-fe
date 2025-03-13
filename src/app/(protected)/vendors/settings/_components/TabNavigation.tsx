@@ -18,7 +18,7 @@ const tabs = [
 ];
 
 const mustAlwaysBeEnabled = (name: string) =>
-  ["General Settings", "Business Information", "Notification"].includes(name);
+  ["General Settings", "Business Information", "Notification", "License Upload"].includes(name);
 
 const isLinkDisabled = (businessStatus: string, name: string) => {
   const disabledBusinessStatuses = [

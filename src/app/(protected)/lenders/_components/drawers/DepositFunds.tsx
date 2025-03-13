@@ -149,7 +149,7 @@ const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
               h={16}
               justifyContent="space-between"
               p={4}
-              rightIcon={<Image src={AmexIcon.src} className="w-10 " />}
+              rightIcon={<Image src={AmexIcon.src} className="w-10" alt="" />}
             >
               Use Bank Card **** **** 1234
             </Button>
@@ -160,7 +160,7 @@ const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
               colorScheme="gray"
               justifyContent="space-between"
               p={4}
-              rightIcon={<Image src={MasterCardIcon.src} className="w-10 " />}
+              rightIcon={<Image src={MasterCardIcon.src} className="w-10" alt=""  />}
             >
               Use Bank Card **** **** 5678
             </Button>
