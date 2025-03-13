@@ -53,7 +53,7 @@ const Footer = () => {
               <h3 className="font-bold mb-2">Users</h3>
               <ul className="space-y-1">
                 <li>
-                  <a href="#" className="hover:text-gray-300">
+                  <a href="/auth/signin" className="hover:text-gray-300">
                     Suppliers
                   </a>
                 </li>
