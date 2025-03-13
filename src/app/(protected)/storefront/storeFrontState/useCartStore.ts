@@ -41,7 +41,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       );
 
       const cartData = resp?.data?.data || [];
-      console.log("API response:", cartData);
+      // console.log("API response:", cartData);
 
       set({
         cart: cartData,
@@ -68,7 +68,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       );
 
       if (resp) {
-        console.log("Item added to cart successfully.");
+        // console.log("Item added to cart successfully.");
         // Refresh the cart after adding the item
         await get().fetchCart(token);
       }
@@ -89,7 +89,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         data
       );
 
-      console.log("resp", resp);
+      // console.log("resp", resp);
       // return
     } catch (e) {
       // console.log(e);

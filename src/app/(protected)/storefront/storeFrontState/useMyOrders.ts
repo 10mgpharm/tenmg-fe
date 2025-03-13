@@ -47,7 +47,10 @@ export const useOrdersStore = create<any>((set, get) => ({
           (item) => item.status.toLowerCase() === "shipped"
         );
         const cancelledOrders = orders.filter(
-          (item) => item.status.toLowerCase() === "cancelled"
+          (item) =>
+            item.status.toLowerCase() === "canceled" ||
+            item.status.toLowerCase() === "awaiting refund" ||
+            item.status.toLowerCase() === "refunded"
         );
         const completedOrders = orders.filter(
           (item) => item.status.toLowerCase() === "completed"

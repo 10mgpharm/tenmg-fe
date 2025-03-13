@@ -51,7 +51,11 @@ const TeamMembers = ({
   token: string;
 }) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const { onOpen: onOpenRemove, onClose: onCloseRemove, isOpen: isOpenRemove } = useDisclosure();
+  const {
+    onOpen: onOpenRemove,
+    onClose: onCloseRemove,
+    isOpen: isOpenRemove,
+  } = useDisclosure();
   const {
     onOpen: onOpenSuspend,
     isOpen: isOpenSuspend,
@@ -66,6 +70,7 @@ const TeamMembers = ({
   const [userId, setUserId] = useState<number>();
   const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
   const [actionType, setActionType] = useState<any | null>(null);
+  const [userData, setUserData] = useState<any>();
 
   const handleDeleteModal = useCallback(
     (id: any) => {
@@ -133,9 +138,21 @@ const TeamMembers = ({
     [onOpenSuspend]
   );
 
+  // handle open Edit user modal
+  const handleOpenEdituser = (userData: any | null) => {
+    setUserId(userData?.user?.id);
+    setUserData(userData);
+    setActionType("edit");
+    onOpen();
+  };
+
   const table = useReactTable({
     data: allMembersData,
-    columns: ColumnsMemberFN(handleDeleteModal, handleOpenModal),
+    columns: ColumnsMemberFN(
+      handleDeleteModal,
+      handleOpenEdituser,
+      handleOpenModal
+    ),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -206,13 +223,26 @@ const TeamMembers = ({
           </TableContainer>
         )}
       </div>
-      <InviteMember
-        onClose={onClose}
-        isOpen={isOpen}
-        accountType="vendor"
-        fetchTeamMembers={fetchTeamMembers}
-        token={token}
-      />
+
+      {isOpen && (
+        <InviteMember
+          onClose={onClose}
+          isOpen={isOpen}
+          accountType="vendor"
+          fetchTeamMembers={fetchTeamMembers}
+          token={token}
+          editing={actionType === "edit"}
+          userId={userId}
+          setActionType={setActionType}
+          userData={{
+            email: userData?.email ?? "",
+            fullName: userData?.fullName ?? "",
+            role: userData?.role ?? null,
+          }}
+          setUserData={setUserData}
+        />
+      )}
+
       {/* <DeleteModal onClose={onCloseRemove} isOpen={isOpenRemove} title="Team Member" /> */}
 
       <ConfirmModal
