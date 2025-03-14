@@ -137,6 +137,7 @@ const Page = () => {
                     pageCount={pageCount} 
                     fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
+                    fetchDiscountCount={fetchDiscountCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -147,6 +148,7 @@ const Page = () => {
                     pageCount={pageCount} 
                     fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
+                    fetchDiscountCount={fetchDiscountCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -157,6 +159,7 @@ const Page = () => {
                     pageCount={pageCount} 
                     fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
+                    fetchDiscountCount={fetchDiscountCount}
                     />
                 </TabPanel>
                 <TabPanel>
@@ -167,6 +170,7 @@ const Page = () => {
                     pageCount={pageCount} 
                     fetchDiscounts={fetchDiscounts}
                     setPageCount={setPageCount}
+                    fetchDiscountCount={fetchDiscountCount}
                     />
                 </TabPanel>
             </TabPanels>

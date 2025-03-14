@@ -11,18 +11,18 @@ import FAQSection from "./_components/faq";
 import FAQ from "./_components/faq";
 
 export const metadata: Metadata = {
-    title: "Home",
+  title: "Home",
 };
 
 export default async function Page() {
-    return (
-      <>
-      <Navbar/>
-      <Herosection/>
-      <Financepage/>
+  return (
+    <>
+      <Navbar />
+      <Herosection />
+      <Financepage />
       {/* <FAQ/> */}
-      <Testimonialsection/>
-      <Footer/>
-      </>
-    );
+      <Testimonialsection />
+      <Footer />
+    </>
+  );
 }

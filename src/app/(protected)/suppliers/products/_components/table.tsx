@@ -26,12 +26,12 @@ export function ColumsProductFN(
   return [
     columnHelper.accessor("name", {
       header: () => (
-        <div className="">
+        <div className="pl-6">
           <p>Product</p>
         </div>
       ),
       cell: (info) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pl-6">
           {
             info.row.original?.thumbnailFile && 
             <img 

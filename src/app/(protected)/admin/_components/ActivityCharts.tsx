@@ -120,7 +120,7 @@ const ActivityCharts = () => {
         chart: {
             type: "donut",
             toolbar: {
-                show: false,
+              show: false,
             },
         },
         colors:  ['#2196F3', '#4CAF50', '#FF9800', '#FF5722'],
