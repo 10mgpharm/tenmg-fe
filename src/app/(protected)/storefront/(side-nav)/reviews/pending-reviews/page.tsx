@@ -11,7 +11,7 @@ export default function Page() {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const [unreviewedProd, setUnreviewedProd] = useState<any>([]);
+  const [unreviewedProd, setUnreviewedProd] = useState<any>(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
