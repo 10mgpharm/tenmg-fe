@@ -51,7 +51,7 @@ export default function ProductDetailPage() {
         // storefront/products/quidins
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/products/${product.toLocaleLowerCase()}`);
         setProductData(data?.data?.data);
-        setReviews(data?.data?.data?.reviews);
+        setReviews(data?.data?.data?.reviews?.data);
       } catch (e) {
       } finally {
         setLoading(false);
@@ -193,8 +193,8 @@ export default function ProductDetailPage() {
                 <p className='text-gray-500'>Read reviews from our satisfied customers.</p>
               </div>
               <div className='space-y-8'>
-                {reviews?.data?.length > 0 &&
-                  reviews?.data?.map((review: string, i: number) => (
+                {reviews?.length > 0 &&
+                  reviews?.map((review: string, i: number) => (
                     <StoreProductReviewComponent key={i} data={review} />
                   ))}
               </div>
