@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 // import NoticeCard from "../../suppliers/_components/NoticeCard";
 import {
   Badge,
@@ -24,7 +24,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { NextAuthUserSession } from "@/types";
+import { LenderDashboardData, LoanRequest, NextAuthUserSession } from "@/types";
 // import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
 // import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
 import { ApexOptions } from "apexcharts";
@@ -38,6 +38,8 @@ import SideBar from "../../admin/_components/SideBar";
 import DepositFunds from "./drawers/DepositFunds";
 import WithdrawFunds from "./drawers/WithdrawFunds";
 import GenerateStatement from "./drawers/GenerateStatement";
+import requestClient from "@/lib/requestClient";
+import { formatAmountString } from "@/utils";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
@@ -53,8 +55,11 @@ interface ILenderDashboard {
 }
 
 const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [lenderData, setLenderData] = useState<LenderDashboardData | null>(
+    null
+  );
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenDeposit,
     onOpen: onOpenDeposit,
@@ -70,6 +75,8 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     onOpen: onOpenGenerate,
     onClose: onCloseGenerate,
   } = useDisclosure();
+
+  const sessionToken = sessionData?.user?.token;
 
   const balanceTimePeriods = [
     "12 months",
@@ -121,6 +128,23 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
   const [selectedBalancePeriod, setSelectedBalancedPeriod] =
     useState<(typeof balanceTimePeriods)[number]>("7 days");
+
+  const fetchLenderData = useCallback(async () => {
+    const response = await requestClient({ token: sessionToken }).get(
+      "/lender/dashboard"
+    );
+    if (response.status === 200) {
+      setLenderData(response.data.data);
+    }
+  }, [sessionToken]);
+
+  useEffect(() => {
+    if (sessionData) {
+      fetchLenderData();
+    }
+  }, [sessionData]);
+
+  console.log("lenderData", lenderData);
 
   return (
     <>
@@ -308,13 +332,31 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
               <h2 className="text-md font-medium text-gray-700">
                 Loan Requests
               </h2>
-              <Button variant="link" size="sm" colorScheme="primary">
+              <Button
+                variant="link"
+                size="sm"
+                colorScheme="primary"
+                onClick={() => {
+                  console.log("See All");
+                }}
+              >
                 See All
               </Button>
             </div>
 
             <Stack spacing={4}>
-              <LoanDetails />
+              {lenderData?.loanRequest.length === 0 ? (
+                <div className="flex flex-col items-center justify-center">
+                  <Image src={NoRequest.src} alt="No Request" />
+                  <Text fontSize="md" color="gray.500">
+                    No loan request available
+                  </Text>
+                </div>
+              ) : (
+                lenderData?.loanRequest.map((request) => (
+                  <LoanDetails key={request.id} data={request} />
+                ))
+              )}
             </Stack>
           </div>
 
@@ -368,7 +410,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         </div>
       </div>
       <CompleteAccountModal isOpen={isOpen} onClose={onClose} />
-      <DepositFunds isOpen={isOpenDeposit} onClose={onCloseDeposit} />
+      <DepositFunds
+        isOpen={isOpenDeposit}
+        onOpen={onOpenDeposit}
+        onClose={onCloseDeposit}
+      />
       <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} />
       <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
     </>
@@ -377,7 +423,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
 export default LenderDashboard;
 
-const LoanDetails = ({}) => {
+const LoanDetails = ({ data }: { data: LoanRequest }) => {
   return (
     <Card boxShadow="none">
       <CardHeader display="flex" justifyContent="flex-end" p={0}>
@@ -395,12 +441,12 @@ const LoanDetails = ({}) => {
             <Flex gap={1} alignItems="center" mb={2}>
               <Text>Loan Amount:</Text>
               <Text fontWeight={700} color="gray.900">
-                ₦300,000
+                ₦{formatAmountString(data?.totalAmount)}
               </Text>
             </Flex>
 
             <Flex justifyContent="space-between" alignItems="center">
-              <Text color="gray.900">Adeola Consode</Text>
+              <Text color="gray.900">{data?.customerId}</Text>
               <Flex gap={1} alignItems="center">
                 <Text color="gray.500">Credit Score:</Text>
                 <Text>45%</Text>
@@ -408,7 +454,14 @@ const LoanDetails = ({}) => {
             </Flex>
           </Box>
           <Flex justifyContent="flex-end" pb={2}>
-            <Button variant="ghost" size="sm" colorScheme="green">
+            <Button
+              variant="ghost"
+              size="sm"
+              colorScheme="green"
+              onClick={() => {
+                console.log("Accept");
+              }}
+            >
               Accept
             </Button>
             <Button variant="ghost" size="sm" colorScheme="gray">

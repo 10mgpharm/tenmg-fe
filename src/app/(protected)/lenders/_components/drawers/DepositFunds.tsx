@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OperationLayout from "../OperationLayout";
 import {
   Box,
@@ -28,6 +28,11 @@ import {
 } from "@heroicons/react/24/outline";
 import StatusBadge from "@/app/(protected)/_components/StatusBadge";
 import CongratsModal from "./CongratsModal";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
 interface PaymentOption {
   label: string;
@@ -42,6 +47,7 @@ interface IFormInput {
 
 interface DepositFundsProps {
   isOpen: boolean;
+  onOpen: () => void;
   onClose: () => void;
 }
 
@@ -68,8 +74,18 @@ interface DepositFundsProps {
 //   },
 // ];
 
-const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
+const DepositFunds = ({ isOpen, onOpen, onClose }: DepositFundsProps) => {
   const [step, setStep] = useState(1);
+
+  const [loadingPayment, setLoadingPayment] = useState(false);
+
+  const [paymentStatus, setPaymentStatus] = useState<"success" | "failed">(
+    "success"
+  );
+
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
+  const userToken = sessionData?.user?.token;
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
@@ -79,16 +95,110 @@ const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
     onClose();
   };
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    nextStep();
-  };
-
   const {
     register,
     formState: { errors },
     handleSubmit,
     watch,
+    getValues,
   } = useForm<IFormInput>({ mode: "onChange" });
+
+  useEffect(() => {
+    // Dynamically load Fincra's SDK
+    const script = document.createElement("script");
+    script.src = process.env.NEXT_PUBLIC_FINCRA_SDK_URL;
+    // script.src = config?.;
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  //   Card Number: 5319 3178 0136 6660
+  // Expiry Date: 10/26
+  // CVV: 000
+
+  const verifyPayment = async (ref) => {
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        `/lender/deposit/${ref}`
+      );
+      toast.success("Fund Deposit is successfully");
+      setStep(2);
+      console.log("response", response);
+    } catch (e) {
+      toast.error("Oops... Something went wrong...!");
+      setPaymentStatus("failed");
+      console.log(e);
+    }
+  };
+
+  const cancelOrder = async (ref) => {
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        `/lender/deposit//${ref}`
+      );
+      if (response?.status === 200) {
+        toast.success("Deposit Funds cancelled successfully...!");
+      }
+    } catch (e) {
+      toast.error("Something went wrong, could not cancel order!");
+    }
+  };
+
+  const payFincra = (ref: string, amount: string | number) => {
+    if (!window.Fincra) {
+      alert("Fincra SDK not loaded. Please try again.");
+      return;
+    }
+
+    window.Fincra.initialize({
+      key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
+      amount: amount,
+      currency: "NGN",
+      reference: ref,
+      customer: {
+        name: sessionData?.user?.name,
+        email: sessionData?.user?.email,
+      },
+      feeBearer: "business",
+      onClose: () => {
+        cancelOrder(ref);
+      },
+      onSuccess: (data: any) => {
+        console.log("data", data);
+        verifyPayment(ref);
+      },
+    });
+  };
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setLoadingPayment(true);
+    try {
+      const response = await requestClient({ token: userToken }).post(
+        "/lender/deposit",
+        { amount: Number(data.amount) }
+      );
+      console.log("submit order res", response?.data?.data?.identifier);
+      onClose();
+      if (response.status === 200) {
+        await payFincra(
+          response?.data?.data?.identifier,
+          response?.data?.data?.amount
+        );
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+      setLoadingPayment(false);
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+      setLoadingPayment(false);
+    }
+  };
 
   return (
     <OperationLayout
@@ -98,14 +208,14 @@ const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
         step === 1
           ? "Deposit Funds"
           : step === 2
-          ? "Select Payment Options"
-          : "Congratulations"
+          ? "Congratulations"
+          : "Failed to Deposit Funds"
       }
       description={
         step === 1
           ? "Enter an amount and a destination to save to"
           : step === 2
-          ? "Click any of the options below to quick save immediately"
+          ? "Your funds have been successfully deposited into your account."
           : "Your funds have been successfully deposited into your account."
       }
     >
@@ -140,7 +250,7 @@ const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
         </form>
       )}
 
-      {step === 2 && (
+      {/* {step === 2 && (
         <>
           <Stack spacing={4}>
             <Button
@@ -160,7 +270,9 @@ const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
               colorScheme="gray"
               justifyContent="space-between"
               p={4}
-              rightIcon={<Image src={MasterCardIcon.src} className="w-10" alt=""  />}
+              rightIcon={
+                <Image src={MasterCardIcon.src} className="w-10" alt="" />
+              }
             >
               Use Bank Card **** **** 5678
             </Button>
@@ -193,15 +305,13 @@ const DepositFunds = ({ isOpen, onClose }: DepositFundsProps) => {
             </Button>
           </Stack>
 
-          <Button size="lg" w="full" onClick={nextStep} mt={10}>
+          <Button size="lg" w="full" onClick={submiOrder} mt={10}>
             Continue
           </Button>
         </>
-      )}
+      )} */}
 
-      {step === 3 && (
-        <CongratsModal />
-      )}
+      {step === 2 && <CongratsModal />}
     </OperationLayout>
   );
 };
