@@ -13,7 +13,12 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaPaperclip } from "react-icons/fa6";
 import { VscSend } from "react-icons/vsc";
 import { useSession } from "next-auth/react";
-import { ConversationProps, MessageProps, NextAuthUserSession, UserListProps } from "@/types";
+import { 
+    ConversationProps,
+     MessageProps, 
+     NextAuthUserSession, 
+     UserListProps 
+    } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
@@ -49,6 +54,7 @@ const Message = () => {
     const [userList, setUserList] = useState<UserListProps[]>([]);
     const [conversation, setConversation] = useState<ConversationProps[]>([]);
     const [currentMessage, setCurrentMessage] = useState<MessageProps>();
+    const [mockConverstation, setMockConversation] = useState<ConversationProps[]>([]);
     const { isOpen, onClose, onOpen } = useDisclosure();
     const debouncedSearch = useDebouncedValue(searchWord, 500);
 
@@ -159,7 +165,7 @@ const Message = () => {
         }
     }
 
-  return (
+    return (
     <div className="px-8 h-[calc(100vh-150px)]">
         {
             loading ?
@@ -173,7 +179,8 @@ const Message = () => {
             <div className="flex flex-col justify-center max-w-md mx-auto text-center">
                 <Image src={messageIcon} alt="" className="mx-auto"/>
                 <h3 className="font-semibold text-xl mt-5">No Messages Yet</h3>
-                <p className="leading-6 mt-3">This section is empty at the moment. Once you start messaging others messages will appear here.
+                <p className="leading-6 mt-3">
+                    This section is empty at the moment. Once you start messaging others messages will appear here.
                 </p>
                 <button 
                 onClick={onOpen}
@@ -195,8 +202,13 @@ const Message = () => {
                                 messages?.map((message) => (
                                     <li 
                                         onClick={() => {
-                                            fetchConversations(message?.id);
-                                            setCurrentMessage(message)
+                                            if(!message.id){
+                                                setConversation(mockConverstation);
+                                                setCurrentMessage(mockConverstation[0]);
+                                            }else{
+                                                fetchConversations(message?.id);
+                                                setCurrentMessage(message);
+                                            };
                                         }}
                                         key={message?.id}
                                         className={cn(
@@ -247,7 +259,9 @@ const Message = () => {
                                     </p>
                                 </div>
                                 <div className="my-4 px-4 relative">
-                                    <p className="text-gray-600 text-center">{currentMessage?.latest?.sentAt}</p>
+                                    <p className="text-gray-600 text-center">
+                                        {currentMessage?.latest?.sentAt}
+                                    </p>
                                     <div className="mt-5 mb-28">
                                         {
                                             conversation?.map((item) => (
@@ -350,9 +364,11 @@ const Message = () => {
                                         sentAt: "",
                                         readStatus: ""
                                     }
+                                    const filterNewMessage = messages?.filter((message) => message.id !== 0);
                                     setCurrentMessage(newMessageObj as any);
                                     setConversation([newMessageObj]);
-                                    setMessages((prev) => [...prev, newMessageObj]);
+                                    setMockConversation([newMessageObj]);
+                                    setMessages((prev) => [newMessageObj, ...filterNewMessage]);
                                 }
                                 onClose();
                             }} 
@@ -391,4 +407,4 @@ const Message = () => {
   )
 }
 
-export default Message
+export default Message;

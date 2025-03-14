@@ -39,11 +39,15 @@ interface DiscountTableProp {
     loading: boolean;
     fetchDiscounts: () => void;
     setPageCount: Dispatch<SetStateAction<number>>;
+    fetchDiscountCount: () => void;
 }
 
 const PAGESIZE = 10;
 
-const DiscountTable = ({data, pageCount, setPageCount, type, loading, fetchDiscounts}: DiscountTableProp) => {
+const DiscountTable = (
+    {data, pageCount, setPageCount, type, loading, fetchDiscounts, fetchDiscountCount}
+    : DiscountTableProp
+) => {
 
     const session = useSession();
     const sessionData = session?.data as NextAuthUserSession;
@@ -103,6 +107,7 @@ const DiscountTable = ({data, pageCount, setPageCount, type, loading, fetchDisco
             if (response.status === 200) {
                 toast.success(response.data.message);
                 fetchDiscounts();
+                fetchDiscountCount();
                 setIsLoading(false);
                 onCloseDeactivate();
                 onCloseActivate();
