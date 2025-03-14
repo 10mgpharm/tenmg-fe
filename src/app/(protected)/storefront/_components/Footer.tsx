@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Container,
@@ -12,9 +14,23 @@ import {
 import { FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 import Image from "next/image";
 import Logo from "@public/assets/images/logoWhite.svg";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const Footer = () => {
+  const router = useRouter();
   const currentYear = new Date().getFullYear(); // Get the current year
+
+  const redirectUser = (path: string) => {
+    signOut({ redirect: false })
+      .then(() => router.push(path))
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.message);
+      });
+  };
+
   return (
     <Box bg="primary.600" color="white" py={10}>
       <Box className="px-3 md:px-20">
@@ -61,18 +77,34 @@ const Footer = () => {
                 Users
               </Text>
               <VStack align="start" spacing={1}>
-                <Link href="/auth/signin" fontSize="sm" cursor="pointer">
+                <Text
+                  onClick={() => redirectUser("/auth/signup")}
+                  fontSize="sm"
+                  cursor="pointer"
+                >
                   Suppliers
-                </Link>
-                <Link href="/auth/signin" fontSize="sm" cursor="pointer">
+                </Text>
+                <Text
+                  onClick={() => redirectUser("/auth/signin")}
+                  fontSize="sm"
+                  cursor="pointer"
+                >
                   Pharmacies
-                </Link>
-                <Link href="/auth/signup/vendor" fontSize="sm" cursor="pointer">
+                </Text>
+                <Text
+                  onClick={() => redirectUser("/auth/signup/vendor")}
+                  fontSize="sm"
+                  cursor="pointer"
+                >
                   Vendors
-                </Link>
-                <Link href="/auth/signup/lender" fontSize="sm" cursor="pointer">
+                </Text>
+                <Text
+                  onClick={() => redirectUser("/auth/signup/lender")}
+                  fontSize="sm"
+                  cursor="pointer"
+                >
                   Lenders
-                </Link>
+                </Text>
               </VStack>
             </Stack>
 

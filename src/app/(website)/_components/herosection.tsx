@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react'
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 const Herosection = () => {
   return (
     <div>
@@ -40,7 +40,10 @@ const Herosection = () => {
                 saving lives.
               </p>
               <div className="flex justify-center items-center space-x-5 sm:space-x-4">
-                <Link href={'/demo'} className="sm:w-auto px-6 py-3 bg-white text-[#344054] rounded-lg border border-gray-400">
+                <Link
+                  href={"/demo"}
+                  className="sm:w-auto px-6 py-3 bg-white text-[#344054] rounded-lg border border-gray-400"
+                >
                   Demo
                 </Link>{" "}
                 <div className="items-end space-x-4 sm:flex hidden">
@@ -57,6 +60,6 @@ const Herosection = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Herosection;

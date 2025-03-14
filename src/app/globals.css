@@ -23,6 +23,17 @@ body {
   margin: 0px auto;
 }
 
+.container {
+  margin: 0 auto;
+  width: 85%;
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: 90%;
+  }
+}
+
 /* Target the calendar icon */
 .react-datepicker-wrapper {
   width: 100%;
