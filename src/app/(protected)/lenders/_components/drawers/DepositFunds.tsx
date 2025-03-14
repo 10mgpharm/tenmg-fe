@@ -243,6 +243,7 @@ const DepositFunds = ({ isOpen, onOpen, onClose }: DepositFundsProps) => {
               w="full"
               type="submit"
               loadingText="Submitting..."
+              isLoading={loadingPayment}
             >
               Continue
             </Button>
