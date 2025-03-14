@@ -603,3 +603,35 @@ export interface UserLoan {
   status: string;
   repaymentStatus: string;
 }
+
+export interface LenderDashboardData {
+  interestEarned: number;
+  loanApprovalThisMonth: number;
+  name: string;
+  pendingRequests: number;
+  type: string;
+  loanRequest: LoanRequest[];
+  wallet: Wallet[]; 
+}
+
+export interface LoanRequest {
+  id: number,
+  identifier: string
+  businessId: number,
+  customerId: number,
+  requestedAmount: string,
+  interestAmount: string,
+  totalAmount: string,
+  interestRate: number,
+  durationInMonths: string,
+  status: string,
+}
+
+export interface Wallet {
+  lenderId: string
+  type: string,
+  currentBalance: string,
+  prevBalance: string,
+  lastTransactionRef: string | null,
+  updatedAt: string,
+}
