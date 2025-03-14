@@ -7,6 +7,7 @@ import BreadCrumbBanner from '../../../_components/BreadCrumbBanner'
 import { useSession } from 'next-auth/react'
 import { NextAuthUserSession } from '@/types'
 import requestClient from '@/lib/requestClient'
+import { useRouter } from 'next/navigation'
 
 export default function ReviewPage() {
 
@@ -24,6 +25,15 @@ export default function ReviewPage() {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
+  const [id, setId] = useState(null);
+
+  useEffect(() => {
+    const url = window.location.href.split('/');
+    console.log(url[url.length - 1])
+    setId(url[url.length - 1])
+  }, [])
+
+
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,7 +43,7 @@ export default function ReviewPage() {
       setLoading(true);
       try {
 
-        const resp = await requestClient({ token }).get("/storefront/reviews/7");
+        const resp = await requestClient({ token }).get(`/storefront/reviews/${id}`);
         console.log("resp", resp)
         setReviews(resp?.data?.data || [])
         setLoading(false);
