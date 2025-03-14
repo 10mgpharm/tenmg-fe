@@ -81,7 +81,9 @@ export interface CustomerData {
   name: string;
   email: string;
   phone: string;
+  score?: number;
   active: number;
+  category?: string | null;
   reference: string | null;
   lastEvaluationHistory: any;
   businessId: number;
@@ -617,8 +619,7 @@ export interface LenderDashboardData {
 export interface LoanRequest {
   id: number,
   identifier: string
-  businessId: number,
-  customerId: number,
+  customer: CustomerData,
   requestedAmount: string,
   interestAmount: string,
   totalAmount: string,

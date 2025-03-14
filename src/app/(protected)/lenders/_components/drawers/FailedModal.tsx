@@ -4,7 +4,7 @@ import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import SuccessIcon from "@public/assets/images/money-failed.png";
 import StatusBadge from "@/app/(protected)/_components/StatusBadge";
 
-const FailedModal = ({ amount, date="Tue, 10 Sept 2024, 19:40" }: { amount: number; date: string }) => {
+const FailedModal = ({ amount }: { amount: number }) => {
   return (
     <Box>
       <Stack spacing={4} align="center">
@@ -12,9 +12,6 @@ const FailedModal = ({ amount, date="Tue, 10 Sept 2024, 19:40" }: { amount: numb
       </Stack>
       <Text color="red.500" fontSize="4xl" fontWeight={700} mb={2}>
         ${amount}
-      </Text>
-      <Text fontSize="sm" color="gray.600" fontWeight={400}>
-        {date}
       </Text>
 
       <Stack
@@ -31,11 +28,7 @@ const FailedModal = ({ amount, date="Tue, 10 Sept 2024, 19:40" }: { amount: numb
         <Flex alignItems="center" justifyContent="space-between">
           <Text>Status</Text>
           <Text fontWeight={700} color="gray.900">
-            <StatusBadge
-              status="Failed"
-              bgColor="red.50"
-              color="red.500"
-            />
+            <StatusBadge status="Failed" bgColor="red.50" color="red.500" />
           </Text>
         </Flex>
 
