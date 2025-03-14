@@ -446,10 +446,10 @@ const LoanDetails = ({ data }: { data: LoanRequest }) => {
             </Flex>
 
             <Flex justifyContent="space-between" alignItems="center">
-              <Text color="gray.900">{data?.customerId}</Text>
+              <Text color="gray.900">{data?.customer.name}</Text>
               <Flex gap={1} alignItems="center">
                 <Text color="gray.500">Credit Score:</Text>
-                <Text>45%</Text>
+                <Text>{data?.customer.score}%</Text>
               </Flex>
             </Flex>
           </Box>
