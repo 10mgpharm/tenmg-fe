@@ -78,14 +78,14 @@ const Footer = () => {
               </Text>
               <VStack align="start" spacing={1}>
                 <Text
-                  onClick={() => redirectUser("/auth/signup")}
+                  onClick={() => redirectUser("/auth/signup?tab=supplier")}
                   fontSize="sm"
                   cursor="pointer"
                 >
                   Suppliers
                 </Text>
                 <Text
-                  onClick={() => redirectUser("/auth/signin")}
+                  onClick={() => redirectUser("/auth/signup?tab=pharmacy")}
                   fontSize="sm"
                   cursor="pointer"
                 >
