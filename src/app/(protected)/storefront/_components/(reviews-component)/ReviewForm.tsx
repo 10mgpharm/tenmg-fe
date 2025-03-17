@@ -1,4 +1,4 @@
-import { Button, FormControl, FormErrorMessage, FormLabel, Input, Text, Textarea } from '@chakra-ui/react'
+import { Button, FormControl, FormErrorMessage, FormLabel, Input, Spinner, Text, Textarea } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MutipleFileUpload } from './MultipleFileUpload';
@@ -23,6 +23,7 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
   const userData = session.data as NextAuthUserSession;
 
 
+
   // console.log('user', userData)
 
   const {
@@ -41,20 +42,25 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
 
 
 
-  const [filePreview, setFilePreview] = useState<string[]>([]);
-  const [file, setFile] = useState<File[]>([]);
-  const [fileError, setFileError] = useState<string>(null);
+  // const [filePreview, setFilePreview] = useState<string[]>([]);
+  // const [file, setFile] = useState<File[]>([]);
+  // const [fileError, setFileError] = useState<string>(null);
+  const [loading, setLoading] = useState(false);
   // const toast = useToast();
 
   const onSubmit = async (data) => {
-    console.log(data);
-
+    // console.log(data);
+    setLoading(true);
     try {
       const res = await requestClient({ token: userData?.user?.token }).post(
         "/storefront/reviews", data);
-      console.log(res)
+      setLoading(false);
+      onClose();
+      toast.success("Review posted successfully")
+      // console.log(res)
     } catch (e) {
-      console.log(e)
+      setLoading(false);
+      // console.log(e)
       toast.error(e.response.data.message || "Failed to post review")
     }
   }
@@ -71,7 +77,7 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
           <Input
             id="name"
             placeholder="eg. John Doe"
-            disabled
+            // disabled
             {...register("name", {
               required: "Your Name is required",
             })}
@@ -87,7 +93,7 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
           </FormLabel>
           <Input
             id="email"
-            disabled
+            // disabled
             placeholder="eg. johndoe@mail.com"
             {...register("email", {
               required: "Business Name is required",
@@ -133,9 +139,8 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
         </FormControl>
 
 
-        <div className="flex flex-col justify-between gap-3 my-3">
+        {/* <div className="flex flex-col justify-between gap-3 my-3">
           <Text fontSize={"1rem"} fontWeight={600} color="gray.700">Upload Pictures (Maximum number of images - 6 )</Text>
-          {/* <Text fontSize={"14px"} fontWeight={400} color="gray.700">Upload Pictures (MaximumE number of images - 6 )</Text> */}
 
           <div className='flex items-center gap-x-2'>
             {filePreview?.map((preview, i) => (
@@ -157,10 +162,10 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
           </div>
           {fileError && <p className="text-xs text-red-500">{fileError}</p>}
 
-        </div>
+        </div> */}
 
         <div className='flex flex-row-reverse w-full my-4'>
-          <Button variant={"outline"} colorScheme={'blue'} size={'sm'} type="submit">Post Review</Button>
+          <Button variant={"outline"} colorScheme={'blue'} size={'sm'} disabled={loading} type="submit">{loading ? <Spinner /> : "Post Review"}</Button>
         </div>
       </form>
     </div>

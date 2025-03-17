@@ -141,7 +141,9 @@ const InviteMember = ({
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>{editing ? "Edit" : "Invite"} Member</DrawerHeader>
+        <DrawerHeader>
+          {editing ? "Change Member Role" : "Invite Member"}{" "}
+        </DrawerHeader>
         <DrawerBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl mb={5} isInvalid={!!errors.fullName}>
@@ -238,7 +240,7 @@ const InviteMember = ({
                 isLoading={isLoading}
                 disabled={isLoading}
               >
-                {editing ? "Edit" : "Invite"} Member
+                {editing ? "Update" : "Invite Member"}
               </Button>
             </HStack>
           </form>

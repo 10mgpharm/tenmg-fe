@@ -17,7 +17,7 @@ const fontSans = Lato({
 const appName = config.appName;
 const appUrl = config.appUrl;
 const appMetaTitle = `${appName} - Providing Credit score and commerce for Pharmacist and Health Providers`;
-const imageAlt = '10MG Health Logo';
+const imageAlt = "10MG Health Logo";
 const appMetaDescription =
   "📢 Providing Credit score and commerce for Pharmacist and Health Providers. #10MG #Health #CreditScore #CreditVoucher #Pharmacist #HealthProviders";
 
@@ -71,17 +71,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className='light' suppressHydrationWarning>
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <link rel="icon" href={TenmgLogo.src} type="image/png" sizes="32x32" />
       </head>
-      <body
-        className={cn(fontSans.variable)}
-        suppressHydrationWarning
-      >
-        <Provider>
-          {children}
-        </Provider>
+      <body className={cn(fontSans.variable)} suppressHydrationWarning>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

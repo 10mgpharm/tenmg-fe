@@ -15,14 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-    return (
-      <>
-      <Navbar/>
-      <Herosection/>
-      <Financepage/>
+  return (
+    <>
+      <Navbar />
+      <Herosection />
+      <Financepage />
       {/* <FAQ/> */}
-      <Testimonialsection/>
-      <Footer/>
-      </>
-    );
+      <Testimonialsection />
+      <Footer />
+    </>
+  );
 }

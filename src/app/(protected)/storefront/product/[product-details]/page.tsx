@@ -39,6 +39,7 @@ export default function ProductDetailPage() {
 
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [reviews, setReviews] = useState([]);
 
   const { addToCart, updateLoading } = useCartStore();
 
@@ -50,6 +51,7 @@ export default function ProductDetailPage() {
         // storefront/products/quidins
         const data = await requestClient({ token: userData?.user?.token }).get(`/storefront/products/${product.toLocaleLowerCase()}`);
         setProductData(data?.data?.data);
+        setReviews(data?.data?.data?.reviews?.data);
       } catch (e) {
       } finally {
         setLoading(false);
@@ -60,6 +62,7 @@ export default function ProductDetailPage() {
 
   }, [userData?.user?.token, product]);
 
+  console.log("reviews", reviews)
 
   const [count, setCount] = useState(1);
 
@@ -184,24 +187,22 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* <div className='w-full'>
+            <div className='w-full'>
               <div className='text-center space-y-1 my-14'>
                 <h3 className='text-3xl font-semibold text-gray-900'>Reviews</h3>
                 <p className='text-gray-500'>Read reviews from our satisfied customers.</p>
               </div>
               <div className='space-y-8'>
-                {Array(4)
-                  .fill(null)
-                  .map((_, i: number) => (
-                    // <p key={i}>Item {i}</p>
-                    <StoreProductReviewComponent key={1} />
+                {reviews?.length > 0 &&
+                  reviews?.map((review: string, i: number) => (
+                    <StoreProductReviewComponent key={i} data={review} />
                   ))}
               </div>
 
               <div className='w-fit mx-auto my-10'>
                 <button className='border border-primary-500 text-primary-500 w-fit py-2 px-4 mx-auto rounded-md text-sm mt-3 font-semibold'>Read More</button>
               </div>
-            </div> */}
+            </div>
 
 
             <div className='w-full mx-auto mt-10'>

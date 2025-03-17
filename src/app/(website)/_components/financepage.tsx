@@ -237,6 +237,7 @@ const Financepage = () => {
               className="rounded-lg w-full h-full"
             />
           </div>
+
           <div className="bg-[#F4D8C1] p-6 rounded-lg shadow-md md:w-[60%] w-full h-full justify-center flex-col flex items-start">
             <h4 className="text-[#5E19B3] text-sm font-semibold mb-2">
               FOR LENDERS

@@ -106,7 +106,7 @@ export function ColumnsMemberFN(
                     <MenuItem
                       onClick={() => handleOpenEdituser(info?.row?.original)}
                     >
-                      Change role
+                      Change Role
                     </MenuItem>
                     {info?.row?.original?.user?.active === 0 ? (
                       <MenuItem

@@ -84,7 +84,7 @@ const TopNavBar = ({ route }: { route: string }) => {
       );
 
       if (response.status === 200) {
-        const datal = response.data?.data?.data?.slice(0,5);
+        const datal = response.data?.data?.data?.slice(0, 5);
         setNotifications(datal || []);
       }
     } catch (err: any) {
@@ -198,7 +198,7 @@ const TopNavBar = ({ route }: { route: string }) => {
                   className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
                   onClick={async () => {
                     await signOut();
-                    router.push("/");
+                    router.push("/auth/signin");
                   }}
                 >
                   Log Out
