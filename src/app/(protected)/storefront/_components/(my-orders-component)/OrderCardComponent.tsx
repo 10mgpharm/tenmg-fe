@@ -5,6 +5,8 @@ import React from 'react'
 
 export default function OrderCardComponent({ product }) {
 
+  // console.log(window.location.href.includes('cancelled'))
+
   const router = useRouter()
 
   return (
@@ -20,7 +22,9 @@ export default function OrderCardComponent({ product }) {
               : product?.status.toLowerCase() === "processing" ? "purple"
                 : product?.status.toLowerCase() === "shipped" ? "green"
                   : "red"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
-            <span style={{ textTransform: 'capitalize' }}>{product?.status.toLowerCase() === "cancelled" || product?.status.toLowerCase() === "canceled" ? product?.refundStatus : product?.status}</span>
+            <span style={{ textTransform: 'capitalize' }}>{window.location.href.includes('cancelled') ? product?.refundStatus : product?.status}</span>
+            {/* <span style={{ textTransform: 'capitalize' }}>{product?.status}</span> */}
+            {/* <span style={{ textTransform: 'capitalize' }}>{product?.status.toLowerCase() === "cancelled" || product?.status.toLowerCase() === "canceled" ? product?.refundStatus : product?.status}</span> */}
           </Badge>
         </div>
         <p className='text-lg font-medium text-gray-900'>₦{product?.orderTotal}</p>

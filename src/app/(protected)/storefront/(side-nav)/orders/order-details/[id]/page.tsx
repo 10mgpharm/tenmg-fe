@@ -83,7 +83,8 @@ export default function OrderDetailsPage() {
                 colorScheme={order?.status?.toLowerCase() === 'completed' || order?.status?.toLowerCase() === "delivered" ? "green" :
                   order?.status?.toLowerCase() === "pending" || order?.status?.toLowerCase() === "processing" ? "warning" : "red"}
                 fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
-                <span style={{ textTransform: 'capitalize' }}>{order?.status}</span>
+                {/* <span style={{ textTransform: 'capitalize' }}>{order?.status}</span> */}
+                <span style={{ textTransform: 'capitalize' }}>{order?.status.toLowerCase() === "cancelled" || order?.status.toLowerCase() === "canceled" ? order?.refundStatus : order?.status}</span>
               </Badge>
             </HStack>
 

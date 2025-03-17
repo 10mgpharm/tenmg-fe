@@ -57,6 +57,7 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
       setLoading(false);
       onClose();
       toast.success("Review posted successfully")
+      window.location.reload();
       // console.log(res)
     } catch (e) {
       setLoading(false);
