@@ -602,6 +602,8 @@ export interface UserLoan {
   name: string;
   amount: string;
   date: string;
+  vendor?: string;
+  score?: number;
   status: string;
   repaymentStatus: string;
 }

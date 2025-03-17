@@ -1,7 +1,6 @@
 "use client";
 
 import React, { use, useCallback, useEffect, useState } from "react";
-// import NoticeCard from "../../suppliers/_components/NoticeCard";
 import {
   Badge,
   Box,
@@ -25,11 +24,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { LenderDashboardData, LoanRequest, NextAuthUserSession } from "@/types";
-// import CompleteAccountModal from "../../vendors/_components/CompleteAccountModal";
-// import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
-import { ApexOptions } from "apexcharts";
-// import ChartComponent from "../../vendors/_components/ChartComponent";
-import NoRequest from "@public/assets/images/no_request.png";
 import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
 import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent";
 import CompleteAccountModal from "@/app/(protected)/vendors/_components/CompleteAccountModal";
@@ -40,18 +34,14 @@ import WithdrawFunds from "./drawers/WithdrawFunds";
 import GenerateStatement from "./drawers/GenerateStatement";
 import requestClient from "@/lib/requestClient";
 import { formatAmountString } from "@/utils";
+import NoRequest from "@public/assets/images/no_request.png";
+
+// Import react-toastify components and styles
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
-}
-
-interface ILenderDashboard {
-  totalCustomers: number;
-  applications: number;
-  creditVoucher: string;
-  txnHistoryEval: number;
-  apiCalls: number;
-  balance: number;
 }
 
 const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
@@ -86,7 +76,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     "24 hours",
   ] as const;
 
-  const options: ApexOptions = {
+  const options = {
     chart: {
       stacked: true,
       toolbar: {
@@ -94,7 +84,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
       },
     },
     dataLabels: {
-      enabled: false, // Remove values on the bars
+      enabled: false,
     },
     yaxis: {
       show: false,
@@ -104,8 +94,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     },
     colors: ["#1A70B8", "var(--tenmg-colors-warning-600)"],
     legend: {
-      //   position: "top",
-      //   inverseOrder: true,
       show: false,
     },
     plotOptions: {
@@ -130,11 +118,18 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     useState<(typeof balanceTimePeriods)[number]>("7 days");
 
   const fetchLenderData = useCallback(async () => {
-    const response = await requestClient({ token: sessionToken }).get(
-      "/lender/dashboard"
-    );
-    if (response.status === 200) {
-      setLenderData(response.data.data);
+    try {
+      const response = await requestClient({ token: sessionToken }).get(
+        "/lender/dashboard"
+      );
+      if (response.status === 200) {
+        setLenderData(response.data.data);
+      } else {
+        toast.error("Error fetching dashboard data");
+      }
+    } catch (error: any) {
+      toast.error("Error fetching dashboard data");
+      console.error(error);
     }
   }, [sessionToken]);
 
@@ -142,7 +137,31 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     if (sessionData) {
       fetchLenderData();
     }
-  }, [sessionData]);
+  }, [sessionData, fetchLenderData]);
+
+  const handleAccept = useCallback(
+    async (id: string) => {
+      try {
+        const response = await requestClient({ token: sessionToken }).post(
+          "/lender/loan-application",
+          {
+            applicationId: id,
+            action: "approve",
+          }
+        );
+        if (response.status === 200) {
+          toast.success("Loan application approved successfully");
+          fetchLenderData();
+        } else {
+          toast.error("Error approving loan application");
+        }
+      } catch (error: any) {
+        toast.error("Error approving loan application");
+        console.error(error);
+      }
+    },
+    [sessionToken, fetchLenderData]
+  );
 
   console.log("lenderData", lenderData);
 
@@ -242,7 +261,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
               </Stack>
 
               <Box>
-                {/* Column Bar Chart */}
                 <ChartComponent
                   options={options}
                   series={series}
@@ -301,7 +319,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
               </Stack>
 
               <Box>
-                {/* Column Bar Chart */}
                 <ChartComponent
                   options={options}
                   series={series}
@@ -325,7 +342,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
           </div>
         </div>
 
-        {/* LOAN RREQUEST */}
+        {/* LOAN REQUEST */}
         <div className="w-full lg:w-2/5 flex flex-col gap-4 h-full">
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-2">
@@ -354,7 +371,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 </div>
               ) : (
                 lenderData?.loanRequest.map((request) => (
-                  <LoanDetails key={request.id} data={request} />
+                  <LoanDetails
+                    key={request.id}
+                    data={request}
+                    handleAccept={handleAccept}
+                  />
                 ))
               )}
             </Stack>
@@ -423,7 +444,13 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
 export default LenderDashboard;
 
-const LoanDetails = ({ data }: { data: LoanRequest }) => {
+const LoanDetails = ({
+  data,
+  handleAccept,
+}: {
+  data: LoanRequest;
+  handleAccept: (id: string) => void;
+}) => {
   return (
     <Card boxShadow="none">
       <CardHeader display="flex" justifyContent="flex-end" p={0}>
@@ -458,9 +485,7 @@ const LoanDetails = ({ data }: { data: LoanRequest }) => {
               variant="ghost"
               size="sm"
               colorScheme="green"
-              onClick={() => {
-                console.log("Accept");
-              }}
+              onClick={() => handleAccept(data?.identifier)}
             >
               Accept
             </Button>
@@ -473,5 +498,3 @@ const LoanDetails = ({ data }: { data: LoanRequest }) => {
     </Card>
   );
 };
-
-// TODO: Do an if statement to manage is number = or less than 25% or 50% or 75% or 100%. Assign different colors to the badge
