@@ -1,7 +1,6 @@
 "use client";
 
 import React, {
-  use,
   useCallback,
   useEffect,
   useState,
@@ -172,8 +171,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     },
     [sessionToken, fetchLenderData]
   );
-
-  console.log("lenderData", lenderData);
 
   return (
     <>
