@@ -129,10 +129,10 @@ const DepositFunds = ({ isOpen, onOpen, onClose }: DepositFundsProps) => {
       toast.success("Fund Deposit is successfully");
       setStep(2);
       console.log("response", response);
-    } catch (e) {
-      toast.error("Oops... Something went wrong...!");
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(`Deposit Error: ${errorMessage}`);
       setPaymentStatus("failed");
-      console.log(e);
     }
   };
 
