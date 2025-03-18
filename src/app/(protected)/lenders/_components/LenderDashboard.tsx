@@ -1,11 +1,6 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
+import React, { useCallback, useEffect, useState, useTransition } from "react";
 import {
   Badge,
   Box,
@@ -26,6 +21,7 @@ import {
   TabList,
   Tabs,
   Text,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { LenderDashboardData, LoanRequest, NextAuthUserSession } from "@/types";
@@ -484,9 +480,6 @@ const LoanDetails = ({
 }) => {
   return (
     <Card boxShadow="none">
-      <CardHeader display="flex" justifyContent="flex-end" p={0}>
-        <CloseButton color="red.600" />
-      </CardHeader>
       <CardBody p={0}>
         <Stack
           divider={<Divider />}
@@ -495,21 +488,29 @@ const LoanDetails = ({
           borderRadius="lg"
           fontSize="sm"
         >
-          <Box p={4} pb={1} fontWeight={500} color="gray.600">
-            <Flex gap={1} alignItems="center" mb={2}>
-              <Text>Loan Amount:</Text>
-              <Text fontWeight={700} color="gray.900">
-                ₦{formatAmountString(data?.totalAmount)}
-              </Text>
-            </Flex>
+          <Box py={1} fontWeight={500} color="gray.600">
+            <Box display="flex" justifyContent="flex-end" p={0}>
+              <Tooltip label="Ignore" hasArrow>
+                <CloseButton color="red.600" size="sm" />
+              </Tooltip>
+            </Box>
 
-            <Flex justifyContent="space-between" alignItems="center">
-              <Text color="gray.900">{data?.customer.name}</Text>
-              <Flex gap={1} alignItems="center">
-                <Text color="gray.500">Credit Score:</Text>
-                <Text>{data?.customer.score}%</Text>
+            <Box px={4}>
+              <Flex gap={1} alignItems="center" mb={2}>
+                <Text>Loan Amount:</Text>
+                <Text fontWeight={700} color="gray.900">
+                  ₦{formatAmountString(data?.totalAmount)}
+                </Text>
               </Flex>
-            </Flex>
+
+              <Flex justifyContent="space-between" alignItems="center">
+                <Text color="gray.900">{data?.customer.name}</Text>
+                <Flex gap={1} alignItems="center">
+                  <Text color="gray.500">Credit Score:</Text>
+                  <Text>{data?.customer.score}%</Text>
+                </Flex>
+              </Flex>
+            </Box>
           </Box>
           <Flex justifyContent="flex-end" pb={2}>
             <Button
