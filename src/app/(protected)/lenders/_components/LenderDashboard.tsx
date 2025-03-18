@@ -29,7 +29,6 @@ import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/O
 import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent";
 import CompleteAccountModal from "@/app/(protected)/vendors/_components/CompleteAccountModal";
 import LenderActions from "./LenderActions";
-import SideBar from "../../admin/_components/SideBar";
 import DepositFunds from "./drawers/DepositFunds";
 import WithdrawFunds from "./drawers/WithdrawFunds";
 import GenerateStatement from "./drawers/GenerateStatement";
@@ -38,9 +37,10 @@ import { formatAmountString } from "@/utils";
 import NoRequest from "@public/assets/images/no_request.png";
 
 // Import react-toastify components and styles
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../admin/_components/Loader";
+import { useRouter } from "next/navigation";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
@@ -70,6 +70,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   } = useDisclosure();
 
   const sessionToken = sessionData?.user?.token;
+  const router = useRouter();
 
   const balanceTimePeriods = [
     "12 months",
@@ -366,7 +367,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                   size="sm"
                   colorScheme="primary"
                   onClick={() => {
-                    console.log("See All");
+                    router.push("/lenders/loan-application");
                   }}
                 >
                   See All

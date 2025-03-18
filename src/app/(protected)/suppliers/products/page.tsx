@@ -114,6 +114,9 @@ const Products = () => {
         try {
         const response = await requestClient({ token: token }).get(`${query}&${queryString}`);
             if (response.status === 200) {
+                if(response.data.data?.currentPage > response.data.data?.lastPage){
+                    setPageCount(products?.currentPage - 1)
+                }
                 setProducts(response.data.data);
             }
             setLoading(false);
@@ -266,7 +269,7 @@ const Products = () => {
             )
             if (response.status === 200) {
                 toast.success(response.data.message);
-                fetchProducts();
+                await fetchProducts();
                 setIsLoading(false);
                 onClose();
             }

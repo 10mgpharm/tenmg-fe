@@ -28,7 +28,7 @@ import {
 import { ColumsLogFN } from "./_components/table";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
+import { AuditLogsResponse, NextAuthUserSession } from "@/types";
 import Pagination from "../../suppliers/_components/Pagination";
 
 const ITEMS_PER_PAGE = 10;
@@ -39,11 +39,9 @@ const Page = () => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [data, setData] = useState<any[]>([]);
-  const [pagination_link, setPagination_link] = useState<any[]>([]);
+  const [data, setData] = useState<AuditLogsResponse>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [totalItems, setTotalItems] = useState<number>(0);
   const [pageCount, setPageCount] = useState<number>(1);
 
   const session = useSession();
@@ -62,11 +60,8 @@ const Page = () => {
 
       try {
         const response = await requestClient({ token }).get(url);
-
         if (response.status === 200 && response.data.data) {
-          setData(response.data.data.data || []);
-          setPagination_link(response.data.data.links || []);
-          setTotalItems(response.data.data.total || 0);
+          setData(response.data.data || []);
         } else {
           setError("Failed to load audit logs. Please try again.");
         }
@@ -84,7 +79,7 @@ const Page = () => {
   }, [token, searchValue, pageCount]);
 
   const table = useReactTable({
-    data,
+    data: data?.data,
     columns: ColumsLogFN(),
     onSortingChange: setSorting,
     state: {
@@ -104,7 +99,8 @@ const Page = () => {
   // const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   const meta = {
-    links: pagination_link
+    links: data?.links,
+    currentPage: data?.currentPage
   }
 
   return (
@@ -124,14 +120,14 @@ const Page = () => {
           </Center>
         )}
 
-        {!loading && !error && data.length === 0 && (
+        {!loading && !error && data?.data.length === 0 && (
           <EmptyOrder
             heading={`No Audit Logs Yet`}
             content={`You currently have no audit logs. All audit logs will appear here.`}
           />
         )}
 
-        {!loading && !error && data.length > 0 && (
+        {!loading && !error && data?.data.length > 0 && (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >
             <Table>
               <Thead bg={"#F2F4F7"}>

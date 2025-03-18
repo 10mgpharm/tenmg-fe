@@ -1,6 +1,7 @@
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { BusinessStatus } from "../constants/enum";
+import { AuditLogData } from "@/data/mockdata";
 import { ApplicationDto } from "./application";
 
 export interface Account {
@@ -66,6 +67,41 @@ export interface MetaDataProp {
   to: number;
   total: number;
 }
+
+export interface AuditLogData {
+  id: string;
+  evenet: string;
+  description: string;
+  createdAt: string;
+  actor: {
+    name: string;
+    email: string;
+    avatar: string | null;
+    role: string;
+  };
+  properties: {
+    action: string;
+    crudType: string;
+    ipAddress: string;
+    tokenExpiresAt: string;
+    tokenScope: string;
+    userAgent: string;
+  }
+}
+export interface AuditLogsResponse {
+  data: AuditLogData[];
+  currentPage: number;
+  from: number;
+  lastPage: number;
+  links: any;
+  path: string;
+  perPage: number;
+  to: number;
+  total: number;
+  lastPageUrl: string | null;
+  nextPageUrl: string | null;
+}
+
 
 export interface MemberDataProp {
   data: AdminMemers[];
@@ -337,6 +373,7 @@ export interface ProductResponseData {
   data: ProductDataProps[];
   links: any;
   meta?: MetaDataProp;
+  lastPage?: number;
   prevPageUrl?: string | null, 
   nextPageUrl?: string | null,
   currentPage?: number;
