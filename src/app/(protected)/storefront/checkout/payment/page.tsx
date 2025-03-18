@@ -59,7 +59,8 @@ export default function PaymentPage() {
   ]
 
 
-  const [shippingAddresses, setShippingAddresses] = useState<any>({});
+  const [shippingData, setShippingData] = useState<any>({});
+  const [shippingAddress, setShippingAddress] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = useState('1')
 
@@ -74,7 +75,9 @@ export default function PaymentPage() {
         );
         if (response.status === 200) {
           const data = response.data.data;
-          setShippingAddresses(data?.find(item => item?.isDefault === true));
+          setShippingData(data?.find(item => item?.isDefault === true));
+
+
         } else {
           toast.error(`Error: ${response.data.message}`);
         }
@@ -88,6 +91,11 @@ export default function PaymentPage() {
 
     fetchAddresses();
   }, [userToken]);
+
+  useEffect(() => {
+    shippingData && setShippingAddress(`${shippingData?.address}, ${shippingData?.city}, ${shippingData?.state}, ${shippingData?.country}`)
+  }, [shippingData])
+
 
 
   const [loadingPayment, setLoadingPayment] = useState(false);
@@ -110,6 +118,7 @@ export default function PaymentPage() {
     };
   }, []);
 
+  // console.log("shippingAddress", shippingAddress)
 
   //   Card Number: 5319 3178 0136 6660
   // Expiry Date: 10/26
@@ -123,10 +132,10 @@ export default function PaymentPage() {
       );
       toast.success('Order placed successfully');
       router.push('/');
-      console.log("response", response);
+      // // console.log("response", response);
     } catch (e) {
       toast.error('Oops... Something went wrong...!');
-      console.log(e)
+      // // console.log(e)
     }
   }
 
@@ -138,7 +147,7 @@ export default function PaymentPage() {
       if (response?.status === 200) {
         toast.success('Order Cancelled Successfully...!');
       }
-      console.log("response", response);
+      // console.log("response", response);
     } catch (e) {
       toast.error("Something went wrong, could not cancel order!")
     }
@@ -179,19 +188,25 @@ export default function PaymentPage() {
     const orderData = {
       "orderId": cartItems?.id,
       "paymentMethodId": 1,
-      "deliveryAddress": "My address",
+      "deliveryAddress": shippingAddress,
       "deliveryType": "STANDARD"
     }
+
+    if (!shippingData) {
+      toast.error("Please set a default shipping address");
+      return;
+    }
+
     setLoadingPayment(true);
     try {
       const response = await requestClient({ token: userToken }).post(
         "/storefront/checkout",
         orderData
       );
-      console.log("submit order res", response?.data?.data?.reference)
+      // console.log("submit order res", response?.data?.data?.reference)
       if (response.status === 200) {
         await payFincra(e, response?.data?.data?.reference, response?.data?.data?.totalAmount)
-        console.log("submit order res", response)
+        // console.log("submit order res", response)
 
       } else {
         toast.error(`Error: ${response.data.message}`);
@@ -211,7 +226,7 @@ export default function PaymentPage() {
 
         <div className='col-span-1 lg:col-span-4 '>
           <div className='w-full border border-r-gray-100 rounded-t-2xl overflow-hidden'>
-            {shippingAddresses ?
+            {shippingData ?
 
               <>
                 <div className='flex items-center justify-between p-4 bg-primary-100'>
@@ -221,10 +236,10 @@ export default function PaymentPage() {
                 <div
                   className="p-5 flex flex-col gap-2 mx-auto w-full"
                 >
-                  <h2 className="text-xl font-bold">{shippingAddresses.name}</h2>
-                  <p className="text-base font-bold">{shippingAddresses.phoneNumber}</p>
+                  <h2 className="text-xl font-bold">{shippingData.name}</h2>
+                  <p className="text-base font-bold">{shippingData.phoneNumber}</p>
                   <p className="text-sm text-gray-500">
-                    {shippingAddresses.address}, {shippingAddresses.city}, {shippingAddresses.state}, {shippingAddresses.country}
+                    {shippingAddress}
                   </p>
 
                 </div>
