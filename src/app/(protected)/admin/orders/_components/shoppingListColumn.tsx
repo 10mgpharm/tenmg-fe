@@ -7,16 +7,6 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { ShoppingList } from "@/types/shoppingList";
 
-export type shoppingListType = {
-  id: string;
-  customerName: string;
-  companyName: string;
-  productName: string;
-  status: string;
-  expectedPurchaseDate: string;
-  image: string;
-};
-
 const columnHelper = createColumnHelper<ShoppingList>();
 
 export function ShoppingListColumsOrderFN(
@@ -24,7 +14,7 @@ export function ShoppingListColumsOrderFN(
   pageSize: number,
   type: string,
   onOpenDetails: () => void,
-  setSelectedOrder: (item: any) => void
+  setSelectedProduct: (item: any) => void
 ) {
   const router = useRouter();
 
@@ -47,7 +37,7 @@ export function ShoppingListColumsOrderFN(
         );
       },
     }),
-    columnHelper.accessor("customerName", {
+    columnHelper.accessor("productName", {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -63,7 +53,7 @@ export function ShoppingListColumsOrderFN(
           </p>
           <span className="text-[13px] text-gray-400">
             {/* {info.row.original?.companyName} */}
-            LUco pharm
+            Luco pharm
           </span>
         </div>
       ),
@@ -85,28 +75,28 @@ export function ShoppingListColumsOrderFN(
       ),
     }),
 
-    columnHelper.accessor("status", {
+    columnHelper.accessor("productName", {
       header: ({ column }) => <p>Status</p>,
       cell: (info) => {
         return (
           <div>
             <p
               className={classNames(
-                info?.row?.original?.status.toUpperCase() === "NOT BOUGHT"
-                  ? "bg-[#FFFAEB] text-[#F79009]"
-                  : "text-[#027A48] bg-[#ECFDF3]",
+                info?.row?.original?.productName.toUpperCase() === "NOT BOUGHT"
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : "bg-[#FFFAEB] text-[#F79009]",
                 " max-w-min p-1 px-2 rounded-2xl text-xs font-medium  capitalize"
               )}
             >
-              <span className="rounded-full text-[1.2rem] pt-4">•</span>{" "}
-              {info?.row?.original?.status}
+              <span className="rounded-full text-[1.2rem] pt-4">•</span> Not
+              purchased
             </p>
           </div>
         );
       },
     }),
 
-    columnHelper.accessor("status", {
+    columnHelper.accessor("productName", {
       header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
@@ -119,6 +109,7 @@ export function ShoppingListColumsOrderFN(
                 <MenuItem
                   onClick={() => {
                     onOpenDetails();
+                    setSelectedProduct(info?.row?.original);
                   }}
                 >
                   View Item

@@ -26,6 +26,8 @@ const ShoppingList = () => {
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [shoppingListData, setShoppingListData] = useState<ShoppingListData>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageCount, setPageCount] = useState<number>(1);
   const [counts, setCount] = useState<CountProps[]>([
     {
       status: "Bought",
@@ -41,52 +43,24 @@ const ShoppingList = () => {
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  // const fetchOrderCount = useCallback(async () => {
-  //   // setCountLoading(true);
-  //   try {
-  //     // https://staging-api.10mg.ai/api/v1/admin/shopping-list
-  //     let query = `/admin/shopping-list`;
-  //     const response = await requestClient({ token: token }).get(query);
-  //     if (response.status === 200) {
-  //       console.log(response, "ttr");
-  //       setShoppingListData(response.data.data);
-  //     }
-  //     // setCountLoading(false);
-  //   } catch (error) {
-  //     console.error(error);
-  //     // setCountLoading(false);
-  //   }
-  // }, [token]);
-
-  useEffect(() => {
-    const fetchOrderCount = async () => {
-      // setCountLoading(true);
-      try {
-        // https://staging-api.10mg.ai/api/v1/admin/shopping-list
-        let query = `/admin/shopping-list`;
-        console.log(query, token);
-        const response = await requestClient({ token: token }).get(query);
-        if (response.status === 200) {
-          console.log(response, "ttr");
-          setShoppingListData(response.data.data);
-        }
-
-        // setCountLoading(false);
-      } catch (error) {
-        console.log(error);
-        // setCountLoading(false);
+  const fetchOrderCount = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      let query = `/admin/shopping-list`;
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setShoppingListData(response?.data?.data);
       }
-    };
-    fetchOrderCount();
-
-    // if (!token) return;
-    // fetchOrderCount();
+    } catch (error) {
+      console.error(error);
+    }
+    setIsLoading(false);
   }, [token]);
-  // }, [fetchOrderCount, token]);
 
   useEffect(() => {
-    console.log(shoppingListData);
-  }, [shoppingListData]);
+    if (!token) return;
+    fetchOrderCount();
+  }, [fetchOrderCount, token]);
 
   return (
     <div className="p-8">
@@ -141,18 +115,16 @@ const ShoppingList = () => {
           ))}
         </TabList>
         <TabPanels>
-          {/* <TabPanel px={0}>
+          <TabPanel px={0}>
             <ShoppingListTable
               data={shoppingListData}
-              loading={false}
+              loading={isLoading}
               type="all"
-              fetchOrders={() => {}}
-              pageCount={10}
+              pageCount={pageCount}
               globalFilter={globalFilter}
-              setPageCount={() => {}}
-              fetchOrderCount={() => {}}
+              setPageCount={setPageCount}
             />
-          </TabPanel> */}
+          </TabPanel>
           {/*     <TabPanel>
                     <OrderPage 
                     orders={orders} 

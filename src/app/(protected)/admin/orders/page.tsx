@@ -46,7 +46,9 @@ const Orders = () => {
       if (debouncedSearch) {
         query += `&search=${debouncedSearch}`;
       }
+
       const response = await requestClient({ token: token }).get(query);
+
       if (response.status === 200) {
         setOrders(response.data.data);
         if (!status || status === "all") {
@@ -142,6 +144,7 @@ const Orders = () => {
               </Tab>
             ))}
         </TabList>
+
         <TabPanels>
           <TabPanel px={0}>
             <OrderPage

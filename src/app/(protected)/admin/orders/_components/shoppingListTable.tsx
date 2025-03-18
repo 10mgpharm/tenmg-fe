@@ -40,21 +40,16 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
-import {
-  ShoppingListColumsOrderFN,
-  shoppingListType,
-} from "./shoppingListColumn";
+import { ShoppingListColumsOrderFN } from "./shoppingListColumn";
 import Image from "next/image";
-import { ShoppingListData } from "@/types/shoppingList";
+import { ShoppingList, ShoppingListData } from "@/types/shoppingList";
 
-interface OrderPageProp {
+interface ShoppingListTableProps {
   data: ShoppingListData;
   type: string;
-  fetchOrders: () => void;
   loading: boolean;
   pageCount: number;
   globalFilter: string;
-  fetchOrderCount?: () => void;
   setPageCount: Dispatch<SetStateAction<number>>;
 }
 
@@ -65,9 +60,7 @@ const ShoppingListTable = ({
   pageCount,
   setPageCount,
   globalFilter,
-  fetchOrders,
-  fetchOrderCount,
-}: OrderPageProp) => {
+}: ShoppingListTableProps) => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
@@ -76,7 +69,8 @@ const ShoppingListTable = ({
   const [error, setError] = useState<boolean>(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedOrder, setSelectedOrder] = useState<OrderData>();
+
+  const [selectedProduct, setSelectedProduct] = useState<ShoppingList>();
 
   const {
     isOpen: isOpenDetails,
@@ -84,7 +78,10 @@ const ShoppingListTable = ({
     onOpen: onOpenDetails,
   } = useDisclosure();
 
-  const memoizedData = useMemo(() => shoppinglistData.data, [shoppinglistData]);
+  const memoizedData = useMemo(
+    () => shoppinglistData?.data,
+    [shoppinglistData]
+  );
 
   const table = useReactTable({
     data: memoizedData,
@@ -93,7 +90,7 @@ const ShoppingListTable = ({
       20,
       type,
       onOpenDetails,
-      setSelectedOrder
+      setSelectedProduct
     ),
     onSortingChange: setSorting,
     state: {
@@ -104,93 +101,23 @@ const ShoppingListTable = ({
     getSortedRowModel: getSortedRowModel(),
   });
 
-  // const handleStatusChange = async (status: string) => {
-  //   try {
-  //     setIsLoading(true);
-  //     let formdata: any;
-  //     if (status === "processing") {
-  //       formdata = {
-  //         orderId: selectedOrder.id,
-  //         status: "PROCESSING",
-  //         requiresRefund: false,
-  //       };
-  //     } else if (status === "shipping") {
-  //       formdata = {
-  //         orderId: selectedOrder.id,
-  //         status: "SHIPPED",
-  //         requiresRefund: false,
-  //       };
-  //     } else if (status === "cancelled" && comment) {
-  //       formdata = {
-  //         orderId: selectedOrder.id,
-  //         status: "CANCELED",
-  //         reason: comment,
-  //         requiresRefund: true,
-  //         refundStatus: "AWAITING REFUND",
-  //       };
-  //     } else if (status === "refunded") {
-  //       formdata = {
-  //         orderId: selectedOrder.id,
-  //         status: "CANCELED",
-  //         reason: "refunded",
-  //         requiresRefund: true,
-  //         refundStatus: "REFUNDED",
-  //       };
-  //     } else if (status === "completed") {
-  //       formdata = {
-  //         orderId: selectedOrder.id,
-  //         status: "COMPLETED",
-  //         requiresRefund: false,
-  //       };
-  //     }
-  //     const response = await requestClient({ token: token }).post(
-  //       `/admin/orders/change-order-status`,
-  //       formdata
-  //     );
-  //     if (response.status === 200) {
-  //       toast.success(response?.data?.message);
-  //       fetchOrders();
-  //       fetchOrderCount();
-  //       onCloseShip();
-  //       onCloseProcess();
-  //       onCloseRefunded();
-  //       onCloseCancelled();
-  //       onCloseComplete();
-  //       setIsLoading(false);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     setIsLoading(false);
-  //     toast.error(handleServerErrorMessage(error));
-  //   }
-  // };
-
-  // const handleSubmit = (e: any) => {
-  //   e.preventDefault();
-  //   if (comment === "") {
-  //     return setError(true);
-  //   } else {
-  //     handleStatusChange("cancelled");
-  //   }
-  // };
-
-  // if (loading) {
-  //   return (
-  //     <Flex justify="center" align="center" height="200px">
-  //       <Spinner size="xl" />
-  //     </Flex>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" height="200px">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
 
   return (
     <div>
-      {shoppinglistData.data?.length === 0 ? (
+      {shoppinglistData?.data?.length === 0 ? (
         <EmptyOrder
           heading={`No Shopping List Yet`}
           content={`You currently have no shopping list. All shopping list orders will appear here.`}
         />
       ) : (
-        shoppinglistData.data?.length > 0 && (
+        shoppinglistData?.data?.length > 0 && (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
               <Thead bg={"#F2F4F7"}>
@@ -244,33 +171,40 @@ const ShoppingListTable = ({
           <DrawerHeader>Product Details</DrawerHeader>
           <DrawerBody>
             <Image
-              src={"/assets/images/supplier.png"}
+              src={selectedProduct?.image}
               width={1000}
               height={1000}
               alt="Product image"
-              className="max-h-[300px] aspect-square rounded-md"
+              className="max-h-[300px] aspect-square rounded-md bg-gray-100"
             />
             <div className="mt-4 flex items-center justify-between flex-wrap gap-2">
               <h2 className="font-semibold text-[18px]">
-                Diclofenac 234 20 Gram
+                {selectedProduct?.productName}{" "}
+                <span className="text-[15px] text-gray-500 font-normal">
+                  | {selectedProduct?.brandName}{" "}
+                </span>
               </h2>
-
-              <span className="text-[15px] text-gray-500">2025-03-20 </span>
             </div>
 
-            <p className="py-[20px] text-[15px] text-gray-600">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Recusandae dolore similique esse, suscipit eveniet cum inventore,
-              nisi exercitationem repellendus libero laudantium voluptas maiores
-              quae totam assumenda perspiciatis earum tempora ipsam?
+            <p className="pb-[20px] pt-[15px] text-[15px] text-gray-600">
+              {selectedProduct?.description}
             </p>
 
             <div>
+              <h3 className="font-semibold text-[15px]">
+                Expected Purchase Date:
+              </h3>
+              <p className="text-[15px] text-gray-800 font-normal">
+                {selectedProduct?.purchaseDate}
+              </p>
+            </div>
+
+            <div className="mt-4">
               <h3 className="font-semibold text-[15px]">Customer Name:</h3>
               <p className="text-[15px] text-gray-800 font-normal">
                 Onyejekwe ugonna
               </p>
-              <p className="text-[15px] text-gray-500">Evans 2</p>
+              <p className="text-[15px] text-gray-500"> Luco pharm</p>
             </div>
           </DrawerBody>
         </DrawerContent>
