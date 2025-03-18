@@ -1,6 +1,7 @@
+import { AuditLogData } from "@/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<AuditLogData>();
 
 export const ColumsLogFN = () => [
   columnHelper.accessor("actor.name", {
