@@ -40,6 +40,7 @@ export default function OrderDetailsPage() {
     { title: 'Order Submitted', description: 'Order Submitted' },
     { title: 'Processing', description: 'Shipment in Progress' },
     { title: 'Shipped', description: 'Out For Delivery' },
+    { title: 'Delivered', description: 'Order has been delivered' },
     { title: 'Completed', description: 'Transaction Complete' },
   ]
 
@@ -55,10 +56,10 @@ export default function OrderDetailsPage() {
   useEffect(() => {
     const status = order?.status?.toLowerCase();
 
-    const stepIndex = status === "completed" ? 4
-      : status === "delivered" ? 3
-        : status === "shipping" ? 2
-          : status === "processing" ? 1
+    const stepIndex = status === "completed" ? 5
+      : status === "delivered" ? 4
+        : status === "shipped" ? 3
+          : status === "processing" ? 2
             : status === "pending" ? 1
               : -1;
 
@@ -81,7 +82,7 @@ export default function OrderDetailsPage() {
               <h1 className='text-xl font-semibold'>Order Details</h1>
               <Badge
                 colorScheme={order?.status?.toLowerCase() === 'completed' || order?.status?.toLowerCase() === "delivered" ? "green" :
-                  order?.status?.toLowerCase() === "pending" || order?.status?.toLowerCase() === "processing" ? "warning" : "red"}
+                  order?.status?.toLowerCase() === "pending" || order?.status?.toLowerCase() === "processing" ? "warning" : order?.status?.toLowerCase() === "shipped" ? "primary" : "red"}
                 fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
                 {/* <span style={{ textTransform: 'capitalize' }}>{order?.status}</span> */}
                 <span style={{ textTransform: 'capitalize' }}>{order?.status.toLowerCase() === "cancelled" || order?.status.toLowerCase() === "canceled" ? order?.refundStatus : order?.status}</span>
