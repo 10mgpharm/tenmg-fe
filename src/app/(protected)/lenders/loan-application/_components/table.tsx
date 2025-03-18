@@ -1,15 +1,17 @@
-import { UserLoan } from "@/types";
-import { classNames } from "@/utils";
+import { ApplicationDto } from "@/types";
+import { classNames, formatAmountString } from "@/utils";
+import { formatAmount } from "@/utils/formatAmount";
+import { convertDate } from "@/utils/formatDate";
 import { Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-const columnHelper = createColumnHelper<UserLoan>();
+const columnHelper = createColumnHelper<ApplicationDto>();
 
 export function ColumnsLoanFN() {
   return [
-    columnHelper.accessor("loanId", {
+    columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
           <p>Ref ID</p>
@@ -17,12 +19,14 @@ export function ColumnsLoanFN() {
       ),
       cell: (info) => (
         <div className="pl-6">
-          <p className="text-gray-500">{info.row.original?.loanId}</p>
-          <p className="text-gray-700 text-xs">{info.row.original?.date}</p>
+          <p className="text-gray-500">{info.row.original?.identifier}</p>
+          <p className="text-gray-700 text-xs">
+            {convertDate(info.row.original?.updatedAt)}
+          </p>
         </div>
       ),
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("customer.name", {
       header: () => (
         <div>
           <p>Customer Name</p>
@@ -30,11 +34,11 @@ export function ColumnsLoanFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-medium">{info.row.original?.name} </p>
+          <p className="font-medium">{info.row.original?.customer.name} </p>
         </div>
       ),
     }),
-    columnHelper.accessor("amount", {
+    columnHelper.accessor("interestAmount", {
       header: () => (
         <div>
           <p>Loan Amount</p>
@@ -42,12 +46,14 @@ export function ColumnsLoanFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-medium">{info.row.original?.amount}</p>
+          <p className="font-medium">
+            {formatAmount(info.row.original?.interestAmount)}
+          </p>
         </div>
       ),
     }),
 
-    columnHelper.accessor("vendor", {
+    columnHelper.accessor("business", {
       header: () => (
         <div>
           <p>Vendor</p>
@@ -55,11 +61,11 @@ export function ColumnsLoanFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-medium">{info.row.original?.vendor}</p>
+          <p className="font-medium">{info.row.original?.business.name}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("score", {
+    columnHelper.accessor("customer.score", {
       header: () => (
         <div>
           <p>Credit Score</p>
@@ -67,12 +73,12 @@ export function ColumnsLoanFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-medium">{info.row.original?.score}</p>
+          <p className="font-medium">{info.row.original?.customer.score}</p>
         </div>
       ),
     }),
 
-    columnHelper.accessor("repaymentStatus", {
+    columnHelper.accessor("status", {
       header: () => (
         <div>
           <p>Status</p>
@@ -82,23 +88,23 @@ export function ColumnsLoanFN() {
         <div>
           <p
             className={classNames(
-              info.row.original.repaymentStatus === "Late Payment"
+              info.row.original.status === "EXPIRED"
                 ? "bg-[#FEF3F2] text-[#B42318]"
-                : info?.row?.original?.repaymentStatus === "Complete"
+                : info?.row?.original?.status === "APPROVED"
                 ? "text-[#027A48] bg-[#ECFDF3]"
-                : info.row.original?.repaymentStatus === "Ongoing"
+                : info.row.original?.status === "INITIATED"
                 ? "bg-orange-50 text-orange-500"
                 : "text-gray-500",
               " max-w-min p-0.5 px-2 rounded-2xl text-sm capitalize font-medium"
             )}
           >
             <span className="text-[1.2rem] rounded-full">•</span>{" "}
-            {info.row.original?.repaymentStatus}
+            {info.row.original?.status}
           </p>
         </div>
       ),
     }),
-    columnHelper.accessor("repaymentStatus", {
+    columnHelper.accessor("status", {
       header: () => (
         <div>
           <p>Actions</p>

@@ -45,6 +45,8 @@ export interface ApplicationDto {
     durationInMonth: number;
     status: string;
     source: string;
+    updatedAt?: string;
+    length?: string;
 }
 
 export interface ApplicationWidgetConfig {

@@ -1,6 +1,7 @@
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { BusinessStatus } from "../constants/enum";
+import { ApplicationDto } from "./application";
 
 export interface Account {
   providerAccountId: number | string;
@@ -637,4 +638,10 @@ export interface Wallet {
   prevBalance: string,
   lastTransactionRef: string | null,
   updatedAt: string,
+}
+
+export interface LoanApplicationDataResponse {
+  data: ApplicationDto;
+  links: any;
+  meta: MetaDataProp;
 }
