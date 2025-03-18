@@ -38,7 +38,7 @@ export default function ProductDetailPage() {
   const product = splitPath[splitPath.length - 1];
 
   const [productData, setProductData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState([]);
 
   const { addToCart, updateLoading } = useCartStore();
@@ -62,7 +62,6 @@ export default function ProductDetailPage() {
 
   }, [userData?.user?.token, product]);
 
-  console.log("reviews", reviews)
 
   const [count, setCount] = useState(1);
 
@@ -193,14 +192,19 @@ export default function ProductDetailPage() {
                 <p className='text-gray-500'>Read reviews from our satisfied customers.</p>
               </div>
               <div className='space-y-8'>
-                {reviews?.length > 0 &&
-                  reviews?.map((review: string, i: number) => (
-                    <StoreProductReviewComponent key={i} data={review} />
-                  ))}
+                {reviews?.length > 0 ?
+                  <>
+                    {reviews?.slice(0, 3)?.map((review: string, i: number) => (
+                      <StoreProductReviewComponent key={i} data={review} />
+                    ))}</>
+                  : <div>
+                    <p className='text-center text-gray-500'>No reviews yet</p>
+                  </div>
+                }
               </div>
 
               <div className='w-fit mx-auto my-10'>
-                <button className='border border-primary-500 text-primary-500 w-fit py-2 px-4 mx-auto rounded-md text-sm mt-3 font-semibold'>Read More</button>
+                {reviews?.length > 3 && <button className='border border-primary-500 text-primary-500 w-fit py-2 px-4 mx-auto rounded-md text-sm mt-3 font-semibold'>Read More</button>}
               </div>
             </div>
 
