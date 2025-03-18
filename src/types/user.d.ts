@@ -372,6 +372,7 @@ export interface ProductResponseData {
   data: ProductDataProps[];
   links: any;
   meta?: MetaDataProp;
+  lastPage?: number;
   prevPageUrl?: string | null, 
   nextPageUrl?: string | null,
   currentPage?: number;
