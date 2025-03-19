@@ -122,7 +122,7 @@ export function ColumnsLoanFN() {
             <MenuItem mb={2}>
               {" "}
               <Link
-                href={"/lenders/loan-application/view"}
+                href={`/lenders/loan-application/view/${info.row.original?.id}`}
                 className="font-medium text-primary-500"
               >
                 View
