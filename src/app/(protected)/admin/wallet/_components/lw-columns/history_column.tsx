@@ -95,9 +95,7 @@ export function History_ColumnFN(
                     <MenuItem onClick={() => {}}>
                       Mark transaction as completed
                     </MenuItem>
-                    <MenuItem onClick={() => onOpenPayout()}>
-                      Initiate Payout
-                    </MenuItem>
+                    <MenuItem onClick={() => {}}>Initiate Payout</MenuItem>
                   </>
                 ) : (
                   <>
