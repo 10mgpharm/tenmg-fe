@@ -10,7 +10,7 @@ export default function ReviewsCardComponent({ product }) {
       <div>
         <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
           <div className='grid grid-cols-6 gap-2 col-span-4'>
-            <div style={{ backgroundImage: "url('/assets/images/pillImage.png')" }} className=' w-full h-full col-span-1 size-16 bg-cover bg-center bg-no-repeat' />
+            <div style={{ backgroundImage: `url( ${product?.thumbnailFile && product?.thumbnailFile?.length > 0 ? product?.thumbnailFile : '/assets/images/pillImage.png'})` }} className=' w-full h-full col-span-1 size-16 bg-cover bg-center bg-no-repeat' />
             <div className='col-span-5'>
               <h4 className='text-lg font-medium text-gray-700'>{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</h4>
               <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>

@@ -23,6 +23,7 @@ export default function ShoppingListPage() {
     if (userData?.user?.token) fetchShoppingList(userData?.user?.token);
   }, [fetchShoppingList, userData?.user?.token]);
 
+  console.log("shoppingList", shoppingList)
 
   return (
     <div>
