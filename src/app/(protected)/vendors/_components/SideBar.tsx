@@ -27,6 +27,7 @@ import Link from "next/link";
 import { BiMessageDetail } from "react-icons/bi";
 import { LuWallet } from "react-icons/lu";
 
+
 const navSections = [
   {
     title: "NAVIGATION",
