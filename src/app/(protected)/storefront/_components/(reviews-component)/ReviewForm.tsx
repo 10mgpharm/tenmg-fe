@@ -7,6 +7,8 @@ import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
 import requestClient from '@/lib/requestClient';
 import { toast } from 'react-toastify';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 
 
@@ -22,7 +24,12 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-
+  const formSchema = z.object({
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    email: z.string().email("Invalid email address"),
+    comment: z.string().min(5, "Comment must be at least 5 characters"),
+    productId: z.string().nonempty("Product ID is required"),
+  });
 
   // console.log('user', userData)
 
@@ -32,6 +39,7 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
     handleSubmit,
     watch,
   } = useForm({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: userData?.user?.name,
       email: userData?.user?.email,
