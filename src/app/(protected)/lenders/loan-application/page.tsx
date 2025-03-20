@@ -1,239 +1,159 @@
-'use client'
-import { Badge, Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { SearchIcon } from "lucide-react";
-import React from "react";
-import { CiFilter, CiMenuKebab } from "react-icons/ci";
+"use client";
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react'
-import { flexRender, useReactTable } from "@tanstack/react-table";
-import SearchInput from "../../vendors/_components/SearchInput";
-import Pagination from "../_components/Pagination";
-export default function LoanApplicationPage() {
+  Badge,
+  Button,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import React, { useState, useTransition, useEffect, useCallback } from "react";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { LoanByUser } from "@/data/mockdata";
+import OverviewCards from "../../_components/loanApplication/OverviewCards";
+import SearchFilter from "../../_components/loanApplication/SearchFilter";
+import LoanTable from "../../_components/loanApplication/LoanTable";
+import { ColumnsLoanFN } from "./_components/table";
+import { toast } from "react-toastify";
+import {
+  LenderDashboardData,
+  LoanApplicationDataResponse,
+  NextAuthUserSession,
+} from "@/types";
+import { handleServerErrorMessage } from "@/utils";
+import Loader from "../../admin/_components/Loader";
+import totalPattern from "@public/assets/images/bgPattern.svg";
+import orderPattern from "@public/assets/images/orderPattern.svg";
+import productPattern from "@public/assets/images/productpatterns.svg";
 
+export interface OverviewCardData {
+  title: string;
+  value: string | number;
+  fromColor?: string;
+  toColor?: string;
+  image: any;
+}
+
+export default function LoanApplicationPage() {
   const router = useRouter();
 
-  const card_info = [
+  const [loading, setLoading] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [lenderData, setLenderData] = useState<LenderDashboardData | null>(
+    null
+  );
+  const [loanData, setLoanData] = useState<LoanApplicationDataResponse | null>(
+    null
+  );
+  const [isPending, startTransition] = useTransition();
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const sessionToken = sessionData?.user?.token;
+
+  const fetchLenderData = useCallback(() => {
+    startTransition(async () => {
+      try {
+        const response = await requestClient({ token: sessionToken }).get(
+          "/lender/dashboard"
+        );
+        if (response.status === 200) {
+          setLenderData(response.data.data);
+        } else {
+          toast.error("Error fetching dashboard data");
+        }
+      } catch (error: any) {
+        toast.error("Error fetching dashboard data");
+        console.error(error);
+      }
+    });
+  }, [sessionToken]);
+
+  const fetchLoanData = useCallback(() => {
+    startTransition(async () => {
+      try {
+        const response = await requestClient({ token: sessionToken }).get(
+          "/lender/loan-application"
+        );
+        if (response.status === 200) {
+          setLoanData(response.data.data);
+        } else {
+          toast.error("Error fetching Loan Application data");
+        }
+      } catch (error: any) {
+        toast.error(
+          "Error fetching dashboard data: ",
+          handleServerErrorMessage(error)
+        );
+        console.error(error);
+      }
+    });
+  }, [sessionToken]);
+
+  useEffect(() => {
+    if (sessionData) {
+      fetchLoanData();
+      fetchLenderData();
+    }
+  }, [sessionData, fetchLoanData, fetchLenderData]);
+
+  const overviewData: OverviewCardData[] = [
     {
       title: "Total Loan Applications",
-      value: "5",
-      bgColor: "#53389E",
-      bgImg: "/assets/images/disb_bg.png",
+      value: loanData?.data?.length || "0",
+      fromColor: "from-[#53389E]",
+      toColor: "to-[#7F56D9]",
+      image: totalPattern,
     },
     {
-      title: "Pending Loan Applications",
-      value: "2",
-      bgColor: "#DC6803",
-      bgImg: "/assets/images/app_bg.png",
+      title: "Pending Applications",
+      value: lenderData?.pendingRequests || "0",
+      fromColor: "from-[#DC6803]",
+      toColor: "to-[#DC6803]",
+      image: orderPattern,
     },
     {
-      title: "Approved Loan Applications",
-      value: "1",
-      bgColor: "#3E4784",
-      bgImg: "/assets/images/pend_bg.png",
+      title: "Approved Applications",
+      value: lenderData?.loanApprovalThisMonth || "0",
+      fromColor: "from-[#3E4784]",
+      toColor: "to-[#3E4784]",
+      image: productPattern,
     },
     {
       title: "Disbursed Amount",
-      value: "₦40,321",
-      bgColor: "#E31B54",
-      bgImg: "/assets/images/tot_bg.png",
+      value: lenderData?.interestEarned || "0",
+      fromColor: "from-[#E31B54]",
+      toColor: "to-[#E31B54]",
+      image: productPattern,
     },
   ];
 
-
   return (
-    <div className="m-5">
+    <>
+      {isPending && <Loader />}
+      {!isPending && (
+        <div className="m-5">
+          <h3 className="font-semibold text-xl my-4">Loan Application</h3>
 
-      <h3 className="font-semibold text-xl my-4">Loan Application</h3>
-
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
-        {card_info.map((item, index) => (
-          <div
-            key={index}
-            className="relative h-32 bg-cover bg-center bg-no-repeat rounded-lg p-4 flex items-center"
-            style={{
-              // backgroundColor: item.bgColor, // Apply solid color  
-              backgroundImage: `url(${item.bgImg})`, // Apply background image
-              // backgroundBlendMode: "overlay", // Ensures color and image blend well
-            }}
-          >
-            {/* Dark Overlay to Fade Background */}
-            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor, }}></div>
-
-            {/* Card Content */}
-            <div className="relative z-10 text-white">
-              <h4 className="text-sm font-medium">{item.title}</h4>
-              <p className="text-base font-semibold">{item.value}</p>
-            </div>
+          <OverviewCards overviewData={overviewData} />
+          <SearchFilter
+            value={globalFilter}
+            onSearchChange={(e) => setGlobalFilter(e.target.value)}
+            // You can pass an onFilterClick handler if needed
+          />
+          <div className="mt-5">
+            <LoanTable
+              data={Array.isArray(loanData?.data) ? loanData.data : []}
+              columns={ColumnsLoanFN()}
+              globalFilter={globalFilter}
+              onGlobalFilterChange={setGlobalFilter}
+              loading={loading}
+            />
           </div>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-3 my-5">
-        <SearchInput
-          placeholder="Search by borrower's name/reference Id"
-        // value={globalFilter}
-        // onChange={(e) => setGlobalFilter(e.target.value)}
-        />
-
-        <Menu>
-          <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
-            <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>            Filters            </p>
-          </MenuButton>
-          <MenuList>
-            <MenuItem>By Date</MenuItem>
-            <MenuItem>Credit Score</MenuItem>
-            <MenuItem>Vendor Name</MenuItem>
-          </MenuList>
-        </Menu>
-      </div>
-
-      <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-        <Table variant='simple'>
-          {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
-          <Thead bg="blue.50">
-            <Tr>
-              <Th textTransform="initial"
-                color="primary.500"
-                fontWeight="500">Reference ID</Th>
-              <Th textTransform="initial"
-                color="primary.500"
-                fontWeight="500">{`Borrower's Name`}</Th>
-              <Th textTransform="initial"
-                color="primary.500"
-                fontWeight="500">Vendor</Th>
-              <Th textTransform="initial"
-                color="primary.500"
-                fontWeight="500">Amount</Th>
-              <Th textTransform="initial"
-                color="primary.500"
-                fontWeight="500">Credit Score</Th>
-              <Th textTransform="initial"
-                color="primary.500"
-                fontWeight="500">Status</Th>
-              <Th textTransform="initial"
-                color="primary.500"
-                fontWeight="500">Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody bg={"white"}>
-            {table_data.map((item, index) => (
-              <Tr key={index} className="border-b border-b-slate-400 text-xs">
-                <Td className="py-2">
-                  <p>{item?.id}</p>
-                  <p>{item?.date}</p>
-                </Td>
-                <Td className="py-2">
-                  {item?.borrower_name}
-                </Td>
-                <Td className="py-2">
-                  {item?.vendor}
-                </Td>
-                <Td className="py-2">{item?.amount}</Td>
-                <Td className="py-2">{item?.creditScore}</Td>
-                <Td>
-                  {index % 3 === 0 ? (
-                    <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
-                      • <span style={{ textTransform: 'capitalize' }}>  Assigned</span>
-                    </Badge>
-                  ) : index % 4 === 0 ? (
-                    <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
-                      • <span style={{ textTransform: 'capitalize' }}>Declined</span>
-                    </Badge>
-                  ) : (
-                    <Badge colorScheme={"orange"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'subtle'}>
-                      • <span style={{ textTransform: 'capitalize' }}>Pending</span>
-                    </Badge>
-                  )}
-                </Td>
-                <Td className="py-2">
-                  <Menu>
-                    <MenuButton as={Button} variant={'unstyled'} size={'sm'}  >
-                      <CiMenuKebab />
-                    </MenuButton>
-                    <MenuList>
-                      <MenuItem onClick={() => router.push('/lenders/loan-application/view')}>View Details</MenuItem>
-                      <MenuItem>Accept Loan Offer</MenuItem>
-                      <MenuItem>Decline Loan Offer</MenuItem>
-                    </MenuList>
-                  </Menu>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-        <Pagination />
-      </TableContainer>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
-
-{/* <Badge colorScheme='green'>Success</Badge>
-  <Badge colorScheme='red'>Removed</Badge>
-  <Badge colorScheme='purple'>New</Badge> */}
-
-export const table_data = [
-  {
-    id: "10MG-001 - 2024",
-    date: "Aug 21, 2024",
-    borrower_name: "Medlife Hospital",
-    vendor: "HealPro Inc.",
-    amount: "₦1, 250,000",
-    creditScore: "720(Good)",
-    status: "Pending",
-  },
-  {
-    id: "10MG-001 - 2024",
-    date: "Aug 21, 2024",
-    borrower_name: "Medlife Hospital",
-    vendor: "HealPro Inc.",
-    amount: "₦1, 250,000",
-    creditScore: "720(Good)",
-    status: "Pending",
-  },
-  {
-    id: "10MG-001 - 2024",
-    date: "Aug 21, 2024",
-    borrower_name: "Medlife Hospital",
-    vendor: "HealPro Inc.",
-    amount: "₦1, 250,000",
-    creditScore: "720(Good)",
-    status: "Pending",
-  },
-  {
-    id: "10MG-001 - 2024",
-    date: "Aug 21, 2024",
-    borrower_name: "Medlife Hospital",
-    vendor: "HealPro Inc.",
-    amount: "₦1, 250,000",
-    creditScore: "720(Good)",
-    status: "Pending",
-  },
-  {
-    id: "10MG-001 - 2024",
-    date: "Aug 21, 2024",
-    borrower_name: "Medlife Hospital",
-    vendor: "HealPro Inc.",
-    amount: "₦1, 250,000",
-    creditScore: "720(Good)",
-    status: "Pending",
-  },
-  {
-    id: "10MG-001 - 2024",
-    date: "Aug 21, 2024",
-    borrower_name: "Medlife Hospital",
-    vendor: "HealPro Inc.",
-    amount: "₦1, 250,000",
-    creditScore: "720(Good)",
-    status: "Pending",
-  },
-]

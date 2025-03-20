@@ -345,24 +345,25 @@ const SystemConfiguration = () => {
                     height={400}
                     className="object-cover rounded-md h-[140px] w-full mix-blend-darken"
                   />
-                  <Flex 
-                  gap={2}
-                  bg={"white"}
-                  p={1}
-                  rounded={"md"}
-                  pos={"absolute"}
-                  right={3}
-                  top={2}
-                  >
-                    {/* <PiNotePencil 
-                    cursor={"pointer"}
-                    onClick={() => {
-                      onSelectImgToEdit(image.imageUrl);
-                    }}
-                    className="w-4 h-auto" 
-                    /> */}
-                    {
-                      storeImages?.data?.length > 1 &&
+                  {
+                    (storeImages?.data?.length > 1 || imageSrcs?.length > 0) &&
+                    <Flex 
+                    gap={2}
+                    bg={"white"}
+                    p={1}
+                    rounded={"md"}
+                    pos={"absolute"}
+                    right={3}
+                    top={2}
+                    >
+                      {/* <PiNotePencil 
+                      cursor={"pointer"}
+                      onClick={() => {
+                        onSelectImgToEdit(image.imageUrl);
+                      }}
+                      className="w-4 h-auto" 
+                      /> */}
+                      
                       <TrashIcon 
                       cursor={"pointer"}
                       onClick={() => {
@@ -371,8 +372,8 @@ const SystemConfiguration = () => {
                       }}
                       className="w-4 h-auto text-red-600"
                       />
-                    }
-                  </Flex>
+                    </Flex>
+                  }
                 </Center>
               </Flex>
               ))
