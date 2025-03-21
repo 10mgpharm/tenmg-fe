@@ -35,7 +35,12 @@ export default function Page() {
     }
 
     if (userData?.user?.token) getUnreviewedProducts(userData?.user?.token);
+
+    // return setLoading(false)
   }, [userData?.user?.token])
+
+  // console.log("unreviewedProd", unreviewedProd)
+  // console.log("loading", loading)
 
 
   return (

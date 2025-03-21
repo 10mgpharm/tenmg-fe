@@ -1,7 +1,7 @@
 import { classNames } from "@/utils";
 import Image from "next/image";
 
-const OverviewCard = ({
+export const OverviewCard = ({
   title,
   value,
   fromColor,
@@ -17,7 +17,7 @@ const OverviewCard = ({
   return (
     <div
       className={classNames(
-        `bg-gradient-to-r ${fromColor} ${toColor} rounded-lg relative`
+        `bg-gradient-to-r ${fromColor} ${toColor} rounded-lg relative overflow-hidden`
       )}
     >
       <div className="flex items-center justify-between py-8 sm:py-12  lg:py-14 px-6">
@@ -36,5 +36,3 @@ const OverviewCard = ({
     </div>
   );
 };
-
-export default OverviewCard;

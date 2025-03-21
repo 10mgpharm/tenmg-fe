@@ -1,8 +1,10 @@
 "use client";
 
+import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 import {
-  Checkbox,
+  Flex,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -10,9 +12,9 @@ import {
   Th,
   Thead,
   Tr,
-  useDisclosure,
 } from "@chakra-ui/react";
 import {
+  ColumnDef,
   ColumnOrderState,
   RowSelectionState,
   SortingState,
@@ -21,61 +23,38 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
-import { ColumsFN } from "./pw-columns/table";
-import TransactionDetails from "./TransactionDetail";
-import InitiatePayout from "./InitiatePayout";
-import { ColumsCompletedFN } from "./pw-columns/CompletedTable";
-import { ColumsHistoryFN } from "./pw-columns/HistoryTable";
-import { Awaiting_columnFn } from "./lw-columns/awaitting_payout_column";
-import { Completed_ColumnFN } from "./lw-columns/completed-payout_column";
-import { History_ColumnFN } from "./lw-columns/history_column";
-import Pagination from "../../products/_components/Pagination";
+import { Dispatch, SetStateAction, useState } from "react";
 
-const WalletTable = ({
+const DataTable = <T extends object>({
   data,
-  type,
-  walletType,
+  column,
+  hasPagination,
+  metaData,
+  setPageCount,
+  isLoading,
 }: {
-  data: any;
-  type: string;
-  walletType: "product_wallet" | "loan_wallet";
+  data: T[];
+  column: ColumnDef<T>[];
+  hasPagination: boolean;
+  metaData?: {
+    links: any;
+    prevPageUrl: string | null;
+    nextPageUrl: string | null;
+    currentPage: number;
+    firstPageUrl: any;
+    lastPageUrl: any;
+  };
+  setPageCount?: Dispatch<SetStateAction<number>>;
+  isLoading: boolean;
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenPayout,
-    onOpen: onOpenPayout,
-    onClose: onClosePayout,
-  } = useDisclosure();
-
-  // Get selected column
-  const getSelectColumn = () => {
-    if (walletType === "product_wallet") {
-      return type === "completed"
-        ? ColumsCompletedFN(onOpen, onOpenPayout)
-        : type === "history"
-        ? ColumsHistoryFN(onOpen, onOpenPayout)
-        : ColumsFN(onOpen, onOpenPayout);
-    }
-
-    if (walletType === "loan_wallet") {
-      return type === "completed"
-        ? Completed_ColumnFN(onOpen, onOpenPayout)
-        : type === "history"
-        ? History_ColumnFN(onOpen, onOpenPayout)
-        : Awaiting_columnFn(onOpen, onOpenPayout);
-    }
-  };
-
-  // table
   const table = useReactTable({
     data: data,
-    columns: getSelectColumn(),
+    columns: column,
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -90,6 +69,14 @@ const WalletTable = ({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  if (isLoading) {
+    return (
+      <Flex justify="center" align="center" height="200px">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
 
   return (
     <div>
@@ -133,13 +120,13 @@ const WalletTable = ({
             </Tbody>
           </Table>
 
-          {/* <Pagination meta={} setPageCount={() => {}} /> */}
+          {hasPagination && metaData && setPageCount && (
+            <Pagination {...metaData} setPageCount={setPageCount} />
+          )}
         </TableContainer>
       )}
-      <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
-      <InitiatePayout isOpen={isOpenPayout} onClose={onClosePayout} />
     </div>
   );
 };
 
-export default WalletTable;
+export default DataTable;
