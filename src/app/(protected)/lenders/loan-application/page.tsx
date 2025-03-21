@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import {
   LenderDashboardData,
   LoanApplicationDataResponse,
+  LoanStats,
   NextAuthUserSession,
 } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
@@ -41,9 +42,7 @@ export default function LoanApplicationPage() {
 
   const [loading, setLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
-  const [lenderData, setLenderData] = useState<LenderDashboardData | null>(
-    null
-  );
+  const [lenderData, setLenderData] = useState<LoanStats | null>(null);
   const [loanData, setLoanData] = useState<LoanApplicationDataResponse | null>(
     null
   );
@@ -57,7 +56,7 @@ export default function LoanApplicationPage() {
     startTransition(async () => {
       try {
         const response = await requestClient({ token: sessionToken }).get(
-          "/lender/dashboard"
+          "/lender/loan-applications/loan-stats"
         );
         if (response.status === 200) {
           setLenderData(response.data.data);
@@ -75,7 +74,7 @@ export default function LoanApplicationPage() {
     startTransition(async () => {
       try {
         const response = await requestClient({ token: sessionToken }).get(
-          "/lender/loan-application"
+          "/lender/loan-applications"
         );
         if (response.status === 200) {
           setLoanData(response.data.data);
@@ -102,28 +101,28 @@ export default function LoanApplicationPage() {
   const overviewData: OverviewCardData[] = [
     {
       title: "Total Loan Applications",
-      value: loanData?.data?.length || "0",
+      value: lenderData?.totalApplications || "0",
       fromColor: "from-[#53389E]",
       toColor: "to-[#7F56D9]",
       image: totalPattern,
     },
     {
       title: "Pending Applications",
-      value: lenderData?.pendingRequests || "0",
+      value: lenderData?.pendingApplications || "0",
       fromColor: "from-[#DC6803]",
       toColor: "to-[#DC6803]",
       image: orderPattern,
     },
     {
       title: "Approved Applications",
-      value: lenderData?.loanApprovalThisMonth || "0",
+      value: lenderData?.successfulApplications || "0",
       fromColor: "from-[#3E4784]",
       toColor: "to-[#3E4784]",
       image: productPattern,
     },
     {
       title: "Disbursed Amount",
-      value: lenderData?.interestEarned || "0",
+      value: "0",
       fromColor: "from-[#E31B54]",
       toColor: "to-[#E31B54]",
       image: productPattern,
@@ -137,7 +136,9 @@ export default function LoanApplicationPage() {
         <div className="m-5">
           <h3 className="font-semibold text-xl my-4">Loan Application</h3>
 
-          <OverviewCards overviewData={overviewData} />
+          <div className="grid grid-cols-4 gap-4 mt-5">
+            <OverviewCards overviewData={overviewData} />
+          </div>
           <SearchFilter
             value={globalFilter}
             onSearchChange={(e) => setGlobalFilter(e.target.value)}

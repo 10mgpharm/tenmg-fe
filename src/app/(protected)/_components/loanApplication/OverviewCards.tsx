@@ -3,7 +3,7 @@ import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard"
 
 const OverviewCards = ({ overviewData }) => {
   return (
-    <div className="grid grid-cols-4 gap-4 mt-5">
+    <>
       {overviewData.map((card, idx) => (
         <OverviewCard
           key={idx}
@@ -14,7 +14,7 @@ const OverviewCards = ({ overviewData }) => {
           image={card.image}
         />
       ))}
-    </div>
+    </>
   );
 };
 

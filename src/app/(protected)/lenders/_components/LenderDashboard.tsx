@@ -169,6 +169,18 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     [sessionToken, fetchLenderData]
   );
 
+  const wallet = lenderData?.wallets;
+
+  const totalBalance = wallet
+    ?.reduce((sum, item) => {
+      return sum + parseFloat(item?.currentBalance);
+    }, 0)
+    .toFixed(2);
+
+  const investmentWalletBalance =
+    wallet?.find((item) => item.type === "investment")?.currentBalance ||
+    "0.00";
+
   return (
     <>
       {/* MAIN CONTENT */}
@@ -183,7 +195,9 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 <div className="w-72 shrink-0">
                   <OverviewCard
                     title="Total Balance"
-                    value="₦0"
+                    value={`₦${
+                      totalBalance && formatAmountString(totalBalance)
+                    }`}
                     icon=""
                     fromColor="from-[#1A70B8]"
                     toColor="to-[#1A70B8]"
@@ -193,7 +207,10 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 <div className="w-72 shrink-0">
                   <OverviewCard
                     title="Investment Wallet"
-                    value="₦0"
+                    value={`₦${
+                      investmentWalletBalance &&
+                      formatAmountString(investmentWalletBalance)
+                    }`}
                     icon=""
                     fromColor="from-[#D42E2F]"
                     toColor="to-[#D42E2F]"
@@ -207,7 +224,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
             <div className="hidden md:grid grid-cols-2 gap-5">
               <OverviewCard
                 title="Total Balance"
-                value="₦0"
+                value={`₦${totalBalance && formatAmountString(totalBalance)}`}
                 fromColor="from-[#1A70B8]"
                 toColor="to-[#1A70B8]"
                 icon=""
@@ -215,7 +232,10 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
               />
               <OverviewCard
                 title="Investment Wallet"
-                value="₦0"
+                value={`₦${
+                  investmentWalletBalance &&
+                  formatAmountString(investmentWalletBalance)
+                }`}
                 icon=""
                 fromColor="from-[#D42E2F]"
                 toColor="to-[#D42E2F]"

@@ -3,7 +3,7 @@ import { classNames } from "@/utils"
 
 const OverviewCard = (
     {title, value, icon, fromColor, toColor, image}: 
-    {title: string, value: string, icon?: any, fromColor: string, toColor: string, image: string}
+    {title: string, value: string, icon?: any, fromColor: string, toColor: string, image?: string}
 ) => {
   return (
     <div className={classNames(`bg-gradient-to-r ${fromColor} ${toColor} rounded-xl relative`)}>
