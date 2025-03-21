@@ -653,7 +653,13 @@ export interface LenderDashboardData {
   pendingRequests: number;
   type: string;
   loanRequest: LoanRequest[];
-  wallet: Wallet[]; 
+  wallets: Wallets[]; 
+}
+
+export interface LoanStats {
+  totalApplications: number;
+  successfulApplications: number;
+  pendingApplications: number;
 }
 
 export interface LoanRequest {
@@ -668,7 +674,7 @@ export interface LoanRequest {
   status: string,
 }
 
-export interface Wallet {
+export interface Wallets {
   lenderId: string
   type: string,
   currentBalance: string,

@@ -1,12 +1,45 @@
 "use client";
 import { Badge, Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState, useTransition, useEffect, useCallback } from "react";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
 import { BiCaretLeft } from "react-icons/bi";
 import { PiCaretLeftBold } from "react-icons/pi";
+import { ApplicationDto, NextAuthUserSession } from "@/types";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
-export default function LoanViewPage() {
+export default function LoanViewPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+
+  const [loanData, setLoanData] = useState<ApplicationDto | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const sessionToken = sessionData?.user?.token;
+
+  const fetchLoanDetails = useCallback(() => {
+    startTransition(async () => {
+      try {
+        const response = await requestClient({ token: sessionToken }).get(
+          `/lender/loan-applications/view/${params.id}`
+        );
+        if (response.status === 200) {
+          setLoanData(response.data.data);
+        }
+      } catch (error: any) {
+        toast.error("Error: ", handleServerErrorMessage(error));
+        console.error(error);
+      }
+    });
+  }, [sessionToken]);
+
+  useEffect(() => {
+    if (!sessionToken) return;
+    fetchLoanDetails();
+  }, [fetchLoanDetails, sessionToken]);
+
   return (
     <div className="mx-10 my-4">
       <Button
@@ -19,7 +52,8 @@ export default function LoanViewPage() {
       >
         Back
       </Button>
-      {true ? (
+
+  
         <>
           <div className="flex items-center justify-between w-full">
             <div>
@@ -78,8 +112,9 @@ export default function LoanViewPage() {
             </div>
           </div>
         </>
-      ) : (
-        <>
+
+    
+        {/* <>
           <div className="flex items-center justify-between w-full">
             <div>
               <h4 className="font-semibold">Application Details</h4>
@@ -144,8 +179,8 @@ export default function LoanViewPage() {
               </div>
             </div>
           </div>
-        </>
-      )}
+        </> */}
+   
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-10">
         <div className="rounded-t-xl overflow-hidden">

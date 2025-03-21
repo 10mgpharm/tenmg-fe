@@ -38,7 +38,7 @@ export interface OverviewCardData {
   image: any;
 }
 
-// TODO: Add this to types 
+// TODO: Add this to types
 
 const overviewData: OverviewCardData[] = [
   {
@@ -78,7 +78,9 @@ const LoanManagement = () => {
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Loan Management</h3>
-      <OverviewCards overviewData={overviewData} />
+      <div className="grid grid-cols-4 gap-4 mt-5">
+        <OverviewCards overviewData={overviewData} />
+      </div>
       <SearchFilter
         value={globalFilter}
         onSearchChange={(e) => setGlobalFilter(e.target.value)}
