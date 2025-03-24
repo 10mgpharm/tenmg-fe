@@ -3,15 +3,16 @@ import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
 
 import SuccessIcon from "@public/assets/images/money-success.png";
 import StatusBadge from "@/app/(protected)/_components/StatusBadge";
+import { formatAmount } from "@/utils/formatAmount";
 
-const CongratsModal = ({ status }: { status?: string }) => {
+const CongratsModal = ({ status, amount }: { status?: string; amount?: number }) => {
   return (
     <Box>
       <Stack spacing={4} align="center">
         <Image src={SuccessIcon.src} alt="Success" width={200} height={200} />
       </Stack>
       <Text color={status === "withdraw" ? "red.500" : "green.500"}  fontSize="4xl" fontWeight={700} mb={2}>
-        {status === "withdraw" ? "-" : "+"} $9000
+        {status === "withdraw" ? "-" : "+"} {amount ? formatAmount(amount) : "N9000"}
       </Text>
       <Text fontSize="sm" color="gray.600" fontWeight={400}>
         Tue, 10 Sept 2024, 19:40
