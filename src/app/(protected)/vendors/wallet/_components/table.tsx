@@ -51,6 +51,7 @@ const DataTable = <T extends object>({
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  // const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
     data: data,

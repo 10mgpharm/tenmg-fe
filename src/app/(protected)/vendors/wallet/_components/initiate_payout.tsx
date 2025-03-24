@@ -24,6 +24,22 @@ const InitiatePayout = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const handleAction = (actionType: "Discard" | "Pay") => {
+    if (actionType === "Discard") {
+      // write action fn
+
+      onClose();
+      return;
+    }
+
+    if (actionType === "Pay") {
+      // write action fn
+
+      onClose();
+      return;
+    }
+  };
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
       <DrawerOverlay />
@@ -42,10 +58,18 @@ const InitiatePayout = ({
             </FormControl>
             <HStack mt={5} justify={"end"}>
               <Flex gap={3}>
-                <Button w={"120px"} onClick={onClose} variant={"outline"}>
+                <Button
+                  w={"120px"}
+                  onClick={() => handleAction("Discard")}
+                  variant={"outline"}
+                >
                   Discard
                 </Button>
-                <Button w={"120px"} className="bg-primary-500 text-white">
+                <Button
+                  w={"120px"}
+                  className="bg-primary-500 text-white"
+                  onClick={() => handleAction("Pay")}
+                >
                   Pay Supplier
                 </Button>
               </Flex>
