@@ -5,14 +5,13 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ViewAll_Column(
-  walletType: "loan" | "product",
+export function Awaiting_column(
   setOpenDetails: (value: boolean) => void,
   setOpenPayout: (value: boolean) => void,
   setOpenCompleted: (value: boolean) => void
 ) {
   return [
-    columnHelper.accessor("name", {
+    columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
       cell: (info) => {
         const serialNumber = info?.row?.index + 1;
@@ -24,11 +23,7 @@ export function ViewAll_Column(
       },
     }),
     columnHelper.accessor("name", {
-      header: ({ column }) => (
-        <p className="pl-6">
-          {walletType === "loan" ? "Vendors" : "Suppliers"} Name
-        </p>
-      ),
+      header: ({ column }) => <p className="pl-6">Vendors Name</p>,
       cell: (info) => {
         return (
           <div className="pl-6">
@@ -41,7 +36,7 @@ export function ViewAll_Column(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.amount}</p>
+          <p className="font-medium">₦{info.row.original?.amount}</p>
         </div>
       ),
     }),
@@ -53,6 +48,7 @@ export function ViewAll_Column(
         </div>
       ),
     }),
+
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Status</p>,
       cell: (info) => {
@@ -77,7 +73,7 @@ export function ViewAll_Column(
       },
     }),
 
-    columnHelper.accessor("status", {
+    columnHelper.accessor("type", {
       header: ({ column }) => <p className="text-center">Actions</p>,
       cell: (info) => {
         return (
@@ -90,7 +86,7 @@ export function ViewAll_Column(
                 {info?.row?.original?.status === "Pending" ? (
                   <>
                     <MenuItem onClick={() => setOpenCompleted(true)}>
-                      Mark transaction as completed
+                      Mark Transaction As Completed
                     </MenuItem>
                     <MenuItem onClick={() => setOpenPayout(true)}>
                       Initiate Payout
@@ -99,7 +95,7 @@ export function ViewAll_Column(
                 ) : (
                   <>
                     <MenuItem onClick={() => setOpenDetails(true)}>
-                      View transaction details
+                      View Transaction Details
                     </MenuItem>
                   </>
                 )}

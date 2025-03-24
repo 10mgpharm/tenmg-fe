@@ -30,7 +30,7 @@ const TransactionDetails = ({
         <DrawerHeader className="capitalize">Transaction Details</DrawerHeader>
         <DrawerBody>
           <Text color={"gray.900"} fontWeight={600} fontSize={"1.4rem"}>
-            $9000
+            ₦9000
           </Text>
           <Text fontSize={"13px"} color={"gray.500"}>
             Tue, 10 Sept 2024, 19:40
