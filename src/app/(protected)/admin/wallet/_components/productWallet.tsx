@@ -60,7 +60,7 @@ const ProductWallet = ({ filterDate }: { filterDate: string }) => {
           className="py-2 px-4 rounded-md border text-sm font-medium text-gray-600 border-gray-300"
           href={"/admin/wallet/product-wallet"}
         >
-          View all
+          View All
         </Link>
       </HStack>
 
@@ -71,8 +71,8 @@ const ProductWallet = ({ filterDate }: { filterDate: string }) => {
             className="rounded-lg text-gray-700 bg-gray-100"
           >
             <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Awaiting Payout</Text>
-              <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
+              <Text className="text-nowrap">Awaiting Payout </Text>
+              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
                 {awaiting?.length}
               </p>
             </div>
@@ -96,7 +96,7 @@ const ProductWallet = ({ filterDate }: { filterDate: string }) => {
           >
             <div className="flex items-center gap-3">
               <Text className="text-nowrap">Transaction History</Text>
-              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
+              <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
                 {history?.length}
               </p>
             </div>
@@ -111,14 +111,14 @@ const ProductWallet = ({ filterDate }: { filterDate: string }) => {
               walletType="product_wallet"
             />
           </TabPanel>
-          <TabPanel>
+          <TabPanel px={0}>
             <WalletTable
               data={completed}
               type="completed"
               walletType="product_wallet"
             />
           </TabPanel>
-          <TabPanel>
+          <TabPanel px={0}>
             <WalletTable
               data={history}
               type="history"

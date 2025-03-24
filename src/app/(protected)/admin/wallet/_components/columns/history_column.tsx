@@ -5,9 +5,10 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsHistoryFN(
+export function History_ColumnFN(
+  walletType: "product_wallet" | "loan_wallet",
   onOpen: () => void,
-  onOpenDeactivate: () => void
+  onOpenPayout: () => void
 ) {
   return [
     columnHelper.accessor("name", {
@@ -22,7 +23,11 @@ export function ColumsHistoryFN(
       },
     }),
     columnHelper.accessor("name", {
-      header: ({ column }) => <p className="pl-6">Supplier Name</p>,
+      header: ({ column }) => (
+        <p className="pl-6">
+          {walletType === "loan_wallet" ? "Vendor's Name" : "Supplier's Name"}
+        </p>
+      ),
       cell: (info) => {
         return (
           <div className="pl-6">
@@ -31,11 +36,21 @@ export function ColumsHistoryFN(
         );
       },
     }),
+    columnHelper.accessor("transaction_type", {
+      header: ({ column }) => <p className="">Transaction Type</p>,
+      cell: (info) => (
+        <div className="">
+          <p className="font-medium capitalize">
+            {info.row.original?.transaction_type}
+          </p>
+        </div>
+      ),
+    }),
     columnHelper.accessor("amount", {
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.amount}</p>
+          <p className="font-medium">₦{info.row.original?.amount}</p>
         </div>
       ),
     }),
@@ -47,6 +62,7 @@ export function ColumsHistoryFN(
         </div>
       ),
     }),
+
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Status</p>,
       cell: (info) => {
@@ -70,6 +86,7 @@ export function ColumsHistoryFN(
         );
       },
     }),
+
     columnHelper.accessor("status", {
       header: ({ column }) => <p className="text-center">Actions</p>,
       cell: (info) => {
@@ -83,14 +100,14 @@ export function ColumsHistoryFN(
                 {info?.row?.original?.status === "Pending" ? (
                   <>
                     <MenuItem onClick={() => {}}>
-                      Mark transaction as completed
+                      Mark Transaction As Completed
                     </MenuItem>
-                    <MenuItem onClick={() => {}}>Initiate Payout</MenuItem>
+                    <MenuItem onClick={onOpenPayout}>Initiate Payout</MenuItem>
                   </>
                 ) : (
                   <>
                     <MenuItem onClick={() => onOpen()}>
-                      View transaction details
+                      View Transaction Details
                     </MenuItem>
                   </>
                 )}

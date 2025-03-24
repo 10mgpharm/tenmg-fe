@@ -49,7 +49,7 @@ const InitiatePayout = ({
         <DrawerBody>
           <form>
             <FormControl>
-              <FormLabel>Supplier Name</FormLabel>
+              <FormLabel>Vendor Name</FormLabel>
               <Input value={"Chidi Victor Fubara"} />
             </FormControl>
             <FormControl mt={5}>
@@ -70,7 +70,7 @@ const InitiatePayout = ({
                   className="bg-primary-500 text-white"
                   onClick={() => handleAction("Pay")}
                 >
-                  Pay Supplier
+                  Pay Vendor
                 </Button>
               </Flex>
             </HStack>

@@ -5,9 +5,10 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsCompletedFN(
+export function Awaiting_columnFn(
+  walletType: "product_wallet" | "loan_wallet",
   onOpen: () => void,
-  onOpenDeactivate: () => void
+  onOpenPayout: () => void
 ) {
   return [
     columnHelper.accessor("name", {
@@ -22,7 +23,11 @@ export function ColumsCompletedFN(
       },
     }),
     columnHelper.accessor("name", {
-      header: ({ column }) => <p className="pl-6">Supplier Name</p>,
+      header: ({ column }) => (
+        <p className="pl-6">
+          {walletType === "loan_wallet" ? "Vendor's Name" : "Supplier's Name"}
+        </p>
+      ),
       cell: (info) => {
         return (
           <div className="pl-6">
@@ -45,7 +50,7 @@ export function ColumsCompletedFN(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.amount}</p>
+          <p className="font-medium">₦{info.row.original?.amount}</p>
         </div>
       ),
     }),
@@ -93,14 +98,14 @@ export function ColumsCompletedFN(
                 {info?.row?.original?.status === "Pending" ? (
                   <>
                     <MenuItem onClick={() => {}}>
-                      Mark transaction as completed
+                      Mark Transaction As Completed
                     </MenuItem>
-                    <MenuItem onClick={() => {}}>Initiate Payout</MenuItem>
+                    <MenuItem onClick={onOpenPayout}>Initiate Payout</MenuItem>
                   </>
                 ) : (
                   <>
                     <MenuItem onClick={() => onOpen()}>
-                      View transaction details
+                      View Transaction Details
                     </MenuItem>
                   </>
                 )}
