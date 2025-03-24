@@ -36,7 +36,7 @@ export function Completed_column(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.amount}</p>
+          <p className="font-medium">₦{info.row.original?.amount}</p>
         </div>
       ),
     }),
