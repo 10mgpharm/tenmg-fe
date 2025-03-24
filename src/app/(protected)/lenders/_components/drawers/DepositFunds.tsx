@@ -100,6 +100,7 @@ const DepositFunds = ({ isOpen, onOpen, onClose }: DepositFundsProps) => {
     formState: { errors },
     handleSubmit,
     watch,
+    reset,
     getValues,
   } = useForm<IFormInput>({ mode: "onChange" });
 
@@ -139,7 +140,7 @@ const DepositFunds = ({ isOpen, onOpen, onClose }: DepositFundsProps) => {
   const cancelOrder = async (ref) => {
     try {
       const response = await requestClient({ token: userToken }).get(
-        `/lender/deposit//${ref}`
+        `/lender/deposit/cancel/${ref}`
       );
       if (response?.status === 200) {
         toast.success("Deposit Funds cancelled successfully...!");
@@ -312,7 +313,7 @@ const DepositFunds = ({ isOpen, onOpen, onClose }: DepositFundsProps) => {
         </>
       )} */}
 
-      {step === 2 && <CongratsModal />}
+      {step === 2 && <CongratsModal amount={getValues().amount} />}
     </OperationLayout>
   );
 };
