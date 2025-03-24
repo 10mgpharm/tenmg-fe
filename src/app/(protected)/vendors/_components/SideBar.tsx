@@ -27,7 +27,6 @@ import Link from "next/link";
 import { BiMessageDetail } from "react-icons/bi";
 import { LuWallet } from "react-icons/lu";
 
-
 const navSections = [
   {
     title: "NAVIGATION",
@@ -39,8 +38,8 @@ const navSections = [
         icon: SlPeople,
       },
       {
-        name: "Wallets",
-        href: "/vendors/wallets",
+        name: "Wallet",
+        href: "/vendors/wallet",
         icon: LuWallet,
       },
     ],
