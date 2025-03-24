@@ -225,7 +225,6 @@ export default function Page() {
       </div>
       <div className="p-5 rounded-lg bg-white/70 border border-slate-200">
         <div className="space-y-5 w-full flex justify-between p-5 ">
-          {/* <div className='space-y-5'> */}
           <div>
             <h3 className="font-semibold text-lg">Password</h3>
             <Text fontSize={"14px"} color={"gray.500"}>
@@ -240,7 +239,6 @@ export default function Page() {
           >
             Change Password
           </Button>
-          {/* </div> */}
         </div>
 
         <Divider my={4} />
