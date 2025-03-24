@@ -663,24 +663,25 @@ export interface LoanStats {
 }
 
 export interface LoanRequest {
-  id: number,
-  identifier: string
-  customer: CustomerData,
-  requestedAmount: string,
-  interestAmount: string,
-  totalAmount: string,
-  interestRate: number,
-  durationInMonths: string,
-  status: string,
+  id: number;
+  identifier: string;
+  customer: CustomerData;
+  business: any;
+  requestedAmount: string;
+  interestAmount: string;
+  totalAmount: string;
+  interestRate: number;
+  durationInMonths: string;
+  status: string;
 }
 
 export interface Wallets {
-  lenderId: string
-  type: string,
-  currentBalance: string,
-  prevBalance: string,
-  lastTransactionRef: string | null,
-  updatedAt: string,
+  lenderId: string;
+  type: string;
+  currentBalance: string;
+  prevBalance: string;
+  lastTransactionRef: string | null;
+  updatedAt: string;
 }
 
 export interface LoanApplicationDataResponse {

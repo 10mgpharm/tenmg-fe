@@ -39,7 +39,7 @@ export default function LoanAutoAccept({
     try {
       await requestClient({
         token: sessionData?.user?.token,
-      }).patch("/lender/settings/update-auto-accept-status", data);
+      }).patch("/lender/settings/update-auto-accept-status", {status: false});
 
       toast.success("Loan preferences updated successfully!");
     } catch (error: any) {

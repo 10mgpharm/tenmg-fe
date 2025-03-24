@@ -520,7 +520,7 @@ const LoanDetails = ({
               <Flex gap={1} alignItems="center" mb={2}>
                 <Text>Loan Amount:</Text>
                 <Text fontWeight={700} color="gray.900">
-                  ₦{formatAmountString(data?.totalAmount)}
+                  ₦{formatAmountString(data?.requestedAmount)}
                 </Text>
               </Flex>
 
