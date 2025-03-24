@@ -145,11 +145,18 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     }
   }, [sessionData, fetchLenderData]);
 
+  const handleView = useCallback(
+    async (id: string) => {
+      router.push(`/lenders/loan-application/view/${id}`);
+    },
+    [router]
+  );
+
   const handleAccept = useCallback(
     async (id: string) => {
       try {
         const response = await requestClient({ token: sessionToken }).post(
-          "/lender/loan-application",
+          "/lender/loan-applications",
           {
             applicationId: id,
             action: "approve",
@@ -163,6 +170,30 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         }
       } catch (error: any) {
         toast.error("Error approving loan application");
+        console.error(error);
+      }
+    },
+    [sessionToken, fetchLenderData]
+  );
+
+  const handleIgnore = useCallback(
+    async (id: string) => {
+      try {
+        const response = await requestClient({ token: sessionToken }).post(
+          "/lender/loan-applications",
+          {
+            applicationId: id,
+            action: "decline",
+          }
+        );
+        if (response.status === 200) {
+          toast.success("Loan application declined successfully");
+          fetchLenderData();
+        } else {
+          toast.error("Error declining loan application");
+        }
+      } catch (error: any) {
+        toast.error("Error declining loan application");
         console.error(error);
       }
     },
@@ -408,6 +439,8 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                       key={request.id}
                       data={request}
                       handleAccept={handleAccept}
+                      handleIgnore={handleIgnore}
+                      handleView={handleView}
                     />
                   ))
                 )}
@@ -495,9 +528,13 @@ export default LenderDashboard;
 const LoanDetails = ({
   data,
   handleAccept,
+  handleView,
+  handleIgnore,
 }: {
   data: LoanRequest;
   handleAccept: (id: string) => void;
+  handleView: (id: string) => void;
+  handleIgnore: (id: string) => void;
 }) => {
   return (
     <Card boxShadow="none">
@@ -512,7 +549,11 @@ const LoanDetails = ({
           <Box py={1} fontWeight={500} color="gray.600">
             <Box display="flex" justifyContent="flex-end" p={0}>
               <Tooltip label="Ignore" hasArrow>
-                <CloseButton color="red.600" size="sm" />
+                <CloseButton
+                  color="red.600"
+                  size="sm"
+                  onClick={() => handleIgnore(data?.identifier)}
+                />
               </Tooltip>
             </Box>
 
@@ -542,7 +583,12 @@ const LoanDetails = ({
             >
               Accept
             </Button>
-            <Button variant="ghost" size="sm" colorScheme="gray">
+            <Button
+              variant="ghost"
+              size="sm"
+              colorScheme="gray"
+              onClick={() => handleView(data?.identifier)}
+            >
               View
             </Button>
           </Flex>

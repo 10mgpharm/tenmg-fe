@@ -119,7 +119,7 @@ export function ColumnsLoanFN() {
             <BsThreeDotsVertical className="w-5 h-auto" />
           </MenuButton>
           <MenuList>
-            <MenuItem mb={2}>
+            <MenuItem >
               {" "}
               <Link
                 href={`/lenders/loan-application/view/${info.row.original?.identifier}`}
@@ -128,8 +128,12 @@ export function ColumnsLoanFN() {
                 View
               </Link>
             </MenuItem>
-            <MenuItem mb={2}>Approve</MenuItem>
-            <MenuItem color="red.500">Ignore</MenuItem>{" "}
+            {info?.row?.original?.status === "INITIATED" && (
+              <>
+                <MenuItem mt={2} mb={2}>Approve</MenuItem>
+                <MenuItem color="red.500">Ignore</MenuItem>{" "}
+              </>
+            )}
           </MenuList>
         </Menu>
       ),
