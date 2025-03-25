@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Flex, Image, Text, Button } from "@chakra-ui/react";
 import useEmblaCarousel from "embla-carousel-react";
 import carousel1 from "@public/assets/images/carousel1.png";
@@ -12,26 +12,42 @@ import {
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import { cn } from "@/lib/utils";
 
-const slides = [
-  {
-    id: 1,
-    image: carousel1,
-    title: "Your pathway to wellness begins here.",
-  },
-  {
-    id: 2,
-    image: carousel2,
-    title: "Experience top-notch healthcare services.",
-  },
-  {
-    id: 3,
-    image: carousel3,
-    title: "Find all your prescriptions in one place.",
-  },
-];
+// const slides = [
+//   {
+//     id: 1,
+//     image: carousel1,
+//     title: "Your pathway to wellness begins here.",
+//   },
+//   {
+//     id: 2,
+//     image: carousel2,
+//     title: "Experience top-notch healthcare services.",
+//   },
+//   {
+//     id: 3,
+//     image: carousel3,
+//     title: "Find all your prescriptions in one place.",
+//   },
+// ];
+
+type SlideType = {
+  id: number;
+  imageUrl: string;
+  title: string;
+  description: string;
+};
 
 const Carousel: React.FC = () => {
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+  const [isLoading, setIsLoading] = useState(false);
+  const [slides, setSlides] = useState<SlideType[]>([]);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   const handleScroll = useCallback(
@@ -42,6 +58,25 @@ const Carousel: React.FC = () => {
     [emblaApi]
   );
 
+  const fetchStoreFrontCarouselImages = async () => {
+    setIsLoading(true);
+    try {
+      const response = await requestClient({
+        token: userData?.user?.token,
+      }).get("/storefront/images");
+      setSlides(response?.data?.data.data);
+    } catch (error) {
+      toast.error("Unable to fetch carousel images");
+      console.error("Unable to fetch carousel images", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStoreFrontCarouselImages();
+  }, []);
+
   return (
     <Box
       w="100%"
@@ -50,13 +85,14 @@ const Carousel: React.FC = () => {
       overflow="hidden"
       borderRadius="8px"
       position="relative"
+      className={cn(isLoading ? "bg-gray-200  animate-pulse" : "")}
     >
-      <Flex ref={emblaRef} className="embla">
-        <Flex className="embla__container">
-          {slides.map(({ id, image, title }) => (
+      <Flex ref={emblaRef} className="embla bg-green-500">
+        <Flex className="embla__container bg-red-500 !flex-1">
+          {slides.map(({ id, imageUrl, title, description }) => (
             <Box key={id} flex="0 0 100%" position="relative">
               <Image
-                src={image.src}
+                src={imageUrl}
                 alt={title}
                 w="100%"
                 h={{ base: "256px", md: "493px" }}
@@ -82,7 +118,7 @@ const Carousel: React.FC = () => {
                   maxWidth="calc(657px + 114px)"
                   pl={[10, 14, 28]}
                 >
-                  {title}
+                  {title ?? "Find all your prescriptions in one place."}
                 </Text>
               </Box>
             </Box>
