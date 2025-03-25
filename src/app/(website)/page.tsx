@@ -20,7 +20,6 @@ export default async function Page() {
       <Navbar />
       <Herosection />
       <Financepage />
-      {/* <FAQ/> */}
       <Testimonialsection />
       <Footer />
     </>
