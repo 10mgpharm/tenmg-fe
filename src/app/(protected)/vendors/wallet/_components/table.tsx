@@ -31,7 +31,7 @@ const DataTable = <T extends object>({
   hasPagination,
   metaData,
   setPageCount,
-  isLoading,
+  isLoading = false,
 }: {
   data: T[];
   column: ColumnDef<T>[];
@@ -45,7 +45,7 @@ const DataTable = <T extends object>({
     lastPageUrl: any;
   };
   setPageCount?: Dispatch<SetStateAction<number>>;
-  isLoading: boolean;
+  isLoading?: boolean;
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});

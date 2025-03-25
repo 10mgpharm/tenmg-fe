@@ -1,13 +1,15 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { classNames } from "@/utils";
+import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import Image from "next/image";
-import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
+export function Completed_ColumnFN(
+  walletType: "product_wallet" | "loan_wallet",
+  onOpen: () => void,
+  onOpenPayout: () => void
+) {
   return [
     columnHelper.accessor("name", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
@@ -21,28 +23,34 @@ export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
       },
     }),
     columnHelper.accessor("name", {
-      header: ({ column }) => <p>Name</p>,
+      header: ({ column }) => (
+        <p className="pl-6">
+          {walletType === "loan_wallet" ? "Vendor's Name" : "Supplier's Name"}
+        </p>
+      ),
       cell: (info) => {
         return (
-          <div>
+          <div className="pl-6">
             <p>{info?.row?.original?.name}</p>
           </div>
         );
       },
     }),
-    columnHelper.accessor("supplier_id", {
+    columnHelper.accessor("transaction_type", {
       header: ({ column }) => <p className="">Transaction Type</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.type}</p>
+          <p className="font-medium capitalize">
+            {info.row.original?.transaction_type}
+          </p>
         </div>
       ),
     }),
-    columnHelper.accessor("weight", {
+    columnHelper.accessor("amount", {
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.amount}</p>
+          <p className="font-medium">₦{info.row.original?.amount}</p>
         </div>
       ),
     }),
@@ -63,13 +71,14 @@ export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
               className={classNames(
                 info?.row?.original?.status === "Failed"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "Completed"
+                  : info?.row?.original?.status === "Completed" ||
+                    info?.row?.original?.status === "Successful"
                   ? "text-[#027A48] bg-[#ECFDF3]"
-                  : "text-yellow-500 bg-yellow-50",
-                " max-w-min p-1 px-2 rounded-2xl text-sm"
+                  : "text-orange-500 bg-orange-50",
+                " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
               )}
             >
-              <span className="w-3 h-3 rounded-full"></span>{" "}
+              <span className="rounded-full text-[1.2rem]">•</span>{" "}
               {info?.row?.original?.status}
             </p>
           </div>
@@ -77,7 +86,7 @@ export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
       },
     }),
     columnHelper.accessor("status", {
-      header: ({ column }) => <p>Actions</p>,
+      header: ({ column }) => <p className="text-center">Actions</p>,
       cell: (info) => {
         return (
           <Flex justify={"center"}>
@@ -86,33 +95,20 @@ export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
                 <BsThreeDotsVertical className="w-5 h-auto" />
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <Link href={`/admin/users/${info?.row?.original?.name}`}>
-                    View User
-                  </Link>
-                </MenuItem>
-                <MenuItem>Login as user</MenuItem>
-                {info?.row?.original?.status === "Suspended" ? (
-                  <MenuItem onClick={() => onOpenDeactivate()}>
-                    Unsuspend User
-                  </MenuItem>
-                ) : info?.row?.original?.status === "Active" ? (
-                  <MenuItem onClick={() => onOpenDeactivate()}>
-                    Suspend User
-                  </MenuItem>
+                {info?.row?.original?.status === "Pending" ? (
+                  <>
+                    <MenuItem onClick={() => {}}>
+                      Mark Transaction As Completed
+                    </MenuItem>
+                    <MenuItem onClick={onOpenPayout}>Initiate Payout</MenuItem>
+                  </>
                 ) : (
                   <>
-                    <MenuItem onClick={() => onOpenDeactivate()}>
-                      Approve
-                    </MenuItem>
-                    <MenuItem onClick={() => onOpenDeactivate()}>
-                      Disapprove
+                    <MenuItem onClick={() => onOpen()}>
+                      View Transaction Details
                     </MenuItem>
                   </>
                 )}
-                <MenuItem onClick={() => onOpen()} color="red.500">
-                  Delete
-                </MenuItem>
               </MenuList>
             </Menu>
           </Flex>

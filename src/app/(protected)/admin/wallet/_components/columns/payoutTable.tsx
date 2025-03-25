@@ -1,14 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { classNames } from "@/utils";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { classNames } from "@/utils";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import Image from "next/image";
+import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
-export function Completed_ColumnFN(
-  onOpen: () => void,
-  onOpenDeactivate: () => void
-) {
+export function ColumsUserFN(onOpen: () => void, onOpenDeactivate: () => void) {
   return [
     columnHelper.accessor("name", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
@@ -22,30 +21,28 @@ export function Completed_ColumnFN(
       },
     }),
     columnHelper.accessor("name", {
-      header: ({ column }) => <p className="pl-6">Vendors Name</p>,
+      header: ({ column }) => <p>Name</p>,
       cell: (info) => {
         return (
-          <div className="pl-6">
+          <div>
             <p>{info?.row?.original?.name}</p>
           </div>
         );
       },
     }),
-    columnHelper.accessor("transaction_type", {
+    columnHelper.accessor("supplier_id", {
       header: ({ column }) => <p className="">Transaction Type</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium capitalize">
-            {info.row.original?.transaction_type}
-          </p>
+          <p className="font-medium">{info.row.original?.type}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("amount", {
+    columnHelper.accessor("weight", {
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.amount}</p>
+          <p className="font-medium">₦{info.row.original?.amount}</p>
         </div>
       ),
     }),
@@ -81,7 +78,7 @@ export function Completed_ColumnFN(
       },
     }),
     columnHelper.accessor("status", {
-      header: ({ column }) => <p className="text-center">Actions</p>,
+      header: ({ column }) => <p>Actions</p>,
       cell: (info) => {
         return (
           <Flex justify={"center"}>
@@ -90,20 +87,33 @@ export function Completed_ColumnFN(
                 <BsThreeDotsVertical className="w-5 h-auto" />
               </MenuButton>
               <MenuList>
-                {info?.row?.original?.status === "Pending" ? (
-                  <>
-                    <MenuItem onClick={() => {}}>
-                      Mark transaction as completed
-                    </MenuItem>
-                    <MenuItem onClick={() => {}}>Initiate Payout</MenuItem>
-                  </>
+                <MenuItem>
+                  <Link href={`/admin/users/${info?.row?.original?.name}`}>
+                    View User
+                  </Link>
+                </MenuItem>
+                <MenuItem>Login as user</MenuItem>
+                {info?.row?.original?.status === "Suspended" ? (
+                  <MenuItem onClick={() => onOpenDeactivate()}>
+                    Unsuspend User
+                  </MenuItem>
+                ) : info?.row?.original?.status === "Active" ? (
+                  <MenuItem onClick={() => onOpenDeactivate()}>
+                    Suspend User
+                  </MenuItem>
                 ) : (
                   <>
-                    <MenuItem onClick={() => onOpen()}>
-                      View transaction details
+                    <MenuItem onClick={() => onOpenDeactivate()}>
+                      Approve
+                    </MenuItem>
+                    <MenuItem onClick={() => onOpenDeactivate()}>
+                      Disapprove
                     </MenuItem>
                   </>
                 )}
+                <MenuItem onClick={() => onOpen()} color="red.500">
+                  Delete
+                </MenuItem>
               </MenuList>
             </Menu>
           </Flex>

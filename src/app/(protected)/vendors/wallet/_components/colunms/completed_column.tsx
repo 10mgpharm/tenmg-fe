@@ -23,7 +23,7 @@ export function Completed_column(
       },
     }),
     columnHelper.accessor("name", {
-      header: ({ column }) => <p className="pl-6">Vendors Name</p>,
+      header: ({ column }) => <p className="pl-6">{"Vendor's Name"}</p>,
       cell: (info) => {
         return (
           <div className="pl-6">

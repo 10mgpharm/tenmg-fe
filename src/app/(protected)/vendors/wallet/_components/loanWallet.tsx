@@ -65,7 +65,7 @@ const LoanWallet = () => {
           href={"/vendors/wallet/loan-wallet"}
           className="text-gray-600 text-sm px-4 py-2 font-medium bg-white border border-[#D0D5DD] rounded-md"
         >
-          View all
+          View All
         </Link>
       </div>
 
@@ -78,7 +78,7 @@ const LoanWallet = () => {
             <div className="flex items-center gap-3">
               <Text className="text-nowrap">Loan Repayment History</Text>
               <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {awaiting?.length}
+                {history?.length}
               </p>
             </div>
           </Tab>
@@ -90,7 +90,7 @@ const LoanWallet = () => {
             <div className="flex items-center gap-3">
               <Text className="text-nowrap"> Awaiting Payout</Text>
               <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                {history?.length}
+                {awaiting?.length}
               </p>
             </div>
           </Tab>
@@ -111,7 +111,7 @@ const LoanWallet = () => {
         <TabPanels className="mt-3">
           <TabPanel className="!p-0">
             <DataTable
-              data={awaiting}
+              data={history}
               column={Awaiting_column(
                 setOpenDetails,
                 setOpenPayout,
@@ -124,7 +124,7 @@ const LoanWallet = () => {
 
           <TabPanel className="!p-0">
             <DataTable
-              data={history}
+              data={awaiting}
               column={Transaction_column(
                 setOpenDetails,
                 setOpenPayout,

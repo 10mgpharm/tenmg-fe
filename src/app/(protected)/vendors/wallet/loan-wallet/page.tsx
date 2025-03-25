@@ -73,7 +73,7 @@ const LoanWallet = () => {
               <div className="flex items-center gap-3">
                 <Text className="text-nowrap">Loan Repayment History</Text>
                 <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                  {awaiting?.length}
+                  {history?.length}
                 </p>
               </div>
             </Tab>
@@ -85,7 +85,7 @@ const LoanWallet = () => {
               <div className="flex items-center gap-3">
                 <Text className="text-nowrap"> Awaiting Payout</Text>
                 <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                  {history?.length}
+                  {awaiting?.length}
                 </p>
               </div>
             </Tab>
