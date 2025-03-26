@@ -70,7 +70,6 @@ const BusinessInformation = ({ user }: { user?: User }) => {
           setValue("contactEmail", sessionData.user.email);
           setValue("contactPerson", sessionData.user.name);
           setValue("contactPhone", sessionData.user.phone || "");
-          setValue("contactPersonPosition", sessionData.user.position || "");
         } else {
           // Main admin gets full business data
           setValue("businessName", data.businessName);
