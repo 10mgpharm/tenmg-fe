@@ -35,6 +35,10 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
+  // Determine user role
+  const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
+  const isAdminMember = sessionData?.user?.role === "admin_member";
+
   const {
     register,
     formState: { errors },
@@ -51,10 +55,6 @@ const BusinessInformation = ({ user }: { user?: User }) => {
     },
   });
 
-  // Determine if the user is the main admin
-  const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
-  // const isAdminMember = sessionData?.user?.role === "admin_member"; 
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -64,12 +64,22 @@ const BusinessInformation = ({ user }: { user?: User }) => {
         }).get("/admin/settings");
 
         const data = response.data.data;
-        setValue("businessName", data.businessName);
-        setValue("contactEmail", data.contactEmail);
-        setValue("contactPerson", data.contactPerson);
-        setValue("contactPhone", data.contactPhone);
-        setValue("businessAddress", data.businessAddress);
-        setValue("contactPersonPosition", data.contactPersonPosition || "");
+
+        if (isAdminMember) {
+          // Admin members can only see their own data, not the business info
+          setValue("contactEmail", sessionData.user.email);
+          setValue("contactPerson", sessionData.user.name);
+          setValue("contactPhone", sessionData.user.phone || "");
+          setValue("contactPersonPosition", sessionData.user.position || "");
+        } else {
+          // Main admin gets full business data
+          setValue("businessName", data.businessName);
+          setValue("contactEmail", data.contactEmail);
+          setValue("contactPerson", data.contactPerson);
+          setValue("contactPhone", data.contactPhone);
+          setValue("businessAddress", data.businessAddress);
+          setValue("contactPersonPosition", data.contactPersonPosition || "");
+        }
       } catch (error) {
         const errorMessage = handleServerErrorMessage(error);
         toast.error(errorMessage);
@@ -89,9 +99,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
 
       const response = await requestClient({
         token: sessionData.user.token,
-      }).patch("/admin/settings/business-information", {
-        ...value,
-      });
+      }).patch("/admin/settings/business-information", value);
 
       if (response.status === 200) {
         toast.success("Business information successfully updated");
@@ -119,12 +127,10 @@ const BusinessInformation = ({ user }: { user?: User }) => {
                 Business Name
               </FormLabel>
               <Input
-              type="name"
+                type="text"
                 isDisabled
                 placeholder="Enter business name"
-                {...register("businessName", {
-                  required: "Business Name is required",
-                })}
+                {...register("businessName")}
               />
             </FormControl>
 
@@ -133,17 +139,15 @@ const BusinessInformation = ({ user }: { user?: User }) => {
                 Contact Person&apos;s Name
               </FormLabel>
               <Input
-                type="numbers"
-                isDisabled
+                type="text"
+                isDisabled={!isMainAdmin}
                 placeholder="Enter contact name"
-                {...register("contactPerson", {
-                  required: "Contact Person Name is required",
-                })}
-                // isDisabled={!isMainAdmin}
+                {...register("contactPerson")}
               />
             </FormControl>
           </HStack>
         </Skeleton>
+
         <Skeleton isLoaded={!isInfoLoading}>
           <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
             <FormControl isInvalid={!!errors.contactEmail?.message}>
@@ -156,16 +160,10 @@ const BusinessInformation = ({ user }: { user?: User }) => {
                 </InputLeftElement>
                 <Input
                   type="email"
-                  isDisabled
+                  isDisabled={!isMainAdmin}
                   placeholder="Enter business email"
                   pl={10}
-                  {...register("contactEmail", {
-                    required: "Business Email is required",
-                    pattern: {
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: "Invalid email address",
-                    },
-                  })}
+                  {...register("contactEmail")}
                 />
               </InputGroup>
               <FormErrorMessage>
@@ -178,15 +176,14 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="number"
-                isDisabled
+                isDisabled={!isMainAdmin}
                 placeholder="Enter phone number"
-                {...register("contactPhone", {
-                  required: "Contact Phone is required",
-                })}
+                {...register("contactPhone")}
               />
             </FormControl>
           </HStack>
         </Skeleton>
+
         <Skeleton isLoaded={!isInfoLoading}>
           <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
             <FormControl isInvalid={!!errors.businessAddress?.message}>
@@ -195,11 +192,9 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled
+                isDisabled={!isMainAdmin}
                 placeholder="Enter business address"
-                {...register("businessAddress", {
-                  required: "Contact Business Address is required",
-                })}
+                {...register("businessAddress")}
               />
             </FormControl>
             <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
@@ -208,15 +203,14 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled
+                isDisabled={!isMainAdmin}
                 placeholder="Enter position"
-                {...register("contactPersonPosition", {
-                  required: "Contact Person Position is required",
-                })}
+                {...register("contactPersonPosition")}
               />
             </FormControl>
           </HStack>
         </Skeleton>
+
         {isMainAdmin && (
           <Skeleton isLoaded={!isInfoLoading}>
             <HStack
@@ -225,9 +219,6 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               flexDirection={{ base: "column", md: "row" }}
             >
               <Flex>
-                {/* <Button variant="outline" mr={3}>
-                  Cancel
-                </Button> */}
                 <Button
                   colorScheme="blue"
                   type="submit"
