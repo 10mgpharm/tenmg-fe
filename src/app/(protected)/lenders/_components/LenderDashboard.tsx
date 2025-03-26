@@ -43,7 +43,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../admin/_components/Loader";
 import { useRouter } from "next/navigation";
 import totalPattern from "@public/assets/images/bgLines.svg";
-import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
+import CongratsModal from "./drawers/CongratsModal";
 
 // Constants for chart time periods
 const BALANCE_TIME_PERIODS = [
@@ -96,6 +96,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const [selectedTimePeriod, setSelectedTimePeriod] =
     useState<BalanceTimePeriod>("7 days");
   const [isPending, startTransition] = useTransition();
+  const [amount, setAmount] = useState<number>(0);
 
   // Modal/drawer state management
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -113,6 +114,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     isOpen: isOpenGenerate,
     onOpen: onOpenGenerate,
     onClose: onCloseGenerate,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenSuccess,
+    onOpen: onOpenSuccess,
+    onClose: onCloseSuccess,
   } = useDisclosure();
 
   const sessionToken = sessionData?.user?.token;
@@ -233,6 +239,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const formattedInvestmentBalance = isInvestmentBalanceHidden
     ? "********"
     : `₦${formatAmountString(investmentWalletBalance)}`;
+
+  const handleDepositSuccess = useCallback(() => {
+    if (onCloseSuccess) onCloseSuccess();
+    fetchLenderData();
+  }, [fetchLenderData]);
 
   return (
     <>
@@ -412,9 +423,17 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         isOpen={isOpenDeposit}
         onOpen={onOpenDeposit}
         onClose={onCloseDeposit}
+        onSuccess={onOpenSuccess}
+        setAmount={setAmount}
       />
       <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} />
       <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
+
+      <CongratsModal
+        isOpen={isOpenSuccess}
+        onClose={handleDepositSuccess}
+        amount={amount}
+      />
     </>
   );
 };
