@@ -92,7 +92,9 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                     colorScheme={"primary"}
                     variant={"outline"}
                     onClick={() => {
-                      router.push("/lenders/loan-application/evaluation");
+                      router.push(
+                        `/lenders/loan-application/evaluation/${loanData?.customer?.lastEvaluationHistory?.id}?evaluationId=${loanData?.customer?.lastEvaluationHistory?.id}`
+                      );
                     }}
                   >
                     View Credit Score
@@ -268,7 +270,9 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                 <p
                   className="text-white cursor-pointer hover:underline"
                   onClick={() => {
-                    router.push("/lenders/loan-application/evaluation");
+                    router.push(
+                      `/lenders/loan-application/evaluation/${loanData?.customer?.lastEvaluationHistory?.id}?evaluationId=${loanData?.customer?.lastEvaluationHistory?.id}`
+                    );
                   }}
                 >
                   View Results
