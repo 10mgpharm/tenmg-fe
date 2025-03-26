@@ -2,6 +2,7 @@ import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { BusinessStatus } from "../constants/enum";
 import { AuditLogData } from "@/data/mockdata";
+import { ApplicationDto } from "./application";
 
 export interface Account {
   providerAccountId: number | string;
@@ -639,6 +640,8 @@ export interface UserLoan {
   name: string;
   amount: string;
   date: string;
+  vendor?: string;
+  score?: number;
   status: string;
   repaymentStatus: string;
 }
@@ -650,26 +653,39 @@ export interface LenderDashboardData {
   pendingRequests: number;
   type: string;
   loanRequest: LoanRequest[];
-  wallet: Wallet[]; 
+  wallets: Wallets[]; 
+}
+
+export interface LoanStats {
+  totalApplications: number;
+  successfulApplications: number;
+  pendingApplications: number;
 }
 
 export interface LoanRequest {
-  id: number,
-  identifier: string
-  customer: CustomerData,
-  requestedAmount: string,
-  interestAmount: string,
-  totalAmount: string,
-  interestRate: number,
-  durationInMonths: string,
-  status: string,
+  id: number;
+  identifier: string;
+  customer: CustomerData;
+  business: any;
+  requestedAmount: string;
+  interestAmount: string;
+  totalAmount: string;
+  interestRate: number;
+  durationInMonths: string;
+  status: string;
 }
 
-export interface Wallet {
-  lenderId: string
-  type: string,
-  currentBalance: string,
-  prevBalance: string,
-  lastTransactionRef: string | null,
-  updatedAt: string,
+export interface Wallets {
+  lenderId: string;
+  type: string;
+  currentBalance: string;
+  prevBalance: string;
+  lastTransactionRef: string | null;
+  updatedAt: string;
+}
+
+export interface LoanApplicationDataResponse {
+  data: ApplicationDto;
+  links: any;
+  meta: MetaDataProp;
 }

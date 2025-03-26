@@ -115,3 +115,17 @@ export const truncateString = (str: string, maxLength: number) => {
   return str.slice(0, maxLength) + "...";
 }
 
+export const getStatusColorScheme = (status?: string): string => {
+  switch (status) {
+    case "INITIATED":
+      return "orange";
+    case "APPROVED":
+      return "green";
+    case "EXPIRED":
+      return "red";
+    case "CANCELLED":
+      return "blue";
+    default:
+      return "gray";
+  }
+};

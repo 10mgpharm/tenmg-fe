@@ -51,7 +51,7 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
   return (
     <>
-      {/* MAIN CONTENT */}  
+      {/* MAIN CONTENT */}
       <div className="w-full flex flex-col md:flex-row gap-5">
         <div className="w-full lg:w-3/5">
           {/* -- MOBILE HORIZONTAL SCROLL -- */}
@@ -70,7 +70,6 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 <OverviewCard
                   title="Total Balance"
                   value="₦0"
-                  icon=""
                   fromColor="from-[#1A70B8]"
                   toColor="to-[#1A70B8]"
                   image=""
@@ -80,7 +79,6 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 <OverviewCard
                   title="Investment Wallet"
                   value="₦0"
-                  icon=""
                   fromColor="from-[#D42E2F]"
                   toColor="to-[#D42E2F]"
                   image=""
@@ -96,13 +94,11 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
               value="₦0"
               fromColor="from-[#1A70B8]"
               toColor="to-[#1A70B8]"
-              icon=""
               image=""
             />
             <OverviewCard
               title="Investment Wallet"
               value="₦0"
-              icon=""
               fromColor="from-[#D42E2F]"
               toColor="to-[#D42E2F]"
               image=""

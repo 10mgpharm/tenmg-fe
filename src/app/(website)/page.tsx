@@ -7,8 +7,8 @@ import Financepage from "./_components/financepage";
 import Testimonialsection from "./_components/testimonialsection";
 import Footer from "./_components/footer";
 import Navbar from "./_components/navbar";
-import FAQSection from "./_components/faq";
-import FAQ from "./_components/faq";
+import FAQSection from "./faq/page";
+import FAQ from "./faq/page";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -17,12 +17,11 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <Navbar />
-      <Herosection />
-      <Financepage />
-      {/* <FAQ/> */}
-      <Testimonialsection />
-      <Footer />
+      <Navbar/>
+      <Herosection/>
+      <Financepage/>
+      <Testimonialsection/>
+      <Footer/>
     </>
   );
 }

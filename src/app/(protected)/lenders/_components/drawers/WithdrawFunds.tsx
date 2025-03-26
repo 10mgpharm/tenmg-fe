@@ -113,7 +113,7 @@ const WithdrawFunds = ({ isOpen, onClose }: WithdrawFundsProps) => {
         </form>
       )}
 
-      {step === 2 && <CongratsModal status="withdraw" />}
+      {/* {step === 2 && <CongratsModal status="withdraw" />} */}
     </OperationLayout>
   );
 };

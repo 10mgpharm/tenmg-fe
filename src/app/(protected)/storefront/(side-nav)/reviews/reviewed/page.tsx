@@ -12,7 +12,7 @@ export default function ReviewedPage() {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const [reviews, setReviews] = useState<any>([]);
+  const [reviews, setReviews] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 

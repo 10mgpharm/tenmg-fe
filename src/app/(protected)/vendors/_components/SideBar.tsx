@@ -25,6 +25,7 @@ import { useBreakpointValue } from "@chakra-ui/react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Link from "next/link";
 import { BiMessageDetail } from "react-icons/bi";
+import { LuWallet } from "react-icons/lu";
 
 const navSections = [
   {
@@ -35,6 +36,11 @@ const navSections = [
         name: "Customers Management",
         href: "/vendors/customers-management",
         icon: SlPeople,
+      },
+      {
+        name: "Wallet",
+        href: "/vendors/wallet",
+        icon: LuWallet,
       },
     ],
   },
