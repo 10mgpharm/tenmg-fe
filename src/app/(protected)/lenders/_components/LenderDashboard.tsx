@@ -146,7 +146,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     }
   }, [sessionData, fetchLenderData]);
 
-  // Handle loan request actions
   const handleView = useCallback(
     (id: string) => {
       router.push(`/lenders/loan-application/view/${id}`);
@@ -226,7 +225,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     return { totalBalance: totalBal, investmentWalletBalance: investmentBal };
   }, [lenderData?.wallets]);
 
-  // Formatted and masked values for display
   const formattedTotalBalance = isTotalBalanceHidden
     ? "********"
     : `₦${formatAmountString(totalBalance)}`;
@@ -419,8 +417,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     </>
   );
 };
-
-// Extracted components to reduce duplication and improve readability
 
 interface BalanceCardProps {
   title: string;
