@@ -57,7 +57,57 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
     loanData?.customer?.lastEvaluationHistory &&
     loanData?.customer?.lastEvaluationHistory?.evaluationResult;
 
-  console.log("credit score", creditScoreResult);
+    const handleAccept = useCallback(
+      async (id: string) => {
+        if (!sessionToken) return;
+  
+        try {
+          const response = await requestClient({ token: sessionToken }).post(
+            "/lender/loan-applications",
+            { applicationId: id, action: "approve" }
+          );
+  
+          if (response.status === 200) {
+            toast.success("Loan application approved successfully");
+            fetchLoanDetails();
+          } else {
+            toast.error("Error approving loan application");
+          }
+        } catch (error: any) {
+          toast.error(
+            error?.response?.data?.message || "Error approving loan application"
+          );
+          console.error(error);
+        }
+      },
+      [sessionToken, fetchLoanDetails]
+    );
+  
+    const handleIgnore = useCallback(
+      async (id: string) => {
+        if (!sessionToken) return;
+  
+        try {
+          const response = await requestClient({ token: sessionToken }).post(
+            "/lender/loan-applications",
+            { applicationId: id, action: "decline" }
+          );
+  
+          if (response.status === 200) {
+            toast.success("Loan application declined successfully");
+            fetchLoanDetails();
+          } else {
+            toast.error("Error declining loan application");
+          }
+        } catch (error: any) {
+          toast.error(
+            error?.response?.data?.message || "Error declining loan application"
+          );
+          console.error(error);
+        }
+      },
+      [sessionToken, fetchLoanDetails]
+    );
 
   return (
     <div className="mx-10 my-4">
@@ -92,17 +142,19 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                     colorScheme={"primary"}
                     variant={"outline"}
                     onClick={() => {
-                      router.push("/lenders/loan-application/evaluation");
+                      router.push(
+                        `/lenders/loan-application/evaluation/${loanData?.customer?.lastEvaluationHistory?.id}?evaluationId=${loanData?.customer?.lastEvaluationHistory?.id}`
+                      );
                     }}
                   >
                     View Credit Score
                   </Button>
                 ) : (
                   <>
-                    <Button size="sm" colorScheme={"red"}>
+                    <Button size="sm" colorScheme={"red"} onClick={() => handleIgnore(params.id)}>
                       Decline Offer
                     </Button>
-                    <Button size="sm" colorScheme={"success"}>
+                    <Button size="sm" colorScheme={"success"} onClick={() => handleAccept(params.id)}>
                       Accept Offer
                     </Button>
                   </>
@@ -268,7 +320,9 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                 <p
                   className="text-white cursor-pointer hover:underline"
                   onClick={() => {
-                    router.push("/lenders/loan-application/evaluation");
+                    router.push(
+                      `/lenders/loan-application/evaluation/${loanData?.customer?.lastEvaluationHistory?.id}?evaluationId=${loanData?.customer?.lastEvaluationHistory?.id}`
+                    );
                   }}
                 >
                   View Results

@@ -9,7 +9,13 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 const columnHelper = createColumnHelper<ApplicationDto>();
 
-export function ColumnsLoanFN() {
+export function ColumnsLoanFN({
+  handleApprove,
+  handleDecline
+}: {
+  handleApprove: (id: string) => void;
+  handleDecline: (id: string) => void;
+}) {
   return [
     columnHelper.accessor("identifier", {
       header: () => (
@@ -130,8 +136,8 @@ export function ColumnsLoanFN() {
             </MenuItem>
             {info?.row?.original?.status === "INITIATED" && (
               <>
-                <MenuItem mt={2} mb={2}>Approve</MenuItem>
-                <MenuItem color="red.500">Ignore</MenuItem>{" "}
+                <MenuItem mt={2} mb={2} onClick={() => handleApprove(info.row.original?.identifier)}>Approve</MenuItem>
+                <MenuItem color="red.500" onClick={() => handleDecline(info.row.original?.identifier)}>Ignore</MenuItem>
               </>
             )}
           </MenuList>
