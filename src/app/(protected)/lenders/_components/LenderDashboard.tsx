@@ -43,6 +43,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../admin/_components/Loader";
 import { useRouter } from "next/navigation";
 import totalPattern from "@public/assets/images/bgLines.svg";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 // Constants for chart time periods
 const BALANCE_TIME_PERIODS = [

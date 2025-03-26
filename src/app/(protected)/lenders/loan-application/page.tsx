@@ -6,6 +6,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Box,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition, useEffect, useCallback } from "react";
@@ -18,7 +19,6 @@ import LoanTable from "../../_components/loanApplication/LoanTable";
 import { ColumnsLoanFN } from "./_components/table";
 import { toast } from "react-toastify";
 import {
-  LenderDashboardData,
   LoanApplicationDataResponse,
   LoanStats,
   NextAuthUserSession,
@@ -28,6 +28,7 @@ import Loader from "../../admin/_components/Loader";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 export interface OverviewCardData {
   title: string;
@@ -47,6 +48,7 @@ export default function LoanApplicationPage() {
     null
   );
   const [isPending, startTransition] = useTransition();
+  const [pageCount, setPageCount] = useState(1);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -74,7 +76,7 @@ export default function LoanApplicationPage() {
     startTransition(async () => {
       try {
         const response = await requestClient({ token: sessionToken }).get(
-          "/lender/loan-applications"
+          `/lender/loan-applications?page=${pageCount}`
         );
         if (response.status === 200) {
           setLoanData(response.data.data);
@@ -89,7 +91,37 @@ export default function LoanApplicationPage() {
         console.error(error);
       }
     });
-  }, [sessionToken]);
+  }, [sessionToken, pageCount]); // Add pageCount to dependency array
+
+  const handleApprove = async (id: string) => {
+    try {
+      await requestClient({ token: sessionToken }).post(
+        "/lender/loan-applications",
+        { applicationId: id, action: "approve" }
+      );
+      toast.success("Loan application approved successfully");
+      fetchLenderData();
+      fetchLoanData();
+    } catch (error: any) {
+      toast.error("Error approving loan application");
+      console.error(error);
+    }
+  };
+
+  const handleDecline = async (id: string) => {
+    try {
+      await requestClient({ token: sessionToken }).post(
+        "/lender/loan-applications",
+        { applicationId: id, action: "decline" }
+      );
+      toast.success("Loan application declined successfully");
+      fetchLenderData();
+      fetchLoanData();
+    } catch (error: any) {
+      toast.error("Error declining loan application");
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (sessionData) {
@@ -142,16 +174,25 @@ export default function LoanApplicationPage() {
           <SearchFilter
             value={globalFilter}
             onSearchChange={(e) => setGlobalFilter(e.target.value)}
-            // You can pass an onFilterClick handler if needed
           />
           <div className="mt-5">
             <LoanTable
               data={Array.isArray(loanData?.data) ? loanData.data : []}
-              columns={ColumnsLoanFN()}
+              columns={ColumnsLoanFN({ handleApprove, handleDecline })}
               globalFilter={globalFilter}
               onGlobalFilterChange={setGlobalFilter}
               loading={loading}
             />
+            
+            {/* Add pagination component */}
+            {loanData?.meta && (
+              <Box mt={4}>
+                <Pagination 
+                  meta={loanData.meta} 
+                  setPageCount={setPageCount} 
+                />
+              </Box>
+            )}
           </div>
         </div>
       )}
