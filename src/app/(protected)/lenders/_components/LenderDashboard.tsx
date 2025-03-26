@@ -1,21 +1,24 @@
 "use client";
 
-import React, { useCallback, useEffect, useState, useTransition } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 import {
   Badge,
   Box,
   Button,
   Card,
   CardBody,
-  CardFooter,
-  CardHeader,
   CloseButton,
   Divider,
   Flex,
   Grid,
   GridItem,
-  IconButton,
-  Image,
+  Image as ChakraImage,
   Stack,
   Tab,
   TabList,
@@ -35,23 +38,65 @@ import GenerateStatement from "./drawers/GenerateStatement";
 import requestClient from "@/lib/requestClient";
 import { formatAmountString } from "@/utils";
 import NoRequest from "@public/assets/images/no_request.png";
-
-// Import react-toastify components and styles
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../admin/_components/Loader";
 import { useRouter } from "next/navigation";
+import totalPattern from "@public/assets/images/bgLines.svg";
+
+// Constants for chart time periods
+const BALANCE_TIME_PERIODS = [
+  "12 months",
+  "3 months",
+  "30 days",
+  "7 days",
+  "24 hours",
+] as const;
+
+type BalanceTimePeriod = (typeof BALANCE_TIME_PERIODS)[number];
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
 }
 
+// Chart configuration
+const chartOptions = {
+  chart: {
+    stacked: true,
+    toolbar: { show: false },
+  },
+  dataLabels: { enabled: false },
+  yaxis: { show: false },
+  xaxis: { categories: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"] },
+  colors: ["#1A70B8", "var(--tenmg-colors-warning-600)"],
+  legend: { show: false },
+  plotOptions: { bar: { borderRadius: 4 } },
+};
+
+const chartSeries = [
+  {
+    name: "Out of Loan",
+    data: [78, 87, 98, 78, 80, 60, 78],
+  },
+  {
+    name: "Available Balance",
+    data: [86, 97, 102, 89, 90, 70, 87],
+  },
+];
+
 const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
+  // State management
   const [lenderData, setLenderData] = useState<LenderDashboardData | null>(
     null
   );
+  const [isTotalBalanceHidden, setIsTotalBalanceHidden] = useState(false);
+  const [isInvestmentBalanceHidden, setIsInvestmentBalanceHidden] =
+    useState(false);
+  const [selectedTimePeriod, setSelectedTimePeriod] =
+    useState<BalanceTimePeriod>("7 days");
   const [isPending, startTransition] = useTransition();
 
+  // Modal/drawer state management
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenDeposit,
@@ -72,56 +117,10 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const sessionToken = sessionData?.user?.token;
   const router = useRouter();
 
-  const balanceTimePeriods = [
-    "12 months",
-    "3 months",
-    "30 days",
-    "7 days",
-    "24 hours",
-  ] as const;
-
-  const options = {
-    chart: {
-      stacked: true,
-      toolbar: {
-        show: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    yaxis: {
-      show: false,
-    },
-    xaxis: {
-      categories: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
-    },
-    colors: ["#1A70B8", "var(--tenmg-colors-warning-600)"],
-    legend: {
-      show: false,
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 4,
-      },
-    },
-  };
-
-  const series = [
-    {
-      name: "Out of Loan",
-      data: [78, 87, 98, 78, 80, 60, 78],
-    },
-    {
-      name: "Available Balance",
-      data: [86, 97, 102, 89, 90, 70, 87],
-    },
-  ];
-
-  const [selectedBalancePeriod, setSelectedBalancedPeriod] =
-    useState<(typeof balanceTimePeriods)[number]>("7 days");
-
+  // Fetch dashboard data
   const fetchLenderData = useCallback(() => {
+    if (!sessionToken) return;
+
     startTransition(async () => {
       try {
         const response = await requestClient({ token: sessionToken }).get(
@@ -133,7 +132,9 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
           toast.error("Error fetching dashboard data");
         }
       } catch (error: any) {
-        toast.error("Error fetching dashboard data");
+        toast.error(
+          error?.response?.data?.message || "Error fetching dashboard data"
+        );
         console.error(error);
       }
     });
@@ -145,8 +146,9 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     }
   }, [sessionData, fetchLenderData]);
 
+  // Handle loan request actions
   const handleView = useCallback(
-    async (id: string) => {
+    (id: string) => {
       router.push(`/lenders/loan-application/view/${id}`);
     },
     [router]
@@ -154,14 +156,14 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
   const handleAccept = useCallback(
     async (id: string) => {
+      if (!sessionToken) return;
+
       try {
         const response = await requestClient({ token: sessionToken }).post(
           "/lender/loan-applications",
-          {
-            applicationId: id,
-            action: "approve",
-          }
+          { applicationId: id, action: "approve" }
         );
+
         if (response.status === 200) {
           toast.success("Loan application approved successfully");
           fetchLenderData();
@@ -169,7 +171,9 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
           toast.error("Error approving loan application");
         }
       } catch (error: any) {
-        toast.error("Error approving loan application");
+        toast.error(
+          error?.response?.data?.message || "Error approving loan application"
+        );
         console.error(error);
       }
     },
@@ -178,14 +182,14 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
   const handleIgnore = useCallback(
     async (id: string) => {
+      if (!sessionToken) return;
+
       try {
         const response = await requestClient({ token: sessionToken }).post(
           "/lender/loan-applications",
-          {
-            applicationId: id,
-            action: "decline",
-          }
+          { applicationId: id, action: "decline" }
         );
+
         if (response.status === 200) {
           toast.success("Loan application declined successfully");
           fetchLenderData();
@@ -193,84 +197,102 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
           toast.error("Error declining loan application");
         }
       } catch (error: any) {
-        toast.error("Error declining loan application");
+        toast.error(
+          error?.response?.data?.message || "Error declining loan application"
+        );
         console.error(error);
       }
     },
     [sessionToken, fetchLenderData]
   );
 
-  const wallet = lenderData?.wallets;
+  // Memoized calculations
+  const { totalBalance, investmentWalletBalance } = useMemo(() => {
+    const wallet = lenderData?.wallets || [];
 
-  const totalBalance = wallet
-    ?.reduce((sum, item) => {
-      return sum + parseFloat(item?.currentBalance);
-    }, 0)
-    .toFixed(2);
+    const totalBal = wallet.length
+      ? wallet
+          .reduce(
+            (sum, item) => sum + parseFloat(item?.currentBalance || "0"),
+            0
+          )
+          .toFixed(2)
+      : "0.00";
 
-  const investmentWalletBalance =
-    wallet?.find((item) => item.type === "investment")?.currentBalance ||
-    "0.00";
+    const investmentBal =
+      wallet?.find((item) => item.type === "investment")?.currentBalance ||
+      "0.00";
+
+    return { totalBalance: totalBal, investmentWalletBalance: investmentBal };
+  }, [lenderData?.wallets]);
+
+  // Formatted and masked values for display
+  const formattedTotalBalance = isTotalBalanceHidden
+    ? "********"
+    : `₦${formatAmountString(totalBalance)}`;
+
+  const formattedInvestmentBalance = isInvestmentBalanceHidden
+    ? "********"
+    : `₦${formatAmountString(investmentWalletBalance)}`;
 
   return (
     <>
-      {/* MAIN CONTENT */}
-
       {isPending && !lenderData && <Loader />}
+
       {!isPending && lenderData && (
         <div className="w-full flex flex-col md:flex-row gap-5">
           <div className="w-full lg:w-3/5">
-            {/* -- MOBILE HORIZONTAL SCROLL -- */}
+            {/* MOBILE HORIZONTAL SCROLL */}
             <div className="md:hidden overflow-x-auto">
               <div className="flex gap-4 w-max">
-                <div className="w-72 shrink-0">
-                  <OverviewCard
-                    title="Total Balance"
-                    value={`₦${
-                      totalBalance && formatAmountString(totalBalance)
-                    }`}
-                    icon=""
-                    fromColor="from-[#1A70B8]"
-                    toColor="to-[#1A70B8]"
-                    image=""
-                  />
-                </div>
-                <div className="w-72 shrink-0">
-                  <OverviewCard
-                    title="Investment Wallet"
-                    value={`₦${
-                      investmentWalletBalance &&
-                      formatAmountString(investmentWalletBalance)
-                    }`}
-                    icon=""
-                    fromColor="from-[#D42E2F]"
-                    toColor="to-[#D42E2F]"
-                    image=""
-                  />
-                </div>
+                <BalanceCard
+                  title="Total Balance"
+                  value={formattedTotalBalance}
+                  isHidden={isTotalBalanceHidden}
+                  onToggleVisibility={() =>
+                    setIsTotalBalanceHidden(!isTotalBalanceHidden)
+                  }
+                  fromColor="from-[#1A70B8]"
+                  toColor="to-[#1A70B8]"
+                  containerClass="w-72 shrink-0"
+                />
+
+                <BalanceCard
+                  title="Investment Wallet"
+                  value={formattedInvestmentBalance}
+                  isHidden={isInvestmentBalanceHidden}
+                  onToggleVisibility={() =>
+                    setIsInvestmentBalanceHidden(!isInvestmentBalanceHidden)
+                  }
+                  fromColor="from-[#D42E2F]"
+                  toColor="to-[#D42E2F]"
+                  containerClass="w-72 shrink-0"
+                />
               </div>
             </div>
 
-            {/* -- DESKTOP VIEW -- */}
+            {/* DESKTOP VIEW */}
             <div className="hidden md:grid grid-cols-2 gap-5">
-              <OverviewCard
+              <BalanceCard
                 title="Total Balance"
-                value={`₦${totalBalance && formatAmountString(totalBalance)}`}
+                value={formattedTotalBalance}
+                isHidden={isTotalBalanceHidden}
+                onToggleVisibility={() =>
+                  setIsTotalBalanceHidden(!isTotalBalanceHidden)
+                }
                 fromColor="from-[#1A70B8]"
                 toColor="to-[#1A70B8]"
-                icon=""
-                image=""
               />
-              <OverviewCard
+
+              <BalanceCard
                 title="Investment Wallet"
-                value={`₦${
-                  investmentWalletBalance &&
-                  formatAmountString(investmentWalletBalance)
-                }`}
-                icon=""
+                value={formattedInvestmentBalance}
+                isHidden={isInvestmentBalanceHidden}
+                onToggleVisibility={() =>
+                  setIsInvestmentBalanceHidden(!isInvestmentBalanceHidden)
+                }
                 fromColor="from-[#D42E2F]"
                 toColor="to-[#D42E2F]"
-                image=""
               />
             </div>
 
@@ -280,129 +302,23 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
               onOpenGenerateStatement={onOpenGenerate}
             />
 
-            {/* BALANCE ALLOCATION & INTEREST GROWTH CHARTS */}
-            <div className="">
-              {/* BALANCE ALLOCATION */}
-              <Box
-                borderRadius="lg"
-                p={5}
-                borderWidth="1px"
-                bg={"white"}
-                mb={6}
-              >
-                <Stack gap={3} flex={1} mt={2}>
-                  <Text fontSize="lg" fontWeight="medium">
-                    Balance Allocation
-                  </Text>
-                  <Tabs
-                    isFitted
-                    variant="unstyled"
-                    onChange={(index) =>
-                      setSelectedBalancedPeriod(balanceTimePeriods[index])
-                    }
-                  >
-                    <TabList width="80%">
-                      {balanceTimePeriods.map((period) => (
-                        <Tab
-                          key={period}
-                          _selected={{
-                            bg: "primary.50",
-                            color: "primary.500",
-                            rounded: "md",
-                            fontWeight: "bold",
-                          }}
-                          fontSize="sm"
-                          fontWeight="medium"
-                          px={4}
-                          py={2}
-                          flex="auto"
-                        >
-                          {period}
-                        </Tab>
-                      ))}
-                    </TabList>
-                  </Tabs>
-                </Stack>
+            {/* CHARTS */}
+            <div className="space-y-6">
+              <ChartSection
+                title="Balance Allocation"
+                selectedPeriod={selectedTimePeriod}
+                onPeriodChange={setSelectedTimePeriod}
+                options={chartOptions}
+                series={chartSeries}
+              />
 
-                <Box>
-                  <ChartComponent
-                    options={options}
-                    series={series}
-                    type="bar"
-                    width={"100%"}
-                    height={320}
-                  />
-
-                  <Flex justifyContent="center" alignItems="center" gap={4}>
-                    <Flex gap={2} alignItems="center">
-                      <Badge bgColor="warning.600" p={1} rounded="lg" />
-                      <Text>Available Balance</Text>
-                    </Flex>
-                    <Flex gap={2} alignItems="center">
-                      <Badge bgColor="#1A70B8" p={1} rounded="lg" />
-                      <Text>Out on Loan</Text>
-                    </Flex>
-                  </Flex>
-                </Box>
-              </Box>
-
-              {/* INTEREST GROWTH */}
-              <Box borderRadius="lg" p={5} borderWidth="1px" bg={"white"}>
-                <Stack gap={3} flex={1} mt={2}>
-                  <Text fontSize="lg" fontWeight="medium">
-                    Interest Growth Over Time
-                  </Text>
-                  <Tabs
-                    isFitted
-                    variant="unstyled"
-                    onChange={(index) =>
-                      setSelectedBalancedPeriod(balanceTimePeriods[index])
-                    }
-                  >
-                    <TabList width="80%">
-                      {balanceTimePeriods.map((period) => (
-                        <Tab
-                          key={period}
-                          _selected={{
-                            bg: "primary.50",
-                            color: "primary.500",
-                            rounded: "md",
-                            fontWeight: "bold",
-                          }}
-                          fontSize="sm"
-                          fontWeight="medium"
-                          px={4}
-                          py={2}
-                          flex="auto"
-                        >
-                          {period}
-                        </Tab>
-                      ))}
-                    </TabList>
-                  </Tabs>
-                </Stack>
-
-                <Box>
-                  <ChartComponent
-                    options={options}
-                    series={series}
-                    type="bar"
-                    width={"100%"}
-                    height={320}
-                  />
-
-                  <Flex justifyContent="center" alignItems="center" gap={4}>
-                    <Flex gap={2} alignItems="center">
-                      <Badge bgColor="warning.600" p={1} rounded="lg" />
-                      <Text>Available Balance</Text>
-                    </Flex>
-                    <Flex gap={2} alignItems="center">
-                      <Badge bgColor="#1A70B8" p={1} rounded="lg" />
-                      <Text>Out on Loan</Text>
-                    </Flex>
-                  </Flex>
-                </Box>
-              </Box>
+              <ChartSection
+                title="Interest Growth Over Time"
+                selectedPeriod={selectedTimePeriod}
+                onPeriodChange={setSelectedTimePeriod}
+                options={chartOptions}
+                series={chartSeries}
+              />
             </div>
           </div>
 
@@ -417,22 +333,15 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                   variant="link"
                   size="sm"
                   colorScheme="primary"
-                  onClick={() => {
-                    router.push("/lenders/loan-application");
-                  }}
+                  onClick={() => router.push("/lenders/loan-application")}
                 >
                   See All
                 </Button>
               </div>
 
               <Stack spacing={4}>
-                {lenderData?.loanRequest.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center">
-                    <Image src={NoRequest.src} alt="No Request" />
-                    <Text fontSize="md" color="gray.500">
-                      No loan request available
-                    </Text>
-                  </div>
+                {!lenderData?.loanRequest?.length ? (
+                  <EmptyRequestState />
                 ) : (
                   lenderData?.loanRequest.map((request) => (
                     <LoanDetails
@@ -478,39 +387,27 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                     </Flex>
                   </GridItem>
 
-                  <GridItem
+                  <StatCard
                     bg="blue.500"
-                    p={6}
-                    borderRadius="lg"
-                    boxShadow="md"
-                  >
-                    <Text fontSize="sm" mb={2}>
-                      Pending Requests
-                    </Text>
-                    <Text fontSize="3xl">
-                      {lenderData?.pendingRequests ?? 0}
-                    </Text>
-                  </GridItem>
+                    title="Pending Requests"
+                    value={lenderData?.pendingRequests ?? 0}
+                  />
 
-                  <GridItem
+                  <StatCard
                     bg="green.500"
-                    p={6}
-                    borderRadius="lg"
-                    boxShadow="md"
-                  >
-                    <Text fontSize="sm" mb={2}>
-                      Interest Earned
-                    </Text>
-                    <Text fontSize="3xl">
-                      ₦{formatAmountString(lenderData?.interestEarned ?? 0)}
-                    </Text>
-                  </GridItem>
+                    title="Interest Earned"
+                    value={`₦${formatAmountString(
+                      lenderData?.interestEarned ?? 0
+                    )}`}
+                  />
                 </Grid>
               </Box>
             </div>
           </div>
         </div>
       )}
+
+      {/* Modals and Drawers */}
       <CompleteAccountModal isOpen={isOpen} onClose={onClose} />
       <DepositFunds
         isOpen={isOpenDeposit}
@@ -523,18 +420,156 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   );
 };
 
-export default LenderDashboard;
+// Extracted components to reduce duplication and improve readability
 
-const LoanDetails = ({
-  data,
-  handleAccept,
-  handleView,
-  handleIgnore,
-}: {
+interface BalanceCardProps {
+  title: string;
+  value: string;
+  isHidden: boolean;
+  onToggleVisibility: () => void;
+  fromColor: string;
+  toColor: string;
+  containerClass?: string;
+}
+
+const BalanceCard: React.FC<BalanceCardProps> = ({
+  title,
+  value,
+  isHidden,
+  onToggleVisibility,
+  fromColor,
+  toColor,
+  containerClass = "",
+}) => (
+  <div className={containerClass}>
+    <OverviewCard
+      title={title}
+      value={value}
+      toggleable={true}
+      isHidden={isHidden}
+      onToggleVisibility={onToggleVisibility}
+      fromColor={fromColor}
+      toColor={toColor}
+      image={totalPattern}
+    />
+  </div>
+);
+
+interface ChartSectionProps {
+  title: string;
+  selectedPeriod: BalanceTimePeriod;
+  onPeriodChange: (period: BalanceTimePeriod) => void;
+  options: any;
+  series: any;
+}
+
+const ChartSection: React.FC<ChartSectionProps> = ({
+  title,
+  selectedPeriod,
+  onPeriodChange,
+  options,
+  series,
+}) => {
+  const handleTabChange = (index: number) => {
+    onPeriodChange(BALANCE_TIME_PERIODS[index]);
+  };
+
+  return (
+    <Box borderRadius="lg" p={5} borderWidth="1px" bg="white">
+      <Stack gap={3} flex={1} mt={2}>
+        <Text fontSize="lg" fontWeight="medium">
+          {title}
+        </Text>
+        <Tabs
+          isFitted
+          variant="unstyled"
+          onChange={handleTabChange}
+          index={BALANCE_TIME_PERIODS.indexOf(selectedPeriod)}
+        >
+          <TabList width="80%">
+            {BALANCE_TIME_PERIODS.map((period) => (
+              <Tab
+                key={period}
+                _selected={{
+                  bg: "primary.50",
+                  color: "primary.500",
+                  rounded: "md",
+                  fontWeight: "bold",
+                }}
+                fontSize="sm"
+                fontWeight="medium"
+                px={4}
+                py={2}
+                flex="auto"
+              >
+                {period}
+              </Tab>
+            ))}
+          </TabList>
+        </Tabs>
+      </Stack>
+
+      <Box>
+        <ChartComponent
+          options={options}
+          series={series}
+          type="bar"
+          width="100%"
+          height={320}
+        />
+
+        <Flex justifyContent="center" alignItems="center" gap={4}>
+          <Flex gap={2} alignItems="center">
+            <Badge bgColor="warning.600" p={1} rounded="lg" />
+            <Text>Available Balance</Text>
+          </Flex>
+          <Flex gap={2} alignItems="center">
+            <Badge bgColor="#1A70B8" p={1} rounded="lg" />
+            <Text>Out on Loan</Text>
+          </Flex>
+        </Flex>
+      </Box>
+    </Box>
+  );
+};
+
+const EmptyRequestState = () => (
+  <div className="flex flex-col items-center justify-center">
+    <ChakraImage src={NoRequest.src} alt="No Request" />
+    <Text fontSize="md" color="gray.500">
+      No loan request available
+    </Text>
+  </div>
+);
+
+interface StatCardProps {
+  bg: string;
+  title: string;
+  value: string | number;
+}
+
+const StatCard: React.FC<StatCardProps> = ({ bg, title, value }) => (
+  <GridItem bg={bg} p={6} borderRadius="lg" boxShadow="md">
+    <Text fontSize="sm" mb={2}>
+      {title}
+    </Text>
+    <Text fontSize="3xl">{value}</Text>
+  </GridItem>
+);
+
+// This can be moved to a separate file
+interface LoanDetailsProps {
   data: LoanRequest;
   handleAccept: (id: string) => void;
   handleView: (id: string) => void;
   handleIgnore: (id: string) => void;
+}
+
+const LoanDetails: React.FC<LoanDetailsProps> = ({
+  data,
+  handleAccept,
+  handleView,
+  handleIgnore,
 }) => {
   return (
     <Card boxShadow="none">
@@ -597,3 +632,5 @@ const LoanDetails = ({
     </Card>
   );
 };
+
+export default LenderDashboard;
