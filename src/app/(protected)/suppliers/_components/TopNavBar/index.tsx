@@ -65,7 +65,7 @@ const TopNavBar = ({ route }: { route: string }) => {
     }
     if(!token) return;
     fetchingCounts();
-  }, [token]);
+  }, [token, fetchingCounts]);
 
   useEffect(() => {
     if (messaging) {
@@ -147,8 +147,9 @@ const TopNavBar = ({ route }: { route: string }) => {
       );
 
       if (response.status === 200) {
-        const datal = response.data?.data?.data?.slice(0, 5);
-        setNotifications(datal || []);
+        const datal = response.data?.data?.data;
+        const unreadResponses = datal?.filter((e: any) => e.readAt === null)?.slice(0, 5);
+        setNotifications(unreadResponses || []);
       }
     } catch (err: any) {
       console.error(err);
@@ -157,6 +158,8 @@ const TopNavBar = ({ route }: { route: string }) => {
       setLoading(false);
     }
   }, [token]);
+
+  console.log(notificationCount)
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
@@ -195,13 +198,17 @@ const TopNavBar = ({ route }: { route: string }) => {
               className="-m-2.5 relative p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500"
             >
               <span className="sr-only">View notifications</span>
-              <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">{notificationCount}</div>
+              <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">
+                {notificationCount}
+              </div>
               <BellIcon aria-hidden="true" className="h-6 w-6" />
             </MenuButton>
             <NotificationModal
               notificationsMsgs={notifications}
               route={route}
               loading={loading}
+              token={token}
+              fetchingCounts={fetchingCounts}
             />
           </Menu>
           <Menu as="div" className="relative">

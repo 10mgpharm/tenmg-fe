@@ -1,4 +1,4 @@
-import Link from 'next/link';
+
 import { IoIosNotifications } from "react-icons/io";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MenuItem, MenuItems } from "@headlessui/react";
@@ -6,6 +6,9 @@ import { useRouter } from 'next/navigation';
 import { Flex } from '@chakra-ui/layout';
 import { Spinner } from '@chakra-ui/react';
 import { cn } from '@/lib/utils';
+import requestClient from '@/lib/requestClient';
+import { toast } from 'react-toastify';
+import { handleServerErrorMessage } from '@/utils';
 export interface NotificationProps {
     id: string;
     readAt: string | null;
@@ -17,14 +20,33 @@ export interface NotificationProps {
 }
 
 const NotificationModal = (
-    { notificationsMsgs, route, loading }:
-        { notificationsMsgs: NotificationProps[], route: string, loading: boolean }
+    { notificationsMsgs, route, loading, token, fetchingCounts }:
+    { notificationsMsgs: NotificationProps[], route: string, loading: boolean, token: string, fetchingCounts: () => void }
 ) => {
     const navigate = useRouter();
+
+    const markAsRead = async (id: string) => {
+        try {
+            const res = await requestClient({ token: token }).patch(
+                `/account/notifications/${id}`,
+            );
+            if (res.status === 200) {
+                fetchingCounts();
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        }
+    }
+
+    const routeNotification = async (url: string, id: string) => {
+        await markAsRead(id);
+        navigate.push(url);
+    }
     return (
         <MenuItems 
         transition
-        className="absolute right-5 z-10 mt-5 pb-8 w-full sm:w-[430px] h-[560px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
+        className="absolute right-5 z-10 mt-5 pb-5 w-full sm:w-[430px] overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
         <div className="flex-1">
             <MenuItem>
                 <div className="flex items-center justify-between px-5">
@@ -43,7 +65,7 @@ const NotificationModal = (
                     <Spinner size="xl" />
                 </Flex>: 
                 notificationsMsgs?.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center mt-24 text-center">
+                    <div className="flex flex-col items-center justify-center my-24 text-center">
                         <IoIosNotifications
                             className="w-32 h-32 text-primary-500"
                         />
@@ -56,8 +78,8 @@ const NotificationModal = (
                     <div className="space-y-4 mt-6">
                         {notificationsMsgs?.map((notification) => (
                             <MenuItem key={notification?.id}>
-                                <Link
-                                    href={`${route}?id=${notification.id}`}
+                                <div
+                                    onClick={() => routeNotification(`${route}?id=${notification.id}`, notification.id)}
                                     className="flex items-start border-b border-gray-200  mt-3 cursor-pointer"
                                 >
                                     <div className='flex gap-3 px-5'>
@@ -76,7 +98,7 @@ const NotificationModal = (
                                             <p className="text-sm text-gray-400">{notification?.createdAt}</p>
                                         </div>
                                     </div>
-                                </Link>
+                                </div>
                             </MenuItem>
                         ))}
                     </div>

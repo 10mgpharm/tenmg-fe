@@ -1,3 +1,5 @@
+"use client";
+
 import { Checkbox } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import EmptyCard from '../_components/EmptyCard'
