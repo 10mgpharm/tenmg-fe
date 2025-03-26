@@ -32,7 +32,7 @@ import { FiX } from "react-icons/fi";
 import { BusinessStatus } from "@/constants";
 import { toast } from "react-toastify";
 import NoticeCard from "./NoticeCard";
-import { useWishlistStore } from "../storeFrontState/useWIshlist";
+import { useWishlistStore } from "../(NoSideMenu)/storeFrontState/useWIshlist";
 
 const StoreFrontPharmacy = () => {
   const session = useSession();
@@ -71,11 +71,11 @@ const StoreFrontPharmacy = () => {
     if (userData?.user?.token) fetchStoreFront();
   }, [userData?.user?.token]);
 
-  const { fetchWishlist, } = useWishlistStore()
+  const { fetchWishlist } = useWishlistStore();
 
   useEffect(() => {
     if (userData?.user?.token) fetchWishlist(userData?.user?.token);
-  }, [fetchWishlist, userData?.user?.token])
+  }, [fetchWishlist, userData?.user?.token]);
 
   return (
     <div className="">
@@ -87,12 +87,12 @@ const StoreFrontPharmacy = () => {
         BusinessStatus.SUSPENDED,
         BusinessStatus.BANNED,
       ].includes(userData?.user?.businessStatus) && (
-          <NoticeCard
-            setOpen={onOpen}
-            url="/storefront/settings/license-upload"
-            status={userData?.user?.businessStatus}
-          />
-        )}
+        <NoticeCard
+          setOpen={onOpen}
+          url="/storefront/settings/license-upload"
+          status={userData?.user?.businessStatus}
+        />
+      )}
       <div className="p-8 px-6 md:px-20 max-w-screen-2xl">
         <Carousel />
       </div>

@@ -9,32 +9,6 @@ import { NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { cn } from "@/lib/utils";
-// import carousel1 from "@public/assets/images/carousel1.png";
-// import carousel2 from "@public/assets/images/carousel2.jpg";
-// import carousel3 from "@public/assets/images/carousel3.jpg";
-// import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-// import {
-//   MdOutlineKeyboardArrowLeft,
-//   MdOutlineKeyboardArrowRight,
-// } from "react-icons/md";
-
-// const slides = [
-//   {
-//     id: 1,
-//     image: carousel1,
-//     title: "Your pathway to wellness begins here.",
-//   },
-//   {
-//     id: 2,
-//     image: carousel2,
-//     title: "Experience top-notch healthcare services.",
-//   },
-//   {
-//     id: 3,
-//     image: carousel3,
-//     title: "Find all your prescriptions in one place.",
-//   },
-// ];
 
 type SlideType = {
   id: number;
@@ -101,7 +75,7 @@ const Carousel: React.FC = () => {
                 objectPosition="center"
                 borderRadius="8px"
               />
-              <Box
+              {/* <Box
                 position="absolute"
                 top="0"
                 left="0"
@@ -111,8 +85,8 @@ const Carousel: React.FC = () => {
                 display="flex"
                 alignItems="center"
                 borderRadius="8px"
-              >
-                {/* <Text
+              > */}
+              {/* <Text
                   fontSize={{ base: "2xl", md: "6xl" }}
                   color="white"
                   fontWeight="bold"
@@ -121,7 +95,7 @@ const Carousel: React.FC = () => {
                 >
                   {title ?? "Find all your prescriptions in one place."}
                 </Text> */}
-              </Box>
+              {/* </Box> */}
             </Box>
           ))}
         </Flex>

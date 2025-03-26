@@ -1,9 +1,4 @@
-import {
-  RangeSlider,
-  RangeSliderTrack,
-  Select,
-  useRangeSlider,
-} from "@chakra-ui/react";
+import { Select } from "@chakra-ui/react";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";

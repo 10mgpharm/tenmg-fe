@@ -27,7 +27,7 @@ import emptyCart from "@public/assets/images/emptyOrder.png";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { useCartStore } from "../storeFrontState/useCartStore";
+import { useCartStore } from "../(NoSideMenu)/storeFrontState/useCartStore";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -45,14 +45,17 @@ const CartDrawer = ({
   handleOpenRemove: () => void;
 }) => {
   const [cartItems, setCartItems] = useState<any>({});
-  const [localQuantities, setLocalQuantities] = useState<{ [key: number]: number }>({});
+  const [localQuantities, setLocalQuantities] = useState<{
+    [key: number]: number;
+  }>({});
   const [subtotal, setSubtotal] = useState<number>(0);
 
   const router = useRouter();
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
 
-  const { cart, addToCart, updateLoading, sycnCart, fetchCart, clearCart } = useCartStore();
+  const { cart, addToCart, updateLoading, sycnCart, fetchCart, clearCart } =
+    useCartStore();
 
   useEffect(() => {
     if (cart) {
@@ -76,7 +79,11 @@ const CartDrawer = ({
     if (cartItems?.items) {
       let total = 0;
       cartItems?.items?.forEach((item) => {
-        const price = parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice);
+        const price =
+          parseFloat(item?.product?.discountPrice) > 0
+            ? parseFloat(item?.product?.actualPrice) -
+              parseFloat(item?.product?.discountPrice)
+            : parseFloat(item?.product?.actualPrice);
         total += price * localQuantities[item.product.id];
       });
       setSubtotal(total);
@@ -86,25 +93,21 @@ const CartDrawer = ({
   const handleCheckout = () => {
     const data_array = [];
 
-
     // Update the global state with the local quantities
     cartItems?.items?.forEach((item) => {
-
       const data = {
         itemId: item.id,
         quantity: localQuantities[item.product.id],
         // action: "update",
       };
 
-      data_array.push(data)
-
+      data_array.push(data);
     });
-
 
     const data_obj = {
       cartId: cartItems?.id,
-      items: data_array
-    }
+      items: data_array,
+    };
 
     sycnCart(data_obj, userData?.user?.token);
     router.push("/storefront/checkout");
@@ -120,23 +123,24 @@ const CartDrawer = ({
 
   // Function to remove item from cart
   const removeItem = (itemId: number) => {
-    const item = cartItems?.items.find((item) => item?.product?.id == itemId).quantity;
+    const item = cartItems?.items.find(
+      (item) => item?.product?.id == itemId
+    ).quantity;
 
     const data = {
       productId: itemId,
       qty: 1,
-      action: 'remove'
-    }
+      action: "remove",
+    };
 
-    addToCart(data, userData?.user?.token)
+    addToCart(data, userData?.user?.token);
   };
-
 
   const handleClearCart = async () => {
     clearCart(userData?.user?.token);
     onClose();
     window.location.reload();
-  }
+  };
 
   return (
     <Drawer
@@ -210,10 +214,18 @@ const CartDrawer = ({
                 <Divider />
                 {/* Action Buttons */}
                 <Stack mt={6} mx={4} spacing={4}>
-                  <Button width="full" colorScheme="blue" onClick={handleCheckout}>
+                  <Button
+                    width="full"
+                    colorScheme="blue"
+                    onClick={handleCheckout}
+                  >
                     Checkout
                   </Button>
-                  <Button width="full" variant="outline" onClick={handleClearCart}>
+                  <Button
+                    width="full"
+                    variant="outline"
+                    onClick={handleClearCart}
+                  >
                     Clear Cart
                   </Button>
                 </Stack>
@@ -227,7 +239,6 @@ const CartDrawer = ({
 };
 
 export default CartDrawer;
-
 
 const CartItemComp = ({
   item,
@@ -256,7 +267,6 @@ const CartItemComp = ({
     }
   };
 
-
   return (
     <HStack
       spacing={6}
@@ -275,10 +285,17 @@ const CartItemComp = ({
       />
 
       {/* Product Details */}
-      <Stack align="start" spacing={1} flex="1" h="full" justify="space-between">
+      <Stack
+        align="start"
+        spacing={1}
+        flex="1"
+        h="full"
+        justify="space-between"
+      >
         {/* Product Name */}
         <Text fontWeight="medium" fontSize="md">
-          {item?.product?.name} {item?.product?.variation?.strengthValue}{item?.product?.measurement?.name}
+          {item?.product?.name} {item?.product?.variation?.strengthValue}
+          {item?.product?.measurement?.name}
         </Text>
 
         {/* Stock Information and Price */}
@@ -289,10 +306,18 @@ const CartItemComp = ({
           <div className="flex items-center gap-x-2 ">
             {item?.product.discountPrice > 0 && (
               <p className="text-gray-900 font-semibold my-2 text-sm">
-                ₦{parseInt(item?.product.actualPrice) - parseInt(item?.product.discountPrice)}
+                ₦
+                {parseInt(item?.product.actualPrice) -
+                  parseInt(item?.product.discountPrice)}
               </p>
             )}
-            <p className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+            <p
+              className={`font-semibold my-2 text-sm ${
+                item?.product.discountPrice > 0
+                  ? "text-gray-400 line-through"
+                  : "text-gray-900"
+              }`}
+            >
               ₦{item?.product.actualPrice}
             </p>
             {/* ₦{parseFloat(item?.product?.discountPrice) > 0 ? parseFloat(item?.product?.actualPrice) - parseFloat(item?.product?.discountPrice) : parseFloat(item?.product?.actualPrice)} */}
@@ -327,7 +352,9 @@ const CartItemComp = ({
             }}
             aria-label="Increase quantity"
             onClick={handleIncrease}
-            color={quantity === item?.product?.quantity ? "gray.300" : "inherit"}
+            color={
+              quantity === item?.product?.quantity ? "gray.300" : "inherit"
+            }
           />
         </HStack>
       </Stack>
