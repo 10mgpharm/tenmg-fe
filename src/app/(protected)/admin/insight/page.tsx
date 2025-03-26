@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
 import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const Insight = () => {
 
@@ -37,6 +38,67 @@ const Insight = () => {
         fetchOverview();
     }, [token, fetchOverview]);
 
+    const mockdata = [
+        {
+          name: '12:00am',
+          uv: 2760,
+        },
+        {
+          name: '6:00am',
+          uv: 3400,
+        },
+        {
+          name: '12:00pm',
+          uv: 9000,
+        },
+        {
+          name: '6:00pm',
+          uv: 1002,
+      
+        },
+    ];
+    const mockdata2 = [
+        {
+          name: 'Mon',
+          uv: 2760,
+        },
+        {
+          name: 'Tue',
+          uv: 3400,
+        },
+        {
+          name: 'Wed',
+          uv: 9000,
+        },
+        {
+          name: 'Thur',
+          uv: 1002,
+      
+        },
+        {
+          name: 'Fri',
+          uv: 102,
+      
+        },
+        {
+          name: 'Sat',
+          uv: 197,
+      
+        },
+        {
+          name: 'Sun',
+          uv: 342,
+      
+        },
+      ];
+
+    const formatYAxisTick = (tickItem: any) => {
+        if (tickItem >= 1000) {
+          return `${(tickItem).toLocaleString()}`;
+        }
+        return tickItem;
+    };
+
     console.log(data)
 
   return (
@@ -53,16 +115,88 @@ const Insight = () => {
         </div>
         <div className="flex gap-5 mt-6">
             <div className="flex-1 bg-white p-5 rounded-md">
-                <h3 className="text-gray-600 font-semibold text-lg">Total Product Sold</h3>
-                <EmptyCard/>
+                <h3 className="text-gray-600 font-semibold text-lg mb-5">Total Product Sold</h3>
+                {
+                    (data?.totalProductsSold?.midnightToSixAm && data?.totalProductsSold?.sixAmToTwelvePm) ?
+                    <div style={{ width: '100%', height: 320 }}>
+                        <ResponsiveContainer>
+                        <AreaChart
+                            width={500}
+                            height={300}
+                            data={mockdata}
+                            margin={{
+                            top: 10,
+                            right: 10,
+                            left: -5,
+                            bottom: 0,
+                            }}
+                        >
+                            <CartesianGrid strokeOpacity={0.5} strokeDasharray="12 10" color='#F2F4F7' vertical={false}/>
+                            <XAxis tickLine={false} axisLine={false} fontSize={"14px"} dataKey="name" />
+                            <YAxis tickLine={false} axisLine={false} fontSize={"14px"} tickFormatter={formatYAxisTick}/>
+                            <Tooltip />
+                            <Area type="monotone" dataKey="uv" stroke="#FDB022" strokeWidth={"2px"} fill="#FFF7ED" />
+                        </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                    : <EmptyCard/> 
+                }
             </div>
             <div className="flex-1 bg-white p-5 rounded-md">
                 <h3 className="text-gray-600 font-semibold text-lg">Total Revenue</h3>
-                <EmptyCard/>
+                {
+                    (data?.totalRevenue?.midnightToSixAm && data?.totalRevenue?.sixAmToTwelvePm) ?
+                    <div style={{ width: '100%', height: 320 }}>
+                        <ResponsiveContainer>
+                        <AreaChart
+                            width={500}
+                            height={300}
+                            data={mockdata}
+                            margin={{
+                            top: 10,
+                            right: 10,
+                            left: -5,
+                            bottom: 0,
+                            }}
+                        >
+                            <CartesianGrid strokeOpacity={0.5} strokeDasharray="12 10" color='#F2F4F7' vertical={false}/>
+                            <XAxis tickLine={false} axisLine={false} fontSize={"14px"} dataKey="name" />
+                            <YAxis tickLine={false} axisLine={false} fontSize={"14px"} tickFormatter={formatYAxisTick}/>
+                            <Tooltip />
+                            <Area type="monotone" dataKey="uv" stroke="#FDB022" strokeWidth={"2px"} fill="#FFF7ED" />
+                        </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                    : <EmptyCard/> 
+                }
             </div>
             <div className="flex-1 bg-white p-5 rounded-md">
                 <h3 className="text-gray-600 font-semibold text-lg">Best Selling Products</h3>
-                <EmptyCard/>
+                {
+                    (data?.bestSellingProducts?.length > 0) ?
+                    <div style={{ width: '100%', height: 320 }}>
+                        <ResponsiveContainer>
+                        <AreaChart
+                            width={500}
+                            height={300}
+                            data={mockdata2}
+                            margin={{
+                            top: 10,
+                            right: 10,
+                            left: -5,
+                            bottom: 0,
+                            }}
+                        >
+                            <CartesianGrid strokeOpacity={0.5} strokeDasharray="12 10" color='#F2F4F7' vertical={false}/>
+                            <XAxis tickLine={false} axisLine={false} fontSize={"14px"} dataKey="name" />
+                            <YAxis tickLine={false} axisLine={false} fontSize={"14px"} tickFormatter={formatYAxisTick}/>
+                            <Tooltip />
+                            <Area type="monotone" dataKey="uv" stroke="#FDB022" strokeWidth={"2px"} fill="#FFF7ED" />
+                        </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                    : <EmptyCard/> 
+                }
             </div>
         </div>
     </div>

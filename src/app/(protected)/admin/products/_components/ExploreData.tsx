@@ -54,12 +54,12 @@ const ExploreData = () => {
     
     const series = [
         {
-            name: "Total Visits",
-            data: [7, 6, 19, 6, 6, 10, 0],
+          name: "Total Visits",
+          data: [7, 6, 19, 6, 6, 10, 0],
         },
         {
-            name: "Total Orders",
-            data: [5, 4, 0, 6, 2, 6, 0],
+          name: "Total Orders",
+          data: [5, 4, 0, 6, 2, 6, 0],
         },
     ];
   return (
@@ -91,14 +91,14 @@ const ExploreData = () => {
                 <div className="">
                     <select className="border p-2 rounded-lg text-gray-500 outline-none">
                         {
-                            options.map((option) => (
-                                <option 
-                                key={option.label} 
-                                value={option.value} 
-                                className="text-gray-500">
-                                    {option.label}
-                                </option>
-                            ))
+                          options.map((option) => (
+                            <option 
+                            key={option.label} 
+                            value={option.value} 
+                            className="text-gray-500">
+                                {option.label}
+                            </option>
+                          ))
                         }
                     </select>
                 </div>
