@@ -1,10 +1,10 @@
+"use client";
+
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import {
   Button,
-  FormControl,
-  FormLabel,
   IconButton,
   Input,
   InputGroup,
@@ -19,13 +19,8 @@ import {
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { FiSearch } from "react-icons/fi";
 import { toast } from "react-toastify";
-
-interface IFormInput {
-  search: string;
-}
 
 const SearchModal = ({
   isSearchOpen,
@@ -63,13 +58,8 @@ const SearchModal = ({
     fetchData(`/storefront/products/search?search=${debouncedSearch.trim()}`);
   }, [debouncedSearch, userData?.user?.token]);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    handleSearch();
-  };
-
   const handleSearch = (selectedValue?: string) => {
-    if (!selectedValue || !searchValue) return handleCloseSearch();
+    if (!selectedValue && !searchValue.trim()) return handleCloseSearch();
 
     const newParams = new URLSearchParams(searchParams.toString());
 
@@ -103,42 +93,40 @@ const SearchModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalBody className=" !p-2 !rounded-lg">
-          <form onSubmit={onSubmit} className="w-full">
-            <InputGroup size="md">
-              <InputLeftElement>
-                <IconButton
-                  size="sm"
-                  bgColor={"transparent"}
-                  _hover={{
-                    bg: "transparent",
-                  }}
-                  aria-label="search"
-                >
-                  <FiSearch className="text-gray-400" />
-                </IconButton>
-              </InputLeftElement>
-              <Input
-                className=" p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
-                type={"text"}
-                placeholder="Search for a product or manufacturer"
-                onChange={(e) => setSearchValue(e.target.value)}
-                value={searchValue}
-                tabIndex={1}
-              />
-              <InputRightElement width="4.5rem">
-                <Button
-                  variant={"solid"}
-                  size="sm"
-                  type="submit"
-                  loadingText="Searching"
-                  disabled={searchValue.trim() === ""}
-                  mr={1}
-                >
-                  Search
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          </form>
+          <InputGroup size="md">
+            <InputLeftElement>
+              <IconButton
+                size="sm"
+                bgColor={"transparent"}
+                _hover={{
+                  bg: "transparent",
+                }}
+                aria-label="search"
+              >
+                <FiSearch className="text-gray-400" />
+              </IconButton>
+            </InputLeftElement>
+            <Input
+              className=" p-[10px_14px] w-full gap-2 rounded-lg border-1 border-gray-300"
+              type={"text"}
+              placeholder="Search for a product or manufacturer"
+              onChange={(e) => setSearchValue(e.target.value)}
+              value={searchValue}
+              tabIndex={1}
+            />
+            <InputRightElement width="4.5rem">
+              <Button
+                variant={"solid"}
+                size="sm"
+                loadingText="Searching"
+                disabled={searchValue.trim() === ""}
+                mr={1}
+                onClick={() => handleSearch()}
+              >
+                Search
+              </Button>
+            </InputRightElement>
+          </InputGroup>
 
           {/* Add condition to show */}
           {searchValue.trim() !== "" && data.length === 0 && !isLoading ? (
