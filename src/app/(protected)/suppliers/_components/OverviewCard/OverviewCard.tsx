@@ -8,6 +8,7 @@ interface OverviewCardProps {
   fromColor: string;
   toColor: string;
   image?: string;
+  icon?: any;
   toggleable?: boolean;
   isHidden?: boolean;
   onToggleVisibility?: () => void;
@@ -19,6 +20,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
   fromColor,
   toColor,
   image,
+  icon,
   toggleable = false,
   isHidden = false,
   onToggleVisibility,
@@ -54,6 +56,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
           </p>
           <p className="font-medium text-white text-2xl">{value}</p>
         </div>
+        {icon && <Image src={icon} alt="" />}
       </div>
 
       {image && (
