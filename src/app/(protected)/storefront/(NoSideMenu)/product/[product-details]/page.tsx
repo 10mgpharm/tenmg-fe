@@ -146,11 +146,10 @@ export default function ProductDetailPage() {
                     </p>
                   )}
                 <p
-                  className={`text-base font-semibold ${
-                    productData?.discountPrice > 0 &&
+                  className={`text-base font-semibold ${productData?.discountPrice > 0 &&
                     productData?.discountPrice !== productData?.actualPrice &&
                     "text-gray-300 line-through"
-                  }`}
+                    }`}
                 >
                   ₦{productData?.actualPrice}
                 </p>
