@@ -1,10 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { classNames, formatAmountString } from "@/utils";
-import { OrderData } from "@/types";
-import { convertDate } from "@/utils/formatDate";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useRouter } from "next/navigation";
 import { ShoppingList } from "@/types/shoppingList";
 
 const columnHelper = createColumnHelper<ShoppingList>();
@@ -12,12 +8,9 @@ const columnHelper = createColumnHelper<ShoppingList>();
 export function ShoppingListColumsOrderFN(
   pageIndex: number,
   pageSize: number,
-  type: string,
   onOpenDetails: () => void,
   setSelectedProduct: (item: any) => void
 ) {
-  const router = useRouter();
-
   return [
     columnHelper.accessor("id", {
       header: () => (
@@ -37,7 +30,7 @@ export function ShoppingListColumsOrderFN(
         );
       },
     }),
-    columnHelper.accessor("productName", {
+    columnHelper.accessor("customer.name", {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -47,13 +40,9 @@ export function ShoppingListColumsOrderFN(
       ),
       cell: (info) => (
         <div className="flex flex-col gap-1">
-          <p>
-            {/* {info.row.original?.customerName} */}
-            Oneyejkwe ugonna
-          </p>
+          <p>{info.row.original?.customer.name}</p>
           <span className="text-[13px] text-gray-400">
-            {/* {info.row.original?.companyName} */}
-            Luco pharm
+            {info.row.original?.customer.businessName}
           </span>
         </div>
       ),
@@ -75,28 +64,7 @@ export function ShoppingListColumsOrderFN(
       ),
     }),
 
-    columnHelper.accessor("productName", {
-      header: ({ column }) => <p>Status</p>,
-      cell: (info) => {
-        return (
-          <div>
-            <p
-              className={classNames(
-                info?.row?.original?.productName.toUpperCase() === "NOT BOUGHT"
-                  ? "text-[#027A48] bg-[#ECFDF3]"
-                  : "bg-[#FFFAEB] text-[#F79009]",
-                " max-w-min p-1 px-2 rounded-2xl text-xs font-medium  capitalize"
-              )}
-            >
-              <span className="rounded-full text-[1.2rem] pt-4">•</span> Not
-              purchased
-            </p>
-          </div>
-        );
-      },
-    }),
-
-    columnHelper.accessor("productName", {
+    columnHelper.accessor("productId", {
       header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
