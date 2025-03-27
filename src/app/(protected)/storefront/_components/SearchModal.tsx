@@ -83,11 +83,6 @@ const SearchModal = ({
     handleCloseSearch();
   };
 
-  // When enter btn is clicked
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleSearch();
-  });
-
   return (
     <Modal isOpen={isSearchOpen} onClose={handleCloseSearch}>
       <ModalOverlay />
@@ -111,6 +106,7 @@ const SearchModal = ({
               type={"text"}
               placeholder="Search for a product or manufacturer"
               onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               value={searchValue}
               tabIndex={1}
             />
