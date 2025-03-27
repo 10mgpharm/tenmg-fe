@@ -28,7 +28,7 @@ const navigation = [
   { name: 'Products', href: '/suppliers/products', icon: FiShoppingBag, current: false },
   { name: 'Insight', href: '/suppliers/insight', icon: BsGraphUpArrow, current: false },
   { name: 'Wallet', href: '/suppliers/wallet', icon: CiWallet, current: false },
-  { name: 'Message', href: '/suppliers/messages', icon: BiMessageDetail, current: false },
+  { name: 'Messages', href: '/suppliers/messages', icon: BiMessageDetail, current: false },
   { name: 'Settings', href: '/suppliers/settings', icon: Cog6ToothIcon, current: false },
 ]
 
@@ -105,6 +105,12 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                                 )}
                               />
                               {item.name}
+                              {
+                                item.name === "Messages" &&
+                                <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                                  {0}
+                                </div>
+                              }
                             </Link>
                           </li>
                         )
@@ -162,6 +168,12 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                             )}
                           />
                           {item.name}
+                          {
+                            item.name === "Messages" &&
+                            <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                              {0}
+                            </div>
+                          }
                         </Link>
                       </li>
                     )

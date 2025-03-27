@@ -121,6 +121,12 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                                 )}
                               />
                               {item.name}
+                              {
+                                item.name === "Messages" &&
+                                <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                                  {0}
+                                </div>
+                              }
                             </Link>
                           </li>
                         );
@@ -180,6 +186,12 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                             )}
                           />
                           {item.name}
+                          {
+                            item.name === "Messages" &&
+                            <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                              {0}
+                            </div>
+                          }
                         </Link>
                       </li>
                     );
