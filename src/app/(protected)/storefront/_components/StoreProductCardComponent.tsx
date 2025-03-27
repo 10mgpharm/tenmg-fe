@@ -12,6 +12,7 @@ import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { useWishlistStore } from "../(NoSideMenu)/storeFrontState/useWIshlist";
 import { LoaderIcon } from "lucide-react";
+import RatingComponent from "./RatingComponent";
 
 export default function StoreProductCardComponent({ product }: any) {
   const router = useRouter();
@@ -108,9 +109,8 @@ export default function StoreProductCardComponent({ product }: any) {
           onClick={(e) => handleWishlistClick(e, product?.id)}
         >
           <HeartIcon
-            className={`w-6 stroke-primary ${
-              addedToWishlist ? "fill-primary-500" : "fill-primary-50"
-            }`}
+            className={`w-6 stroke-primary ${addedToWishlist ? "fill-primary-500" : "fill-primary-50"
+              }`}
           />
         </div>
       </div>
@@ -121,20 +121,21 @@ export default function StoreProductCardComponent({ product }: any) {
           </p>
         )}
         <p
-          className={`font-semibold my-2 text-sm ${
-            product?.discountPrice > 0
-              ? "text-gray-400 line-through"
-              : "text-gray-900"
-          }`}
+          className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
+            ? "text-gray-400 line-through"
+            : "text-gray-900"
+            }`}
         >
           ₦{product?.actualPrice}
         </p>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          {[...Array(5)].map((_, i) => (
-            <StarIcon key={i} className="w-5 fill-warning-400 stroke-none" />
-          ))}
+          <RatingComponent
+            rating={product?.rating ?? 0}
+            handleRating={() => { }}
+            readonly={true}
+          />
         </div>
         <Tag
           size="sm"
@@ -197,7 +198,7 @@ export default function StoreProductCardComponent({ product }: any) {
   );
 
   return (
-    <div className="w-fit max-w-[311px] px-3 py-3 flex flex-col items-center justify-center shadow-lg rounded-md">
+    <div className="w-fit max-w-[311px] px-3 py-3 mx-4 flex flex-col items-center justify-center shadow-lg rounded-md">
       {isProductClickable ? (
         <div>
           <Link href={`/storefront/product/${product?.slug}`}>
