@@ -4,15 +4,14 @@ import { HeartIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useCartStore } from "../storeFrontState/useCartStore";
+import { useCartStore } from "../(NoSideMenu)/storeFrontState/useCartStore";
 import { Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { BusinessStatus } from "@/constants";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
-import { useWishlistStore } from "../storeFrontState/useWIshlist";
+import { useWishlistStore } from "../(NoSideMenu)/storeFrontState/useWIshlist";
 import { LoaderIcon } from "lucide-react";
-
 
 export default function StoreProductCardComponent({ product }: any) {
   const router = useRouter();
@@ -23,23 +22,30 @@ export default function StoreProductCardComponent({ product }: any) {
   const [cartList, setAddCartlist] = useState(null);
   const [addedTocart, setAddedToCart] = useState(false);
   const { addToCart, updateLoading, cart } = useCartStore();
-  const { addToWishlist, wishlist, loading, removeWishlistItem } = useWishlistStore();
+  const { addToWishlist, wishlist, loading, removeWishlistItem } =
+    useWishlistStore();
 
   useEffect(() => {
-    setAddedToWishlist(wishlist?.findIndex((item) => item?.productId === product?.id) >= 0)
-  }, [wishlist, product])
+    setAddedToWishlist(
+      wishlist?.findIndex((item) => item?.productId === product?.id) >= 0
+    );
+  }, [wishlist, product]);
 
   useEffect(() => {
     if (cart) {
-      setAddCartlist(cart)
+      setAddCartlist(cart);
     }
-  }, [cart])
+  }, [cart]);
 
   useEffect(() => {
     if (cartList) {
-      setAddedToCart(cartList?.items?.findIndex((item) => item?.product?.id === product?.id) >= 0)
+      setAddedToCart(
+        cartList?.items?.findIndex(
+          (item) => item?.product?.id === product?.id
+        ) >= 0
+      );
     }
-  }, [cartList, product])
+  }, [cartList, product]);
 
   const businessStatus = userData?.user?.businessStatus;
 
@@ -63,24 +69,25 @@ export default function StoreProductCardComponent({ product }: any) {
     };
     await addToCart(data, userData?.user?.token).then((res) =>
       setLoadingAddToCart(false)
-    )
+    );
   };
 
-
-  const handleWishlistClick = async (e: React.MouseEvent, id: number | string) => {
+  const handleWishlistClick = async (
+    e: React.MouseEvent,
+    id: number | string
+  ) => {
     e.stopPropagation(); // Prevent event propagation to the parent Link
     if (addedToWishlist === true) {
-      const wishlistId = wishlist.find((item) => item?.productId === product?.id).id
+      const wishlistId = wishlist.find(
+        (item) => item?.productId === product?.id
+      ).id;
       setAddedToWishlist(false);
       removeWishlistItem(wishlistId, userData?.user?.token, setAddedToWishlist);
     } else {
       setAddedToWishlist(true);
-      addToWishlist(id, userData?.user?.token, setAddedToWishlist)
+      addToWishlist(id, userData?.user?.token, setAddedToWishlist);
     }
-
   };
-
-
 
   const renderProductImage = () => (
     <div
@@ -92,9 +99,19 @@ export default function StoreProductCardComponent({ product }: any) {
   const renderProductDetails = () => (
     <div className="w-full">
       <div className="flex items-center justify-between my-2">
-        <p className="text-gray-950 font-semibold text-sm capitalize">{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</p>
-        <div className="relative z-10 cursor-pointer" onClick={(e) => handleWishlistClick(e, product?.id)}>
-          <HeartIcon className={`w-6 stroke-primary ${addedToWishlist ? "fill-primary-500" : "fill-primary-50"}`} />
+        <p className="text-gray-950 font-semibold text-sm capitalize">
+          {product?.name} {product?.variation?.strengthValue}
+          {product?.measurement?.name}
+        </p>
+        <div
+          className="relative z-10 cursor-pointer"
+          onClick={(e) => handleWishlistClick(e, product?.id)}
+        >
+          <HeartIcon
+            className={`w-6 stroke-primary ${
+              addedToWishlist ? "fill-primary-500" : "fill-primary-50"
+            }`}
+          />
         </div>
       </div>
       <div className="relative flex items-center gap-x-2">
@@ -103,7 +120,13 @@ export default function StoreProductCardComponent({ product }: any) {
             ₦{parseInt(product?.actualPrice) - parseInt(product?.discountPrice)}
           </p>
         )}
-        <p className={`font-semibold my-2 text-sm ${product?.discountPrice > 0 ? "text-gray-400 line-through" : "text-gray-900"}`}>
+        <p
+          className={`font-semibold my-2 text-sm ${
+            product?.discountPrice > 0
+              ? "text-gray-400 line-through"
+              : "text-gray-900"
+          }`}
+        >
           ₦{product?.actualPrice}
         </p>
       </div>
@@ -117,15 +140,24 @@ export default function StoreProductCardComponent({ product }: any) {
           size="sm"
           ml="1"
           borderRadius="full"
-          color={product?.inventory?.toLowerCase() === "in stock" ? "green.500" : "error.500"}
-          bgColor={product?.inventory?.toLowerCase() === "in stock" ? "green.100" : "error.100"}
+          color={
+            product?.inventory?.toLowerCase() === "in stock"
+              ? "green.500"
+              : "error.500"
+          }
+          bgColor={
+            product?.inventory?.toLowerCase() === "in stock"
+              ? "green.100"
+              : "error.100"
+          }
         >
-
-          <TagLabel className="">{product?.inventory.toLowerCase()
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
-          }</TagLabel>
+          <TagLabel className="">
+            {product?.inventory
+              .toLowerCase()
+              .split(" ")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ")}
+          </TagLabel>
         </Tag>
       </div>
     </div>
@@ -134,7 +166,10 @@ export default function StoreProductCardComponent({ product }: any) {
   const renderButtons = () => (
     <div className="flex items-center justify-between w-full gap-4 my-2">
       <button
-        disabled={!isProductClickable || product?.inventory?.toLowerCase() !== "in stock"}
+        disabled={
+          !isProductClickable ||
+          product?.inventory?.toLowerCase() !== "in stock"
+        }
         className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer disabled:cursor-not-allowed"
         onClick={() => {
           handleAddToCart(product?.id, "add");
@@ -146,9 +181,17 @@ export default function StoreProductCardComponent({ product }: any) {
       <button
         disabled={!isProductClickable || updateLoading}
         className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
-        onClick={() => { handleAddToCart(product?.id, addedTocart ? "remove" : "add") }}
+        onClick={() => {
+          handleAddToCart(product?.id, addedTocart ? "remove" : "add");
+        }}
       >
-        {loadingAddToCart ? <LoaderIcon className="size-3 mx-auto" /> : addedTocart ? "Remove From Cart" : "Add To Cart"}
+        {loadingAddToCart ? (
+          <LoaderIcon className="size-3 mx-auto" />
+        ) : addedTocart ? (
+          "Remove From Cart"
+        ) : (
+          "Add To Cart"
+        )}
       </button>
     </div>
   );
@@ -172,4 +215,3 @@ export default function StoreProductCardComponent({ product }: any) {
     </div>
   );
 }
-

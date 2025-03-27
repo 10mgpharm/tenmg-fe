@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -15,16 +15,16 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea
-} from '@chakra-ui/react'
-import { Controller, useForm } from 'react-hook-form';
-import { FiUploadCloud } from 'react-icons/fi';
-import { useSession } from 'next-auth/react';
-import { NextAuthUserSession } from '@/types';
-import requestClient from '@/lib/requestClient';
-import CreatableSelect from 'react-select/creatable';
-import { toast } from 'react-toastify';
-import { useShoppingList } from '../../storeFrontState/useShoppingList';
+  Textarea,
+} from "@chakra-ui/react";
+import { Controller, useForm } from "react-hook-form";
+import { FiUploadCloud } from "react-icons/fi";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
+import CreatableSelect from "react-select/creatable";
+import { toast } from "react-toastify";
+import { useShoppingList } from "../../(NoSideMenu)/storeFrontState/useShoppingList";
 
 interface IShoppingListInput {
   productName: string;
@@ -34,7 +34,7 @@ interface IShoppingListInput {
 }
 
 export default function AddShoppingList() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { addShoppingList, shoppingList } = useShoppingList();
   const session = useSession();
@@ -51,7 +51,7 @@ export default function AddShoppingList() {
     handleSubmit,
     setValue,
     reset,
-    control
+    control,
   } = useForm<IShoppingListInput>({
     mode: "onChange",
     defaultValues: {
@@ -66,13 +66,19 @@ export default function AddShoppingList() {
     const fetchStoreFront = async () => {
       setIsLoading(true);
       try {
-        const response = await requestClient({ token: userData?.user?.token }).get("/storefront");
-        const allProducts = response?.data?.data?.data?.flatMap((item) => item.products) || [];
+        const response = await requestClient({
+          token: userData?.user?.token,
+        }).get("/storefront");
+        const allProducts =
+          response?.data?.data?.data?.flatMap((item) => item.products) || [];
         const filteredProducts = allProducts.filter(
-          (product) => !shoppingList?.some((item) => item?.productId === product?.id)
+          (product) =>
+            !shoppingList?.some((item) => item?.productId === product?.id)
         );
         const conciseProducts = filteredProducts.map((product) => ({
-          label: `${product.name} ${product.variation?.strengthValue || ""} ${product.measurement?.name || ""}`,
+          label: `${product.name} ${product.variation?.strengthValue || ""} ${
+            product.measurement?.name || ""
+          }`,
           value: product.id,
           productBrand: product.brand || "Unknown Brand",
         }));
@@ -90,21 +96,20 @@ export default function AddShoppingList() {
   const handleOptionSelect = (selectedOption) => {
     if (selectedOption) {
       setNameValue(selectedOption);
-      setValue('brandName', selectedOption.productBrand?.name);
-      setValue('productName', selectedOption?.label);
+      setValue("brandName", selectedOption.productBrand?.name);
+      setValue("productName", selectedOption?.label);
     }
   };
 
   const handleCreate = (inputValue) => {
     setNameValue({ label: inputValue, value: inputValue });
-    setValue('productName', inputValue);
+    setValue("productName", inputValue);
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
-
     }
   };
 
@@ -113,7 +118,6 @@ export default function AddShoppingList() {
     const file = event.dataTransfer.files[0];
     if (file) {
       setSelectedFile(file);
-
     }
   };
 
@@ -123,16 +127,16 @@ export default function AddShoppingList() {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    formData.append('productName', data.productName);
-    formData.append('brandName', data.brandName);
-    formData.append('purchaseDate', data.purchaseDate);
-    formData.append('description', data.description);
-    formData.append('file', selectedFile);
+    formData.append("productName", data.productName);
+    formData.append("brandName", data.brandName);
+    formData.append("purchaseDate", data.purchaseDate);
+    formData.append("description", data.description);
+    formData.append("file", selectedFile);
 
     if (nameValue?.value === nameValue?.label) {
-      formData.append('existIn10mgStore', 'NON-EXIST');
+      formData.append("existIn10mgStore", "NON-EXIST");
     } else {
-      formData.append('productId', nameValue?.value);
+      formData.append("productId", nameValue?.value);
     }
 
     const res = await addShoppingList(formData, userData?.user?.token);
@@ -179,13 +183,17 @@ export default function AddShoppingList() {
                       isClearable
                       isSearchable
                       placeholder="Select or type a product name"
-                      onChange={(newValue) => { handleOptionSelect(newValue) }}
+                      onChange={(newValue) => {
+                        handleOptionSelect(newValue);
+                      }}
                       onCreateOption={handleCreate}
                       value={nameValue}
                       styles={{
                         control: (base) => ({
                           ...base,
-                          borderColor: errors.productName ? "red" : base.borderColor,
+                          borderColor: errors.productName
+                            ? "red"
+                            : base.borderColor,
                         }),
                       }}
                     />
@@ -224,7 +232,9 @@ export default function AddShoppingList() {
                   placeholder="Additional Information"
                   isInvalid={!!errors.description}
                   _focus={{
-                    border: !!errors.description ? "red.300" : "border-gray-300",
+                    border: !!errors.description
+                      ? "red.300"
+                      : "border-gray-300",
                   }}
                   {...register("description", {
                     required: true,
@@ -235,7 +245,7 @@ export default function AddShoppingList() {
               <div>
                 <FormLabel>Images (Optional)</FormLabel>
                 <div
-                  className='flex flex-col gap-2 cursor-pointer border border-dashed border-slate-300 rounded-md p-4'
+                  className="flex flex-col gap-2 cursor-pointer border border-dashed border-slate-300 rounded-md p-4"
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                 >
@@ -244,8 +254,13 @@ export default function AddShoppingList() {
                       <FiUploadCloud className="w-6 h-6 text-gray-700" />
                     </div>
                   </label>
-                  <p className='text-sm font-normal text-center'>
-                    <label htmlFor="file-upload" className="cursor-pointer font-semibold text-primary-500">Select a PNG or JPEG to upload</label>
+                  <p className="text-sm font-normal text-center">
+                    <label
+                      htmlFor="file-upload"
+                      className="cursor-pointer font-semibold text-primary-500"
+                    >
+                      Select a PNG or JPEG to upload
+                    </label>
                     <br /> or drag and drop
                   </p>
                   <input
@@ -261,8 +276,13 @@ export default function AddShoppingList() {
                 </div>
               </div>
 
-              <div className='w-full flex items-center gap-4'>
-                <Button colorScheme='blue' size={'sm'} className='mx-auto w-fit my-2' type="submit">
+              <div className="w-full flex items-center gap-4">
+                <Button
+                  colorScheme="blue"
+                  size={"sm"}
+                  className="mx-auto w-fit my-2"
+                  type="submit"
+                >
                   Save Item
                 </Button>
               </div>
@@ -273,5 +293,5 @@ export default function AddShoppingList() {
         </ModalContent>
       </Modal>
     </>
-  )
+  );
 }
