@@ -74,12 +74,12 @@ export default function TransactionHistoryPage() {
         ))}
       </div>
       {
-        false ?
+        true ?
 
           <div>
             <div className='flex items-center justify-between flex-col lg:flex-row mt-8'>
 
-              <Tabs>
+              <Tabs variant="enclosed-colored" isFitted>
                 <TabList>
                   <Tab>All</Tab>
                   <Tab>Incoming</Tab>

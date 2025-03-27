@@ -37,7 +37,8 @@ const BusinessInformation = ({ user }: { user?: User }) => {
 
   // Determine user role
   const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
-  const isAdminMember = sessionData?.user?.entityType === "admin_member";
+  // @ts-ignore
+  const isAdminMember = sessionData?.user?.role === "admin_member";
 
   const {
     register,
@@ -70,6 +71,8 @@ const BusinessInformation = ({ user }: { user?: User }) => {
           setValue("contactEmail", sessionData.user.email);
           setValue("contactPerson", sessionData.user.name);
           setValue("contactPhone", sessionData.user.phone || "");
+          // @ts-ignore
+          setValue("contactPersonPosition", sessionData.user.position || "");
           // setValue("contactPersonPosition", sessionData.user.position || "");
         } else {
           // Main admin gets full business data

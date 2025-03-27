@@ -6,6 +6,21 @@ export interface ShoppingList {
   productId: number;
   description: string;
   image: string;
+  customer: {
+    id: number;
+    name: string;
+    email: string;
+    active: boolean;
+    useTwoFactor: string;
+    avatar: string;
+    emailVerifiedAt: string;
+    owner: boolean;
+    entityType: string;
+    role: string;
+    businessName: string;
+    businessStatus: string;
+    completeProfile: true;
+  };
   createdAt: string;
   updatedAt: string;
 }

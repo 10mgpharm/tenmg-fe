@@ -126,18 +126,19 @@ const DepositFunds = ({
     }
   };
 
-  const cancelOrder = async (ref) => {
+  const cancelOrder = async (ref, amount) => {
     try {
-      const response = await requestClient({ token: userToken }).get(
-        `/lender/deposit/cancel/${ref}`
+      const response = await requestClient({ token: userToken }).post(
+        `/lender/deposit/cancel/${ref}`,
+        {
+          amount: amount,
+        }
       );
-      // TODO: Requires confirmation from backend
-      // if (response?.status === 200) {
-      //   toast.success("Deposit Funds cancelled successfully...!");
-      // }
+      if (response?.status === 200) {
+        toast.success("Deposit Funds cancelled successfully...!");
+      }
     } catch (e) {
-      // toast.error("Something went wrong, could not cancel order!");
-      toast.success("Deposit Funds cancelled successfully...!");
+      toast.error("Something went wrong, could not cancel order!");
     }
   };
 
@@ -158,7 +159,7 @@ const DepositFunds = ({
       },
       feeBearer: "business",
       onClose: () => {
-        cancelOrder(ref);
+        cancelOrder(ref, amount);
       },
       onSuccess: (data: any) => {
         verifyPayment(ref, amount);

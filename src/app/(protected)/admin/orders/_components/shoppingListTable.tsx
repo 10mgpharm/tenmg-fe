@@ -2,24 +2,18 @@
 
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import {
-  SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
-  Button,
   Flex,
-  FormControl,
-  FormLabel,
-  Select,
   Spinner,
   Table,
   TableContainer,
   Tbody,
   Td,
-  Textarea,
   Th,
   Thead,
   Tr,
@@ -32,44 +26,25 @@ import {
   DrawerOverlay,
 } from "@chakra-ui/react";
 
-import { NextAuthUserSession, OrderData, OrderResponseData } from "@/types";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
-import ModalWrapper from "@/app/(protected)/suppliers/_components/ModalWrapper";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import requestClient from "@/lib/requestClient";
-import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
-import { handleServerErrorMessage } from "@/utils";
 import { ShoppingListColumsOrderFN } from "./shoppingListColumn";
 import Image from "next/image";
 import { ShoppingList, ShoppingListData } from "@/types/shoppingList";
 
 interface ShoppingListTableProps {
   data: ShoppingListData;
-  type: string;
   loading: boolean;
   pageCount: number;
-  globalFilter: string;
   setPageCount: Dispatch<SetStateAction<number>>;
 }
 
 const ShoppingListTable = ({
   data: shoppinglistData,
-  type,
   loading,
   pageCount,
   setPageCount,
-  globalFilter,
 }: ShoppingListTableProps) => {
-  const session = useSession();
-  const sessionData = session?.data as NextAuthUserSession;
-  const token = sessionData?.user?.token;
-
-  const [comment, setComment] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [selectedProduct, setSelectedProduct] = useState<ShoppingList>();
 
   const {
@@ -88,14 +63,10 @@ const ShoppingListTable = ({
     columns: ShoppingListColumsOrderFN(
       pageCount,
       20,
-      type,
       onOpenDetails,
       setSelectedProduct
     ),
-    onSortingChange: setSorting,
-    state: {
-      globalFilter,
-    },
+
     enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -104,7 +75,7 @@ const ShoppingListTable = ({
   if (loading) {
     return (
       <Flex justify="center" align="center" height="200px">
-        <Spinner size="xl" />
+        <Spinner size="md" />
       </Flex>
     );
   }
@@ -151,7 +122,10 @@ const ShoppingListTable = ({
                 ))}
               </Tbody>
             </Table>
-            <Pagination meta={""} setPageCount={setPageCount} />
+            <Pagination
+              meta={shoppinglistData.meta}
+              setPageCount={setPageCount}
+            />
           </TableContainer>
         )
       )}
@@ -202,9 +176,11 @@ const ShoppingListTable = ({
             <div className="mt-4">
               <h3 className="font-semibold text-[15px]">Customer Name:</h3>
               <p className="text-[15px] text-gray-800 font-normal">
-                Onyejekwe ugonna
+                {selectedProduct?.customer.name}
               </p>
-              <p className="text-[15px] text-gray-500"> Luco pharm</p>
+              <p className="text-[15px] text-gray-500">
+                {selectedProduct?.customer.businessName}
+              </p>
             </div>
           </DrawerBody>
         </DrawerContent>

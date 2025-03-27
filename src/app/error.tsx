@@ -51,7 +51,7 @@ const Error = ({ error }) => {
               onClick={() => setShowError(!showError)}
               className="mt-[30px] text-primary-600 hover:underline cursor-pointer "
             >
-              {showError ? "Close" : "Vew"} detials
+              {showError ? "Close" : "Vew"} details
             </p>
           </div>
         </div>
