@@ -35,10 +35,11 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
-  console.log(sessionData)
+  console.log(sessionData);
   // Determine user role
   const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
-  const isAdminMember = sessionData?.user?.entityType === "admin_member";
+  // @ts-ignore
+  const isAdminMember = sessionData?.user?.role === "admin_member";
 
   const {
     register,
@@ -65,7 +66,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
         }).get("/admin/settings");
 
         const data = response.data.data;
-        console.log(data)
+        console.log(data);
         console.log("usd", isAdminMember);
 
         if (isAdminMember) {
@@ -73,6 +74,8 @@ const BusinessInformation = ({ user }: { user?: User }) => {
           setValue("contactEmail", sessionData.user.email);
           setValue("contactPerson", sessionData.user.name);
           setValue("contactPhone", sessionData.user.phone || "");
+          // @ts-ignore
+          setValue("contactPersonPosition", sessionData.user.position || "");
           // setValue("contactPersonPosition", sessionData.user.position || "");
         } else {
           // Main admin gets full business data

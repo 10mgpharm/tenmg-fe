@@ -107,178 +107,6 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
 
   return (
     <Box className="fixed top-0 left-0 right-0 w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
-      <Box
-        className=" flex justify-between shadow-sm lg:pr-8 items-center h-16 px-6"
-        display={{
-          // base: "flex",
-          base: "none",
-          md: "none",
-        }}
-      >
-        {/* Logo */}
-        <HStack onClick={() => router.push("/storefront")} cursor="pointer">
-          {/* for desktop */}
-          <Image
-            src={Logo}
-            alt="10mg Health Logo"
-            className="w-20 h-20 hidden md:block"
-            width={40}
-            height={40}
-          />
-
-          {/* for mobile */}
-          <Image
-            src={LogoSymbol}
-            alt="10mg Health Logo"
-            className="w-10 h-10 block md:hidden"
-            width={25}
-            height={25}
-          />
-        </HStack>
-
-        <HStack spacing={4} color="primary.500">
-          <Box
-            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-            onClick={!isRestrictedStatus ? handleOpenSearch : undefined}
-            opacity={isRestrictedStatus ? 0.5 : 1}
-          >
-            <Stack align="center">
-              <Icon as={Search} boxSize={5} />
-            </Stack>
-          </Box>
-
-          <Box
-            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-            onClick={!isRestrictedStatus ? handleOpenCart : undefined}
-            opacity={isRestrictedStatus ? 0.5 : 1}
-          >
-            <Stack align="center">
-              <Box position="relative" display="flex" alignItems="center">
-                <Icon as={PiShoppingBagBold} boxSize={5} />
-                <Box
-                  as="span"
-                  position="absolute"
-                  top="-1"
-                  right="-2"
-                  bg="red.600"
-                  color="white"
-                  fontSize="xs"
-                  px={1}
-                  borderRadius="full"
-                >
-                  {cartSize}
-                </Box>
-              </Box>
-            </Stack>
-          </Box>
-          {/* Avatar Icon */}
-          <Box cursor="pointer">
-            <Stack align="center">
-              <Box position="relative" display="flex" alignItems="center">
-                <Icon as={UserCircle2Icon} boxSize={5} color="primary.500" />
-              </Box>
-            </Stack>
-          </Box>
-
-          {/* Mobile Dropdown Menu */}
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Menu"
-              icon={<RxHamburgerMenu />}
-              variant="ghost"
-              fontSize="2xl"
-            />
-            <MenuList
-              bg="white"
-              w="100vw"
-              p={2}
-              m={0}
-              borderRadius={0}
-              color="gray.900"
-              fontSize="md"
-              fontWeight="medium"
-            >
-              {/* Menu Items */}
-              <MenuItem py={3}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/settings"}>
-                    Personal Information
-                  </Link>
-                </Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/storefront/orders")
-                }
-              >
-                <Text>My Orders</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/storefront/my-wishlist")
-                }
-              >
-                <Text>My Wishlist</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/storefront/shopping-list")
-                }
-              >
-                <Text>Shopping List</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/product-reviews")
-                }
-              >
-                <Text>Product Reviews</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                // onClick={isRestrictedStatus ? undefined : () => router.push("/help")}
-                onClick={() => router.push("/storefront/faq")}
-              >
-                <Text>Help</Text>
-              </MenuItem>
-              <Box py={3}>
-                <Button
-                  colorScheme="primary"
-                  width="full"
-                  mt={2}
-                  onClick={async () => await signOut()}
-                >
-                  Log Out
-                </Button>
-              </Box>
-            </MenuList>
-          </Menu>
-        </HStack>
-      </Box>
-
       {/* Desktop View */}
       <Box
         className="flex justify-between shadow-sm items-center container py-[20px]"
@@ -311,11 +139,12 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
 
         {/* Navigation */}
         <HStack
-          spacing={8}
+          // spacing={8}
           color="primary.500"
           fontSize="sm"
           fontWeight="medium"
           alignItems="center"
+          className="space-x-4  md:space-x-8"
         >
           {/* Search */}
           <Box

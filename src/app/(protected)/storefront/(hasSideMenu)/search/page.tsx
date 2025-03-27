@@ -108,7 +108,7 @@ export default function SearchPage() {
               />
             ) : (
               <div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  max-md:place-items-center">
                   {data.map((product, key) => (
                     <StoreProductCardComponent key={key} product={product} />
                   ))}
@@ -116,18 +116,18 @@ export default function SearchPage() {
 
                 {/* pagination */}
                 {lastPage > currentPage && (
-                  <div className="flex justify-center w-full gap-4 ">
+                  <div className="flex justify-center w-full gap-4 mt-10">
                     <Button
-                      className="bg-primary-100 !h-fit border-gray-25 !px-4 !py-1 rounded-lg"
-                      disabled={lastPage <= currentPage}
+                      className="!bg-primary-100 !h-fit !text-gray-900 border-gray-25 !px-4 !py-2 rounded-lg"
+                      disabled={currentPage === 1}
                     >
-                      <ChevronLeftIcon size={20} />
+                      <ChevronLeftIcon size={18} />
                     </Button>
                     <Button
-                      className="bg-primary-100  !h-fit border-gray-25 !px-4 !py-1 rounded-lg"
+                      className="!bg-primary-100  !h-fit  !text-gray-900 border-gray-25 !px-4 !py-2 rounded-lg"
                       disabled={lastPage === currentPage}
                     >
-                      <ChevronRightIcon size={20} />
+                      <ChevronRightIcon size={18} />
                     </Button>
                   </div>
                 )}
@@ -136,12 +136,10 @@ export default function SearchPage() {
           </div>
         </div>
 
-        {openMobileFilter && (
-          <MobileFilterComponent
-            isOpen={openMobileFilter}
-            setIsOpen={setOpenMobileFilter}
-          />
-        )}
+        <MobileFilterComponent
+          isOpen={openMobileFilter}
+          setIsOpen={setOpenMobileFilter}
+        />
       </section>
     </>
   );
