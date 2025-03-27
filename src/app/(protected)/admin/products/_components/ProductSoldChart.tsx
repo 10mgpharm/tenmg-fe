@@ -1,7 +1,7 @@
 
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-const data = [
+export const mockdata = [
   {
     name: '01',
     uv: 2,
@@ -48,7 +48,7 @@ const ProductSoldChart = () => {
         <AreaChart
           width={500}
           height={300}
-          data={data}
+          data={mockdata}
           margin={{
             top: 10,
             right: 10,
