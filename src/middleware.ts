@@ -6,7 +6,7 @@ import { headers } from 'next/headers';
 export { default } from 'next-auth/middleware';
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|widgets|auth|images|assets|icons).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|widgets|auth|images|assets|icons|firebase-messaging-sw\\.js).*)'],
 };
 
 export async function middleware(request: NextRequest) {
