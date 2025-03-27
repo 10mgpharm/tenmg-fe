@@ -18,16 +18,85 @@ import {
 import { useRouter } from "next/navigation";
 import { convertLetterCase, handleServerErrorMessage } from "@/utils";
 import GreetingComponent from "./GreetingComponent";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import NotificationModal from "./NotificationModal";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
+import { messaging, onMessage } from "@/lib/firebase";
+import { requestPermission } from "@/lib/requestPermission";
 
 const TopNavBar = ({ route }: { route: string }) => {
 
   const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;
+  const token = data?.user?.token;
+
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
+  
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchingCounts = useCallback( async () => {
+    const res = await requestClient({token: token}).get(
+      `/account/count-unread-notifications`
+    )
+    setNotificationCount(res.data?.data?.count)
+  }, [token]);
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      console.log('Service Worker and Push are supported');
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(function (swReg) {
+          console.log('Service Worker is registered', swReg);
+        })
+        .catch(function (error) {
+          console.error('Service Worker registration failed:', error);
+        });
+    } else {
+      console.warn('Push messaging is not supported');
+    }
+  }, []);
+
+  useEffect(() => {
+    if ("Notification" in window && token) {
+      requestPermission(token);
+    }
+    if(!token) return;
+    fetchingCounts();
+  }, [token, fetchingCounts]);
+
+  useEffect(() => {
+    if (messaging) {
+      const unsubscribe = onMessage(messaging, (payload) => {
+        fetchingCounts();
+        toast(`🦄 ${payload.notification.body}!`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
+      return () => unsubscribe();
+    }
+  }, [messaging, token]);
+
+
+  const handleTest = async () => {
+    try {
+      const res = await requestClient({token: token}).post(
+        `/account/test-notification`,
+      )
+      console.log(res.data)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
@@ -70,12 +139,6 @@ const TopNavBar = ({ route }: { route: string }) => {
     }
   };
 
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const sessionData = session?.data as NextAuthUserSession;
-  const token = sessionData?.user?.token;
-
   const fetchingData = useCallback(async () => {
     setLoading(true);
     try {
@@ -84,8 +147,9 @@ const TopNavBar = ({ route }: { route: string }) => {
       );
 
       if (response.status === 200) {
-        const datal = response.data?.data?.data?.slice(0, 5);
-        setNotifications(datal || []);
+        const datal = response.data?.data?.data;
+        const unreadResponses = datal?.filter((e: any) => e.readAt === null)?.slice(0, 5);
+        setNotifications(unreadResponses || []);
       }
     } catch (err: any) {
       console.error(err);
@@ -95,6 +159,8 @@ const TopNavBar = ({ route }: { route: string }) => {
     }
   }, [token]);
 
+  console.log(notificationCount)
+
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
@@ -102,6 +168,7 @@ const TopNavBar = ({ route }: { route: string }) => {
           <div className="hidden md:flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
             <Image
               src={Logo}
+              onClick={handleTest}
               alt=""
               className="w-24 h-10 md:w-[160px] md:h-auto"
               width={75}
@@ -131,13 +198,17 @@ const TopNavBar = ({ route }: { route: string }) => {
               className="-m-2.5 relative p-2.5 text-primary-600 rounded-full bg-primary-50 hover:text-gray-500"
             >
               <span className="sr-only">View notifications</span>
-              <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">1</div>
+              <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">
+                {notificationCount}
+              </div>
               <BellIcon aria-hidden="true" className="h-6 w-6" />
             </MenuButton>
             <NotificationModal
               notificationsMsgs={notifications}
               route={route}
               loading={loading}
+              token={token}
+              fetchingCounts={fetchingCounts}
             />
           </Menu>
           <Menu as="div" className="relative">

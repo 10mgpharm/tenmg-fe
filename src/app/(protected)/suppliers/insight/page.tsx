@@ -1,8 +1,44 @@
+"use client";
+
 import { Checkbox } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import EmptyCard from '../_components/EmptyCard'
+import requestClient from '@/lib/requestClient';
+import { useSession } from 'next-auth/react';
+import { NextAuthUserSession } from '@/types';
 
 const Insight = () => {
+
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+
+    const [data, setData] = useState<any>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const fetchOverview = useCallback(async () => {
+        setLoading(true);
+        try {
+            let query = `/supplier/insights`;
+            
+            const response = await requestClient({ token: token }).get(query);
+            if (response.status === 200) {
+                setData(response.data.data);
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if(!token) return;
+        fetchOverview();
+    }, [token, fetchOverview]);
+
+    console.log(data)
+
   return (
     <div className='p-8 min-h-[calc(100vh-108px)]'>
         <h2 className='text-2xl font-semibold text-gray-700'>Insight</h2>

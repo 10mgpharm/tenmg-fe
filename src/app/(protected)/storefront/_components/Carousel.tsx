@@ -3,38 +3,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Box, Flex, Image, Text, Button } from "@chakra-ui/react";
 import useEmblaCarousel from "embla-carousel-react";
-import carousel1 from "@public/assets/images/carousel1.png";
-import carousel2 from "@public/assets/images/carousel2.jpg";
-import carousel3 from "@public/assets/images/carousel3.jpg";
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-import {
-  MdOutlineKeyboardArrowLeft,
-  MdOutlineKeyboardArrowRight,
-} from "react-icons/md";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { cn } from "@/lib/utils";
-
-// const slides = [
-//   {
-//     id: 1,
-//     image: carousel1,
-//     title: "Your pathway to wellness begins here.",
-//   },
-//   {
-//     id: 2,
-//     image: carousel2,
-//     title: "Experience top-notch healthcare services.",
-//   },
-//   {
-//     id: 3,
-//     image: carousel3,
-//     title: "Find all your prescriptions in one place.",
-//   },
-// ];
 
 type SlideType = {
   id: number;
@@ -64,6 +38,7 @@ const Carousel: React.FC = () => {
       const response = await requestClient({
         token: userData?.user?.token,
       }).get("/storefront/images");
+
       setSlides(response?.data?.data.data);
     } catch (error) {
       toast.error("Unable to fetch carousel images");
@@ -100,7 +75,7 @@ const Carousel: React.FC = () => {
                 objectPosition="center"
                 borderRadius="8px"
               />
-              <Box
+              {/* <Box
                 position="absolute"
                 top="0"
                 left="0"
@@ -110,8 +85,8 @@ const Carousel: React.FC = () => {
                 display="flex"
                 alignItems="center"
                 borderRadius="8px"
-              >
-                <Text
+              > */}
+              {/* <Text
                   fontSize={{ base: "2xl", md: "6xl" }}
                   color="white"
                   fontWeight="bold"
@@ -119,8 +94,8 @@ const Carousel: React.FC = () => {
                   pl={[10, 14, 28]}
                 >
                   {title ?? "Find all your prescriptions in one place."}
-                </Text>
-              </Box>
+                </Text> */}
+              {/* </Box> */}
             </Box>
           ))}
         </Flex>

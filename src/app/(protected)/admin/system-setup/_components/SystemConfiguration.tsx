@@ -12,7 +12,6 @@ import {
   useDisclosure
 } from "@chakra-ui/react"
 import { TrashIcon } from "lucide-react";
-import { PiNotePencil } from "react-icons/pi";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import ModalComponent from "./ModalComponent";
 import ImgEditor from "./ImgEditor.create.product";
@@ -263,7 +262,7 @@ const SystemConfiguration = () => {
                 <Text fontSize={"13px"}>Drag Image</Text>
                 <p className="text-gray-600">Or</p>
                 <Text className="underline text-primary-600 text-[13px]">Select Images</Text>
-                <p className="text-gray-500 text-center mt-1.5">PDF, PNG or JPG</p>
+                <p className="text-gray-500 text-center mt-1.5">PNG, JPEG or JPG</p>
                 <p className="text-sm text-gray-500 text-center">(Max size, 5MB)</p>
               </Box>
             </Center>
@@ -299,14 +298,14 @@ const SystemConfiguration = () => {
                   right={3}
                   top={2}
                   >
-                    <PiNotePencil 
+                    {/* <PiNotePencil 
                     cursor={"pointer"}
                     onClick={() => {
                       onSelectImgToEdit(e);
                       // setImgToEditUrl(e);
                     }}
                     className="w-4 h-auto" 
-                    />
+                    /> */}
                     <TrashIcon
                     cursor={"pointer"}
                     onClick={() => {
