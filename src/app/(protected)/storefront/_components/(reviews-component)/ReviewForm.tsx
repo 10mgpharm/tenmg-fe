@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 interface IReviewForm {
   name: string;
   email: string;
-  review: string;
+  comment: string;
   product: string;
 }
 
@@ -28,7 +28,7 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
     name: z.string().min(3, "Name must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
     comment: z.string().min(5, "Comment must be at least 5 characters"),
-    productId: z.string().nonempty("Product ID is required"),
+    productId: z.number(),
   });
 
   // console.log('user', userData)
@@ -50,13 +50,13 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
 
 
 
-  // const [filePreview, setFilePreview] = useState<string[]>([]);
-  // const [file, setFile] = useState<File[]>([]);
-  // const [fileError, setFileError] = useState<string>(null);
+
   const [loading, setLoading] = useState(false);
   // const toast = useToast();
 
-  const onSubmit = async (data) => {
+
+
+  const submitReview = async (data) => {
     // console.log(data);
     setLoading(true);
     try {
@@ -74,10 +74,11 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
     }
   }
 
+
   return (
     <div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(submitReview)}>
 
         <FormControl isInvalid={!!errors.name} >
           <FormLabel htmlFor="name">
@@ -136,10 +137,10 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
             Review
           </FormLabel>
           <Textarea
-            id="review"
+            id="comment"
             placeholder="Write your Comment here"
             {...register("comment", {
-              required: "review is required",
+              required: "comment is required",
             })}
           />
           <FormErrorMessage>
@@ -148,7 +149,21 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
         </FormControl>
 
 
-        {/* <div className="flex flex-col justify-between gap-3 my-3">
+
+        <div className='flex flex-row-reverse w-full my-4'>
+          <Button variant={"outline"} colorScheme={'blue'} size={'sm'} disabled={loading} type="submit" >{loading ? <Spinner /> : "Post Review"}</Button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+// const [filePreview, setFilePreview] = useState<string[]>([]);
+// const [file, setFile] = useState<File[]>([]);
+// const [fileError, setFileError] = useState<string>(null);
+
+
+{/* <div className="flex flex-col justify-between gap-3 my-3">
           <Text fontSize={"1rem"} fontWeight={600} color="gray.700">Upload Pictures (Maximum number of images - 6 )</Text>
 
           <div className='flex items-center gap-x-2'>
@@ -172,11 +187,3 @@ export default function ReviewForm({ onClose, prod_id, prod_name }: any) {
           {fileError && <p className="text-xs text-red-500">{fileError}</p>}
 
         </div> */}
-
-        <div className='flex flex-row-reverse w-full my-4'>
-          <Button variant={"outline"} colorScheme={'blue'} size={'sm'} disabled={loading} type="submit">{loading ? <Spinner /> : "Post Review"}</Button>
-        </div>
-      </form>
-    </div>
-  )
-}
