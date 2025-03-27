@@ -46,7 +46,6 @@ const TopNavBar = ({ route }: { route: string }) => {
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
-      console.log('Service Worker and Push are supported');
       navigator.serviceWorker.register('/firebase-messaging-sw.js')
         .then(function (swReg) {
           console.log('Service Worker is registered', swReg);
@@ -85,18 +84,6 @@ const TopNavBar = ({ route }: { route: string }) => {
       return () => unsubscribe();
     }
   }, [messaging, token]);
-
-
-  const handleTest = async () => {
-    try {
-      const res = await requestClient({token: token}).post(
-        `/account/test-notification`,
-      )
-      console.log(res.data)
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   const renderBusinessType = (businessType: string) => {
     switch (businessType) {
@@ -159,8 +146,6 @@ const TopNavBar = ({ route }: { route: string }) => {
     }
   }, [token]);
 
-  console.log(notificationCount)
-
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
@@ -168,7 +153,6 @@ const TopNavBar = ({ route }: { route: string }) => {
           <div className="hidden md:flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
             <Image
               src={Logo}
-              onClick={handleTest}
               alt=""
               className="w-24 h-10 md:w-[160px] md:h-auto"
               width={75}
@@ -201,7 +185,7 @@ const TopNavBar = ({ route }: { route: string }) => {
               <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">
                 {notificationCount}
               </div>
-              <BellIcon aria-hidden="true" className="h-6 w-6" />
+              <BellIcon aria-hidden="true" className="h-8 w-8" />
             </MenuButton>
             <NotificationModal
               notificationsMsgs={notifications}

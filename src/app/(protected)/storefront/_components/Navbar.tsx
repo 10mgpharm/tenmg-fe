@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Menu,
   MenuButton,
@@ -37,12 +37,18 @@ import { BusinessStatus } from "@/constants";
 import requestClient from "@/lib/requestClient";
 import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io";
 import { cn } from "@/lib/utils";
+import { requestPermission } from "@/lib/requestPermission";
+import { toast } from "react-toastify";
+import { messaging, onMessage } from "@/lib/firebase";
+import { handleServerErrorMessage } from "@/utils";
 
 const Navbar = () => {
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
 
   const router = useRouter();
 
@@ -97,11 +103,73 @@ const Navbar = () => {
     }
   };
 
-  useEffect(() => {
-    if (token) {
-      fetchingData();
-    }
+  const fetchingCounts = useCallback( async () => {
+    const res = await requestClient({token: token}).get(
+      `/account/count-unread-notifications`
+    )
+    setNotificationCount(res.data?.data?.count)
   }, [token]);
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(function (swReg) {
+          console.log('Service Worker is registered', swReg);
+        })
+        .catch(function (error) {
+          console.error('Service Worker registration failed:', error);
+        });
+    } else {
+      console.warn('Push messaging is not supported');
+    }
+  }, []);
+
+  useEffect(() => {
+    if ("Notification" in window && token) {
+      requestPermission(token);
+    }
+    if (token) {
+      fetchingCounts();
+    }
+  }, [token, fetchingCounts]);
+
+  useEffect(() => {
+    if (messaging) {
+      const unsubscribe = onMessage(messaging, (payload) => {
+        fetchingCounts();
+        toast(`🦄 ${payload.notification.body}!`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
+      return () => unsubscribe();
+    }
+  }, [messaging, token]);
+
+  const markAsRead = async (id: string) => {
+    try {
+      const res = await requestClient({ token: token }).patch(
+          `/account/notifications/${id}`,
+      );
+      if (res.status === 200) {
+          fetchingCounts();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
+    }
+  }
+
+  const routeNotification = async (url: string, id: string) => {
+    await markAsRead(id);
+    router.push(url);
+  }
 
   return (
     <Box className="lg:fixed w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
@@ -282,10 +350,13 @@ const Navbar = () => {
 
           {/* NOTIFICATIONS */}
           <Menu>
-            <MenuButton className="relative">
+            <MenuButton 
+            type="button"
+            onClick={fetchingData}
+            className="relative">
               <span className="sr-only">View notifications</span>
               <BellIcon aria-hidden="true" className="h-6 w-6 mx-auto" />
-              <div className="px-1 rounded-full bg-red-500 absolute top-0 right-6 text-[9px] text-white">1</div>
+              <div className="px-1 rounded-full bg-red-500 absolute top-0 right-6 text-[9px] text-white">{notificationCount}</div>
               <Text>Notifications</Text>
             </MenuButton>
             <MenuList
@@ -334,8 +405,8 @@ const Navbar = () => {
                 <div className="mt-6">
                   {notifications?.map((notification) => (
                     <MenuItem key={notification?.id} display={"block"} _hover={{bg: "none"}}>
-                      <Link
-                        href={`/storefront/notifications?id=${notification.id}`}
+                      <div
+                        onClick={() => routeNotification(`/storefront/notifications?id=${notification.id}`, notification?.id)}
                         className="flex border-b border-gray-200 cursor-pointer pb-2"
                       >
                         <div className='flex gap-3'>
@@ -354,7 +425,7 @@ const Navbar = () => {
                               <p className="text-sm text-gray-400">{notification?.createdAt}</p>
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     </MenuItem>
                   ))}
                 </div>
