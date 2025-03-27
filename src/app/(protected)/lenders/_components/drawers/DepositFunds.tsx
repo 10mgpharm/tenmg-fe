@@ -139,7 +139,6 @@ const DepositFunds = ({
       }
     } catch (e) {
       toast.error("Something went wrong, could not cancel order!");
-      // toast.success("Deposit Funds cancelled successfully...!");
     }
   };
 
