@@ -2,8 +2,40 @@ import { Button } from '@chakra-ui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import WriteReviewModal from './ReviewModal'
+import RatingComponent from '../RatingComponent'
+import { useSession } from 'next-auth/react'
+import { NextAuthUserSession } from '@/types'
+import requestClient from '@/lib/requestClient'
 
 export default function ReviewsCardComponent({ product }) {
+
+  // console.log(product)
+
+  const session = useSession();
+  const userData = session.data as NextAuthUserSession;
+
+  const rate = async (rate) => {
+    // setLoading(true);
+
+  }
+
+  const handleRating = async (rate: number) => {
+    const data = {
+      productId: product?.id,
+      rating: rate
+    }
+    try {
+      // storefront/products/quidins
+      const res = await requestClient({ token: userData?.user?.token }).post(`/storefront/ratings`, data);
+      // console.log(res)
+    } catch (e) {
+    } finally {
+      // setLoading(false);
+    }
+
+    // console.log(rate)
+  }
+
 
   return (
     <div className='m-4 border border-gray-200 rounded-md p-4'>
@@ -15,11 +47,11 @@ export default function ReviewsCardComponent({ product }) {
               <h4 className='text-lg font-medium text-gray-700'>{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</h4>
               <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>
               <div className="flex items-center">
-                <StarIcon className="w-5 fill-gray-400 stroke-none" />
-                <StarIcon className="w-5 fill-gray-400 stroke-none" />
-                <StarIcon className="w-5 fill-gray-400 stroke-none" />
-                <StarIcon className="w-5 fill-gray-400 stroke-none" />
-                <StarIcon className="w-5 fill-gray-400 stroke-none" />
+                <RatingComponent
+                  rating={product?.rating ?? 0}
+                  handleRating={handleRating}
+                  readonly={false}
+                />
               </div>
             </div>
           </div>
@@ -30,4 +62,7 @@ export default function ReviewsCardComponent({ product }) {
       </div>
     </div>
   )
+
+
+
 }

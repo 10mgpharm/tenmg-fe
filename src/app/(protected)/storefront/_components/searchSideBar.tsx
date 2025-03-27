@@ -2,7 +2,7 @@ import { Select } from "@chakra-ui/react";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -251,6 +251,7 @@ const SearchSideBar = () => {
   return (
     <div className=" space-y-4 size-full">
       {/* list of categoris */}
+
       <Select
         className={cn(
           "!border-gray-400 !h-[52px] !px-5",
