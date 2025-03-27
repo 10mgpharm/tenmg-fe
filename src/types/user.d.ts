@@ -22,6 +22,7 @@ export interface User {
   owner: boolean;
   emailVerifiedAt: string;
   entityType: string;
+  role: string;
   businessName: string;
   businessStatus: BusinessStatus;
   completeProfile: boolean;
