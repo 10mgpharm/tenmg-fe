@@ -203,7 +203,6 @@ const SearchSideBar = ({
     }
 
     router.push(`?${newParams.toString()}`);
-    setIsOpen && setIsOpen(false);
   };
 
   const handleFilterState = (
@@ -275,6 +274,7 @@ const SearchSideBar = ({
           }
           handleFilterState("cate", e.target.value);
           setParams("category", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={categoryValue}
       >
@@ -310,6 +310,7 @@ const SearchSideBar = ({
           }
           handleFilterState("brands", e.target.value);
           setParams("brand", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={brandValue}
       >
@@ -345,6 +346,7 @@ const SearchSideBar = ({
           }
           handleFilterState("measure", e.target.value);
           setParams("measurement", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={measurementValue}
       >
@@ -380,6 +382,7 @@ const SearchSideBar = ({
           }
           handleFilterState("medTye", e.target.value);
           setParams("medicationType", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={medTypeValue}
       >
@@ -415,6 +418,7 @@ const SearchSideBar = ({
           }
           handleFilterState("present", e.target.value);
           setParams("presentation", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={presentationtValue}
       >
