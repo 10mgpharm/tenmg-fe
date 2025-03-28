@@ -13,8 +13,15 @@ import { toast } from "react-toastify";
 import { useWishlistStore } from "../(NoSideMenu)/storeFrontState/useWIshlist";
 import { LoaderIcon } from "lucide-react";
 import RatingComponent from "./RatingComponent";
+import { cn } from "@/lib/utils";
 
-export default function StoreProductCardComponent({ product }: any) {
+export default function StoreProductCardComponent({
+  product,
+  flexible,
+}: {
+  flexible?: boolean;
+  product: any;
+}) {
   const router = useRouter();
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
@@ -81,7 +88,7 @@ export default function StoreProductCardComponent({ product }: any) {
     if (addedToWishlist === true) {
       const wishlistId = wishlist.find(
         (item) => item?.productId === product?.id
-      ).id;
+      )?.id;
       setAddedToWishlist(false);
       removeWishlistItem(wishlistId, userData?.user?.token, setAddedToWishlist);
     } else {
@@ -93,7 +100,10 @@ export default function StoreProductCardComponent({ product }: any) {
   const renderProductImage = () => (
     <div
       style={{ backgroundImage: `url(${product?.thumbnailFile})` }}
-      className="w-[279px] h-[186px] bg-gray-50 bg-cover bg-center bg-no-repeat rounded-sm shadow-sm overflow-hidden"
+      className={cn(
+        " bg-gray-50 bg-cover bg-center bg-no-repeat rounded-lg shadow-sm overflow-hidden",
+        flexible ? "aspect-[4/3] w-full" : "w-[279px] h-[186px]"
+      )}
     />
   );
 
@@ -109,8 +119,9 @@ export default function StoreProductCardComponent({ product }: any) {
           onClick={(e) => handleWishlistClick(e, product?.id)}
         >
           <HeartIcon
-            className={`w-6 stroke-primary ${addedToWishlist ? "fill-primary-500" : "fill-primary-50"
-              }`}
+            className={`w-6 stroke-primary ${
+              addedToWishlist ? "fill-primary-500" : "fill-primary-50"
+            }`}
           />
         </div>
       </div>
@@ -121,10 +132,11 @@ export default function StoreProductCardComponent({ product }: any) {
           </p>
         )}
         <p
-          className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
-            ? "text-gray-400 line-through"
-            : "text-gray-900"
-            }`}
+          className={`font-semibold my-2 text-sm ${
+            product?.discountPrice > 0
+              ? "text-gray-400 line-through"
+              : "text-gray-900"
+          }`}
         >
           ₦{product?.actualPrice}
         </p>
@@ -133,7 +145,7 @@ export default function StoreProductCardComponent({ product }: any) {
         <div className="flex items-center">
           <RatingComponent
             rating={product?.rating ?? 0}
-            handleRating={() => { }}
+            handleRating={() => {}}
             readonly={true}
           />
         </div>
@@ -198,16 +210,21 @@ export default function StoreProductCardComponent({ product }: any) {
   );
 
   return (
-    <div className="w-fit max-w-[311px] px-3 py-3 mx-4 flex flex-col items-center justify-center shadow-lg rounded-md">
+    <div
+      className={cn(
+        " px-3 py-3 mx-4 flex flex-col items-center justify-center shadow-lg rounded-md",
+        flexible ? "w-full" : "w-fit max-w-[311px]"
+      )}
+    >
       {isProductClickable ? (
-        <div>
+        <div className="w-full">
           <Link href={`/storefront/product/${product?.slug}`}>
             {renderProductImage()}
           </Link>
           {renderProductDetails()}
         </div>
       ) : (
-        <div className="pointer-events-none cursor-not-allowed">
+        <div className="pointer-events-none cursor-not-allowed w-full">
           {renderProductImage()}
           {renderProductDetails()}
         </div>
