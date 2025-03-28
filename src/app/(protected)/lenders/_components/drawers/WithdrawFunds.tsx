@@ -125,7 +125,7 @@ const WithdrawFunds = ({
               />
             </InputGroup>
             <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
-            {!!!errors.amount && (
+            {wallet && (
               <div className="mt-2">
                 <StatusBadge
                   status={

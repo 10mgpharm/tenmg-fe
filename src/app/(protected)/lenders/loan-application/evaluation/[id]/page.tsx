@@ -21,7 +21,7 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession, SingleTransactionData } from "@/types";
 import BreakdownRecords from "@/app/(protected)/vendors/transactions-history/_components/BreakdownRecord";
 import { formatAmountString, handleServerErrorMessage } from "@/utils";
-import { downloadCsv } from "@/utils/downloadCsv";
+import { downloadCsv } from "@/utils/downloadTemplate";
 import { toast } from "react-toastify";
 
 const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
