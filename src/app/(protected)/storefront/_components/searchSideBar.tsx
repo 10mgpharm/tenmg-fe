@@ -7,7 +7,11 @@ import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const SearchSideBar = () => {
+const SearchSideBar = ({
+  setIsOpen,
+}: {
+  setIsOpen?: (value: boolean) => void;
+}) => {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
   const router = useRouter();
@@ -63,7 +67,7 @@ const SearchSideBar = () => {
     setMeasurementValue("");
     setMedTypesValue("");
     setPresentationValue("");
-    handleChange("", "");
+    setParams("", "");
   }, [searchValue]);
 
   // Fetch FNs
@@ -186,7 +190,7 @@ const SearchSideBar = () => {
   }, [userData?.user?.token]);
 
   //
-  const handleChange = (filterCategory: string, value: string) => {
+  const setParams = (filterCategory: string, value: string) => {
     const newParams = new URLSearchParams(searchParams.toString());
 
     if (value) {
@@ -199,6 +203,7 @@ const SearchSideBar = () => {
     }
 
     router.push(`?${newParams.toString()}`);
+    setIsOpen && setIsOpen(false);
   };
 
   const handleFilterState = (
@@ -269,7 +274,7 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("cate", e.target.value);
-          handleChange("category", e.target.value);
+          setParams("category", e.target.value);
         }}
         value={categoryValue}
       >
@@ -304,7 +309,7 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("brands", e.target.value);
-          handleChange("brands", e.target.value);
+          setParams("brand", e.target.value);
         }}
         value={brandValue}
       >
@@ -339,7 +344,7 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("measure", e.target.value);
-          handleChange("measurements", e.target.value);
+          setParams("measurement", e.target.value);
         }}
         value={measurementValue}
       >
@@ -374,7 +379,7 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("medTye", e.target.value);
-          handleChange("medicationType", e.target.value);
+          setParams("medicationType", e.target.value);
         }}
         value={medTypeValue}
       >
@@ -409,7 +414,7 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("present", e.target.value);
-          handleChange("presentation", e.target.value);
+          setParams("presentation", e.target.value);
         }}
         value={presentationtValue}
       >
