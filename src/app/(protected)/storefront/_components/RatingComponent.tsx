@@ -2,7 +2,6 @@
 import React from 'react'
 import { StarRating } from "react-flexible-star-rating";
 
-
 interface IRatingComponent {
   rating: number
   handleRating?: (rate: number) => void

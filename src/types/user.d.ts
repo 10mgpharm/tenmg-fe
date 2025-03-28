@@ -433,6 +433,21 @@ export interface DiscountResponseData {
   lastPageUrl?: any;
 }
 
+export interface WalletData {
+  id : string;
+}
+export interface WalletResponseData {
+  data: WalletData[];
+  links: any;
+  meta?: MetaDataProp;
+  prevPageUrl?: string | null, 
+  nextPageUrl?: string | null,
+  currentPage?: number;
+  firstPageUrl?: any;
+  lastPageUrl?: any;
+  total: number
+}
+
 /**
  * Interfaces for the Credit Score
  */

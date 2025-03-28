@@ -35,7 +35,6 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
-  console.log(sessionData);
   // Determine user role
   const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
   // @ts-ignore
@@ -66,8 +65,6 @@ const BusinessInformation = ({ user }: { user?: User }) => {
         }).get("/admin/settings");
 
         const data = response.data.data;
-        console.log(data);
-        console.log("usd", isAdminMember);
 
         if (isAdminMember) {
           // Admin members can only see their own data, not the business info

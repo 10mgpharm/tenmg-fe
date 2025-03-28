@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import folder from "@public/assets/images/Group 3.svg";
 import drugImage from "@public/assets/images/MedicineStreamline-Lagos1.svg";
@@ -12,10 +12,20 @@ import WithdrawFunds from "./_components/WithdrawFunds";
 import OTPModal from "./_components/OTPModal";
 import Link from "next/link";
 import Transaction from "./_components/Transaction";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession, WalletResponseData } from "@/types";
 
 const Wallet = () => {
-  const [showBalance, setShowBalance] = useState(true); // State for toggling wallet balance visibility
-  const hasAccountNumber = true;
+
+  const [loading, setLoading] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
+  const [transactions, setTransactions] = useState<WalletResponseData>();
+  const hasAccountNumber = false;
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -28,6 +38,48 @@ const Wallet = () => {
     onOpen: onOpenOTP,
     onClose: onCloseOTP,
   } = useDisclosure();
+
+  const fetchingTransactions = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/supplier/wallet/transactions`
+      );
+      if (response.status === 200) {
+        setTransactions(response?.data?.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token]);
+
+  const genetateOTP = useCallback(async () => {
+    try {
+      const response = await requestClient({ token: token }).post(
+        `/resend-otp`,
+        {
+          "type": "SUPPLIER_ADD_BANK_ACCOUNT"
+        }
+      );
+      if (response.status === 200) {
+        console.log(response?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  },[token]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingTransactions();
+  }, [token]);
+
+  const openAccountModal = async () => {
+    await genetateOTP();
+    onOpen();
+  }
 
   return (
     <div className="p-8">
@@ -86,7 +138,7 @@ const Wallet = () => {
                   Add a bank account to enable easy withdrawal of your funds
                 </p>
                 <button
-                  onClick={onOpen}
+                  onClick={openAccountModal}
                   className="mt-5 bg-primary-500 px-5 py-2 text-white rounded-md"
                 >
                   Add Account
@@ -105,7 +157,7 @@ const Wallet = () => {
               View All
             </Link>
           </div>
-          {!hasAccountNumber && (
+          {transactions?.data?.length === 0 ? (
             <div className="mt-5 max-w-sm mx-auto">
               <div className="text-center py-12">
                 <Image src={folder} alt="" className="mx-auto" />
@@ -118,10 +170,11 @@ const Wallet = () => {
                 </p>
               </div>
             </div>
-          )}
-        </div>
-        <div className="mt-5">
-          <Transaction />
+            ) : 
+            <div className="mt-5">
+              <Transaction />
+            </div>
+          }
         </div>
       </div>
       <AddAccount isOpen={isOpen} onClose={onClose} />
