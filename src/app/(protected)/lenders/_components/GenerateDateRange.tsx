@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import moment from "moment";
 import {
   Box,
@@ -8,29 +13,121 @@ import {
   Select,
   Text,
   Grid,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 
-export default function GenerateDateRange() {
+export interface DateRangeRef {
+  getDateRange: () => {
+    startDate: string;
+    endDate: string;
+    isValid: boolean;
+  } | null;
+  getDateError: () => string;
+  resetDates: () => void;
+}
+
+interface GenerateDateRangeProps {
+  // Add props if needed
+}
+
+const GenerateDateRange = forwardRef<DateRangeRef, GenerateDateRangeProps>((props, ref) => {
   const months = moment.months();
+  const currentYear = moment().year();
+  
+  // Generate last 10 years, current year first
+  const years = Array.from({ length: 10 }, (_, i) => 
+    (currentYear - i).toString()
+  );
 
-  const years = ["2022", "2023", "2024", "2025", "2026"];
+  const [startDay, setStartDay] = useState("");
+  const [startMonth, setStartMonth] = useState("");
+  const [startYear, setStartYear] = useState("");
 
-  const [startDay, setStartDay] = useState("1");
-  const [startMonth, setStartMonth] = useState("January");
-  const [startYear, setStartYear] = useState("2023");
+  const [endDay, setEndDay] = useState("");
+  const [endMonth, setEndMonth] = useState("");
+  const [endYear, setEndYear] = useState("");
 
-  const [endDay, setEndDay] = useState("1");
-  const [endMonth, setEndMonth] = useState("January");
-  const [endYear, setEndYear] = useState("2023");
+  const [isStartDateFilled, setIsStartDateFilled] = useState(false);
+  const [dateError, setDateError] = useState("");
 
   const cardBg = "gray.50";
   const cardBorder = "gray.200";
+
+  // Expose methods to parent component via ref
+  useImperativeHandle(ref, () => ({
+    getDateRange: () => {
+      if (!startDay || !startMonth || !startYear || !endDay || !endMonth || !endYear) {
+        return null;
+      }
+
+      const startDate = getMomentDate(startDay, startMonth, startYear);
+      const endDate = getMomentDate(endDay, endMonth, endYear);
+
+      return {
+        startDate: startDate.format('YYYY-MM-DD'),
+        endDate: endDate.format('YYYY-MM-DD'),
+        isValid: !dateError
+      };
+    },
+    getDateError: () => dateError,
+    resetDates: () => {
+      setStartDay("");
+      setStartMonth("");
+      setStartYear("");
+      setEndDay("");
+      setEndMonth("");
+      setEndYear("");
+      setDateError("");
+    }
+  }));
+
+  // Check if start date is fully selected
+  useEffect(() => {
+    if (startDay && startMonth && startYear) {
+      setIsStartDateFilled(true);
+
+      // Auto-set end date to start date as initial value
+      if (!endDay || !endMonth || !endYear) {
+        setEndDay(startDay);
+        setEndMonth(startMonth);
+        setEndYear(startYear);
+      }
+    } else {
+      setIsStartDateFilled(false);
+    }
+  }, [startDay, startMonth, startYear]);
+
+  // Validate end date is after start date
+  useEffect(() => {
+    if (isStartDateFilled && endDay && endMonth && endYear) {
+      const startDate = getMomentDate(startDay, startMonth, startYear);
+      const endDate = getMomentDate(endDay, endMonth, endYear);
+
+      if (endDate.isBefore(startDate)) {
+        setDateError("End date must be after start date");
+      } else {
+        setDateError("");
+      }
+    } else {
+      setDateError("");
+    }
+  }, [
+    startDay,
+    startMonth,
+    startYear,
+    endDay,
+    endMonth,
+    endYear,
+    isStartDateFilled,
+  ]);
 
   function getMomentDate(day: string, month: string, year: string) {
     return moment(`${day} ${month} ${year}`, "D MMMM YYYY");
   }
 
   function getDaysInMonth(month: string, year: string): number[] {
+    if (!month || !year) return [1];
+
     const date = moment(`1 ${month} ${year}`, "D MMMM YYYY");
     const totalDays = date.daysInMonth();
     return Array.from({ length: totalDays }, (_, i) => i + 1);
@@ -43,12 +140,17 @@ export default function GenerateDateRange() {
     monthVal: string,
     setMonth: React.Dispatch<React.SetStateAction<string>>,
     yearVal: string,
-    setYear: React.Dispatch<React.SetStateAction<string>>
+    setYear: React.Dispatch<React.SetStateAction<string>>,
+    isDisabled: boolean = false
   ) {
-    const possibleDays = getDaysInMonth(monthVal, yearVal);
+    const possibleDays = getDaysInMonth(
+      monthVal || months[0],
+      yearVal || years[0]
+    );
 
-    if (!possibleDays.includes(Number(dayVal))) {
-      setDay(String(possibleDays[0]));
+    // If selected day isn't valid for this month, adjust it
+    if (dayVal && !possibleDays.includes(Number(dayVal))) {
+      setDay(String(possibleDays[possibleDays.length - 1]));
     }
 
     return (
@@ -59,6 +161,7 @@ export default function GenerateDateRange() {
         borderRadius="md"
         p={4}
         mb={4}
+        opacity={isDisabled ? 0.6 : 1}
       >
         <Text fontWeight="semibold" mb={4}>
           {title}
@@ -67,7 +170,12 @@ export default function GenerateDateRange() {
           {/* Day (Dropdown) */}
           <FormControl>
             <FormLabel>Day</FormLabel>
-            <Select value={dayVal} onChange={(e) => setDay(e.target.value)}>
+            <Select
+              value={dayVal}
+              onChange={(e) => setDay(e.target.value)}
+              placeholder="Day"
+              isDisabled={isDisabled}
+            >
               {possibleDays.map((d) => (
                 <option key={d} value={String(d)}>
                   {d}
@@ -79,7 +187,12 @@ export default function GenerateDateRange() {
           {/* Month */}
           <FormControl>
             <FormLabel>Month</FormLabel>
-            <Select value={monthVal} onChange={(e) => setMonth(e.target.value)}>
+            <Select
+              value={monthVal}
+              onChange={(e) => setMonth(e.target.value)}
+              placeholder="Month"
+              isDisabled={isDisabled}
+            >
               {months.map((m) => (
                 <option key={m} value={m}>
                   {m}
@@ -91,7 +204,12 @@ export default function GenerateDateRange() {
           {/* Year */}
           <FormControl>
             <FormLabel>Year</FormLabel>
-            <Select value={yearVal} onChange={(e) => setYear(e.target.value)}>
+            <Select
+              value={yearVal}
+              onChange={(e) => setYear(e.target.value)}
+              placeholder="Year"
+              isDisabled={isDisabled}
+            >
               {years.map((yr) => (
                 <option key={yr} value={yr}>
                   {yr}
@@ -114,7 +232,8 @@ export default function GenerateDateRange() {
         startMonth,
         setStartMonth,
         startYear,
-        setStartYear
+        setStartYear,
+        false
       )}
 
       {/* End Date Card */}
@@ -125,8 +244,20 @@ export default function GenerateDateRange() {
         endMonth,
         setEndMonth,
         endYear,
-        setEndYear
+        setEndYear,
+        !isStartDateFilled
+      )}
+
+      {/* Date validation error */}
+      {dateError && (
+        <FormControl isInvalid={!!dateError}>
+          <FormErrorMessage color="red.500">{dateError}</FormErrorMessage>
+        </FormControl>
       )}
     </Box>
   );
-}
+});
+
+GenerateDateRange.displayName = "GenerateDateRange";
+
+export default GenerateDateRange;
