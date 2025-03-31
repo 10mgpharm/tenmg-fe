@@ -17,7 +17,7 @@ export default function PendingReviewCardComponent({ product }) {
               <p className='text-sm  text-gray-500 my-1'>{product?.comment}</p>
               <div className="flex items-center">
                 <RatingComponent
-                  rating={product?.rating ?? 0}
+                  rating={product?.rating?.rating ?? 0}
                   readonly={true}
                 />
               </div>
