@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Menu,
   MenuButton,
@@ -12,14 +12,12 @@ import {
   Icon,
   Stack,
   VStack,
-  IconButton,
-  Button,
   Avatar,
   Flex,
   Spinner,
 } from "@chakra-ui/react";
 
-import { BellIcon, Search, UserCircle2Icon } from "lucide-react";
+import { BellIcon, Search } from "lucide-react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -38,13 +36,17 @@ import { BusinessStatus } from "@/constants";
 import requestClient from "@/lib/requestClient";
 import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io";
 import { cn } from "@/lib/utils";
-import NotificationDropDown from "./NotificationDropDown";
+import { requestPermission } from "@/lib/requestPermission";
+import { toast } from "react-toastify";
+import { messaging, onMessage } from "@/lib/firebase";
+import { handleServerErrorMessage } from "@/utils";
 
 const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
 
   const router = useRouter();
 
@@ -99,186 +101,76 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
     }
   };
 
-  useEffect(() => {
-    if (token) {
-      fetchingData();
-    }
+  const fetchingCounts = useCallback( async () => {
+    const res = await requestClient({token: token}).get(
+      `/account/count-unread-notifications`
+    )
+    setNotificationCount(res.data?.data?.count)
   }, [token]);
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(function (swReg) {
+          console.log('Service Worker is registered', swReg);
+        })
+        .catch(function (error) {
+          console.error('Service Worker registration failed:', error);
+        });
+    } else {
+      console.warn('Push messaging is not supported');
+    }
+  }, []);
+
+  useEffect(() => {
+    if ("Notification" in window && token) {
+      requestPermission(token);
+    }
+    if (token) {
+      fetchingCounts();
+    }
+  }, [token, fetchingCounts]);
+
+  useEffect(() => {
+    if (messaging) {
+      const unsubscribe = onMessage(messaging, (payload) => {
+        fetchingCounts();
+        toast(`🦄 ${payload.notification.body}!`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
+      return () => unsubscribe();
+    }
+  }, [messaging, token]);
+
+  const markAsRead = async (id: string) => {
+    try {
+      const res = await requestClient({ token: token }).patch(
+          `/account/notifications/${id}`,
+      );
+      if (res.status === 200) {
+          fetchingCounts();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
+    }
+  }
+
+  const routeNotification = async (url: string, id: string) => {
+    await markAsRead(id);
+    router.push(url);
+  }
 
   return (
     <Box className="fixed top-0 left-0 right-0 w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
-      <Box
-        className=" flex justify-between shadow-sm lg:pr-8 items-center h-16 px-6"
-        display={{
-          // base: "flex",
-          base: "none",
-          md: "none",
-        }}
-      >
-        {/* Logo */}
-        <HStack onClick={() => router.push("/storefront")} cursor="pointer">
-          {/* for desktop */}
-          <Image
-            src={Logo}
-            alt="10mg Health Logo"
-            className="w-20 h-20 hidden md:block"
-            width={40}
-            height={40}
-          />
-
-          {/* for mobile */}
-          <Image
-            src={LogoSymbol}
-            alt="10mg Health Logo"
-            className="w-10 h-10 block md:hidden"
-            width={25}
-            height={25}
-          />
-        </HStack>
-
-        <HStack spacing={4} color="primary.500">
-          <Box
-            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-            onClick={!isRestrictedStatus ? handleOpenSearch : undefined}
-            opacity={isRestrictedStatus ? 0.5 : 1}
-          >
-            <Stack align="center">
-              <Icon as={Search} boxSize={5} />
-            </Stack>
-          </Box>
-
-          <Box
-            cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-            onClick={!isRestrictedStatus ? handleOpenCart : undefined}
-            opacity={isRestrictedStatus ? 0.5 : 1}
-          >
-            <Stack align="center">
-              <Box position="relative" display="flex" alignItems="center">
-                <Icon as={PiShoppingBagBold} boxSize={5} />
-                <Box
-                  as="span"
-                  position="absolute"
-                  top="-1"
-                  right="-2"
-                  bg="red.600"
-                  color="white"
-                  fontSize="xs"
-                  px={1}
-                  borderRadius="full"
-                >
-                  {cartSize}
-                </Box>
-              </Box>
-            </Stack>
-          </Box>
-          {/* Avatar Icon */}
-          <Box cursor="pointer">
-            <Stack align="center">
-              <Box position="relative" display="flex" alignItems="center">
-                <Icon as={UserCircle2Icon} boxSize={5} color="primary.500" />
-              </Box>
-            </Stack>
-          </Box>
-
-          {/* Mobile Dropdown Menu */}
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Menu"
-              icon={<RxHamburgerMenu />}
-              variant="ghost"
-              fontSize="2xl"
-            />
-            <MenuList
-              bg="white"
-              w="100vw"
-              p={2}
-              m={0}
-              borderRadius={0}
-              color="gray.900"
-              fontSize="md"
-              fontWeight="medium"
-            >
-              {/* Menu Items */}
-              <MenuItem py={3}>
-                <Text cursor="pointer">
-                  <Link href={"/storefront/settings"}>
-                    Personal Information
-                  </Link>
-                </Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/storefront/orders")
-                }
-              >
-                <Text>My Orders</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/storefront/my-wishlist")
-                }
-              >
-                <Text>My Wishlist</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/storefront/shopping-list")
-                }
-              >
-                <Text>Shopping List</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                onClick={
-                  isRestrictedStatus
-                    ? undefined
-                    : () => router.push("/product-reviews")
-                }
-              >
-                <Text>Product Reviews</Text>
-              </MenuItem>
-              <MenuItem
-                py={3}
-                opacity={isRestrictedStatus ? 0.5 : 1}
-                cursor={isRestrictedStatus ? "not-allowed" : "pointer"}
-                // onClick={isRestrictedStatus ? undefined : () => router.push("/help")}
-                onClick={() => router.push("/storefront/faq")}
-              >
-                <Text>Help</Text>
-              </MenuItem>
-              <Box py={3}>
-                <Button
-                  colorScheme="primary"
-                  width="full"
-                  mt={2}
-                  onClick={async () => await signOut()}
-                >
-                  Log Out
-                </Button>
-              </Box>
-            </MenuList>
-          </Menu>
-        </HStack>
-      </Box>
-
       {/* Desktop View */}
       <Box
         className="flex justify-between shadow-sm items-center container py-[20px]"
@@ -311,11 +203,12 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
 
         {/* Navigation */}
         <HStack
-          spacing={8}
+          // spacing={8}
           color="primary.500"
           fontSize="sm"
           fontWeight="medium"
           alignItems="center"
+          className="space-x-4  md:space-x-8"
         >
           {/* Search */}
           <Box
@@ -331,30 +224,14 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
 
           {/* NOTIFICATIONS */}
           <Menu>
-            <MenuButton className="relative">
-              <Box className=" flex flex-col justify-center  ">
-                <BellIcon aria-hidden="true" className="h-6 w-6 mx-auto" />
-                <Box
-                  as="span"
-                  position="absolute"
-                  top="-2"
-                  bg="red.600"
-                  color="white"
-                  fontSize="xs"
-                  px={1}
-                  width={4}
-                  height={4}
-                  borderRadius="full"
-                  className="flex items-center justify-center -right-2  md:right-[22px] "
-                >
-                  {1}
-                </Box>
-              </Box>
-              <Text className="hidden md:block">Notifications</Text>
-
-              {/* <div className="px-1 rounded-full bg-red-500 absolute top-0 right-6 text-[9px] text-white">
-                1
-              </div> */}
+            <MenuButton 
+            type="button"
+            onClick={fetchingData}
+            className="relative">
+              <span className="sr-only">View notifications</span>
+              <BellIcon aria-hidden="true" className="h-6 w-6 mx-auto" />
+              <div className="px-1 rounded-full bg-red-500 absolute top-0 right-6 text-[9px] text-white">{notificationCount}</div>
+              <Text>Notifications</Text>
             </MenuButton>
             <MenuList
               bg="white"
@@ -372,10 +249,63 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
                 "scrollbar-width": "none",
               }}
             >
-              <NotificationDropDown
-                notifications={notifications}
-                loading={loading}
-              />
+              <div>
+                <div className="flex items-center justify-between px-5">
+                  <p className='font-bold text-lg'>Notifications</p>
+                  <div
+                  onClick={() => router.push('/storefront/notifications')}
+                    className='text-sm font-semibold cursor-pointer text-primary-600'
+                  >
+                    View all
+                  </div>
+                </div>
+              {
+                loading ? 
+                  <Flex justify="center" align="center" height="200px">
+                      <Spinner size="xl" />
+                  </Flex>
+                : 
+                notifications?.length === 0 ? (
+                <div className="flex flex-col items-center justify-center mt-24 text-center">
+                  <IoIosNotifications
+                    className="w-32 h-32 text-primary-500"
+                  />
+                  <p className="text-gray-600 font-medium mt-4">
+                  This is where your notifications will appear.
+                  </p>
+                </div>
+                )
+                : (
+                <div className="mt-6">
+                  {notifications?.map((notification) => (
+                    <MenuItem key={notification?.id} display={"block"} _hover={{bg: "none"}}>
+                      <div
+                        onClick={() => routeNotification(`/storefront/notifications?id=${notification.id}`, notification?.id)}
+                        className="flex border-b border-gray-200 cursor-pointer pb-2"
+                      >
+                        <div className='flex gap-3'>
+                          <div>
+                            <div className="p-1 bg-blue-100 text-blue-600 rounded-full">
+                              <IoMdNotificationsOutline
+                                className="w-6 h-6 cursor-pointer"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                              <p 
+                              className={cn(notification.readAt ? "text-black/50 font-normal" : "text-[#101828]" , "font-medium text-sm leading-6")}>{
+                              notification?.data?.subject}
+                              </p>
+                              <p className="text-sm text-gray-400">{notification?.createdAt}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </MenuItem>
+                  ))}
+                </div>
+                )
+              }
+            </div>
             </MenuList>
           </Menu>
 

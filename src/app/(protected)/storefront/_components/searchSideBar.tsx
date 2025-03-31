@@ -2,12 +2,16 @@ import { Select } from "@chakra-ui/react";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const SearchSideBar = () => {
+const SearchSideBar = ({
+  setIsOpen,
+}: {
+  setIsOpen?: (value: boolean) => void;
+}) => {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
   const router = useRouter();
@@ -63,7 +67,7 @@ const SearchSideBar = () => {
     setMeasurementValue("");
     setMedTypesValue("");
     setPresentationValue("");
-    handleChange("", "");
+    setParams("", "");
   }, [searchValue]);
 
   // Fetch FNs
@@ -186,7 +190,7 @@ const SearchSideBar = () => {
   }, [userData?.user?.token]);
 
   //
-  const handleChange = (filterCategory: string, value: string) => {
+  const setParams = (filterCategory: string, value: string) => {
     const newParams = new URLSearchParams(searchParams.toString());
 
     if (value) {
@@ -251,6 +255,7 @@ const SearchSideBar = () => {
   return (
     <div className=" space-y-4 size-full">
       {/* list of categoris */}
+
       <Select
         className={cn(
           "!border-gray-400 !h-[52px] !px-5",
@@ -268,7 +273,8 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("cate", e.target.value);
-          handleChange("category", e.target.value);
+          setParams("category", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={categoryValue}
       >
@@ -303,7 +309,8 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("brands", e.target.value);
-          handleChange("brands", e.target.value);
+          setParams("brand", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={brandValue}
       >
@@ -338,7 +345,8 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("measure", e.target.value);
-          handleChange("measurements", e.target.value);
+          setParams("measurement", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={measurementValue}
       >
@@ -373,7 +381,8 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("medTye", e.target.value);
-          handleChange("medicationType", e.target.value);
+          setParams("medicationType", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={medTypeValue}
       >
@@ -408,7 +417,8 @@ const SearchSideBar = () => {
             return;
           }
           handleFilterState("present", e.target.value);
-          handleChange("presentation", e.target.value);
+          setParams("presentation", e.target.value);
+          setIsOpen && setIsOpen(false);
         }}
         value={presentationtValue}
       >

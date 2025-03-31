@@ -1,12 +1,10 @@
-import { LoanData } from "@/types";
 import { classNames } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
-import Link from "next/link";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumnsLoanApplicationFN() {
+export function ColumsApplicationFN(onOpen: () => void) {
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
@@ -50,6 +48,16 @@ export function ColumnsLoanApplicationFN() {
         </div>
       ),
     }),
+    columnHelper.accessor("vendor", {
+      header: ({ column }) => <p>Vendor</p>,
+      cell: (info) => {
+        return (
+          <div>
+            <p className="text-gray-500">{info?.row?.original?.vendor}</p>
+          </div>
+        );
+      },
+    }),
 
     columnHelper.accessor("vendor", {
       header: ({ column }) => <p>Credit Score</p>,
@@ -75,7 +83,7 @@ export function ColumnsLoanApplicationFN() {
                   : info?.row?.original?.status === "Rejected"
                   ? "text-red-500 bg-red-50"
                   : "text-gray-500",
-                "max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+                " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
               )}
             >
               <span className="text-[1.2rem] rounded-full">•</span>{" "}
@@ -88,8 +96,8 @@ export function ColumnsLoanApplicationFN() {
     columnHelper.accessor("id", {
       header: ({ column }) => <p>Action</p>,
       cell: (info) => (
-        <div className="flex items-center gap-3 px-4">
-          <p className="text-primary-600 font-medium cursor-pointer ">View</p>
+        <div className="flex items-center gap-3">
+          <p className="text-primary-600 font-medium cursor-pointer">View</p>
         </div>
       ),
     }),

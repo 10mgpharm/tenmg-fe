@@ -22,6 +22,7 @@ export interface User {
   owner: boolean;
   emailVerifiedAt: string;
   entityType: string;
+  role: string;
   businessName: string;
   businessStatus: BusinessStatus;
   completeProfile: boolean;
@@ -430,6 +431,21 @@ export interface DiscountResponseData {
   currentPage?: number;
   firstPageUrl?: any;
   lastPageUrl?: any;
+}
+
+export interface WalletData {
+  id : string;
+}
+export interface WalletResponseData {
+  data: WalletData[];
+  links: any;
+  meta?: MetaDataProp;
+  prevPageUrl?: string | null, 
+  nextPageUrl?: string | null,
+  currentPage?: number;
+  firstPageUrl?: any;
+  lastPageUrl?: any;
+  total: number
 }
 
 /**

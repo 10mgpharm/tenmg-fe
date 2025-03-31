@@ -55,7 +55,9 @@ const SearchModal = ({
 
   useEffect(() => {
     if (!userData || searchValue.trim() === "") return;
-    fetchData(`/storefront/products/search?search=${debouncedSearch.trim()}`);
+    fetchData(
+      `/storefront/products/search?search=${debouncedSearch.trim()}&status=ACTIVE&active=active&inventory=OUT OF STOCK,LOW STOCK,IN STOCK`
+    );
   }, [debouncedSearch, userData?.user?.token]);
 
   const handleSearch = (selectedValue?: string) => {
@@ -83,11 +85,6 @@ const SearchModal = ({
     handleCloseSearch();
   };
 
-  // When enter btn is clicked
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleSearch();
-  });
-
   return (
     <Modal isOpen={isSearchOpen} onClose={handleCloseSearch}>
       <ModalOverlay />
@@ -111,6 +108,7 @@ const SearchModal = ({
               type={"text"}
               placeholder="Search for a product or manufacturer"
               onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               value={searchValue}
               tabIndex={1}
             />

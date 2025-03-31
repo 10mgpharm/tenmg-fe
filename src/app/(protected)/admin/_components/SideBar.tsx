@@ -10,6 +10,7 @@ import {
 import {
   Cog6ToothIcon,
   HomeIcon,
+  ReceiptPercentIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { classNames } from "@/utils";
@@ -23,7 +24,7 @@ import { signOut } from "next-auth/react";
 import { LuUsers, LuWallet } from "react-icons/lu";
 import { FaBalanceScale } from "react-icons/fa";
 import { GiSpanner } from "react-icons/gi";
-import { MdMonitor } from "react-icons/md";
+import { MdMonitor, MdOutlineSwapHorizontalCircle } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 
 const navigation = [
@@ -62,7 +63,19 @@ const navigation = [
     current: false,
   },
   {
-    name: "Message",
+    name: "Loan Application",
+    href: "/admin/loan-application",
+    icon: ReceiptPercentIcon,
+    current: false,
+  },
+  {
+    name: "Loan Repayment",
+    href: "/admin/loan-repayment",
+    icon: MdOutlineSwapHorizontalCircle,
+    current: false,
+  },
+  {
+    name: "Messages",
     href: "/admin/messages",
     icon: BiMessageDetail,
     current: false,
@@ -152,6 +165,11 @@ const SideBar = () => {
                                 )}
                               />
                               {item.name}
+                              {item.name === "Messages" && (
+                                <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                                  {0}
+                                </div>
+                              )}
                             </a>
                           </li>
                         );
@@ -208,6 +226,11 @@ const SideBar = () => {
                             )}
                           />
                           {item.name}
+                          {item.name === "Messages" && (
+                            <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                              {0}
+                            </div>
+                          )}
                         </a>
                       </li>
                     );
