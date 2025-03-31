@@ -119,9 +119,8 @@ export default function StoreProductCardComponent({
           onClick={(e) => handleWishlistClick(e, product?.id)}
         >
           <HeartIcon
-            className={`w-6 stroke-primary ${
-              addedToWishlist ? "fill-primary-500" : "fill-primary-50"
-            }`}
+            className={`w-6 stroke-primary ${addedToWishlist ? "fill-primary-500" : "fill-primary-50"
+              }`}
           />
         </div>
       </div>
@@ -132,11 +131,10 @@ export default function StoreProductCardComponent({
           </p>
         )}
         <p
-          className={`font-semibold my-2 text-sm ${
-            product?.discountPrice > 0
+          className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
               ? "text-gray-400 line-through"
               : "text-gray-900"
-          }`}
+            }`}
         >
           ₦{product?.actualPrice}
         </p>
@@ -144,8 +142,8 @@ export default function StoreProductCardComponent({
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <RatingComponent
-            rating={product?.rating ?? 0}
-            handleRating={() => {}}
+            rating={product?.rating ? Math.round(product?.rating) : 0}
+            handleRating={() => { }}
             readonly={true}
           />
         </div>
