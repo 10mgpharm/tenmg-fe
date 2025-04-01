@@ -87,7 +87,7 @@ export interface AuditLogData {
     tokenExpiresAt: string;
     tokenScope: string;
     userAgent: string;
-  }
+  };
 }
 export interface AuditLogsResponse {
   data: AuditLogData[];
@@ -102,7 +102,6 @@ export interface AuditLogsResponse {
   lastPageUrl: string | null;
   nextPageUrl: string | null;
 }
-
 
 export interface MemberDataProp {
   data: AdminMemers[];
@@ -216,7 +215,6 @@ export interface VendorData {
   updatedAt: string;
 }
 
-
 export interface ResultBreakdownProps {
   operator: string;
   ruleDescription: string;
@@ -236,13 +234,13 @@ export interface SingleTransactionData {
     baseAmount: string;
     maxAmount: string;
     category: string | null;
-  },
+  };
   creditScoreResult: {
     scorePercent: number;
     scoreTotal: number;
     scoreValue: number;
     appliedRules: ResultBreakdownProps[];
-  }
+  };
   customer: CustomerData;
   vendor: VendorData;
   evaluation: any;
@@ -256,7 +254,7 @@ export interface TransactionHistoryDataProps {
   lastPage: number;
   nextPageUrl: string | null;
   prevPageUrl: string | null;
-  meta: any
+  meta: any;
 }
 export interface CustomerRecords {
   id: number;
@@ -291,7 +289,7 @@ export interface MedicationData {
   slug: string;
   status: string;
   createdAt: string;
-  variations?: MedicationVariant[]
+  variations?: MedicationVariant[];
 }
 
 export interface MedicationResponseData {
@@ -338,7 +336,7 @@ export interface MeasurementType {
   active: boolean;
   name: string;
   status: string;
-  variations?: MedicationVariant[]
+  variations?: MedicationVariant[];
 }
 export interface ProductDataProps {
   id: number;
@@ -353,7 +351,7 @@ export interface ProductDataProps {
   status: string;
   slug: string;
   thumbnailFile: string;
-  company: string| null;
+  company: string | null;
   inventory: string;
   discountPrice: string;
   actualPrice: string;
@@ -375,8 +373,8 @@ export interface ProductResponseData {
   links: any;
   meta?: MetaDataProp;
   lastPage?: number;
-  prevPageUrl?: string | null, 
-  nextPageUrl?: string | null,
+  prevPageUrl?: string | null;
+  nextPageUrl?: string | null;
   currentPage?: number;
   firstPageUrl?: any;
   lastPageUrl?: any;
@@ -403,8 +401,8 @@ export interface OrderResponseData {
   data: OrderData[];
   links: any;
   meta?: MetaDataProp;
-  prevPageUrl?: string | null, 
-  nextPageUrl?: string | null,
+  prevPageUrl?: string | null;
+  nextPageUrl?: string | null;
   currentPage?: number;
   firstPageUrl?: any;
   lastPageUrl?: any;
@@ -426,26 +424,26 @@ export interface DiscountResponseData {
   data: DiscountDataType[];
   links: any;
   meta?: MetaDataProp;
-  prevPageUrl?: string | null, 
-  nextPageUrl?: string | null,
+  prevPageUrl?: string | null;
+  nextPageUrl?: string | null;
   currentPage?: number;
   firstPageUrl?: any;
   lastPageUrl?: any;
 }
 
 export interface WalletData {
-  id : string;
+  id: string;
 }
 export interface WalletResponseData {
   data: WalletData[];
   links: any;
   meta?: MetaDataProp;
-  prevPageUrl?: string | null, 
-  nextPageUrl?: string | null,
+  prevPageUrl?: string | null;
+  nextPageUrl?: string | null;
   currentPage?: number;
   firstPageUrl?: any;
   lastPageUrl?: any;
-  total: number
+  total: number;
 }
 
 /**
@@ -561,15 +559,15 @@ export interface AdminApprovals {
   expiryDate: string;
   name: string;
   businessName: string;
-  contactEmail: string,
-  businessAddress: string,
+  contactEmail: string;
+  businessAddress: string;
   contactPerson: string;
   contactPhone: string;
   contactPersonPosition: string;
   code: string;
   position: string;
-  cacDocument: string,
-  verificationStatus: string
+  cacDocument: string;
+  verificationStatus: string;
   createdAt: string;
   updatedAt: string;
   address: string;
@@ -586,23 +584,23 @@ export interface AdminApprovalsProps {
 }
 
 interface NextAuthUserSessionWithToken extends JWT {
-    name: string;
-    email: string;
-    picture: string;
-    sub: string;
-    id: number;
-    active: boolean;
-    emailVerifiedAt: string;
-    entityType: string;
-    businessName: string;
-    businessStatus: string;
-    owner: boolean;
-    completeProfile: boolean;
-    token: string;
-    account: Account;
-    iat: number;
-    exp: number;
-    jti: string;
+  name: string;
+  email: string;
+  picture: string;
+  sub: string;
+  id: number;
+  active: boolean;
+  emailVerifiedAt: string;
+  entityType: string;
+  businessName: string;
+  businessStatus: string;
+  owner: boolean;
+  completeProfile: boolean;
+  token: string;
+  account: Account;
+  iat: number;
+  exp: number;
+  jti: string;
 }
 
 export interface PresentationProps {
@@ -625,7 +623,7 @@ interface FaqDataProps {
   message: string;
   status: string;
 }
-export interface StoreFrontImage{
+export interface StoreFrontImage {
   id: number;
   description: string | null;
   imageUrl: string;
@@ -637,18 +635,18 @@ export interface StoreFrontImageResponse {
   meta: MetaDataProp;
 }
 
-export interface AuditLogData{
- timestamp: string;
- event: string;
- user: string;
- action: string;
+export interface AuditLogData {
+  timestamp: string;
+  event: string;
+  user: string;
+  action: string;
 }
-export interface ApiLogData{
- status: string;
- event: string;
- endpoint: string;
- server_response: string;
- timestamp: string;
+export interface ApiLogData {
+  status: string;
+  event: string;
+  endpoint: string;
+  server_response: string;
+  timestamp: string;
 }
 
 export interface UserLoan {
@@ -669,7 +667,7 @@ export interface LenderDashboardData {
   pendingRequests: number;
   type: string;
   loanRequest: LoanRequest[];
-  wallets: Wallets[]; 
+  wallets: Wallets[];
 }
 
 export interface LoanStats {
@@ -701,7 +699,7 @@ export interface Wallets {
 }
 
 export interface LoanApplicationDataResponse {
-  data: ApplicationDto;
+  data: ApplicationDto[];
   links: any;
   meta: MetaDataProp;
 }

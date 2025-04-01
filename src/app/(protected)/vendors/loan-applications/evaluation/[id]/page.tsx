@@ -24,7 +24,7 @@ import { formatAmountString, handleServerErrorMessage } from "@/utils";
 import { downloadCsv } from "@/utils/downloadTemplate";
 import { toast } from "react-toastify";
 
-const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
+const Evalution = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const session = useSession();
   const searchParams = useSearchParams();
@@ -43,7 +43,7 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
     setLoading(true);
     try {
       const response = await requestClient({ token: token }).get(
-        `lender/txn_history/creditscore-breakdown/${evaluationId}`
+        `vendor/txn_history/creditscore-breakdown/${evaluationId}`
       );
       if (response.status === 200) {
         setTnxHistorysData(response.data.data);
@@ -59,7 +59,7 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
     setIsDownloading(true);
     try {
       const response = await requestClient({ token: token }).post(
-        `lender/txn_history/download/${params.id}`
+        `vendor/txn_history/download/${params.id}`
       );
 
       if (response.status === 200) {
@@ -80,7 +80,6 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
     if (!token) return;
     fetchCustomerTnx();
   }, [fetchCustomerTnx, token]);
-
   return (
     <div className="p-8">
       {loading ? (
@@ -151,7 +150,7 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
               </Button>
               <Button
                 as={Link}
-                href={`/lender/transactions-history/${params.id}/records`}
+                href={`/vendors/transactions-history/${params.id}/records`}
                 bg="primary.600"
                 color="white"
                 height="34px"
@@ -340,4 +339,4 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default SingleTransactionPage;
+export default Evalution;
