@@ -151,7 +151,7 @@ const SingleTransactionPage = ({ params }: { params: { id: string } }) => {
               </Button>
               <Button
                 as={Link}
-                href={`/lender/transactions-history/${params.id}/records`}
+                href={`/vendors/transactions-history/${params.id}/records`}
                 bg="primary.600"
                 color="white"
                 height="34px"

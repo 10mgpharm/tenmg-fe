@@ -155,8 +155,9 @@ const LoanApplication = () => {
   });
 
   const filterOptions = [
-    { option: "Active", value: "active" },
-    { option: "Suspended", value: "inactive" },
+    { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
+    { option: "EXPIRED", value: "EXPIRED" },
   ];
 
   return (
@@ -171,6 +172,7 @@ const LoanApplication = () => {
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
+
             <div
               onClick={onOpenFilter}
               className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"

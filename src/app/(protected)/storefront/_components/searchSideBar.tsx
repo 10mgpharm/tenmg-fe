@@ -273,7 +273,7 @@ const SearchSideBar = ({
             return;
           }
           handleFilterState("cate", e.target.value);
-          setParams("category", e.target.value);
+          setParams("categories", e.target.value);
           setIsOpen && setIsOpen(false);
         }}
         value={categoryValue}
@@ -309,7 +309,7 @@ const SearchSideBar = ({
             return;
           }
           handleFilterState("brands", e.target.value);
-          setParams("brand", e.target.value);
+          setParams("brands", e.target.value);
           setIsOpen && setIsOpen(false);
         }}
         value={brandValue}
@@ -417,7 +417,7 @@ const SearchSideBar = ({
             return;
           }
           handleFilterState("present", e.target.value);
-          setParams("presentation", e.target.value);
+          setParams("presentations", e.target.value);
           setIsOpen && setIsOpen(false);
         }}
         value={presentationtValue}

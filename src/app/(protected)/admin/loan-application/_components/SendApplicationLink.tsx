@@ -61,7 +61,7 @@ const SendApplicationLink = ({
     try {
       setIsLoading(true);
       const response = await requestClient({ token: token }).post(
-        "/vendor/loan-applications/send-application-link",
+        "/admin/loan-application/send-application-link",
         data
       );
 
