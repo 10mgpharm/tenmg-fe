@@ -8,6 +8,13 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -82,61 +89,88 @@ const SendApplicationLink = ({
   }));
 
   return (
-    <ModalWrapper
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Send Application Link"
-    >
-      <form onSubmit={handleSubmit(onSubmit)} className="mb-5">
-        <FormControl isInvalid={!!errors.customerId}>
-          <FormLabel>Select Customer</FormLabel>
-          <Controller
-            name="customerId"
-            control={control}
-            rules={{ required: "Please select a customer." }}
-            render={({ field }) => (
-              <>
-                <Select
-                  {...field}
-                  isClearable={true}
-                  isSearchable={true}
-                  options={customerOptions}
-                  placeholder={"Search Customer"}
-                  styles={customStyles}
-                  name="customerId"
-                  onChange={(selectedOption) => {
-                    field.onChange(selectedOption?.value);
-                    setValue("customerId", selectedOption?.value);
-                  }}
-                  value={customerOptions?.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-                {errors.customerId && (
-                  <FormErrorMessage>
-                    {errors.customerId.message?.toString()}
-                  </FormErrorMessage>
+    <Modal isCentered isOpen={isOpen} onClose={onClose} size={"lg"}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Apply for Loan</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <form onSubmit={handleSubmit(onSubmit)} className="mb-5  h-fit">
+            <FormControl isInvalid={!!errors.customerId}>
+              <FormLabel>Select Customer</FormLabel>
+              <Controller
+                name="customerId"
+                control={control}
+                rules={{ required: "Please select a customer." }}
+                render={({ field }) => (
+                  <>
+                    <Select
+                      {...field}
+                      isClearable={true}
+                      isSearchable={true}
+                      options={customerOptions}
+                      placeholder={"Search Customer"}
+                      styles={customStyles}
+                      name="customerId"
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value);
+                        setValue("customerId", selectedOption?.value);
+                      }}
+                      value={customerOptions?.find(
+                        (option) => option.value === field.value
+                      )}
+                    />
+                    {errors.customerId && (
+                      <FormErrorMessage>
+                        {errors.customerId.message?.toString()}
+                      </FormErrorMessage>
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          />
-        </FormControl>
-        <Flex justify={"end"} mt={5} gap={3}>
-          <Button w={"150px"} onClick={onClose} variant={"outline"}>
-            Cancel
-          </Button>
-          <Button
-            w={"150px"}
-            type="submit"
-            isLoading={isLoading}
-            loadingText={"Submitting.."}
-            className="bg-primary-500 text-white"
-          >
-            Send Link
-          </Button>
-        </Flex>
-      </form>
-    </ModalWrapper>
+              />
+            </FormControl>
+
+            <FormControl isInvalid={!!errors.amount} className="mt-7">
+              <FormLabel>Enter Loan Amount</FormLabel>
+              <Controller
+                name="amount"
+                control={control}
+                rules={{ required: "Please enter loan amount." }}
+                render={({ field }) => (
+                  <>
+                    <Input
+                      {...field}
+                      name="amount"
+                      placeholder={"Enter loan amount"}
+                    />
+
+                    {errors.amount && (
+                      <FormErrorMessage>
+                        {errors.amount.message?.toString()}
+                      </FormErrorMessage>
+                    )}
+                  </>
+                )}
+              />
+            </FormControl>
+            <Flex justify={"end"} mt={5} gap={3}>
+              <Button w={"150px"} onClick={onClose} variant={"outline"}>
+                Cancel
+              </Button>
+              <Button
+                w={"150px"}
+                type="submit"
+                isLoading={isLoading}
+                loadingText={"Submitting.."}
+                className="bg-primary-500 text-white"
+              >
+                Send Link
+              </Button>
+            </Flex>
+          </form>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
 
