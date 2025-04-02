@@ -1,18 +1,21 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
+  const route = useRouter();
 
   const click = () => setNav(!nav);
   const close = () => setNav(false);
+
   return (
     <div>
       <nav className="bg-white shadow-sm border-b-2 ">
         <div className="max-w-7xl mx-auto px-2 sm:px-0 flex items-center w-full justify-between py-4">
           <div className="px-3 mt-2 flex justify-between items-center w-full lg:w-auto">
-            <div className="flex gap-2 items-center">
+            <Link href={"/"} className="flex gap-2 items-center">
               <svg
                 width="159"
                 height="42"
@@ -41,7 +44,8 @@ const Navbar = () => {
                   fill="#336699"
                 />
               </svg>
-            </div>
+            </Link>
+
             <button className="lg:hidden block text-black" onClick={click}>
               <svg
                 className="w-6 h-6"
@@ -57,16 +61,19 @@ const Navbar = () => {
             </button>
           </div>
           <div className="max-w-7xl mx-auto hidden lg:flex justify-between items-center space-x-6">
-            <Link href="#home" className="text-black hover:text-blue-700">
+            <Link href="/#home" className="text-black hover:text-blue-700">
               Home
             </Link>
-            <Link href="#API" className="text-black hover:text-blue-700">
+            <Link href="/#API" className="text-black hover:text-blue-700">
               API
             </Link>
             <Link href="/faq" className="text-black hover:text-blue-700">
               FAQs
             </Link>
-            <Link href="#Lender" className="text-black hover:text-blue-700">
+            <Link
+              href="/auth/signup/lender"
+              className="text-black hover:text-blue-700"
+            >
               Lender
             </Link>
           </div>
@@ -91,8 +98,8 @@ const Navbar = () => {
           <div
             className={
               nav
-                ? "fixed top-0 left-0 w-[72%] h-full bg-white text-black transition-all duration-300"
-                : "fixed top-0 left-[100%] w-[72%] h-full bg-white text-black transition-all duration-300"
+                ? "fixed top-0 right-0 w-[72%] h-full bg-white text-black transition-all duration-300"
+                : "fixed top-0 -right-[100%] w-[72%] h-full bg-white text-black transition-all duration-300"
             }
           >
             <div className="p-4 relative h-full">
@@ -106,26 +113,54 @@ const Navbar = () => {
                 </svg>
               </div>
               <div className="flex flex-col space-y-6 text-black mt-8">
-                <Link href="#home" className="text-black">
+                <p
+                  onClick={() => {
+                    click();
+                    route.push("/#home");
+                  }}
+                  className="text-black cursor-pointer"
+                >
                   Home
-                </Link>
-                <Link href="#API" className="text-black">
+                </p>
+                <p
+                  onClick={() => {
+                    click();
+                    route.push("/#API");
+                  }}
+                  className="text-black cursor-pointer"
+                >
                   API
-                </Link>
-                <Link href="#FAQs" className="text-black">
+                </p>
+                <p
+                  onClick={() => {
+                    click();
+                    route.push("/faq");
+                  }}
+                  className="text-black cursor-pointer"
+                >
                   FAQs
-                </Link>
-                <Link href="/auth/signup/lender" className="text-black">
+                </p>
+                <p
+                  onClick={() => {
+                    click();
+                    route.push("/auth/signup/lender");
+                  }}
+                  className="text-black  cursor-pointer"
+                >
                   Lender
-                </Link>
+                </p>
               </div>
 
               <div className="absolute left-0 right-0 w-full bottom-0 p-4">
-                <Link href="/auth/signup">
-                  <button className="w-full rounded-lg py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
-                    Sign Up
-                  </button>
-                </Link>
+                <button
+                  className="w-full rounded-lg cursor-pointer py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                  onClick={() => {
+                    click();
+                    route.push("/auth/signup");
+                  }}
+                >
+                  Sign Up
+                </button>
               </div>
             </div>
           </div>
