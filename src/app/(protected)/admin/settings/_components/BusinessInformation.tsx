@@ -35,9 +35,9 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
-  // Determine user role
+
   const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
-  // @ts-ignore
+
   const isAdminMember = sessionData?.user?.role === "admin_member";
 
   const {
