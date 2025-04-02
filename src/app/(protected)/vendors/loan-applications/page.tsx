@@ -17,7 +17,11 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyResult from "../_components/EmptyResult";
 import { useSession } from "next-auth/react";
-import { CustomerRecords, LoanDataProp, NextAuthUserSession } from "@/types";
+import {
+  CustomerRecords,
+  LoanApplicationDataResponse,
+  NextAuthUserSession,
+} from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import CreateLoan from "./_components/CreateLoan";
@@ -32,13 +36,21 @@ import { ColumnsLoanApplicationFN } from "./_components/table";
 import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../_components/FilterDrawer";
 import SendApplicationLink from "./_components/SendApplicationLink";
-import { applicationData } from "@/data/mockdata";
+
+export interface OverviewCardData {
+  title: string;
+  value: string | number;
+  fromColor?: string;
+  toColor?: string;
+  image: any;
+}
 
 const LoanApplication = () => {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
-  const [loanApplication, setLoanApplication] = useState<LoanDataProp>();
+  const [loanApplication, setLoanApplication] =
+    useState<LoanApplicationDataResponse | null>(null);
   const [allCustomers, setAllCustomers] = useState<CustomerRecords[]>();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
@@ -131,8 +143,7 @@ const LoanApplication = () => {
   };
 
   const table = useReactTable({
-    // data: tableData ? tableData : [],
-    data: applicationData,
+    data: tableData ?? [],
     columns: ColumnsLoanApplicationFN(),
     state: {
       globalFilter,
@@ -144,13 +155,15 @@ const LoanApplication = () => {
   });
 
   const filterOptions = [
-    { option: "Active", value: "active" },
-    { option: "Suspended", value: "inactive" },
+    { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
+    { option: "EXPIRED", value: "EXPIRED" },
   ];
 
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Loan Application</h3>
+
       <div className="flex justify-between">
         <div className="mb-5">
           <div className="flex items-center gap-3 mt-5">
@@ -159,6 +172,7 @@ const LoanApplication = () => {
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
+
             <div
               onClick={onOpenFilter}
               className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
@@ -169,12 +183,13 @@ const LoanApplication = () => {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Button onClick={onOpenSend}>Send Application Link</Button>
-          {/* <Button onClick={onOpen}>
+          <Button onClick={onOpen} variant={"outline"}>
             Create Application
-          </Button> */}
+          </Button>
+          <Button onClick={onOpenSend}>Send Application Link</Button>
         </div>
       </div>
+
       <div className="">
         {loading ? (
           <Flex justify="center" align="center" height="200px">

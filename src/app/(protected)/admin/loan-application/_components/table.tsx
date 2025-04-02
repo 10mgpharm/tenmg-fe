@@ -1,14 +1,14 @@
 "use client";
-import SearchComponent from "@/app/(protected)/suppliers/orders/_components/SearchComponent";
+
 import {
   Button,
   Flex,
   HStack,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
   Tr,
@@ -24,16 +24,26 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import { applicationData } from "@/data/mockdata";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
+import {
+  CustomerRecords,
+  LoanApplicationDataResponse,
+  NextAuthUserSession,
+} from "@/types";
 import { ColumsApplicationFN } from "./column";
 import CreateLoan from "./CreateLoan";
 import SuccessModal from "./SuccessModal";
+import { useDebouncedValue } from "@/utils/debounce";
+import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
+import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
+import SendApplicationLink from "./SendApplicationLink";
+import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
+import EmptyResult from "@/app/(protected)/vendors/_components/EmptyResult";
 
 const DataTable = () => {
   const session = useSession();
@@ -56,21 +66,99 @@ const DataTable = () => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [globalFilter, setGlobalFilter] = useState<string>("");
 
-  const meta = {
-    meta: {
-      links: [
-        { label: "Previous", active: false },
-        { label: 1, active: true },
-      ],
-    },
+  const [status, setStatus] = useState<string>("");
+  const [loanApplication, setLoanApplication] =
+    useState<LoanApplicationDataResponse | null>(null);
+  const [allCustomers, setAllCustomers] = useState<CustomerRecords[]>();
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
+  const fetchLoanApplication = useCallback(async () => {
+    setLoading(true);
+    let query = `/admin/loan-application?page=${pageCount}`;
+
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
+    }
+    if (status) {
+      query += `&status=${status}`;
+    }
+    if (createdAtStart) {
+      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+    }
+    if (createdAtEnd) {
+      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+    }
+
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setLoanApplication(response.data.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+
+  const fetchAllCustomers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token: token }).get(
+        "/admin/customers/get-all"
+      );
+      if (response.status === 200) {
+        setAllCustomers(response.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, [token]);
+
+  const tableData = useMemo(
+    () => loanApplication?.data,
+    [loanApplication?.data]
+  );
+
+  useEffect(() => {
+    if (!token) return;
+    fetchLoanApplication();
+    fetchAllCustomers();
+  }, [fetchLoanApplication, fetchAllCustomers, token]);
+
+  const applyFilters = (filters: IFilterInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
   };
 
-  // const memoizedData = useMemo(() => data, [data])
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
+  };
+
+  const filterOptions = [
+    { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
+    { option: "EXPIRED", value: "EXPIRED" },
+  ];
 
   const table = useReactTable({
-    data: applicationData,
-    columns: ColumsApplicationFN(onOpen),
+    data: tableData ?? [],
+    columns: ColumsApplicationFN(),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -90,12 +178,17 @@ const DataTable = () => {
     <div>
       <HStack justify={"space-between"}>
         <Flex mt={4} gap={2}>
-          <SearchComponent placeholder="Search for a user" />
+          <SearchInput
+            placeholder="Search for a loan"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
           <Button
             h={"40px"}
             px={4}
             variant={"outline"}
             className="border text-gray-600 bg-white"
+            onClick={onOpenFilter}
           >
             Filter
           </Button>
@@ -106,6 +199,7 @@ const DataTable = () => {
             px={4}
             variant={"outline"}
             className="border bg-white"
+            onClick={onOpenSend}
           >
             Send Application Link
           </Button>
@@ -119,11 +213,16 @@ const DataTable = () => {
           </Button>
         </Flex>
       </HStack>
+
       <div className="mt-5">
-        {applicationData?.length === 0 ? (
-          <EmptyOrder
-            heading={`No Loan Yet`}
-            content={`You currently have no loan application. All loan application will appear here.`}
+        {loading ? (
+          <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+          </Flex>
+        ) : tableData && tableData?.length === 0 ? (
+          <EmptyResult
+            heading={`Nothing to show here yet`}
+            content={`No active loans yet. Once you've disbursed a loan, the details will appear here.`}
           />
         ) : (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -159,15 +258,34 @@ const DataTable = () => {
                 ))}
               </Tbody>
             </Table>
-            <Pagination meta={meta} setPageCount={setPageCount} />
+            <Pagination meta={tableData} setPageCount={setPageCount} />
           </TableContainer>
         )}
       </div>
+
       <CreateLoan
         isOpen={isOpen}
         onClose={onClose}
         onOpenSuccess={onOpenSuccess}
+        customers={allCustomers}
+        fetchLoanApplication={fetchLoanApplication}
       />
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+      />
+
+      <SendApplicationLink
+        isOpen={isOpenSend}
+        onClose={onCloseSend}
+        customers={allCustomers}
+        fetchLoanApplication={fetchLoanApplication}
+      />
+
       <SuccessModal isOpen={isOpenSuccess} onClose={onCloseSuccess} />
     </div>
   );

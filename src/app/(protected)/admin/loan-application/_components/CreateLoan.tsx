@@ -1,76 +1,179 @@
+import { CustomerRecords } from "@/types";
 import {
-    Drawer,
-    DrawerBody,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
-    Flex,
-    FormControl,
-    FormLabel,
-    Input,
-    HStack,
-    Button,
-    Select
-  } from '@chakra-ui/react'
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  HStack,
+  Button,
+} from "@chakra-ui/react";
+import shape from "@public/assets/images/Rectangle 43.svg";
+import Image from "next/image";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import Select from "react-select";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
+import { convertArray } from "@/utils/convertSelectArray";
+import { SelectProps } from "./SendApplicationLink";
 
-import shape from '@public/assets/images/Rectangle 43.svg';
-import Image from 'next/image';
-
-const CreateLoan = (
-    {isOpen, onClose, onOpenSuccess}: 
-    {isOpen: boolean, onClose: () => void, onOpenSuccess: () => void}
-) => {
-  return (
-    <Drawer
-        isOpen={isOpen}
-        placement='right'
-        onClose={onClose}
-        size={"md"}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader className='capitalize'>Apply for Loan</DrawerHeader>
-          <DrawerBody>
-            <form>
-                <FormControl>
-                    <FormLabel>Customer by Name or ID</FormLabel>
-                    <Input type='text' placeholder='Eg. Jude Bellingham or MG-10932023'/>
-                </FormControl>
-                <FormControl mt={5}>
-                    <FormLabel>Loan Amount</FormLabel>
-                    <Input type='number' placeholder='N 3,000.000.00'/>
-                </FormControl>
-                <FormControl mt={5}>
-                    <FormLabel>Loan Repayment</FormLabel>
-                    <Select placeholder='Choose Repayment Period '>
-                        <option value=""></option>
-                    </Select>
-                </FormControl>
-                <HStack mt={5} justify={"end"}>
-                  <Flex gap={3}>
-                    <Button w={"120px"} onClick={onClose} variant={"outline"}>Cancel</Button>
-                    <Button 
-                    w={"120px"}
-                    onClick={() => {
-                        onClose()
-                        onOpenSuccess()
-                    }} 
-                    className='bg-primary-500 text-white'>
-                        Apply for Loan
-                    </Button>
-                  </Flex>
-                </HStack>
-            </form>
-          </DrawerBody>
-          <DrawerFooter p={0}>
-            <Image src={shape} alt=''/>
-          </DrawerFooter>
-        </DrawerContent>
-    </Drawer>
-  )
+interface IFormInput {
+  customerId: SelectProps;
+  requestedAmount: string;
+  durationInMonths: SelectProps;
 }
+
+const CreateLoan = ({
+  isOpen,
+  onClose,
+  onOpenSuccess,
+  fetchLoanApplication,
+  customers,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onOpenSuccess: () => void;
+  fetchLoanApplication: () => void;
+  customers: CustomerRecords[];
+}) => {
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    control,
+    formState: { errors, isValid },
+    handleSubmit,
+    reset,
+  } = useForm<IFormInput>({
+    mode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<IFormInput> = async (records) => {
+    const data = {
+      customerId: records.customerId.value,
+      requestedAmount: records.requestedAmount,
+      durationInMonths: records.durationInMonths.value,
+    };
+    try {
+      setIsLoading(true);
+      const response = await requestClient({ token: token }).post(
+        "/admin/loan-application",
+        data
+      );
+
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+        fetchLoanApplication();
+        onClose();
+        reset();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(handleServerErrorMessage(error));
+    }
+    setIsLoading(false);
+  };
+
+  return (
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerCloseButton />
+        <DrawerHeader className="capitalize">Apply for Loan</DrawerHeader>
+        <DrawerBody>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <FormControl isInvalid={!!errors.customerId}>
+              <FormLabel color={"#344054"}>Select Customer</FormLabel>
+              <Controller
+                name="customerId"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <Select
+                      classNamePrefix="select"
+                      isClearable={true}
+                      isSearchable={true}
+                      {...field}
+                      name="customerId"
+                      options={convertArray(customers)}
+                    />
+                  );
+                }}
+              />
+            </FormControl>
+            <FormControl isInvalid={!!errors.requestedAmount}>
+              <FormLabel color={"#344054"}>Loan Amount</FormLabel>
+              <Input
+                placeholder="₦3,000.000.00"
+                type="number"
+                id="requestedAmount"
+                errorBorderColor="red.300"
+                isInvalid={!!errors.requestedAmount}
+                _focus={{
+                  border: !!errors.requestedAmount
+                    ? "red.300"
+                    : "border-gray-300",
+                }}
+                {...register("requestedAmount", {
+                  required: true,
+                })}
+              />
+            </FormControl>
+            <FormControl isInvalid={!!errors.durationInMonths}>
+              <FormLabel color={"#344054"}>Loan Repayment</FormLabel>
+              <Controller
+                name="durationInMonths"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={[
+                      { value: 1, label: "1 month" },
+                      { value: 3, label: "3 months" },
+                      { value: 6, label: "6 months" },
+                    ]}
+                    placeholder="Choose Repayment Period"
+                  />
+                )}
+              />
+            </FormControl>
+            <HStack pt={6} justify={"end"}>
+              <Flex gap={3}>
+                <Button w={"150px"} onClick={onClose} variant={"outline"}>
+                  Cancel
+                </Button>
+                <Button
+                  w={"150px"}
+                  type="submit"
+                  isLoading={isLoading}
+                  loadingText={"Submitting.."}
+                  className="bg-primary-500 text-white"
+                >
+                  Apply for Loan
+                </Button>
+              </Flex>
+            </HStack>
+          </form>
+        </DrawerBody>
+        <DrawerFooter p={0}>
+          <Image src={shape} alt="" />
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+};
 
 export default CreateLoan;

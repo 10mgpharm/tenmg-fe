@@ -37,7 +37,7 @@ const Page = ({ params }: { params: { snug: string } }) => {
 
       try {
         const response = await requestClient({ token: token }).get(
-          `/vendor/loan-applications/view/${id}`
+          `/admin/loan-application/view/${id}`
         );
         setLoanData(response.data.data);
       } catch (error) {
@@ -77,7 +77,7 @@ const Page = ({ params }: { params: { snug: string } }) => {
         colorScheme="primary"
         variant="unstyled"
         onClick={() => {
-          router.push("/vendors/loan-applications");
+          router.push("/admin/loan-application");
         }}
       >
         Back
