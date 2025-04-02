@@ -19,7 +19,7 @@ import {
 
 import { BellIcon, Search } from "lucide-react";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 // import avatar from "@public/assets/images/Avatar.png";
@@ -101,8 +101,8 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
     }
   };
 
-  const fetchingCounts = useCallback( async () => {
-    const res = await requestClient({token: token}).get(
+  const fetchingCounts = useCallback(async () => {
+    const res = await requestClient({ token: token }).get(
       `/account/count-unread-notifications`
     )
     setNotificationCount(res.data?.data?.count)
@@ -153,10 +153,10 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
   const markAsRead = async (id: string) => {
     try {
       const res = await requestClient({ token: token }).patch(
-          `/account/notifications/${id}`,
+        `/account/notifications/${id}`,
       );
       if (res.status === 200) {
-          fetchingCounts();
+        fetchingCounts();
       }
     } catch (error) {
       console.error(error);
@@ -224,10 +224,10 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
 
           {/* NOTIFICATIONS */}
           <Menu>
-            <MenuButton 
-            type="button"
-            onClick={fetchingData}
-            className="relative">
+            <MenuButton
+              type="button"
+              onClick={fetchingData}
+              className="relative">
               <span className="sr-only">View notifications</span>
               <BellIcon aria-hidden="true" className="h-6 w-6 mx-auto" />
               <div className="px-1 rounded-full bg-red-500 absolute top-0 right-6 text-[9px] text-white">{notificationCount}</div>
@@ -253,59 +253,59 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
                 <div className="flex items-center justify-between px-5">
                   <p className='font-bold text-lg'>Notifications</p>
                   <div
-                  onClick={() => router.push('/storefront/notifications')}
+                    onClick={() => router.push('/storefront/notifications')}
                     className='text-sm font-semibold cursor-pointer text-primary-600'
                   >
                     View all
                   </div>
                 </div>
-              {
-                loading ? 
-                  <Flex justify="center" align="center" height="200px">
+                {
+                  loading ?
+                    <Flex justify="center" align="center" height="200px">
                       <Spinner size="xl" />
-                  </Flex>
-                : 
-                notifications?.length === 0 ? (
-                <div className="flex flex-col items-center justify-center mt-24 text-center">
-                  <IoIosNotifications
-                    className="w-32 h-32 text-primary-500"
-                  />
-                  <p className="text-gray-600 font-medium mt-4">
-                  This is where your notifications will appear.
-                  </p>
-                </div>
-                )
-                : (
-                <div className="mt-6">
-                  {notifications?.map((notification) => (
-                    <MenuItem key={notification?.id} display={"block"} _hover={{bg: "none"}}>
-                      <div
-                        onClick={() => routeNotification(`/storefront/notifications?id=${notification.id}`, notification?.id)}
-                        className="flex border-b border-gray-200 cursor-pointer pb-2"
-                      >
-                        <div className='flex gap-3'>
-                          <div>
-                            <div className="p-1 bg-blue-100 text-blue-600 rounded-full">
-                              <IoMdNotificationsOutline
-                                className="w-6 h-6 cursor-pointer"
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-1">
-                              <p 
-                              className={cn(notification.readAt ? "text-black/50 font-normal" : "text-[#101828]" , "font-medium text-sm leading-6")}>{
-                              notification?.data?.subject}
-                              </p>
-                              <p className="text-sm text-gray-400">{notification?.createdAt}</p>
-                          </div>
-                        </div>
+                    </Flex>
+                    :
+                    notifications?.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center mt-24 text-center">
+                        <IoIosNotifications
+                          className="w-32 h-32 text-primary-500"
+                        />
+                        <p className="text-gray-600 font-medium mt-4">
+                          This is where your notifications will appear.
+                        </p>
                       </div>
-                    </MenuItem>
-                  ))}
-                </div>
-                )
-              }
-            </div>
+                    )
+                      : (
+                        <div className="mt-6">
+                          {notifications?.map((notification) => (
+                            <MenuItem key={notification?.id} display={"block"} _hover={{ bg: "none" }}>
+                              <div
+                                onClick={() => routeNotification(`/storefront/notifications?id=${notification.id}`, notification?.id)}
+                                className="flex border-b border-gray-200 cursor-pointer pb-2"
+                              >
+                                <div className='flex gap-3'>
+                                  <div>
+                                    <div className="p-1 bg-blue-100 text-blue-600 rounded-full">
+                                      <IoMdNotificationsOutline
+                                        className="w-6 h-6 cursor-pointer"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p
+                                      className={cn(notification.readAt ? "text-black/50 font-normal" : "text-[#101828]", "font-medium text-sm leading-6")}>{
+                                        notification?.data?.subject}
+                                    </p>
+                                    <p className="text-sm text-gray-400">{notification?.createdAt}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </MenuItem>
+                          ))}
+                        </div>
+                      )
+                }
+              </div>
             </MenuList>
           </Menu>
 
@@ -318,22 +318,8 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
             <Stack align="center" spacing={1}>
               <Box position="relative" display="flex" alignItems="center">
                 <Icon as={PiShoppingBagBold} boxSize={5} />{" "}
-                <Box
-                  as="span"
-                  position="absolute"
-                  top="-2"
-                  right="-3"
-                  bg="red.600"
-                  color="white"
-                  fontSize="xs"
-                  px={1}
-                  width={4}
-                  height={4}
-                  borderRadius="full"
-                  className="flex items-center justify-center"
-                >
-                  {cartSize}
-                </Box>
+
+                <div className="px-1 rounded-full bg-red-500 absolute top-[-2px] right-[-5px] text-[9px] text-white">{cartSize}</div>
               </Box>
               <Text className="hidden md:block">Cart</Text>
             </Stack>

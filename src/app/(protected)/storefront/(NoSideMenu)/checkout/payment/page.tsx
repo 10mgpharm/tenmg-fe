@@ -25,7 +25,7 @@ import { config } from "process";
 
 export default function PaymentPage() {
   const [cartItems, setCartItems] = useState<any>({});
-  const { cart, fetchCart, clearCart } = useCartStore();
+  const { cart, fetchCart, clearCart, cartSize } = useCartStore();
   // const cartItems = cart;
 
   const session = useSession();
@@ -43,6 +43,12 @@ export default function PaymentPage() {
       setCartItems(cart);
     }
   }, [cart]);
+
+  useEffect(() => {
+    if (cartSize == 0) {
+      redirect("/storefront");
+    }
+  }, [cartSize])
 
   const breadCrumb = [
     {
@@ -98,7 +104,6 @@ export default function PaymentPage() {
   }, [shippingData]);
 
   const [loadingPayment, setLoadingPayment] = useState(false);
-  // !Note that this function is not the same as the order payment. This is a temporary fucntion to test the payment page
 
   const [paymentLoading, setPaymentLoading] = useState(false);
 
@@ -128,7 +133,10 @@ export default function PaymentPage() {
         `/storefront/payment/verify/${ref}`
       );
       toast.success("Order placed successfully");
-      router.push("/");
+      // wait 1 second and reload the page
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
       // // console.log("response", response);
     } catch (e) {
       toast.error("Oops... Something went wrong...!");
@@ -341,11 +349,10 @@ export default function PaymentPage() {
                         </p>
                       )}
                       <p
-                        className={`font-semibold my-2 text-sm ${
-                          item?.discountPrice > 0
-                            ? "text-gray-400 line-through"
-                            : "text-gray-900"
-                        }`}
+                        className={`font-semibold my-2 text-sm ${item?.discountPrice > 0
+                          ? "text-gray-400 line-through"
+                          : "text-gray-900"
+                          }`}
                       >
                         ₦{item?.actualPrice}
                       </p>

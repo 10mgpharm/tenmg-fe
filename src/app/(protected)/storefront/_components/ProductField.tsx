@@ -30,28 +30,30 @@ const ProductsField = ({ category }: any) => {
         </Button>
       </Flex>
 
-      <Flex
-        overflowX="auto"
-        gap={6}
-        className="px-6 md:px-20 max-w-screen-2xl mx-auto"
-        py={2}
-        mb={8}
-        sx={{
-          '::-webkit-scrollbar': {
-            display: 'none'
-          },
-          '-ms-overflow-style': 'none',
-          'scrollbar-width': 'none'
-        }}
-      >
-        {/* {category?.products?.length < 1 ? "" :
+      <div className="w-full md:w-[90%] mx-auto py-2">
+        <Flex
+          overflowX="auto"
+          gap={6}
+          className=" max-w-screen-2xl mx-auto"
+          py={2}
+          mb={8}
+          sx={{
+            '::-webkit-scrollbar': {
+              display: 'none'
+            },
+            '-ms-overflow-style': 'none',
+            'scrollbar-width': 'none'
+          }}
+        >
+          {/* {category?.products?.length < 1 ? "" :
           <> */}
-        {category?.products?.map((product, index) => (
-          <StoreProductCardComponent key={index} product={product} />
-        ))}
-        {/* </>
+          {category?.products?.map((product, index) => (
+            <StoreProductCardComponent key={index} product={product} />
+          ))}
+          {/* </>
         } */}
-      </Flex>
+        </Flex>
+      </div>
     </Box>
   );
 };

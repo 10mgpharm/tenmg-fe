@@ -43,8 +43,6 @@ export default function OrderDetailsPage() {
     if (userData?.user?.token) getSingleOrder(userData?.user?.token, id);
   }, [getSingleOrder, userData?.user?.token, id]);
 
-  console.log("order", order);
-
   const steps = [
     { title: "Order Submitted", description: "Order Submitted" },
     { title: "Processing", description: "Shipment in Progress" },
@@ -100,12 +98,13 @@ export default function OrderDetailsPage() {
                   order?.status?.toLowerCase() === "completed" ||
                     order?.status?.toLowerCase() === "delivered"
                     ? "green"
-                    : order?.status?.toLowerCase() === "pending" ||
-                      order?.status?.toLowerCase() === "processing"
-                      ? "purple"
-                      : order?.status?.toLowerCase() === "shipped"
-                        ? "primary"
-                        : "red"
+                    : order?.status?.toLowerCase() === "pending"
+                      ? "warning"
+                      : order?.status?.toLowerCase() === "processing"
+                        ? "purple"
+                        : order?.status?.toLowerCase() === "shipped"
+                          ? "primary"
+                          : "red"
                 }
                 fontSize="10px"
                 px="2"
