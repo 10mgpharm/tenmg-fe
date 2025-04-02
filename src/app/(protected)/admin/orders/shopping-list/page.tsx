@@ -28,7 +28,7 @@ const ShoppingList = () => {
   const fetchOrderCount = useCallback(async () => {
     setIsLoading(true);
     try {
-      let query = `/admin/shopping-list?search=${searchValue}`;
+      let query = `/admin/shopping-list?search=${searchValue}&page=${pageCount}`;
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
         setShoppingListData(response?.data?.data);
@@ -37,7 +37,7 @@ const ShoppingList = () => {
       console.error(error);
     }
     setIsLoading(false);
-  }, [token, debounceValue]);
+  }, [token, debounceValue, pageCount]);
 
   useEffect(() => {
     if (!token) return;
@@ -52,9 +52,12 @@ const ShoppingList = () => {
         </Text>
         <Flex gap={2}>
           <SearchInput
-            placeholder="Search with customer's name"
+            placeholder="Search by product name"
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+              setPageCount(1);
+            }}
           />
         </Flex>
       </HStack>

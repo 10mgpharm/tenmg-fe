@@ -57,57 +57,57 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
     loanData?.customer?.lastEvaluationHistory &&
     loanData?.customer?.lastEvaluationHistory?.evaluationResult;
 
-    const handleAccept = useCallback(
-      async (id: string) => {
-        if (!sessionToken) return;
-  
-        try {
-          const response = await requestClient({ token: sessionToken }).post(
-            "/lender/loan-applications",
-            { applicationId: id, action: "approve" }
-          );
-  
-          if (response.status === 200) {
-            toast.success("Loan application approved successfully");
-            fetchLoanDetails();
-          } else {
-            toast.error("Error approving loan application");
-          }
-        } catch (error: any) {
-          toast.error(
-            error?.response?.data?.message || "Error approving loan application"
-          );
-          console.error(error);
+  const handleAccept = useCallback(
+    async (id: string) => {
+      if (!sessionToken) return;
+
+      try {
+        const response = await requestClient({ token: sessionToken }).post(
+          "/lender/loan-applications",
+          { applicationId: id, action: "approve" }
+        );
+
+        if (response.status === 200) {
+          toast.success("Loan application approved successfully");
+          fetchLoanDetails();
+        } else {
+          toast.error("Error approving loan application");
         }
-      },
-      [sessionToken, fetchLoanDetails]
-    );
-  
-    const handleIgnore = useCallback(
-      async (id: string) => {
-        if (!sessionToken) return;
-  
-        try {
-          const response = await requestClient({ token: sessionToken }).post(
-            "/lender/loan-applications",
-            { applicationId: id, action: "decline" }
-          );
-  
-          if (response.status === 200) {
-            toast.success("Loan application declined successfully");
-            fetchLoanDetails();
-          } else {
-            toast.error("Error declining loan application");
-          }
-        } catch (error: any) {
-          toast.error(
-            error?.response?.data?.message || "Error declining loan application"
-          );
-          console.error(error);
+      } catch (error: any) {
+        toast.error(
+          error?.response?.data?.message || "Error approving loan application"
+        );
+        console.error(error);
+      }
+    },
+    [sessionToken, fetchLoanDetails]
+  );
+
+  const handleIgnore = useCallback(
+    async (id: string) => {
+      if (!sessionToken) return;
+
+      try {
+        const response = await requestClient({ token: sessionToken }).post(
+          "/lender/loan-applications",
+          { applicationId: id, action: "decline" }
+        );
+
+        if (response.status === 200) {
+          toast.success("Loan application declined successfully");
+          fetchLoanDetails();
+        } else {
+          toast.error("Error declining loan application");
         }
-      },
-      [sessionToken, fetchLoanDetails]
-    );
+      } catch (error: any) {
+        toast.error(
+          error?.response?.data?.message || "Error declining loan application"
+        );
+        console.error(error);
+      }
+    },
+    [sessionToken, fetchLoanDetails]
+  );
 
   return (
     <div className="mx-10 my-4">
@@ -126,7 +126,7 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
             Back
           </Button>
           <>
-            <div className="flex items-center justify-between w-full">
+            <div className="flex items-center justify-between w-full gap-4">
               <div>
                 <h4 className="font-semibold">Application Details</h4>
                 <p className="text-sm">
@@ -151,10 +151,18 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                   </Button>
                 ) : (
                   <>
-                    <Button size="sm" colorScheme={"red"} onClick={() => handleIgnore(params.id)}>
+                    <Button
+                      size="sm"
+                      colorScheme={"red"}
+                      onClick={() => handleIgnore(params.id)}
+                    >
                       Decline Offer
                     </Button>
-                    <Button size="sm" colorScheme={"success"} onClick={() => handleAccept(params.id)}>
+                    <Button
+                      size="sm"
+                      colorScheme={"success"}
+                      onClick={() => handleAccept(params.id)}
+                    >
                       Accept Offer
                     </Button>
                   </>
@@ -207,72 +215,7 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
               </div>
             </div>
           </>
-          {/* <>
-            <div className="flex items-center justify-between w-full">
-              <div>
-                <h4 className="font-semibold">Application Details</h4>
-                <p className="text-sm">
-                  Overview of borrower’s loan details, including their
-                  evaluation reference and credit score.
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button size="sm" colorScheme={"primary"} variant={"solid"}>
-                  View Loan
-                </Button>
-                <Button
-                  size="sm"
-                  colorScheme={"primary"}
-                  variant={"outline"}
-                  onClick={() => {
-                    router.push("/lenders/loan-application/evaluation");
-                  }}
-                >
-                  View Credit Score
-                </Button>
-              </div>
-            </div>
 
-            <div className="w-full rounded-t-xl overflow-hidden my-5">
-              <div className="bg-[#D1E9FF] px-5 py-3 ">
-                <h4 className="font-semibold">Customer Information</h4>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 px-5 py-3 bg-white">
-                <div className="space-y-2">
-                  <p className="text-sm">Borrower’s Name</p>
-                  <h4 className="font-semibold text-sm">Linda Olanrewaju</h4>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm">Email Address</p>
-                  <h4 className="font-semibold text-sm">
-                    ahmed.linda@lendsqr.com
-                  </h4>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm">Reference ID</p>
-                  <h4 className="font-semibold text-sm">10MG-10212012</h4>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm">Credit Score</p>
-                  <h4 className="font-semibold text-sm">720 (Good)</h4>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm">Status</p>
-                  <Badge
-                    colorScheme="green"
-                    fontSize="10px"
-                    px="2"
-                    py="1"
-                    borderRadius="xl"
-                    variant={"solid"}
-                  >
-                    Active
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          </> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-10">
             <div className="rounded-t-xl overflow-hidden">
               <div className="bg-primary px-5 py-3 ">
@@ -317,16 +260,6 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
             <div className="rounded-t-xl overflow-hidden">
               <div className="bg-primary px-5 py-3 flex items-center justify-between">
                 <h4 className="font-semibold text-white">Credit Score</h4>
-                <p
-                  className="text-white cursor-pointer hover:underline"
-                  onClick={() => {
-                    router.push(
-                      `/lenders/loan-application/evaluation/${loanData?.customer?.lastEvaluationHistory?.id}?evaluationId=${loanData?.customer?.lastEvaluationHistory?.id}`
-                    );
-                  }}
-                >
-                  View Results
-                </p>
               </div>
               <div className="gap-4 px-5 py-3 bg-white space-y-3">
                 <div className="space-y-0.5 my-2">
@@ -352,47 +285,6 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
               </div>
             </div>
           </div>
-          {/* <div className="rounded-t-xl overflow-hidden">
-            <div className="bg-primary px-5 py-3 ">
-              <h4 className="font-semibold text-white">Loan History</h4>
-            </div>
-
-            <table className="w-full text-center">
-              <thead className="bg-[#E8F1F8] text-[#1A70B8]">
-                <tr>
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Transactions</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr className="border-b border-b-slate-400 text-xs">
-                  <td className="py-2">20/11/2014</td>
-                  <td className="py-2">Purchase Supplies</td>
-                  <td className="py-2">
-                    {" "}
-                    <Badge
-                      colorScheme="warning"
-                      fontSize="10px"
-                      px="2"
-                      py="1"
-                      borderRadius="xl"
-                    >
-                      •
-                      <span
-                        className=""
-                        style={{ textTransform: "capitalize" }}
-                      >
-                        {" "}
-                        Outstanding
-                      </span>
-                    </Badge>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div> */}
         </>
       )}
     </div>

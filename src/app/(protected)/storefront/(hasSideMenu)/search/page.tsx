@@ -74,7 +74,7 @@ export default function SearchPage() {
     fetchData(
       `/storefront/products/search?search=${searchValue}${
         filterValue ? "&" + filterCategory + "=" + filterValue : ""
-      }&status=ACTIVE&active=active&inventory=OUT OF STOCK,LOW STOCK,IN STOCK`
+      }&status=ACTIVE&active=active&inventories=OUT OF STOCK,LOW STOCK,IN STOCK`
     );
   }, [searchValue, filterCategory, filterValue, userData?.user?.token]);
 
