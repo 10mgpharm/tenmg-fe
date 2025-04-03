@@ -68,7 +68,7 @@ const SendApplicationLink = ({
     try {
       setIsLoading(true);
       const response = await requestClient({ token: token }).post(
-        "/vendor/loan-applications/send-application-link",
+        "/client/applications/start",
         data
       );
 
@@ -84,7 +84,7 @@ const SendApplicationLink = ({
   };
 
   const customerOptions = customers?.map((customer) => ({
-    value: customer.id,
+    value: customer,
     label: `${customer.name} - ${customer.email}`,
   }));
 
@@ -96,10 +96,10 @@ const SendApplicationLink = ({
         <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)} className="mb-5  h-fit">
-            <FormControl isInvalid={!!errors.customerId}>
+            <FormControl isInvalid={!!errors.customer}>
               <FormLabel>Select Customer</FormLabel>
               <Controller
-                name="customerId"
+                name="customer"
                 control={control}
                 rules={{ required: "Please select a customer." }}
                 render={({ field }) => (
@@ -111,18 +111,18 @@ const SendApplicationLink = ({
                       options={customerOptions}
                       placeholder={"Search Customer"}
                       styles={customStyles}
-                      name="customerId"
+                      name="customer"
                       onChange={(selectedOption) => {
                         field.onChange(selectedOption?.value);
-                        setValue("customerId", selectedOption?.value);
+                        setValue("customer", selectedOption?.value);
                       }}
                       value={customerOptions?.find(
-                        (option) => option.value === field.value
+                        (option) => option.value?.id === field.value?.id
                       )}
                     />
-                    {errors.customerId && (
+                    {errors.customer && (
                       <FormErrorMessage>
-                        {errors.customerId.message?.toString()}
+                        {errors.customer.message?.toString()}
                       </FormErrorMessage>
                     )}
                   </>
@@ -130,10 +130,10 @@ const SendApplicationLink = ({
               />
             </FormControl>
 
-            <FormControl isInvalid={!!errors.amount} className="mt-7">
+            <FormControl isInvalid={!!errors.requestedAmount} className="mt-7">
               <FormLabel>Enter Loan Amount</FormLabel>
               <Controller
-                name="amount"
+                name="requestedAmount"
                 control={control}
                 rules={{ required: "Please enter loan amount." }}
                 render={({ field }) => (
@@ -144,9 +144,9 @@ const SendApplicationLink = ({
                       placeholder={"Enter loan amount"}
                     />
 
-                    {errors.amount && (
+                    {errors.requestedAmount && (
                       <FormErrorMessage>
-                        {errors.amount.message?.toString()}
+                        {errors.requestedAmount.message?.toString()}
                       </FormErrorMessage>
                     )}
                   </>

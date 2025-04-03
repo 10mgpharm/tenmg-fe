@@ -8,6 +8,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Input,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -61,7 +62,7 @@ const SendApplicationLink = ({
     try {
       setIsLoading(true);
       const response = await requestClient({ token: token }).post(
-        "/admin/loan-application/send-application-link",
+        "/client/applications/start",
         data
       );
 
@@ -77,7 +78,7 @@ const SendApplicationLink = ({
   };
 
   const customerOptions = customers?.map((customer) => ({
-    value: customer.id,
+    value: customer,
     label: `${customer.name} - ${customer.email}`,
   }));
 
@@ -87,11 +88,11 @@ const SendApplicationLink = ({
       onClose={onClose}
       title="Send Application Link"
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="mb-5">
-        <FormControl isInvalid={!!errors.customerId}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 mb-5">
+        <FormControl isInvalid={!!errors.customer}>
           <FormLabel>Select Customer</FormLabel>
           <Controller
-            name="customerId"
+            name="customer"
             control={control}
             rules={{ required: "Please select a customer." }}
             render={({ field }) => (
@@ -103,24 +104,49 @@ const SendApplicationLink = ({
                   options={customerOptions}
                   placeholder={"Search Customer"}
                   styles={customStyles}
-                  name="customerId"
+                  name="customer"
                   onChange={(selectedOption) => {
                     field.onChange(selectedOption?.value);
-                    setValue("customerId", selectedOption?.value);
+                    setValue("customer", selectedOption?.value);
                   }}
                   value={customerOptions?.find(
-                    (option) => option.value === field.value
+                    (option) => option.value?.id === field.value?.id
                   )}
                 />
-                {errors.customerId && (
+                {errors.customer && (
                   <FormErrorMessage>
-                    {errors.customerId.message?.toString()}
+                    {errors.customer.message?.toString()}
                   </FormErrorMessage>
                 )}
               </>
             )}
           />
         </FormControl>
+
+        <FormControl isInvalid={!!errors.requestedAmount} className="mt-7">
+          <FormLabel>Enter Loan Amount</FormLabel>
+          <Controller
+            name="requestedAmount"
+            control={control}
+            rules={{ required: "Please enter loan amount." }}
+            render={({ field }) => (
+              <>
+                <Input
+                  {...field}
+                  name="amount"
+                  placeholder={"Enter loan amount"}
+                />
+
+                {errors.requestedAmount && (
+                  <FormErrorMessage>
+                    {errors.requestedAmount.message?.toString()}
+                  </FormErrorMessage>
+                )}
+              </>
+            )}
+          />
+        </FormControl>
+
         <Flex justify={"end"} mt={5} gap={3}>
           <Button w={"150px"} onClick={onClose} variant={"outline"}>
             Cancel

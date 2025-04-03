@@ -150,7 +150,7 @@ const Evalution = ({ params }: { params: { id: string } }) => {
               </Button>
               <Button
                 as={Link}
-                href={`/admin/transactions-history/${params.id}/records`}
+                href={`/admin/loan-application/transaction-history/${params.id}/records`}
                 bg="primary.600"
                 color="white"
                 height="34px"
