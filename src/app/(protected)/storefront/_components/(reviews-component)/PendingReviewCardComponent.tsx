@@ -37,7 +37,7 @@ export default function PendingReviewCardComponent({ product }) {
       <div>
         <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
           <div className='grid grid-cols-6 gap-2 col-span-4'>
-            <Link href={`/storefront/products/${product?.id}`} className='w-full'>
+            <Link href={`/storefront/product/${product?.id}`} className='w-full'>
               <div style={{ backgroundImage: `url( ${product?.product?.thumbnailFile && product?.product?.thumbnailFile?.length > 0 ? product?.product?.thumbnailFile : '/assets/images/pillImage.png'})` }} className=' w-full h-full col-span-1 size-16 bg-cover bg-center bg-no-repeat' />
             </Link>
             <div className='col-span-5'>

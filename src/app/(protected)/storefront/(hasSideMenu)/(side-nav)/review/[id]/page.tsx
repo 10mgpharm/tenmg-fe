@@ -78,9 +78,13 @@ const ReviewPageProductCard = ({ product }) => {
         <div>
           <div className='flex justify-between items-center'>
             <div className='flex items-center gap-2'>
-              <div style={{ backgroundImage: `url( ${product?.product?.thumbnailFile && product?.product?.thumbnailFile?.length > 0 ? product?.product?.thumbnailFile : '/assets/images/pillImage.png'})` }} className='size-16 bg-cover bg-center bg-no-repeat' />
+              <Link href={`/storefront/product/${product?.id}`} className='w-full'>
+                <div style={{ backgroundImage: `url( ${product?.product?.thumbnailFile && product?.product?.thumbnailFile?.length > 0 ? product?.product?.thumbnailFile : '/assets/images/pillImage.png'})` }} className='size-16 bg-cover bg-center bg-no-repeat' />
+              </Link>
               <div>
-                <h4 className='text-lg font-medium text-gray-700'>{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</h4>
+                <Link href={`/storefront/product/${product?.id}`} className='w-full'>
+                  <h4 className='text-lg font-medium text-gray-700'>{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</h4>
+                </Link>
                 <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>
                 <div className="flex items-center">
                   <RatingComponent
