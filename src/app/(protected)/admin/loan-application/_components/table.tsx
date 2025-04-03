@@ -36,7 +36,6 @@ import {
   NextAuthUserSession,
 } from "@/types";
 import { ColumsApplicationFN } from "./column";
-import CreateLoan from "./CreateLoan";
 import SuccessModal from "./SuccessModal";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
@@ -49,7 +48,6 @@ const DataTable = () => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenSuccess,
     onOpen: onOpenSuccess,
@@ -138,6 +136,10 @@ const DataTable = () => {
   }, [fetchLoanApplication, fetchAllCustomers, token]);
 
   const applyFilters = (filters: IFilterInput) => {
+    console.log(
+      filters,
+      `&dateFrom=${filters.startDate.toISOString().split("T")[0]}`
+    );
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
@@ -197,19 +199,10 @@ const DataTable = () => {
           <Button
             h={"40px"}
             px={4}
-            variant={"outline"}
             className="border bg-white"
             onClick={onOpenSend}
           >
             Send Application Link
-          </Button>
-          <Button
-            h={"40px"}
-            px={4}
-            onClick={onOpen}
-            className="border bg-white"
-          >
-            Create Application
           </Button>
         </Flex>
       </HStack>
@@ -262,14 +255,6 @@ const DataTable = () => {
           </TableContainer>
         )}
       </div>
-
-      <CreateLoan
-        isOpen={isOpen}
-        onClose={onClose}
-        onOpenSuccess={onOpenSuccess}
-        customers={allCustomers}
-        fetchLoanApplication={fetchLoanApplication}
-      />
 
       <FilterDrawer
         isOpen={isOpenFilter}

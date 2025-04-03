@@ -183,9 +183,9 @@ const LoanApplication = () => {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Button onClick={onOpen} variant={"outline"}>
+          {/* <Button onClick={onOpen} variant={"outline"}>
             Create Application
-          </Button>
+          </Button> */}
           <Button onClick={onOpenSend}>Send Application Link</Button>
         </div>
       </div>
