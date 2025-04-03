@@ -21,7 +21,7 @@ import { PiCaretLeftBold } from "react-icons/pi";
 import { getStatusColorScheme } from "@/utils";
 import { formatAmount } from "@/utils/formatAmount";
 
-const Page = ({ params }: { params: { snug: string } }) => {
+const Page = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -37,7 +37,7 @@ const Page = ({ params }: { params: { snug: string } }) => {
 
       try {
         const response = await requestClient({ token: token }).get(
-          `/admin/loan-application/view/${id}`
+          `/admin/loan-application/${id}`
         );
         setLoanData(response.data.data);
       } catch (error) {
@@ -50,10 +50,8 @@ const Page = ({ params }: { params: { snug: string } }) => {
 
   useEffect(() => {
     if (!token) return;
-    fetchLoanApplicationById(params.snug);
-  }, [fetchLoanApplicationById, params.snug, token]);
-
-  console.log(loanData);
+    fetchLoanApplicationById(params.id);
+  }, [fetchLoanApplicationById, params.id, token]);
 
   const creditScoreValue =
     loanData?.customer?.lastEvaluationHistory?.creditScore?.scoreValue || 0;
@@ -98,7 +96,7 @@ const Page = ({ params }: { params: { snug: string } }) => {
             variant={"outline"}
             onClick={() => {
               router.push(
-                `/vendors/loan-applications/evaluation/${loanData?.customer?.lastEvaluationHistory?.id}?evaluationId=${loanData?.customer?.lastEvaluationHistory?.id}`
+                `/admin/loan-application/evaluation/${loanData?.customer?.lastEvaluationHistory?.id}?evaluationId=${loanData?.customer?.lastEvaluationHistory?.id}`
               );
             }}
           >

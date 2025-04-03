@@ -103,7 +103,7 @@ export function ColumsApplicationFN() {
       cell: (info) => (
         <div className="flex items-center gap-3">
           <Link
-            href={`/admin/loan-application/view/${info.row.original?.id}`}
+            href={`/admin/loan-application/view/${info.row.original?.identifier}`}
             className="text-primary-600 font-medium cursor-pointer "
           >
             View
