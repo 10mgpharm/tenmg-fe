@@ -22,7 +22,6 @@ const Insight = () => {
         setLoading(true);
         try {
             let query = `/supplier/insights?dateFilter=${filterQuery}`;
-            
             const response = await requestClient({ token: token }).get(query);
             if (response.status === 200) {
                 setData(response.data.data);
