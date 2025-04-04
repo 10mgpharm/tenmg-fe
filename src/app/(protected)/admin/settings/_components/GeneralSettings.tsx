@@ -340,7 +340,7 @@ const GeneralSettings = () => {
               <Input
                 disabled
                 type="text"
-                value={sessionData?.user?.entityType}
+                value={sessionData?.user?.role}
               />
             </GridItem>
           </Grid>

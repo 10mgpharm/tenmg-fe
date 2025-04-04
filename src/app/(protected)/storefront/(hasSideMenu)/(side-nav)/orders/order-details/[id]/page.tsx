@@ -43,8 +43,6 @@ export default function OrderDetailsPage() {
     if (userData?.user?.token) getSingleOrder(userData?.user?.token, id);
   }, [getSingleOrder, userData?.user?.token, id]);
 
-  console.log("order", order);
-
   const steps = [
     { title: "Order Submitted", description: "Order Submitted" },
     { title: "Processing", description: "Shipment in Progress" },
@@ -68,14 +66,14 @@ export default function OrderDetailsPage() {
       status === "completed"
         ? 5
         : status === "delivered"
-        ? 4
-        : status === "shipped"
-        ? 3
-        : status === "processing"
-        ? 2
-        : status === "pending"
-        ? 1
-        : -1;
+          ? 4
+          : status === "shipped"
+            ? 3
+            : status === "processing"
+              ? 2
+              : status === "pending"
+                ? 1
+                : -1;
 
     setStepIndex(stepIndex);
     setActiveStep(stepIndex);
@@ -98,14 +96,15 @@ export default function OrderDetailsPage() {
               <Badge
                 colorScheme={
                   order?.status?.toLowerCase() === "completed" ||
-                  order?.status?.toLowerCase() === "delivered"
+                    order?.status?.toLowerCase() === "delivered"
                     ? "green"
-                    : order?.status?.toLowerCase() === "pending" ||
-                      order?.status?.toLowerCase() === "processing"
-                    ? "warning"
-                    : order?.status?.toLowerCase() === "shipped"
-                    ? "primary"
-                    : "red"
+                    : order?.status?.toLowerCase() === "pending"
+                      ? "warning"
+                      : order?.status?.toLowerCase() === "processing"
+                        ? "purple"
+                        : order?.status?.toLowerCase() === "shipped"
+                          ? "primary"
+                          : "red"
                 }
                 fontSize="10px"
                 px="2"
@@ -116,7 +115,7 @@ export default function OrderDetailsPage() {
                 {/* <span style={{ textTransform: 'capitalize' }}>{order?.status}</span> */}
                 <span style={{ textTransform: "capitalize" }}>
                   {order?.status.toLowerCase() === "cancelled" ||
-                  order?.status.toLowerCase() === "canceled"
+                    order?.status.toLowerCase() === "canceled"
                     ? order?.refundStatus
                     : order?.status}
                 </span>

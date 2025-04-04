@@ -74,7 +74,7 @@ export default function SearchPage() {
     fetchData(
       `/storefront/products/search?search=${searchValue}${
         filterValue ? "&" + filterCategory + "=" + filterValue : ""
-      }`
+      }&status=ACTIVE&active=active&inventories=OUT OF STOCK,LOW STOCK,IN STOCK`
     );
   }, [searchValue, filterCategory, filterValue, userData?.user?.token]);
 
@@ -108,9 +108,13 @@ export default function SearchPage() {
               />
             ) : (
               <div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  max-md:place-items-center">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4  max-md:place-items-center max-[500px]:grid-cols-1">
                   {data.map((product, key) => (
-                    <StoreProductCardComponent key={key} product={product} />
+                    <StoreProductCardComponent
+                      key={key}
+                      product={product}
+                      flexible
+                    />
                   ))}
                 </div>
 
@@ -166,7 +170,7 @@ const MobileFilterComponent = ({
         <DrawerCloseButton />
         <DrawerHeader>Filter Your Search</DrawerHeader>
         <DrawerBody>
-          <SearchSideBar />
+          <SearchSideBar setIsOpen={setIsOpen} />
         </DrawerBody>
       </DrawerContent>
     </Drawer>

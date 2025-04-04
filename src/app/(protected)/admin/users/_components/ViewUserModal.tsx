@@ -127,7 +127,13 @@ export default function ViewUserModal({
             <>
               {/* Business Information */}
               <Box>
-                <Heading as="h3" fontSize="xl" fontWeight="semibold" mb={4}>
+                <Heading
+                  as="h3"
+                  fontSize="xl"
+                  fontWeight="semibold"
+                  mb={4}
+                  className="text-primary-600"
+                >
                   Business Information
                 </Heading>
 
@@ -215,7 +221,13 @@ export default function ViewUserModal({
 
               {/* License Information */}
               <Box>
-                <Heading as="h3" fontSize="xl" fontWeight="semibold" mb={4}>
+                <Heading
+                  as="h3"
+                  fontSize="xl"
+                  fontWeight="semibold"
+                  mb={4}
+                  className="text-primary-600"
+                >
                   License Information
                 </Heading>
                 <Stack spacing={4}>

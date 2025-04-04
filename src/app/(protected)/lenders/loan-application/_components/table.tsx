@@ -5,13 +5,14 @@ import { convertDate } from "@/utils/formatDate";
 import { Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 const columnHelper = createColumnHelper<ApplicationDto>();
 
 export function ColumnsLoanFN({
   handleApprove,
-  handleDecline
+  handleDecline,
 }: {
   handleApprove: (id: string) => void;
   handleDecline: (id: string) => void;
@@ -44,7 +45,7 @@ export function ColumnsLoanFN({
         </div>
       ),
     }),
-    columnHelper.accessor("interestAmount", {
+    columnHelper.accessor("requestedAmount", {
       header: () => (
         <div>
           <p>Loan Amount</p>
@@ -53,7 +54,7 @@ export function ColumnsLoanFN({
       cell: (info) => (
         <div>
           <p className="font-medium">
-            {formatAmount(info.row.original?.interestAmount)}
+            {formatAmount(info.row.original?.requestedAmount)}
           </p>
         </div>
       ),
@@ -117,27 +118,35 @@ export function ColumnsLoanFN({
         </div>
       ),
       cell: (info) => (
-        // <div>
-        //   <Link href={'/vendors/loan-management/view'} className="font-medium text-primary-500">View</Link>
-        // </div>
         <Menu>
           <MenuButton>
             <BsThreeDotsVertical className="w-5 h-auto" />
           </MenuButton>
           <MenuList>
-            <MenuItem >
+            <MenuItem>
               {" "}
               <Link
                 href={`/lenders/loan-application/view/${info.row.original?.identifier}`}
-                className="font-medium text-primary-500"
+                className="font-medium text-primary-500 size-full"
               >
                 View
               </Link>
             </MenuItem>
             {info?.row?.original?.status === "INITIATED" && (
               <>
-                <MenuItem mt={2} mb={2} onClick={() => handleApprove(info.row.original?.identifier)}>Approve</MenuItem>
-                <MenuItem color="red.500" onClick={() => handleDecline(info.row.original?.identifier)}>Ignore</MenuItem>
+                <MenuItem
+                  mt={2}
+                  mb={2}
+                  onClick={() => handleApprove(info.row.original?.identifier)}
+                >
+                  Approve
+                </MenuItem>
+                <MenuItem
+                  color="red.500"
+                  onClick={() => handleDecline(info.row.original?.identifier)}
+                >
+                  Ignore
+                </MenuItem>
               </>
             )}
           </MenuList>

@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react'
+import { Button, Link } from '@chakra-ui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import WriteReviewModal from './ReviewModal'
@@ -6,6 +6,7 @@ import RatingComponent from '../RatingComponent'
 import { useSession } from 'next-auth/react'
 import { NextAuthUserSession } from '@/types'
 import requestClient from '@/lib/requestClient'
+import { toast } from 'react-toastify'
 
 export default function ReviewsCardComponent({ product }) {
 
@@ -27,7 +28,8 @@ export default function ReviewsCardComponent({ product }) {
     try {
       // storefront/products/quidins
       const res = await requestClient({ token: userData?.user?.token }).post(`/storefront/ratings`, data);
-      // console.log(res)
+      console.log(res)
+      toast.success("Rating successful")
     } catch (e) {
     } finally {
       // setLoading(false);
@@ -42,9 +44,14 @@ export default function ReviewsCardComponent({ product }) {
       <div>
         <div className='grid grid-cols-1 lg:grid-cols-5 gap-4'>
           <div className='grid grid-cols-6 gap-2 col-span-4'>
-            <div style={{ backgroundImage: `url( ${product?.thumbnailFile && product?.thumbnailFile?.length > 0 ? product?.thumbnailFile : '/assets/images/pillImage.png'})` }} className=' w-full h-full col-span-1 size-16 bg-cover bg-center bg-no-repeat' />
+            <Link href={`/storefront/product/${product?.id}`} className='w-full'>
+              <div style={{ backgroundImage: `url( ${product?.thumbnailFile && product?.thumbnailFile?.length > 0 ? product?.thumbnailFile : '/assets/images/pillImage.png'})` }} className=' w-full h-full col-span-1 size-16 bg-cover bg-center bg-no-repeat' />
+            </Link>
+
             <div className='col-span-5'>
-              <h4 className='text-lg font-medium text-gray-700'>{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</h4>
+              <Link href={`/storefront/products/${product?.id}`} className='w-full'>
+                <h4 className='text-lg font-medium text-gray-700'>{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</h4>
+              </Link>
               <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>
               <div className="flex items-center">
                 <RatingComponent

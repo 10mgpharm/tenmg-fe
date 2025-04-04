@@ -55,7 +55,9 @@ const SearchModal = ({
 
   useEffect(() => {
     if (!userData || searchValue.trim() === "") return;
-    fetchData(`/storefront/products/search?search=${debouncedSearch.trim()}`);
+    fetchData(
+      `/storefront/products/search?search=${debouncedSearch.trim()}&status=ACTIVE&active=active&inventories=OUT OF STOCK,LOW STOCK,IN STOCK`
+    );
   }, [debouncedSearch, userData?.user?.token]);
 
   const handleSearch = (selectedValue?: string) => {

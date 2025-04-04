@@ -97,6 +97,8 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     useState<BalanceTimePeriod>("7 days");
   const [isPending, startTransition] = useTransition();
   const [amount, setAmount] = useState<number>(0);
+  const [wallet, setWallet] = useState([]);
+  const [isWithdraw, setIsWithdraw] = useState(false);
 
   // Modal/drawer state management
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -147,11 +149,34 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     });
   }, [sessionToken]);
 
+  const fetchWallet = useCallback(() => {
+    if (!sessionToken) return;
+
+    startTransition(async () => {
+      try {
+        const response = await requestClient({ token: sessionToken }).get(
+          "/lender/settings"
+        );
+        if (response.status === 200) {
+          setWallet(response.data.data);
+        } else {
+          toast.error("Error fetching wallet");
+        }
+      } catch (error: any) {
+        toast.error(
+          error?.response?.data?.message || "Error fetching wallet"
+        );
+        console.error(error);
+      }
+    });
+  }, [sessionToken]);
+
   useEffect(() => {
     if (sessionData) {
       fetchLenderData();
+      fetchWallet();
     }
-  }, [sessionData, fetchLenderData]);
+  }, [sessionData, fetchLenderData, fetchWallet]);
 
   const handleView = useCallback(
     (id: string) => {
@@ -197,7 +222,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         );
 
         if (response.status === 200) {
-          toast.success("Loan application declined successfully");
           fetchLenderData();
         } else {
           toast.error("Error declining loan application");
@@ -426,13 +450,14 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         onSuccess={onOpenSuccess}
         setAmount={setAmount}
       />
-      <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} />
+      <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} wallet={wallet} setAmount={setAmount} onSuccess={onOpenSuccess} setIsWithdraw={setIsWithdraw} />
       <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
 
       <CongratsModal
         isOpen={isOpenSuccess}
         onClose={handleDepositSuccess}
         amount={amount}
+        isWithdraw={isWithdraw}
       />
     </>
   );

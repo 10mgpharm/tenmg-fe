@@ -21,7 +21,7 @@ import { useCartStore } from "../storeFrontState/useCartStore";
 import { FiTrash2 } from "react-icons/fi";
 import DeleteModal from "../../_components/DeleteModal";
 import emptyCart from "@public/assets/images/emptyOrder.png";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import BreadCrumbBanner from "../../_components/BreadCrumbBanner";
 
 export default function CheckoutPage() {
@@ -34,8 +34,17 @@ export default function CheckoutPage() {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
-  const { cart, addToCart, sycnCart, isLoading } = useCartStore();
+  const { cart, addToCart, sycnCart, isLoading, cartSize } = useCartStore();
   const router = useRouter();
+
+  useEffect(() => {
+    if (cart) {
+      if (cartSize == 0) {
+        redirect('/storefront')
+      }
+    }
+  }, [, cart, cartSize])
+
   useEffect(() => {
     if (cart) {
       setCartItems(cart);
@@ -55,7 +64,7 @@ export default function CheckoutPage() {
       cartItems.items.forEach((item) => {
         const price =
           item.product?.discountPrice > 0 &&
-          item?.product?.actualPrice !== item?.product?.discountPrice
+            item?.product?.actualPrice !== item?.product?.discountPrice
             ? item?.product?.actualPrice - item.product?.discountPrice
             : item?.product?.actualPrice;
         total += price * localQuantities[item.product.id];
@@ -233,11 +242,10 @@ export default function CheckoutPage() {
                                     </p>
                                   )}
                                   <p
-                                    className={`font-semibold my-2 text-sm ${
-                                      item?.product.discountPrice > 0
-                                        ? "text-gray-400 line-through"
-                                        : "text-gray-900"
-                                    }`}
+                                    className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0
+                                      ? "text-gray-400 line-through"
+                                      : "text-gray-900"
+                                      }`}
                                   >
                                     ₦{item?.product.actualPrice}
                                   </p>
@@ -287,7 +295,7 @@ export default function CheckoutPage() {
                                   }
                                   color={
                                     localQuantities[item.product.id] ===
-                                    item?.product?.quantity
+                                      item?.product?.quantity
                                       ? "gray.300"
                                       : "inherit"
                                   }

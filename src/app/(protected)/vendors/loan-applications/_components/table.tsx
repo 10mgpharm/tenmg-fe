@@ -1,102 +1,108 @@
-import { LoanData } from "@/types";
+import { ApplicationDto, LoanData } from "@/types";
 import { classNames } from "@/utils";
+import { formatAmount } from "@/utils/formatAmount";
 import { convertDate } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
 
-const columnHelper = createColumnHelper<LoanData>();
+const columnHelper = createColumnHelper<ApplicationDto>();
 
 export function ColumnsLoanApplicationFN() {
   return [
+    columnHelper.accessor("id", {
+      header: ({ column }) => <p className="pl-6"> S/N</p>,
+      cell: (info) => {
+        const serialNumber = info?.row?.index + 1;
+        return (
+          <div className="pl-6">
+            <p>{serialNumber}</p>
+          </div>
+        );
+      },
+    }),
+
     columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
-          <p>Application ID</p>
+          <p>Ref ID</p>
         </div>
       ),
       cell: (info) => (
-        <div>
-          <p className="pl-6">{info.row.original?.identifier}</p>
+        <div onClick={() => {}} className="flex flex-col gap-2  justify-start">
+          <p className="text-gray-500">{info.row.original?.identifier}</p>
+          <span className="text-gray-700 text-xs">
+            {convertDate(info.row.original?.updatedAt)}{" "}
+          </span>
         </div>
       ),
     }),
-    columnHelper.accessor("id", {
-      header: () => (
-        <div>
-          <p>Customer Name</p>
-        </div>
-      ),
+    columnHelper.accessor("customer.name", {
+      header: ({ column }) => <p>Customer Name</p>,
       cell: (info) => (
-        <div>
-          <p className="font-bold">{info.row.original?.customer?.name} </p>
+        <div className="">
+          <p className="font-medium">{info.row.original?.customer?.name}</p>
         </div>
       ),
     }),
-
-    // Contact Information
-
-    columnHelper.accessor("source", {
-      header: () => <p>Loan Amount</p>,
+    columnHelper.accessor("requestedAmount", {
+      header: ({ column }) => <p>Loan Amount</p>,
       cell: (info) => (
-        <div>
-          <p>{info.row.original?.requestedAmount?.toLocaleString()}</p>
-        </div>
-      ),
-    }),
-
-    // Date Created
-
-    columnHelper.accessor("createdAt", {
-      header: () => <p>Date Created</p>,
-      cell: (info) => (
-        <div>
-          <p>{convertDate(info.row.original?.createdAt || null)}</p>
-        </div>
-      ),
-    }),
-
-    // Status
-    columnHelper.accessor("status", {
-      header: () => <p>Loan Status</p>,
-      cell: (info) => (
-        <div>
-          <p
-            className={classNames(
-              info?.row?.original?.status === "APPROVED"
-                ? "text-[#027A48] bg-[#ECFDF3]"
-                : info?.row?.original?.status === "PENDING"
-                ? "bg-[#FEF3F2] text-[#eaa640]"
-                : "text-gray-500",
-              " max-w-min p-1 px-2 rounded-2xl text-xs font-medium items-center justify-center flex gap-1"
-            )}
-          >
-            {" "}
-            <span className="rounded-full text-[1.2rem]">•</span>
-            {info.row.original?.status}
+        <div className="">
+          <p className="font-medium">
+            {formatAmount(info.row.original?.requestedAmount)}
           </p>
         </div>
       ),
     }),
-    columnHelper.accessor("id", {
-      header: () => <p>Actions</p>,
+
+    columnHelper.accessor("customer.score", {
+      header: ({ column }) => <p>Credit Score</p>,
       cell: (info) => {
         return (
-          <div className="flex gap-4">
-            <Link 
-            href={`/vendors/loan-applications/${info.row.original?.customer?.id}`} 
-            className="text-primary font-medium">
-              View
-            </Link>
-            {/* {
-              info.row.original?.status === "PENDING" &&
-              <div className="flex items-center gap-4">
-                <p className="cursor-pointer text-primary-600 font-medium">Edit</p>
-                <p className="cursor-pointer text-primary-600 font-medium">Approve</p>
-              </div>
-            } */}
+          <div>
+            <p className="font-medium">
+              {info?.row?.original?.customer?.score}
+            </p>
           </div>
         );
       },
+    }),
+    columnHelper.accessor("status", {
+      header: ({ column }) => <p>Status</p>,
+      cell: (info) => {
+        return (
+          <div>
+            <p
+              className={classNames(
+                info.row.original.status === "EXPIRED"
+                  ? "bg-[#FEF3F2] text-[#B42318]"
+                  : info?.row?.original?.status === "APPROVED"
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : info.row.original?.status === "INITIATED"
+                  ? "bg-orange-50 text-orange-500"
+                  : "text-gray-500",
+                " max-w-min p-0.5 px-2 rounded-2xl text-sm capitalize font-medium"
+              )}
+            >
+              <span className="text-[1.2rem] rounded-full">•</span>{" "}
+              {info.row.original?.status}
+            </p>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("id", {
+      header: ({ column }) => <p>Action</p>,
+      cell: (info) => (
+        <div className="flex items-center gap-3 px-4">
+          <Link
+            href={`/vendors/loan-applications/${info.row.original?.id}`}
+            className="text-primary-600 font-medium cursor-pointer "
+          >
+            View
+          </Link>
+        </div>
+      ),
     }),
   ];
 }

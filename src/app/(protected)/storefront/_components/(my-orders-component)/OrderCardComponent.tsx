@@ -19,7 +19,7 @@ export default function OrderCardComponent({ product }) {
 
           <Badge colorScheme={product?.status.toLowerCase() === 'completed' ? "green"
             : product?.status.toLowerCase() === "pending" ? "warning"
-              : product?.status.toLowerCase() === "processing" ? "warning"
+              : product?.status.toLowerCase() === "processing" ? "purple"
                 : product?.status.toLowerCase() === "shipped" ? "blue"
                   : "red"} fontSize="10px" px="2" py="1" borderRadius="xl" variant={'solid'}>
             <span style={{ textTransform: 'capitalize' }}>{window.location.href.includes('cancelled') ? product?.refundStatus : product?.status}</span>
