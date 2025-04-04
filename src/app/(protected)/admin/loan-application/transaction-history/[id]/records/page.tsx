@@ -46,11 +46,11 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
       setLoading(true);
       setError("");
       try {
-        const response = await requestClient({ token }).post(
-          "admin/txn_history/view",
-          {
-            transactionHistoryId: parseInt(params.id, 10),
-          }
+        const response = await requestClient({ token }).get(
+          `admin/txn_history/${params.id}`
+          // {
+          //   transactionHistoryId: parseInt(params.id, 10),
+          // }
         );
 
         if (response.status === 200 && response.data.data) {
