@@ -5,13 +5,16 @@ import productPattern from "@public/assets/images/productpatterns.svg";
 import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
 import SearchInput from "../_components/SearchInput";
 import { CiFilter } from "react-icons/ci";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { LoanByUser } from "@/data/mockdata";
 import { ColumnsLoanFN } from "./_components/table";
 import {
+  ColumnOrderState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  RowSelectionState,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -29,6 +32,11 @@ import EmptyResult from "../_components/EmptyResult";
 import OverviewCards from "../../_components/loanApplication/OverviewCards";
 import SearchFilter from "../../_components/loanApplication/SearchFilter";
 import LoanTable from "../../_components/loanApplication/LoanTable";
+import requestClient from "@/lib/requestClient";
+import { useDebouncedValue } from "@/utils/debounce";
+import { LoanDataProp, NextAuthUserSession } from "@/types";
+import { useSession } from "next-auth/react";
+import { formatAmount } from "@/utils/formatAmount";
 
 export interface OverviewCardData {
   title: string;
@@ -40,40 +48,112 @@ export interface OverviewCardData {
 
 // TODO: Add this to types
 
-const overviewData: OverviewCardData[] = [
-  {
-    title: "Total Loans",
-    value: "5,600",
-    fromColor: "from-[#53389E]",
-    toColor: "to-[#7F56D9]",
-    image: totalPattern,
-  },
-  {
-    title: "Total Interests",
-    value: "₦2,300",
-    fromColor: "from-[#DC6803]",
-    toColor: "to-[#DC6803]",
-    image: orderPattern,
-  },
-  {
-    title: "Total Amount Disbursed",
-    value: "₦50,000",
-    fromColor: "from-[#3E4784]",
-    toColor: "to-[#3E4784]",
-    image: productPattern,
-  },
-  {
-    title: "Total Products",
-    value: "50,000",
-    fromColor: "from-[#E31B54]",
-    toColor: "to-[#E31B54]",
-    image: productPattern,
-  },
-];
-
 const LoanManagement = () => {
-  const [loading, setLoading] = useState(false);
+  const [pageCount, setPageCount] = useState<number>(1);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [status, setStatus] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
+
+  const [loan, setLoan] = useState<LoanDataProp | null>(null);
+
+  const [loanStats, setLoanStats] = useState<any | null>(null);
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
+  const fetchLoans = useCallback(async () => {
+    setLoading(true);
+    let query = `/vendor/loans?page=${pageCount}`;
+
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
+    }
+    if (status) {
+      query += `&status=${status}`;
+    }
+    if (createdAtStart) {
+      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+    }
+    if (createdAtEnd) {
+      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+    }
+
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setLoan(response.data.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+
+  const fetchLoanStats = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/vendor/loans/view/stats`
+      );
+      if (response.status === 200) {
+        setLoanStats(response.data.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token]);
+
+  const tableData = useMemo(() => loan?.data, [loan?.data]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetchLoans();
+    fetchLoanStats();
+  }, [fetchLoans, fetchLoanStats, token]);
+
+  const overviewData: OverviewCardData[] = [
+    {
+      title: "Active Loan",
+      value: loanStats ? loanStats?.activeLoan : 0,
+      fromColor: "from-[#53389E]",
+      toColor: "to-[#7F56D9]",
+      image: totalPattern,
+    },
+    {
+      title: "Total Loan Amount",
+      value: loanStats ? formatAmount(loanStats?.totalLoans) : "₦0",
+      fromColor: "from-[#DC6803]",
+      toColor: "to-[#DC6803]",
+      image: orderPattern,
+    },
+    {
+      title: "Pending Repayment",
+      value: loanStats ? formatAmount(loanStats?.pendingRepayment) : "₦0",
+      fromColor: "from-[#3E4784]",
+      toColor: "to-[#3E4784]",
+      image: productPattern,
+    },
+    {
+      title: "Completed Loan",
+      value: loanStats ? loanStats?.completedRepayment : 0,
+      fromColor: "from-[#E31B54]",
+      toColor: "to-[#E31B54]",
+      image: productPattern,
+    },
+  ];
 
   return (
     <div className="p-8">
@@ -88,7 +168,7 @@ const LoanManagement = () => {
       />
       <div className="mt-5">
         <LoanTable
-          data={LoanByUser ?? []}
+          data={tableData ?? []}
           columns={ColumnsLoanFN()}
           globalFilter={globalFilter}
           onGlobalFilterChange={setGlobalFilter}

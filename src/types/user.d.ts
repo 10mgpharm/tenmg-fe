@@ -160,10 +160,15 @@ export interface LoanData {
   interestAmount: string;
   interestRate: number;
   requestedAmount: string;
+  repaymemtEndDate: string;
+  repaymemtStartDate: string;
+  repaymentSchedule: RepaymentSchedule[];
+  capitalAmount: string;
   source: string;
   status: string;
   totalAmount: string;
   updatedAt: string;
+  vendor: Vendor;
 }
 
 export interface LoanDataProp {
@@ -174,6 +179,23 @@ export interface LoanDataProp {
   lastPage: number;
   nextPageUrl: string | null;
   prevPageUrl: string | null;
+  links: any;
+  meta: MetaDataProp;
+}
+
+export interface RepaymentSchedule {
+  balance: string;
+  createdAt: string;
+  dueDate: string;
+  id: number;
+  interest: string;
+  lateFee: string | null;
+  loanId: number;
+  paymentId: number | null;
+  paymentStatus: 'PENDING' | 'PAID' | 'OVERDUE' | 'PARTIAL';
+  principal: string;
+  totalAmount: string;
+  updatedAt: string;
 }
 
 export interface TransactionHistoryData {

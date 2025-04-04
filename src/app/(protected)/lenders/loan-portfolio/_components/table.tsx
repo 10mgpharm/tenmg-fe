@@ -1,12 +1,13 @@
-import Link from "next/link";
+import { ApplicationDto, LoanData } from "@/types";
 import { classNames } from "@/utils";
-import { createColumnHelper } from "@tanstack/react-table";
-import { LoanData } from "@/types";
 import { formatAmount } from "@/utils/formatAmount";
+import { convertDate } from "@/utils/formatDate";
+import { createColumnHelper } from "@tanstack/react-table";
+import Link from "next/link";
 
 const columnHelper = createColumnHelper<LoanData>();
 
-export function ColumsLoanFN(onOpen: () => void) {
+export function ColumnsLoanApplicationFN() {
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
@@ -27,16 +28,8 @@ export function ColumsLoanFN(onOpen: () => void) {
         </div>
       ),
       cell: (info) => (
-        <div
-          onClick={() => {
-            onOpen();
-          }}
-          className="flex flex-col gap-2 pl-6  justify-start"
-        >
-          <p className="text-gray-500"> {info.row.original?.identifier} </p>
-          <span className="text-gray-700">
-            {info.row.original?.vendor?.name}
-          </span>
+        <div className="flex flex-col gap-2 pl-6  justify-start">
+          <p className="text-gray-500">{info.row.original?.identifier}</p>
         </div>
       ),
     }),
@@ -50,7 +43,7 @@ export function ColumsLoanFN(onOpen: () => void) {
       cell: (info) => (
         <div className="flex flex-col gap-2 pl-6  justify-start">
           <p className="text-gray-500">{info.row.original?.customer?.name}</p>
-          <span className="text-gray-700">
+          <span className="text-gray-700 text-xs">
             {info.row.original?.customer?.email}
           </span>
         </div>
@@ -180,13 +173,13 @@ export function ColumsLoanFN(onOpen: () => void) {
       },
     }),
 
-    columnHelper.accessor("vendor", {
-      header: ({ column }) => <p>Actions</p>,
+    columnHelper.accessor("id", {
+      header: ({ column }) => <p>Action</p>,
       cell: (info) => (
-        <div className="">
+        <div className="flex items-center gap-3 px-2">
           <Link
-            href={"/admin/loan-management/detail"}
-            className="text-primary-500 font-medium"
+            href={`/vendors/loan-applications/${info.row.original?.id}`}
+            className="text-primary-600 font-medium cursor-pointer "
           >
             View
           </Link>
