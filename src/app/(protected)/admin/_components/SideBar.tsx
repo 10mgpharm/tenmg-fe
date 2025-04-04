@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -19,12 +19,14 @@ import { FiShoppingBag } from "react-icons/fi";
 import { CiLogout } from "react-icons/ci";
 import { BiMessageDetail } from "react-icons/bi";
 import { redirect, usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { LuUsers, LuWallet } from "react-icons/lu";
 import { FaBalanceScale } from "react-icons/fa";
 import { GiSpanner } from "react-icons/gi";
 import { MdMonitor } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
+import requestClient from "@/lib/requestClient";
+import { NextAuthUserSession } from "@/types";
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: HomeIcon, current: true },
@@ -89,7 +91,30 @@ const navigation = [
 
 const SideBar = () => {
   const pathname = usePathname();
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+
+  const [count, setCount] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const fetchingMessageCount = useCallback(async () => {
+    try {
+      const res = await requestClient({token: token}).get(
+        `/account/messages/unread-count`
+      )
+      setCount(res.data?.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingMessageCount();
+  }, [token, fetchingMessageCount]);
+
+  console.log(count);
+
   return (
     <div>
       <Dialog
@@ -217,7 +242,7 @@ const SideBar = () => {
                           {
                             item.name === "Messages" &&
                             <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
-                              {0}
+                              {count}
                             </div>
                           }
                         </a>
