@@ -19,7 +19,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 interface IFormInput {
-  otp: string;
   bankName: string;
   accountNumber: string;
   accountName: string;
@@ -41,7 +40,6 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
   } = useForm<IFormInput>({
       mode: "onChange",
       defaultValues: {
-        otp: "",
         bankCode: "",
         bankName: "",
         accountName: "",
@@ -86,7 +84,7 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                   border: !!errors.bankName ? "red.300" : "border-gray-300",
                 }}
                 {...register("bankName", {
-                    required: true,
+                  required: true,
                 })}
                 />
               </FormControl>
@@ -102,7 +100,7 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                   border: !!errors.accountNumber ? "red.300" : "border-gray-300",
                 }}
                 {...register("accountNumber", {
-                    required: true,
+                  required: true,
                 })}
                 />
               </FormControl>
@@ -138,7 +136,7 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                 })}
                 />
               </FormControl>
-              <FormControl isInvalid={!!errors.otp}>
+              {/* <FormControl isInvalid={!!errors.otp}>
                 <FormLabel>Routing Number/Sort Code</FormLabel>
                 <Input 
                 id="otp"
@@ -153,7 +151,7 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                   required: true,
                 })}
                 />
-              </FormControl>
+              </FormControl> */}
               <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
                 Add Account
               </Button>

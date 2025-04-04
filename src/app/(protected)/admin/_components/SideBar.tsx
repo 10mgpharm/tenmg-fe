@@ -113,8 +113,6 @@ const SideBar = () => {
     fetchingMessageCount();
   }, [token, fetchingMessageCount]);
 
-  console.log(count);
-
   return (
     <div>
       <Dialog
@@ -180,7 +178,7 @@ const SideBar = () => {
                               {
                                 item.name === "Messages" &&
                                 <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
-                                  {0}
+                                  {count}
                                 </div>
                               }
                             </a>
