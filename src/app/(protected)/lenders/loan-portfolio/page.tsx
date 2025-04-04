@@ -38,7 +38,6 @@ import {
 import { ColumnsLoanApplicationFN } from "./_components/table";
 import {
   CustomerRecords,
-  LoanApplicationDataResponse,
   LoanDataProp,
   NextAuthUserSession,
 } from "@/types";
@@ -51,6 +50,7 @@ export default function TransactionWalletPage() {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
+  
   const [loanApplication, setLoanApplication] =
     useState<LoanDataProp | null>(null);
 

@@ -51,7 +51,7 @@ export function ColumnsLoanApplicationFN() {
     }),
 
     columnHelper.accessor("totalAmount", {
-      header: ({ column }) => <p>Total Loan Amount</p>,
+      header: ({ column }) => <p>Loan Amount</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
