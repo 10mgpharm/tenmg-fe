@@ -70,10 +70,10 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
     columnHelper.accessor("dueDate", {
       header: ({ column }) => <p>Payment Date</p>,
       cell: (info) => {
-        const dueDate = info?.row?.original?.dueDate;
+        const paymentDate = info?.row?.original?.updatedAt;
         return (
           <div>
-            <p>{dueDate && convertDate(dueDate)}</p>
+            <p>{paymentDate && convertDate(paymentDate)}</p>
           </div>
         );
       },
