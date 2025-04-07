@@ -85,42 +85,42 @@ const Admin = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-    const overviewData = [
-      {
-        id: 1,
-        title: "Today's Sales",
-        amount: `${data?.todaySales || 0}`,
-        changeType: "INCREASE",
-        timeStamp: " vs. last week",
-        percentage: "2.35%",
-      },
-      {
-        id: 2,
-        title: "Today's Revenue",
-        amount: `₦${data?.todayRevenue || 0.00}`,
-        changeType: "INCREASE",
-        timeStamp: " vs. last week",
-        percentage: "2.35%",
-      },
-      {
-        id: 2,
-        title: "Today's Order",
-        amount: `${data?.todayOrder || 0}`,
-        changeType: "INCREASE",
-        timeStamp: " vs. last week",
-        percentage: "2.35%",
-      },
-      {
-        id: 2,
-        title: "Ongoing Loan",
-        amount: `0`,
-        changeType: "INCREASE",
-        timeStamp: " vs. last week",
-        percentage: "2.35%",
-      },
-    ]
+  const overviewData = [
+    {
+      id: 1,
+      title: "Today's Sales",
+      amount: `${data?.todaySales || 0}`,
+      changeType: "INCREASE",
+      timeStamp: " vs. last week",
+      percentage: "2.35%",
+    },
+    {
+      id: 2,
+      title: "Today's Revenue",
+      amount: `₦${data?.todayRevenue || 0.00}`,
+      changeType: "INCREASE",
+      timeStamp: " vs. last week",
+      percentage: "2.35%",
+    },
+    {
+      id: 2,
+      title: "Today's Order",
+      amount: `${data?.todayOrder || 0}`,
+      changeType: "INCREASE",
+      timeStamp: " vs. last week",
+      percentage: "2.35%",
+    },
+    {
+      id: 2,
+      title: "Ongoing Loan",
+      amount: `0`,
+      changeType: "INCREASE",
+      timeStamp: " vs. last week",
+      percentage: "2.35%",
+    },
+  ]
 
-    return (
+  return (
     <div className="p-8">
       <Stack gap={4}>
         <Text fontWeight={"semibold"} fontSize={"2xl"}>
