@@ -2,8 +2,6 @@
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
-import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
-import SearchInput from "../_components/SearchInput";
 import { CiFilter } from "react-icons/ci";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LoanByUser } from "@/data/mockdata";
@@ -17,17 +15,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Flex,
-  Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
 import EmptyResult from "../_components/EmptyResult";
 import OverviewCards from "../../_components/loanApplication/OverviewCards";
 import SearchFilter from "../../_components/loanApplication/SearchFilter";

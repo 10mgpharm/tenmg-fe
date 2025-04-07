@@ -181,7 +181,7 @@ export function ColumnsLoanFN() {
       cell: (info) => (
         <div>
           <Link
-            href={"/vendors/loan-management/view"}
+            href={`/vendors/loan-management/${info.row.original?.id}`}
             className="font-medium text-primary-500"
           >
             View

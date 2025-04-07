@@ -19,4 +19,46 @@ export const dateToString = (date: Date | null) => {
 export const formatText = (text: string): string => {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 };
+
+export const convertDateWithTime = (dateString: string, includeSeconds: boolean = false): string => {
+    const newDate = new Date(dateString);
+    
+    const month = newDate.getMonth();
+    const day = newDate.getDate();
+    const year = newDate.getFullYear();
+    
+    const hours = newDate.getHours();
+    const minutes = newDate.getMinutes();
+    const seconds = newDate.getSeconds();
+    
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedSeconds = String(seconds).padStart(2, '0');
+    
+    const datePart = `${day} ${monthList[month]} ${year}`;
+    
+    const timePart = includeSeconds 
+      ? `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`
+      : `${formattedHours}:${formattedMinutes} ${ampm}`;
+    return `${datePart}, ${timePart}`;
+};
   
+export const getFormattedTime = (dateString: string, includeSeconds: boolean = false): string => {
+    const date = new Date(dateString);
+    
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    
+    if (includeSeconds) {
+      const formattedSeconds = String(seconds).padStart(2, '0');
+      return `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+    }
+    
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+};
