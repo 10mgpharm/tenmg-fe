@@ -54,7 +54,7 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
 
 
 
-const SideBar = ({ businessStatus }: { businessStatus: string }) => {
+const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, isOpen: boolean, onClose: () => void }) => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -65,7 +65,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
   const [count, setCount] = useState(0);
   const fetchingMessageCount = useCallback(async () => {
     try {
-      const res = await requestClient({token: token}).get(
+      const res = await requestClient({ token: token }).get(
         `/account/messages/unread-count`
       )
       setCount(res.data?.data);
@@ -75,13 +75,13 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
   }, [token]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchingMessageCount();
   }, [token, fetchingMessageCount]);
 
   return (
     <div>
-      <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
+      <Dialog open={isOpen} onClose={onClose} className="relative z-50 lg:hidden">
         <DialogBackdrop
           transition
           className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
@@ -93,7 +93,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
           >
             <TransitionChild>
               <div className="absolute left-full top-0 flex w-16 justify-center pt-5 duration-300 ease-in-out data-[closed]:opacity-0">
-                <button type="button" onClick={() => setSidebarOpen(false)} className="-m-2.5 p-2.5">
+                <button type="button" onClick={onClose} className="-m-2.5 p-2.5">
                   <span className="sr-only">Close sidebar</span>
                   <XMarkIcon aria-hidden="true" className="h-6 w-6 text-white" />
                 </button>
@@ -116,7 +116,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                                 isActive
                                   ? 'bg-indigo-700 text-white'
                                   : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
-                                  disabled ? "pointer-events-none opacity-50" : "",
+                                disabled ? "pointer-events-none opacity-50" : "",
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                               )}
                             >
@@ -170,7 +170,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                     const disabled = isLinkDisabled(businessStatus, item.name);
                     // const isActive = pathname.includes(item.href);
                     // let isActive = new RegExp(`^${item.href.replace(/\d+/g, '\\d+')}.*$`).test(pathname);
-                    
+
                     return (
                       <li key={item.name}>
                         <Link
@@ -179,7 +179,7 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                             isActive
                               ? 'bg-primary-50 text-primary-500 p-0.5'
                               : 'text-gray-500 px-3',
-                              disabled ? "pointer-events-none opacity-50" : "",
+                            disabled ? "pointer-events-none opacity-50" : "",
                             'group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6',
                           )}
                         >

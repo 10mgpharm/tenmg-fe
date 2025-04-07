@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
@@ -25,7 +25,7 @@ import { toast } from "react-toastify";
 import { messaging, onMessage } from "@/lib/firebase";
 import { requestPermission } from "@/lib/requestPermission";
 
-const TopNavBar = ({ route }: { route: string }) => {
+const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => void }) => {
 
   const router = useRouter();
   const session = useSession();
@@ -34,11 +34,11 @@ const TopNavBar = ({ route }: { route: string }) => {
 
   const [notifications, setNotifications] = useState<any[]>([]);
   const [notificationCount, setNotificationCount] = useState<number>(0);
-  
+
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchingCounts = useCallback( async () => {
-    const res = await requestClient({token: token}).get(
+  const fetchingCounts = useCallback(async () => {
+    const res = await requestClient({ token: token }).get(
       `/account/count-unread-notifications`
     )
     setNotificationCount(res.data?.data?.count)
@@ -62,7 +62,7 @@ const TopNavBar = ({ route }: { route: string }) => {
     if ("Notification" in window && token) {
       requestPermission(token);
     }
-    if(!token) return;
+    if (!token) return;
     fetchingCounts();
   }, [token, fetchingCounts]);
 
@@ -261,6 +261,11 @@ const TopNavBar = ({ route }: { route: string }) => {
               </MenuItem>
             </MenuItems>
           </Menu>
+
+          {data?.user?.entityType === "ADMIN" || data?.user?.entityType === "SUPPLIER" && <div className=" lg:hidden p-2 text-gray-700 w-fit" onClick={onMenuClick}>
+            <Bars3Icon className="w-6" />
+            <span className="sr-only">Open sidebar</span>
+          </div>}
         </div>
       </div>
       {/* <Divider /> */}

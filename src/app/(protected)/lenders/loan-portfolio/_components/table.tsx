@@ -178,7 +178,7 @@ export function ColumnsLoanApplicationFN() {
       cell: (info) => (
         <div className="flex items-center gap-3 px-2">
           <Link
-            href={`/vendors/loan-applications/${info.row.original?.id}`}
+            href={`/lenders/loan-portfolio/${info.row.original?.id}`}
             className="text-primary-600 font-medium cursor-pointer "
           >
             View

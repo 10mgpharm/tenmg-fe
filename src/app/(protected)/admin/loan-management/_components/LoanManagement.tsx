@@ -35,7 +35,7 @@ import requestClient from "@/lib/requestClient";
 import { formatAmount } from "@/utils/formatAmount";
 
 const LoanManagement = () => {
-  const onOpen = () => {};
+  const onOpen = () => { };
 
   const [pageCount, setPageCount] = useState<number>(1);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -141,7 +141,7 @@ const LoanManagement = () => {
 
   return (
     <div className="">
-      <div className="grid grid-cols-4 gap-4 mt-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
         <OverviewCard
           title="Total Loan Amount"
           value={loanStats ? formatAmount(loanStats?.totalLoans) : "₦0"}
@@ -199,9 +199,9 @@ const LoanManagement = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>

@@ -59,31 +59,31 @@ const Admin = () => {
       }
     }, [token]);
 
-    useEffect(() => {
-      if(!token) return;
-      fetchingOverview();
-    }, [token, fetchingOverview]);
+  useEffect(() => {
+    if (!token) return;
+    fetchingOverview();
+  }, [token, fetchingOverview]);
 
     const loanData = data?.loans?.data?.slice(0, 4);
     const memoizedData = useMemo(() => loanData, [loanData]);
 
-    const table = useReactTable({
-      data: memoizedData,
-      columns: ColumsFN(),
-      onSortingChange: setSorting,
-      state: {
+  const table = useReactTable({
+    data: memoizedData,
+    columns: ColumsFN(),
+    onSortingChange: setSorting,
+    state: {
       sorting,
       columnVisibility,
       columnOrder,
       rowSelection,
-      },
-      enableRowSelection: true,
-      onRowSelectionChange: setRowSelection,
-      onColumnVisibilityChange: setColumnVisibility,
-      onColumnOrderChange: setColumnOrder,
-      getCoreRowModel: getCoreRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-    });
+    },
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
 
     const overviewData = [
       {
@@ -158,26 +158,26 @@ const Admin = () => {
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
               <Thead bg={"#F2F4F7"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
-                  <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
+                {table?.getHeaderGroups()?.map((headerGroup, i) => (
+                  <Tr key={i}>
+                    {headerGroup.headers?.map((header, i) => (
+                      <Th textTransform={"initial"} px="0px" key={i}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>
                 ))}
               </Thead>
               <Tbody color="#606060" fontSize={"14px"}>
-                {memoizedData && table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
+                {memoizedData && table?.getRowModel()?.rows?.map((row, i) => (
+                  <Tr key={i}>
+                    {row.getVisibleCells()?.map((cell, i) => (
+                      <Td key={i} px="0px">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
