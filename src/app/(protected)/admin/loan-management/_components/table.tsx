@@ -185,7 +185,7 @@ export function ColumsLoanFN(onOpen: () => void) {
       cell: (info) => (
         <div className="">
           <Link
-            href={"/admin/loan-management/detail"}
+            href={`/admin/loan-management/${info.row.original?.id}`}
             className="text-primary-500 font-medium"
           >
             View

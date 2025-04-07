@@ -28,7 +28,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   return (
     <LoanDetailView
       id={params.id}
-      endpoint="lender/loan/detail"
+      endpoint="vendor/loans"
       title="Loan Information"
       subtitle="At a glance summary of the loan."
       columnsFn={ColumnsRepaymentFN}
