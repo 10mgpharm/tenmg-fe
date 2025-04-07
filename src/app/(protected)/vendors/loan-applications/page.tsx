@@ -1,31 +1,35 @@
 "use client";
-import { CiFilter } from "react-icons/ci"
-import SearchInput from "../_components/SearchInput"
-import { 
-  Button, 
-  Flex, 
-  Spinner, 
-  Table, 
-  TableContainer, 
-  Tbody, 
-  Td, 
-  Th, 
-  Thead, 
-  Tr, 
-  useDisclosure 
-} from "@chakra-ui/react"
+import { CiFilter } from "react-icons/ci";
+import SearchInput from "../_components/SearchInput";
+import {
+  Button,
+  Flex,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyResult from "../_components/EmptyResult";
 import { useSession } from "next-auth/react";
-import { CustomerRecords, LoanDataProp, NextAuthUserSession } from "@/types";
+import {
+  CustomerRecords,
+  LoanApplicationDataResponse,
+  NextAuthUserSession,
+} from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import CreateLoan from "./_components/CreateLoan";
-import { 
-  flexRender, 
-  getCoreRowModel, 
-  getFilteredRowModel, 
-  useReactTable 
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/_components/Pagination";
 import { ColumnsLoanApplicationFN } from "./_components/table";
@@ -33,12 +37,20 @@ import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../_components/FilterDrawer";
 import SendApplicationLink from "./_components/SendApplicationLink";
 
-const LoanApplication = () => {
+export interface OverviewCardData {
+  title: string;
+  value: string | number;
+  fromColor?: string;
+  toColor?: string;
+  image: any;
+}
 
+const LoanApplication = () => {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
-  const [loanApplication, setLoanApplication] = useState<LoanDataProp>();
+  const [loanApplication, setLoanApplication] =
+    useState<LoanApplicationDataResponse | null>(null);
   const [allCustomers, setAllCustomers] = useState<CustomerRecords[]>();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
@@ -91,19 +103,20 @@ const LoanApplication = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
-
-  const fetchAllCustomers = useCallback(async() => {
-    setLoading(true)
+  const fetchAllCustomers = useCallback(async () => {
+    setLoading(true);
     try {
-      const response = await requestClient({ token: token}).get('/vendor/customers/get-all');
-      if(response.status === 200){
-        setAllCustomers(response.data.data)
+      const response = await requestClient({ token: token }).get(
+        "/vendor/customers/get-all"
+      );
+      if (response.status === 200) {
+        setAllCustomers(response.data.data);
       }
     } catch (error) {
       console.error(error);
       setLoading(false);
     }
-  },[token])
+  }, [token]);
 
   const tableData = useMemo(
     () => loanApplication?.data,
@@ -111,7 +124,7 @@ const LoanApplication = () => {
   );
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchLoanApplication();
     fetchAllCustomers();
   }, [fetchLoanApplication, fetchAllCustomers, token]);
@@ -130,7 +143,7 @@ const LoanApplication = () => {
   };
 
   const table = useReactTable({
-    data: tableData ? tableData : [],
+    data: tableData ?? [],
     columns: ColumnsLoanApplicationFN(),
     state: {
       globalFilter,
@@ -142,13 +155,15 @@ const LoanApplication = () => {
   });
 
   const filterOptions = [
-    { option: "Active", value: "active" },
-    { option: "Suspended", value: "inactive" },
+    { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
+    { option: "EXPIRED", value: "EXPIRED" },
   ];
 
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Loan Application</h3>
+
       <div className="flex justify-between">
         <div className="mb-5">
           <div className="flex items-center gap-3 mt-5">
@@ -157,6 +172,7 @@ const LoanApplication = () => {
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
+
             <div
               onClick={onOpenFilter}
               className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
@@ -167,14 +183,13 @@ const LoanApplication = () => {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Button onClick={onOpenSend}>
-            Send Application Link
-          </Button>
-          {/* <Button onClick={onOpen}>
+          {/* <Button onClick={onOpen} variant={"outline"}>
             Create Application
           </Button> */}
+          <Button onClick={onOpenSend}>Send Application Link</Button>
         </div>
       </div>
+
       <div className="">
         {loading ? (
           <Flex justify="center" align="center" height="200px">
@@ -187,58 +202,55 @@ const LoanApplication = () => {
           />
         ) : (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-          <Table>
-            <Thead bg={"blue.50"}>
-              {tableData && table?.getHeaderGroups()?.map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers?.map((header) => (
-                    <Th
-                      textTransform={"initial"}
-                      px="0px"
-                      key={header.id}
-                      color={"primary.500"}
-                      fontWeight={"500"}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
+            <Table>
+              <Thead bg={"blue.50"}>
+                {tableData &&
+                  table?.getHeaderGroups()?.map((headerGroup) => (
+                    <Tr key={headerGroup.id}>
+                      {headerGroup.headers?.map((header) => (
+                        <Th
+                          textTransform={"initial"}
+                          px="0px"
+                          key={header.id}
+                          color={"primary.500"}
+                          fontWeight={"500"}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </Th>
+                      ))}
+                    </Tr>
+                  ))}
+              </Thead>
+              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                {tableData?.length &&
+                  table?.getRowModel()?.rows?.map((row) => (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells()?.map((cell) => (
+                        <Td key={cell.id} px="0px">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
                           )}
-                    </Th>
+                        </Td>
+                      ))}
+                    </Tr>
                   ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {tableData?.length && table?.getRowModel()?.rows?.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="0px">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-              <Tr>
-                <Td py={4} w="full" colSpan={6}>
-                  <Pagination meta={tableData} setPageCount={setPageCount} />
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
-        </TableContainer>
-        )
-      }
+              </Tbody>
+            </Table>
+            <Pagination meta={tableData} setPageCount={setPageCount} />
+          </TableContainer>
+        )}
       </div>
-      <CreateLoan 
-      isOpen={isOpen} 
-      onClose={onClose}
-      customers={allCustomers}
-      fetchLoanApplication={fetchLoanApplication}
+      <CreateLoan
+        isOpen={isOpen}
+        onClose={onClose}
+        customers={allCustomers}
+        fetchLoanApplication={fetchLoanApplication}
       />
       <FilterDrawer
         isOpen={isOpenFilter}
@@ -247,14 +259,14 @@ const LoanApplication = () => {
         clearFilters={clearFilters}
         filterOptions={filterOptions}
       />
-      <SendApplicationLink 
-      isOpen={isOpenSend} 
-      onClose={onCloseSend}
-      customers={allCustomers}
-      fetchLoanApplication={fetchLoanApplication}
+      <SendApplicationLink
+        isOpen={isOpenSend}
+        onClose={onCloseSend}
+        customers={allCustomers}
+        fetchLoanApplication={fetchLoanApplication}
       />
     </div>
-  )
-}
+  );
+};
 
-export default LoanApplication
+export default LoanApplication;

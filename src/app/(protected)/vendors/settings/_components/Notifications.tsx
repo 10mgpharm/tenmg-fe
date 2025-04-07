@@ -27,7 +27,7 @@ const Notifications = () => {
 
         const response = await requestClient({
           token: sessionData.user.token,
-        }).get("/account/notifications");
+        }).get("/account/app-notifications");
 
         if (response?.status === 200) {
           const fetchedNotifications = response?.data.data.data ?? [];

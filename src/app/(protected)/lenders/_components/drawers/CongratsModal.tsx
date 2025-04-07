@@ -12,11 +12,13 @@ const CongratsModal = ({
   onClose,
   status,
   amount,
+  isWithdraw,
 }: {
   status?: string;
   amount?: number;
   isOpen: boolean;
   onClose: () => void;
+  isWithdraw: boolean;
 }) => { 
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("en-US", {
@@ -42,12 +44,12 @@ const CongratsModal = ({
           <Image src={SuccessIcon.src} alt="Success" width={200} height={200} />
         </Stack>
         <Text
-          color={status === "withdraw" ? "red.500" : "green.500"}
+          color={isWithdraw ? "red.500" : "green.500"}
           fontSize="4xl"
           fontWeight={700}
           mb={2}
         >
-          {status === "withdraw" ? "-" : "+"} ₦
+          {isWithdraw ? "-" : "+"} ₦
           {formatAmountString(amount) || "9,000"}
         </Text>
         <Text fontSize="sm" color="gray.600" fontWeight={400}>

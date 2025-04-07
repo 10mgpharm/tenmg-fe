@@ -2,7 +2,6 @@
 import React from 'react'
 import { StarRating } from "react-flexible-star-rating";
 
-
 interface IRatingComponent {
   rating: number
   handleRating?: (rate: number) => void
@@ -13,7 +12,7 @@ export default function RatingComponent({ handleRating, readonly, rating, }: IRa
   return (
     <div className="w-full flex items-center" >
       <StarRating
-        initialRating={Math.round(rating)}
+        initialRating={rating > 0 ? Math.round(rating) : 0}
         onRatingChange={handleRating}
         starsLength={5}
         dimension={6}

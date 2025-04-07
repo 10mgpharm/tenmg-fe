@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -18,9 +18,11 @@ import { FiShoppingBag } from 'react-icons/fi'
 import { CiLogout, CiWallet } from 'react-icons/ci'
 import { BiMessageDetail } from 'react-icons/bi'
 import { redirect, usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { BusinessStatus } from "@/constants";
+import { NextAuthUserSession } from '@/types'
+import requestClient from '@/lib/requestClient'
 
 const navigation = [
   { name: 'Dashboard', href: '/suppliers', icon: HomeIcon, current: true },
@@ -28,7 +30,7 @@ const navigation = [
   { name: 'Products', href: '/suppliers/products', icon: FiShoppingBag, current: false },
   { name: 'Insight', href: '/suppliers/insight', icon: BsGraphUpArrow, current: false },
   { name: 'Wallet', href: '/suppliers/wallet', icon: CiWallet, current: false },
-  { name: 'Message', href: '/suppliers/messages', icon: BiMessageDetail, current: false },
+  { name: 'Messages', href: '/suppliers/messages', icon: BiMessageDetail, current: false },
   { name: 'Settings', href: '/suppliers/settings', icon: Cog6ToothIcon, current: false },
 ]
 
@@ -55,6 +57,27 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
 const SideBar = ({ businessStatus }: { businessStatus: string }) => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+
+  const [count, setCount] = useState(0);
+  const fetchingMessageCount = useCallback(async () => {
+    try {
+      const res = await requestClient({token: token}).get(
+        `/account/messages/unread-count`
+      )
+      setCount(res.data?.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingMessageCount();
+  }, [token, fetchingMessageCount]);
 
   return (
     <div>
@@ -105,6 +128,12 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                                 )}
                               />
                               {item.name}
+                              {
+                                item.name === "Messages" &&
+                                <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                                  {count}
+                                </div>
+                              }
                             </Link>
                           </li>
                         )
@@ -162,6 +191,12 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                             )}
                           />
                           {item.name}
+                          {
+                            item.name === "Messages" &&
+                            <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                              {count}
+                            </div>
+                          }
                         </Link>
                       </li>
                     )

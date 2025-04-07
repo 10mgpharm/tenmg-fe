@@ -13,6 +13,7 @@ import {
   Input,
 } from '@chakra-ui/react'
 import Image from 'next/image'
+import StatusBadge from '../../_components/StatusBadge'
 
 export default function TransactionHistoryDrawer() {
 
@@ -39,12 +40,12 @@ export default function TransactionHistoryDrawer() {
           <DrawerBody>
             <div>
               <div>
-                <h4 className='font-semibold text-xl'>₦9000</h4>
+                <h4 className='font-semibold text-xl mb-2'>₦9000</h4>
                 <p className='font-light text-sm'>Tue, 10 Sept 2024. 19:40</p>
               </div>
 
               <div>
-                <p className='mt-4 font-light text-sm'>Details</p>
+                <p className='mt-4 font-light text-sm mb-2'>Details</p>
                 <p className='border border-slate-500 rounded-md py-2 px-4 text-semibold'>
                   Lisa Olanrawaju
                 </p>
@@ -54,7 +55,7 @@ export default function TransactionHistoryDrawer() {
 
                 <div className='flex items-center justify-between text-xs my-3'>
                   <p className='font-light'>Status</p>
-                  <p className='font-semibold'>Completed</p>
+                  <p className='font-semibold'><StatusBadge status='Completed' bgColor="green.50" color="green.500" isDot/></p>
                 </div>
                 <div className='flex items-center justify-between text-xs my-3'>
                   <p className='font-light'>Wallet debited</p>
