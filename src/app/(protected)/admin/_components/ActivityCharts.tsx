@@ -1,6 +1,7 @@
 "use client";
 import { ApexOptions } from "apexcharts";
 import ChartComponent from '../../vendors/_components/ChartComponent';
+import React from "react";
 
 const user = [
     {id: 1, name: "Fubura Dickson", pharmacyName:"Vendor's pharmacy name", amount: "₦300,0000", creditScore: "75%"},
@@ -10,7 +11,7 @@ const user = [
     {id: 1, name: "Fubura Dickson", pharmacyName:"Vendor's pharmacy name", amount: "₦300,0000", creditScore: "45%"},
 ]
 
-const ActivityCharts = ({data}: any) => {
+const ActivityCharts = ({data, loading}: any) => {
 
   const chartOptions: ApexOptions = {
       chart: {
@@ -180,13 +181,23 @@ const ActivityCharts = ({data}: any) => {
     <div className=''>
         <div className="grid grid-cols-1 md:grid-cols-6 gap-5">
             <div className="col-span-6 md:col-span-4 bg-white py-5 px-3 rounded-md">
-                <ChartComponent
+            <React.Fragment>
+              <div className="">
+                {loading ? (
+                  <div className="flex items-center justify-center h-80 text-gray-500">
+                    Loading chart...
+                  </div>
+                  ) : (
+                    <ChartComponent
                     options={chartOptions}
                     series={chartSeries}
                     type="bar"
                     width={"100%"}
                     height={350}
-                />
+                  />
+                  )}
+              </div>
+            </React.Fragment>
             </div>
             <div className="col-span-6 md:col-span-2">
                 <div className="bg-primary-500 flex items-center flex-col justify-center h-full w-full rounded-lg text-white py-20 md:py-0">

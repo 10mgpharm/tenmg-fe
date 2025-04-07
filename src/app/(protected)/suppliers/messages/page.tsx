@@ -119,6 +119,22 @@ const Message = () => {
         }
     };
 
+    const markAsRead = async (id: number) => {
+        try {
+            const res = await requestClient({ token: token }).patch(
+                `/account/messages/mark-as-read/${id}`,
+            );
+            if (res.status === 200) {
+                refetchingData();
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(handleServerErrorMessage(error));
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const fetchConversations = async (id: number) => {
         setIsLoading(true);
         try {
@@ -127,6 +143,7 @@ const Message = () => {
             );
             if (response.status === 200) {
                 setConversation(response.data.data.data || []);
+                await markAsRead(id);
             }
         } catch (err: any) {
             console.error(err);

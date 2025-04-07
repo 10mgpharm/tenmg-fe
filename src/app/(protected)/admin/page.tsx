@@ -25,7 +25,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { records } from "@/data/mockdata";
 import { ColumsFN } from "./_components/table";
 import DashboardCard from "./_components/DashboardCard";
 import ActivityCharts from "./_components/ActivityCharts";
@@ -40,18 +39,23 @@ const Admin = () => {
     const token = sessionData?.user?.token;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
     const fetchingOverview = useCallback(async () => {
       try {
+        setLoading(true)
         const res = await requestClient({token: token}).get(
           `/admin/dashboard`
         )
         setData(res.data?.data);
       } catch (error) {
         console.error(error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
       }
     }, [token]);
 
@@ -60,7 +64,7 @@ const Admin = () => {
       fetchingOverview();
     }, [token, fetchingOverview]);
 
-    const loanData = data?.loans?.data?.slice(0, 5)
+    const loanData = data?.loans?.data?.slice(0, 4);
     const memoizedData = useMemo(() => loanData, [loanData]);
 
     const table = useReactTable({
@@ -81,18 +85,40 @@ const Admin = () => {
       getSortedRowModel: getSortedRowModel(),
     });
 
-    const dbData = [
+    const overviewData = [
       {
         id: 1,
         title: "Today's Sales",
-        amount: `₦${data?.data?.revenue}`,
+        amount: `${data?.todaySales || 0}`,
+        changeType: "INCREASE",
+        timeStamp: " vs. last week",
+        percentage: "2.35%",
+      },
+      {
+        id: 2,
+        title: "Today's Revenue",
+        amount: `₦${data?.todayRevenue || 0.00}`,
+        changeType: "INCREASE",
+        timeStamp: " vs. last week",
+        percentage: "2.35%",
+      },
+      {
+        id: 2,
+        title: "Today's Order",
+        amount: `${data?.todayOrder || 0}`,
+        changeType: "INCREASE",
+        timeStamp: " vs. last week",
+        percentage: "2.35%",
+      },
+      {
+        id: 2,
+        title: "Ongoing Loan",
+        amount: `0`,
         changeType: "INCREASE",
         timeStamp: " vs. last week",
         percentage: "2.35%",
       },
     ]
-
-    // console.log(data);
 
     return (
     <div className="p-8">
@@ -101,7 +127,7 @@ const Admin = () => {
           Dashboard
         </Text>
         <SimpleGrid columns={[2, 4]} gap={3}>
-          {records.map((item) => (
+          {overviewData?.map((item) => (
             <DashboardCard
               key={item.id}
               title={item.title}
@@ -114,7 +140,7 @@ const Admin = () => {
         </SimpleGrid>
       </Stack>
       <Stack mt={6}>
-        <ActivityCharts data={data} />
+        <ActivityCharts data={data} loading={loading} />
       </Stack>
       <Stack mt={6}>
         <HStack justify={"space-between"} mb={3}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ApexOptions } from "apexcharts";
 import { CalendarIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -15,11 +15,12 @@ import CompleteAccountModal from "../_components/CompleteAccountModal";
 import OverviewCardWithoutBG from "../_components/OverViewWithoutBG";
 import ChartComponent from "../../vendors/_components/ChartComponent";
 import RevenuePerProduct from "../_components/RevenuePerProduct";
+import requestClient from "@/lib/requestClient";
 
 export const options = [
-    { label: "This week", value: "This week" },
-    { label: "This month", value: "This month" },
-    { label: "Last year", value: "Last year" },
+    // { label: "This week", value: "This week" },
+    // { label: "This month", value: "This month" },
+    { label: "This year", value: "This year" },
 ]
 
 const Supplier = () => {
@@ -27,11 +28,32 @@ const Supplier = () => {
     const session = useSession();
     const chartRef = useRef<any>(null);
     const sessionData = session.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const isVisible = sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
 
-    const pieSeries = [54, 12, 8];
-    const total = pieSeries.reduce((a, b) => a + b, 0);
+    const fetchingOverview = useCallback(async () => {
+        try {
+            setLoading(true);
+          const res = await requestClient({token: token}).get(
+            `/supplier/dashboard?dateFilter=one_year`
+          )
+          setData(res.data?.data);
+        } catch (error) {
+          console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if(!token) return;
+        fetchingOverview();
+    }, [token, fetchingOverview]);
+
+    // console.log(data);
 
     const formatValue = (value: any) => {
         if (value >= 1000000) {
@@ -72,13 +94,18 @@ const Supplier = () => {
         },
         xaxis: {
           categories: [
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat",
-            "Sun",
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
           ],
         },
         stroke: {
@@ -89,6 +116,13 @@ const Supplier = () => {
           show: false,
         },
     };
+
+    const pieSeries = [
+        Number(data?.analytics?.stockStatus?.inStock),
+        Number(data?.analytics?.stockStatus?.lowStock), 
+        Number(data?.analytics?.stockStatus?.outOfStock)
+    ];
+    const total = pieSeries.reduce((a, b) => a + b, 0);
 
     const pieOptions: ApexOptions = {
         chart: {
@@ -139,9 +173,23 @@ const Supplier = () => {
     const series = [
         {
             name: "Revenue",
-            data: [100000, 50000, 150000, 75000, 180000, 120000, 195000],
+            data: [
+                data?.analytics?.revenue?.january, 
+                data?.analytics?.revenue?.february, 
+                data?.analytics?.revenue?.march, 
+                data?.analytics?.revenue?.april, 
+                data?.analytics?.revenue?.may, 
+                data?.analytics?.revenue?.june, 
+                data?.analytics?.revenue?.july, 
+                data?.analytics?.revenue?.august, 
+                data?.analytics?.revenue?.september, 
+                data?.analytics?.revenue?.october, 
+                data?.analytics?.revenue?.november, 
+                data?.analytics?.revenue?.december, 
+            ],
         },
     ];
+
 
     return (
         <div>
@@ -161,21 +209,21 @@ const Supplier = () => {
                 <div className="grid grid-cols-4 gap-4 mt-5">
                     <OverviewCardWithoutBG
                         title="Total Income"
-                        value="₦100,100.00"
+                        value={`₦${data?.analytics?.totalIncome?.count || "0.00"}`}
                     />
                     <OverviewCardWithoutBG
                         title="Total Orders"
-                        value="20"
+                        value={`${data?.analytics?.totalOrders?.count || 0}`}
                         icon={order}
                     />
                     <OverviewCardWithoutBG
                         title="Completed Orders"
-                        value="10"
+                        value={`${data?.analytics?.completedOrders?.count || 0}`}
                         icon={completedOrder}
                     />
                     <OverviewCardWithoutBG
                         title="Total Products"
-                        value="150"
+                        value={`${data?.analytics?.totalProducts?.count || 0}`}
                         icon={totalProducts}
                     />
                 </div>
@@ -197,15 +245,23 @@ const Supplier = () => {
                             </select>
                         </div>
                         {/* <EmptyCard /> */}
-                        <div className="">
-                            <ChartComponent
-                                options={graphOptions}
-                                series={series}
-                                type="area"
-                                width={"100%"}
-                                height={320}
-                            />
-                        </div>
+                        <React.Fragment>
+                            <div className="">
+                                {loading ? (
+                                <div className="flex items-center justify-center h-80 text-gray-500">
+                                    Loading chart...
+                                </div>
+                                ) : (
+                                <ChartComponent
+                                    options={graphOptions}
+                                    series={series}
+                                    type="area"
+                                    width="100%"
+                                    height={320}
+                                />
+                                )}
+                            </div>
+                        </React.Fragment>
                     </div>
                     <div className="flex-1 bg-white p-5 rounded-md">
                         <div className="flex items-center justify-between">
@@ -224,17 +280,27 @@ const Supplier = () => {
                             </select>
                         </div>
                         {/* <EmptyCard /> */}
-                        <ChartComponent
-                            options={pieOptions}
-                            series={pieSeries}
-                            type="donut"
-                            width={"100%"}
-                            height={320}
-                        />
+                        <React.Fragment>
+                            <div className="">
+                                {loading ? (
+                                <div className="flex items-center justify-center h-80 text-gray-500">
+                                    Loading chart...
+                                </div>
+                                ) : (
+                                <ChartComponent
+                                    options={pieOptions}
+                                    series={pieSeries}
+                                    type="donut"
+                                    width={"100%"}
+                                    height={320}
+                                />
+                                )}
+                            </div>
+                        </React.Fragment>
                     </div>
                 </div>
                 <div className="mt-5">
-                   <RevenuePerProduct />
+                   <RevenuePerProduct data={data?.analytics?.revenuePerProduct} loading={loading}/>
                 </div>
             </div>
             <CompleteAccountModal
