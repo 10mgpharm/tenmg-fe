@@ -71,7 +71,7 @@ const SendApplicationLink = ({
   });
 
   const customerOptions = customers?.map((customer) => ({
-    value: customer.id, // Just use the ID as the value
+    value: customer.id,
     label: `${customer.name} - ${customer.email}`,
   }));
 
