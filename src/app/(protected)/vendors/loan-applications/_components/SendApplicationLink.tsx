@@ -29,7 +29,7 @@ export interface SelectProps {
 
 interface IFormInput {
   customerId: number;
-  requestedAmount?: number;
+  requestedAmount: number;
 }
 
 const customStyles = {
@@ -135,8 +135,7 @@ const SendApplicationLink = ({
               />
             </FormControl>
 
-            {/* Loan Amount is Optional for now. */}
-            {/* <FormControl isInvalid={!!errors.requestedAmount} className="mt-7">
+            <FormControl isInvalid={!!errors.requestedAmount} className="mt-7">
               <FormLabel>Enter Loan Amount</FormLabel>
               <Controller
                 name="requestedAmount"
@@ -157,7 +156,7 @@ const SendApplicationLink = ({
                   </>
                 )}
               />
-            </FormControl> */}
+            </FormControl>
             <Flex justify={"end"} mt={5} gap={3}>
               <Button w={"150px"} onClick={onClose} variant={"outline"}>
                 Cancel
