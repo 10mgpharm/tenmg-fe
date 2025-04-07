@@ -7,6 +7,7 @@ import { NextAuthUserSession } from "@/types";
 import TopNavBar from "../suppliers/_components/TopNavBar";
 import Footer from "../suppliers/_components/Footer";
 import SideBar from "./_components/SideBar";
+import AdminLayoutClient from "./_components/AdminClientLayout";
 
 const appName = config.appName;
 
@@ -26,15 +27,18 @@ export default async function AdminLayout({
   if (session.user?.entityType !== "ADMIN") redirect("/");
 
   return (
-    <>
-      <TopNavBar route="/admin/notifications"/>
-      <SideBar />
-      {/* <Suspense fallback={<div>Loading...</div>}> */}
-      <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
-        <div className="min-h-[calc(100vh-150px)]">{children}</div>
-        <Footer />
-      </main>
-      {/* </Suspense> */}
-    </>
+    <AdminLayoutClient>{children}</AdminLayoutClient>
+
   );
 }
+// <>
+//   <TopNavBar route="/admin/notifications" />
+//   <SideBar />
+//   {/* <Suspense fallback={<div>Loading...</div>}> */}
+//   <main className="relative lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
+
+//     <div className="min-h-[calc(100vh-150px)]">{children}</div>
+//     <Footer />
+//   </main>
+//   {/* </Suspense> */}
+// </>

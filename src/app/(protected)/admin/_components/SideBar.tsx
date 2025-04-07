@@ -102,7 +102,7 @@ const navigation = [
   },
 ];
 
-const SideBar = () => {
+const SideBar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   const pathname = usePathname();
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -112,7 +112,7 @@ const SideBar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const fetchingMessageCount = useCallback(async () => {
     try {
-      const res = await requestClient({token: token}).get(
+      const res = await requestClient({ token: token }).get(
         `/account/messages/unread-count`
       )
       setCount(res.data?.data);
@@ -122,15 +122,15 @@ const SideBar = () => {
   }, [token]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchingMessageCount();
   }, [token, fetchingMessageCount]);
 
   return (
     <div>
       <Dialog
-        open={sidebarOpen}
-        onClose={setSidebarOpen}
+        open={isOpen}
+        onClose={onClose}
         className="relative z-50 lg:hidden"
       >
         <DialogBackdrop
@@ -146,7 +146,8 @@ const SideBar = () => {
               <div className="absolute left-full top-0 flex w-16 justify-center pt-5 duration-300 ease-in-out data-[closed]:opacity-0">
                 <button
                   type="button"
-                  onClick={() => setSidebarOpen(false)}
+                  // onClick={() => setSidebarOpen(false)}
+                  onClick={onClose}
                   className="-m-2.5 p-2.5"
                 >
                   <span className="sr-only">Close sidebar</span>
@@ -162,13 +163,13 @@ const SideBar = () => {
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
                     <ul role="list" className="-mx-2 space-y-6">
-                      {navigation.map((item) => {
+                      {navigation.map((item, i) => {
                         const isActive = (href: string) => {
                           if (href === "/admin") return pathname === href; // Exact match for Dashboard
                           return pathname.startsWith(href); // Allow dynamic routes
                         };
                         return (
-                          <li key={item.name}>
+                          <li key={i}>
                             <a
                               href={item.href}
                               className={classNames(
@@ -223,13 +224,13 @@ const SideBar = () => {
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
                 <ul role="list" className="-mx-2 space-y-8">
-                  {navigation.map((item) => {
+                  {navigation.map((item, i) => {
                     const isActive = (href: string) => {
                       if (href === "/admin") return pathname === href; // Exact match for Dashboard
                       return pathname.startsWith(href); // Allow dynamic routes
                     };
                     return (
-                      <li key={item.name}>
+                      <li key={i}>
                         <a
                           href={item.href}
                           className={classNames(

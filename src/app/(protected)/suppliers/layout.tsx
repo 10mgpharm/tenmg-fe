@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
+import SupplierClientsideLayout from "./_components/SupplierClientsideLayout";
 
 const appName = config.appName;
 
@@ -23,16 +24,17 @@ export default async function SupplierLayout({
   const session: NextAuthUserSession = await getServerSession(authOptions);
   if (!session) redirect('/auth/signin');
 
-  return(
-    <>
-      <TopNavBar route="/suppliers/notifications" />
-      <SideBar businessStatus={session?.user?.businessStatus} />
-      <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
-        <div className="min-h-[calc(100vh-150px)]">
-          {children}
-        </div>
-        <Footer />
-      </main>
-    </>
+  return (
+    <SupplierClientsideLayout session={session} >children={children} </SupplierClientsideLayout>
   );
+  // <>
+  //   <TopNavBar route="/suppliers/notifications" />
+  //   <SideBar businessStatus={session?.user?.businessStatus} />
+  //   <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
+  //     <div className="min-h-[calc(100vh-150px)]">
+  //       {children}
+  //     </div>
+  //     <Footer />
+  //   </main>
+  // </>
 }

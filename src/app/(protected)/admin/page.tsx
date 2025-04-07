@@ -35,75 +35,75 @@ import { NextAuthUserSession } from "@/types";
 
 const Admin = () => {
 
-    const session = useSession();
-    const sessionData = session?.data as NextAuthUserSession;
-    const token = sessionData?.user?.token;
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [data, setData] = useState(null);
-    const [columnVisibility, setColumnVisibility] = useState({});
-    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [data, setData] = useState(null);
+  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    const fetchingOverview = useCallback(async () => {
-      try {
-        const res = await requestClient({token: token}).get(
-          `/admin/dashboard`
-        )
-        setData(res.data?.data);
-      } catch (error) {
-        console.error(error);
-      }
-    }, [token]);
+  const fetchingOverview = useCallback(async () => {
+    try {
+      const res = await requestClient({ token: token }).get(
+        `/admin/dashboard`
+      )
+      setData(res.data?.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [token]);
 
-    useEffect(() => {
-      if(!token) return;
-      fetchingOverview();
-    }, [token, fetchingOverview]);
+  useEffect(() => {
+    if (!token) return;
+    fetchingOverview();
+  }, [token, fetchingOverview]);
 
-    const loanData = data?.loans?.data?.slice(0, 5)
-    const memoizedData = useMemo(() => loanData, [loanData]);
+  const loanData = data?.loans?.data?.slice(0, 5)
+  const memoizedData = useMemo(() => loanData, [loanData]);
 
-    const table = useReactTable({
-      data: memoizedData,
-      columns: ColumsFN(),
-      onSortingChange: setSorting,
-      state: {
+  const table = useReactTable({
+    data: memoizedData,
+    columns: ColumsFN(),
+    onSortingChange: setSorting,
+    state: {
       sorting,
       columnVisibility,
       columnOrder,
       rowSelection,
-      },
-      enableRowSelection: true,
-      onRowSelectionChange: setRowSelection,
-      onColumnVisibilityChange: setColumnVisibility,
-      onColumnOrderChange: setColumnOrder,
-      getCoreRowModel: getCoreRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-    });
+    },
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
 
-    const dbData = [
-      {
-        id: 1,
-        title: "Today's Sales",
-        amount: `₦${data?.data?.revenue}`,
-        changeType: "INCREASE",
-        timeStamp: " vs. last week",
-        percentage: "2.35%",
-      },
-    ]
+  const dbData = [
+    {
+      id: 1,
+      title: "Today's Sales",
+      amount: `₦${data?.data?.revenue}`,
+      changeType: "INCREASE",
+      timeStamp: " vs. last week",
+      percentage: "2.35%",
+    },
+  ]
 
-    // console.log(data);
+  // console.log(data);
 
-    return (
+  return (
     <div className="p-8">
       <Stack gap={4}>
         <Text fontWeight={"semibold"} fontSize={"2xl"}>
           Dashboard
         </Text>
         <SimpleGrid columns={[2, 4]} gap={3}>
-          {records.map((item) => (
+          {records.map((item, i) => (
             <DashboardCard
-              key={item.id}
+              key={i}
               title={item.title}
               amount={item.amount}
               changeType={item.changeType}
@@ -132,26 +132,26 @@ const Admin = () => {
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
               <Thead bg={"#F2F4F7"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
-                  <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
+                {table?.getHeaderGroups()?.map((headerGroup, i) => (
+                  <Tr key={i}>
+                    {headerGroup.headers?.map((header, i) => (
+                      <Th textTransform={"initial"} px="0px" key={i}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>
                 ))}
               </Thead>
               <Tbody color="#606060" fontSize={"14px"}>
-                {memoizedData && table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
+                {memoizedData && table?.getRowModel()?.rows?.map((row, i) => (
+                  <Tr key={i}>
+                    {row.getVisibleCells()?.map((cell, i) => (
+                      <Td key={i} px="0px">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
