@@ -11,7 +11,9 @@ export default function SupplierClientsideLayout({ session, children }: { sessio
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <>
-      <TopNavBar route="/suppliers/notifications" />
+      <TopNavBar route="/suppliers/notifications"
+        onMenuClick={() => setIsSidebarOpen((prev) => !prev)}
+      />
       <SideBar businessStatus={session?.user?.businessStatus} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
         <div className="min-h-[calc(100vh-150px)]">

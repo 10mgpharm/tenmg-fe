@@ -25,7 +25,7 @@ export default async function SupplierLayout({
   if (!session) redirect('/auth/signin');
 
   return (
-    <SupplierClientsideLayout session={session} >children={children} </SupplierClientsideLayout>
+    <SupplierClientsideLayout session={session} >{children} </SupplierClientsideLayout>
   );
   // <>
   //   <TopNavBar route="/suppliers/notifications" />
