@@ -38,10 +38,12 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (cartSize == 0) {
-      redirect('/storefront')
+    if (cart) {
+      if (cartSize == 0) {
+        redirect('/storefront')
+      }
     }
-  }, [cartSize])
+  }, [, cart, cartSize])
 
   useEffect(() => {
     if (cart) {
@@ -241,8 +243,8 @@ export default function CheckoutPage() {
                                   )}
                                   <p
                                     className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0
-                                        ? "text-gray-400 line-through"
-                                        : "text-gray-900"
+                                      ? "text-gray-400 line-through"
+                                      : "text-gray-900"
                                       }`}
                                   >
                                     ₦{item?.product.actualPrice}

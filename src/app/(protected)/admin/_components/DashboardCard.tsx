@@ -16,7 +16,9 @@ const DashboardCard = (
                 {
                     changeType === "INCREASE" ? 
                     <FaArrowUp className="w-3.5 h-3.5 text-green-600"/>
-                    : <FaArrowDown className="w-3.5 h-3.5 text-red-400"/>
+                    : changeType === "DECREASE" ?
+                     <FaArrowDown className="w-3.5 h-3.5 text-red-400"/>
+                    : null
                 }
                 <p className={classNames(changeType === "INCREASE" ? "text-green-600" : "text-red-400", " text-sm ml-1")}>{percentage}</p>
             </div>

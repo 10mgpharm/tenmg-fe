@@ -58,7 +58,7 @@ export function ColumsApplicationFN() {
       cell: (info) => {
         return (
           <div>
-            <p className="font-medium">{info?.row?.original?.customer.email}</p>
+            <p className="font-medium">{info?.row?.original?.business.name}</p>
           </div>
         );
       },

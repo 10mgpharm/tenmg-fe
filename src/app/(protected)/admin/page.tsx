@@ -24,37 +24,77 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
-import { loanData, records } from "@/data/mockdata";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { records } from "@/data/mockdata";
 import { ColumsFN } from "./_components/table";
 import DashboardCard from "./_components/DashboardCard";
 import ActivityCharts from "./_components/ActivityCharts";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
 
 const Admin = () => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const table = useReactTable({
-    data: loanData,
-    columns: ColumsFN(),
-    onSortingChange: setSorting,
-    state: {
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [data, setData] = useState(null);
+    const [columnVisibility, setColumnVisibility] = useState({});
+    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+    const fetchingOverview = useCallback(async () => {
+      try {
+        const res = await requestClient({token: token}).get(
+          `/admin/dashboard`
+        )
+        setData(res.data?.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }, [token]);
+
+    useEffect(() => {
+      if(!token) return;
+      fetchingOverview();
+    }, [token, fetchingOverview]);
+
+    const loanData = data?.loans?.data?.slice(0, 5)
+    const memoizedData = useMemo(() => loanData, [loanData]);
+
+    const table = useReactTable({
+      data: memoizedData,
+      columns: ColumsFN(),
+      onSortingChange: setSorting,
+      state: {
       sorting,
       columnVisibility,
       columnOrder,
       rowSelection,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  });
+      },
+      enableRowSelection: true,
+      onRowSelectionChange: setRowSelection,
+      onColumnVisibilityChange: setColumnVisibility,
+      onColumnOrderChange: setColumnOrder,
+      getCoreRowModel: getCoreRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+    });
 
-  return (
+    const dbData = [
+      {
+        id: 1,
+        title: "Today's Sales",
+        amount: `₦${data?.data?.revenue}`,
+        changeType: "INCREASE",
+        timeStamp: " vs. last week",
+        percentage: "2.35%",
+      },
+    ]
+
+    // console.log(data);
+
+    return (
     <div className="p-8">
       <Stack gap={4}>
         <Text fontWeight={"semibold"} fontSize={"2xl"}>
@@ -74,7 +114,7 @@ const Admin = () => {
         </SimpleGrid>
       </Stack>
       <Stack mt={6}>
-        <ActivityCharts />
+        <ActivityCharts data={data} />
       </Stack>
       <Stack mt={6}>
         <HStack justify={"space-between"} mb={3}>
@@ -108,7 +148,7 @@ const Admin = () => {
                 ))}
               </Thead>
               <Tbody color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
+                {memoizedData && table?.getRowModel()?.rows?.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells()?.map((cell) => (
                       <Td key={cell.id} px="0px">

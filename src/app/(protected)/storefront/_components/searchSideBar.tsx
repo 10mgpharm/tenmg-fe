@@ -345,7 +345,7 @@ const SearchSideBar = ({
             return;
           }
           handleFilterState("measure", e.target.value);
-          setParams("measurement", e.target.value);
+          setParams("measurements", e.target.value);
           setIsOpen && setIsOpen(false);
         }}
         value={measurementValue}
@@ -381,7 +381,7 @@ const SearchSideBar = ({
             return;
           }
           handleFilterState("medTye", e.target.value);
-          setParams("medicationType", e.target.value);
+          setParams("medicationTypes", e.target.value);
           setIsOpen && setIsOpen(false);
         }}
         value={medTypeValue}

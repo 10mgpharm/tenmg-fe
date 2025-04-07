@@ -76,11 +76,6 @@ const Wallet = () => {
     fetchingTransactions();
   }, [token]);
 
-  const openAccountModal = async () => {
-    await genetateOTP();
-    onOpen();
-  }
-
   return (
     <div className="p-8">
       <div>
@@ -138,7 +133,7 @@ const Wallet = () => {
                   Add a bank account to enable easy withdrawal of your funds
                 </p>
                 <button
-                  onClick={openAccountModal}
+                  onClick={onOpen}
                   className="mt-5 bg-primary-500 px-5 py-2 text-white rounded-md"
                 >
                   Add Account
@@ -177,7 +172,9 @@ const Wallet = () => {
           }
         </div>
       </div>
-      <AddAccount isOpen={isOpen} onClose={onClose} />
+      <AddAccount 
+      isOpen={isOpen} 
+      onClose={onClose} />
       <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}

@@ -21,7 +21,7 @@ export const records = [
   },
   {
     id: 3,
-    title: "Today's Customers",
+    title: "Today's Orders",
     amount: "0",
     changeType: "INCREASE",
     timeStamp: " vs. last week",
@@ -29,11 +29,11 @@ export const records = [
   },
   {
     id: 4,
-    title: "Today's Vendor",
+    title: "Ongoing Loan",
     amount: "0",
-    changeType: "INCREASE",
-    timeStamp: " vs. last week",
-    percentage: "2.35%",
+    changeType: "",
+    timeStamp: " ",
+    percentage: "",
   },
 ];
 

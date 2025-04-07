@@ -40,7 +40,6 @@ import SuccessModal from "./SuccessModal";
 import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
-import SendApplicationLink from "./SendApplicationLink";
 import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 import EmptyResult from "@/app/(protected)/vendors/_components/EmptyResult";
 
@@ -109,21 +108,6 @@ const DataTable = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
-  const fetchAllCustomers = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await requestClient({ token: token }).get(
-        "/admin/customers/get-all"
-      );
-      if (response.status === 200) {
-        setAllCustomers(response.data.data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  }, [token]);
-
   const tableData = useMemo(
     () => loanApplication?.data,
     [loanApplication?.data]
@@ -132,8 +116,7 @@ const DataTable = () => {
   useEffect(() => {
     if (!token) return;
     fetchLoanApplication();
-    fetchAllCustomers();
-  }, [fetchLoanApplication, fetchAllCustomers, token]);
+  }, [fetchLoanApplication, token]);
 
   const applyFilters = (filters: IFilterInput) => {
     console.log(
@@ -195,16 +178,6 @@ const DataTable = () => {
             Filter
           </Button>
         </Flex>
-        <Flex gap={2}>
-          <Button
-            h={"40px"}
-            px={4}
-            className="border bg-white"
-            onClick={onOpenSend}
-          >
-            Send Application Link
-          </Button>
-        </Flex>
       </HStack>
 
       <div className="mt-5">
@@ -262,13 +235,6 @@ const DataTable = () => {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         filterOptions={filterOptions}
-      />
-
-      <SendApplicationLink
-        isOpen={isOpenSend}
-        onClose={onCloseSend}
-        customers={allCustomers}
-        fetchLoanApplication={fetchLoanApplication}
       />
 
       <SuccessModal isOpen={isOpenSuccess} onClose={onCloseSuccess} />
