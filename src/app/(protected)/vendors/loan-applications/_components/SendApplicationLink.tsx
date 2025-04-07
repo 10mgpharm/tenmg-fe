@@ -28,14 +28,15 @@ export interface SelectProps {
 }
 
 interface IFormInput {
-  customerId: SelectProps;
+  customerId: number;
+  requestedAmount?: number;
 }
 
 const customStyles = {
   menuList: (provided: any) => ({
     ...provided,
-    maxHeight: 200, // Limit dropdown height
-    overflowY: "auto", // Enable vertical scrolling
+    maxHeight: 200, 
+    overflowY: "auto",
   }),
 };
 
@@ -60,33 +61,40 @@ const SendApplicationLink = ({
     formState: { errors, isValid },
     handleSubmit,
     setValue,
-  } = useForm({
+    reset,
+  } = useForm<IFormInput>({
     mode: "onChange",
+    defaultValues: {
+      customerId: undefined,
+      requestedAmount: undefined,
+    },
   });
+
+  const customerOptions = customers?.map((customer) => ({
+    value: customer.id, // Just use the ID as the value
+    label: `${customer.name} - ${customer.email}`,
+  }));
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       setIsLoading(true);
       const response = await requestClient({ token: token }).post(
-        "/client/applications/start",
+        "/vendor/loan-applications/send-application-link",
         data
       );
 
       if (response.status === 200) {
         toast.success(response?.data?.message);
-        fetchLoanApplication();
+        if (fetchLoanApplication) fetchLoanApplication();
+        reset();
         onClose();
       }
     } catch (error) {
-      setIsLoading(false);
       toast.error(handleServerErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const customerOptions = customers?.map((customer) => ({
-    value: customer,
-    label: `${customer.name} - ${customer.email}`,
-  }));
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose} size={"lg"}>
@@ -95,34 +103,31 @@ const SendApplicationLink = ({
         <ModalHeader>Apply for Loan</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <form onSubmit={handleSubmit(onSubmit)} className="mb-5  h-fit">
-            <FormControl isInvalid={!!errors.customer}>
+          <form onSubmit={handleSubmit(onSubmit)} className="mb-5 h-fit">
+            <FormControl isInvalid={!!errors.customerId}>
               <FormLabel>Select Customer</FormLabel>
               <Controller
-                name="customer"
+                name="customerId"
                 control={control}
                 rules={{ required: "Please select a customer." }}
                 render={({ field }) => (
                   <>
                     <Select
-                      {...field}
                       isClearable={true}
                       isSearchable={true}
                       options={customerOptions}
                       placeholder={"Search Customer"}
                       styles={customStyles}
-                      name="customer"
                       onChange={(selectedOption) => {
                         field.onChange(selectedOption?.value);
-                        setValue("customer", selectedOption?.value);
                       }}
                       value={customerOptions?.find(
-                        (option) => option.value?.id === field.value?.id
+                        (option) => option.value === field.value
                       )}
                     />
-                    {errors.customer && (
+                    {errors.customerId && (
                       <FormErrorMessage>
-                        {errors.customer.message?.toString()}
+                        {errors.customerId.message?.toString()}
                       </FormErrorMessage>
                     )}
                   </>
@@ -130,7 +135,8 @@ const SendApplicationLink = ({
               />
             </FormControl>
 
-            <FormControl isInvalid={!!errors.requestedAmount} className="mt-7">
+            {/* Loan Amount is Optional for now. */}
+            {/* <FormControl isInvalid={!!errors.requestedAmount} className="mt-7">
               <FormLabel>Enter Loan Amount</FormLabel>
               <Controller
                 name="requestedAmount"
@@ -140,10 +146,9 @@ const SendApplicationLink = ({
                   <>
                     <Input
                       {...field}
-                      name="amount"
+                      type="number"
                       placeholder={"Enter loan amount"}
                     />
-
                     {errors.requestedAmount && (
                       <FormErrorMessage>
                         {errors.requestedAmount.message?.toString()}
@@ -152,7 +157,7 @@ const SendApplicationLink = ({
                   </>
                 )}
               />
-            </FormControl>
+            </FormControl> */}
             <Flex justify={"end"} mt={5} gap={3}>
               <Button w={"150px"} onClick={onClose} variant={"outline"}>
                 Cancel
@@ -161,7 +166,7 @@ const SendApplicationLink = ({
                 w={"150px"}
                 type="submit"
                 isLoading={isLoading}
-                loadingText={"Submitting.."}
+                loadingText={"Sending..."}
                 className="bg-primary-500 text-white"
               >
                 Send Link
