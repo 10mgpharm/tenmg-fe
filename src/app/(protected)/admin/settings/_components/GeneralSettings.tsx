@@ -33,6 +33,7 @@ interface IFormInput {
   contactPhone: string;
   businessAddress: string;
   contactPersonPosition: string;
+  role?: string;
 }
 
 const GeneralSettings = () => {
@@ -188,6 +189,7 @@ const GeneralSettings = () => {
       setUserEmail(data.contactEmail);
       setUserName(data.businessName);
       setFilePreview(data.owner.avatar);
+      setValue("role", data.role);
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
@@ -337,11 +339,7 @@ const GeneralSettings = () => {
               </Text>
             </GridItem>
             <GridItem colSpan={1}>
-              <Input
-                disabled
-                type="text"
-                value={sessionData?.user?.role}
-              />
+              <Input disabled type="text" {...register("role")} />
             </GridItem>
           </Grid>
         </Box>

@@ -169,6 +169,7 @@ export interface LoanData {
   totalAmount: string;
   updatedAt: string;
   vendor: Vendor;
+  application: LoanRequest;
 }
 
 export interface LoanDataProp {

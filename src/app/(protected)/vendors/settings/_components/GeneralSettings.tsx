@@ -28,6 +28,7 @@ import EnabledTwoFactor from "@/app/(protected)/admin/settings/_components/Enabl
 interface IFormInput {
   name: string;
   email: string;
+  role?: string;
 }
 
 const GeneralSettings = () => {
@@ -57,6 +58,8 @@ const GeneralSettings = () => {
         ...value,
       });
       const { data }: ResponseDto<User> = response.data;
+
+      setValue("role", data.role);
 
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -198,11 +201,7 @@ const GeneralSettings = () => {
               </Text>
             </GridItem>
             <GridItem colSpan={1}>
-              <Input
-                disabled
-                type="text"
-                value={sessionData?.user?.entityType}
-              />
+              <Input disabled type="text" {...register("role")} />
             </GridItem>
           </Grid>
         </Box>
