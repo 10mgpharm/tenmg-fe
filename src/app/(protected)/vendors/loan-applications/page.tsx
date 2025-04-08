@@ -118,6 +118,10 @@ const LoanApplication = () => {
     }
   }, [token]);
 
+  const tableLinks = useMemo(
+    () => loanApplication?.links,
+    [loanApplication?.links]
+  );
   const tableData = useMemo(
     () => loanApplication?.data,
     [loanApplication?.data]
@@ -218,9 +222,9 @@ const LoanApplication = () => {
                           {header.isPlaceholder
                             ? null
                             : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                         </Th>
                       ))}
                     </Tr>
@@ -242,7 +246,7 @@ const LoanApplication = () => {
                   ))}
               </Tbody>
             </Table>
-            <Pagination meta={tableData} setPageCount={setPageCount} />
+            <Pagination meta={tableLinks} setPageCount={setPageCount} />
           </TableContainer>
         )}
       </div>
