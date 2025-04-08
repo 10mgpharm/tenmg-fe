@@ -1,6 +1,7 @@
 "use client";
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from '@chakra-ui/react'
 import TransactionTable from './TransactionTable';
+import { WalletData } from '@/types';
 
 const transactions = [
     {name: "Chidi Victor", email: "chidivictor@gmail.com", brand: "Global Pentazocine", quantity: "100", price: "#50,000", dateOfPurchase: "Jan 6, 2022", paymentMethod: "Cash", status: "Pending"},
@@ -11,10 +12,12 @@ const transactions = [
     {name: "Chidi Victor", email: "chidivictor@gmail.com", brand: "Global Pentazocine", quantity: "100", price: "#50,000", dateOfPurchase: "Jan 6, 2022", paymentMethod: "Cash", status: "Completed"},
     {name: "Chidi Victor", email: "chidivictor@gmail.com", brand: "Synthetic opioids", quantity: "100", price: "#50,000", dateOfPurchase: "Jan 6, 2022", paymentMethod: "Cash", status: "Completed"},
 ]
-const Transaction = () => {
+
+const Transaction = ({data}: {data: WalletData[]}) => {
 
     const completeTransaction = transactions.filter((item) => item.status === "Completed") 
     const pendingTransaction = transactions.filter((item) => item.status === "Pending");
+    console.log(data)
 
   return (
     <div>

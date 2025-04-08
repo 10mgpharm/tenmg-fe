@@ -2,7 +2,7 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { CiFilter, CiSearch } from "react-icons/ci"
 import Transaction from "../_components/Transaction"
 
-const TransactionUI = () => {
+const TransactionUI = ({data}: any) => {
   return (
     <div className="p-8">
         <div className="flex items-center gap-3">
@@ -27,7 +27,7 @@ const TransactionUI = () => {
             </div>
         </div>
         <div className="mt-4">
-            <Transaction />
+            <Transaction data={data} />
         </div>
     </div>
   )
