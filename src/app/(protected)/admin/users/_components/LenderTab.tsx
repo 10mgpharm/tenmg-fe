@@ -2,7 +2,7 @@
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 import {
-    Button,
+  Button,
   FormControl,
   FormLabel,
   Stack,
@@ -53,6 +53,7 @@ const LenderTab = ({
   globalFilter,
   setGlobalFilter,
   fetchTeamUser,
+  userType,
 }: {
   data: MemberDataProp;
   isLoading: boolean;
@@ -61,6 +62,7 @@ const LenderTab = ({
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   fetchTeamUser: (type: string, pageCount: number) => void;
+  userType?: "SUPPLIERS" | "VENDOR" | "PHARMACIES" | "LENDERS";
 }) => {
   const [userId, setUserId] = useState<number>();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -72,9 +74,9 @@ const LenderTab = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
-      onOpen: onOpenDelete,
-      isOpen: isOpenDelete,
-      onClose: onCloseDelete,
+    onOpen: onOpenDelete,
+    isOpen: isOpenDelete,
+    onClose: onCloseDelete,
   } = useDisclosure();
 
   const {
@@ -89,9 +91,9 @@ const LenderTab = ({
 
   const handleDeleteModal = useCallback(
     (id: any) => {
-    const numericId = Number(id);
-    setUserId(numericId);
-    onOpenDelete();
+      const numericId = Number(id);
+      setUserId(numericId);
+      onOpenDelete();
     },
     [onOpenDelete]
   );
@@ -143,47 +145,48 @@ const LenderTab = ({
   const renderedColumn = useMemo(
     () =>
       ColumsLenderFN(
-      handleDeleteModal,
-      pageCount,
-      15,
-      handleViewModal,
-      handleOpenModal
-    ),
+        handleDeleteModal,
+        pageCount,
+        15,
+        handleViewModal,
+        handleOpenModal,
+        userType
+      ),
     [handleDeleteModal, pageCount]
   );
 
   const table = useReactTable({
-      data: records,
-      columns: renderedColumn,
-      onSortingChange: setSorting,
-      state: {
+    data: records,
+    columns: renderedColumn,
+    onSortingChange: setSorting,
+    state: {
       sorting,
       columnVisibility,
       columnOrder,
       rowSelection,
       globalFilter,
-      },
-      manualFiltering: true,
-      onGlobalFilterChange: setGlobalFilter,
-      enableRowSelection: true,
-      onRowSelectionChange: setRowSelection,
-      onColumnVisibilityChange: setColumnVisibility,
-      onColumnOrderChange: setColumnOrder,
-      getCoreRowModel: getCoreRowModel(),
-      getSortedRowModel: getSortedRowModel(),
+    },
+    manualFiltering: true,
+    onGlobalFilterChange: setGlobalFilter,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   const handleRemove = async () => {
     setIsLoadingAction(true);
     try {
       const response = await requestClient({ token }).delete(
-      `admin/users/${userId}`
+        `admin/users/${userId}`
       );
 
       if (response.status === 200) {
-      toast.success(response.data.message);
-      onCloseDelete();
-      fetchTeamUser("lender", 1);
+        toast.success(response.data.message);
+        onCloseDelete();
+        fetchTeamUser("lender", 1);
       }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
@@ -191,7 +194,7 @@ const LenderTab = ({
     } finally {
       setIsLoadingAction(false);
     }
-  }
+  };
 
   return (
     <div className="">
@@ -241,28 +244,24 @@ const LenderTab = ({
           </Table>
           <Pagination meta={data?.meta} setPageCount={setPageCount} />
         </TableContainer>
-    )}
+      )}
 
-  <ConfirmationModal
-    isOpen={isOpen}
-    onClose={onClose}
-    title={"User"}
-    actionType={actionType}
-    onConfirm={() => handleStatusToggle(actionType)}
-  />
-  <ViewUserModal
-    isOpen={isOpenView}
-    onClose={onCloseView}
-    id={userId}
-  />
-  <DeleteModal
-    isOpen={isOpenDelete}
-    onClose={onCloseDelete}
-    title={"User"}
-    handleRequest={handleRemove}
-    isLoading={isLoadingAction}
-  />
-  </div>
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={"User"}
+        actionType={actionType}
+        onConfirm={() => handleStatusToggle(actionType)}
+      />
+      <ViewUserModal isOpen={isOpenView} onClose={onCloseView} id={userId} />
+      <DeleteModal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        title={"User"}
+        handleRequest={handleRemove}
+        isLoading={isLoadingAction}
+      />
+    </div>
   );
 };
 
