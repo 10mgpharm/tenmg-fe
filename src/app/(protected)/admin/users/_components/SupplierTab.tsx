@@ -49,6 +49,7 @@ const SupplierTab = ({
   globalFilter,
   setGlobalFilter,
   fetchTeamUser,
+  userType,
 }: {
   data: MemberDataProp;
   type: string;
@@ -58,6 +59,7 @@ const SupplierTab = ({
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   fetchTeamUser: (type: string, pageCount: number) => void;
+  userType?: "SUPPLIERS" | "VENDOR" | "PHARMACIES" | "LENDERS";
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -180,9 +182,18 @@ const SupplierTab = ({
         pageCount,
         15,
         handleOpenModal,
-        handleViewModal
+        handleViewModal,
+        userType
       ),
-    [handleDeleteModal, handleOpenModal, onOpen, onOpenDeactivate, pageCount, handleViewModal]
+    [
+      handleDeleteModal,
+      handleOpenModal,
+      onOpen,
+      onOpenDeactivate,
+      pageCount,
+      handleViewModal,
+      userType,
+    ]
   );
 
   const table = useReactTable({
@@ -256,11 +267,7 @@ const SupplierTab = ({
         </TableContainer>
       )}
 
-      <ViewUserModal
-        isOpen={isOpenView}
-        onClose={onCloseView}
-        id={userId}
-      />
+      <ViewUserModal isOpen={isOpenView} onClose={onCloseView} id={userId} />
 
       <ConfirmationModal
         isOpen={isOpen}
