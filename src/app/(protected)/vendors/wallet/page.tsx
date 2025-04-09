@@ -14,10 +14,10 @@ const Wallets = () => {
           Loan Wallet
         </h3>
 
-        <TimeLineSelector
+        {/* <TimeLineSelector
           selectedTimeLine={selectedTimeLine}
           setSelectedTimeLine={setSelectedTimeLine}
-        />
+        /> */}
       </div>
 
       <div>
