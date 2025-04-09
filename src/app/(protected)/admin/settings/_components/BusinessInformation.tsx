@@ -34,7 +34,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   const [isInfoLoading, setIsInfoLoading] = useState<boolean>(false);
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
-
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
 
@@ -94,6 +94,31 @@ const BusinessInformation = ({ user }: { user?: User }) => {
     if (sessionData?.user?.token) fetchUser();
   }, [sessionData?.user?.token, setValue]);
 
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      setIsLoading(true);
+      try {
+        const token = sessionData?.user?.token;
+        if (!token) {
+          setIsAdmin(false);
+          return;
+        }
+
+        const response = await requestClient({ token: token }).get(
+          "/account/profile"
+        );
+        setIsAdmin(response?.data?.data?.role === "ADMIN");
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+        setIsAdmin(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserRole();
+  }, [sessionData?.user?.token]);
+
   const onSubmit: SubmitHandler<IFormInput> = async (value) => {
     if (!isMainAdmin) return; // Prevent submission if not main admin
 
@@ -131,7 +156,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled
+                isDisabled={!isAdmin}
                 placeholder="Enter business name"
                 {...register("businessName")}
               />
@@ -143,7 +168,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled={!isMainAdmin}
+                isDisabled={!isAdmin}
                 placeholder="Enter contact name"
                 {...register("contactPerson")}
               />
@@ -163,7 +188,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
                 </InputLeftElement>
                 <Input
                   type="email"
-                  isDisabled={!isMainAdmin}
+                  isDisabled={!isAdmin}
                   placeholder="Enter business email"
                   pl={10}
                   {...register("contactEmail")}
@@ -179,7 +204,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="number"
-                isDisabled={!isMainAdmin}
+                isDisabled={!isAdmin}
                 placeholder="Enter phone number"
                 {...register("contactPhone")}
               />
@@ -195,7 +220,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled={!isMainAdmin}
+                isDisabled={!isAdmin}
                 placeholder="Enter business address"
                 {...register("businessAddress")}
               />
@@ -206,7 +231,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled={!isMainAdmin}
+                isDisabled={!isAdmin}
                 placeholder="Enter position"
                 {...register("contactPersonPosition")}
               />
@@ -214,7 +239,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
           </HStack>
         </Skeleton>
 
-        {isMainAdmin && (
+        {isAdmin && (
           <Skeleton isLoaded={!isInfoLoading}>
             <HStack
               justify={"center"}

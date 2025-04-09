@@ -9,7 +9,7 @@ import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
 
 // Define which tabs are admin-only
-const adminOnlyTabs = ["API Management", "Members", "Business Information"];
+const adminOnlyTabs = ["API Management", "Members"];
 
 const tabs = [
   { label: "General Settings", href: "/admin/settings/general_settings" },
