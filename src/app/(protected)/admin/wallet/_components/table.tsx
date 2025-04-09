@@ -41,7 +41,7 @@ const WalletTable = ({
 }: {
   data: any;
   type: string;
-  walletType: "product_wallet" | "loan_wallet";
+  walletType?: "product_wallet" | "loan_wallet";
   hasPagination?: boolean;
   metaData?: {
     links: any;

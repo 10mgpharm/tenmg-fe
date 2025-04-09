@@ -59,7 +59,7 @@ const GeneralSettings = () => {
       });
       const { data }: ResponseDto<User> = response.data;
 
-      setValue("role", data.role);
+      // const data = response.data.data;
 
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -99,6 +99,7 @@ const GeneralSettings = () => {
     if (sessionData) {
       setValue("name", sessionData.user.name, { shouldValidate: true });
       setValue("email", sessionData.user.email, { shouldValidate: true });
+      setValue("role", sessionData.user.role); // Add this line
     }
   }, [sessionData, setValue]);
 

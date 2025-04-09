@@ -17,11 +17,11 @@ import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import SearchInput from "../../vendors/_components/SearchInput";
 import Link from "next/link";
-
 interface CountProps {
     active: number;
     total: number;
     inactive: number;
+    expired: number;
 }
 
 const Page = () => {
@@ -123,7 +123,7 @@ const Page = () => {
                     <div className='flex items-center gap-3'>
                         <Text>Expired</Text>
                         <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {0}
+                            {counts?.expired}
                         </p>
                     </div>
                 </Tab>

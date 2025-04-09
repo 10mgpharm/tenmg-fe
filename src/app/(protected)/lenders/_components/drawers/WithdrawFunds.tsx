@@ -107,7 +107,7 @@ const WithdrawFunds = ({
       isOpen={isOpen}
       onClose={handleClose}
       title="Withdraw Funds"
-      description="Enter an amount for funds to be withdrawn to"
+      description="Funds can only be withdrawn from your investment wallet, you cannot withdraw more than your investment wallet balance."
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-5 text-gray mb-10">

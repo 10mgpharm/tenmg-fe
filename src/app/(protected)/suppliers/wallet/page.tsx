@@ -16,10 +16,24 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, WalletResponseData } from "@/types";
 
+interface WalletProps {
+  currentBalance: string;
+  previousBalance: string;
+  bankAccount: {
+    accountName: string;
+    accountNumber: string;
+    active: number
+    bankCode: string;
+    bankName: string;
+    id: number;
+  }
+}
+
 const Wallet = () => {
 
   const [loading, setLoading] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
+  const [walletBalance, setWalletBalance] = useState<WalletProps>();
   const [transactions, setTransactions] = useState<WalletResponseData>();
   const hasAccountNumber = false;
 
@@ -39,6 +53,22 @@ const Wallet = () => {
     onClose: onCloseOTP,
   } = useDisclosure();
 
+  const fetchingWallet = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/supplier/wallet`
+      );
+      if (response.status === 200) {
+        setWalletBalance(response?.data?.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token]);
+
   const fetchingTransactions = useCallback(async () => {
     setLoading(true);
     try {
@@ -55,26 +85,11 @@ const Wallet = () => {
     }
   }, [token]);
 
-  const genetateOTP = useCallback(async () => {
-    try {
-      const response = await requestClient({ token: token }).post(
-        `/resend-otp`,
-        {
-          "type": "SUPPLIER_ADD_BANK_ACCOUNT"
-        }
-      );
-      if (response.status === 200) {
-        console.log(response?.data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  },[token]);
-
   useEffect(() => {
     if(!token) return;
     fetchingTransactions();
-  }, [token]);
+    fetchingWallet();
+  }, [token, fetchingTransactions, fetchingWallet]);
 
   return (
     <div className="p-8">
@@ -97,7 +112,7 @@ const Wallet = () => {
                 </button>
               </div>
               <p className="font-semibold text-2xl text-gray-700 mt-3">
-                {showBalance ? "₦32,439,390.00" : "******"}
+                {showBalance ? `₦${walletBalance?.currentBalance}` : "******"}
               </p>
               <button
                 onClick={onOpenWithdraw}
@@ -108,21 +123,21 @@ const Wallet = () => {
             </div>
             <Image src={drugImage} alt="" className="-ml-10" />
           </div>
-          {hasAccountNumber ? (
+          {walletBalance?.bankAccount ? (
             <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
               <div className="flex items-center justify-between">
                 <div className="p-1 rounded-full bg-white">
                   <p className="text-gray-600 text-sm font-semibold">
-                    Chidi Victor
+                    {walletBalance?.bankAccount?.accountName}
                   </p>
                 </div>
                 <div className="p-1 rounded-full bg-white">
-                  <p className="text-gray-600 text-sm font-semibold">GT Bank</p>
+                  <p className="text-gray-600 text-sm font-semibold">{walletBalance?.bankAccount?.bankName}</p>
                 </div>
               </div>
               <div className="text-gray-100 mt-8">
                 <p className="text-sm mb-2">Payout Account</p>
-                <h2 className="text-xl font-semibold">12345***7890</h2>
+                <h2 className="text-xl font-semibold">{walletBalance?.bankAccount?.accountNumber}</h2>
               </div>
             </div>
           ) : (
@@ -167,7 +182,7 @@ const Wallet = () => {
             </div>
             ) : 
             <div className="mt-5">
-              <Transaction />
+              <Transaction data={transactions?.data} />
             </div>
           }
         </div>
