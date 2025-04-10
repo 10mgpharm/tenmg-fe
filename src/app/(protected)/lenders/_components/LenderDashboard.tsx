@@ -315,7 +315,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                   isInvestment={true}
                   loanAmount="₦125,000"
                   onInvestmentClick={() => {
-                    console.log("Investment clicked");
+                    router.push("/lenders/my-earnings");
                   }}
                 />
               </div>
@@ -346,7 +346,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 isInvestment={true}
                 loanAmount={formattedLedgerBalance}
                 onInvestmentClick={() => {
-                  console.log("Investment clicked");
+                  router.push("/lenders/my-earnings");
                 }}
               />
             </div>
