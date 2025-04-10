@@ -239,14 +239,8 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     useMemo(() => {
       const wallet = lenderData?.wallets || [];
 
-      const totalBal = wallet.length
-        ? wallet
-            .reduce(
-              (sum, item) => sum + parseFloat(item?.currentBalance || "0"),
-              0
-            )
-            .toFixed(2)
-        : "0.00";
+      const totalBal = wallet?.find((item) => item.type === "deposit")?.currentBalance ||
+      "0.00";
 
       const investmentBal =
         wallet?.find((item) => item.type === "investment")?.currentBalance ||
@@ -315,7 +309,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                   isInvestment={true}
                   loanAmount="₦125,000"
                   onInvestmentClick={() => {
-                    console.log("Investment clicked");
+                    router.push("/lenders/my-earnings");
                   }}
                 />
               </div>
@@ -346,7 +340,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 isInvestment={true}
                 loanAmount={formattedLedgerBalance}
                 onInvestmentClick={() => {
-                  console.log("Investment clicked");
+                  router.push("/lenders/my-earnings");
                 }}
               />
             </div>

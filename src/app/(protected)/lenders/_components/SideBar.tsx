@@ -44,12 +44,7 @@ const navigation = [
     icon: BsGraphUpArrow,
     current: false,
   },
-  {
-    name: "My Earnings",
-    href: "/lenders/my-earnings",
-    icon: PiMoneyWavyBold,
-    current: false,
-  },
+
   {
     name: "Messages",
     href: "/lenders/messages",

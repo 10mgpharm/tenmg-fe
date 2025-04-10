@@ -11,6 +11,7 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { transactionData } from "@/data/mockdata";
 import DataTable from "./table";
@@ -19,6 +20,9 @@ import { Completed_column } from "./colunms/completed_column";
 import { Transaction_column } from "./colunms/transaction_column";
 import TransactionDetails from "./transactionDetails";
 import InitiatePayout from "./initiate_payout";
+import AccoundDetailsCard from "./AccoundDetailsCard";
+import OTPModal from "@/app/(protected)/suppliers/wallet/_components/OTPModal";
+import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/WithdrawFunds";
 
 const LoanWallet = () => {
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
@@ -29,36 +33,48 @@ const LoanWallet = () => {
   const [openPayout, setOpenPayout] = React.useState(false);
   const [openCompleted, setOpenCompleted] = React.useState(false);
 
+  const {
+    isOpen: isOpenWithdraw,
+    onOpen: onOpenWithdraw,
+    onClose: onCloseWithdraw,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenOTP,
+    onOpen: onOpenOTP,
+    onClose: onCloseOTP,
+  } = useDisclosure();
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 ">
         <OverviewCard
-          title=" Total Outgoing Loan"
+          title=" Credit Voucher"
           value="₦5,600"
           fromColor="from-[#53389E]"
           toColor="to-[#7F56D9]"
           image={totalPattern}
         />
         <OverviewCard
-          title="Loan Repayment Amount
-"
-          value="2,600"
+          title="Available Balance"
+          value="₦2,600"
           fromColor="from-[#DC6803]"
           toColor="to-[#DC6803]"
           image={orderPattern}
+          func_btn="Withdraw Funds"
+          func={() => setOpenPayout(true)}
         />
-        <OverviewCard
-          title="Total Payout
-
-"
+        {/* <OverviewCard
+          title="Total Payout"
           value="₦50,000"
           fromColor="from-[#E31B54]"
           toColor="to-[#E31B54]"
           image={productPattern}
-        />
+        /> */}
+        <AccoundDetailsCard />
       </div>
 
-      <div className="flex items-center justify-between mt-5">
+      <div className="flex items-center justify-between my-5">
         <h3 className="font-medium text-[18px] ">Transactions</h3>
 
         <Link
@@ -69,86 +85,16 @@ const LoanWallet = () => {
         </Link>
       </div>
 
-      <Tabs variant={"unstyled"} className="mt-5">
-        <TabList className="flex items-center gap-3 max-sm:overflow-x-scroll no-scrollbar">
-          <Tab
-            _selected={{ color: "white", bg: "#1A70B8" }}
-            className="bg-gray-100  text-[15px] text-gray-700 rounded-lg"
-          >
-            <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Loan Repayment History</Text>
-              <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {history?.length}
-              </p>
-            </div>
-          </Tab>
-
-          <Tab
-            _selected={{ color: "white", bg: "#1A70B8" }}
-            className="bg-gray-100  text-[15px] text-gray-700 rounded-lg"
-          >
-            <div className="flex items-center gap-3">
-              <Text className="text-nowrap"> Awaiting Payout</Text>
-              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                {awaiting?.length}
-              </p>
-            </div>
-          </Tab>
-
-          <Tab
-            _selected={{ color: "white", bg: "#1A70B8" }}
-            className="bg-gray-100  text-[15px] text-gray-700 rounded-lg"
-          >
-            <div className="flex items-center gap-3">
-              <Text className="text-nowrap"> Completed Payout</Text>
-              <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                {completed?.length}
-              </p>
-            </div>
-          </Tab>
-        </TabList>
-
-        <TabPanels className="mt-3">
-          <TabPanel className="!p-0">
-            <DataTable
-              data={history}
-              column={Awaiting_column(
-                setOpenDetails,
-                setOpenPayout,
-                setOpenCompleted
-              )}
-              hasPagination={false}
-              isLoading={false}
-            />
-          </TabPanel>
-
-          <TabPanel className="!p-0">
-            <DataTable
-              data={awaiting}
-              column={Transaction_column(
-                setOpenDetails,
-                setOpenPayout,
-                setOpenCompleted
-              )}
-              hasPagination={false}
-              isLoading={false}
-            />
-          </TabPanel>
-
-          <TabPanel className="!p-0">
-            <DataTable
-              data={completed}
-              column={Completed_column(
-                setOpenDetails,
-                setOpenPayout,
-                setOpenCompleted
-              )}
-              hasPagination={false}
-              isLoading={false}
-            />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <DataTable
+        data={history}
+        column={Awaiting_column(
+          setOpenDetails,
+          setOpenPayout,
+          setOpenCompleted
+        )}
+        hasPagination={false}
+        isLoading={false}
+      />
 
       {/* Side sheets */}
       {openDetails && (
@@ -164,6 +110,14 @@ const LoanWallet = () => {
           onClose={() => setOpenPayout(false)}
         />
       )}
+
+      <WithdrawFunds
+        isOpen={isOpenWithdraw}
+        onClose={onCloseWithdraw}
+        otpOpen={onOpenOTP}
+      />
+
+      <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
     </div>
   );
 };

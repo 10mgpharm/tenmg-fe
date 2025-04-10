@@ -1,7 +1,7 @@
 "use client";
 
-import { Flex, Spinner, Text } from "@chakra-ui/react";
-import { ArrowLeft } from "lucide-react";
+import { Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
+import { ArrowLeft, ListFilter } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import OverviewCard from "../../../wallet/_components/OverviewCard";
@@ -10,13 +10,32 @@ import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { transactionData } from "@/data/mockdata";
-import WalletTable from "../../../wallet/_components/table";
+import WalletTable from "../../_components/WalletTable";
+import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
+import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
+import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
 const Wallet = () => {
   const [isLoading, setIsloading] = useState(false);
   const router = useRouter();
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [searchValue, setSearchValue] = useState<string>("");
   const [pagecount, setPageCount] = useState(1);
+  const [status, setStatus] = useState<string>("");
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
+
+  const filterOptions = [
+    { option: "AWAITING", value: "AWAITING" },
+    { option: "COMPLETED", value: "COMPLETED" },
+    { option: "PENDING", value: "PENDING" },
+  ];
 
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
   const completed = transactionData.filter((item) => item.type === "Completed");
@@ -30,6 +49,23 @@ const Wallet = () => {
     currentPage: 1,
     firstPageUrl: "",
     lastPageUrl: "",
+  };
+
+  const applyFilters = (filters: IFilterInput) => {
+    console.log(
+      filters,
+      `&dateFrom=${filters.startDate.toISOString().split("T")[0]}`
+    );
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
   };
 
   return (
@@ -81,83 +117,42 @@ const Wallet = () => {
               />
             </div>
 
-            <Tabs variant={"unstyled"} className="mt-7">
-              <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
-                <Tab
-                  _selected={{ color: "white", bg: "#1A70B8" }}
-                  className="rounded-lg text-gray-700 bg-gray-100"
+            <div className="flex items-center justify-between gap-3 pt-6 pb-4">
+              <h3 className="font-semibold text-[20px]">Transactions</h3>
+
+              <div className="flex items-center gap-2">
+                <SearchInput
+                  placeholder="Search"
+                  value={searchValue}
+                  onChange={() => setSearchValue}
+                />
+
+                <button
+                  className="border-gray-300 h-[43px]  border rounded-md px-3 cursor-pointer hover:bg-gray-100"
+                  onClick={onOpenFilter}
                 >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Awaiting Payout </Text>
-                    {/* <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                {awaiting?.length}
-              </p> */}
-                  </div>
-                </Tab>
+                  <ListFilter className="text-[16px] " />
+                </button>
+              </div>
+            </div>
 
-                <Tab
-                  _selected={{ color: "white", bg: "#1A70B8" }}
-                  className="rounded-lg text-gray-700 bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Completed Payout</Text>
-                    {/* <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                {completed?.length}
-              </p> */}
-                  </div>
-                </Tab>
-
-                <Tab
-                  _selected={{ color: "white", bg: "#1A70B8" }}
-                  className="rounded-lg text-gray-700 bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Transaction History</Text>
-                    {/* <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {history?.length}
-              </p> */}
-                  </div>
-                </Tab>
-              </TabList>
-
-              <TabPanels>
-                <TabPanel px={0}>
-                  <WalletTable
-                    data={awaiting}
-                    type="awaiting"
-                    hasPagination={true}
-                    metaData={metaData}
-                    setPageCount={setPageCount}
-                    isLoading={false}
-                  />
-                </TabPanel>
-
-                <TabPanel px={0}>
-                  <WalletTable
-                    data={completed}
-                    type="completed"
-                    hasPagination={true}
-                    metaData={metaData}
-                    setPageCount={setPageCount}
-                    isLoading={false}
-                  />
-                </TabPanel>
-
-                <TabPanel px={0}>
-                  <WalletTable
-                    data={history}
-                    type="history"
-                    hasPagination={true}
-                    metaData={metaData}
-                    setPageCount={setPageCount}
-                    isLoading={false}
-                  />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+            <WalletTable
+              data={history}
+              hasPagination
+              metaData={metaData}
+              setPageCount={setPageCount}
+            />
           </div>
         )}
       </div>
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+      />
     </div>
   );
 };
