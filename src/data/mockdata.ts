@@ -37,6 +37,72 @@ export const records = [
   },
 ];
 
+export const pharmTransactionHistoryData = [
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "successful",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "pending",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "successful",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "failed",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "successful",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "pending",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "failed",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "successful",
+  },
+  {
+    id: "MG-TXN-001",
+    date: "Aug 21, 2024",
+    description: "Panadol, Paracetamol, Vitamin C",
+    amountPaid: 1000,
+    paymentStatus: "failed",
+  },
+];
+
 export const myEarningsData = [
   {
     loanId: "TG9555",
