@@ -10,7 +10,8 @@ import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { transactionData } from "@/data/mockdata";
-import WalletTable from "../../../wallet/_components/table";
+import WalletTable from "../../_components/WalletTable";
+import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 const Wallet = () => {
   const [isLoading, setIsloading] = useState(false);
   const router = useRouter();
@@ -81,80 +82,22 @@ const Wallet = () => {
               />
             </div>
 
-            <Tabs variant={"unstyled"} className="mt-7">
-              <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
-                <Tab
-                  _selected={{ color: "white", bg: "#1A70B8" }}
-                  className="rounded-lg text-gray-700 bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Awaiting Payout </Text>
-                    {/* <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                {awaiting?.length}
-              </p> */}
-                  </div>
-                </Tab>
+            <div className="flex items-center justify-between gap-3 pt-6 pb-4">
+              <h3 className="font-semibold text-[20px]">Transactions</h3>
 
-                <Tab
-                  _selected={{ color: "white", bg: "#1A70B8" }}
-                  className="rounded-lg text-gray-700 bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Completed Payout</Text>
-                    {/* <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                {completed?.length}
-              </p> */}
-                  </div>
-                </Tab>
+              <SearchInput
+                placeholder="Search"
+                value={searchValue}
+                onChange={() => setSearchValue}
+              />
+            </div>
 
-                <Tab
-                  _selected={{ color: "white", bg: "#1A70B8" }}
-                  className="rounded-lg text-gray-700 bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Transaction History</Text>
-                    {/* <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {history?.length}
-              </p> */}
-                  </div>
-                </Tab>
-              </TabList>
-
-              <TabPanels>
-                <TabPanel px={0}>
-                  <WalletTable
-                    data={awaiting}
-                    type="awaiting"
-                    hasPagination={true}
-                    metaData={metaData}
-                    setPageCount={setPageCount}
-                    isLoading={false}
-                  />
-                </TabPanel>
-
-                <TabPanel px={0}>
-                  <WalletTable
-                    data={completed}
-                    type="completed"
-                    hasPagination={true}
-                    metaData={metaData}
-                    setPageCount={setPageCount}
-                    isLoading={false}
-                  />
-                </TabPanel>
-
-                <TabPanel px={0}>
-                  <WalletTable
-                    data={history}
-                    type="history"
-                    hasPagination={true}
-                    metaData={metaData}
-                    setPageCount={setPageCount}
-                    isLoading={false}
-                  />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+            <WalletTable
+              data={history}
+              hasPagination
+              metaData={metaData}
+              setPageCount={setPageCount}
+            />
           </div>
         )}
       </div>
