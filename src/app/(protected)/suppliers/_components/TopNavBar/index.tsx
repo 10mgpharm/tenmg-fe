@@ -44,8 +44,6 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
     setNotificationCount(res.data?.data?.count)
   }, [token]);
 
-  console.log("data?.user?.entityType", data?.user?.entityType)
-
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.register('/firebase-messaging-sw.js')
