@@ -27,9 +27,9 @@ import LenderTab from "./_components/LenderTab";
 
 const Users = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [type, setType] = useState<"supplier" | "vendor" | "pharmacy" | "lender">(
-    "supplier"
-  );
+  const [type, setType] = useState<
+    "supplier" | "vendor" | "pharmacy" | "lender"
+  >("supplier");
   const {
     isOpen: isOpenPharm,
     onClose: onClosePharm,
@@ -125,22 +125,22 @@ const Users = () => {
       fetchTeamUser("pharmacy", 1);
       setVendorData(null);
       setSupplierData(null);
-      setLenderData(null)
+      setLenderData(null);
     } else if (index === 2) {
       fetchTeamUser("vendor", 1);
       setSupplierData(null);
       setPharmData(null);
-      setLenderData(null)
-    } else if (index === 3){
+      setLenderData(null);
+    } else if (index === 3) {
       fetchTeamUser("lender", 1);
       setSupplierData(null);
       setPharmData(null);
-      setVendorData(null)
+      setVendorData(null);
     } else {
       fetchTeamUser("supplier", 1);
       setVendorData(null);
       setPharmData(null);
-      setLenderData(null)
+      setLenderData(null);
     }
   };
 
@@ -288,6 +288,7 @@ const Users = () => {
               setPageCount={setPageCount}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
+              userType={"SUPPLIERS"}
             />
           </TabPanel>
           <TabPanel>
@@ -300,6 +301,7 @@ const Users = () => {
               setPageCount={setPageCount}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
+              userType={"PHARMACIES"}
             />
           </TabPanel>
           <TabPanel>
@@ -312,6 +314,7 @@ const Users = () => {
               setPageCount={setPageCount}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
+              userType={"VENDOR"}
             />
           </TabPanel>
           <TabPanel>
@@ -323,6 +326,7 @@ const Users = () => {
               setPageCount={setPageCount}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
+              userType="LENDERS"
             />
           </TabPanel>
         </TabPanels>

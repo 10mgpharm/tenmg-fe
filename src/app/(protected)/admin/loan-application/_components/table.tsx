@@ -108,6 +108,11 @@ const DataTable = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
+  console.log("loanApplication", loanApplication)
+  const tableLinks = useMemo(
+    () => loanApplication?.links,
+    [loanApplication?.links]
+  );
   const tableData = useMemo(
     () => loanApplication?.data,
     [loanApplication?.data]
@@ -201,9 +206,9 @@ const DataTable = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>
@@ -224,7 +229,7 @@ const DataTable = () => {
                 ))}
               </Tbody>
             </Table>
-            <Pagination meta={tableData} setPageCount={setPageCount} />
+            <Pagination meta={tableLinks} setPageCount={setPageCount} />
           </TableContainer>
         )}
       </div>

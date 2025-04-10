@@ -44,6 +44,8 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
     setNotificationCount(res.data?.data?.count)
   }, [token]);
 
+  console.log("data?.user?.entityType", data?.user?.entityType)
+
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.register('/firebase-messaging-sw.js')
@@ -262,7 +264,7 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
             </MenuItems>
           </Menu>
 
-          {data?.user?.entityType === "ADMIN" || data?.user?.entityType === "SUPPLIER" && <div className=" lg:hidden p-2 text-gray-700 w-fit" onClick={onMenuClick}>
+          {(data?.user?.entityType === "ADMIN" || data?.user?.entityType === "SUPPLIER") && <div className=" lg:hidden p-2 text-gray-700 w-fit" onClick={onMenuClick}>
             <Bars3Icon className="w-6" />
             <span className="sr-only">Open sidebar</span>
           </div>}
