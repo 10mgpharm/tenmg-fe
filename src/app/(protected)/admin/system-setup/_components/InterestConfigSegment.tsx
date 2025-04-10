@@ -56,7 +56,7 @@ const InterestConfigSegment = () => {
           isInvalid={!!errors.productCommission?.message}
           className="w-full max-w-[400px]"
         >
-          <FormLabel>Product Commission(%)</FormLabel>
+          <FormLabel>Product Commission (%)</FormLabel>
           <Input
             type={"number"}
             placeholder="Enter 10mg commission on each product"

@@ -67,7 +67,7 @@ const LoanConfigSegment = () => {
           isInvalid={!!errors.lenderInterest?.message}
           className="w-full max-w-[400px]"
         >
-          <FormLabel>Lenders Interest</FormLabel>
+          <FormLabel>Lenders Interest (%)</FormLabel>
           <Input
             type={"number"}
             placeholder="Enter lenders interest"
@@ -86,7 +86,7 @@ const LoanConfigSegment = () => {
           isInvalid={!!errors.mgInterest?.message}
           className="w-full max-w-[400px]"
         >
-          <FormLabel>10mg Interest</FormLabel>
+          <FormLabel>10mg Interest (%)</FormLabel>
           <Input
             type={"number"}
             placeholder="Enter 10mg commission on each product"
@@ -102,7 +102,7 @@ const LoanConfigSegment = () => {
         </FormControl>
 
         <FormControl className="w-full max-w-[400px]">
-          <FormLabel>Total Interest On Each Loan</FormLabel>
+          <FormLabel>Total Interest On Each Loan (%)</FormLabel>
           <Input
             type={"text"}
             disabled
