@@ -90,7 +90,7 @@ export function MyEarningsColumn(
         return (
           <div className="">
             <p
-              className="cursor-pointer"
+              className="cursor-pointer text-primary-600 font-medium"
               onClick={() => {
                 onOpenDetails();
                 setSelectedUserId(info.row.original.id);
