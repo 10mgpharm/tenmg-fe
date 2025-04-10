@@ -25,8 +25,13 @@ import { toast } from "react-toastify";
 import { messaging, onMessage } from "@/lib/firebase";
 import { requestPermission } from "@/lib/requestPermission";
 
-const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => void }) => {
-
+const TopNavBar = ({
+  route,
+  onMenuClick,
+}: {
+  route: string;
+  onMenuClick?: () => void;
+}) => {
   const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;
@@ -34,27 +39,27 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
 
   const [notifications, setNotifications] = useState<any[]>([]);
   const [notificationCount, setNotificationCount] = useState<number>(0);
-
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchingCounts = useCallback(async () => {
-    const res = await requestClient({ token: token }).get(
+    const res = await requestClient({ token }).get(
       `/account/count-unread-notifications`
-    )
-    setNotificationCount(res.data?.data?.count)
+    );
+    setNotificationCount(res.data?.data?.count);
   }, [token]);
 
   useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then(function (swReg) {
-          console.log('Service Worker is registered', swReg);
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((swReg) => {
+          console.log("Service Worker is registered", swReg);
         })
-        .catch(function (error) {
-          console.error('Service Worker registration failed:', error);
+        .catch((error) => {
+          console.error("Service Worker registration failed:", error);
         });
     } else {
-      console.warn('Push messaging is not supported');
+      console.warn("Push messaging is not supported");
     }
   }, []);
 
@@ -73,11 +78,6 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
         toast(`🦄 ${payload.notification.body}!`, {
           position: "bottom-right",
           autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "dark",
         });
       });
@@ -85,57 +85,17 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
     }
   }, [messaging, token]);
 
-  const renderBusinessType = (businessType: string) => {
-    switch (businessType) {
-      case "VENDOR":
-        return (
-          <Tag
-            size="sm"
-            ml="1"
-            borderRadius={"full"}
-            color={"green.500"}
-            bgColor={"green.50"}
-          >
-            <TagLabel>{convertLetterCase(businessType)}</TagLabel>
-          </Tag>
-        );
-      case "SUPPLIER":
-        return (
-          <Tag size="sm" variant="solid" bg="green.50" color={"green.500"}>
-            {convertLetterCase(businessType)}
-          </Tag>
-        );
-      case "ADMIN":
-        return (
-          <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
-            {convertLetterCase(businessType)}
-          </Tag>
-        );
-      case "LENDER":
-        return (
-          <Tag size="sm" variant="solid" bg="blue.50" color={"blue.700"}>
-            {convertLetterCase(businessType)}
-          </Tag>
-        );
-      default:
-        return (
-          <Tag size="sm" variant="solid" colorScheme="red">
-            {businessType?.toLocaleLowerCase()}
-          </Tag>
-        );
-    }
-  };
-
   const fetchingData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await requestClient({ token }).get(
         `/account/notifications`
       );
-
       if (response.status === 200) {
         const datal = response.data?.data?.data;
-        const unreadResponses = datal?.filter((e: any) => e.readAt === null)?.slice(0, 5);
+        const unreadResponses = datal
+          ?.filter((e: any) => e.readAt === null)
+          ?.slice(0, 5);
         setNotifications(unreadResponses || []);
       }
     } catch (err: any) {
@@ -146,6 +106,56 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
     }
   }, [token]);
 
+  const renderBusinessType = (businessType: string) => {
+    switch (businessType) {
+      case "VENDOR":
+        return (
+          <Tag
+            size="sm"
+            ml="1"
+            borderRadius="full"
+            color="green.500"
+            bg="green.50"
+          >
+            <TagLabel>{convertLetterCase(businessType)}</TagLabel>
+          </Tag>
+        );
+      case "SUPPLIER":
+        return (
+          <Tag size="sm" variant="solid" bg="green.50" color="green.500">
+            {convertLetterCase(businessType)}
+          </Tag>
+        );
+      case "ADMIN":
+        return (
+          <Tag size="sm" variant="solid" bg="#E8F1F8" color="blue.700">
+            {convertLetterCase(businessType)}
+          </Tag>
+        );
+      case "LENDER":
+        return (
+          <Tag size="sm" variant="solid" bg="blue.50" color="blue.700">
+            {convertLetterCase(businessType)}
+          </Tag>
+        );
+      default:
+        return (
+          <Tag size="sm" variant="solid" colorScheme="red">
+            {businessType?.toLowerCase()}
+          </Tag>
+        );
+    }
+  };
+
+  const renderUserRole = (role?: string) => {
+    if (!role) return null;
+    return (
+      <Tag size="sm" variant="subtle" bg="gray.100" color="gray.700">
+        {convertLetterCase(role)}
+      </Tag>
+    );
+  };
+
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
@@ -153,7 +163,7 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
           <div className="hidden md:flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
             <Image
               src={Logo}
-              alt=""
+              alt="Logo"
               className="w-24 h-10 md:w-[160px] md:h-auto"
               width={75}
               height={75}
@@ -163,7 +173,7 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
         </div>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
           {data?.user?.entityType === "VENDOR" && (
-            <FormControl display="flex" alignItems="center" w={"auto"} gap={2}>
+            <FormControl display="flex" alignItems="center" w="auto" gap={2}>
               <Switch id="test-mode" />
               <FormLabel
                 htmlFor="test-mode"
@@ -175,6 +185,8 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
               </FormLabel>
             </FormControl>
           )}
+
+          {/* Notification bell */}
           <Menu as="div">
             <MenuButton
               type="button"
@@ -185,7 +197,7 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
               <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">
                 {notificationCount}
               </div>
-              <BellIcon aria-hidden="true" className="h-8 w-8" />
+              <BellIcon className="h-8 w-8" />
             </MenuButton>
             <NotificationModal
               notificationsMsgs={notifications}
@@ -195,9 +207,10 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
               fetchingCounts={fetchingCounts}
             />
           </Menu>
+
+          {/* User Avatar and dropdown */}
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">
-              <span className="sr-only">Open user menu</span>
               <Avatar
                 size="md"
                 name={data?.user?.name}
@@ -205,14 +218,14 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
               />
               <span className="hidden lg:flex lg:items-center">
                 <div className="text-left ml-4">
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     <span
                       aria-hidden="true"
                       className="text-sm font-semibold leading-6 text-gray-900"
                     >
                       {data?.user.name}
                     </span>
-                    {renderBusinessType(data?.user?.entityType)}
+                    {renderUserRole(data?.user?.role)}
                   </div>
                   <p className="text-gray-600 text-sm">
                     {data?.user?.businessName}
@@ -224,25 +237,19 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
                 />
               </span>
             </MenuButton>
-            <MenuItems
-              transition
-              className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-            >
+            <MenuItems className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition">
               <MenuItem>
                 <button
-                  className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                  className="block px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 w-full text-left"
                   onClick={() => {
-                    if (data?.user?.entityType === "SUPPLIER") {
-                      router.push("/suppliers/settings/personal_information");
-                    } else if (data?.user?.entityType === "VENDOR") {
-                      router.push("/vendors/settings/general_settings");
-                    } else if (data?.user?.entityType === "ADMIN") {
-                      router.push("/admin/settings/general_settings");
-                    } else if (data?.user?.entityType === "LENDER") {
-                      router.push("/lenders/settings/general-settings");
-                    } else {
-                      router.push("/"); // Fallback route if no entity type matches
-                    }
+                    const type = data?.user?.entityType;
+                    const routes: Record<string, string> = {
+                      SUPPLIER: "/suppliers/settings/personal_information",
+                      VENDOR: "/vendors/settings/general_settings",
+                      ADMIN: "/admin/settings/general_settings",
+                      LENDER: "/lenders/settings/general-settings",
+                    };
+                    router.push(routes[type] || "/");
                   }}
                 >
                   View Profile
@@ -250,7 +257,7 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
               </MenuItem>
               <MenuItem>
                 <button
-                  className="block px-3 py-1 text-sm leading-6 text-red-600 data-[focus]:bg-red-50"
+                  className="block px-3 py-1 text-sm text-red-600 hover:bg-red-50 w-full text-left"
                   onClick={async () => {
                     await signOut();
                     router.push("/auth/signin");
@@ -262,13 +269,18 @@ const TopNavBar = ({ route, onMenuClick }: { route: string, onMenuClick?: () => 
             </MenuItems>
           </Menu>
 
-          {data?.user?.entityType === "ADMIN" || data?.user?.entityType === "SUPPLIER" && <div className=" lg:hidden p-2 text-gray-700 w-fit" onClick={onMenuClick}>
-            <Bars3Icon className="w-6" />
-            <span className="sr-only">Open sidebar</span>
-          </div>}
+          {(data?.user?.entityType === "ADMIN" ||
+            data?.user?.entityType === "SUPPLIER") && (
+            <div
+              className="lg:hidden p-2 text-gray-700 w-fit"
+              onClick={onMenuClick}
+            >
+              <Bars3Icon className="w-6" />
+              <span className="sr-only">Open sidebar</span>
+            </div>
+          )}
         </div>
       </div>
-      {/* <Divider /> */}
     </div>
   );
 };
