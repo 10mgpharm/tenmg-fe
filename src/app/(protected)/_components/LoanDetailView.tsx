@@ -34,6 +34,8 @@ import { NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import Loader from "@/app/(protected)/admin/_components/Loader";
 import { convertDate } from "@/utils/formatDate";
+import { formatAmount } from "@/utils/formatAmount";
+import { formatAmountString } from "@/utils";
 
 const defaultTheme = extendTheme({
   components: {
@@ -58,12 +60,12 @@ const defaultTheme = extendTheme({
 interface LoanDetailViewProps {
   id: string;
   endpoint: string;
-  title?: string; 
-  subtitle?: string; 
-  columnsFn: any; 
+  title?: string;
+  subtitle?: string;
+  columnsFn: any;
   emptyStateHeading?: string;
   emptyStateContent?: string;
-  theme?: any; 
+  theme?: any;
   onBack?: () => void;
 }
 
@@ -76,7 +78,7 @@ const LoanDetailView = ({
   emptyStateHeading = "No repayment history Yet",
   emptyStateContent = "You currently have no repayment history. All repayment history will appear here.",
   theme = defaultTheme,
-  onBack
+  onBack,
 }: LoanDetailViewProps) => {
   const router = useRouter();
   const session = useSession();
@@ -91,18 +93,31 @@ const LoanDetailView = ({
   const [error, setError] = useState<string>("");
   const [data, setData] = useState<any>(null);
 
-  // Calculate loan progress based on payment status
+  const hasValidSchedule = data?.repaymentSchedule?.length > 0;
+  const totalRepaymentValue = data?.repaymentSchedule?.length;
+
   const calculateProgress = () => {
-    if (!data?.repaymentSchedule || !Array.isArray(data.repaymentSchedule) || data.repaymentSchedule.length === 0) {
+    if (!hasValidSchedule) {
       return 0;
     }
-    
-    const totalItems = data.repaymentSchedule.length;
+
     const paidItems = data.repaymentSchedule.filter(
-      (item: any) => item.paymentStatus === "PAID" || item.paymentStatus === "PARTIAL"
+      (item: any) =>
+        item.paymentStatus === "success" || item.paymentStatus === "PARTIAL"
     ).length;
-    
-    return Math.round((paidItems / totalItems) * 100);
+
+    return Math.round((paidItems / totalRepaymentValue) * 100);
+  };
+
+  const calculateRepayment = () => {
+    if (!hasValidSchedule) {
+      return 0;
+    }
+
+    return data.repaymentSchedule.reduce((total: number, item: any) => {
+      const balance = parseFloat(item.balance || 0);
+      return total + (isNaN(balance) ? 0 : balance);
+    }, 0);
   };
 
   const handleBack = () => {
@@ -160,23 +175,28 @@ const LoanDetailView = ({
 
   // Get the loan dates (using more reliable calculation)
   const getLoanDates = () => {
-    if (!data?.repaymentSchedule || !Array.isArray(data.repaymentSchedule) || data.repaymentSchedule.length === 0) {
+    if (
+      !data?.repaymentSchedule ||
+      !Array.isArray(data.repaymentSchedule) ||
+      data.repaymentSchedule.length === 0
+    ) {
       return { startDate: "N/A", endDate: "N/A" };
     }
-    
+
     // Sort the repayments by due date
     const sortedSchedule = [...data.repaymentSchedule].sort(
       (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
     );
-    
+
     const startDate = sortedSchedule[0].createdAt || sortedSchedule[0].dueDate;
     const endDate = sortedSchedule[sortedSchedule.length - 1].dueDate;
-    
+
     return { startDate, endDate };
   };
 
   const { startDate, endDate } = getLoanDates();
   const progressValue = calculateProgress();
+  const repaymentAmount = calculateRepayment();
 
   return (
     <div className="p-8">
@@ -190,10 +210,14 @@ const LoanDetailView = ({
         <>
           <Stack mt={4} gap={0.5}>
             <Text fontSize={"1.2rem"} fontWeight={600}>
-              {data?.customer?.name ? `${data.customer.name}'s ${title}` : title}
+              {data?.customer?.name
+                ? `${data.customer.name}'s ${title}`
+                : title}
             </Text>
             <Text fontSize={"15px"} color={"gray.600"}>
-              {data?.customer?.name ? subtitle.replace('the loan', `${data.customer.name}'s Loan`) : subtitle}
+              {data?.customer?.name
+                ? subtitle.replace("the loan", `${data.customer.name}'s Loan`)
+                : subtitle}
             </Text>
           </Stack>
           <Stack mt={4} className="p-5 rounded-md border bg-white">
@@ -203,7 +227,10 @@ const LoanDetailView = ({
                   Loan Amount
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
-                  ₦{data?.totalAmount || "0.00"}
+                  ₦
+                  {data?.totalAmount
+                    ? formatAmountString(data?.totalAmount)
+                    : "0.00"}
                 </Text>
               </Stack>
               <Stack>
@@ -211,7 +238,10 @@ const LoanDetailView = ({
                   Loan Interest
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
-                  ₦{data?.interestAmount || "0.00"}
+                  ₦
+                  {data?.interestAmount
+                    ? formatAmountString(data?.interestAmount)
+                    : "0.00"}
                 </Text>
               </Stack>
               <Stack>
@@ -219,7 +249,7 @@ const LoanDetailView = ({
                   Total Repayment
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
-                  ₦{data?.totalRepaymentAmount || data?.interestAmount || "0.00"}
+                  ₦{formatAmountString(repaymentAmount) || "0.00"}
                 </Text>
               </Stack>
               <Stack>
@@ -235,7 +265,9 @@ const LoanDetailView = ({
                   Start Date
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
-                  {startDate && startDate !== "N/A" ? convertDate(startDate) : "N/A"}
+                  {startDate && startDate !== "N/A"
+                    ? convertDate(startDate)
+                    : "N/A"}
                 </Text>
               </Stack>
               <Stack>
@@ -254,12 +286,12 @@ const LoanDetailView = ({
               </Text>
               <ThemeProvider theme={theme}>
                 <Progress h={"34px"} value={progressValue} pos={"relative"}>
-                  <chakra.span className="text-white text-center text-sm absolute top-2 inset-x-0">
-                    {progressValue === 100 
-                      ? "Loan Fully Repaid" 
-                      : progressValue === 0 
-                        ? "Repayment Not Started" 
-                        : `Repayment in Progress - ${progressValue}% Complete`}
+                  <chakra.span className="text-black text-center text-sm absolute top-2 inset-x-0">
+                    {progressValue === 100
+                      ? "Loan Fully Repaid"
+                      : progressValue === 0
+                      ? "Repayment Not Started"
+                      : `Repayment in Progress - ${progressValue}% Complete`}
                   </chakra.span>
                 </Progress>
               </ThemeProvider>
@@ -270,7 +302,8 @@ const LoanDetailView = ({
               Repayment History
             </Text>
             <div className="">
-              {!data?.repaymentSchedule || data.repaymentSchedule.length === 0 ? (
+              {!data?.repaymentSchedule ||
+              data.repaymentSchedule.length === 0 ? (
                 <EmptyOrder
                   heading={emptyStateHeading}
                   content={emptyStateContent}
