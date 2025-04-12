@@ -45,6 +45,7 @@ export const authOptions: NextAuthOptions = {
             emailVerifiedAt: data.emailVerifiedAt,
             token: accessToken.token,
             entityType: data.entityType,
+            role: data.role,
             businessName: data.businessName,
             businessStatus: data.businessStatus,
             owner: data.owner,
@@ -108,6 +109,7 @@ export const authOptions: NextAuthOptions = {
             emailVerifiedAt: existingUser.emailVerifiedAt,
             token: accessToken.token,
             entityType: existingUser.entityType,
+            role: existingUser.role,
             businessName: existingUser.businessName,
             businessStatus: existingUser.businessStatus,
             owner: existingUser.owner,
@@ -123,6 +125,7 @@ export const authOptions: NextAuthOptions = {
         params.token.emailVerifiedAt = params.user?.emailVerifiedAt;
 
         params.token.entityType = params.user?.entityType;
+        params.token.role = params.user?.role;
         params.token.businessName = params.user?.businessName;
         params.token.businessStatus = params.user?.businessStatus;
 
