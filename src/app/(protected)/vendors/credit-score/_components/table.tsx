@@ -50,7 +50,10 @@ export function ColumnsCreditScoreFN() {
       header: () => <p>Credit Score</p>,
       cell: (info) => (
         <div>
-          <p>{info.row.original?.creditScoreResult?.scoreValue} / {info.row.original.creditScoreResult.scoreTotal}</p>
+          <p>
+            {info.row.original?.creditScoreResult?.scoreValue} /{" "}
+            {info.row.original.creditScoreResult.scoreTotal}
+          </p>
         </div>
       ),
     }),
@@ -66,27 +69,7 @@ export function ColumnsCreditScoreFN() {
         </div>
       ),
     }),
-    columnHelper.accessor("customer.active", {
-      header: () => <p>Account Status</p>,
-      cell: (info) => (
-        <div>
-          <p
-            className={classNames(
-              info?.row?.original?.customer?.active === 1
-                ? "text-[#027A48] bg-[#ECFDF3]"
-                : info?.row?.original?.customer?.active === 0
-                ? "bg-[#FEF3F2] text-[#eaa640]"
-                : "text-gray-500",
-              " max-w-min p-1 px-2 rounded-2xl text-xs font-medium items-center justify-center flex gap-1"
-            )}
-          >
-            {" "}
-            <span className="rounded-full text-[1.2rem]">•</span>
-            {info.row.original?.customer?.active === 1 ? "Active" : "Suspended"}
-          </p>
-        </div>
-      ),
-    }),
+
     columnHelper.accessor("id", {
       header: () => <p>Action</p>,
       cell: (info) => {
