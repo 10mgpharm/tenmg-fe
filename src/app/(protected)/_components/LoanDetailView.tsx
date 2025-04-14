@@ -203,7 +203,7 @@ const LoanDetailView = ({
       <Flex cursor={"pointer"} gap={2} onClick={handleBack}>
         <ArrowLeft className="w-5 h-auto text-gray-600" />
         <Text>Back</Text>
-      </Flex>
+      </Flex> 
       {loading && <Loader />}
 
       {!loading && (
@@ -228,8 +228,8 @@ const LoanDetailView = ({
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
                   ₦
-                  {data?.totalAmount
-                    ? formatAmountString(data?.totalAmount)
+                  {data?.capitalAmount
+                    ? formatAmountString(data?.capitalAmount)
                     : "0.00"}
                 </Text>
               </Stack>
@@ -249,7 +249,7 @@ const LoanDetailView = ({
                   Total Repayment
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
-                  ₦{formatAmountString(repaymentAmount) || "0.00"}
+                  ₦{formatAmountString(data?.totalAmount) || "0.00"}
                 </Text>
               </Stack>
               <Stack>

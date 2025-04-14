@@ -42,7 +42,9 @@ export function ColumnsCreditScoreFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-semibold">Category A</p>
+          <p className="font-semibold">
+            {info.row.original?.affordability?.category ?? "N/A"}
+          </p>
         </div>
       ),
     }),
@@ -50,10 +52,7 @@ export function ColumnsCreditScoreFN() {
       header: () => <p>Credit Score</p>,
       cell: (info) => (
         <div>
-          <p>
-            {info.row.original?.creditScoreResult?.scoreValue} /{" "}
-            {info.row.original.creditScoreResult.scoreTotal}
-          </p>
+          <p>{info.row.original?.creditScoreResult?.scoreValue}</p>
         </div>
       ),
     }),
@@ -76,7 +75,7 @@ export function ColumnsCreditScoreFN() {
         return (
           <div className="flex gap-4">
             <Link
-              href={`/vendors/transactions-history/${info.row.original?.customer?.id}?evaluationId=${info.row.original.id}`}
+              href={`/vendors/transactions-history/${info.row.original?.customer?.lastEvaluationHistory?.id}`}
               className="text-primary font-medium"
             >
               View

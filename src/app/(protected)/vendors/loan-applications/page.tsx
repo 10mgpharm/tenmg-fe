@@ -119,8 +119,8 @@ const LoanApplication = () => {
   }, [token]);
 
   const tableLinks = useMemo(
-    () => loanApplication?.links,
-    [loanApplication?.links]
+    () => loanApplication?.meta,
+    [loanApplication?.meta]
   );
   const tableData = useMemo(
     () => loanApplication?.data,
@@ -222,9 +222,9 @@ const LoanApplication = () => {
                           {header.isPlaceholder
                             ? null
                             : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                         </Th>
                       ))}
                     </Tr>

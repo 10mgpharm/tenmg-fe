@@ -46,11 +46,8 @@ const TransactionRecord = ({ params }: { params: { id: string } }) => {
       setLoading(true);
       setError("");
       try {
-        const response = await requestClient({ token }).post(
-          "lender/txn_history/view",
-          {
-            transactionHistoryId: parseInt(params.id, 10),
-          }
+        const response = await requestClient({ token }).get(
+          `/lender/txn_history/${params.id}`
         );
 
         if (response.status === 200 && response.data.data) {

@@ -27,7 +27,7 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
       header: ({ column }) => <p>Repayment Amount</p>,
       cell: (info) => (
         <div className="">
-          <p>{info.row.original?.balance}</p>
+          <p>{info.row.original?.totalAmount}</p>
         </div>
       ),
     }),
@@ -54,7 +54,7 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
                   ? "bg-[#FFFAEB] text-[#F79009]"
                   : info?.row?.original?.paymentStatus === "OVERDUE"
                   ? "bg-[#FEF3F2] text-[#C62828]"
-                  : info?.row?.original?.paymentStatus === "PAID"
+                  : info?.row?.original?.paymentStatus === "SUCCESS"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : "text-gray-500",
                 " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
@@ -78,11 +78,11 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
         );
       },
     }),
-    columnHelper.accessor("totalAmount", {
+    columnHelper.accessor("principal", {
       header: ({ column }) => <p>Loan Amount</p>,
       cell: (info) => (
         <div className="">
-          <p>{info.row.original?.totalAmount}</p>
+          <p>{info.row.original?.principal}</p>
         </div>
       ),
     }),

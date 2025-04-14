@@ -68,7 +68,6 @@ const DataTable = () => {
   const [status, setStatus] = useState<string>("");
   const [loanApplication, setLoanApplication] =
     useState<LoanApplicationDataResponse | null>(null);
-  const [allCustomers, setAllCustomers] = useState<CustomerRecords[]>();
   const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
   const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const {
@@ -108,7 +107,7 @@ const DataTable = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
-  console.log("loanApplication", loanApplication)
+  console.log("loanApplication", loanApplication);
   const tableLinks = useMemo(
     () => loanApplication?.links,
     [loanApplication?.links]
@@ -124,10 +123,6 @@ const DataTable = () => {
   }, [fetchLoanApplication, token]);
 
   const applyFilters = (filters: IFilterInput) => {
-    console.log(
-      filters,
-      `&dateFrom=${filters.startDate.toISOString().split("T")[0]}`
-    );
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
@@ -206,9 +201,9 @@ const DataTable = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </Th>
                     ))}
                   </Tr>
