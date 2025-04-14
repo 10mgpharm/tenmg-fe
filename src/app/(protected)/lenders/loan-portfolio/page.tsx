@@ -161,7 +161,7 @@ export default function TransactionWalletPage() {
 
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
-    { option: "DISBURSED", value: "DISBURSED" },
+    { option: "INITIATED", value: "INITIATED" },
     { option: "ONGOING", value: "ONGOING" },
   ];
 
