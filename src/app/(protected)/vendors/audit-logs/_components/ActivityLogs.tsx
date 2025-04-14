@@ -46,6 +46,7 @@ const ActivityLogs = () => {
                 const response = await requestClient({ token }).get(url);
 
                 if (response.status === 200 && response.data.data) {
+                    console.log(response.data);
                     setData(response.data.data.data || []);
                     setPagination_link(response.data.data.links || []);
                     setTotalItems(response.data.data.total || 0);
@@ -87,7 +88,7 @@ const ActivityLogs = () => {
             <div className="mb-5 mt-3">
                 <div className="flex items-center gap-3">
                     <SearchInput
-                        placeholder="Search"
+                        placeholder="Search by action"
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
@@ -136,7 +137,7 @@ const ActivityLogs = () => {
                             </Tbody>
                         </Table>
                         <Pagination
-                            meta={meta}
+                            meta={pagination_link}
                             setPageCount={setPageCount}
                         />
                     </TableContainer>

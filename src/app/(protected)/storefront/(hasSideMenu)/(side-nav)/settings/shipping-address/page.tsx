@@ -112,7 +112,7 @@ export default function ShippingAddressList() {
             key={address.id}
             className="border border-gray-300 p-5 flex flex-col gap-2 rounded-md mx-auto w-full relative"
           >
-            <div className="absolute top-4 right-4 w-fit ">
+            <div className="w-fit ">
               {address?.isDefault ? (
                 <Tag
                   size={"sm"}
