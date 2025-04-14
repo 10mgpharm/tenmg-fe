@@ -44,28 +44,12 @@ const CreditScore = () => {
   const [loading, setLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [pageCount, setPageCount] = useState<number>(1);
-  const [status, setStatus] = useState<string>("");
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [creditScoreData, setCreditScoreData] = useState(null);
 
   const debouncedSearch = useDebouncedValue(globalFilter, 500);
-
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenFilter,
-    onClose: onCloseFilter,
-    onOpen: onOpenFilter,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenBusiness,
-    onClose: onCloseBusiness,
-    onOpen: onOpenBusiness,
-  } = useDisclosure();
 
   const fetchCreditScore = useCallback(async () => {
     setLoading(true);
@@ -73,15 +57,6 @@ const CreditScore = () => {
 
     if (debouncedSearch) {
       query += `&search=${debouncedSearch}`;
-    }
-    if (status) {
-      query += `&status=${status}`;
-    }
-    if (createdAtStart) {
-      query += `&createdAtStart=${createdAtStart.toISOString().split("T")[0]}`;
-    }
-    if (createdAtEnd) {
-      query += `&createdAtEnd=${createdAtEnd.toISOString().split("T")[0]}`;
     }
 
     try {
@@ -94,30 +69,12 @@ const CreditScore = () => {
       console.error(error);
       setLoading(false);
     }
-  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token, pageCount, debouncedSearch]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchCreditScore();
   }, [token, fetchCreditScore]);
-
-  const applyFilters = (filters: IFilterInput) => {
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
-    setStatus(filters.status);
-  };
-
-  const clearFilters = () => {
-    setCreatedAtStart(null);
-    setCreatedAtEnd(null);
-    setStatus("");
-    setGlobalFilter("");
-  };
-
-  const filterOptions = [
-    { option: "Active", value: "active" },
-    { option: "Suspended", value: "inactive" },
-  ];
 
   const tableData: CreditScoreData[] = useMemo(
     () => creditScoreData?.data,
@@ -152,13 +109,6 @@ const CreditScore = () => {
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
-            <div
-              onClick={onOpenFilter}
-              className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
-            >
-              <CiFilter className="w-5 h-5" />
-              <p className="text-gray-500 font-medium">Filter</p>
-            </div>
           </div>
         </div>
       </div>
@@ -222,14 +172,7 @@ const CreditScore = () => {
           </Flex>
         )}
       </div>
-      <FilterDrawer
-        isOpen={isOpenFilter}
-        onClose={onCloseFilter}
-        applyFilters={applyFilters}
-        clearFilters={clearFilters}
-        filterOptions={filterOptions}
-        isNotDate={true}
-      />
+
       {/* <AffordabilityModel isOpen={isOpen} onClose={onClose} />
       <BusinessLogicModal isOpen={isOpenBusiness} onClose={onCloseBusiness} /> */}
     </div>
