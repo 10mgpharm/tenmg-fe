@@ -193,7 +193,7 @@ export interface RepaymentSchedule {
   lateFee: string | null;
   loanId: number;
   paymentId: number | null;
-  paymentStatus: 'PENDING' | 'PAID' | 'OVERDUE' | 'PARTIAL';
+  paymentStatus: "PENDING" | "PAID" | "OVERDUE" | "PARTIAL";
   principal: string;
   totalAmount: string;
   updatedAt: string;
@@ -499,6 +499,7 @@ export interface Affordability {
   rule: string;
   maxAmount: string;
   baseAmount: string;
+  category: string;
 }
 
 export interface CreditPattern {
