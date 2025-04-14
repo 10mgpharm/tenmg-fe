@@ -62,7 +62,7 @@ const Admin = () => {
   useEffect(() => {
     if (!token) return;
     fetchingOverview();
-  }, [token, fetchingOverview]);
+  }, [token]);
 
     const loanData = data?.loans?.data?.slice(0, 4);
     const memoizedData = useMemo(() => loanData, [loanData]);
@@ -148,7 +148,7 @@ const Admin = () => {
             Loan Managment
           </Text>
           <Link
-            href={"/dashboard/loans"}
+            href={"/admin/loan-management"}
             className="text-gray-600 text-sm px-4 py-2 font-medium bg-white border border-[#D0D5DD] rounded-md"
           >
             View all

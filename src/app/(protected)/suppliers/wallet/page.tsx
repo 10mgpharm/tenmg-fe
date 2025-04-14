@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import folder from "@public/assets/images/Group 3.svg";
 import drugImage from "@public/assets/images/MedicineStreamline-Lagos1.svg";
 import AddAccount from "./_components/AddAccount";
-import { useDisclosure } from "@chakra-ui/react";
+import { Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import WithdrawFunds from "./_components/WithdrawFunds";
 import OTPModal from "./_components/OTPModal";
 import Link from "next/link";
@@ -170,23 +170,30 @@ const Wallet = () => {
               View All
             </Link>
           </div>
-          {transactions?.data?.length === 0 ? (
-            <div className="mt-5 max-w-sm mx-auto">
-              <div className="text-center py-12">
-                <Image src={folder} alt="" className="mx-auto" />
-                <h3 className="font-semibold text-lg text-gray-700 mt-4">
-                  Nothing to show here yet
-                </h3>
-                <p className="text-gray-600">
-                  You don’t have any transactions yet. When you do, they’ll
-                  appear here.
-                </p>
-              </div>
-            </div>
-            ) : 
+          {
+          loading ? 
+            <Flex justify="center" align="center" height="200px">
+              <Spinner size="xl" />
+            </Flex>
+          : transactions?.data?.length > 0 ? (
             <div className="mt-5">
               <Transaction data={transactions?.data} />
             </div>
+            ) : 
+            (
+              <div className="mt-5 max-w-sm mx-auto">
+                <div className="text-center py-12">
+                  <Image src={folder} alt="" className="mx-auto" />
+                  <h3 className="font-semibold text-lg text-gray-700 mt-4">
+                    Nothing to show here yet
+                  </h3>
+                  <p className="text-gray-600">
+                    You don’t have any transactions yet. When you do, they’ll
+                    appear here.
+                  </p>
+                </div>
+              </div>
+            )
           }
         </div>
       </div>
