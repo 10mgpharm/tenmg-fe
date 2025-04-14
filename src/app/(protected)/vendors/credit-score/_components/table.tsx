@@ -93,7 +93,7 @@ export function ColumnsCreditScoreFN() {
         return (
           <div className="flex gap-4">
             <Link
-              href={`/vendors/transactions-history/${info.row.original?.customer?.id}?evaluationId=${info.row.original.id}`}
+              href={`/vendors/transactions-history/${info.row.original?.customer?.lastEvaluationHistory?.id}`}
               className="text-primary font-medium"
             >
               View
