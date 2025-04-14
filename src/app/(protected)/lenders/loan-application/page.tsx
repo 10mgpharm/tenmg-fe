@@ -7,6 +7,9 @@ import {
   MenuItem,
   MenuList,
   Box,
+  HStack,
+  Flex,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition, useEffect, useCallback } from "react";
@@ -29,6 +32,10 @@ import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
+import SearchInput from "../../vendors/_components/SearchInput";
+import { IFilterInput } from "../../vendors/customers-management/page";
+import FilterDrawer from "../../vendors/_components/FilterDrawer";
+import { useDebouncedValue } from "@/utils/debounce";
 
 export interface OverviewCardData {
   title: string;
@@ -53,6 +60,15 @@ export default function LoanApplicationPage() {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const sessionToken = sessionData?.user?.token;
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [status, setStatus] = useState<string>("");
+
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
 
   const fetchLenderData = useCallback(() => {
     startTransition(async () => {
@@ -72,12 +88,30 @@ export default function LoanApplicationPage() {
     });
   }, [sessionToken]);
 
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
   const fetchLoanData = useCallback(() => {
     startTransition(async () => {
       try {
+        let query = `/lender/loan-applications?page=${pageCount}`;
+
+        if (debouncedSearch) {
+          query += `&search=${debouncedSearch}`;
+        }
+        if (status) {
+          query += `&status=${status}`;
+        }
+        if (createdAtStart) {
+          query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+        }
+        if (createdAtEnd) {
+          query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+        }
+
         const response = await requestClient({ token: sessionToken }).get(
-          `/lender/loan-applications?page=${pageCount}`
+          query
         );
+
         if (response.status === 200) {
           setLoanData(response.data.data);
         } else {
@@ -91,7 +125,14 @@ export default function LoanApplicationPage() {
         console.error(error);
       }
     });
-  }, [sessionToken, pageCount]); // Add pageCount to dependency array
+  }, [
+    sessionToken,
+    pageCount,
+    debouncedSearch,
+    status,
+    createdAtStart,
+    createdAtEnd,
+  ]); // Add pageCount to dependency array
 
   const handleApprove = async (id: string) => {
     try {
@@ -130,6 +171,25 @@ export default function LoanApplicationPage() {
     }
   }, [sessionData, fetchLoanData, fetchLenderData]);
 
+  const applyFilters = (filters: IFilterInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
+  };
+
+  const filterOptions = [
+    { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
+    { option: "EXPIRED", value: "EXPIRED" },
+  ];
+
   const overviewData: OverviewCardData[] = [
     {
       title: "Total Loan Applications",
@@ -163,39 +223,53 @@ export default function LoanApplicationPage() {
 
   return (
     <>
-      {isPending && <Loader />}
-      {!isPending && (
-        <div className="m-5">
-          <h3 className="font-semibold text-xl my-4">Loan Application</h3>
+      <div className="m-5">
+        <h3 className="font-semibold text-xl my-4">Loan Application</h3>
 
-          <div className="grid grid-cols-4 gap-4 mt-5">
-            <OverviewCards overviewData={overviewData} />
-          </div>
-          <SearchFilter
-            value={globalFilter}
-            onSearchChange={(e) => setGlobalFilter(e.target.value)}
-          />
-          <div className="mt-5">
-            <LoanTable
-              data={Array.isArray(loanData?.data) ? loanData.data : []}
-              columns={ColumnsLoanFN({ handleApprove, handleDecline })}
-              globalFilter={globalFilter}
-              onGlobalFilterChange={setGlobalFilter}
-              loading={loading}
-            />
-            
-            {/* Add pagination component */}
-            {loanData?.meta && (
-              <Box mt={4}>
-                <Pagination 
-                  meta={loanData.meta} 
-                  setPageCount={setPageCount} 
-                />
-              </Box>
-            )}
-          </div>
+        <div className="grid grid-cols-4 gap-4 mt-5">
+          <OverviewCards overviewData={overviewData} />
         </div>
-      )}
+        <HStack justify={"space-between"}>
+          <Flex mt={4} gap={2}>
+            <SearchInput
+              placeholder="Search for a loan"
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+            />
+            <Button
+              h={"40px"}
+              px={4}
+              variant={"outline"}
+              className="border text-gray-600 bg-white"
+              onClick={onOpenFilter}
+            >
+              Filter
+            </Button>
+          </Flex>
+        </HStack>
+        <div className="mt-5">
+          <LoanTable
+            data={Array.isArray(loanData?.data) ? loanData.data : []}
+            columns={ColumnsLoanFN({ handleApprove, handleDecline })}
+            loading={loading || isPending}
+          />
+
+          {/* Add pagination component */}
+          {loanData?.meta && (
+            <Box mt={4}>
+              <Pagination meta={loanData.meta} setPageCount={setPageCount} />
+            </Box>
+          )}
+        </div>
+      </div>
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+      />
     </>
   );
 }

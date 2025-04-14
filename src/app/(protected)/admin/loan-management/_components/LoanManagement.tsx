@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Flex,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -10,6 +11,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
   ColumnOrderState,
@@ -33,12 +35,14 @@ import { useSession } from "next-auth/react";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import { formatAmount } from "@/utils/formatAmount";
+import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
+import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
+import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
 
 const LoanManagement = () => {
-  const onOpen = () => { };
+  const onOpen = () => {};
 
   const [pageCount, setPageCount] = useState<number>(1);
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -47,6 +51,11 @@ const LoanManagement = () => {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
 
   const [loan, setLoan] = useState<LoanDataProp | null>(null);
 
@@ -80,11 +89,10 @@ const LoanManagement = () => {
       if (response.status === 200) {
         setLoan(response.data.data);
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
-      setLoading(false);
     }
+    setLoading(false);
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
   const fetchLoanStats = useCallback(async () => {
@@ -95,7 +103,8 @@ const LoanManagement = () => {
         `/admin/loan/stats`
       );
       if (response.status === 200) {
-        setLoanStats(response.data.data);
+        setLoanStats(response?.data?.data);
+        setPageCount(response?.data?.data?.currentPage);
       }
       setLoading(false);
     } catch (error) {
@@ -115,9 +124,7 @@ const LoanManagement = () => {
   const table = useReactTable({
     data: tableData || [],
     columns: ColumsLoanFN(onOpen),
-    onSortingChange: setSorting,
     state: {
-      sorting,
       columnVisibility,
       columnOrder,
       rowSelection,
@@ -130,103 +137,127 @@ const LoanManagement = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const meta = {
-    meta: {
-      links: [
-        { label: "Previous", active: false },
-        { label: 1, active: true },
-      ],
-    },
+  const applyFilters = (filters: IFilterInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
   };
 
   return (
-    <div className="">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
-        <OverviewCard
-          title="Total Loan Amount"
-          value={loanStats ? formatAmount(loanStats?.totalLoans) : "₦0"}
-          fromColor="from-[#53389E]"
-          toColor="to-[#7F56D9]"
-          image={totalPattern}
-        />
-        <OverviewCard
-          title="Total Interest"
-          value={loanStats ? formatAmount(loanStats?.totalInterest) : "₦0"}
-          fromColor="from-[#DC6803]"
-          toColor="to-[#DC6803]"
-          image={orderPattern}
-        />
-        <OverviewCard
-          title="Active Loans"
-          value={loanStats ? loanStats?.activeLoan : 0}
-          fromColor="from-[#3E4784]"
-          toColor="to-[#3E4784]"
-          image={productPattern}
-        />
-        <OverviewCard
-          title="Pending Repayment"
-          value={loanStats ? formatAmount(loanStats?.pendingRepayment) : "₦0"}
-          fromColor="from-[#E31B54]"
-          toColor="to-[#E31B54]"
-          image={productPattern}
-        />
-      </div>
-      <Flex mt={4} gap={2}>
-        <SearchComponent placeholder="Search for a user" />
-        <Button
-          h={""}
-          px={4}
-          variant={"outline"}
-          className="border text-gray-600 bg-white"
-        >
-          Filter
-        </Button>
-      </Flex>
-      <div className="mt-5">
-        {tableData?.length === 0 ? (
-          <EmptyOrder
-            heading={`No Loan Yet`}
-            content={`You currently have no loan application. All loan will appear here.`}
+    <>
+      <div className="">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
+          <OverviewCard
+            title="Total Loan Amount"
+            value={loanStats ? formatAmount(loanStats?.totalLoans) : "₦0"}
+            fromColor="from-[#53389E]"
+            toColor="to-[#7F56D9]"
+            image={totalPattern}
           />
-        ) : (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-            <Table>
-              <Thead bg={"#F2F4F7"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
-                  <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
+          <OverviewCard
+            title="Total Interest"
+            value={loanStats ? formatAmount(loanStats?.totalInterest) : "₦0"}
+            fromColor="from-[#DC6803]"
+            toColor="to-[#DC6803]"
+            image={orderPattern}
+          />
+          <OverviewCard
+            title="Active Loans"
+            value={loanStats ? loanStats?.activeLoan : 0}
+            fromColor="from-[#3E4784]"
+            toColor="to-[#3E4784]"
+            image={productPattern}
+          />
+          <OverviewCard
+            title="Pending Repayment"
+            value={loanStats ? formatAmount(loanStats?.pendingRepayment) : "₦0"}
+            fromColor="from-[#E31B54]"
+            toColor="to-[#E31B54]"
+            image={productPattern}
+          />
+        </div>
+        <Flex mt={4} gap={2}>
+          <SearchInput
+            placeholder="Search for a loan"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
+
+          <Button
+            h={"40px"}
+            px={4}
+            variant={"outline"}
+            className="border text-gray-600 bg-white"
+            onClick={onOpenFilter}
+          >
+            Filter
+          </Button>
+        </Flex>
+        <div className="mt-5">
+          {loading ? (
+            <Flex justify="center" align="center" height="200px">
+              <Spinner size="xl" />
+            </Flex>
+          ) : tableData?.length === 0 ? (
+            <EmptyOrder
+              heading={`No Loan Yet`}
+              content={`You currently have no loan application. All loan will appear here.`}
+            />
+          ) : (
+            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+              <Table>
+                <Thead bg={"#F2F4F7"}>
+                  {table?.getHeaderGroups()?.map((headerGroup) => (
+                    <Tr key={headerGroup.id}>
+                      {headerGroup.headers?.map((header) => (
+                        <Th textTransform={"initial"} px="0px" key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </Th>
+                      ))}
+                    </Tr>
+                  ))}
+                </Thead>
+                <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                  {table?.getRowModel()?.rows?.map((row) => (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells()?.map((cell) => (
+                        <Td key={cell.id} px="0px">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
                           )}
-                      </Th>
-                    ))}
-                  </Tr>
-                ))}
-              </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </Td>
-                    ))}
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-            <Pagination meta={meta} setPageCount={setPageCount} />
-          </TableContainer>
-        )}
+                        </Td>
+                      ))}
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              <Pagination meta={loan?.meta} setPageCount={setPageCount} />
+            </TableContainer>
+          )}
+        </div>
       </div>
-    </div>
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        noStatus
+      />
+    </>
   );
 };
 

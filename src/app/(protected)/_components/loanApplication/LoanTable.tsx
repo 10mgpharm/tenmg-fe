@@ -1,22 +1,43 @@
-import React from 'react';
+import React from "react";
 import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { Table, TableContainer, Thead, Tbody, Tr, Th, Td, Spinner, Flex } from '@chakra-ui/react';
-import EmptyResult from '../../vendors/_components/EmptyResult';
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableContainer,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Spinner,
+  Flex,
+} from "@chakra-ui/react";
+import EmptyResult from "../../vendors/_components/EmptyResult";
+import Pagination from "../../suppliers/_components/Pagination";
 
 interface LoanTableProps {
   data: any[];
   columns: any[];
-  globalFilter: string;
-  onGlobalFilterChange: (value: string) => void;
+  globalFilter?: string;
+  onGlobalFilterChange?: (value: string) => void;
   loading: boolean;
+  setPageCount: (value: number) => void;
+  metaData: any;
 }
 
-const LoanTable = ({ data, columns, globalFilter, onGlobalFilterChange, loading }: LoanTableProps) => {
+const LoanTable = ({
+  data,
+  columns,
+  globalFilter,
+  onGlobalFilterChange,
+  loading,
+  setPageCount,
+  metaData,
+}: LoanTableProps) => {
   const table = useReactTable({
     data: data,
     columns: columns,
@@ -36,7 +57,12 @@ const LoanTable = ({ data, columns, globalFilter, onGlobalFilterChange, loading 
   }
 
   if (data?.length === 0) {
-    return <EmptyResult heading="Nothing to show here" content="" />;
+    return (
+      <EmptyResult
+        heading="No result found"
+        content="All loan application will show here"
+      />
+    );
   }
 
   return (
@@ -76,6 +102,7 @@ const LoanTable = ({ data, columns, globalFilter, onGlobalFilterChange, loading 
           ))}
         </Tbody>
       </Table>
+      <Pagination meta={metaData} setPageCount={setPageCount} />
     </TableContainer>
   );
 };

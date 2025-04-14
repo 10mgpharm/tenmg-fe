@@ -35,6 +35,7 @@ const FilterDrawer = ({
   clearFilters,
   filterOptions,
   isNotDate,
+  noStatus,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -42,6 +43,7 @@ const FilterDrawer = ({
   clearFilters?: () => void;
   filterOptions?: FilterOptions[];
   isNotDate?: boolean;
+  noStatus?: boolean;
 }) => {
   const {
     handleSubmit,
@@ -69,7 +71,7 @@ const FilterDrawer = ({
   };
 
   return (
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"sm"}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -83,36 +85,38 @@ const FilterDrawer = ({
         </DrawerHeader>
         <DrawerBody>
           <Stack mt={5} spacing={5}>
-            <FormControl>
-              <FormLabel>Status</FormLabel>
-              <Controller
-                name="status"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <Select {...field}>
-                    <option value="" disabled style={{ color: "gray" }}>
-                      Select Status
-                    </option>
-                    {filterOptions?.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.option}
+            {noStatus ? null : (
+              <FormControl>
+                <FormLabel>Status</FormLabel>
+                <Controller
+                  name="status"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <Select {...field}>
+                      <option value="" disabled style={{ color: "gray" }}>
+                        Select Status
                       </option>
-                    ))}
-                  </Select>
-                )}
-              />
-            </FormControl>
+                      {filterOptions?.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.option}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            )}
             {isNotDate ? null : (
-            <DateRange
-            fromName="startDate"
-            toName="endDate"
-            control={control}
-            watch={watch}
-            setValue={setValue}
-            labelFrom="From"
-            labelTo="To"
-          />
+              <DateRange
+                fromName="startDate"
+                toName="endDate"
+                control={control}
+                watch={watch}
+                setValue={setValue}
+                labelFrom="From"
+                labelTo="To"
+              />
             )}
           </Stack>
         </DrawerBody>
