@@ -15,18 +15,18 @@ import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, WalletResponseData } from "@/types";
-
+export interface BankInfo {
+  accountName: string;
+  accountNumber: string;
+  active: number
+  bankCode: string;
+  bankName: string;
+  id: number;
+}
 interface WalletProps {
   currentBalance: string;
   previousBalance: string;
-  bankAccount: {
-    accountName: string;
-    accountNumber: string;
-    active: number
-    bankCode: string;
-    bankName: string;
-    id: number;
-  }
+  bankAccount: BankInfo;
 }
 
 const Wallet = () => {
@@ -112,26 +112,29 @@ const Wallet = () => {
                 </button>
               </div>
               <p className="font-semibold text-2xl text-gray-700 mt-3">
-                {showBalance ? `₦${walletBalance?.currentBalance}` : "******"}
+                {showBalance ? `₦${walletBalance?.currentBalance || Number(0.00).toFixed(2)}` : "******"}
               </p>
-              <button
-                onClick={onOpenWithdraw}
-                className="mt-8 bg-primary-500 px-5 py-2 text-white rounded-md"
-              >
-                Withdraw Funds
-              </button>
+              {
+                walletBalance?.bankAccount &&
+                <button
+                  onClick={onOpenWithdraw}
+                  className="mt-8 bg-primary-500 px-5 py-2 text-white rounded-md"
+                >
+                  Withdraw Funds
+                </button>
+              }
             </div>
             <Image src={drugImage} alt="" className="-ml-10" />
           </div>
           {walletBalance?.bankAccount ? (
             <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
               <div className="flex items-center justify-between">
-                <div className="p-1 rounded-full bg-white">
+                <div className="py-1 px-2 rounded-full bg-white">
                   <p className="text-gray-600 text-sm font-semibold">
                     {walletBalance?.bankAccount?.accountName}
                   </p>
                 </div>
-                <div className="p-1 rounded-full bg-white">
+                <div className="py-1 px-2 rounded-full bg-white">
                   <p className="text-gray-600 text-sm font-semibold">{walletBalance?.bankAccount?.bankName}</p>
                 </div>
               </div>
@@ -194,6 +197,7 @@ const Wallet = () => {
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
         otpOpen={onOpenOTP}
+        bankDetails={walletBalance?.bankAccount}
       />
       <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
     </div>
