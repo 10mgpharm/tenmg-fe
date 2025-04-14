@@ -24,6 +24,10 @@ import { useDebouncedValue } from "@/utils/debounce";
 import { LoanDataProp, NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import { formatAmount } from "@/utils/formatAmount";
+import FilterDrawer from "../_components/FilterDrawer";
+import { IFilterInput } from "../customers-management/page";
+import { Button, Flex, HStack, useDisclosure } from "@chakra-ui/react";
+import SearchInput from "../_components/SearchInput";
 
 export interface OverviewCardData {
   title: string;
@@ -33,14 +37,8 @@ export interface OverviewCardData {
   image: any;
 }
 
-// TODO: Add this to types
-
 const LoanManagement = () => {
   const [pageCount, setPageCount] = useState<number>(1);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
   const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -56,6 +54,12 @@ const LoanManagement = () => {
   const token = sessionData?.user?.token;
 
   const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
 
   const fetchLoans = useCallback(async () => {
     setLoading(true);
@@ -103,6 +107,25 @@ const LoanManagement = () => {
     }
   }, [token]);
 
+  const applyFilters = (filters: IFilterInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+    setGlobalFilter("");
+  };
+
+  const filterOptions = [
+    { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
+    { option: "EXPIRED", value: "EXPIRED" },
+  ];
+
   const tableData = useMemo(() => loan?.data, [loan?.data]);
 
   useEffect(() => {
@@ -148,11 +171,24 @@ const LoanManagement = () => {
       <div className="grid grid-cols-4 gap-4 mt-5">
         <OverviewCards overviewData={overviewData} />
       </div>
-      <SearchFilter
-        value={globalFilter}
-        onSearchChange={(e) => setGlobalFilter(e.target.value)}
-        // You can pass an onFilterClick handler if needed
-      />
+      <HStack justify={"space-between"}>
+        <Flex mt={4} gap={2}>
+          <SearchInput
+            placeholder="Search for a loan"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
+          <Button
+            h={"40px"}
+            px={4}
+            variant={"outline"}
+            className="border text-gray-600 bg-white"
+            onClick={onOpenFilter}
+          >
+            Filter
+          </Button>
+        </Flex>
+      </HStack>
       <div className="mt-5">
         <LoanTable
           data={tableData ?? []}
@@ -160,8 +196,18 @@ const LoanManagement = () => {
           globalFilter={globalFilter}
           onGlobalFilterChange={setGlobalFilter}
           loading={loading}
+          setPageCount={setPageCount}
+          metaData={loan?.meta}
         />
       </div>
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+      />
     </div>
   );
 };
