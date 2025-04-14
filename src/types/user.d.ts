@@ -499,6 +499,7 @@ export interface Affordability {
   rule: string;
   maxAmount: string;
   baseAmount: string;
+  category: string;
 }
 
 export interface CreditPattern {
