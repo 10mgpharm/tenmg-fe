@@ -252,7 +252,7 @@ export default function LoanApplicationPage() {
             data={Array.isArray(loanData?.data) ? loanData.data : []}
             columns={ColumnsLoanFN({ handleApprove, handleDecline })}
             loading={loading || isPending}
-            metaData={loanData.meta}
+            metaData={loanData?.meta}
             setPageCount={setPageCount}
           />
         </div>
