@@ -252,14 +252,9 @@ export default function LoanApplicationPage() {
             data={Array.isArray(loanData?.data) ? loanData.data : []}
             columns={ColumnsLoanFN({ handleApprove, handleDecline })}
             loading={loading || isPending}
+            metaData={loanData.meta}
+            setPageCount={setPageCount}
           />
-
-          {/* Add pagination component */}
-          {loanData?.meta && (
-            <Box mt={4}>
-              <Pagination meta={loanData.meta} setPageCount={setPageCount} />
-            </Box>
-          )}
         </div>
       </div>
 
