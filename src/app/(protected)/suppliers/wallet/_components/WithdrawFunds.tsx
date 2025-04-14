@@ -12,8 +12,9 @@ import {
     Input,
     Select,
   } from '@chakra-ui/react'
+import { BankInfo } from '../page';
 
-const WithdrawFunds = ({isOpen, onClose, otpOpen}: {isOpen: boolean, onClose: () => void; otpOpen: () => void;}) => {
+const WithdrawFunds = ({isOpen, onClose, otpOpen, bankDetails}: {isOpen: boolean, onClose: () => void; otpOpen: () => void; bankDetails: BankInfo}) => {
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -24,14 +25,12 @@ const WithdrawFunds = ({isOpen, onClose, otpOpen}: {isOpen: boolean, onClose: ()
             <form className='space-y-4 mb-6'>
                 <FormControl>
                     <FormLabel>Account Number</FormLabel>
-                    <Input type='number' placeholder='1234567890'/>
+                    <Input type='number' placeholder='1234567890' disabled value={bankDetails?.accountNumber}/>
                 </FormControl>
                 <FormControl>
                     <FormLabel>Select Bank</FormLabel>
-                    <Select>
-                        <option value="">GT Bank</option>
-                        <option value="">Access Bank</option>
-                        <option value="">Union Bank</option>
+                    <Select disabled>
+                        <option value={bankDetails?.accountName}>{bankDetails?.accountName}</option>
                     </Select>
                 </FormControl>
                 <FormControl>

@@ -2,6 +2,7 @@
 import { ApexOptions } from "apexcharts";
 import ChartComponent from '../../vendors/_components/ChartComponent';
 import React from "react";
+import Link from "next/link";
 
 const user = [
   { id: 1, name: "Fubura Dickson", pharmacyName: "Vendor's pharmacy name", amount: "₦300,0000", creditScore: "75%" },
@@ -217,8 +218,8 @@ const ActivityCharts = ({data, loading}: any) => {
         </div>
         <div className="col-span-6 md:col-span-3 bg-white border rounded-lg">
             <div className="flex items-center justify-between p-5 border-b">
-                <p className="font-semibold text-base text-gray-600 md:text-lg">User Relationship</p>
-                <p className='text-primary-500 text-sm md:text-base font-medium'>See all</p>
+              <p className="font-semibold text-base text-gray-600 md:text-lg">User Relationship</p>
+              <Link className='text-primary-500 text-sm md:text-base font-medium' href={'/admin/users'}>See All</Link>
             </div>
             {
               data?.users && 
@@ -233,8 +234,8 @@ const ActivityCharts = ({data, loading}: any) => {
         </div>
         <div className="col-span-6 md:col-span-3 rounded-lg bg-white border w-full h-[420px] overflow-y-auto">
             <div className="flex items-center justify-between p-5 border-b">
-                <p className="font-semibold text-base text-gray-600 md:text-lg">Loan Requests</p>
-                <p className='text-primary-500 text-sm md:text-base font-medium'>See all</p>
+              <p className="font-semibold text-base text-gray-600 md:text-lg">Loan Requests</p>
+              <Link className='text-primary-500 text-sm md:text-base font-medium' href={'/admin/loan-application'}>See All</Link>
             </div>
             <>
                 {user.map((items) => (
