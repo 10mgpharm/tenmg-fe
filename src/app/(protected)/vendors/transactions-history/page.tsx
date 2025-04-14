@@ -135,7 +135,7 @@ const TransactionHistory = () => {
   }, [fetchCustomerTnx, pageCount, token, fetchCustomers]);
 
   const tableData = useMemo(() => tnxHistoryData?.data || [], [tnxHistoryData]);
-  const columns = useMemo(() => ColumnsTnxHistoryFN(), []);
+  const columns = ColumnsTnxHistoryFN();
 
   const table = useReactTable({
     data: tableData ? tableData : [],
@@ -202,9 +202,9 @@ const TransactionHistory = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </Th>
                     ))}
                   </Tr>

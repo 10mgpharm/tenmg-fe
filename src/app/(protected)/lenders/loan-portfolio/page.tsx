@@ -36,23 +36,21 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ColumnsLoanApplicationFN } from "./_components/table";
-import {
-  CustomerRecords,
-  LoanDataProp,
-  NextAuthUserSession,
-} from "@/types";
+import { CustomerRecords, LoanDataProp, NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import Pagination from "../../suppliers/_components/Pagination";
 import { formatAmount } from "@/utils/formatAmount";
+import FilterDrawer from "../../vendors/_components/FilterDrawer";
 export default function TransactionWalletPage() {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
-  
-  const [loanApplication, setLoanApplication] =
-    useState<LoanDataProp | null>(null);
+
+  const [loanApplication, setLoanApplication] = useState<LoanDataProp | null>(
+    null
+  );
 
   const [loanStats, setLoanStats] = useState<any | null>(null);
 
@@ -163,8 +161,8 @@ export default function TransactionWalletPage() {
 
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
-    { option: "INITIATED", value: "INITIATED" },
-    { option: "EXPIRED", value: "EXPIRED" },
+    { option: "DISBURSED", value: "DISBURSED" },
+    { option: "ONGOING", value: "ONGOING" },
   ];
 
   const card_info = [
@@ -195,161 +193,122 @@ export default function TransactionWalletPage() {
   ];
 
   return (
-    <div className="px-4">
-      <h4 className="text-xl font-bold my-4">Loan Portfolio</h4>
+    <>
+      <div className="px-4">
+        <h4 className="text-xl font-bold my-4">Loan Portfolio</h4>
 
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
-        {card_info.map((item, index) => (
-          <div
-            key={index}
-            className="relative h-32 bg-cover bg-center bg-no-repeat rounded-lg p-4 flex items-center"
-            style={{
-              backgroundImage: `url(${item.bgImg})`,
-            }}
-          >
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+          {card_info.map((item, index) => (
             <div
-              className="absolute inset-0  bg-opacity-10 rounded-md"
-              style={{ backgroundColor: item.bgColor }}
-            ></div>
+              key={index}
+              className="relative h-32 bg-cover bg-center bg-no-repeat rounded-lg p-4 flex items-center"
+              style={{
+                backgroundImage: `url(${item.bgImg})`,
+              }}
+            >
+              <div
+                className="absolute inset-0  bg-opacity-10 rounded-md"
+                style={{ backgroundColor: item.bgColor }}
+              ></div>
 
-            {/* Card Content */}
-            <div className="relative z-10 text-white">
-              <h4 className="text-sm font-medium">{item.title}</h4>
-              <p className="text-base font-semibold">{item.value}</p>
+              {/* Card Content */}
+              <div className="relative z-10 text-white">
+                <h4 className="text-sm font-medium">{item.title}</h4>
+                <p className="text-base font-semibold">{item.value}</p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="my-8">
-        {loading ? (
-          <Flex justify="center" align="center" height="200px">
-            <Spinner size="xl" />
-          </Flex>
-        ) : tableData && tableData?.length === 0 ? (
-          <LenderEmptyScreen
-            heading="Nothing to show here yet"
-            content="You don’t have a loan in your portfolio yet, when you do, they’ll appear here."
-          />
-        ) : (
+        <div className="my-8">
           <>
             <div className="flex items-center gap-3 my-5">
               <SearchInput
                 placeholder="Search for Borrower's name/Loan ID"
-                // value={globalFilter}
-                // onChange={(e) => setGlobalFilter(e.target.value)}
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
               />
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  variant={"unstyled"}
-                  size={"md"}
-                  px="8px"
-                  className=" cursor-pointer  "
-                >
-                  <p
-                    className="text-gray-500 border border-gray-300 rounded-md flex items-center"
-                    style={{ padding: "8px 20px" }}
-                  >
-                    Filters
-                  </p>
-                </MenuButton>
-                <MenuList>
-                  {/* <MenuItem>By Date</MenuItem>
-                <MenuItem>Credit Score</MenuItem>
-                <MenuItem>Vendor Name</MenuItem> */}
-                </MenuList>
-              </Menu>
+              <Button
+                h={"40px"}
+                px={4}
+                variant={"outline"}
+                className="border text-gray-600 bg-white"
+                onClick={onOpenFilter}
+              >
+                Filter
+              </Button>
             </div>
-            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-              <Table>
-                <Thead bg={"blue.50"}>
-                  {tableData &&
-                    table?.getHeaderGroups()?.map((headerGroup) => (
-                      <Tr key={headerGroup.id}>
-                        {headerGroup.headers?.map((header) => (
-                          <Th
-                            textTransform={"initial"}
-                            px="0px"
-                            key={header.id}
-                            color={"primary.500"}
-                            fontWeight={"500"}
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </Th>
-                        ))}
-                      </Tr>
-                    ))}
-                </Thead>
-                <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                  {tableData?.length &&
-                    table?.getRowModel()?.rows?.map((row) => (
-                      <Tr key={row.id}>
-                        {row.getVisibleCells()?.map((cell) => (
-                          <Td key={cell.id} px="0px">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </Td>
-                        ))}
-                      </Tr>
-                    ))}
-                </Tbody>
-              </Table>
-              <Pagination meta={tableData} setPageCount={setPageCount} />
-            </TableContainer>
+            {loading ? (
+              <Flex justify="center" align="center" height="200px">
+                <Spinner size="xl" />
+              </Flex>
+            ) : tableData && tableData?.length === 0 ? (
+              <LenderEmptyScreen
+                heading="Nothing to show here yet"
+                content="You don’t have a loan in your portfolio yet, when you do, they’ll appear here."
+              />
+            ) : (
+              <TableContainer
+                border={"1px solid #F9FAFB"}
+                borderRadius={"10px"}
+              >
+                <Table>
+                  <Thead bg={"blue.50"}>
+                    {tableData &&
+                      table?.getHeaderGroups()?.map((headerGroup) => (
+                        <Tr key={headerGroup.id}>
+                          {headerGroup.headers?.map((header) => (
+                            <Th
+                              textTransform={"initial"}
+                              px="0px"
+                              key={header.id}
+                              color={"primary.500"}
+                              fontWeight={"500"}
+                            >
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                            </Th>
+                          ))}
+                        </Tr>
+                      ))}
+                  </Thead>
+                  <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                    {tableData?.length &&
+                      table?.getRowModel()?.rows?.map((row) => (
+                        <Tr key={row.id}>
+                          {row.getVisibleCells()?.map((cell) => (
+                            <Td key={cell.id} px="0px">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </Td>
+                          ))}
+                        </Tr>
+                      ))}
+                  </Tbody>
+                </Table>
+                <Pagination
+                  meta={loanApplication?.meta}
+                  setPageCount={setPageCount}
+                />
+              </TableContainer>
+            )}
           </>
-        )}
+        </div>
       </div>
-    </div>
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+      />
+    </>
   );
 }
-
-export const TH_table_data = [
-  {
-    id: "10MG-LN001",
-    name: "Olivia Rhye",
-    date: "Aug 21, 2024",
-    amount: "₦1,300,000",
-    end_date: "Aug 21, 2024",
-    outstanding_amount: "₦1,300,000",
-    // type: "Deposit",
-    status: "Completed",
-  },
-  {
-    id: "10MG-LN001",
-    name: "Olivia Rhye",
-    date: "Aug 21, 2024",
-    amount: "₦1,300,000",
-    end_date: "Aug 21, 2024",
-    outstanding_amount: "₦1,300,000",
-    // type: "Deposit",
-    status: "Completed",
-  },
-  {
-    id: "10MG-LN001",
-    name: "Olivia Rhye",
-    date: "Aug 21, 2024",
-    amount: "₦1,300,000",
-    end_date: "Aug 21, 2024",
-    outstanding_amount: "₦1,300,000",
-    // type: "Deposit",
-    status: "Completed",
-  },
-  {
-    id: "10MG-LN001",
-    name: "Olivia Rhye",
-    date: "Aug 21, 2024",
-    amount: "₦1,300,000",
-    end_date: "Aug 21, 2024",
-    outstanding_amount: "₦1,300,000",
-    // type: "Deposit",
-    status: "Completed",
-  },
-];
