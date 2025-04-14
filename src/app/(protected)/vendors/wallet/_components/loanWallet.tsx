@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { OverviewCard } from "./overviewCard";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
@@ -23,11 +23,19 @@ import InitiatePayout from "./initiate_payout";
 import AccoundDetailsCard from "./AccoundDetailsCard";
 import OTPModal from "@/app/(protected)/suppliers/wallet/_components/OTPModal";
 import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/WithdrawFunds";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
 
 const LoanWallet = () => {
-  const awaiting = transactionData.filter((item) => item.type === "Awaiting");
-  const completed = transactionData.filter((item) => item.type === "Completed");
+  // const awaiting = transactionData.filter((item) => item.type === "Awaiting");
+  // const completed = transactionData.filter((item) => item.type === "Completed");
   const history = transactionData.filter((item) => item.type === "History");
+
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
 
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openPayout, setOpenPayout] = React.useState(false);
@@ -45,19 +53,68 @@ const LoanWallet = () => {
     onClose: onCloseOTP,
   } = useDisclosure();
 
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<any>({});
+  const [transactions, setTransactions] = useState<any>([]);
+
+  useEffect(() => {
+    setLoading(true);
+    const fetchStat = async () => {
+
+      try {
+        const response = await requestClient({ token: token }).get(
+          `/vendor/wallet`,
+        );
+        if (response.status === 200) {
+          // console.log(response?.data?.data);
+          console.log(response?.data);
+          setStats(response?.data);
+          setLoading(false);
+        }
+      }
+      catch (error) {
+        setLoading(false);
+        console.error(error);
+      }
+    }
+    token && fetchStat()
+  }, [token])
+  useEffect(() => {
+    setLoading(true);
+    const fetchTransactions = async () => {
+
+      try {
+        const response = await requestClient({ token: token }).get(
+          `/vendor/wallet/transactions`,
+        );
+        if (response.status === 200) {
+          console.log(response?.data?.data?.data);
+          setTransactions(response?.data?.data?.data);
+          setLoading(false);
+        }
+      }
+      catch (error) {
+        setLoading(false);
+        console.error(error);
+      }
+    }
+    token && fetchTransactions()
+  }, [token])
+
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 ">
         <OverviewCard
           title=" Credit Voucher"
-          value="₦5,600"
+          value={stats?.voucherBalance}
           fromColor="from-[#53389E]"
           toColor="to-[#7F56D9]"
           image={totalPattern}
         />
         <OverviewCard
           title="Available Balance"
-          value="₦2,600"
+          value={stats?.payoutBalance}
           fromColor="from-[#DC6803]"
           toColor="to-[#DC6803]"
           image={orderPattern}
@@ -86,14 +143,14 @@ const LoanWallet = () => {
       </div>
 
       <DataTable
-        data={history}
+        data={transactions}
         column={Awaiting_column(
           setOpenDetails,
           setOpenPayout,
           setOpenCompleted
         )}
         hasPagination={false}
-        isLoading={false}
+        isLoading={loading}
       />
 
       {/* Side sheets */}
