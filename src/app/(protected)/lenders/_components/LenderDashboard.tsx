@@ -163,9 +163,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
           toast.error("Error fetching wallet");
         }
       } catch (error: any) {
-        toast.error(
-          error?.response?.data?.message || "Error fetching wallet"
-        );
+        toast.error(error?.response?.data?.message || "Error fetching wallet");
         console.error(error);
       }
     });
@@ -237,32 +235,39 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   );
 
   // Memoized calculations
-  const { totalBalance, investmentWalletBalance } = useMemo(() => {
-    const wallet = lenderData?.wallets || [];
+  const { totalBalance, investmentWalletBalance, ledgerBalance } =
+    useMemo(() => {
+      const wallet = lenderData?.wallets || [];
 
-    const totalBal = wallet.length
-      ? wallet
-          .reduce(
-            (sum, item) => sum + parseFloat(item?.currentBalance || "0"),
-            0
-          )
-          .toFixed(2)
-      : "0.00";
-
-    const investmentBal =
-      wallet?.find((item) => item.type === "investment")?.currentBalance ||
+      const totalBal = wallet?.find((item) => item.type === "deposit")?.currentBalance ||
       "0.00";
 
-    return { totalBalance: totalBal, investmentWalletBalance: investmentBal };
-  }, [lenderData?.wallets]);
+      const investmentBal =
+        wallet?.find((item) => item.type === "investment")?.currentBalance ||
+        "0.00";
+
+      const loanAmountBal =
+        wallet?.find((item) => item.type === "ledger")?.currentBalance ||
+        "0.00";
+
+      return {
+        totalBalance: totalBal,
+        investmentWalletBalance: investmentBal,
+        ledgerBalance: loanAmountBal,
+      };
+    }, [lenderData?.wallets]);
 
   const formattedTotalBalance = isTotalBalanceHidden
-    ? "********"
+    ? "*****"
     : `₦${formatAmountString(totalBalance)}`;
 
   const formattedInvestmentBalance = isInvestmentBalanceHidden
-    ? "********"
+    ? "*****"
     : `₦${formatAmountString(investmentWalletBalance)}`;
+
+  const formattedLedgerBalance = isInvestmentBalanceHidden
+    ? "*****"
+    : `₦${formatAmountString(ledgerBalance)}`;
 
   const handleDepositSuccess = useCallback(() => {
     if (onCloseSuccess) onCloseSuccess();
@@ -301,6 +306,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                   fromColor="from-[#D42E2F]"
                   toColor="to-[#D42E2F]"
                   containerClass="w-72 shrink-0"
+                  isInvestment={true}
+                  loanAmount="₦125,000"
+                  onInvestmentClick={() => {
+                    router.push("/lenders/my-earnings");
+                  }}
                 />
               </div>
             </div>
@@ -327,6 +337,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                 }
                 fromColor="from-[#D42E2F]"
                 toColor="to-[#D42E2F]"
+                isInvestment={true}
+                loanAmount={formattedLedgerBalance}
+                onInvestmentClick={() => {
+                  router.push("/lenders/my-earnings");
+                }}
               />
             </div>
 
@@ -450,7 +465,14 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         onSuccess={onOpenSuccess}
         setAmount={setAmount}
       />
-      <WithdrawFunds isOpen={isOpenWithdraw} onClose={onCloseWithdraw} wallet={wallet} setAmount={setAmount} onSuccess={onOpenSuccess} setIsWithdraw={setIsWithdraw} />
+      <WithdrawFunds
+        isOpen={isOpenWithdraw}
+        onClose={onCloseWithdraw}
+        wallet={wallet}
+        setAmount={setAmount}
+        onSuccess={onOpenSuccess}
+        setIsWithdraw={setIsWithdraw}
+      />
       <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
 
       <CongratsModal
@@ -471,6 +493,9 @@ interface BalanceCardProps {
   fromColor: string;
   toColor: string;
   containerClass?: string;
+  isInvestment?: boolean;
+  loanAmount?: string;
+  onInvestmentClick?: () => void;
 }
 
 const BalanceCard: React.FC<BalanceCardProps> = ({
@@ -481,6 +506,9 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
   fromColor,
   toColor,
   containerClass = "",
+  isInvestment,
+  loanAmount,
+  onInvestmentClick,
 }) => (
   <div className={containerClass}>
     <OverviewCard
@@ -492,6 +520,9 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
       fromColor={fromColor}
       toColor={toColor}
       image={totalPattern}
+      isInvestment={isInvestment}
+      loanAmount={loanAmount}
+      onInvestmentClick={onInvestmentClick}
     />
   </div>
 );

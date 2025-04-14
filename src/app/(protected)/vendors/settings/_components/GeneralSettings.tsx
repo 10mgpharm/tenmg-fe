@@ -17,13 +17,14 @@ import {
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession, ResponseDto, User } from "@/types";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import ChangePassword from "@/app/(protected)/admin/settings/_components/ChangePassword";
 import TwoFactorAuth from "@/app/(protected)/admin/settings/_components/TwoFactorAuth";
 import EnabledTwoFactor from "@/app/(protected)/admin/settings/_components/EnabledTwoFactor";
+
 
 interface IFormInput {
   name: string;
@@ -59,7 +60,7 @@ const GeneralSettings = () => {
       });
       const { data }: ResponseDto<User> = response.data;
 
-      setValue("role", data.role);
+      // const data = response.data.data;
 
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -81,7 +82,6 @@ const GeneralSettings = () => {
       toast.error(`Profile change failed: ${errorMessage}`);
     }
   };
-
   const {
     register,
     formState: { errors, isValid },
@@ -99,8 +99,11 @@ const GeneralSettings = () => {
     if (sessionData) {
       setValue("name", sessionData.user.name, { shouldValidate: true });
       setValue("email", sessionData.user.email, { shouldValidate: true });
+      setValue("role",sessionData.user.role);
     }
   }, [sessionData, setValue]);
+
+  // console.log(sessionData?.user?.role);
 
   const SETUP_2FA = async () => {
     try {

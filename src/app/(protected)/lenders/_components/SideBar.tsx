@@ -20,17 +20,44 @@ import { redirect, usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { BusinessStatus } from "@/constants";
-import { LuFileText } from 'react-icons/lu'
-import { BiMessageDetail } from 'react-icons/bi'
+import { LuFileText } from "react-icons/lu";
+import { BiMessageDetail } from "react-icons/bi";
+import { PiMoneyWavyBold } from "react-icons/pi";
 
 const navigation = [
-  { name: 'Dashboard', href: '/lenders', icon: HomeIcon, current: true },
-  { name: 'Loan Application', href: '/lenders/loan-application', icon: LuFileText, current: false },
-  { name: 'Transaction History', href: '/lenders/transaction-history', icon: FiShoppingBag, current: false },
-  { name: 'Loan Portfolio', href: '/lenders/loan-portfolio', icon: BsGraphUpArrow, current: false },
-  { name: 'Messages', href: '/lenders/messages', icon: BiMessageDetail, current: false },
-  { name: 'Settings', href: '/lenders/settings', icon: Cog6ToothIcon, current: false },
-]
+  { name: "Dashboard", href: "/lenders", icon: HomeIcon, current: true },
+  {
+    name: "Loan Application",
+    href: "/lenders/loan-application",
+    icon: LuFileText,
+    current: false,
+  },
+  {
+    name: "Transaction History",
+    href: "/lenders/transaction-history",
+    icon: FiShoppingBag,
+    current: false,
+  },
+  {
+    name: "Loan Portfolio",
+    href: "/lenders/loan-portfolio",
+    icon: BsGraphUpArrow,
+    current: false,
+  },
+
+  {
+    name: "Messages",
+    href: "/lenders/messages",
+    icon: BiMessageDetail,
+    current: false,
+  },
+  {
+    name: "Settings",
+    href: "/lenders/settings",
+    icon: Cog6ToothIcon,
+    current: false,
+  },
+];
 
 const mustAlwaysBeEnabled = (name: string) =>
   ["Dashboard", "Settings"].includes(name);
@@ -121,12 +148,11 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                                 )}
                               />
                               {item.name}
-                              {
-                                item.name === "Messages" &&
+                              {item.name === "Messages" && (
                                 <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
                                   {0}
                                 </div>
-                              }
+                              )}
                             </Link>
                           </li>
                         );
@@ -186,12 +212,11 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
                             )}
                           />
                           {item.name}
-                          {
-                            item.name === "Messages" &&
+                          {item.name === "Messages" && (
                             <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
                               {0}
                             </div>
-                          }
+                          )}
                         </Link>
                       </li>
                     );

@@ -23,25 +23,19 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useState } from "react";
-import TransactionDetails from "./TransactionDetail";
-import InitiatePayout from "./InitiatePayout";
-import { Awaiting_columnFn } from "./columns/awaitting_payout_column";
-import { Completed_ColumnFN } from "./columns/completed-payout_column";
-import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
+import TransactionDetails from "../../wallet/_components/TransactionDetail";
+import { TransactionColumn } from "./columns/TransactionColum";
+import Pharm_TransactionDetailss from "./PharmacyTransactionDetails";
 
-const WalletTable = ({
+const TransactionTable = ({
   data,
-  type,
-  walletType,
   hasPagination = false,
   metaData,
   setPageCount,
   isLoading = false,
 }: {
   data: any;
-  type: string;
-  walletType?: "product_wallet" | "loan_wallet";
   hasPagination?: boolean;
   metaData?: {
     links: any;
@@ -60,25 +54,11 @@ const WalletTable = ({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenPayout,
-    onOpen: onOpenPayout,
-    onClose: onClosePayout,
-  } = useDisclosure();
-
-  // Get selected column
-  const getSelectColumn = () => {
-    return type === "completed"
-      ? Completed_ColumnFN(walletType, onOpen, onOpenPayout)
-      : type === "history"
-      ? History_ColumnFN(walletType, onOpen, onOpenPayout)
-      : Awaiting_columnFn(walletType, onOpen, onOpenPayout);
-  };
 
   // table
   const table = useReactTable({
     data: data,
-    columns: getSelectColumn(),
+    columns: TransactionColumn(onOpen),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -106,8 +86,8 @@ const WalletTable = ({
     <div>
       {data?.length === 0 ? (
         <EmptyOrder
-          heading={`No Wallet Yet`}
-          content={`You currently have no wallet. All wallets will appear here.`}
+          heading={`No History Yet`}
+          content={`No transaction has been made by this user. All transactions will appear here.`}
         />
       ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -149,14 +129,9 @@ const WalletTable = ({
           )}
         </TableContainer>
       )}
-      <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
-      <InitiatePayout
-        isOpen={isOpenPayout}
-        onClose={onClosePayout}
-        walletType={walletType}
-      />
+      <Pharm_TransactionDetailss isOpen={isOpen} onClose={onClose} type="" />
     </div>
   );
 };
 
-export default WalletTable;
+export default TransactionTable;

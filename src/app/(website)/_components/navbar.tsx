@@ -61,10 +61,10 @@ const Navbar = () => {
             </button>
           </div>
           <div className="max-w-7xl mx-auto hidden lg:flex justify-between items-center space-x-6">
-            <Link href="/#home" className="text-black hover:text-blue-700">
+            <Link href="/home" className="text-black hover:text-blue-700">
               Home
             </Link>
-            <Link href="/#API" className="text-black hover:text-blue-700">
+            <Link href="/api" className="text-black hover:text-blue-700">
               API
             </Link>
             <Link href="/faq" className="text-black hover:text-blue-700">

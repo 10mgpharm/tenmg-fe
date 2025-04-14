@@ -23,25 +23,18 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useState } from "react";
-import TransactionDetails from "./TransactionDetail";
-import InitiatePayout from "./InitiatePayout";
-import { Awaiting_columnFn } from "./columns/awaitting_payout_column";
-import { Completed_ColumnFN } from "./columns/completed-payout_column";
-import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
+import { WalletColumn_FN } from "./columns/WalletColumn";
+import TransactionDetails from "../../wallet/_components/TransactionDetail";
 
 const WalletTable = ({
   data,
-  type,
-  walletType,
   hasPagination = false,
   metaData,
   setPageCount,
   isLoading = false,
 }: {
   data: any;
-  type: string;
-  walletType?: "product_wallet" | "loan_wallet";
   hasPagination?: boolean;
   metaData?: {
     links: any;
@@ -60,25 +53,11 @@ const WalletTable = ({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenPayout,
-    onOpen: onOpenPayout,
-    onClose: onClosePayout,
-  } = useDisclosure();
-
-  // Get selected column
-  const getSelectColumn = () => {
-    return type === "completed"
-      ? Completed_ColumnFN(walletType, onOpen, onOpenPayout)
-      : type === "history"
-      ? History_ColumnFN(walletType, onOpen, onOpenPayout)
-      : Awaiting_columnFn(walletType, onOpen, onOpenPayout);
-  };
 
   // table
   const table = useReactTable({
     data: data,
-    columns: getSelectColumn(),
+    columns: WalletColumn_FN(onOpen),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -150,11 +129,6 @@ const WalletTable = ({
         </TableContainer>
       )}
       <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
-      <InitiatePayout
-        isOpen={isOpenPayout}
-        onClose={onClosePayout}
-        walletType={walletType}
-      />
     </div>
   );
 };
