@@ -46,7 +46,7 @@ const ActivityLogs = () => {
                 const response = await requestClient({ token }).get(url);
 
                 if (response.status === 200 && response.data.data) {
-                    console.log(response.data);
+                    // console.log(response.data);
                     setData(response.data.data.data || []);
                     setPagination_link(response.data.data.links || []);
                     setTotalItems(response.data.data.total || 0);
