@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { classNames } from "@/utils";
+import { classNames, formatText } from "@/utils";
 
 const columnHelper = createColumnHelper<any>();
 
@@ -47,14 +47,14 @@ export function ColumsTransactionFN(onOpen: () => void) {
        </div>
       ),
     }),
-    columnHelper.accessor("price", {
+    columnHelper.accessor("amount", {
         header: ({ column }) => (
           <p>Price</p>
         ),
         cell: (info) => {
           return (
             <div>
-             <p className="font-medium">{info?.row?.original?.price}</p>
+             <p className="font-medium">{info?.row?.original?.amount}</p>
             </div>
           );
         },
@@ -91,17 +91,17 @@ export function ColumsTransactionFN(onOpen: () => void) {
         return (
           <div>
             <p className={classNames(
-            info?.row?.original?.status === "Pending" 
+            info?.row?.original?.status === "DEBIT" 
             ? "bg-[#FFFAEB] text-[#F79009]" 
             : info?.row?.original?.status === "Cancelled" 
             ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "Completed"
+            : info?.row?.original?.status === "CREDIT"
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
             )}>
                 <span className="w-3 h-3 rounded-full"></span>
                 {" "}
-               {info?.row?.original?.status}
+               {formatText(info?.row?.original?.status)}
             </p>
           </div>
         );

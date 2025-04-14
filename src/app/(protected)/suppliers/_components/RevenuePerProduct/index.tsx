@@ -7,6 +7,16 @@ const RevenuePerProduct = ({data, loading}: any) => {
   const categories = data?.map((product: any) => product.name);
   const revenues = data?.map((product: any) => parseFloat(product.revenue));
 
+  const formatValue = (value: any) => {
+    if (value >= 1000000) {
+      return `₦${(value / 1000000).toFixed(1)}M`;
+    } else if (value >= 1000) {
+      return `₦${(value / 1000).toFixed(1)}K`;
+    } else {
+      return `₦${value.toFixed(1)}`;
+    }
+  };
+
   const chartOptions: ApexOptions = {
     chart: {
       type: 'line',
@@ -34,20 +44,6 @@ const RevenuePerProduct = ({data, loading}: any) => {
         colors: ['#000'],
       },
     },
-    // labels: [
-    //   'Product 1',
-    //   'Product 2',
-    //   'Product 3',
-    //   'Product 4',
-    //   'Product 5',
-    //   'Product 6',
-    //   'Product 7',
-    //   'Product 8',
-    //   'Product 9',
-    //   'Product 10',
-    //   'Product 11',
-    //   'Product 12',
-    // ],
     xaxis: {
       categories
     },
@@ -57,7 +53,7 @@ const RevenuePerProduct = ({data, loading}: any) => {
         //   text: 'Values',
         // },
         labels: {
-          formatter: (val: number) => val.toFixed(0),
+          formatter: formatValue,
         },
       },
       {
@@ -80,23 +76,6 @@ const RevenuePerProduct = ({data, loading}: any) => {
     },
   ];
 
-  // const series = [
-  //   {
-  //     name: 'Indicator', // Blue bars
-  //     type: 'column',
-  //     data: [69, 42, 32, 20, 41, 11, 57, 15, 57, 94, 92, 42],
-  //   },
-  //   // {
-  //   //   name: 'Indicator', // Green bars
-  //   //   type: 'column',
-  //   //   data: [42, 50, 35, 82, 15, 15, 53, 36, 94, 52, 54, 15],
-  //   // },
-  //   // {
-  //   //   name: 'Indicator', // Orange line
-  //   //   type: 'line',
-  //   //   data: [80, 60, 55, 70, 75, 80, 95, 70, 75, 85, 92, 68],
-  //   // },
-  // ];
     
   return (
     <div className="bg-white p-5 rounded-md">
@@ -105,7 +84,7 @@ const RevenuePerProduct = ({data, loading}: any) => {
           <div className="">
               {loading ? (
               <div className="flex items-center justify-center h-80 text-gray-500">
-                  Loading chart...
+                Loading chart...
               </div>
               ) : (
                 <ChartComponent
