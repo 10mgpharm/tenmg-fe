@@ -193,12 +193,12 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                     {loanData?.customer?.reference || "N/A"}
                   </h4>
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <p className="text-sm">Vendor Information</p>
                   <h4 className="font-semibold text-sm">
                     {loanData?.business?.name || "N/A"}
                   </h4>
-                </div>
+                </div> */}
                 <div className="space-y-2">
                   <p className="text-sm">Status</p>
                   <Badge
