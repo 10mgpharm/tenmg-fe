@@ -14,7 +14,8 @@ import Link from "next/link";
 import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession, WalletResponseData } from "@/types";
+import { BankDto, NextAuthUserSession, WalletResponseData } from "@/types";
+import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 export interface BankInfo {
   accountName: string;
   accountNumber: string;
@@ -29,10 +30,16 @@ interface WalletProps {
   bankAccount: BankInfo;
 }
 
+interface SelectOption {
+  label: string;
+  value: number;
+}
+
 const Wallet = () => {
 
   const [loading, setLoading] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
+  const [banks, setBanks] = useState<SelectOption[] | null>(null);
   const [walletBalance, setWalletBalance] = useState<WalletProps>();
   const [transactions, setTransactions] = useState<WalletResponseData>();
   const hasAccountNumber = false;
@@ -40,6 +47,31 @@ const Wallet = () => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
+
+  const fetchingBankList = async () => {
+    try {
+      const response = await getBankList(token);
+      if (response.status === "error") {
+        setBanks([]);
+      } else {
+        const bankList: BankDto[] = response.data;
+        setBanks(
+          bankList.map((bank) => ({
+            label: bank.name,
+            value: bank.code,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching bank list:", error);
+      setBanks([]);
+    }
+  }
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingBankList();
+  }, [token]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -126,7 +158,7 @@ const Wallet = () => {
             </div>
             <Image src={drugImage} alt="" className="-ml-10" />
           </div>
-          {walletBalance?.bankAccount ? (
+          {!walletBalance?.bankAccount ? (
             <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
               <div className="flex items-center justify-between">
                 <div className="py-1 px-2 rounded-full bg-white">
@@ -200,6 +232,7 @@ const Wallet = () => {
       <AddAccount 
       isOpen={isOpen} 
       onClose={onClose} 
+      banks={banks}
       />
       <WithdrawFunds
         isOpen={isOpenWithdraw}

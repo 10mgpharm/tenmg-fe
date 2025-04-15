@@ -12,6 +12,8 @@ import {
     FormControl,
     FormLabel,
     Input,
+    Select,
+    Text,
   } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -24,17 +26,26 @@ interface IFormInput {
   accountName: string;
   bankCode: string;
 }
+interface SelectOption {
+  label: string;
+  value: number;
+}
 
-const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) => {
+const AddAccount = ({isOpen, onClose, banks }: {isOpen: boolean, onClose: () => void; banks: SelectOption[] }) => {
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
   const [isLoading, setIsLoading ] = useState(false);
+  const [accountVerificationError, setAccountVerificationError] = useState<
+    string | null
+  >(null);
   
   const {
     register,
     setValue,
+    trigger,
+    getValues,
     formState: { errors },
     handleSubmit,
   } = useForm<IFormInput>({
@@ -46,6 +57,30 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
       accountNumber: "",
     }
   });
+
+  // const verifyingBankAccount = async () => {
+  //   const accountNumber = getValues("accountNumber");
+  //   const bankCode = getValues("bankCode");
+  //   setAccountVerificationError(null);
+  //   try {
+  //     const { data, status, message } = await verifyBankAccount(token, {
+  //       accountNumber: accountNumber,
+  //       bankCode: bankCode,
+  //     });
+  //     if (status === "error") {
+  //       setAccountVerificationError(message);
+  //     } else {
+  //       console.log(data)
+  //       // if (data.success) {
+  //       //   setValue("accountName", data?.data?.accountName);
+  //       // } else {
+  //       //   setAccountVerificationError(data?.message);
+  //       // }
+  //     }
+  //   } catch (error) {
+  //     setAccountVerificationError("Verification failed");
+  //   }
+  // }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
@@ -64,6 +99,8 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
     }
   }
 
+  console.log(getValues())
+
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -72,21 +109,35 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
           <ModalCloseButton />
           <ModalBody>
             <form className='space-y-4 mb-6' onSubmit={handleSubmit(onSubmit)}>
-              <FormControl isInvalid={!!errors.bankName}>
-                <FormLabel>Bank Name</FormLabel>
-                <Input 
-                id="bankName"
-                name="bankName"
-                placeholder="e.g GT Bank" 
-                type="text"
+              <FormControl
+                className="col-span-2"
                 isInvalid={!!errors.bankName}
-                _focus={{
-                  border: !!errors.bankName ? "red.300" : "border-gray-300",
-                }}
-                {...register("bankName", {
-                  required: true,
-                })}
-                />
+              >
+                <Select
+                  placeholder="Choose Bank"
+                  {...register("bankCode", {
+                    required: "Please select a bank",
+                  })}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    const selectedText =
+                      e.target.options[e.target.selectedIndex].text;
+                    setValue("bankCode", selectedValue);
+                    setValue("bankName", selectedText);
+                    trigger(["bankCode", "bankName"]);
+                  }}
+                >
+                  {banks?.map((bank, index) => (
+                    <option key={index} value={bank.value}>
+                      {bank.label}
+                    </option>
+                  ))}
+                </Select>
+                {errors.bankName && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.bankName.message}
+                  </Text>
+                )}
               </FormControl>
               <FormControl isInvalid={!!errors.accountNumber}>
                 <FormLabel>Account Number</FormLabel>
@@ -109,7 +160,7 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                 <Input 
                 id="accountName"
                 name="accountName"
-                placeholder="Chidi Victor 1" 
+                placeholder="Chidi Victor" 
                 type="text"
                 isInvalid={!!errors.accountName}
                 _focus={{
@@ -143,7 +194,12 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                 name="bankCode"
                 placeholder="e.g 139-0568" 
                 type="number"
+                disabled
                 isInvalid={!!errors.bankCode}
+                _disabled={{
+                  color: "gray.700",
+                  opacity: 1,
+                }}
                 _focus={{
                   border: !!errors.bankCode ? "red.300" : "border-gray-300",
                 }}
@@ -152,22 +208,6 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                 })}
                 />
               </FormControl>
-              {/* <FormControl isInvalid={!!errors.otp}>
-                <FormLabel>Routing Number/Sort Code</FormLabel>
-                <Input 
-                id="otp"
-                name="otp"
-                placeholder="e.g 12345" 
-                type="text"
-                isInvalid={!!errors.otp}
-                _focus={{
-                  border: !!errors.otp ? "red.300" : "border-gray-300",
-                }}
-                {...register("otp", {
-                  required: true,
-                })}
-                />
-              </FormControl> */}
               <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
                 Add Account
               </Button>
