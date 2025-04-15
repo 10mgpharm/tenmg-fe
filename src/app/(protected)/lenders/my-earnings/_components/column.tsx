@@ -85,7 +85,7 @@ export function MyEarningsColumn(
     }),
 
     columnHelper.accessor("id", {
-      header: ({ column }) => <p className="text-center">Actions</p>,
+      header: ({ column }) => <p className="">Actions</p>,
       cell: (info) => {
         return (
           <div className="">

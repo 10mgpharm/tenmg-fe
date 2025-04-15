@@ -119,6 +119,7 @@ export interface CustomerData {
   email: string;
   phone: string;
   score?: number;
+  scoreTotal?: number;
   active: number;
   category?: string | null;
   reference: string | null;

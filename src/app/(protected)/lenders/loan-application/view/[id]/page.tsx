@@ -12,6 +12,7 @@ import { getStatusColorScheme, handleServerErrorMessage } from "@/utils";
 import { formatAmount } from "@/utils/formatAmount";
 import Loader from "@/app/(protected)/admin/_components/Loader";
 
+// TODO: Make this page a reusable component
 export default function LoanViewPage({ params }: { params: { id: string } }) {
   const router = useRouter();
 
@@ -43,15 +44,15 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
   }, [fetchLoanDetails, sessionToken]);
 
   const creditScoreValue =
-    loanData?.customer?.lastEvaluationHistory?.creditScore?.scoreValue || 0;
+    loanData?.customer?.score || 0;
   const creditScoreTotal =
-    loanData?.customer?.lastEvaluationHistory?.creditScore?.scoreTotal || 0;
+    loanData?.customer?.scoreTotal || 0;
 
   const performingStatus =
     loanData?.customer?.lastEvaluationHistory?.status || "INITIATED";
 
   const category =
-    loanData?.customer?.lastEvaluationHistory?.creditScore?.category || "N/A";
+    loanData?.customer?.category || "N/A";
 
   const creditScoreResult =
     loanData?.customer?.lastEvaluationHistory &&
@@ -193,12 +194,12 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                     {loanData?.customer?.reference || "N/A"}
                   </h4>
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <p className="text-sm">Vendor Information</p>
                   <h4 className="font-semibold text-sm">
                     {loanData?.business?.name || "N/A"}
                   </h4>
-                </div>
+                </div> */}
                 <div className="space-y-2">
                   <p className="text-sm">Status</p>
                   <Badge
@@ -234,7 +235,9 @@ export default function LoanViewPage({ params }: { params: { id: string } }) {
                 </div>
                 <div className="space-y-0.5 my-2">
                   <p className="text-sm font-thin ">Tenure</p>
-                  <h4 className="font-semibold text-sm">6 Months</h4>
+                  <h4 className="font-semibold text-sm">
+                    {loanData?.durationInMonths || "N/A"} Months
+                  </h4>
                 </div>
                 <div className="space-y-0.5 my-2">
                   <p className="text-sm font-thin ">Instalment Amount:</p>
