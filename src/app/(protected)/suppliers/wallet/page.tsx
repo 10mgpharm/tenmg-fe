@@ -126,7 +126,7 @@ const Wallet = () => {
             </div>
             <Image src={drugImage} alt="" className="-ml-10" />
           </div>
-          {walletBalance?.bankAccount ? (
+          {!walletBalance?.bankAccount ? (
             <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
               <div className="flex items-center justify-between">
                 <div className="py-1 px-2 rounded-full bg-white">
@@ -199,7 +199,8 @@ const Wallet = () => {
       </div>
       <AddAccount 
       isOpen={isOpen} 
-      onClose={onClose} />
+      onClose={onClose} 
+      />
       <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
