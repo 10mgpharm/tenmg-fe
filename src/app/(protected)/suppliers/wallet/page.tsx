@@ -199,7 +199,8 @@ const Wallet = () => {
       </div>
       <AddAccount 
       isOpen={isOpen} 
-      onClose={onClose} />
+      onClose={onClose} 
+      />
       <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}

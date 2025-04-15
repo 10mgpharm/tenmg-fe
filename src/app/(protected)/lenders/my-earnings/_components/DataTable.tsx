@@ -83,11 +83,16 @@ const DataTable = ({
         myEarningsData?.length > 0 && (
           <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
-              <Thead bg={"#F2F4F7"}>
+              <Thead bg="blue.50">
                 {table?.getHeaderGroups()?.map((headerGroup) => (
                   <Tr key={headerGroup.id}>
                     {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
+                      <Th
+                        textTransform={"initial"}
+                        px="0px"
+                        key={header.id}
+                        color="primary.500"
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(

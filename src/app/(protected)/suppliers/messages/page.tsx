@@ -319,6 +319,12 @@ const Message = () => {
                                                 className="outline-none flex-1 bg-transparent" 
                                                 placeholder="Write messsage here ..."
                                                 value={newMessage}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter" && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                      handleSubmit(e);
+                                                    }
+                                                }}
                                                 />
                                             </div>
                                             {

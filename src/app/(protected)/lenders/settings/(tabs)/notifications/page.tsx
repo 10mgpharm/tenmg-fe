@@ -1,7 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Button, Spinner, Switch, Text } from "@chakra-ui/react";
+import { Spinner, Switch } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import {
   NextAuthUserSession,
@@ -13,40 +12,6 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 
 export default function Page() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-
-  const notification_card_details = [
-    {
-      title: "Customers' credit application",
-      desc: "Get notification when customers submit a credit application",
-      tag: "customer_credit_application",
-    },
-    {
-      title: "Customer Repayment [auto or manual payment]",
-      desc: "Get a notification when a repayment is done for your customers",
-      tag: "customer_repayment",
-    },
-    {
-      title: "Lender approve customer application",
-      desc: "Get a notification when a lender approves your customer's credit application",
-      tag: "lender_approve_customer",
-    },
-    {
-      title: " Loan offering",
-      desc: "Get notification when admin sends loan offer to your customer",
-      tag: "loan_offering",
-    },
-  ];
-
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
