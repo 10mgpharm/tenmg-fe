@@ -237,7 +237,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                           <Td fontSize={"14px"}>
                             <Link
                               href={
-                                `/vendors/transactions-history/${params.id}?evaluationId=${item?.id}`
+                                `/vendors/transactions-history/${item?.id}?evaluationId=${item?.id}`
                               }
                               className="text-primary-600 font-medium"
                             >

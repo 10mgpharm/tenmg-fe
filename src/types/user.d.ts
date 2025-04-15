@@ -564,6 +564,7 @@ export interface CreditScoreData {
   creditScoreResult: CreditScoreResult;
   affordability: Affordability;
   evaluation: Evaluation;
+  evaluationId: number;
   customer: CustomerData;
   vendor: Vendor;
   createdAt: string;
