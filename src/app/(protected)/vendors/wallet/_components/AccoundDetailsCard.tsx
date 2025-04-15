@@ -45,7 +45,8 @@ export default function AccoundDetailsCard() {
 
       <AddAccount
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onClose} 
+        banks={[]}      
       />
     </>
   )
