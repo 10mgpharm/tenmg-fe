@@ -38,6 +38,7 @@ import { formatAmount } from "@/utils/formatAmount";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
+import { formatAmountString } from "@/utils";
 
 const LoanManagement = () => {
   const onOpen = () => {};
@@ -156,14 +157,14 @@ const LoanManagement = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
           <OverviewCard
             title="Total Loan Amount"
-            value={loanStats ? formatAmount(loanStats?.totalLoans) : "₦0"}
+            value={loanStats ? `₦${String(formatAmountString(loanStats?.totalLoans))}` : "₦0"}
             fromColor="from-[#53389E]"
             toColor="to-[#7F56D9]"
             image={totalPattern}
           />
           <OverviewCard
             title="Total Interest"
-            value={loanStats ? formatAmount(loanStats?.totalInterest) : "₦0"}
+            value={loanStats ? `₦${String(formatAmountString(loanStats?.totalInterest))}` : "₦0"}
             fromColor="from-[#DC6803]"
             toColor="to-[#DC6803]"
             image={orderPattern}
@@ -177,7 +178,7 @@ const LoanManagement = () => {
           />
           <OverviewCard
             title="Pending Repayment"
-            value={loanStats ? formatAmount(loanStats?.pendingRepayment) : "₦0"}
+            value={loanStats ? `₦${String(formatAmountString(loanStats?.pendingRepayment))}` : "₦0"}
             fromColor="from-[#E31B54]"
             toColor="to-[#E31B54]"
             image={productPattern}

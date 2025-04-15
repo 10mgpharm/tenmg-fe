@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { classNames } from "@/utils";
+import { classNames, formatAmountString } from "@/utils";
 import { createColumnHelper } from "@tanstack/react-table";
 import { LoanData } from "@/types";
-import { formatAmount } from "@/utils/formatAmount";
 
 const columnHelper = createColumnHelper<LoanData>();
 
@@ -62,8 +61,11 @@ export function ColumsLoanFN(onOpen: () => void) {
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-            {formatAmount(info.row.original?.totalAmount)}
+            {formatAmountString(info.row.original?.capitalAmount)}
           </p>
+          <span className="text-success-600 font-normal text-xs">
+            Loan Interest: {info.row.original?.interestAmount}
+          </span>
         </div>
       ),
     }),
@@ -77,7 +79,7 @@ export function ColumsLoanFN(onOpen: () => void) {
               className={classNames(
                 info.row.original.status === "DISBURSED"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "DISBURSED"
+                  : info?.row?.original?.status === "Ongoing"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : info.row.original?.status === "INITIATED"
                   ? "bg-orange-50 text-orange-500"
@@ -120,7 +122,7 @@ export function ColumsLoanFN(onOpen: () => void) {
         return (
           <div>
             <p className="font-medium">
-              {formatAmount(totalPendingAmount.toString())}
+              {formatAmountString(totalPendingAmount.toString())}
             </p>
           </div>
         );
