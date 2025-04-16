@@ -23,11 +23,11 @@ export function Awaiting_column(
       },
     }),
     columnHelper.accessor("name", {
-      header: ({ column }) => <p className="pl-6">{"Vendor's Name"}</p>,
+      header: ({ column }) => <p className="pl-6">{"Customer's Name"}</p>,
       cell: (info) => {
         return (
           <div className="pl-6">
-            <p>{info?.row?.original?.name}</p>
+            <p>{info?.row?.original?.businessId?.contactPerson}</p>
           </div>
         );
       },
@@ -44,7 +44,7 @@ export function Awaiting_column(
       header: ({ column }) => <p className="">Date</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.date}</p>
+          <p className="font-medium">{info.row.original?.createdAt.split("T")[0]}</p>
         </div>
       ),
     }),
@@ -60,8 +60,8 @@ export function Awaiting_column(
                   ? "bg-[#FEF3F2] text-[#B42318]"
                   : info?.row?.original?.status === "Completed" ||
                     info?.row?.original?.status === "Successful"
-                  ? "text-[#027A48] bg-[#ECFDF3]"
-                  : "text-orange-500 bg-orange-50",
+                    ? "text-[#027A48] bg-[#ECFDF3]"
+                    : "text-orange-500 bg-orange-50",
                 " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
               )}
             >

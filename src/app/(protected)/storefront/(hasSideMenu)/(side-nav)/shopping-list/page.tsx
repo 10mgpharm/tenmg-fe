@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { Image, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useShoppingList } from "../../../(NoSideMenu)/storeFrontState/useShoppingList";
 import emptyCart from "@public/assets/images/emptyOrder.png";
+import EmptyScreenList from "../../../_components/(my-orders-component)/EmptyOrderScreen";
 
 export default function ShoppingListPage() {
   const session = useSession();
@@ -32,25 +33,26 @@ export default function ShoppingListPage() {
         </div>
       ) : (
         <>
-          {shoppingList?.length >= 0 ? (
+          {shoppingList?.length > 0 ? (
             <div>
               {shoppingList?.map((item) => (
                 <ShoppingListCardComponent key={item?.id} product={item} />
               ))}
             </div>
           ) : (
-            <div className="w-full h-[50vh] flex items-center justify-center">
-              <Stack textAlign="center" alignItems="center" mt={10} gap={6}>
-                <Image
-                  src={emptyCart.src}
-                  alt="Empty Cart"
-                  boxSize={{ base: "120px", md: "160px" }}
-                />
-                <Text fontSize="xl" fontWeight="medium">
-                  You do not have any items in your shopping list
-                </Text>
-              </Stack>
-            </div>
+            // <div className="w-full h-[50vh] flex items-center justify-center">
+            //   <Stack textAlign="center" alignItems="center" mt={10} gap={6}>
+            //     <Image
+            //       src={emptyCart.src}
+            //       alt="Empty Cart"
+            //       boxSize={{ base: "120px", md: "160px" }}
+            //     />
+            //     <Text fontSize="xl" fontWeight="medium">
+            //       You do not have any items in your shopping list
+            //     </Text>
+            //   </Stack>
+            // </div>
+            <EmptyScreenList />
           )}
         </>
       )}

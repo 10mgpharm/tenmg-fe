@@ -87,7 +87,7 @@ export default function EditAddressModal({
       zipCode: "",
     },
   });
-
+  // console.log("existingData", existingData);
   // Country/State/City from the library
   const [selectedCountry, setSelectedCountry] = useState<ICountry | null>(null);
   const [selectedState, setSelectedState] = useState<IState | null>(null);
@@ -207,6 +207,7 @@ export default function EditAddressModal({
       state: selectedState?.name,
       city: selectedCity?.name,
       zipCode: formData.zipCode,
+      isDefault: existingData?.isDefault || false,
     };
 
     try {

@@ -53,6 +53,8 @@ const DataTable = <T extends object>({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   // const [globalFilter, setGlobalFilter] = useState("");
 
+
+
   const table = useReactTable({
     data: data,
     columns: column,
@@ -97,9 +99,9 @@ const DataTable = <T extends object>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </Th>
                   ))}
                 </Tr>
