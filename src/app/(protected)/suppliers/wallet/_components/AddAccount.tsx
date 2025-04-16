@@ -33,18 +33,18 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
   const [isLoading, setIsLoading ] = useState(false);
   
   const {
-    control,
     register,
+    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm<IFormInput>({
-      mode: "onChange",
-      defaultValues: {
-        bankCode: "",
-        bankName: "",
-        accountName: "",
-        accountNumber: "",
-      }
+    mode: "onChange",
+    defaultValues: {
+      bankCode: "",
+      bankName: "",
+      accountName: "",
+      accountNumber: "",
+    }
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -109,14 +109,30 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                 <Input 
                 id="accountName"
                 name="accountName"
-                placeholder="Chidi Victor" 
+                placeholder="Chidi Victor 1" 
                 type="text"
                 isInvalid={!!errors.accountName}
                 _focus={{
                   border: !!errors.accountName ? "red.300" : "border-gray-300",
                 }}
+                onKeyDown={(e) => {
+                  if (/\d/.test(e.key)) {
+                    e.preventDefault(); // block numbers
+                  }
+                }}
+                onPaste={(e) => {
+                  const paste = e.clipboardData.getData('text');
+                  if (/\d/.test(paste)) {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[0-9]/g, ""); // remove numbers
+                  setValue("accountName", value);
+                }}
                 {...register("accountName", {
-                    required: true,
+                  required: true,
+                  validate: (value) => !/\d/.test(value) || "Account name should not contain numbers",
                 })}
                 />
               </FormControl>
@@ -126,7 +142,7 @@ const AddAccount = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) 
                 id="bankCode"
                 name="bankCode"
                 placeholder="e.g 139-0568" 
-                type="text"
+                type="number"
                 isInvalid={!!errors.bankCode}
                 _focus={{
                   border: !!errors.bankCode ? "red.300" : "border-gray-300",

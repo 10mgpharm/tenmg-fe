@@ -167,7 +167,9 @@ const Page = ({ params }: { params: { id: string } }) => {
             </div>
             <div className="space-y-0.5 my-2">
               <p className="text-sm font-thin ">Tenure</p>
-              <h4 className="font-semibold text-sm">6 Months</h4>
+              <h4 className="font-semibold text-sm">
+                {loanData?.durationInMonths || "N/A"} Months
+              </h4>
             </div>
             <div className="space-y-0.5 my-2">
               <p className="text-sm font-thin ">Instalment Amount:</p>

@@ -119,6 +119,7 @@ export interface CustomerData {
   email: string;
   phone: string;
   score?: number;
+  scoreTotal?: number;
   active: number;
   category?: string | null;
   reference: string | null;
@@ -564,6 +565,7 @@ export interface CreditScoreData {
   creditScoreResult: CreditScoreResult;
   affordability: Affordability;
   evaluation: Evaluation;
+  evaluationId: number;
   customer: CustomerData;
   vendor: Vendor;
   createdAt: string;

@@ -14,8 +14,9 @@ import { ColumsTransactionFN } from "./table";
 import EmptyOrder from "../../orders/_components/EmptyOrder";
 import { Table,TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import Pagination from "../../_components/Pagination";
+import { WalletData } from "@/types";
 
-const TransactionTable = ({data}: {data: any}) => {
+const TransactionTable = ({data}: {data: WalletData[]}) => {
 
     const onOpen = () => {}
     const [pageCount, setPageCount] = useState<number>(1);
@@ -63,7 +64,7 @@ const TransactionTable = ({data}: {data: any}) => {
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
-                    {table?.getHeaderGroups()?.map((headerGroup) => (
+                    {data && table?.getHeaderGroups()?.map((headerGroup) => (
                         <Tr key={headerGroup.id}>
                         {headerGroup.headers?.map((header) => (
                             <Th
@@ -83,7 +84,7 @@ const TransactionTable = ({data}: {data: any}) => {
                     ))}
                     </Thead>
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {table?.getRowModel()?.rows?.map((row) => (
+                    {data && table?.getRowModel()?.rows?.map((row) => (
                         <Tr key={row.id}>
                         {row.getVisibleCells()?.map((cell) => (
                             <Td key={cell.id} px="0px">

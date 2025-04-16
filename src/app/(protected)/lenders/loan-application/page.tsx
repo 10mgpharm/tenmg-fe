@@ -187,7 +187,7 @@ export default function LoanApplicationPage() {
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
     { option: "INITIATED", value: "INITIATED" },
-    { option: "EXPIRED", value: "EXPIRED" },
+    { option: "CANCELED", value: "CANCELED" },
   ];
 
   const overviewData: OverviewCardData[] = [
@@ -252,7 +252,7 @@ export default function LoanApplicationPage() {
             data={Array.isArray(loanData?.data) ? loanData.data : []}
             columns={ColumnsLoanFN({ handleApprove, handleDecline })}
             loading={loading || isPending}
-            metaData={loanData.meta}
+            metaData={loanData?.meta}
             setPageCount={setPageCount}
           />
         </div>

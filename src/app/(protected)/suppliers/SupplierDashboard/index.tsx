@@ -201,10 +201,10 @@ const Supplier = () => {
             <div className="mt-5">
                 <div className="flex items-center justify-between">
                     <h2 className="font-semibold text-2xl text-gray-600">Dashboard</h2>
-                    <div className="border rounded-md p-1 flex items-center gap-1.5 px-2 shadow-sm">
+                    {/* <div className="border rounded-md p-1 flex items-center gap-1.5 px-2 shadow-sm">
                         <p className="text-sm text-gray-600">Today</p>
                         <CalendarIcon className="w-4 h-4 text-gray-500 text-default-400 pointer-events-none flex-shrink-0" />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="grid grid-cols-4 gap-4 mt-5">
                     <OverviewCardWithoutBG

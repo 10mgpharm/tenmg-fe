@@ -56,6 +56,7 @@ const LoanWallet = () => {
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>({});
+  const [amount, setAmount] = useState<number>(0);
   const [transactions, setTransactions] = useState<any>([]);
 
   useEffect(() => {
@@ -177,11 +178,14 @@ const LoanWallet = () => {
         />
       )}
 
-      <WithdrawFunds
+      {/* <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
-        otpOpen={onOpenOTP}
-      />
+        wallet={wallet}
+        setAmount={setAmount}
+        onSuccess={onOpenSuccess}
+        setIsWithdraw={setIsWithdraw}
+      /> */}
 
       <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
     </div>
