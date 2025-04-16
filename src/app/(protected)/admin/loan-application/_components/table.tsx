@@ -137,8 +137,8 @@ const DataTable = () => {
 
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
-    { option: "INITIATED", value: "INITIATED" },
-    { option: "EXPIRED", value: "EXPIRED" },
+    { option: "CANCELED", value: "CANCELED" },
+    { option: "PENDING_MANDAT", value: "PENDING_MANDAT" },
   ];
 
   const table = useReactTable({

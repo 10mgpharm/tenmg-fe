@@ -161,7 +161,7 @@ const LoanApplication = () => {
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
     { option: "INITIATED", value: "INITIATED" },
-    { option: "EXPIRED", value: "EXPIRED" },
+    { option: "CANCELED", value: "CANCELED" },
   ];
 
   return (
