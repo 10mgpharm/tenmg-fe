@@ -86,7 +86,7 @@ const Wallet = () => {
   }, [token]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchingTransactions();
     fetchingWallet();
   }, [token, fetchingTransactions, fetchingWallet]);
@@ -180,16 +180,16 @@ const Wallet = () => {
                 </p>
               </div>
             </div>
-            ) : 
+          ) :
             <div className="mt-5">
               <Transaction data={transactions?.data} />
             </div>
           }
         </div>
       </div>
-      <AddAccount 
-      isOpen={isOpen} 
-      onClose={onClose} />
+      <AddAccount
+        isOpen={isOpen}
+        onClose={onClose} />
       <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}

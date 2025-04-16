@@ -26,6 +26,7 @@ import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/Withdr
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const LoanWallet = () => {
   // const awaiting = transactionData.filter((item) => item.type === "Awaiting");
@@ -101,26 +102,34 @@ const LoanWallet = () => {
     token && fetchTransactions()
   }, [token])
 
+  const [showBalance, setShowBalance] = useState(false);
 
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 ">
-        <OverviewCard
-          title=" Credit Voucher"
-          value={stats?.voucherBalance}
-          fromColor="from-[#53389E]"
-          toColor="to-[#7F56D9]"
-          image={totalPattern}
-        />
-        <OverviewCard
-          title="Available Balance"
-          value={stats?.payoutBalance}
-          fromColor="from-[#DC6803]"
-          toColor="to-[#DC6803]"
-          image={orderPattern}
-          func_btn="Withdraw Funds"
-          func={() => setOpenPayout(true)}
-        />
+        <div className="w-full relative">
+          <div className="absolute top-2 right-2 cursor-pointer z-40 text-white" onClick={() => setShowBalance(!showBalance)}>
+            {showBalance ? (<FaEye className="w-5 h-5" />) : (<FaEyeSlash className="w-5 h-5" />)}
+          </div>
+          <OverviewCard
+            title=" Credit Voucher"
+            value={showBalance ? "******" : stats?.voucherBalance}
+            fromColor="from-[#53389E]"
+            toColor="to-[#7F56D9]"
+            image={totalPattern}
+          />
+        </div>
+        <div className="w-full relative">
+          <OverviewCard
+            title="Available Balance"
+            value={showBalance ? "******" : stats?.payoutBalance}
+            fromColor="from-[#DC6803]"
+            toColor="to-[#DC6803]"
+            image={orderPattern}
+            func_btn="Withdraw Funds"
+            func={() => setOpenPayout(true)}
+          />
+        </div>
         {/* <OverviewCard
           title="Total Payout"
           value="₦50,000"
