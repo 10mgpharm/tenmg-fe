@@ -151,6 +151,12 @@ const LoanManagement = () => {
     setGlobalFilter("");
   };
 
+  const filterOptions = [
+    { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
+    { option: "ONGOING", value: "ONGOING" },
+  ];
+
   return (
     <>
       <div className="">
@@ -256,7 +262,7 @@ const LoanManagement = () => {
         onClose={onCloseFilter}
         applyFilters={applyFilters}
         clearFilters={clearFilters}
-        noStatus
+        filterOptions={filterOptions}
       />
     </>
   );
