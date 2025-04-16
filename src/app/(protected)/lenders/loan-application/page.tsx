@@ -187,7 +187,7 @@ export default function LoanApplicationPage() {
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
     { option: "INITIATED", value: "INITIATED" },
-    { option: "EXPIRED", value: "EXPIRED" },
+    { option: "CANCELED", value: "CANCELED" },
   ];
 
   const overviewData: OverviewCardData[] = [

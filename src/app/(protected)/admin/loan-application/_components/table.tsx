@@ -107,7 +107,6 @@ const DataTable = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
-  console.log("loanApplication", loanApplication);
   const tableLinks = useMemo(
     () => loanApplication?.links,
     [loanApplication?.links]
@@ -137,8 +136,8 @@ const DataTable = () => {
 
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
-    { option: "INITIATED", value: "INITIATED" },
-    { option: "EXPIRED", value: "EXPIRED" },
+    { option: "CANCELED", value: "CANCELED" },
+    { option: "PENDING_MANDAT", value: "PENDING_MANDAT" },
   ];
 
   const table = useReactTable({

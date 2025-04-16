@@ -32,6 +32,7 @@ const ActivityLogs = () => {
 
     const ITEMS_PER_PAGE = 10;
 
+    console.log("pagination_link", pagination_link)
 
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     useEffect(() => {
@@ -46,9 +47,9 @@ const ActivityLogs = () => {
                 const response = await requestClient({ token }).get(url);
 
                 if (response.status === 200 && response.data.data) {
-                    // console.log(response.data);
+                    console.log(response.data.data);
                     setData(response.data.data.data || []);
-                    setPagination_link(response.data.data.links || []);
+                    setPagination_link(response.data.data || []);
                     setTotalItems(response.data.data.total || 0);
                 } else {
                     setError("Failed to load audit logs. Please try again.");

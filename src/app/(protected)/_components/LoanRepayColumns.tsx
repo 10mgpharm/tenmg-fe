@@ -7,27 +7,20 @@ const columnHelper = createColumnHelper<RepaymentSchedule>();
 
 export function ColumnsRepaymentFN(onOpen: () => void) {
   return [
-    columnHelper.accessor("id", {
-      header: () => (
-        <div className="pl-6">
-          <p>Repayment ID</p>
-        </div>
-      ),
+    columnHelper.accessor("balance", {
+      header: ({ column }) => <p className="pl-6">Repayment Amount</p>,
       cell: (info) => (
-        <div
-          onClick={() => {
-            onOpen();
-          }}
-        >
-          <p className="pl-6">{info.row.original?.id}</p>
+        <div className="pl-6">
+          <p>₦{info.row.original?.totalAmount}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("balance", {
-      header: ({ column }) => <p>Repayment Amount</p>,
+
+    columnHelper.accessor("interest", {
+      header: ({ column }) => <p className="pl-6">Interest Amount</p>,
       cell: (info) => (
-        <div className="">
-          <p>{info.row.original?.totalAmount}</p>
+        <div className="pl-6">
+          <p>₦{info.row.original?.interest}</p>
         </div>
       ),
     }),
@@ -73,7 +66,11 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
         const paymentDate = info?.row?.original?.updatedAt;
         return (
           <div>
-            <p>{paymentDate && convertDate(paymentDate)}</p>
+            <p>
+              {info?.row?.original?.paymentStatus === "PENDING"
+                ? "N/A"
+                : paymentDate && convertDate(paymentDate)}
+            </p>
           </div>
         );
       },
@@ -82,7 +79,7 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
       header: ({ column }) => <p>Loan Amount</p>,
       cell: (info) => (
         <div className="">
-          <p>{info.row.original?.principal}</p>
+          <p>₦{info.row.original?.principal}</p>
         </div>
       ),
     }),
