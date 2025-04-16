@@ -21,7 +21,7 @@ export function ColumnsLoanFN({
     columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
-          <p>Ref ID</p>
+          <p>Application ID</p>
         </div>
       ),
       cell: (info) => (
