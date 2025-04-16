@@ -10,7 +10,7 @@ const columnHelper = createColumnHelper<ApplicationDto>();
 export function ColumnsLoanApplicationFN() {
   return [
     columnHelper.accessor("id", {
-      header: ({ column }) => <p className="pl-6"> S/N</p>,
+      header: ({ column }) => <p className="pl-6">S/N</p>,
       cell: (info) => {
         const serialNumber = info?.row?.index + 1;
         return (
@@ -24,7 +24,7 @@ export function ColumnsLoanApplicationFN() {
     columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
-          <p>Ref ID</p>
+          <p>Application ID</p>
         </div>
       ),
       cell: (info) => (
