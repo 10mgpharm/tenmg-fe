@@ -107,7 +107,6 @@ const DataTable = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
-  console.log("loanApplication", loanApplication);
   const tableLinks = useMemo(
     () => loanApplication?.links,
     [loanApplication?.links]

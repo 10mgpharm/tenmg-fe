@@ -126,7 +126,7 @@ const Page = ({ params }: { params: { id: string } }) => {
           <div className="space-y-2">
             <p className="text-sm">Reference ID</p>
             <h4 className="font-semibold text-sm">
-              {loanData?.customer?.reference || "N/A"}
+              {loanData?.customer?.identifier || "N/A"}
             </h4>
           </div>
           <div className="space-y-2">
