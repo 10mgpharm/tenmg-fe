@@ -52,6 +52,7 @@ interface EditAddressModalProps {
   id?: string; // if present -> Edit mode
   onSuccess: () => void; // callback to refresh parent data
   existingData?: {
+    isDefault: boolean;
     name?: string;
     address?: string;
     phoneNumber?: string;
