@@ -34,7 +34,6 @@ import Pagination from "../../suppliers/_components/Pagination";
 const ITEMS_PER_PAGE = 10;
 
 const Page = () => {
-
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
@@ -56,7 +55,9 @@ const Page = () => {
       setError("");
 
       //audit-logs?event=login
-      const url = searchValue ? `admin/settings/audit-logs?event=${searchValue}&page=${pageCount}&limit=${ITEMS_PER_PAGE}` : `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
+      const url = searchValue
+        ? `admin/settings/audit-logs?search=${searchValue}&page=${pageCount}&limit=${ITEMS_PER_PAGE}`
+        : `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
 
       try {
         const response = await requestClient({ token }).get(url);
@@ -100,13 +101,17 @@ const Page = () => {
 
   const meta = {
     links: data?.links,
-    currentPage: data?.currentPage
-  }
+    currentPage: data?.currentPage,
+  };
 
   return (
     <div className="p-8">
       <h2 className="text-2xl font-semibold text-gray-700 mb-2">Audit Logs</h2>
-      <SearchComponent placeholder="Search by action" onChange={(e) => setSearchValue(e.target.value)} />
+      <SearchComponent
+        placeholder="Search by user name"
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+
       <div className="mt-5">
         {loading && (
           <Flex justify="center" align="center" height="200px">
@@ -128,7 +133,7 @@ const Page = () => {
         )}
 
         {!loading && !error && data?.data.length > 0 && (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >
+          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
             <Table>
               <Thead bg={"#F2F4F7"}>
                 {table?.getHeaderGroups()?.map((headerGroup) => (
@@ -138,15 +143,15 @@ const Page = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </Th>
                     ))}
                   </Tr>
                 ))}
               </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"} >
+              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
                 {table?.getRowModel()?.rows?.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells()?.map((cell) => (
@@ -161,10 +166,7 @@ const Page = () => {
                 ))}
               </Tbody>
             </Table>
-            <Pagination
-              meta={meta}
-              setPageCount={setPageCount}
-            />
+            <Pagination meta={meta} setPageCount={setPageCount} />
           </TableContainer>
         )}
       </div>

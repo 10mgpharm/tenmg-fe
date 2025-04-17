@@ -110,32 +110,26 @@ const TopNavBar = ({
     switch (businessType) {
       case "VENDOR":
         return (
-          <Tag
-            size="sm"
-            ml="1"
-            borderRadius="full"
-            color="green.500"
-            bg="green.50"
-          >
+          <Tag size="sm" borderRadius="full" color="green.500" bg="green.50">
             <TagLabel>{convertLetterCase(businessType)}</TagLabel>
           </Tag>
         );
       case "SUPPLIER":
         return (
-          <Tag size="sm" variant="solid" bg="green.50" color="green.500">
+          <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
             {convertLetterCase(businessType)}
           </Tag>
         );
       case "ADMIN":
         return (
-          <Tag size="sm" variant="solid" bg="#E8F1F8" color="blue.700">
+          <Tag size="sm" variant="solid" bg="#0000" color="red.700">
             {convertLetterCase(businessType)}
           </Tag>
         );
       case "LENDER":
         return (
           <Tag size="sm" variant="solid" bg="blue.50" color="blue.700">
-            {convertLetterCase(businessType)}
+            {convertLetterCase(businessType)}1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
           </Tag>
         );
       default:
@@ -147,14 +141,43 @@ const TopNavBar = ({
     }
   };
 
-  const renderUserRole = (role?: string) => {
-    if (!role) return null;
-    return (
-      <Tag size="sm" variant="subtle" bg="gray.100" color="gray.700">
-        {convertLetterCase(role)}
-      </Tag>
-    );
-  };
+const renderUserRole = (role?: string) => {
+  if (!role) return null;
+
+  switch (role.toUpperCase()) {
+    case "VENDOR":
+      return (
+        <Tag size="sm" variant="solid" bg="green.100" color="green.700">
+          {convertLetterCase(role)}
+        </Tag>
+      );
+    case "SUPPLIER":
+      return (
+        <Tag size="sm" variant="solid" bg="red.100" color="red.700">
+          {convertLetterCase(role)}
+        </Tag>
+      );
+    case "ADMIN":
+      return (
+        <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
+          {convertLetterCase(role)}
+        </Tag>
+      );
+    case "LENDER":
+      return (
+        <Tag size="sm" variant="solid" bg="purple.100" color="purple.700">
+          {convertLetterCase(role)}
+        </Tag>
+      );
+    default:
+      return (
+        <Tag size="sm" variant="solid" bg="gray.100" color="gray.600">
+          {convertLetterCase(role)}
+        </Tag>
+      );
+  }
+};
+
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
