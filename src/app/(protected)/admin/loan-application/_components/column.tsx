@@ -10,7 +10,7 @@ const columnHelper = createColumnHelper<ApplicationDto>();
 export function ColumsApplicationFN() {
   return [
     columnHelper.accessor("id", {
-      header: ({ column }) => <p className="pl-6"> S/N</p>,
+      header: ({ column }) => <p className="pl-6">S/N</p>,
       cell: (info) => {
         const serialNumber = info?.row?.index + 1;
         return (
@@ -23,11 +23,11 @@ export function ColumsApplicationFN() {
     columnHelper.accessor("identifier", {
       header: () => (
         <div className="pl-6">
-          <p>Ref ID</p>
+          <p>Application ID</p>
         </div>
       ),
       cell: (info) => (
-        <div onClick={() => {}} className="flex flex-col gap-2  justify-start">
+        <div onClick={() => {}} className="flex flex-col gap-2 pl-6 justify-start">
           <p className="text-gray-500">{info.row.original?.identifier}</p>
           <span className="text-gray-700 text-xs">
             {convertDate(info.row.original?.updatedAt)}{" "}
@@ -69,7 +69,7 @@ export function ColumsApplicationFN() {
       cell: (info) => {
         return (
           <div>
-            <p className="font-medium">{info?.row?.original?.customer.score}</p>
+            <p className="font-medium flex justify-center">{info?.row?.original?.customer.score}</p>
           </div>
         );
       },

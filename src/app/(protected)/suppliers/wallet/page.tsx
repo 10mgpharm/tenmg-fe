@@ -19,11 +19,12 @@ import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 export interface BankInfo {
   accountName: string;
   accountNumber: string;
-  active: number
+  active: number;
   bankCode: string;
   bankName: string;
   id: number;
 }
+
 interface WalletProps {
   currentBalance: string;
   previousBalance: string;
@@ -36,13 +37,11 @@ interface SelectOption {
 }
 
 const Wallet = () => {
-
   const [loading, setLoading] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
   const [walletBalance, setWalletBalance] = useState<WalletProps>();
   const [transactions, setTransactions] = useState<WalletResponseData>();
-  const hasAccountNumber = false;
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -88,15 +87,13 @@ const Wallet = () => {
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await requestClient({ token: token }).get(
-        `/supplier/wallet`
-      );
+      const response = await requestClient({ token }).get(`/supplier/wallet`);
       if (response.status === 200) {
         setWalletBalance(response?.data?.data);
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
     }
   }, [token]);
@@ -104,105 +101,106 @@ const Wallet = () => {
   const fetchingTransactions = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await requestClient({ token: token }).get(
+      const response = await requestClient({ token }).get(
         `/supplier/wallet/transactions`
       );
       if (response.status === 200) {
         setTransactions(response?.data?.data);
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
     }
   }, [token]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchingTransactions();
     fetchingWallet();
   }, [token, fetchingTransactions, fetchingWallet]);
 
+  const formattedBalance = walletBalance?.currentBalance
+    ? Number(walletBalance?.currentBalance).toFixed(2)
+    : "0.00";
+
   return (
     <div className="p-8">
-      <div>
-        <h3 className="font-semibold text-xl text-gray-700 mb-4">Wallet</h3>
-        <div className="flex gap-5">
-          <div className="flex-1 bg-primary-50 pt-3 pl-5 rounded-lg flex justify-between">
-            <div>
-              <div className="mt-5 flex items-center gap-3">
-                <p className="text-xl">Wallet Balance</p>
-                <button
-                  onClick={() => setShowBalance(!showBalance)}
-                  className="focus:outline-none"
-                >
-                  {showBalance ? (
-                    <FaEye className="w-5 h-5" />
-                  ) : (
-                    <FaEyeSlash className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-              <p className="font-semibold text-2xl text-gray-700 mt-3">
-                {showBalance ? `₦${walletBalance?.currentBalance || Number(0.00).toFixed(2)}` : "******"}
-              </p>
-              {
-                walletBalance?.bankAccount &&
-                <button
-                  onClick={onOpenWithdraw}
-                  className="mt-8 bg-primary-500 px-5 py-2 text-white rounded-md"
-                >
-                  Withdraw Funds
-                </button>
-              }
+      <h3 className="font-semibold text-xl text-gray-700 mb-4">Wallet</h3>
+
+      <div className="flex gap-5">
+        {/* Balance section */}
+        <div className="flex-1 bg-primary-50 pt-3 pl-5 rounded-lg flex justify-between">
+          <div>
+            <div className="mt-5 flex items-center gap-3">
+              <p className="text-xl">Wallet Balance</p>
+              <button onClick={() => setShowBalance(!showBalance)}>
+                {showBalance ? <FaEye className="w-5 h-5" /> : <FaEyeSlash className="w-5 h-5" />}
+              </button>
             </div>
-            <Image src={drugImage} alt="" className="-ml-10" />
+            <p className="font-semibold text-2xl text-gray-700 mt-3">
+              {showBalance ? `₦${formattedBalance}` : "******"}
+            </p>
+            {walletBalance?.bankAccount && (
+              <button
+                onClick={onOpenWithdraw}
+                className="mt-8 bg-primary-500 px-5 py-2 text-white rounded-md"
+              >
+                Withdraw Funds
+              </button>
+            )}
           </div>
-          {walletBalance?.bankAccount ? (
-            <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div className="py-1 px-2 rounded-full bg-white">
-                  <p className="text-gray-600 text-sm font-semibold">
-                    {walletBalance?.bankAccount?.accountName}
-                  </p>
-                </div>
-                <div className="py-1 px-2 rounded-full bg-white">
-                  <p className="text-gray-600 text-sm font-semibold">{walletBalance?.bankAccount?.bankName}</p>
-                </div>
-              </div>
-              <div className="text-gray-100 mt-8">
-                <p className="text-sm mb-2">Payout Account</p>
-                <h2 className="text-xl font-semibold">{walletBalance?.bankAccount?.accountNumber}</h2>
-              </div>
-            </div>
-          ) : (
-            <div className="flex-1 flex flex-col justify-center bg-primary-50 p-5 rounded-lg">
-              <div className="max-w-xs mx-auto text-center">
-                <h2 className="text-xl font-medium">Add a bank account</h2>
-                <p className="mt-2">
-                  Add a bank account to enable easy withdrawal of your funds
-                </p>
-                <button
-                  onClick={onOpen}
-                  className="mt-5 bg-primary-500 px-5 py-2 text-white rounded-md"
-                >
-                  Add Account
-                </button>
-              </div>
-            </div>
-          )}
+          <Image src={drugImage} alt="wallet art" className="-ml-10" />
         </div>
-        <div className="mt-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Transactions</h3>
-            <Link
-              href={"/suppliers/wallet/transactions"}
-              className="border p-2 px-4 rounded-md"
-            >
-              View All
-            </Link>
+
+        {/* Bank info or Add account */}
+        {walletBalance?.bankAccount ? (
+          <div className="flex-1 bg-[#20232D] p-5 rounded-lg text-white">
+            <div className="flex items-center justify-between">
+              <div className="py-1 px-2 rounded-full bg-white">
+                <p className="text-gray-600 text-sm font-semibold">
+                  {walletBalance.bankAccount.accountName}
+                </p>
+              </div>
+              <div className="py-1 px-2 rounded-full bg-white">
+                <p className="text-gray-600 text-sm font-semibold">
+                  {walletBalance.bankAccount.bankName}
+                </p>
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-sm mb-2">Payout Account</p>
+              <h2 className="text-xl font-semibold">{walletBalance.bankAccount.accountNumber}</h2>
+            </div>
           </div>
-          {
+        ) : (
+          <div className="flex-1 flex flex-col justify-center bg-primary-50 p-5 rounded-lg">
+            <div className="max-w-xs mx-auto text-center">
+              <h2 className="text-xl font-medium">Add a bank account</h2>
+              <p className="mt-2">
+                Add a bank account to enable easy withdrawal of your funds
+              </p>
+              <button
+                onClick={onOpen}
+                className="mt-5 bg-primary-500 px-5 py-2 text-white rounded-md"
+              >
+                Add Account
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="mt-5">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-medium">Transactions</h3>
+          <Link
+            href={"/suppliers/wallet/transactions"}
+            className="border p-2 px-4 rounded-md"
+          >
+            View All
+          </Link>
+        </div>
+        {
           loading ? 
             <Flex justify="center" align="center" height="200px">
               <Spinner size="xl" />
@@ -228,7 +226,6 @@ const Wallet = () => {
             )
           }
         </div>
-      </div>
       <AddAccount 
       isOpen={isOpen} 
       onClose={onClose} 

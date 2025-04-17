@@ -76,9 +76,8 @@ export default function AddShoppingList() {
             !shoppingList?.some((item) => item?.productId === product?.id)
         );
         const conciseProducts = filteredProducts.map((product) => ({
-          label: `${product.name} ${product.variation?.strengthValue || ""} ${
-            product.measurement?.name || ""
-          }`,
+          label: `${product.name} ${product.variation?.strengthValue || ""} ${product.measurement?.name || ""
+            }`,
           value: product.id,
           productBrand: product.brand || "Unknown Brand",
         }));
