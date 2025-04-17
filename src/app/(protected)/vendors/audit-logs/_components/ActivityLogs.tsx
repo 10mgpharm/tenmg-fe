@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { CiFilter } from "react-icons/ci";
 import SearchInput from "../../_components/SearchInput"
 import { Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react"
 import EmptyResult from "../../_components/EmptyResult"
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
-import { AuditLogData } from "@/data/mockdata";
 import { ColumnsAuditLogFN } from "./table";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
-import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
+import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
 
 
 const ActivityLogs = () => {
@@ -24,55 +23,42 @@ const ActivityLogs = () => {
     const [searchValue, setSearchValue] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [globalFilter, setGlobalFilter] = useState<string>("");
-    const [data, setData] = useState<any[]>([]);
-    const [totalItems, setTotalItems] = useState<number>(0);
-    const [pagination_link, setPagination_link] = useState<any[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [data, setData] = useState<any>();
     const [pageCount, setPageCount] = useState<number>(1);
 
     const ITEMS_PER_PAGE = 10;
 
+    const fetchData = async (page: number) => {
+        setLoading(true);
+        setError("");
+        //audit-logs?event=login
+        const url = searchValue ? `vendor/audit-logs?event=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `vendor/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
 
-    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-    useEffect(() => {
-        const fetchData = async (page: number) => {
-            setLoading(true);
-            setError("");
-
-            //audit-logs?event=login
-            const url = searchValue ? `vendor/audit-logs?event=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `vendor/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
-
-            try {
-                const response = await requestClient({ token }).get(url);
-
-                if (response.status === 200 && response.data.data) {
-                    // console.log(response.data);
-                    setData(response.data.data.data || []);
-                    setPagination_link(response.data.data.links || []);
-                    setTotalItems(response.data.data.total || 0);
-                } else {
-                    setError("Failed to load audit logs. Please try again.");
-                }
-            } catch (err: any) {
-                console.error(err);
-                setError("An unexpected error occurred while fetching audit logs.");
-            } finally {
-                setLoading(false);
+        try {
+            const response = await requestClient({ token }).get(url);
+            if (response.status === 200 && response.data.data) {
+                setData(response.data.data || []);
+            } else {
+                setError("Failed to load audit logs. Please try again.");
             }
-        };
-
-
-        if (token) {
-            fetchData(currentPage);
+        } catch (err: any) {
+            console.error(err);
+            setError("An unexpected error occurred while fetching audit logs.");
+        } finally {
+            setLoading(false);
         }
-    }, [token, currentPage, searchValue]);
+    };
 
-    const meta = {
-        links: pagination_link
-    }
+    useEffect(() => {
+        if (token) {
+            fetchData(pageCount);
+        }
+    }, [token, pageCount, searchValue]);
+
+    const memomizedData = useMemo(() => data?.data, [data?.data]);
 
     const table = useReactTable({
-        data,
+        data: memomizedData,
         columns: ColumnsAuditLogFN(),
         state: {
             globalFilter,
@@ -102,7 +88,11 @@ const ActivityLogs = () => {
                 </div>
             </div>
             <div className="">
-                {!loading && !error && data.length > 0 && (
+                {
+                    data?.data?.length === 0 ? 
+                    <EmptyResult heading="No Activity Log" content="All Activity Logs will appear here!"/>
+                    : data?.data?.length > 1
+                    ? (
                     <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >
                         <Table>
                             <Thead bg={"#F2F4F7"}>
@@ -136,12 +126,23 @@ const ActivityLogs = () => {
                                 ))}
                             </Tbody>
                         </Table>
-                        <Pagination
-                            meta={pagination_link}
+                        <Pagination 
+                            links={data?.links}
+                            prevPageUrl={data?.prevPageUrl}
+                            nextPageUrl={data?.nextPageUrl}
+                            firstPageUrl={data?.firstPageUrl} 
+                            lastPageUrl={data?.lastPageUrl}
                             setPageCount={setPageCount}
+                            currentPage={data?.currentPage}
                         />
                     </TableContainer>
-                )}
+                )
+                : (
+                <Flex justify="center" align="center" height="200px">
+                    <Spinner size="xl" />
+                </Flex>
+                )
+            }
             </div>
         </div>
     )
