@@ -1,6 +1,6 @@
 import { RepaymentSchedule } from "@/types";
 import { classNames } from "@/utils";
-import { convertDate, getFormattedTime } from "@/utils/formatDate";
+import { convertDate, formatText, getFormattedTime } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<RepaymentSchedule>();
@@ -47,14 +47,14 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
                   ? "bg-[#FFFAEB] text-[#F79009]"
                   : info?.row?.original?.paymentStatus === "OVERDUE"
                   ? "bg-[#FEF3F2] text-[#C62828]"
-                  : info?.row?.original?.paymentStatus === "SUCCESS"
+                  : info?.row?.original?.paymentStatus === "success"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : "text-gray-500",
                 " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
               )}
             >
               <span className="rounded-full text-[1.2rem]">•</span>{" "}
-              {info?.row?.original?.paymentStatus}
+              {formatText(info?.row?.original?.paymentStatus)}
             </p>
           </div>
         );

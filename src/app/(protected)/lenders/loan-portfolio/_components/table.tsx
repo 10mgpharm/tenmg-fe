@@ -70,7 +70,7 @@ export function ColumnsLoanApplicationFN() {
               className={classNames(
                 info.row.original.status === "DISBURSED"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "DISBURSED"
+                  : info?.row?.original?.status === "Ongoing"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : info.row.original?.status === "INITIATED"
                   ? "bg-orange-50 text-orange-500"

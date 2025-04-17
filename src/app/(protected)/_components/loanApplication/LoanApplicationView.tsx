@@ -30,7 +30,6 @@ export default function LoanApplicationView({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loanData, setLoanData] = useState<LoanRequest | null>(null);
 
-  // Determine API endpoint based on user role
   const getEndpoint = useCallback(() => {
     switch (userRole) {
       case "lender":
@@ -44,7 +43,6 @@ export default function LoanApplicationView({
     }
   }, [userRole, id]);
 
-  // Fetch loan details
   const fetchLoanDetails = useCallback(async () => {
     if (!sessionToken) return;
 
@@ -107,7 +105,6 @@ export default function LoanApplicationView({
     [sessionToken, id, fetchLoanDetails, onRefresh]
   );
 
-  // Extract credit score data
   const creditScoreValue =
     loanData?.customer?.score ||
     loanData?.customer?.lastEvaluationHistory?.creditScore?.scoreValue ||
@@ -126,7 +123,6 @@ export default function LoanApplicationView({
     loanData?.customer?.lastEvaluationHistory?.creditScore?.category ||
     "N/A";
 
-  // Parse evaluation result for vendors
   let parsedEvaluationResult = null;
 
   const evaluationResult =
@@ -185,24 +181,22 @@ export default function LoanApplicationView({
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {(userRole === "lender" &&
-            (loanData?.status === "APPROVED" ||
-              loanData?.status === "EXPIRED")) ||
-          userRole === "admin" ||
-          userRole === "vendor" ? (
-            <Button
-              size="sm"
-              colorScheme="primary"
-              variant="outline"
-              onClick={() => router.push(getEvaluationPath())}
-            >
-              View Credit Score
-            </Button>
-          ) : userRole === "lender" ? (
-            <>
-              <Button
-                size="sm"
-                colorScheme="red"
+          <Button
+            size="sm"
+            colorScheme="primary"
+            variant="outline"
+            onClick={() => router.push(getEvaluationPath())}
+          >
+            View Credit Score
+          </Button>
+
+          {userRole === "lender" &&
+            (loanData?.status !== "APPROVED" &&
+              loanData?.status !== "EXPIRED") && (
+              <>
+                <Button
+                  size="sm"
+                  colorScheme="red"
                 onClick={() => handleAction("decline")}
               >
                 Decline Offer
@@ -215,7 +209,7 @@ export default function LoanApplicationView({
                 Accept Offer
               </Button>
             </>
-          ) : null}
+          )}
         </div>
       </div>
 
