@@ -163,14 +163,22 @@ const LoanManagement = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
           <OverviewCard
             title="Total Loan Amount"
-            value={loanStats ? `₦${String(formatAmountString(loanStats?.totalLoans))}` : "₦0"}
+            value={
+              loanStats
+                ? `₦${String(formatAmountString(loanStats?.totalLoans))}`
+                : "₦0"
+            }
             fromColor="from-[#53389E]"
             toColor="to-[#7F56D9]"
             image={totalPattern}
           />
           <OverviewCard
             title="Total Interest"
-            value={loanStats ? `₦${String(formatAmountString(loanStats?.totalInterest))}` : "₦0"}
+            value={
+              loanStats
+                ? `₦${String(formatAmountString(loanStats?.totalInterest))}`
+                : "₦0"
+            }
             fromColor="from-[#DC6803]"
             toColor="to-[#DC6803]"
             image={orderPattern}
@@ -184,7 +192,11 @@ const LoanManagement = () => {
           />
           <OverviewCard
             title="Pending Repayment"
-            value={loanStats ? `₦${String(formatAmountString(loanStats?.pendingRepayment))}` : "₦0"}
+            value={
+              loanStats
+                ? `₦${String(formatAmountString(loanStats?.pendingRepayment))}`
+                : "₦0"
+            }
             fromColor="from-[#E31B54]"
             toColor="to-[#E31B54]"
             image={productPattern}
@@ -263,6 +275,7 @@ const LoanManagement = () => {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         filterOptions={filterOptions}
+        isNotDate
       />
     </>
   );
