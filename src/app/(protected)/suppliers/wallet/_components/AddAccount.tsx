@@ -99,8 +99,6 @@ const AddAccount = ({isOpen, onClose, banks }: {isOpen: boolean, onClose: () => 
     }
   }
 
-  console.log(getValues())
-
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -151,9 +149,14 @@ const AddAccount = ({isOpen, onClose, banks }: {isOpen: boolean, onClose: () => 
                   border: !!errors.accountNumber ? "red.300" : "border-gray-300",
                 }}
                 {...register("accountNumber", {
-                  required: true,
+                  required: "Account Number is Required"
                 })}
                 />
+                {errors.accountNumber && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.accountNumber.message}
+                  </Text>
+                )}
               </FormControl>
               <FormControl isInvalid={!!errors.accountName}>
                 <FormLabel>Account Name</FormLabel>
@@ -182,10 +185,15 @@ const AddAccount = ({isOpen, onClose, banks }: {isOpen: boolean, onClose: () => 
                   setValue("accountName", value);
                 }}
                 {...register("accountName", {
-                  required: true,
+                  required: "Account Name is Required",
                   validate: (value) => !/\d/.test(value) || "Account name should not contain numbers",
                 })}
                 />
+                {errors.accountName && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.accountName.message}
+                  </Text>
+                )}
               </FormControl>
               <FormControl isInvalid={!!errors.bankCode}>
                 <FormLabel>Bank Code</FormLabel>
@@ -204,9 +212,14 @@ const AddAccount = ({isOpen, onClose, banks }: {isOpen: boolean, onClose: () => 
                   border: !!errors.bankCode ? "red.300" : "border-gray-300",
                 }}
                 {...register("bankCode", {
-                  required: true,
+                  required: "Bank Code is Required"
                 })}
                 />
+                {errors.bankCode && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.bankCode.message}
+                  </Text>
+                )}
               </FormControl>
               <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
                 Add Account

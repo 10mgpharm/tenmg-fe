@@ -56,13 +56,6 @@ const RevenuePerProduct = ({data, loading}: any) => {
           formatter: formatValue,
         },
       },
-      {
-        opposite: true,
-        // title: {
-        //   text: 'Line Indicator',
-        // },
-        max: 100,
-      },
     ],
     legend: {
       position: 'bottom',
