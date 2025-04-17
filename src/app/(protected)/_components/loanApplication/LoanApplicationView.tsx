@@ -232,9 +232,9 @@ export default function LoanApplicationView({
             </h4>
           </div>
           <div className="space-y-2">
-            <p className="text-sm">Reference ID</p>
+            <p className="text-sm">Application ID</p>
             <h4 className="font-semibold text-sm">
-              {loanData?.customer?.identifier || "N/A"}
+              {loanData?.identifier || "N/A"}
             </h4>
           </div>
           {userRole === "admin" && (
