@@ -60,6 +60,7 @@ interface EditAddressModalProps {
     state?: string;
     city?: string;
     zipCode?: string;
+    isDefault?: boolean;
   };
 }
 
