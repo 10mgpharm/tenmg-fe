@@ -3,12 +3,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from '@chakra-ui/react'
 import TransactionTable from './TransactionTable';
 import { WalletData } from '@/types';
 
-
 const Transaction = ({ data }: { data: WalletData[] }) => {
-
-    // const completeTransaction = transactions.filter((item) => item.status === "Completed")
-    // const pendingTransaction = transactions.filter((item) => item.status === "Pending");
-
     return (
         <div>
             <Tabs variant={"unstyled"}>

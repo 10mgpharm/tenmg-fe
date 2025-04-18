@@ -14,8 +14,8 @@ import Link from "next/link";
 import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession, WalletResponseData } from "@/types";
-
+import { BankDto, NextAuthUserSession, WalletResponseData } from "@/types";
+import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 export interface BankInfo {
   accountName: string;
   accountNumber: string;
@@ -31,15 +31,46 @@ interface WalletProps {
   bankAccount: BankInfo;
 }
 
+interface SelectOption {
+  label: string;
+  value: number;
+}
+
 const Wallet = () => {
   const [loading, setLoading] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
+  const [banks, setBanks] = useState<SelectOption[] | null>(null);
   const [walletBalance, setWalletBalance] = useState<WalletProps>();
   const [transactions, setTransactions] = useState<WalletResponseData>();
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
+
+  const fetchingBankList = async () => {
+    try {
+      const response = await getBankList(token);
+      if (response.status === "error") {
+        setBanks([]);
+      } else {
+        const bankList: BankDto[] = response.data;
+        setBanks(
+          bankList.map((bank) => ({
+            label: bank.name,
+            value: bank.code,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching bank list:", error);
+      setBanks([]);
+    }
+  }
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingBankList();
+  }, [token]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -159,41 +190,47 @@ const Wallet = () => {
           </div>
         )}
       </div>
-
-      {/* Transactions */}
       <div className="mt-5">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-medium">Transactions</h3>
-          <Link href={"/suppliers/wallet/transactions"} className="border p-2 px-4 rounded-md">
+          <Link
+            href={"/suppliers/wallet/transactions"}
+            className="border p-2 px-4 rounded-md"
+          >
             View All
           </Link>
         </div>
-
-        {loading ? (
-          <Flex justify="center" align="center" height="200px">
-            <Spinner size="xl" />
-          </Flex>
-        ) : transactions?.data?.length > 0 ? (
-          <div className="mt-5">
-            <Transaction data={transactions.data} />
-          </div>
-        ) : (
-          <div className="mt-5 max-w-sm mx-auto">
-            <div className="text-center py-12">
-              <Image src={folder} alt="" className="mx-auto" />
-              <h3 className="font-semibold text-lg text-gray-700 mt-4">
-                Nothing to show here yet
-              </h3>
-              <p className="text-gray-600">
-                You don’t have any transactions yet. When you do, they’ll appear here.
-              </p>
+        {
+          loading ? 
+            <Flex justify="center" align="center" height="200px">
+              <Spinner size="xl" />
+            </Flex>
+          : transactions?.data?.length > 0 ? (
+            <div className="mt-5">
+              <Transaction data={transactions?.data} />
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* Modals */}
-      <AddAccount isOpen={isOpen} onClose={onClose} />
+            ) : 
+            (
+              <div className="mt-5 max-w-sm mx-auto">
+                <div className="text-center py-12">
+                  <Image src={folder} alt="" className="mx-auto" />
+                  <h3 className="font-semibold text-lg text-gray-700 mt-4">
+                    Nothing to show here yet
+                  </h3>
+                  <p className="text-gray-600">
+                    You don’t have any transactions yet. When you do, they’ll
+                    appear here.
+                  </p>
+                </div>
+              </div>
+            )
+          }
+        </div>
+      <AddAccount 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      banks={banks}
+      />
       <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}

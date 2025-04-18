@@ -1,8 +1,41 @@
+"use client";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { CiFilter, CiSearch } from "react-icons/ci"
 import Transaction from "../_components/Transaction"
+import { useCallback, useEffect, useState } from "react"
+import { NextAuthUserSession, WalletResponseData } from "@/types"
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
 
-const TransactionUI = ({data}: any) => {
+const TransactionUI = () => {
+
+    const session = useSession();
+    const sessionData = session?.data as NextAuthUserSession;
+    const token = sessionData?.user?.token;
+    const [loading, setLoading] = useState(false);
+    const [transactions, setTransactions] = useState<WalletResponseData>();
+
+    const fetchingTransactions = useCallback(async () => {
+        setLoading(true);
+        try {
+          const response = await requestClient({ token }).get(
+            `/supplier/wallet/transactions`
+          );
+          if (response.status === 200) {
+            setTransactions(response?.data?.data);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
+      }, [token]);
+    
+      useEffect(() => {
+        if (!token) return;
+        fetchingTransactions();
+      }, [token, fetchingTransactions]);
+    
   return (
     <div className="p-8">
         <div className="flex items-center gap-3">
@@ -27,7 +60,7 @@ const TransactionUI = ({data}: any) => {
             </div>
         </div>
         <div className="mt-4">
-            <Transaction data={data} />
+            <Transaction data={transactions?.data} />
         </div>
     </div>
   )

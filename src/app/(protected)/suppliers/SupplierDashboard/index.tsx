@@ -231,7 +231,7 @@ const Supplier = () => {
                     <div className="flex-1 bg-white p-5 rounded-md">
                         <div className="flex items-center justify-between">
                             <h3 className="text-gray-600 font-semibold text-lg">Revenue Analytics</h3>
-                            <select className="border p-2 rounded-lg text-gray-500 outline-none">
+                            {/* <select className="border p-2 rounded-lg text-gray-500 outline-none">
                                 {
                                     options.map((option) => (
                                         <option 
@@ -242,7 +242,7 @@ const Supplier = () => {
                                         </option>
                                     ))
                                 }
-                            </select>
+                            </select> */}
                         </div>
                         {/* <EmptyCard /> */}
                         <React.Fragment>
@@ -266,7 +266,7 @@ const Supplier = () => {
                     <div className="flex-1 bg-white p-5 rounded-md">
                         <div className="flex items-center justify-between">
                             <h3 className="text-gray-600 font-semibold text-lg">Stock Status</h3>
-                            <select className="border p-2 rounded-lg text-gray-500 outline-none">
+                            {/* <select className="border p-2 rounded-lg text-gray-500 outline-none">
                                 {
                                     options.map((option) => (
                                         <option 
@@ -277,7 +277,7 @@ const Supplier = () => {
                                         </option>
                                     ))
                                 }
-                            </select>
+                            </select> */}
                         </div>
                         {/* <EmptyCard /> */}
                         <React.Fragment>
@@ -300,7 +300,10 @@ const Supplier = () => {
                     </div>
                 </div>
                 <div className="mt-5">
-                   <RevenuePerProduct data={data?.analytics?.revenuePerProduct} loading={loading}/>
+                   <RevenuePerProduct 
+                   data={data?.analytics?.revenuePerProduct} 
+                   loading={loading}
+                   />
                 </div>
             </div>
             <CompleteAccountModal

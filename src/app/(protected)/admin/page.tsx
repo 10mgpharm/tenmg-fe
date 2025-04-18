@@ -64,8 +64,8 @@ const Admin = () => {
     fetchingOverview();
   }, [token]);
 
-    const loanData = data?.loans?.data?.slice(0, 4);
-    const memoizedData = useMemo(() => loanData, [loanData]);
+  const loanData = data?.loans?.data?.slice(0, 4);
+  const memoizedData = useMemo(() => loanData, [loanData]);
 
   const table = useReactTable({
     data: memoizedData,
@@ -119,6 +119,8 @@ const Admin = () => {
       percentage: "2.35%",
     },
   ]
+
+  console.log(data)
 
   return (
     <div className="p-8">
