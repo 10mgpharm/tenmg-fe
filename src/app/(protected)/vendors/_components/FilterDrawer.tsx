@@ -16,12 +16,16 @@ import {
 } from "@chakra-ui/react";
 import { Controller, useForm } from "react-hook-form";
 import DateRange from "../../_components/DateRange";
+import { formatDateRange } from "@/lib/dateFormatter";
+import { IApplyFilters } from "../loan-applications/page";
 
 interface IFormInput {
   endDate?: Date | null;
   startDate?: Date | null;
   status?: string;
 }
+
+
 
 interface FilterOptions {
   option: string;
@@ -39,7 +43,7 @@ const FilterDrawer = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  applyFilters?: (filters: IFormInput) => void;
+  applyFilters?: (filters: any) => void;
   clearFilters?: () => void;
   filterOptions?: FilterOptions[];
   isNotDate?: boolean;
@@ -47,7 +51,7 @@ const FilterDrawer = ({
 }) => {
   const {
     handleSubmit,
-    formState: {},
+    formState: { },
     control,
     watch,
     setValue,
@@ -56,8 +60,16 @@ const FilterDrawer = ({
     mode: "onChange",
   });
 
+  //   {
+  //     "status": "",
+  //     "startDate": "2025-04-07T23:00:00.000Z",
+  //     "endDate": "2025-04-18T23:00:00.000Z"
+  // }
   const onSubmit = (data: IFormInput) => {
-    applyFilters(data);
+    // console.log('data', data)
+    const refData = { ...data, startDate: formatDateRange(data.startDate, false), endDate: formatDateRange(data.endDate, true) };
+    // console.log('refData', refData)
+    applyFilters(refData);
     onClose();
   };
 

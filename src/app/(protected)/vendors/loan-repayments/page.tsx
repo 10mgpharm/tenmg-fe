@@ -45,9 +45,9 @@ const LoanRepayments = () => {
   }, [token, pageCount, debouncedSearch]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchingLoans();
-  },[token, fetchingLoans])
+  }, [token, fetchingLoans])
 
   const table = useReactTable({
     data: loanRepaymentData ? loanRepaymentData : [],
@@ -66,7 +66,7 @@ const LoanRepayments = () => {
       <h3 className="font-semibold text-2xl">Loan Repayment</h3>
       <div className="flex justify-between">
         <div className="mb-5">
-          <div className="flex items-center gap-3 mt-5">
+          <div className="flex items-center gap-3 mt-5 flex-wrap">
             <SearchInput
               placeholder="Search for a loan"
               value={globalFilter}
@@ -82,7 +82,7 @@ const LoanRepayments = () => {
           </div>
         </div>
       </div>
-      <div className="">
+      <div className="w-full">
         {loading ? (
           <Flex justify="center" align="center" height="200px">
             <Spinner size="xl" />
@@ -93,53 +93,69 @@ const LoanRepayments = () => {
             content={`No active loans repayment yet. Once you've a repaid loan, the details will appear here.`}
           />
         ) : (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-          <Table>
-            <Thead bg={"blue.50"}>
-              {loanRepaymentData && table?.getHeaderGroups()?.map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers?.map((header) => (
-                    <Th
-                      textTransform={"initial"}
-                      px="0px"
-                      key={header.id}
-                      color={"primary.500"}
-                      fontWeight={"500"}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+          <TableContainer
+            border="1px solid #F9FAFB"
+            borderRadius="10px"
+            overflowX="auto"
+            w="100%"
+          >
+            <Table variant="simple" size="sm">
+              <Thead bg="blue.50">
+                {loanRepaymentData && table?.getHeaderGroups()?.map((headerGroup) => (
+                  <Tr key={headerGroup.id}>
+                    {headerGroup.headers?.map((header) => (
+                      <Th
+                        key={header.id}
+                        textTransform="initial"
+                        px={{ base: "8px", md: "16px" }}
+                        minW="120px"
+                        whiteSpace="nowrap"
+                        color="primary.500"
+                        fontWeight="500"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                    </Th>
+                      </Th>
+                    ))}
+                  </Tr>
+                ))}
+              </Thead>
+
+              <Tbody bg="white" color="#606060" fontSize="14px">
+                {loanRepaymentData?.length &&
+                  table?.getRowModel()?.rows?.map((row) => (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells()?.map((cell) => (
+                        <Td
+                          key={cell.id}
+                          px={{ base: "8px", md: "16px" }}
+                          minW="120px"
+                          whiteSpace="nowrap"
+                          overflow="hidden"
+                          textOverflow="ellipsis"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Td>
+                      ))}
+                    </Tr>
                   ))}
+
+                <Tr>
+                  {/* Optional: Pagination row */}
                 </Tr>
-              ))}
-            </Thead>
-            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {loanRepaymentData?.length && table?.getRowModel()?.rows?.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="0px">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-              <Tr>
-                {/* <Td py={4} w="full" colSpan={6}>
-                  <Pagination meta={tableData} setPageCount={setPageCount} />
-                </Td> */}
-              </Tr>
-            </Tbody>
-          </Table>
-        </TableContainer>
+              </Tbody>
+            </Table>
+          </TableContainer>
+
         )
-      }
+        }
       </div>
     </div>
   )

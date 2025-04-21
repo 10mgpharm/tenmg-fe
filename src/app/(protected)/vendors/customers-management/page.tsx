@@ -38,6 +38,8 @@ import { useDebouncedValue } from "@/utils/debounce";
 import UploadModal from "../_components/UploadModal";
 import { ConfirmationModal } from "./_components/ConfirmationModal";
 import { dateToString } from "@/utils/formatDate";
+import { formatDateRange } from "@/lib/dateFormatter";
+import { IApplyFilters } from "../loan-applications/page";
 
 export interface IFilterInput {
   endDate?: Date | null;
@@ -89,10 +91,12 @@ const CustomerManagement = () => {
       query += `&status=${status}`;
     }
     if (createdAtStart) {
-      query += `&createdAtStart=${dateToString(createdAtStart)}`;
+      // query += `&createdAtStart=${dateToString(createdAtStart)}`;
+      query += `&createdAtStart=${formatDateRange(createdAtStart, false)}`;
     }
     if (createdAtEnd) {
-      query += `&createdAtEnd=${dateToString(createdAtEnd)}`;
+      query += `&createdAtEnd=${formatDateRange(createdAtStart, false)}`;
+      // query += `&createdAtEnd=${dateToString(createdAtEnd)}`;
     }
 
     try {
@@ -180,7 +184,7 @@ const CustomerManagement = () => {
   /**
    * Handle the filters
    */
-  const applyFilters = (filters: IFilterInput) => {
+  const applyFilters = (filters: IApplyFilters) => {
     setCreatedAtStart(filters.startDate || null);
     setCreatedAtEnd(filters.endDate || null);
     setStatus(filters.status || "");
@@ -223,9 +227,9 @@ const CustomerManagement = () => {
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Customers Management</h3>
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-wrap">
         <div className="mb-5">
-          <div className="flex items-center gap-3 mt-5">
+          <div className="flex items-center gap-3 mt-5 flex-wrap">
             <SearchInput
               placeholder="Search for a Customer"
               value={globalFilter}
@@ -257,15 +261,20 @@ const CustomerManagement = () => {
             <Spinner size="xl" />
           </Flex>
         ) : tableData && tableData.data.length !== 0 ? (
-          <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-            <Table>
+          <TableContainer border="1px solid #F9FAFB"
+            borderRadius="10px"
+            overflowX="auto"
+            w="100%">
+            <Table variant="simple" size="sm">
               <Thead bg="blue.50">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <Tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
                       <Th
                         textTransform="initial"
-                        px="0px"
+                        px={{ base: "8px", md: "16px" }}
+                        minW="120px"
+                        whiteSpace="nowrap"
                         key={header.id}
                         color="primary.500"
                         fontWeight="500"
@@ -273,9 +282,9 @@ const CustomerManagement = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>
@@ -285,7 +294,9 @@ const CustomerManagement = () => {
                 {table.getRowModel().rows.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} px="0px">
+                      <Td key={cell.id} px={{ base: "8px", md: "16px" }}
+                        minW="120px"
+                        whiteSpace="nowrap">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
