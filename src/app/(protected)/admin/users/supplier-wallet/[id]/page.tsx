@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import { ArrowLeft, ListFilter } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -14,7 +14,16 @@ import WalletTable from "../../_components/WalletTable";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
-const Wallet = () => {
+import Link from "next/link";
+import Image from "next/image";
+
+const Wallet = ({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}) => {
   const [isLoading, setIsloading] = useState(false);
   const router = useRouter();
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
@@ -90,17 +99,36 @@ const Wallet = () => {
               </Text>
             </Flex>
             <h3 className="font-bold pt-3 text-[20px] ">
-              Onyejekwe Ugonna Wallet
+              Onyejekwe Ugonna Wallet{" "}
+              <span className="bg-[#FFF1F3] text-[#C01048] font-medium text-[14px] ml-5 px-6 py-3 rounded-full">
+                Supplier
+              </span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 c">
-              <OverviewCard
-                title="Total Commission Earned"
-                value="₦5,600"
-                fromColor="from-[#53389E]"
-                toColor="to-[#7F56D9]"
-                image={totalPattern}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-7 c">
+              <div
+                className={`bg-gradient-to-r from-[#53389E] to-[#7F56D9] rounded-lg relative  pt-8 sm:pt-10  lg:pt-12 px-6`}
+              >
+                <div className="flex ">
+                  <div className="">
+                    <p className="text-white text-[15px] lg:text-lg font-medium mb-1">
+                      {"Total Commission Earned"}
+                    </p>
+                    <p className="font-bold text-white text-[18px] sm:text-[20px] lg:text-3xl">
+                      {"₦5,600"}
+                    </p>
+                  </div>
+                </div>
+                <p className="flex flex-col  pt-5 pb-5 text-white/70  text-[15px]">
+                  Last payment date:
+                  <span>2 march, 2025</span>
+                </p>
+
+                <div className="absolute top-3 inset-x-0 mx-auto">
+                  <Image src={totalPattern} alt="" className="mx-auto" />
+                </div>
+              </div>
+
               <OverviewCard
                 title="Total Payouts to Suppliers"
                 value="₦2,300"
@@ -118,27 +146,16 @@ const Wallet = () => {
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-6 pb-4">
-              <h3 className="font-semibold text-[20px]">Transactions</h3>
+              <h3 className="font-semibold text-[18px]">Recent Transactions</h3>
 
-              <div className="flex items-center gap-2">
-                <SearchInput
-                  placeholder="Search"
-                  value={searchValue}
-                  onChange={() => setSearchValue}
-                />
-
-                <button
-                  className="border-gray-300 h-[43px]  border rounded-md px-3 cursor-pointer hover:bg-gray-100"
-                  onClick={onOpenFilter}
-                >
-                  <ListFilter className="text-[16px] " />
-                </button>
-              </div>
+              <Link href={`/admin/users/supplier-wallet/view-all/${params.id}`}>
+                <Button variant={"outline"}>View all</Button>
+              </Link>
             </div>
 
             <WalletTable
               data={history}
-              hasPagination
+              hasPagination={false}
               metaData={metaData}
               setPageCount={setPageCount}
             />
