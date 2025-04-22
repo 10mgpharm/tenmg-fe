@@ -239,8 +239,8 @@ const LoanDetailView = ({
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
                   ₦
-                  {data?.application?.interestRate
-                    ? formatAmountString(data?.application?.interestRate)
+                  {data?.interestAmount
+                    ? formatAmountString(data?.interestAmount)
                     : "0.00"}
                 </Text>
               </Stack>
@@ -249,7 +249,7 @@ const LoanDetailView = ({
                   Total Repayment
                 </Text>
                 <Text fontWeight={500} fontSize={"1.2rem"}>
-                  ₦{formatAmountString(data?.application?.totalAmount) || "0.00"}
+                  ₦{formatAmountString(data?.totalAmount) || "0.00"}
                 </Text>
               </Stack>
               <Stack>

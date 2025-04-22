@@ -80,6 +80,7 @@ const LoanTable = ({
                 <Th
                   key={header.id}
                   textTransform="initial"
+                  py={3}
                   px={{ base: "8px", md: "16px" }}
                   minW="120px"
                   whiteSpace="nowrap"

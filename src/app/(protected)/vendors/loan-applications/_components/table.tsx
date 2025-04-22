@@ -23,7 +23,7 @@ export function ColumnsLoanApplicationFN() {
 
     columnHelper.accessor("identifier", {
       header: () => (
-        <div className="pl-6">
+        <div className="">
           <p>Application ID</p>
         </div>
       ),
@@ -94,7 +94,7 @@ export function ColumnsLoanApplicationFN() {
     columnHelper.accessor("id", {
       header: ({ column }) => <p>Action</p>,
       cell: (info) => (
-        <div className="flex items-center gap-3 px-4">
+        <div className="flex items-center gap-3">
           <Link
             href={`/vendors/loan-applications/${info.row.original?.id}`}
             className="text-primary-600 font-medium cursor-pointer "
