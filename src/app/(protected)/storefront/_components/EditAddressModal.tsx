@@ -52,7 +52,6 @@ interface EditAddressModalProps {
   id?: string; // if present -> Edit mode
   onSuccess: () => void; // callback to refresh parent data
   existingData?: {
-    isDefault: boolean;
     name?: string;
     address?: string;
     phoneNumber?: string;
@@ -60,6 +59,7 @@ interface EditAddressModalProps {
     state?: string;
     city?: string;
     zipCode?: string;
+    isDefault?: boolean;
   };
 }
 
@@ -316,8 +316,16 @@ export default function EditAddressModal({
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
                       colorScheme="gray"
-                      size={`${selectedCountry && countryPlaceholder?.length > 14 ? "sm" : "md"}`}
-                      className={`${selectedCountry && countryPlaceholder?.length > 14 ? "py-[23px]" : ""}`}
+                      size={`${
+                        selectedCountry && countryPlaceholder?.length > 14
+                          ? "sm"
+                          : "md"
+                      }`}
+                      className={`${
+                        selectedCountry && countryPlaceholder?.length > 14
+                          ? "py-[23px]"
+                          : ""
+                      }`}
                     >
                       {countryPlaceholder}
                     </MenuButton>
@@ -351,8 +359,16 @@ export default function EditAddressModal({
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
                       colorScheme="gray"
-                      size={`${selectedState && statePlaceholder?.length > 14 ? "sm" : "md"}`}
-                      className={`${selectedState && statePlaceholder?.length > 14 ? "py-[23px]" : ""}`}
+                      size={`${
+                        selectedState && statePlaceholder?.length > 14
+                          ? "sm"
+                          : "md"
+                      }`}
+                      className={`${
+                        selectedState && statePlaceholder?.length > 14
+                          ? "py-[23px]"
+                          : ""
+                      }`}
                     >
                       {statePlaceholder}
                     </MenuButton>
@@ -381,8 +397,16 @@ export default function EditAddressModal({
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
                       colorScheme="gray"
-                      size={`${selectedCity && cityPlaceholder?.length > 14 ? "sm" : "md"}`}
-                      className={`${selectedCity && cityPlaceholder?.length > 14 ? "py-[23px]" : ""}`}
+                      size={`${
+                        selectedCity && cityPlaceholder?.length > 14
+                          ? "sm"
+                          : "md"
+                      }`}
+                      className={`${
+                        selectedCity && cityPlaceholder?.length > 14
+                          ? "py-[23px]"
+                          : ""
+                      }`}
                     >
                       {cityPlaceholder}
                     </MenuButton>

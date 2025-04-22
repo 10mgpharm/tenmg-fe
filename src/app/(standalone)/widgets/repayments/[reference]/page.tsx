@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import LoanLayout from "../../_components/LoanLayout";
 import LoanProfile from "../../_components/LoanProfile";

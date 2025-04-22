@@ -36,7 +36,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ColumnsLoanApplicationFN } from "./_components/table";
-import { CustomerRecords, LoanDataProp, NextAuthUserSession } from "@/types";
+import { LoanDataProp, NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
@@ -54,17 +54,10 @@ export default function TransactionWalletPage() {
 
   const [loanStats, setLoanStats] = useState<any | null>(null);
 
-  const [allCustomers, setAllCustomers] = useState<CustomerRecords[]>();
-  const { isOpen, onClose, onOpen } = useDisclosure();
   const {
     isOpen: isOpenFilter,
     onClose: onCloseFilter,
     onOpen: onOpenFilter,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenSend,
-    onClose: onCloseSend,
-    onOpen: onOpenSend,
   } = useDisclosure();
 
   const session = useSession();

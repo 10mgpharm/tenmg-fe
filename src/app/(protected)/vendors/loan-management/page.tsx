@@ -28,6 +28,8 @@ import FilterDrawer from "../_components/FilterDrawer";
 import { IFilterInput } from "../customers-management/page";
 import { Button, Flex, HStack, useDisclosure } from "@chakra-ui/react";
 import SearchInput from "../_components/SearchInput";
+import { formatDateRange } from "@/lib/dateFormatter";
+import { IApplyFilters } from "../loan-applications/page";
 
 export interface OverviewCardData {
   title: string;
@@ -72,10 +74,10 @@ const LoanManagement = () => {
       query += `&status=${status}`;
     }
     if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+      query += `&dateFrom=${formatDateRange(createdAtStart, false)}`;
     }
     if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+      query += `&dateTo=${formatDateRange(createdAtEnd, true)}`;
     }
 
     try {
@@ -107,7 +109,7 @@ const LoanManagement = () => {
     }
   }, [token]);
 
-  const applyFilters = (filters: IFilterInput) => {
+  const applyFilters = (filters: IApplyFilters) => {
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
@@ -168,11 +170,11 @@ const LoanManagement = () => {
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Loan Management</h3>
-      <div className="grid grid-cols-4 gap-4 mt-5">
+      <div className="grid grid-cols-2  lg:grid-cols-4 gap-4 mt-5">
         <OverviewCards overviewData={overviewData} />
       </div>
-      <HStack justify={"space-between"}>
-        <Flex mt={4} gap={2}>
+      <HStack justify={"space-between"} flexWrap={"wrap"} >
+        <Flex mt={4} gap={2} wrap={"wrap"}>
           <SearchInput
             placeholder="Search for a loan"
             value={globalFilter}

@@ -45,7 +45,7 @@ const MyEarnings = () => {
 
       <div className="mt-5 flex flex-col gap-4">
         <SearchComponent
-          placeholder="Search for user"
+          placeholder="Search for a user"
           onChange={() => setSearchValue}
         />
 
