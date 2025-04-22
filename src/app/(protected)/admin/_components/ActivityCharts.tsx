@@ -3,14 +3,8 @@ import { ApexOptions } from "apexcharts";
 import ChartComponent from '../../vendors/_components/ChartComponent';
 import React from "react";
 import Link from "next/link";
-
-const user = [
-  { id: 1, name: "Fubura Dickson", pharmacyName: "Vendor's pharmacy name", amount: "₦300,0000", creditScore: "75%" },
-  { id: 2, name: "Fubura Dickson", pharmacyName: "Vendor's pharmacy name", amount: "₦300,0000", creditScore: "15%" },
-  { id: 3, name: "Fubura Dickson", pharmacyName: "Vendor's pharmacy name", amount: "₦300,0000", creditScore: "45%" },
-  { id: 4, name: "Fubura Dickson", pharmacyName: "Vendor's pharmacy name", amount: "₦300,0000", creditScore: "45%" },
-  { id: 5, name: "Fubura Dickson", pharmacyName: "Vendor's pharmacy name", amount: "₦300,0000", creditScore: "45%" },
-]
+import EmptyCard from "../../suppliers/_components/EmptyCard";
+import { Flex, Spinner } from "@chakra-ui/react";
 
 const ActivityCharts = ({data, loading}: any) => {
 
@@ -201,20 +195,20 @@ const ActivityCharts = ({data, loading}: any) => {
           </React.Fragment>
         </div>
         <div className="col-span-6 md:col-span-2">
-            <div className="bg-primary-500 flex items-center flex-col justify-center h-full w-full rounded-lg text-white py-20 md:py-0">
-                <h3 className="text-2xl font-semibold">
-                    Store Visitors
-                </h3>
-                <select className="bg-primary-300 rounded-full px-3 outline-none ring-0 py-1 mt-4">
-                    <option value="active">Today</option>
-                    <option value="paused">1 week</option>
-                    <option value="delayed">1 Month</option>
-                    <option value="canceled">All Time</option>
-                </select>
-                <h1 className="text-6xl font-bold mt-6">
-                    102.5k  
-                </h1>
-            </div>
+          <div className="bg-primary-500 flex items-center flex-col justify-center h-full w-full rounded-lg text-white py-20 md:py-0">
+            <h3 className="text-2xl font-semibold">
+              Store Visitors
+            </h3>
+            <select className="bg-primary-300 rounded-full px-3 outline-none ring-0 py-1 mt-4">
+              <option value="active">Today</option>
+              <option value="paused">1 week</option>
+              <option value="delayed">1 Month</option>
+              <option value="canceled">All Time</option>
+            </select>
+            <h1 className="text-6xl font-bold mt-6">
+              102.5k  
+            </h1>
+          </div>
         </div>
         <div className="col-span-6 md:col-span-3 bg-white border rounded-lg">
             <div className="flex items-center justify-between p-5 border-b">
@@ -233,28 +227,41 @@ const ActivityCharts = ({data, loading}: any) => {
             }
         </div>
         <div className="col-span-6 md:col-span-3 rounded-lg bg-white border w-full h-[420px] overflow-y-auto">
-            <div className="flex items-center justify-between p-5 border-b">
-              <p className="font-semibold text-base text-gray-600 md:text-lg">Loan Requests</p>
-              <Link className='text-primary-500 text-sm md:text-base font-medium' href={'/admin/loan-application'}>See All</Link>
-            </div>
-            <>
-                {user.map((items) => (
-                    <div key={items.id} className="border mx-3 sm:mx-5 my-3 p-3 sm:p-4 rounded-sm">
-                        <div className="flex items-center h-full">
-                            <p className='font-semibold text-sm'>{items.name}</p>
-                            <span className="h-[30px] sm:h-[20px] w-[0.5px] border-[0.5px] bg-[#F9F9F9] mx-2" />
-                            <p className='font-semibold text-sm'>{items.pharmacyName}</p>
-                        </div>
-                        <div className="flex items-center justify-between pt-3">
-                            <p className='text-sm'>Loan amount: <span className='font-semibold'>{items.amount}</span></p>
-                            <p className='text-sm'>Credit Score: <span className={`${
-                                items.creditScore === "75%" ? "text-green-600":
-                                items.creditScore === "45%" ? "text-orange-500": "text-red-600"
-                            } font-semibold`}>{items.creditScore}</span></p>
-                        </div>
+          <div className="flex items-center justify-between p-5 border-b">
+            <p className="font-semibold text-base text-gray-600 md:text-lg">Loan Requests</p>
+            <Link className='text-primary-500 text-sm md:text-base font-medium' href={'/admin/loan-application'}>See All</Link>
+          </div>
+          {
+            data?.loanRequests?.length === 0 ? (
+              <EmptyCard/> 
+            )
+            : data?.loanRequests?.length > 0 ? (
+              <>
+                {data?.loanRequests?.map((items: any) => (
+                  <div key={items.id} className="border mx-3 sm:mx-5 my-3 p-3 sm:p-4 rounded-sm">
+                    <div className="flex items-center h-full">
+                        <p className='font-semibold text-sm'>{items?.customer?.name}</p>
+                        <span className="h-[30px] sm:h-[20px] w-[0.5px] border-[0.5px] bg-[#F9F9F9] mx-2" />
+                        <p className='font-semibold text-sm'>{items?.business?.name}</p>
                     </div>
+                    <div className="flex items-center justify-between pt-3">
+                      <p className='text-sm'>Loan amount: <span className='font-semibold'>{items?.totalAmount}</span></p>
+                      <p className='text-sm'>Credit Score: <span className={`${
+                          items?.customer?.score > 45 ? "text-green-600":
+                          items?.customer?.score < 45 ? "text-orange-500": "text-red-600"
+                      } font-semibold`}>
+                        {items?.customer?.score}</span>
+                      </p>
+                    </div>
+                  </div>
                 ))}
-            </>
+              </>
+            ) : (
+              <Flex justify="center" align="center" height="200px">
+                <Spinner size="xl" />
+              </Flex>
+            )
+          }
         </div>
       </div>
     </div>

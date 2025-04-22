@@ -1,6 +1,6 @@
 "use client";
 
-import { Checkbox, Flex, Spinner } from '@chakra-ui/react'
+import { Flex, Spinner } from '@chakra-ui/react'
 import EmptyCard from '../../suppliers/_components/EmptyCard'
 import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
@@ -78,9 +78,7 @@ const Insight = () => {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox>
-                <span className='text-primary-500 underline'>Auto Refresh</span>
-              </Checkbox>
+              <span onClick={() => fetchOverview()} className='text-primary-500 underline cursor-pointer text-sm font-medium'>Refresh Record</span>
             </div>
         </div>
         {

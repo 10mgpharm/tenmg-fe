@@ -12,6 +12,8 @@ import {
   Thead,
   Tr,
   HStack,
+  Flex,
+  Spinner,
 } from "@chakra-ui/react";
 
 import Link from "next/link";
@@ -31,6 +33,7 @@ import ActivityCharts from "./_components/ActivityCharts";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import EmptyCard from "../suppliers/_components/EmptyCard";
 
 const Admin = () => {
 
@@ -103,7 +106,7 @@ const Admin = () => {
       percentage: "2.35%",
     },
     {
-      id: 2,
+      id: 3,
       title: "Today's Order",
       amount: `${data?.todayOrder || 0}`,
       changeType: "INCREASE",
@@ -111,16 +114,14 @@ const Admin = () => {
       percentage: "2.35%",
     },
     {
-      id: 2,
+      id: 4,
       title: "Ongoing Loan",
-      amount: `0`,
+      amount: `${data?.onGoingLoans || 0}`,
       changeType: "INCREASE",
       timeStamp: " vs. last week",
       percentage: "2.35%",
     },
   ]
-
-  console.log(data)
 
   return (
     <div className="p-8">
@@ -157,40 +158,53 @@ const Admin = () => {
           </Link>
         </HStack>
         <Stack bg={"white"}>
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-            <Table>
-              <Thead bg={"#F2F4F7"}>
-                {table?.getHeaderGroups()?.map((headerGroup, i) => (
-                  <Tr key={i}>
-                    {headerGroup.headers?.map((header, i) => (
-                      <Th textTransform={"initial"} px="0px" key={i}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                      </Th>
+          {
+            memoizedData?.length === 0 ? 
+            (
+              <EmptyCard/> 
+            )
+            : memoizedData?.length > 0 ? (
+              <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                <Table>
+                  <Thead bg={"#F2F4F7"}>
+                    {table?.getHeaderGroups()?.map((headerGroup, i) => (
+                      <Tr key={i}>
+                        {headerGroup.headers?.map((header, i) => (
+                          <Th textTransform={"initial"} px="0px" key={i}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                          </Th>
+                        ))}
+                      </Tr>
                     ))}
-                  </Tr>
-                ))}
-              </Thead>
-              <Tbody color="#606060" fontSize={"14px"}>
-                {memoizedData && table?.getRowModel()?.rows?.map((row, i) => (
-                  <Tr key={i}>
-                    {row.getVisibleCells()?.map((cell, i) => (
-                      <Td key={i} px="0px">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </Td>
+                  </Thead>
+                  <Tbody color="#606060" fontSize={"14px"}>
+                    {memoizedData && table?.getRowModel()?.rows?.map((row, i) => (
+                      <Tr key={i}>
+                        {row.getVisibleCells()?.map((cell, i) => (
+                          <Td key={i} px="0px">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </Td>
+                        ))}
+                      </Tr>
                     ))}
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            )
+            : (
+              <Flex justify="center" align="center" height="200px">
+                  <Spinner size="xl" />
+              </Flex>
+            )
+          }
         </Stack>
       </Stack>
     </div>
