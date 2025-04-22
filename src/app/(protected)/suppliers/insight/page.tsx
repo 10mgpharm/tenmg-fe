@@ -1,6 +1,6 @@
 "use client";
 
-import { Checkbox, Flex, Spinner } from '@chakra-ui/react'
+import { Flex, Spinner } from '@chakra-ui/react'
 import { useCallback, useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import EmptyCard from '../_components/EmptyCard'
@@ -19,18 +19,18 @@ const Insight = () => {
     const [filterQuery, setFilterQuery] = useState("today");
 
     const fetchOverview = useCallback(async () => {
-        setLoading(true);
-        try {
-            let query = `/supplier/insights?dateFilter=${filterQuery}`;
-            const response = await requestClient({ token: token }).get(query);
-            if (response.status === 200) {
-                setData(response.data.data);
-                setLoading(false);
-            }
-        } catch (error) {
-            console.error(error);
-            setLoading(false);
+      setLoading(true);
+      try {
+        let query = `/supplier/insights?dateFilter=${filterQuery}`;
+        const response = await requestClient({ token: token }).get(query);
+        if (response.status === 200) {
+          setData(response.data.data);
+          setLoading(false);
         }
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
     }, [token, filterQuery]);
 
     useEffect(() => {
@@ -78,9 +78,7 @@ const Insight = () => {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox>
-                <span className='text-primary-500 underline'>Auto Refresh</span>
-              </Checkbox>
+              <span onClick={() => fetchOverview()} className='text-primary-500 underline cursor-pointer text-sm font-medium'>Refresh Record</span>
             </div>
         </div>
         {
