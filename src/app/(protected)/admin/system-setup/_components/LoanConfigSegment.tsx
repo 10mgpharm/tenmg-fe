@@ -7,13 +7,24 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
 
 interface IFormInput {
   lenderInterest: number;
   mgInterest: number;
 }
 
-const LoanConfigSegment = () => {
+const LoanConfigSegment = ({
+  data,
+  refetch,
+}: {
+  data: {
+    key: string;
+    value: number;
+    group: string;
+  }[];
+  refetch: () => void;
+}) => {
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
@@ -41,7 +52,28 @@ const LoanConfigSegment = () => {
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true);
     try {
-      //   Write action
+      const response = await requestClient({ token: token }).post(
+        "/admin/settings/config",
+        {
+          settings: [
+            {
+              group: "loan",
+              key: "lenders_interest",
+              value: watch("lenderInterest"),
+            },
+            {
+              group: "loan",
+              key: "tenmg_interest",
+              value: watch("mgInterest"),
+            },
+          ],
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Saved successfully");
+        refetch();
+        reset();
+      }
     } catch (error) {
       setIsLoading(false);
       console.error(error);
@@ -59,7 +91,9 @@ const LoanConfigSegment = () => {
           </p>
         </div>
 
-        <Button onClick={handleSubmit(onSubmit)}>Save Changes</Button>
+        <Button onClick={handleSubmit(onSubmit)} isLoading={isLoading}>
+          Save Changes
+        </Button>
       </div>
 
       <form className="shadow-sm bg-white p-4 rounded-md space-y-4 mt-5">
@@ -74,6 +108,10 @@ const LoanConfigSegment = () => {
             {...register("lenderInterest", {
               required: "Enter lenders interest",
             })}
+            disabled={isLoading}
+            defaultValue={
+              data?.find((i) => i.key === "lenders_interest")?.value
+            }
           />
           {errors.lenderInterest && (
             <Text as={"span"} className="text-red-500 text-sm">
@@ -93,22 +131,14 @@ const LoanConfigSegment = () => {
             {...register("mgInterest", {
               required: "Enter 10mg interest",
             })}
+            disabled={isLoading}
+            defaultValue={data?.find((i) => i.key === "tenmg_interest")?.value}
           />
           {errors.mgInterest && (
             <Text as={"span"} className="text-red-500 text-sm">
               {errors.mgInterest?.message}
             </Text>
           )}
-        </FormControl>
-
-        <FormControl className="w-full max-w-[400px]">
-          <FormLabel>Total Interest On Each Loan (%)</FormLabel>
-          <Input
-            type={"text"}
-            disabled
-            className="!bg-gray-200"
-            value={totalInterest}
-          />
         </FormControl>
       </form>
     </div>
