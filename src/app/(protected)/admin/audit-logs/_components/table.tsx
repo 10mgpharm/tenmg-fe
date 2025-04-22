@@ -4,6 +4,10 @@ import { Badge, Box, Text } from "@chakra-ui/react";
 
 const columnHelper = createColumnHelper<AuditLogData>();
 
+// Capitalizes the first letter of any string
+const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
 export const ColumsLogFN = () => [
   columnHelper.accessor("actor", {
     header: "User",
@@ -12,15 +16,25 @@ export const ColumsLogFN = () => [
 
       if (!actor) return "Unknown";
 
+      // Add "10mg" before a capitalized role
+      const roleText = actor.role ? `10mg ${capitalize(actor.role)}` : "";
+
       return (
         <Box>
           <Text fontWeight="semibold">{actor.name || "Unknown"}</Text>
           <Text fontSize="sm" color="gray.500">
             {actor.email || "No email"}
           </Text>
-          {actor.role && (
-            <Badge mt={1} colorScheme="purple">
-              {actor.role}
+          {roleText && (
+            <Badge
+              mt={1}
+              colorScheme="purple"
+              fontSize="10px"
+              px={2}
+              py={1}
+              borderRadius="md"
+            >
+              {roleText}
             </Badge>
           )}
         </Box>
