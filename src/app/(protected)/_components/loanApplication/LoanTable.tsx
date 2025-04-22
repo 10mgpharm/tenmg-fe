@@ -66,8 +66,13 @@ const LoanTable = ({
   }
 
   return (
-    <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-      <Table>
+    <TableContainer
+      border="1px solid #F9FAFB"
+      borderRadius="10px"
+      overflowX="auto"
+      w="100%"
+    >
+      <Table variant="simple" size="sm">
         <Thead bg="blue.50">
           {table.getHeaderGroups().map((headerGroup) => (
             <Tr key={headerGroup.id}>
@@ -75,16 +80,18 @@ const LoanTable = ({
                 <Th
                   key={header.id}
                   textTransform="initial"
-                  px="0px"
+                  px={{ base: "8px", md: "16px" }}
+                  minW="120px"
+                  whiteSpace="nowrap"
                   color="primary.500"
                   fontWeight="500"
                 >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                 </Th>
               ))}
             </Tr>
@@ -94,7 +101,13 @@ const LoanTable = ({
           {table.getRowModel().rows.map((row) => (
             <Tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <Td key={cell.id} px="0px">
+                <Td key={cell.id}
+                  px={{ base: "8px", md: "16px" }}
+                  minW="120px"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Td>
               ))}

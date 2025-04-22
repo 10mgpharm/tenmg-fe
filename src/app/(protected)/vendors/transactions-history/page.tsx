@@ -36,6 +36,8 @@ import { useDebouncedValue } from "@/utils/debounce";
 import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../_components/FilterDrawer";
 import { dateToString } from "@/utils/formatDate";
+import { formatDateRange } from "@/lib/dateFormatter";
+import { IApplyFilters } from "../loan-applications/page";
 
 const TransactionHistory = () => {
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,7 @@ const TransactionHistory = () => {
 
   const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
-  const applyFilters = (filters: IFilterInput) => {
+  const applyFilters = (filters: IApplyFilters) => {
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
@@ -95,10 +97,10 @@ const TransactionHistory = () => {
         query += `&status=${status}`;
       }
       if (createdAtStart) {
-        query += `&dateFrom=${dateToString(createdAtStart)}`;
+        query += `&dateFrom=${formatDateRange(createdAtStart, false)}`;
       }
       if (createdAtEnd) {
-        query += `&dateTo=${dateToString(createdAtEnd)}`;
+        query += `&dateTo=${formatDateRange(createdAtEnd, true)}`;
       }
 
       try {
@@ -157,9 +159,9 @@ const TransactionHistory = () => {
   return (
     <div className="p-8">
       <h3 className="font-semibold text-2xl">Transaction Evaluations</h3>
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-wrap">
         <div className="mb-5">
-          <div className="flex items-center gap-3 mt-5">
+          <div className="flex items-center gap-3 mt-5 flex-wrap">
             <SearchInput
               placeholder="Search for a transaction"
               value={globalFilter}
@@ -186,15 +188,20 @@ const TransactionHistory = () => {
         )}
 
         {!loading && tableData.length > 0 && (
-          <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-            <Table>
+          <TableContainer border="1px solid #F9FAFB"
+            borderRadius="10px"
+            overflowX="auto"
+            w="100%">
+            <Table variant="simple" size="sm">
               <Thead bg="blue.50">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <Tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
                       <Th
                         textTransform="initial"
-                        px="0px"
+                        px={{ base: "8px", md: "16px" }}
+                        minW="120px"
+                        whiteSpace="nowrap"
                         key={header.id}
                         color="primary.500"
                         fontWeight="500"
@@ -202,9 +209,9 @@ const TransactionHistory = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>
@@ -214,7 +221,9 @@ const TransactionHistory = () => {
                 {table.getRowModel().rows.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} px="0px">
+                      <Td key={cell.id} px={{ base: "8px", md: "16px" }}
+                        minW="120px"
+                        whiteSpace="nowrap">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

@@ -119,9 +119,19 @@ export function ColumsSupplierFN(
                 {(!userType || userType !== "PHARMACIES") && (
                   <MenuItem
                     onClick={() =>
-                      route.push(
-                        `/admin/users/wallet/${info?.row?.original?.id}`
-                      )
+                      userType === "SUPPLIERS"
+                        ? route.push(
+                            `/admin/users/supplier-wallet/${info?.row?.original?.id}`
+                          )
+                        : userType === "LENDERS"
+                        ? route.push(
+                            `/admin/users/lender-wallet/${info?.row?.original?.id}`
+                          )
+                        : userType === "VENDOR"
+                        ? route.push(
+                            `/admin/users/vendor-wallet/${info?.row?.original?.id}`
+                          )
+                        : null
                     }
                   >
                     View Wallet

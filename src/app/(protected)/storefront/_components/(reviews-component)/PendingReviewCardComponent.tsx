@@ -22,7 +22,7 @@ export default function PendingReviewCardComponent({ product }) {
     try {
       // storefront/products/quidins
       const res = await requestClient({ token: userData?.user?.token }).post(`/storefront/ratings`, data);
-      console.log(res)
+      // console.log(res)
       toast.success("Rating successful")
     } catch (e) {
     } finally {
@@ -48,7 +48,7 @@ export default function PendingReviewCardComponent({ product }) {
               <div className="flex items-center">
                 <RatingComponent
                   rating={product?.rating?.rating ?? 0}
-                  readonly={false}
+                  readonly={product?.rating?.rating && product?.rating?.rating > 0 ? true : false}
                   handleRating={handleRating}
                 />
               </div>
