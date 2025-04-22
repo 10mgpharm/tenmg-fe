@@ -75,13 +75,13 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
         );
       },
     }),
-    columnHelper.accessor("principal", {
-      header: ({ column }) => <p>Loan Amount</p>,
-      cell: (info) => (
-        <div className="">
-          <p>₦{info.row.original?.principal}</p>
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("principal", {
+    //   header: ({ column }) => <p>Loan Amount</p>,
+    //   cell: (info) => (
+    //     <div className="">
+    //       <p>₦{info.row.original?.principal}</p>
+    //     </div>
+    //   ),
+    // }),
   ];
 }
