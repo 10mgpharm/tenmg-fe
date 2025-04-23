@@ -69,7 +69,7 @@ const TopNavBar = ({
     }
     if (!token) return;
     fetchingCounts();
-  }, [token, fetchingCounts]);
+  }, [token]);
 
   useEffect(() => {
     if (messaging) {
@@ -83,7 +83,7 @@ const TopNavBar = ({
       });
       return () => unsubscribe();
     }
-  }, [messaging, token]);
+  }, [messaging]);
 
   const fetchingData = useCallback(async () => {
     setLoading(true);

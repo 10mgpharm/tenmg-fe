@@ -109,7 +109,6 @@ const SideBar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
   const token = sessionData?.user?.token;
 
   const [count, setCount] = useState(0);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const fetchingMessageCount = useCallback(async () => {
     try {
       const res = await requestClient({ token: token }).get(
@@ -124,7 +123,7 @@ const SideBar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
   useEffect(() => {
     if (!token) return;
     fetchingMessageCount();
-  }, [token, fetchingMessageCount]);
+  }, [token]);
 
   return (
     <div>
