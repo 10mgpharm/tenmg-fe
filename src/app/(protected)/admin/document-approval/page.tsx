@@ -63,9 +63,8 @@ const DocumentApproval = () => {
       try {
         setIsLoading(true);
 
-        const query = `/admin/business/licenses?page=${page}${
-          requestType ? `&type=${requestType}` : ""
-        }${debouncedSearch ? `&businessName=${debouncedSearch}` : ""}`;
+        const query = `/admin/business/licenses?page=${page}${requestType ? `&type=${requestType}` : ""
+          }${debouncedSearch ? `&businessName=${debouncedSearch}` : ""}`;
 
         const response = await requestClient({ token }).get(query);
 
@@ -145,10 +144,10 @@ const DocumentApproval = () => {
 
   return (
     <div className="p-8">
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-col">
         <h3 className="font-semibold text-2xl">New Approvals</h3>
         <div className="mb-4 flex items-center gap-3">
-          <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-[350px]">
+          <div className="border border-gray-300 rounded-md flex flex-wrap items-center gap-3 px-3 py-2 w-[350px]">
             <CiSearch className="w-5 h-5 text-gray-700" />
             <input
               type="text"
@@ -177,7 +176,7 @@ const DocumentApproval = () => {
         </div>
       </div>
       <Tabs onChange={handleTabsChange} variant={"unstyled"}>
-        <TabList>
+        <TabList className=" overflow-x-scroll">
           <Tab
             _selected={{ color: "white", bg: "#1A70B8", borderRadius: "10px" }}
           >

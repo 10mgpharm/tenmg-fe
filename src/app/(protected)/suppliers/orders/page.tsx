@@ -35,7 +35,7 @@ const OrderUI = () => {
             const response = await requestClient({ token: token }).get(query);
             if (response.status === 200) {
                 setOrders(response.data.data);
-                if(!status || status === "all"){
+                if (!status || status === "all") {
                     setAllCount(response.data?.data?.meta?.total)
                 }
             }
@@ -62,128 +62,128 @@ const OrderUI = () => {
     }, [token]);
 
     useEffect(() => {
-        if(!token) return;
+        if (!token) return;
         fetchOrders();
         fetchOrderCount();
-    },[fetchOrders, fetchOrderCount, token]);
+    }, [fetchOrders, fetchOrderCount, token]);
 
-  return (
-    <div className='p-8 min-h-[calc(100vh-155px)]'>
-        <HStack justify={"space-between"} mb={4}>
+    return (
+        <div className='p-8 min-h-[calc(100vh-155px)]'>
             <Text fontWeight={"semibold"} fontSize={"2xl"}>Orders</Text>
-            <Flex gap={2}>
-                <SearchInput
-                placeholder="Search with customer&apos;s name"
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                />
-                <Button 
-                h={""} 
-                px={4} 
-                variant={"outline"} 
-                className="border-primary-500 text-primary-600 bg-white">
-                    View shopping list
-                </Button>
-            </Flex>
-        </HStack>
-        <Tabs variant={"unstyled"}>
-            <TabList>
-                <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                    <div className='flex items-center gap-3'>
-                        <Text>All Orders</Text>
-                        <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {allCount}
-                        </p>
-                    </div>
-                </Tab>
-                {
-                    counts?.filter((item) => item.status !== "DELIVERED")?.map((count:CountProps) => (
-                        <Tab 
-                        onClick={() => setStatus(count.status)} 
-                        _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}
-                        key={count.status}
-                        >
-                            <div className='flex items-center gap-3'>
-                                <p className='text-base lowercase first-letter:uppercase'>{count?.status}</p>
-                                <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
-                                    {count.total}
-                                </p>
-                            </div>
-                        </Tab>
-                    ))
-                }
-            </TabList>
-            <TabPanels>
-                <TabPanel px={0}>
-                    <OrderPage 
-                    orders={orders} 
-                    loading={loading} 
-                    type="all"
-                    fetchOrders={fetchOrders}
-                    pageCount={pageCount}
-                    globalFilter={globalFilter}
-                    setPageCount={setPageCount}
+            <HStack justify={"space-between"} mb={4}>
+                <Flex gap={2} wrap={"wrap"}>
+                    <SearchInput
+                        placeholder="Search with customer&apos;s name"
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
                     />
-                </TabPanel>
-                <TabPanel>
-                    <OrderPage 
-                        orders={orders} 
-                        loading={loading} 
-                        type="PENDING"
-                        fetchOrders={fetchOrders}
-                        pageCount={pageCount}
-                        globalFilter={globalFilter}
-                        setPageCount={setPageCount}
-                    />
-                </TabPanel>
-                <TabPanel>
-                    <OrderPage 
-                        orders={orders} 
-                        loading={loading} 
-                        type="PROCESSING"
-                        fetchOrders={fetchOrders}
-                        pageCount={pageCount}
-                        globalFilter={globalFilter}
-                        setPageCount={setPageCount}
-                    />
-                </TabPanel>
-                <TabPanel>
-                    <OrderPage 
-                        orders={orders} 
-                        loading={loading} 
-                        type="SHIPPED"
-                        fetchOrders={fetchOrders}
-                        pageCount={pageCount}
-                        globalFilter={globalFilter}
-                        setPageCount={setPageCount}
-                    />
-                </TabPanel>
-                <TabPanel>
-                    <OrderPage 
-                        orders={orders} 
-                        loading={loading} 
-                        type="CANCELED"
-                        fetchOrders={fetchOrders}
-                        pageCount={pageCount}
-                        globalFilter={globalFilter}
-                        setPageCount={setPageCount}
-                    />
-                </TabPanel>
-                <TabPanel>
-                    <OrderPage 
-                        orders={orders} 
-                        loading={loading} 
-                        type="COMPLETED"
-                        fetchOrders={fetchOrders}
-                        pageCount={pageCount}
-                        globalFilter={globalFilter}
-                        setPageCount={setPageCount}
-                    />
-                </TabPanel>
-            </TabPanels>
-        </Tabs>
-    </div>
-  )
+                    <Button
+                        h={4}
+                        px={4}
+                        variant={"outline"}
+                        className="border-primary-500 text-primary-600 bg-white">
+                        View shopping list
+                    </Button>
+                </Flex>
+            </HStack>
+            <Tabs variant={"unstyled"}>
+                <TabList className=" overflow-x-scroll">
+                    <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
+                        <div className='flex items-center gap-3'>
+                            <Text>All Orders</Text>
+                            <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
+                                {allCount}
+                            </p>
+                        </div>
+                    </Tab>
+                    {
+                        counts?.filter((item) => item.status !== "DELIVERED")?.map((count: CountProps) => (
+                            <Tab
+                                onClick={() => setStatus(count.status)}
+                                _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}
+                                key={count.status}
+                            >
+                                <div className='flex items-center gap-3'>
+                                    <p className='text-base lowercase first-letter:uppercase'>{count?.status}</p>
+                                    <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
+                                        {count.total}
+                                    </p>
+                                </div>
+                            </Tab>
+                        ))
+                    }
+                </TabList>
+                <TabPanels>
+                    <TabPanel px={0}>
+                        <OrderPage
+                            orders={orders}
+                            loading={loading}
+                            type="all"
+                            fetchOrders={fetchOrders}
+                            pageCount={pageCount}
+                            globalFilter={globalFilter}
+                            setPageCount={setPageCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <OrderPage
+                            orders={orders}
+                            loading={loading}
+                            type="PENDING"
+                            fetchOrders={fetchOrders}
+                            pageCount={pageCount}
+                            globalFilter={globalFilter}
+                            setPageCount={setPageCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <OrderPage
+                            orders={orders}
+                            loading={loading}
+                            type="PROCESSING"
+                            fetchOrders={fetchOrders}
+                            pageCount={pageCount}
+                            globalFilter={globalFilter}
+                            setPageCount={setPageCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <OrderPage
+                            orders={orders}
+                            loading={loading}
+                            type="SHIPPED"
+                            fetchOrders={fetchOrders}
+                            pageCount={pageCount}
+                            globalFilter={globalFilter}
+                            setPageCount={setPageCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <OrderPage
+                            orders={orders}
+                            loading={loading}
+                            type="CANCELED"
+                            fetchOrders={fetchOrders}
+                            pageCount={pageCount}
+                            globalFilter={globalFilter}
+                            setPageCount={setPageCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <OrderPage
+                            orders={orders}
+                            loading={loading}
+                            type="COMPLETED"
+                            fetchOrders={fetchOrders}
+                            pageCount={pageCount}
+                            globalFilter={globalFilter}
+                            setPageCount={setPageCount}
+                        />
+                    </TabPanel>
+                </TabPanels>
+            </Tabs>
+        </div>
+    )
 }
 
 export default OrderUI

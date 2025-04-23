@@ -1,12 +1,12 @@
 "use client";
-import { 
-    Flex, 
-    HStack, 
+import {
+    Flex,
+    HStack,
     Text,
-    Tabs, 
-    TabList, 
-    TabPanels, 
-    Tab, 
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
     TabPanel,
 } from "@chakra-ui/react"
 import DiscountTable from "./_components/DiscountTable";
@@ -73,110 +73,110 @@ const Page = () => {
     }, [token]);
 
     useEffect(() => {
-        if(!token) return;
+        if (!token) return;
         fetchDiscounts();
         fetchDiscountCount();
-    },[token, fetchDiscounts]);
+    }, [token, fetchDiscounts]);
 
     return (
-    <div className='p-8'>
-        <HStack justify={"space-between"} mb={4}>
+        <div className='p-8'>
             <Text fontWeight={"semibold"} fontSize={"2xl"}>Discount</Text>
-            <Flex gap={2}>
-                <SearchInput
-                placeholder="Search with discount code"
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                />
-                <Link href={'/admin/discount-code/create'} className="border-primary-500 text-primary-600 border p-3 font-medium rounded-md bg-white">
-                    Create Discount
-                </Link>
-            </Flex>
-        </HStack>
-        <Tabs variant={"unstyled"}>
-            <TabList>
-                <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                    <div className='flex items-center gap-3'>
-                        <Text>All Discount</Text>
-                        <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {counts?.total}
-                        </p>
-                    </div>
-                </Tab>
-                <Tab onClick={() => setStatus("ACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                    <div className='flex items-center gap-3'>
-                        <Text>Active</Text>
-                        <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {counts?.active}
-                        </p>
-                    </div>
-                </Tab>
-                <Tab onClick={() => setStatus("INACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                    <div className='flex items-center gap-3'>
-                        <Text>Inactive</Text>
-                        <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {counts?.inactive}
-                        </p>
-                    </div>
-                </Tab>
-                <Tab onClick={() => setStatus("EXPIRED")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                    <div className='flex items-center gap-3'>
-                        <Text>Expired</Text>
-                        <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
-                            {counts?.expired}
-                        </p>
-                    </div>
-                </Tab>
-            </TabList>
-            <TabPanels>
-                <TabPanel px={0}>
-                    <DiscountTable 
-                    type="" 
-                    loading={loading} 
-                    data={discount} 
-                    pageCount={pageCount} 
-                    fetchDiscounts={fetchDiscounts}
-                    setPageCount={setPageCount}
-                    fetchDiscountCount={fetchDiscountCount}
+            <HStack justify={"space-between"} mb={4}  >
+                <Flex gap={2} wrap={"wrap"}>
+                    <SearchInput
+                        placeholder="Search with discount code"
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
                     />
-                </TabPanel>
-                <TabPanel>
-                    <DiscountTable 
-                    type="Active" 
-                    loading={loading}
-                    data={discount} 
-                    pageCount={pageCount} 
-                    fetchDiscounts={fetchDiscounts}
-                    setPageCount={setPageCount}
-                    fetchDiscountCount={fetchDiscountCount}
-                    />
-                </TabPanel>
-                <TabPanel>
-                    <DiscountTable 
-                    type="Inactive"  
-                    loading={loading}
-                    data={discount}
-                    pageCount={pageCount} 
-                    fetchDiscounts={fetchDiscounts}
-                    setPageCount={setPageCount}
-                    fetchDiscountCount={fetchDiscountCount}
-                    />
-                </TabPanel>
-                <TabPanel>
-                    <DiscountTable 
-                    type="Expired"
-                    loading={loading} 
-                    data={discount} 
-                    pageCount={pageCount} 
-                    fetchDiscounts={fetchDiscounts}
-                    setPageCount={setPageCount}
-                    fetchDiscountCount={fetchDiscountCount}
-                    />
-                </TabPanel>
-            </TabPanels>
-        </Tabs>
-    </div>
-  )
+                    <Link href={'/admin/discount-code/create'} className="border-primary-500 text-primary-600 border p-3 font-medium rounded-md bg-white">
+                        Create Discount
+                    </Link>
+                </Flex>
+            </HStack>
+            <Tabs variant={"unstyled"}>
+                <TabList className=" overflow-x-scroll">
+                    <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
+                        <div className='flex items-center gap-3'>
+                            <Text>All Discount</Text>
+                            <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
+                                {counts?.total}
+                            </p>
+                        </div>
+                    </Tab>
+                    <Tab onClick={() => setStatus("ACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
+                        <div className='flex items-center gap-3'>
+                            <Text>Active</Text>
+                            <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
+                                {counts?.active}
+                            </p>
+                        </div>
+                    </Tab>
+                    <Tab onClick={() => setStatus("INACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
+                        <div className='flex items-center gap-3'>
+                            <Text>Inactive</Text>
+                            <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
+                                {counts?.inactive}
+                            </p>
+                        </div>
+                    </Tab>
+                    <Tab onClick={() => setStatus("EXPIRED")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
+                        <div className='flex items-center gap-3'>
+                            <Text>Expired</Text>
+                            <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
+                                {counts?.expired}
+                            </p>
+                        </div>
+                    </Tab>
+                </TabList>
+                <TabPanels>
+                    <TabPanel px={0}>
+                        <DiscountTable
+                            type=""
+                            loading={loading}
+                            data={discount}
+                            pageCount={pageCount}
+                            fetchDiscounts={fetchDiscounts}
+                            setPageCount={setPageCount}
+                            fetchDiscountCount={fetchDiscountCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <DiscountTable
+                            type="Active"
+                            loading={loading}
+                            data={discount}
+                            pageCount={pageCount}
+                            fetchDiscounts={fetchDiscounts}
+                            setPageCount={setPageCount}
+                            fetchDiscountCount={fetchDiscountCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <DiscountTable
+                            type="Inactive"
+                            loading={loading}
+                            data={discount}
+                            pageCount={pageCount}
+                            fetchDiscounts={fetchDiscounts}
+                            setPageCount={setPageCount}
+                            fetchDiscountCount={fetchDiscountCount}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <DiscountTable
+                            type="Expired"
+                            loading={loading}
+                            data={discount}
+                            pageCount={pageCount}
+                            fetchDiscounts={fetchDiscounts}
+                            setPageCount={setPageCount}
+                            fetchDiscountCount={fetchDiscountCount}
+                        />
+                    </TabPanel>
+                </TabPanels>
+            </Tabs>
+        </div>
+    )
 }
 
 export default Page

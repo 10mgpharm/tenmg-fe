@@ -31,6 +31,9 @@ export default function ReviewsCardComponent({ product }) {
       console.log(res)
       toast.success("Rating successful")
     } catch (e) {
+      console.log(e.response.data)
+      toast.error(e.response.data.errors.ecommerceProductId[0]
+        || e.response.data.message)
     } finally {
       // setLoading(false);
     }
@@ -49,7 +52,7 @@ export default function ReviewsCardComponent({ product }) {
             </Link>
 
             <div className='col-span-5'>
-              <Link href={`/storefront/products/${product?.id}`} className='w-full'>
+              <Link href={`/storefront/product/${product?.id}`} className='w-full'>
                 <h4 className='text-lg font-medium text-gray-700'>{product?.name} {product?.variation?.strengthValue}{product?.measurement?.name}</h4>
               </Link>
               <p className='text-sm  text-gray-500 my-1'>{product?.description}</p>

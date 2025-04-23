@@ -161,7 +161,7 @@ const DataTable = () => {
   return (
     <div>
       <HStack justify={"space-between"}>
-        <Flex mt={4} gap={2}>
+        <Flex mt={4} gap={2} wrap={"wrap"}>
           <SearchInput
             placeholder="Search for a loan"
             value={globalFilter}
@@ -200,9 +200,9 @@ const DataTable = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </Th>
                     ))}
                   </Tr>
