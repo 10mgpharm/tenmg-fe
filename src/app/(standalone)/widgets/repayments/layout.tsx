@@ -13,7 +13,7 @@ export default function SignInLayout({
   return (
     <div className="bg-gray-300 min-h-screen flex justify-center items-center gap-4 flex-col">
       {children}
-      <LoanFooter />
+      {/* <LoanFooter /> */}
     </div>
   );
 }
