@@ -146,10 +146,10 @@ const Users = () => {
 
   return (
     <div className="p-8">
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between">
         <h3 className="font-semibold text-2xl">Users</h3>
-        <div className="mb-4 flex items-center gap-3">
-          <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-[350px]">
+        <div className="mb-4 flex items-center gap-3 flex-wrap">
+          <div className="border border-gray-300 rounded-md flex flex-wrap items-center gap-3 px-3 py-2 w-[350px]">
             <CiSearch className="w-5 h-5 text-gray-700" />
             <input
               type="text"
@@ -235,7 +235,7 @@ const Users = () => {
         </div>
       </div>
       <Tabs onChange={handleTabsChange} variant={"unstyled"}>
-        <TabList>
+        <TabList className=" overflow-x-scroll">
           <Tab
             _selected={{ color: "white", bg: "#1A70B8", borderRadius: "10px" }}
           >

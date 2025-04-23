@@ -132,8 +132,8 @@ export default function StoreProductCardComponent({
         )}
         <p
           className={`font-semibold my-2 text-sm ${product?.discountPrice > 0
-              ? "text-gray-400 line-through"
-              : "text-gray-900"
+            ? "text-gray-400 line-through"
+            : "text-gray-900"
             }`}
         >
           ₦{product?.actualPrice}
@@ -142,7 +142,9 @@ export default function StoreProductCardComponent({
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <RatingComponent
-            rating={product?.rating ? Math.round(product?.rating) : 0}
+            rating={product?.rating?.avgRating
+              ? Math.round(product?.rating?.avgRating
+              ) : 0}
             handleRating={() => { }}
             readonly={true}
           />
