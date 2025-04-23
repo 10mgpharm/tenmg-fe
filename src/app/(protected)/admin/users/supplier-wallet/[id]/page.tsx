@@ -112,7 +112,7 @@ const Wallet = ({
                 <div className="flex ">
                   <div className="">
                     <p className="text-white text-[15px] lg:text-lg font-medium mb-1">
-                      {"Total Commission Earned"}
+                      {"Total Wallet Balance"}
                     </p>
                     <p className="font-bold text-white text-[18px] sm:text-[20px] lg:text-3xl">
                       {"₦5,600"}
@@ -120,7 +120,7 @@ const Wallet = ({
                   </div>
                 </div>
                 <p className="flex flex-col  pt-5 pb-5 text-white/70  text-[15px]">
-                  Last payment date:
+                  Last withdrawal date:
                   <span>2 march, 2025</span>
                 </p>
 
@@ -130,14 +130,14 @@ const Wallet = ({
               </div>
 
               <OverviewCard
-                title="Total Payouts to Suppliers"
+                title="Total "
                 value="₦2,300"
                 fromColor="from-[#DC6803]"
                 toColor="to-[#DC6803]"
                 image={orderPattern}
               />
               <OverviewCard
-                title="Wallet Balance"
+                title="Admin Commission"
                 value="₦50,000"
                 fromColor="from-[#E31B54]"
                 toColor="to-[#E31B54]"
