@@ -7,16 +7,30 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
+import requestClient from "@/lib/requestClient";
 
 interface IFormInput {
   productCommission: number;
 }
 
-const InterestConfigSegment = () => {
+const InterestConfigSegment = ({
+  data,
+  refetch,
+}: {
+  data: {
+    key: string;
+    value: number;
+    group: string;
+  }[];
+  refetch: () => void;
+}) => {
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
   const [isLoading, setIsLoading] = useState(false);
+  const productCommission = data?.find(
+    (i) => i.key === "tenmg_ecommerce_commission_percent"
+  );
 
   const {
     register,
@@ -24,6 +38,7 @@ const InterestConfigSegment = () => {
     handleSubmit,
     control,
     reset,
+    watch,
   } = useForm<IFormInput>({
     mode: "onChange",
   });
@@ -31,12 +46,28 @@ const InterestConfigSegment = () => {
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true);
     try {
-      //   Write action
+      const response = await requestClient({ token: token }).post(
+        "/admin/settings/config",
+        {
+          settings: [
+            {
+              group: "general",
+              key: "tenmg_ecommerce_commission_percent",
+              value: watch("productCommission"),
+            },
+          ],
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Saved successfully");
+        refetch();
+        reset();
+      }
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
       toast.error(handleServerErrorMessage(error));
     }
+    setIsLoading(false);
   };
 
   return (
@@ -48,7 +79,9 @@ const InterestConfigSegment = () => {
             Set 10mg commission on each product
           </p>
         </div>
-        <Button onClick={handleSubmit(onSubmit)}>Save Changes</Button>
+        <Button onClick={handleSubmit(onSubmit)} isLoading={isLoading}>
+          Save Changes
+        </Button>
       </div>
 
       <form className="shadow-sm bg-white p-4 rounded-md space-y-4 mt-5">
@@ -63,6 +96,8 @@ const InterestConfigSegment = () => {
             {...register("productCommission", {
               required: "Enter commission on each product",
             })}
+            defaultValue={productCommission?.value}
+            disabled={isLoading}
           />
           {errors.productCommission && (
             <Text as={"span"} className="text-red-500 text-sm">
