@@ -69,7 +69,7 @@ export function ColumnsLoanFN() {
               className={classNames(
                 info.row.original.status === "DISBURSED"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "DISBURSED"
+                  : info?.row?.original?.status === "Ongoing"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : info.row.original?.status === "INITIATED"
                   ? "bg-orange-50 text-orange-500"
@@ -152,7 +152,6 @@ export function ColumnsLoanFN() {
         }
 
         const nextPayment = pendingPayments[0];
-        // const nextPaymentAmount = formatAmount(nextPayment.totalAmount);
 
         const dueDate = new Date(nextPayment.dueDate);
         const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -163,7 +162,6 @@ export function ColumnsLoanFN() {
 
         return (
           <div>
-            {/* <p className="font-medium">{nextPaymentAmount}</p> */}
             <div className="flex items-center gap-1">
               <span className="text-gray-600 text-sm">{formattedDate}</span>
             </div>

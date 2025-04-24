@@ -36,6 +36,7 @@ import SearchInput from "../../vendors/_components/SearchInput";
 import { IFilterInput } from "../../vendors/customers-management/page";
 import FilterDrawer from "../../vendors/_components/FilterDrawer";
 import { useDebouncedValue } from "@/utils/debounce";
+import { formatDateRange } from "@/lib/dateFormatter";
 
 export interface OverviewCardData {
   title: string;
@@ -102,10 +103,10 @@ export default function LoanApplicationPage() {
           query += `&status=${status}`;
         }
         if (createdAtStart) {
-          query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+          query += `&dateFrom=${formatDateRange(createdAtStart, false)}`;
         }
         if (createdAtEnd) {
-          query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+          query += `&dateTo=${formatDateRange(createdAtEnd, true)}`;
         }
 
         const response = await requestClient({ token: sessionToken }).get(
