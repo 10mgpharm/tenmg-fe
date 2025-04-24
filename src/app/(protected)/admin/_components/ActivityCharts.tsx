@@ -37,7 +37,6 @@ const ActivityCharts = ({data, loading}: any) => {
       title: {
         text: '',
       },
-
     },
     grid: {
       xaxis: {
@@ -159,7 +158,7 @@ const ActivityCharts = ({data, loading}: any) => {
             total: {
               show: true,
               // label: '50%, 25%, 15%, 10%',
-              formatter: (total) => `Ratio`,
+              formatter: (total) => `100%`,
               color: '#333',
               fontSize: '14px',
               fontFamily: 'Arial, sans-serif',
@@ -171,6 +170,7 @@ const ActivityCharts = ({data, loading}: any) => {
   };
 
   const pieSeries = [data?.users?.supplier, data?.users?.customer, data?.users?.vendor, data?.users?.lender];
+  console.log(data?.loanRequests)
 
   return (
     <div className=''>
@@ -245,7 +245,7 @@ const ActivityCharts = ({data, loading}: any) => {
                         <p className='font-semibold text-sm'>{items?.business?.name}</p>
                     </div>
                     <div className="flex items-center justify-between pt-3">
-                      <p className='text-sm'>Loan amount: <span className='font-semibold'>{items?.totalAmount}</span></p>
+                      <p className='text-sm'>Loan amount: <span className='font-semibold'>₦{items?.requestedAmount ?? "0.00"}</span></p>
                       <p className='text-sm'>Credit Score: <span className={`${
                           items?.customer?.score > 45 ? "text-green-600":
                           items?.customer?.score < 45 ? "text-orange-500": "text-red-600"

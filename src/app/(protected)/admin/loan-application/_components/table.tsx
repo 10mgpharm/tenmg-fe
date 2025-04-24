@@ -42,6 +42,7 @@ import { IFilterInput } from "@/app/(protected)/vendors/customers-management/pag
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 import EmptyResult from "@/app/(protected)/vendors/_components/EmptyResult";
+import { formatDateRange } from "@/lib/dateFormatter";
 
 const DataTable = () => {
   const session = useSession();
@@ -89,10 +90,10 @@ const DataTable = () => {
       query += `&status=${status}`;
     }
     if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+      query += `&dateFrom=${formatDateRange(createdAtStart, false)}`;
     }
     if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+      query += `&dateTo=${formatDateRange(createdAtEnd, true)}`;
     }
 
     try {
@@ -136,6 +137,7 @@ const DataTable = () => {
 
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
+    { option: "INITIATED", value: "INITIATED" },
     { option: "CANCELED", value: "CANCELED" },
     { option: "PENDING_MANDAT", value: "PENDING_MANDAT" },
   ];
@@ -161,7 +163,7 @@ const DataTable = () => {
   return (
     <div>
       <HStack justify={"space-between"}>
-        <Flex mt={4} gap={2}>
+        <Flex mt={4} gap={2} wrap={"wrap"}>
           <SearchInput
             placeholder="Search for a loan"
             value={globalFilter}
