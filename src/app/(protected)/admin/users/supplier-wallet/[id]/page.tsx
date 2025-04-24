@@ -26,13 +26,10 @@ const Wallet = ({
 }) => {
   const [isLoading, setIsloading] = useState(false);
   const router = useRouter();
-  const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [searchValue, setSearchValue] = useState<string>("");
   const [pagecount, setPageCount] = useState(1);
   const [status, setStatus] = useState<string>("");
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
-  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [adminCommisionFilter, setAdminCommissionFilter] = useState("");
 
   const {
     isOpen: isOpenFilter,
@@ -58,23 +55,6 @@ const Wallet = ({
     currentPage: 1,
     firstPageUrl: "",
     lastPageUrl: "",
-  };
-
-  const applyFilters = (filters: IFilterInput) => {
-    console.log(
-      filters,
-      `&dateFrom=${filters.startDate.toISOString().split("T")[0]}`
-    );
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
-    setStatus(filters.status);
-  };
-
-  const clearFilters = () => {
-    setCreatedAtStart(null);
-    setCreatedAtEnd(null);
-    setStatus("");
-    setGlobalFilter("");
   };
 
   return (
@@ -107,50 +87,64 @@ const Wallet = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-7 c">
               <div
-                className={`bg-gradient-to-r from-[#53389E] to-[#7F56D9] rounded-lg relative  pt-8 sm:pt-10  lg:pt-12 px-6`}
+                className={`bg-white border-gray-200 border-2 rounded-md px-5 pt-5`}
               >
-                <div className="flex ">
-                  <div className="">
-                    <p className="text-white text-[15px] lg:text-lg font-medium mb-1">
-                      {"Total Wallet Balance"}
-                    </p>
-                    <p className="font-bold text-white text-[18px] sm:text-[20px] lg:text-3xl">
-                      {"₦5,600"}
-                    </p>
-                  </div>
+                <div className="flex-col flex gap-2">
+                  <p className="text-gray-800 text-[15px] font-semibold ">
+                    {" Wallet Balance"}
+                  </p>
+                  <p className="font-bold text-[20px] ">{"₦5,600"}</p>
                 </div>
-                <p className="flex flex-col  pt-5 pb-5 text-white/70  text-[15px]">
+                <p className="flex flex-col  pt-5 pb-5 text-gray-700  text-[15px]">
                   Last withdrawal date:
                   <span>2 march, 2025</span>
                 </p>
+              </div>
 
-                <div className="absolute top-3 inset-x-0 mx-auto">
-                  <Image src={totalPattern} alt="" className="mx-auto" />
+              <div
+                className={`bg-white border-gray-200 border-2 rounded-md p-5 flex items-center `}
+              >
+                <div className="flex-col flex gap-2  ">
+                  <p className="text-gray-800 text-[15px] font-semibold ">
+                    {"Ledger Balance"}
+                  </p>
+                  <p className="font-bold text-[20px] ">{"₦2,300"}</p>
                 </div>
               </div>
 
-              <OverviewCard
-                title="Total "
-                value="₦2,300"
-                fromColor="from-[#DC6803]"
-                toColor="to-[#DC6803]"
-                image={orderPattern}
-              />
-              <OverviewCard
-                title="Admin Commission"
-                value="₦50,000"
-                fromColor="from-[#E31B54]"
-                toColor="to-[#E31B54]"
-                image={productPattern}
-              />
+              <div
+                className={`bg-white border-gray-200 border-2 rounded-md p-5`}
+              >
+                <div className="flex justify-end">
+                  <select
+                    className="bg-gray-200 rounded-full pl-3 outline-none ring-0 text-[13px] py-1 "
+                    onChange={(e) => setAdminCommissionFilter(e.target.value)}
+                    value={adminCommisionFilter}
+                  >
+                    <option value="10">Last 7 Days</option>
+                    <option value="20">Last 14 Days</option>
+                    <option value="delayed">1 Month Ago</option>
+                    <option value="canceled">All Time</option>
+                  </select>
+                </div>
+
+                <div className="flex-col flex gap-2 mt-2">
+                  <p className="text-gray-800 text-[15px] font-semibold ">
+                    {"Admin Commission"}
+                  </p>
+                  <p className="font-bold text-[20px] ">{"₦50,000"}</p>
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-6 pb-4">
-              <h3 className="font-semibold text-[18px]">Recent Transactions</h3>
+              <h3 className="font-semibold text-[18px]">Transactions</h3>
 
-              <Link href={`/admin/users/supplier-wallet/view-all/${params.id}`}>
-                <Button variant={"outline"}>View all</Button>
-              </Link>
+              <SearchInput
+                placeholder="Search"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
             </div>
 
             <WalletTable
@@ -162,14 +156,6 @@ const Wallet = ({
           </div>
         )}
       </div>
-
-      <FilterDrawer
-        isOpen={isOpenFilter}
-        onClose={onCloseFilter}
-        applyFilters={applyFilters}
-        clearFilters={clearFilters}
-        filterOptions={filterOptions}
-      />
     </div>
   );
 };
