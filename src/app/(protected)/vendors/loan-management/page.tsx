@@ -41,8 +41,6 @@ export interface OverviewCardData {
 
 const LoanManagement = () => {
   const [pageCount, setPageCount] = useState<number>(1);
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -73,12 +71,6 @@ const LoanManagement = () => {
     if (status) {
       query += `&status=${status}`;
     }
-    if (createdAtStart) {
-      query += `&dateFrom=${formatDateRange(createdAtStart, false)}`;
-    }
-    if (createdAtEnd) {
-      query += `&dateTo=${formatDateRange(createdAtEnd, true)}`;
-    }
 
     try {
       const response = await requestClient({ token: token }).get(query);
@@ -90,7 +82,7 @@ const LoanManagement = () => {
       console.error(error);
       setLoading(false);
     }
-  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token, pageCount, debouncedSearch, status]);
 
   const fetchLoanStats = useCallback(async () => {
     setLoading(true);
@@ -110,14 +102,10 @@ const LoanManagement = () => {
   }, [token]);
 
   const applyFilters = (filters: IApplyFilters) => {
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
   };
 
   const clearFilters = () => {
-    setCreatedAtStart(null);
-    setCreatedAtEnd(null);
     setStatus("");
     setGlobalFilter("");
   };
@@ -125,7 +113,7 @@ const LoanManagement = () => {
   const filterOptions = [
     { option: "APPROVED", value: "APPROVED" },
     { option: "INITIATED", value: "INITIATED" },
-    { option: "EXPIRED", value: "EXPIRED" },
+    { option: "ONGOING", value: "ONGOING" },
   ];
 
   const tableData = useMemo(() => loan?.data, [loan?.data]);
@@ -173,7 +161,7 @@ const LoanManagement = () => {
       <div className="grid grid-cols-2  lg:grid-cols-4 gap-4 mt-5">
         <OverviewCards overviewData={overviewData} />
       </div>
-      <HStack justify={"space-between"} flexWrap={"wrap"} >
+      <HStack justify={"space-between"} flexWrap={"wrap"}>
         <Flex mt={4} gap={2} wrap={"wrap"}>
           <SearchInput
             placeholder="Search for a loan"
@@ -209,6 +197,7 @@ const LoanManagement = () => {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         filterOptions={filterOptions}
+        isNotDate
       />
     </div>
   );

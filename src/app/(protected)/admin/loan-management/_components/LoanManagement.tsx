@@ -47,8 +47,6 @@ const LoanManagement = () => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -78,12 +76,6 @@ const LoanManagement = () => {
     if (status) {
       query += `&status=${status}`;
     }
-    if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
-    }
-    if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
-    }
 
     try {
       const response = await requestClient({ token: token }).get(query);
@@ -94,7 +86,7 @@ const LoanManagement = () => {
       console.error(error);
     }
     setLoading(false);
-  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token, pageCount, debouncedSearch, status]);
 
   const fetchLoanStats = useCallback(async () => {
     setLoading(true);
@@ -139,14 +131,10 @@ const LoanManagement = () => {
   });
 
   const applyFilters = (filters: IFilterInput) => {
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
   };
 
   const clearFilters = () => {
-    setCreatedAtStart(null);
-    setCreatedAtEnd(null);
     setStatus("");
     setGlobalFilter("");
   };
