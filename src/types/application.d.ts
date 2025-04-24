@@ -43,6 +43,7 @@ export interface ApplicationDto {
     totalAmount: number;
     interestRate: number;
     durationInMonth: number;
+    durationInMonths: number;
     status: string;
     source: string;
     updatedAt?: string;
