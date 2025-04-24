@@ -154,7 +154,7 @@ const Admin = () => {
             href={"/admin/loan-management"}
             className="text-gray-600 text-sm px-4 py-2 font-medium bg-white border border-[#D0D5DD] rounded-md"
           >
-            View all
+            See All
           </Link>
         </HStack>
         <Stack bg={"white"}>
@@ -201,7 +201,7 @@ const Admin = () => {
             )
             : (
               <Flex justify="center" align="center" height="200px">
-                  <Spinner size="xl" />
+                <Spinner size="xl" />
               </Flex>
             )
           }
