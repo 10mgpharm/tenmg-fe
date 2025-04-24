@@ -147,6 +147,7 @@ const Wallet = ({
               />
             </div>
 
+            <div></div>
             <WalletTable
               data={history}
               hasPagination={false}
