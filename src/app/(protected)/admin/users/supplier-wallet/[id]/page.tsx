@@ -1,21 +1,13 @@
 "use client";
 
-import { Button, Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
-import { ArrowLeft, ListFilter } from "lucide-react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import OverviewCard from "../../../wallet/_components/OverviewCard";
-import totalPattern from "@public/assets/images/bgPattern.svg";
-import orderPattern from "@public/assets/images/orderPattern.svg";
-import productPattern from "@public/assets/images/productpatterns.svg";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { transactionData } from "@/data/mockdata";
 import WalletTable from "../../_components/WalletTable";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
-import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
-import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
-import Link from "next/link";
-import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const Wallet = ({
   params,
@@ -28,20 +20,8 @@ const Wallet = ({
   const router = useRouter();
   const [searchValue, setSearchValue] = useState<string>("");
   const [pagecount, setPageCount] = useState(1);
-  const [status, setStatus] = useState<string>("");
+  const [status, setStatus] = useState<string>("pending");
   const [adminCommisionFilter, setAdminCommissionFilter] = useState("");
-
-  const {
-    isOpen: isOpenFilter,
-    onClose: onCloseFilter,
-    onOpen: onOpenFilter,
-  } = useDisclosure();
-
-  const filterOptions = [
-    { option: "AWAITING", value: "AWAITING" },
-    { option: "COMPLETED", value: "COMPLETED" },
-    { option: "PENDING", value: "PENDING" },
-  ];
 
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
   const completed = transactionData.filter((item) => item.type === "Completed");
@@ -80,7 +60,7 @@ const Wallet = ({
             </Flex>
             <h3 className="font-bold pt-3 text-[20px] ">
               Onyejekwe Ugonna Wallet{" "}
-              <span className="bg-[#FFF1F3] text-[#C01048] font-medium text-[14px] ml-5 px-6 py-3 rounded-full">
+              <span className="bg-[#FFF1F3] text-[#C01048] font-medium text-[14px] ml-5 px-6 py-2 rounded-full">
                 Supplier
               </span>
             </h3>
@@ -106,7 +86,7 @@ const Wallet = ({
               >
                 <div className="flex-col flex gap-2  ">
                   <p className="text-gray-800 text-[15px] font-semibold ">
-                    {"Ledger Balance"}
+                    {"Ledger Account"}
                   </p>
                   <p className="font-bold text-[20px] ">{"₦2,300"}</p>
                 </div>
@@ -147,13 +127,67 @@ const Wallet = ({
               />
             </div>
 
-            <div></div>
-            <WalletTable
-              data={history}
-              hasPagination={false}
-              metaData={metaData}
-              setPageCount={setPageCount}
-            />
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
+                <div
+                  className={cn(
+                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
+                    status === "pending" && " text-white bg-[#1A70B8]"
+                  )}
+                  onClick={() => setStatus("pending")}
+                >
+                  <div className="flex items-center gap-3">
+                    <Text className="text-nowrap">Awaiting Payout</Text>
+                    <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
+                      {awaiting?.length}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className={cn(
+                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
+                    status === "completed" && "text-white bg-[#1A70B8]"
+                  )}
+                  onClick={() => setStatus("completed")}
+                >
+                  <div className="flex items-center gap-3">
+                    <Text className="text-nowrap">Completed Payout</Text>
+                    <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
+                      {completed?.length}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className={cn(
+                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
+                    status === "" && "text-white bg-[#1A70B8]"
+                  )}
+                  onClick={() => setStatus("")}
+                >
+                  <div className="flex items-center gap-3">
+                    <Text className="text-nowrap">Transaction History</Text>
+                    <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
+                      {history?.length}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <WalletTable
+                data={
+                  status === "pending"
+                    ? awaiting
+                    : status === "completed"
+                    ? completed
+                    : history
+                }
+                hasPagination
+                metaData={metaData}
+                setPageCount={setPageCount}
+                isLoading={isLoading}
+              />
+            </div>
           </div>
         )}
       </div>
