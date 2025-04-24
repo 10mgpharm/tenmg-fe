@@ -47,28 +47,31 @@ const Wallet = () => {
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  const fetchingBankList = async () => {
-    try {
-      const response = await getBankList(token);
-      if (response.status === "error") {
-        setBanks([]);
-      } else {
-        const bankList: BankDto[] = response.data;
-        setBanks(
-          bankList.map((bank) => ({
-            label: bank.name,
-            value: bank.code,
-          }))
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching bank list:", error);
-      setBanks([]);
-    }
-  }
+
 
   useEffect(() => {
-    if(!token) return;
+
+    const fetchingBankList = async () => {
+      try {
+        const response = await getBankList(token);
+        if (response.status === "error") {
+          setBanks([]);
+        } else {
+          const bankList: BankDto[] = response.data;
+          setBanks(
+            bankList.map((bank) => ({
+              label: bank.name,
+              value: bank.code,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching bank list:", error);
+        setBanks([]);
+      }
+    }
+
+    if (!token) return;
     fetchingBankList();
   }, [token]);
 
@@ -201,35 +204,36 @@ const Wallet = () => {
           </Link>
         </div>
         {
-          loading ? 
+          loading ?
             <Flex justify="center" align="center" height="200px">
               <Spinner size="xl" />
             </Flex>
-          : transactions?.data?.length > 0 ? (
-            <div className="mt-5">
-              <Transaction data={transactions?.data} />
-            </div>
-            ) : 
-            (
-              <div className="mt-5 max-w-sm mx-auto">
-                <div className="text-center py-12">
-                  <Image src={folder} alt="" className="mx-auto" />
-                  <h3 className="font-semibold text-lg text-gray-700 mt-4">
-                    Nothing to show here yet
-                  </h3>
-                  <p className="text-gray-600">
-                    You don’t have any transactions yet. When you do, they’ll
-                    appear here.
-                  </p>
-                </div>
+            : transactions?.data?.length > 0 ? (
+              <div className="mt-5">
+                <Transaction data={transactions?.data} />
               </div>
-            )
-          }
-        </div>
-      <AddAccount 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      banks={banks}
+            ) :
+              (
+                <div className="mt-5 max-w-sm mx-auto">
+                  <div className="text-center py-12">
+                    <Image src={folder} alt="" className="mx-auto" />
+                    <h3 className="font-semibold text-lg text-gray-700 mt-4">
+                      Nothing to show here yet
+                    </h3>
+                    <p className="text-gray-600">
+                      You don’t have any transactions yet. When you do, they’ll
+                      appear here.
+                    </p>
+                  </div>
+                </div>
+              )
+        }
+      </div>
+      <AddAccount
+        isOpen={isOpen}
+        onClose={onClose}
+        // banks={banks}
+        endpoint="/supplier/wallet/add-bank-account"
       />
       <WithdrawFunds
         isOpen={isOpenWithdraw}
