@@ -4,9 +4,27 @@ import { Badge, Box, Text } from "@chakra-ui/react";
 
 const columnHelper = createColumnHelper<AuditLogData>();
 
-// Capitalizes the first letter of any string
 const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+const formatRole = (role: string) => {
+  if (!role) return "";
+
+  const lower = role.toLowerCase();
+
+  // Member roles that require 10mg prefix
+  const memberPrefixes = ["admin_", "vendor_"];
+
+  const isMember = memberPrefixes.some((prefix) => lower.startsWith(prefix));
+
+  if (isMember) {
+    const [mainRole, subRole] = lower.split("_");
+    return `10mg ${capitalize(mainRole)} ${capitalize(subRole)}`;
+  }
+
+  // Regular roles
+  return capitalize(lower);
+};
 
 export const ColumsLogFN = () => [
   columnHelper.accessor("actor", {
@@ -16,8 +34,7 @@ export const ColumsLogFN = () => [
 
       if (!actor) return "Unknown";
 
-      // Add "10mg" before a capitalized role
-      const roleText = actor.role ? `10mg ${capitalize(actor.role)}` : "";
+      const roleText = actor.role ? formatRole(actor.role) : "";
 
       return (
         <Box>

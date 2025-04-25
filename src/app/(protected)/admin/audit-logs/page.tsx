@@ -50,29 +50,41 @@ const Page = () => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError("");
+    setPageCount(1);
+   const fetchData = async () => {
+     setLoading(true);
+     setError("");
 
-      //audit-logs?event=login
-      const url = searchValue
-        ? `admin/settings/audit-logs?search=${searchValue}&page=${pageCount}&limit=${ITEMS_PER_PAGE}`
-        : `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
+     const url = `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
 
-      try {
-        const response = await requestClient({ token }).get(url);
-        if (response.status === 200 && response.data.data) {
-          setData(response.data.data || []);
-        } else {
-          setError("Failed to load audit logs. Please try again.");
-        }
-      } catch (err: any) {
-        console.error(err);
-        setError("An unexpected error occurred while fetching audit logs.");
-      } finally {
-        setLoading(false);
-      }
-    };
+     try {
+       const response = await requestClient({ token }).get(url);
+
+       if (response.status === 200 && response.data.data) {
+         let results = response.data.data.data || [];
+
+         // Apply search manually on actor.name
+         if (searchValue.trim()) {
+           results = results.filter((log: any) =>
+             log.actor?.name?.toLowerCase().includes(searchValue.toLowerCase())
+           );
+         }
+
+         setData({
+           ...response.data.data,
+           data: results,
+         });
+       } else {
+         setError("Failed to load audit logs. Please try again.");
+       }
+     } catch (err: any) {
+       console.error(err);
+       setError("An unexpected error occurred while fetching audit logs.");
+     } finally {
+       setLoading(false);
+     }
+   };
+
 
     if (token) {
       fetchData();
@@ -127,8 +139,12 @@ const Page = () => {
 
         {!loading && !error && data?.data.length === 0 && (
           <EmptyOrder
-            heading={`No Audit Logs Yet`}
-            content={`You currently have no audit logs. All audit logs will appear here.`}
+            heading={searchValue ? "No Matching Results" : "No Audit Logs Yet"}
+            content={
+              searchValue
+                ? `No audit log found for the user name "${searchValue}".`
+                : `You currently have no audit logs. All audit logs will appear here.`
+            }
           />
         )}
 
