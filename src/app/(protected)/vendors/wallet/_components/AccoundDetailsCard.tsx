@@ -1,11 +1,50 @@
 import AddAccount from '@/app/(protected)/suppliers/wallet/_components/AddAccount';
+import { BankInfo } from '@/app/(protected)/suppliers/wallet/page';
+import requestClient from '@/lib/requestClient';
+import { NextAuthUserSession } from '@/types';
 import { useDisclosure } from '@chakra-ui/react';
-import React from 'react'
+import { useSession } from 'next-auth/react';
+import React, { useCallback, useEffect, useState } from 'react'
+
+
+interface WalletProps {
+  currentBalance: string;
+  previousBalance: string;
+  bankAccount: BankInfo;
+}
 
 export default function AccoundDetailsCard() {
 
   const hasAccountNumber = false;
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+  const [walletBalance, setWalletBalance] = useState<WalletProps>();
+  const [loading, setLoading] = useState(false);
+
+
+
+  const fetchingWallet = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token }).get(`/vendor/wallet`);
+      if (response.status === 200) {
+        setWalletBalance(response?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetchingWallet();
+  }, [token, fetchingWallet]);
+
 
   return (
     <>
@@ -45,8 +84,9 @@ export default function AccoundDetailsCard() {
 
       <AddAccount
         isOpen={isOpen}
-        onClose={onClose} 
-        banks={[]}      
+        onClose={onClose}
+        // banks={[]}   
+        endpoint={"vendor/wallet/add-bank-account"}
       />
     </>
   )
