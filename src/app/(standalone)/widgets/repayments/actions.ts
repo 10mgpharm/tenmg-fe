@@ -2,7 +2,6 @@
 
 import requestClient from "@/lib/requestClient";
 import {
-    ApplicationWidgetConfig,
     RepaymentWidgetConfig,
     ResponseDto,
  

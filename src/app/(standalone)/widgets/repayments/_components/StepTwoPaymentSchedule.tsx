@@ -30,7 +30,8 @@ interface Props {
   data: RepaymentWidgetConfig;
   token?: string;
   navigateBackAction?: () => void;
-  onContinueAction?: () => void;
+  onContinueAction?: (paidAmount?: string | number) => void;
+  lastPaidBalance: string | null;
 }
 
 type PaymentOption = "custom" | "full";
@@ -47,10 +48,12 @@ export default function StepTwoPaymentSchedule({
   token,
   navigateBackAction,
   onContinueAction,
+  lastPaidBalance,
 }: Props) {
   const [paymentOption, setPaymentOption] = useState<PaymentOption>("full");
   const [selectedPayments, setSelectedPayments] = useState<number[]>([]);
   const [loadingPayment, setLoadingPayment] = useState(false);
+  const [paidAmount, setPaidAmount] = useState<string | number>("");
 
   const handlePaymentToggle = (id: number) => {
     setSelectedPayments((prev) =>
@@ -65,8 +68,18 @@ export default function StepTwoPaymentSchedule({
 
   const isSuccessStatus = (status: string | undefined) => {
     if (!status) return false;
-    return status.toUpperCase() === "SUCCESS";
+    return (
+      status.toUpperCase() === "SUCCESS" || status.toUpperCase() === "PAID"
+    );
   };
+
+  const hasPaidPayment = data?.repaymentSchedule?.some(item => 
+    isSuccessStatus(item.paymentStatus)
+  );
+
+  const fullPaymentAmount = hasPaidPayment 
+    ? lastPaidBalance 
+    : data?.totalAmount;
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -86,7 +99,9 @@ export default function StepTwoPaymentSchedule({
         `/client/repayment/verify-payment/${ref}`
       );
       toast.success("Fund Repayment is successful");
-      onContinueAction();
+      if (onContinueAction) {
+        onContinueAction(amount);
+      }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(`Repayment Error: ${errorMessage}`);
@@ -139,7 +154,8 @@ export default function StepTwoPaymentSchedule({
         {
           amount: Number(value.amount),
           reference: data?.identifier,
-          paymentType: paymentOption === "custom" ? "partPayment" : "fullPayment",
+          paymentType:
+            paymentOption === "custom" ? "partPayment" : "fullPayment",
           noOfMonths:
             paymentOption === "custom"
               ? selectedPayments.length
@@ -217,7 +233,7 @@ export default function StepTwoPaymentSchedule({
               <Text fontSize="md" color="gray.700">
                 Full Payment
               </Text>
-              <Flex>₦{formatAmountString(data?.totalAmount)}</Flex>
+              <Flex>₦{formatAmountString(fullPaymentAmount)}</Flex>
             </Box>
             <Radio value="full" />
           </Flex>
@@ -285,7 +301,6 @@ export default function StepTwoPaymentSchedule({
         </Stack>
       )}
 
-      {/* Total amount display */}
       <Stack
         spacing={5}
         borderColor="warning.400"
@@ -310,7 +325,7 @@ export default function StepTwoPaymentSchedule({
             ₦
             {paymentOption === "custom"
               ? formatAmountString(totalSelectedAmount)
-              : formatAmountString(data?.totalAmount)}
+              : formatAmountString(fullPaymentAmount)}
           </Text>
         </Flex>
       </Stack>
@@ -324,14 +339,14 @@ export default function StepTwoPaymentSchedule({
             amount:
               paymentOption === "custom"
                 ? totalSelectedAmount
-                : Number(data?.totalAmount),
+                : Number(fullPaymentAmount),
           })
         }
       >
         Pay Now ₦
         {paymentOption === "custom"
           ? formatAmountString(totalSelectedAmount)
-          : formatAmountString(data?.totalAmount)}
+          : formatAmountString(fullPaymentAmount)}
       </Button>
     </LoanLayout>
   );

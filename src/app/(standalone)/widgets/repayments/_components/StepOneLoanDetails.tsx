@@ -29,6 +29,9 @@ interface Props {
   data: RepaymentWidgetConfig;
   navigateBackAction?: () => void;
   onContinueAction?: () => void;
+  pendingPaymentDate: any;
+  isSuccessStatus: (status: string | undefined) => boolean;
+  lastPaidBalance: string | null;
 }
 
 export default function StepOneLoanDetails({
@@ -38,27 +41,15 @@ export default function StepOneLoanDetails({
   data,
   navigateBackAction,
   onContinueAction,
+  pendingPaymentDate,
+  isSuccessStatus,
+  lastPaidBalance,
 }: Props) {
   const [showAll, setShowAll] = useState(false);
 
   const displayItems = showAll
     ? data?.repaymentSchedule
     : data?.repaymentSchedule?.slice(0, 3) || [];
-
-  // Check for "PENDING" status in a case-insensitive way
-  const isPendingStatus = (status: string | undefined) => {
-    if (!status) return false;
-    return status.toUpperCase() === "PENDING";
-  };
-
-  const pendingPayment =
-    data?.repaymentSchedule?.find((item) => isPendingStatus(item.paymentStatus)) || null;
-
-  // Check if payment status is successful (handles both upper and lowercase variants)
-  const isSuccessStatus = (status: string | undefined) => {
-    if (!status) return false;
-    return status.toUpperCase() === "SUCCESS";
-  };
 
   return (
     <LoanLayout
@@ -70,34 +61,51 @@ export default function StepOneLoanDetails({
       <LoanProfile name={customer?.name} email={customer?.email} />
 
       <Stack
-        spacing={5}
+        spacing={4}
         borderColor="gray.200"
         border="1px solid var(--tenmg-colors-gray-200)"
         borderRadius="md"
         my={6}
         py={5}
       >
-        <Flex gap={3} justifyContent="center" alignItems="center">
-          <Text fontSize="lg" color="gray.700">
-            Credit Amount
-          </Text>
-          {/* <Badge
-            bg="warning.100"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            textColor="warning.700"
-            rounded={16}
-            py={1}
-            px={3}
-          >
-            Repayment Overdue
-          </Badge> */}
-        </Flex>
-        <Flex justifyContent="center" alignItems="center" fontSize={64}>
-          <TbCurrencyNaira size="24px" className="mt-6" />
-          <Text>{formatAmountString(application?.totalAmount)}</Text>
-        </Flex>
+        <Box>
+          <Flex gap={3} justifyContent="center" alignItems="center">
+            <Badge
+              bg="warning.100"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              textColor="warning.700"
+              rounded={16}
+              py={1}
+              px={3}
+            >
+              Repayment Amount
+            </Badge>
+          </Flex>
+          <Flex justifyContent="center" alignItems="center" fontSize={60}>
+            <TbCurrencyNaira size="24px" className="mt-6" />
+            <Text>{formatAmountString(lastPaidBalance)}</Text>
+          </Flex>
+          <Stack justifyContent="center" alignItems="center" fontSize={20}>
+            <Badge
+              bg="success.100"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              textColor="success.700"
+              rounded={16}
+              py={1}
+              px={3}
+            >
+              <Text color="success.700">Total Loan Amount</Text>
+            </Badge>
+            <Flex justifyContent="center" alignItems="center" fontSize={24}>
+              <TbCurrencyNaira className="mt-1" />
+              <Text>{formatAmountString(application?.totalAmount)}</Text>
+            </Flex>
+          </Stack>
+        </Box>
         <Divider />
         <Flex
           justifyContent="space-between"
@@ -111,12 +119,12 @@ export default function StepOneLoanDetails({
             </Text>
             <Text>{application?.interestRate}%</Text>
           </Stack>
-          {pendingPayment && (
+          {pendingPaymentDate && (
             <Stack alignItems="center">
               <Text color="gray.500" fontSize="sm">
                 Next Payment
               </Text>
-              <Text>{convertDate(pendingPayment?.dueDate)}</Text>
+              <Text>{convertDate(pendingPaymentDate?.dueDate)}</Text>
             </Stack>
           )}
           <Stack alignItems="center">
@@ -126,6 +134,21 @@ export default function StepOneLoanDetails({
             <Text>{application?.durationInMonths} Months</Text>
           </Stack>
         </Flex>
+        {/* {lastPaidBalance !== null && (
+          <Flex justifyContent="center" mt={2}>
+            <Stack alignItems="center">
+              <Text color="gray.500" fontSize="sm">
+                Remaining Balance (Last Payment)
+              </Text>
+              <Flex alignItems="center">
+                <TbCurrencyNaira />
+                <Text fontWeight="500">
+                  {formatAmountString(lastPaidBalance)}
+                </Text>
+              </Flex>
+            </Stack>
+          </Flex>
+        )} */}
       </Stack>
 
       {data?.repaymentSchedule && data.repaymentSchedule.length > 0 && (
@@ -155,22 +178,28 @@ export default function StepOneLoanDetails({
                 </Text>
                 <Text color="gray.400">{convertDate(item.dueDate)}</Text>
               </Box>
-              <Badge
-                bg={`${
-                  isSuccessStatus(item.paymentStatus) ? "success.50" : "warning.50"
-                } `}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                textColor={`${
-                  isSuccessStatus(item.paymentStatus) ? "success.700" : "warning.700"
-                } `}
-                rounded={16}
-                py={1}
-                px={3}
-              >
-                {item.paymentStatus}
-              </Badge>
+              <Flex direction="column" alignItems="flex-end" gap={1}>
+                <Badge
+                  bg={`${
+                    isSuccessStatus(item.paymentStatus)
+                      ? "success.50"
+                      : "warning.50"
+                  } `}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  textColor={`${
+                    isSuccessStatus(item.paymentStatus)
+                      ? "success.700"
+                      : "warning.700"
+                  } `}
+                  rounded={16}
+                  py={1}
+                  px={3}
+                >
+                  {item.paymentStatus}
+                </Badge>
+              </Flex>
             </Flex>
           ))}
 
