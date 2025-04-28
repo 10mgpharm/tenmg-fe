@@ -144,7 +144,15 @@ const TopNavBar = ({
 const renderUserRole = (role?: string) => {
   if (!role) return null;
 
-  switch (role.toUpperCase()) {
+  const roleUpper = role.toUpperCase();
+
+  switch (roleUpper) {
+    case "ADMIN":
+      return (
+        <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
+          10mg {convertLetterCase(role)}
+        </Tag>
+      );
     case "VENDOR":
       return (
         <Tag size="sm" variant="solid" bg="green.100" color="green.700">
@@ -154,12 +162,6 @@ const renderUserRole = (role?: string) => {
     case "SUPPLIER":
       return (
         <Tag size="sm" variant="solid" bg="red.100" color="red.700">
-          {convertLetterCase(role)}
-        </Tag>
-      );
-    case "ADMIN":
-      return (
-        <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
           {convertLetterCase(role)}
         </Tag>
       );
@@ -177,6 +179,7 @@ const renderUserRole = (role?: string) => {
       );
   }
 };
+
 
 
   return (
