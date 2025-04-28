@@ -11,6 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import StepOneLoanDetails from "./StepOneLoanDetails";
 import StepTwoPaymentSchedule from "./StepTwoPaymentSchedule";
+import StepThreeConfirmation from "./StepThreeConfirmation";
 
 interface Props {
   business: BusinessDto;
@@ -30,6 +31,7 @@ export default function RepaymentWidget({
   token,
 }: Props) {
   const [activeStep, setActiveStep] = useState<number>(1);
+  const [currentPaidAmount, setCurrentPaidAmount] = useState<string | number>("");
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -38,6 +40,31 @@ export default function RepaymentWidget({
       setActiveStep(parseInt(step));
     }
   }, []);
+
+  const isPendingStatus = (status: string | undefined) => {
+    if (!status) return false;
+    return status.toUpperCase() === "PENDING";
+  };
+
+  const pendingPaymentDate =
+    data?.repaymentSchedule?.find((item) =>
+      isPendingStatus(item.paymentStatus)
+    ) || null;
+
+  const isSuccessStatus = (status: string | undefined) => {
+    if (!status) return false;
+    return (
+      status.toUpperCase() === "SUCCESS" || status.toUpperCase() === "PAID"
+    );
+  };
+
+  const lastPaidPayment = data?.repaymentSchedule
+    ? [...data.repaymentSchedule]
+        .filter((item) => isSuccessStatus(item.paymentStatus))
+        .pop()
+    : null;
+
+  const lastPaidBalance = lastPaidPayment?.balance || null;
 
   switch (activeStep) {
     case 1:
@@ -50,6 +77,9 @@ export default function RepaymentWidget({
           onContinueAction={() => {
             setActiveStep(activeStep + 1);
           }}
+          pendingPaymentDate={pendingPaymentDate}
+          isSuccessStatus={isSuccessStatus}
+          lastPaidBalance={lastPaidBalance}
         />
       );
     case 2:
@@ -60,9 +90,29 @@ export default function RepaymentWidget({
           data={data}
           token={token}
           application={application}
-          onContinueAction={() => {
+          onContinueAction={(paidAmount) => {
+            if (paidAmount) {
+              setCurrentPaidAmount(paidAmount);
+            }
             setActiveStep(activeStep + 1);
           }}
+          navigateBackAction={() => {
+            setActiveStep(activeStep - 1);
+          }}
+          lastPaidBalance={lastPaidBalance}
+        />
+      );
+    case 3:
+      return (
+        <StepThreeConfirmation
+          business={business}
+          customer={customer}
+          data={data}
+          token={token}
+          application={application}
+          pendingPaymentDate={pendingPaymentDate}
+          isSuccessStatus={isSuccessStatus}
+          lastPaidBalance={currentPaidAmount ? String(currentPaidAmount) : lastPaidBalance}
         />
       );
     default:
