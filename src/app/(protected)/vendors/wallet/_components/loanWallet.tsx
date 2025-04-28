@@ -138,7 +138,7 @@ const LoanWallet = () => {
           toColor="to-[#E31B54]"
           image={productPattern}
         /> */}
-        <AccoundDetailsCard />
+        <AccoundDetailsCard showBalance={showBalance} />
       </div>
 
       <div className="flex items-center justify-between my-5">
