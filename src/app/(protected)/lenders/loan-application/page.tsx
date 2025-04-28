@@ -61,8 +61,6 @@ export default function LoanApplicationPage() {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const sessionToken = sessionData?.user?.token;
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
 
   const {
@@ -102,12 +100,6 @@ export default function LoanApplicationPage() {
         if (status) {
           query += `&status=${status}`;
         }
-        if (createdAtStart) {
-          query += `&dateFrom=${formatDateRange(createdAtStart, false)}`;
-        }
-        if (createdAtEnd) {
-          query += `&dateTo=${formatDateRange(createdAtEnd, true)}`;
-        }
 
         const response = await requestClient({ token: sessionToken }).get(
           query
@@ -126,14 +118,7 @@ export default function LoanApplicationPage() {
         console.error(error);
       }
     });
-  }, [
-    sessionToken,
-    pageCount,
-    debouncedSearch,
-    status,
-    createdAtStart,
-    createdAtEnd,
-  ]); // Add pageCount to dependency array
+  }, [sessionToken, pageCount, debouncedSearch, status]); // Add pageCount to dependency array
 
   const handleApprove = async (id: string) => {
     try {
@@ -173,14 +158,10 @@ export default function LoanApplicationPage() {
   }, [sessionData, fetchLoanData, fetchLenderData]);
 
   const applyFilters = (filters: IFilterInput) => {
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
   };
 
   const clearFilters = () => {
-    setCreatedAtStart(null);
-    setCreatedAtEnd(null);
     setStatus("");
     setGlobalFilter("");
   };
@@ -265,6 +246,7 @@ export default function LoanApplicationPage() {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         filterOptions={filterOptions}
+        isNotDate
       />
     </>
   );
