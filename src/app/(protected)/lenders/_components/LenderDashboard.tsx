@@ -459,14 +459,17 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         onSuccess={onOpenSuccess}
         setAmount={setAmount}
       />
-      <WithdrawFunds
-        isOpen={isOpenWithdraw}
-        onClose={onCloseWithdraw}
-        wallet={wallet}
-        setAmount={setAmount}
-        onSuccess={onOpenSuccess}
-        setIsWithdraw={setIsWithdraw}
-      />
+      {isOpenWithdraw && (
+        <WithdrawFunds
+          isOpen={isOpenWithdraw}
+          onClose={onCloseWithdraw}
+          wallet={wallet}
+          setAmount={setAmount}
+          onSuccess={onOpenSuccess}
+          setIsWithdraw={setIsWithdraw}
+        />
+      )}
+
       <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
 
       <CongratsModal
