@@ -5,10 +5,14 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 const tabs = [
-    { label: 'Personal Information', href: '/suppliers/settings/personal_information' },
-    { label: 'Password', href: '/suppliers/settings/password' },
-    { label: 'Notification Settings', href: '/suppliers/settings/notifications' },
-    { label: 'License Upload', href: '/suppliers/settings/license_upload' },
+  {
+    label: "Personal Information",
+    href: "/suppliers/settings/personal_information",
+  },
+  { label: "Password", href: "/suppliers/settings/password" },
+  { label: "Notification Settings", href: "/suppliers/settings/notifications" },
+  { label: "License Upload", href: "/suppliers/settings/license_upload" },
+  { label: "ShippingAddress", href: "/suppliers/settings/ShippingAddress" },
 ];
 
 export default function TabsNavigation() {

@@ -12,14 +12,12 @@ const formatRole = (role: string) => {
 
   const lower = role.toLowerCase();
 
-  // Roles that do NOT need 10mg
-  const simpleRoles = ["customer", "lender", "vendor", "admin", "supplier"];
-
-  if (simpleRoles.includes(lower)) {
-    return capitalize(lower);
+  // If role is exactly "admin", add "10mg" prefix
+  if (lower === "admin") {
+    return `10mg ${capitalize(lower)}`;
   }
 
-  // Roles that need 10mg (admin_support, vendor_operator etc.)
+  // If it's a member type like "admin_support" or "vendor_operator"
   const memberPrefixes = ["admin_", "vendor_"];
   const isMember = memberPrefixes.some((prefix) => lower.startsWith(prefix));
 
@@ -28,9 +26,10 @@ const formatRole = (role: string) => {
     return `10mg ${capitalize(mainRole)} ${capitalize(subRole)}`;
   }
 
-  // fallback
+  // Otherwise, just capitalize normally (for vendor, supplier, customer, lender)
   return capitalize(lower);
 };
+
 
 export const ColumsLogFN = () => [
   columnHelper.accessor("actor", {
