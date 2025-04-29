@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   HStack,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -12,6 +13,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
   ColumnOrderState,
@@ -32,6 +34,8 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
+import { IApplyFilters } from "@/app/(protected)/vendors/loan-applications/page";
+import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 
 const DataTable = () => {
   const onOpen = () => {};
@@ -43,31 +47,30 @@ const DataTable = () => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
-  const [globalFilter, setGlobalFilter] = useState("");
   const [isLoadingTable, setIsLoadingTable] = useState(false);
   const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
   const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [status, setStatus] = useState("");
   const [tableData, setTableData] = useState(null);
-
-  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
 
   const fetchTableData = useCallback(async () => {
     setIsLoadingTable(true);
 
     let query = `/admin/loan-repayment?page=${pageCount}`;
 
-    if (debouncedSearch) {
-      query += `&search=${debouncedSearch}`;
-    }
     if (status) {
       query += `&status=${status}`;
     }
     if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+      query += `&dateFrom=${createdAtStart}`;
     }
     if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+      query += `&dateTo=${createdAtEnd}`;
     }
 
     try {
@@ -79,7 +82,7 @@ const DataTable = () => {
       console.error(error);
     }
     setIsLoadingTable(false);
-  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token, pageCount, status, createdAtStart, createdAtEnd]);
 
   useEffect(() => {
     fetchTableData();
@@ -105,66 +108,103 @@ const DataTable = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
+  const filterOptions = [
+    { option: "PAID", value: "PAID" },
+    { option: "PENDING", value: "PENDING" },
+  ];
+
+  const applyFilters = (filters: IApplyFilters) => {
+    console.log(filters);
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+  };
+
   return (
     <div>
-      <Flex mt={4} gap={2}>
-        <SearchComponent placeholder="Search for a user" />
+      <Flex mt={4} gap={2} justifyContent={"space-between"}>
+        <Text fontSize={"1.3rem"} fontWeight={700} color={"gray.900"}>
+          Loan Repayments
+        </Text>
+
         <Button
           h={"40px"}
           px={4}
           variant={"outline"}
           className="border text-gray-600 bg-white"
+          onClick={onOpenFilter}
         >
           Filter
         </Button>
       </Flex>
-      <div className="mt-5">
-        {!repaymentData?.data ? (
-          <EmptyOrder
-            heading={`No Loan Yet`}
-            content={`You currently have no loan repayment. All loan repayment will appear here.`}
-          />
-        ) : (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-            <Table>
-              <Thead bg={"#F2F4F7"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
-                  <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </Th>
-                    ))}
-                  </Tr>
-                ))}
-              </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </Td>
-                    ))}
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-            <Pagination
-              meta={tableData?.data?.meta}
-              setPageCount={setPageCount}
+
+      {isLoadingTable ? (
+        <div className="flex justify-center mt-10">
+          <Spinner size={"lg"} />
+        </div>
+      ) : (
+        <div className="mt-5">
+          {!repaymentData?.data ? (
+            <EmptyOrder
+              heading={`No Loan Yet`}
+              content={`You currently have no loan repayment. All loan repayment will appear here.`}
             />
-          </TableContainer>
-        )}
-      </div>
+          ) : (
+            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+              <Table>
+                <Thead bg={"#F2F4F7"}>
+                  {table?.getHeaderGroups()?.map((headerGroup) => (
+                    <Tr key={headerGroup.id}>
+                      {headerGroup.headers?.map((header) => (
+                        <Th textTransform={"initial"} px="0px" key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </Th>
+                      ))}
+                    </Tr>
+                  ))}
+                </Thead>
+                <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                  {table?.getRowModel()?.rows?.map((row) => (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells()?.map((cell) => (
+                        <Td key={cell.id} px="0px">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Td>
+                      ))}
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              <Pagination
+                meta={tableData?.data?.meta}
+                setPageCount={setPageCount}
+              />
+            </TableContainer>
+          )}
+        </div>
+      )}
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+      />
     </div>
   );
 };
