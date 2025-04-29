@@ -30,6 +30,8 @@ import { Button, Flex, HStack, useDisclosure } from "@chakra-ui/react";
 import SearchInput from "../_components/SearchInput";
 import { formatDateRange } from "@/lib/dateFormatter";
 import { IApplyFilters } from "../loan-applications/page";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
 export interface OverviewCardData {
   title: string;
@@ -100,6 +102,24 @@ const LoanManagement = () => {
       setLoading(false);
     }
   }, [token]);
+
+  const sendRepaymentLink = useCallback(
+    async (id: string) => {
+      try {
+        const response = await requestClient({ token: token }).get(
+          `/client/repayment/test-repayment-mail/${id}`
+        );
+        if (response.status === 200) {
+          toast.success("Repayment link sent successfully");
+        }
+      } catch (error) {
+        console.error(error);
+        const errorMessage = handleServerErrorMessage(error);
+        toast.error(errorMessage);
+      }
+    },
+    [token]
+  );
 
   const applyFilters = (filters: IApplyFilters) => {
     setStatus(filters.status);
@@ -182,7 +202,7 @@ const LoanManagement = () => {
       <div className="mt-5">
         <LoanTable
           data={tableData ?? []}
-          columns={ColumnsLoanFN()}
+          columns={ColumnsLoanFN(sendRepaymentLink)}
           globalFilter={globalFilter}
           onGlobalFilterChange={setGlobalFilter}
           loading={loading}
