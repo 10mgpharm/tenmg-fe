@@ -99,7 +99,7 @@ const GeneralSettings = () => {
     if (sessionData) {
       setValue("name", sessionData.user.name, { shouldValidate: true });
       setValue("email", sessionData.user.email, { shouldValidate: true });
-      setValue("role",sessionData.user.role);
+      setValue("role", `vendor ${sessionData.user.role}`);
     }
   }, [sessionData, setValue]);
 

@@ -129,7 +129,7 @@ const TopNavBar = ({
       case "LENDER":
         return (
           <Tag size="sm" variant="solid" bg="blue.50" color="blue.700">
-            {convertLetterCase(businessType)}1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+            {convertLetterCase(businessType)}1
           </Tag>
         );
       default:
@@ -141,47 +141,76 @@ const TopNavBar = ({
     }
   };
 
-const renderUserRole = (role?: string) => {
-  if (!role) return null;
+  const renderUserRole = (role?: string, entityType?: string) => {
+    if (!entityType) return null;
 
-  const roleUpper = role.toUpperCase();
+    const normalized = entityType.trim().toLowerCase();
 
-  switch (roleUpper) {
-    case "ADMIN":
+    const capitalizeWords = (text: string) =>
+      text
+        .split(/[_\s]/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+    // Admin roles
+    if (normalized === "admin") {
       return (
         <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
-          10mg {convertLetterCase(role)}
+          10mg {role}
         </Tag>
       );
-    case "VENDOR":
+    }
+    if (normalized.startsWith("admin_")) {
+      const suffix = capitalizeWords(normalized.replace("admin_", ""));
+      return (
+        <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
+          10mg {suffix}
+        </Tag>
+      );
+    }
+
+    // Vendor roles
+    if (normalized === "vendor") {
       return (
         <Tag size="sm" variant="solid" bg="green.100" color="green.700">
-          {convertLetterCase(role)}
+          Vendor
         </Tag>
       );
-    case "SUPPLIER":
+    }
+    if (normalized.startsWith("vendor_")) {
+      const suffix = capitalizeWords(normalized.replace("vendor_", ""));
+      return (
+        <Tag size="sm" variant="solid" bg="green.100" color="green.700">
+          Vendor {suffix}
+        </Tag>
+      );
+    }
+
+    // Supplier
+    if (normalized === "supplier") {
       return (
         <Tag size="sm" variant="solid" bg="red.100" color="red.700">
-          {convertLetterCase(role)}
+          Supplier
         </Tag>
       );
-    case "LENDER":
+    }
+
+    // Lender
+    if (normalized === "lender") {
       return (
         <Tag size="sm" variant="solid" bg="purple.100" color="purple.700">
-          {convertLetterCase(role)}
+          Lender
         </Tag>
       );
-    default:
-      return (
-        <Tag size="sm" variant="solid" bg="gray.100" color="gray.600">
-          {convertLetterCase(role)}
-        </Tag>
-      );
-  }
-};
+    }
 
-
-
+    // Fallback
+    return (
+      <Tag size="sm" variant="solid" bg="gray.100" color="gray.700">
+        {capitalizeWords(entityType)}
+      </Tag>
+    );
+  };
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
@@ -251,7 +280,7 @@ const renderUserRole = (role?: string) => {
                     >
                       {data?.user.name}
                     </span>
-                    {renderUserRole(data?.user?.role)}
+                    {renderUserRole(data?.user?.role, data?.user?.entityType)}
                   </div>
                   <p className="text-gray-600 text-sm">
                     {data?.user?.businessName}
