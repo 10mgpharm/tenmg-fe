@@ -216,11 +216,7 @@ const CustomerManagement = () => {
   const table = useReactTable({
     data: tableData ? tableData.data : [],
     columns: columns,
-    state: {
-      globalFilter,
-    },
     manualFiltering: true,
-    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
