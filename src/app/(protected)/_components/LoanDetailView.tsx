@@ -103,7 +103,7 @@ const LoanDetailView = ({
 
     const paidItems = data.repaymentSchedule.filter(
       (item: any) =>
-        item.paymentStatus === "success" || item.paymentStatus === "PARTIAL"
+        item.paymentStatus === "PAID"
     ).length;
 
     return Math.round((paidItems / totalRepaymentValue) * 100);

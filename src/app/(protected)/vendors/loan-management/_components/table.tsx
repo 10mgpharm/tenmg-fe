@@ -1,12 +1,15 @@
 import { LoanData } from "@/types";
 import { classNames } from "@/utils";
 import { formatAmount } from "@/utils/formatAmount";
+import { MenuButton, MenuList, MenuItem, Menu } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
 const columnHelper = createColumnHelper<LoanData>();
 
-export function ColumnsLoanFN() {
+export function ColumnsLoanFN(sendRepaymentLink: (id: string) => void) {
+  const router = useRouter();
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
@@ -178,12 +181,32 @@ export function ColumnsLoanFN() {
       ),
       cell: (info) => (
         <div>
-          <Link
-            href={`/vendors/loan-management/${info.row.original?.id}`}
-            className="font-medium text-primary-500"
-          >
-            View
-          </Link>
+          <Menu>
+            <MenuButton>
+              <BsThreeDotsVertical className="w-5 h-auto" />
+            </MenuButton>
+            <MenuList>
+              <MenuItem
+                onClick={() =>
+                  router.push(
+                    `/vendors/loan-management/${info.row.original?.id}`
+                  )
+                }
+              >
+                <Link
+                  href={`/vendors/loan-management/${info.row.original?.id}`}
+                  className="font-medium text-primary-500"
+                >
+                  View
+                </Link>
+              </MenuItem>
+              <MenuItem
+                onClick={() => sendRepaymentLink(info.row.original?.identifier)}
+              >
+                Send Repayment Link
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </div>
       ),
     }),
