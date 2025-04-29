@@ -6,11 +6,14 @@ import ProductWallet from "./_components/productWallet";
 import LoanWallets from "./_components/LoanWallets";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession, TransactionDataProps, TransactionProps } from "@/types";
+import {
+  NextAuthUserSession,
+  TransactionDataProps,
+  TransactionProps,
+} from "@/types";
 import requestClient from "@/lib/requestClient";
 
 const Page = () => {
-  
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
@@ -42,7 +45,7 @@ const Page = () => {
       const response = await requestClient({ token: token }).get(
         `/admin/wallet`
       );
-      console.log(response)
+      console.log(response);
       if (response.status === 200) {
         setWalletStats(response.data);
         setLoading(false);
@@ -54,16 +57,20 @@ const Page = () => {
   }, [token]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchingWallet();
     fetchingTransactions();
   }, [token]);
 
-  console.log(walletStats)
+  console.log(walletStats);
 
   return (
     <div className="px-6 py-8 md:p-8 ">
-      <Tabs variant={"unstyled"} className="w-full">
+      <Tabs
+        variant={"unstyled"}
+        className="w-full"
+        onChange={() => setSelectedTimeLine("All time")}
+      >
         {/* Tabs */}
         <div className="flex items-center justify-between max-sm:flex-col max-sm:items-start max-sm:gap-4">
           <TabList className="flex items-center gap-4">
@@ -98,9 +105,9 @@ const Page = () => {
         {/* panels */}
         <TabPanels className="mt-10 max-sm:mt-8">
           <TabPanel className="!p-0">
-            <ProductWallet 
-            transactions={transactions}
-            setPageCount={setPageCount}
+            <ProductWallet
+              transactions={transactions}
+              setPageCount={setPageCount}
             />
           </TabPanel>
           <TabPanel className=" !p-0">
