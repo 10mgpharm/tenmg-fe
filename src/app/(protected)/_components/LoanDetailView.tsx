@@ -102,8 +102,7 @@ const LoanDetailView = ({
     }
 
     const paidItems = data.repaymentSchedule.filter(
-      (item: any) =>
-        item.paymentStatus === "PAID"
+      (item: any) => item.paymentStatus === "PAID"
     ).length;
 
     return Math.round((paidItems / totalRepaymentValue) * 100);
@@ -173,7 +172,6 @@ const LoanDetailView = ({
     getSortedRowModel: getSortedRowModel(),
   });
 
-  // Get the loan dates (using more reliable calculation)
   const getLoanDates = () => {
     if (
       !data?.repaymentSchedule ||
@@ -203,7 +201,7 @@ const LoanDetailView = ({
       <Flex cursor={"pointer"} gap={2} onClick={handleBack}>
         <ArrowLeft className="w-5 h-auto text-gray-600" />
         <Text>Back</Text>
-      </Flex> 
+      </Flex>
       {loading && <Loader />}
 
       {!loading && (
@@ -242,7 +240,11 @@ const LoanDetailView = ({
                   {data?.interestAmount
                     ? formatAmountString(data?.interestAmount)
                     : "0.00"}
+                    <Text fontWeight={400} color="success.600" fontSize="0.8rem">
+                  Interest Rate: {data?.application?.interestRate}%
                 </Text>
+                </Text>
+            
               </Stack>
               <Stack>
                 <Text fontSize={"15px"} color={"gray.500"}>

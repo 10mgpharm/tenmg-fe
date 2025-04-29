@@ -31,7 +31,6 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
     BusinessStatus.PENDING_VERIFICATION,
     BusinessStatus.PENDING_APPROVAL,
     BusinessStatus.REJECTED,
-    BusinessStatus.LICENSE_EXPIRED,
     BusinessStatus.SUSPENDED,
     BusinessStatus.BANNED,
   ];
