@@ -38,7 +38,8 @@ import { formatAmount } from "@/utils/formatAmount";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
-import { formatAmountString } from "@/utils";
+import { formatAmountString, handleServerErrorMessage } from "@/utils";
+import { toast } from "react-toastify";
 
 const LoanManagement = () => {
   const onOpen = () => {};
@@ -106,6 +107,21 @@ const LoanManagement = () => {
     }
   }, [token]);
 
+  const sendRepaymentLink = useCallback(async (id: string) => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/client/repayment/test-repayment-mail/${id}`
+      );
+      if (response.status === 200) {
+        toast.success("Repayment link sent successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  }, [token]);
+
   const tableData = useMemo(() => loan?.data, [loan?.data]);
 
   useEffect(() => {
@@ -116,7 +132,7 @@ const LoanManagement = () => {
 
   const table = useReactTable({
     data: tableData || [],
-    columns: ColumsLoanFN(onOpen),
+    columns: ColumsLoanFN(onOpen, sendRepaymentLink),
     state: {
       columnVisibility,
       columnOrder,

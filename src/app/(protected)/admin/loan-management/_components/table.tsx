@@ -2,10 +2,17 @@ import Link from "next/link";
 import { classNames, formatAmountString } from "@/utils";
 import { createColumnHelper } from "@tanstack/react-table";
 import { LoanData } from "@/types";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { MenuButton, MenuList, MenuItem, Menu } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 
 const columnHelper = createColumnHelper<LoanData>();
 
-export function ColumsLoanFN(onOpen: () => void) {
+export function ColumsLoanFN(
+  onOpen: () => void,
+  sendRepaymentLink: (id: string) => void
+) {
+  const router = useRouter();
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
@@ -185,14 +192,30 @@ export function ColumsLoanFN(onOpen: () => void) {
     columnHelper.accessor("vendor", {
       header: ({ column }) => <p>Actions</p>,
       cell: (info) => (
-        <div className="">
-          <Link
-            href={`/admin/loan-management/${info.row.original?.id}`}
-            className="text-primary-500 font-medium"
-          >
-            View
-          </Link>
-        </div>
+        <Menu>
+          <MenuButton>
+            <BsThreeDotsVertical className="w-5 h-auto" />
+          </MenuButton>
+          <MenuList>
+            <MenuItem
+              onClick={() =>
+                router.push(`/admin/loan-management/${info.row.original?.id}`)
+              }
+            >
+              <Link
+                href={`/admin/loan-management/${info.row.original?.id}`}
+                className="text-primary-500 font-medium"
+              >
+                View
+              </Link>
+            </MenuItem>
+            {/* <MenuItem
+              onClick={() => sendRepaymentLink(info.row.original?.identifier)}
+            >
+              Send Repayment Link
+            </MenuItem> */}
+          </MenuList>
+        </Menu>
       ),
     }),
   ];
