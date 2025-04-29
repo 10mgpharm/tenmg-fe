@@ -33,7 +33,6 @@ import {
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/_components/Pagination";
 import { ColumnsLoanApplicationFN } from "./_components/table";
-import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../_components/FilterDrawer";
 import SendApplicationLink from "./_components/SendApplicationLink";
 import { formatDateRange } from "@/lib/dateFormatter";
@@ -141,6 +140,7 @@ const LoanApplication = () => {
   }, [fetchLoanApplication, fetchAllCustomers, token]);
 
   const applyFilters = (filters: IApplyFilters) => {
+    console.log(filters);
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);

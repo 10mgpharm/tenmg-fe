@@ -5,7 +5,7 @@ const columnHelper = createColumnHelper<any>();
 
 export function ColumsRepaymentFN(onOpen: () => void) {
   return [
-    columnHelper.accessor("id", {
+    columnHelper.accessor("loan.identifier", {
       header: () => (
         <div className="pl-6">
           <p>Repayment ID</p>
@@ -17,7 +17,7 @@ export function ColumsRepaymentFN(onOpen: () => void) {
             onOpen();
           }}
         >
-          <p className="pl-6">{info.row.original?.name}</p>
+          <p className="pl-6">{info.row.original?.identifier}</p>
         </div>
       ),
     }),
@@ -40,7 +40,7 @@ export function ColumsRepaymentFN(onOpen: () => void) {
         );
       },
     }),
-    columnHelper.accessor("status", {
+    columnHelper.accessor("paymentStatus", {
       header: ({ column }) => <p>Repayment Status</p>,
       cell: (info) => {
         return (
@@ -56,7 +56,7 @@ export function ColumsRepaymentFN(onOpen: () => void) {
               )}
             >
               <span className="rounded-full text-[1.2rem]">•</span>{" "}
-              {info?.row?.original?.status}
+              {info?.row?.original?.paymentStatus}
             </p>
           </div>
         );
