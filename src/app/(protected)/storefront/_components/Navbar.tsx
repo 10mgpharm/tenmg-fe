@@ -72,7 +72,6 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
     BusinessStatus.PENDING_VERIFICATION,
     BusinessStatus.PENDING_APPROVAL,
     BusinessStatus.REJECTED,
-    BusinessStatus.LICENSE_EXPIRED,
     BusinessStatus.SUSPENDED,
     BusinessStatus.BANNED,
   ].includes(businessStatus);

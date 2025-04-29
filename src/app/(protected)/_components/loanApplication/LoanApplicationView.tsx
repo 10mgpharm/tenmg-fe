@@ -105,7 +105,7 @@ export default function LoanApplicationView({
         console.error(error);
       }
     },
-    [sessionToken, id, fetchLoanDetails, onRefresh]
+    [sessionToken, id, fetchLoanDetails, onRefresh, router]
   );
 
   const creditScoreValue =
