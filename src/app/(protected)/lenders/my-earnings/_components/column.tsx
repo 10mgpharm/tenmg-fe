@@ -54,14 +54,9 @@ export function MyEarningsColumn(
       cell: (info) => (
         <div className="">
           <p className="">₦{info.row.original?.loanAmount}</p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("projectedInterest", {
-      header: ({ column }) => <p className="">Projected Interest</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="">₦{info.row.original?.projectedInterest}</p>
+          <span className="text-primary-700 text-[12px]">
+            Loan Interest: 200.00
+          </span>
         </div>
       ),
     }),
@@ -71,15 +66,6 @@ export function MyEarningsColumn(
       cell: (info) => (
         <div className="">
           <p className="">₦{info.row.original?.repaidInterest}</p>
-        </div>
-      ),
-    }),
-
-    columnHelper.accessor("balanceInterest", {
-      header: ({ column }) => <p className="">Balance Interest</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="">₦{info.row.original?.balanceInterest}</p>
         </div>
       ),
     }),

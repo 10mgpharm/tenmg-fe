@@ -1,22 +1,23 @@
+import { getBankList } from '@/app/(standalone)/widgets/applications/actions';
 import requestClient from '@/lib/requestClient';
-import { NextAuthUserSession } from '@/types';
+import { BankDto, NextAuthUserSession } from '@/types';
 import { handleServerErrorMessage } from '@/utils';
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalCloseButton,
-    Button,
-    FormControl,
-    FormLabel,
-    Input,
-    Select,
-    Text,
-  } from '@chakra-ui/react'
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Text,
+} from '@chakra-ui/react'
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -32,18 +33,17 @@ interface SelectOption {
 }
 
 const AddAccount = (
-  {isOpen, onClose, banks, fetchingWallet }: 
-  {isOpen: boolean, onClose: () => void; banks: SelectOption[], fetchingWallet: () => void }
-) => {
+  { isOpen, onClose, endpoint, fetchingWallet }: 
+  { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void; }) => {
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
   const token = sessionToken?.user?.token;
-  const [isLoading, setIsLoading ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [accountVerificationError, setAccountVerificationError] = useState<
     string | null
   >(null);
-  
+
   const {
     register,
     setValue,
@@ -60,6 +60,35 @@ const AddAccount = (
       accountNumber: "",
     }
   });
+
+  const [banks, setBanks] = useState<SelectOption[] | null>(null);
+
+
+  useEffect(() => {
+
+    const fetchingBankList = async () => {
+      try {
+        const response = await getBankList(token);
+        if (response.status === "error") {
+          setBanks([]);
+        } else {
+          const bankList: BankDto[] = response.data;
+          setBanks(
+            bankList.map((bank) => ({
+              label: bank.name,
+              value: bank.code,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching bank list:", error);
+        setBanks([]);
+      }
+    }
+
+    if (!token) return;
+    fetchingBankList();
+  }, [token]);
 
   // const verifyingBankAccount = async () => {
   //   const accountNumber = getValues("accountNumber");
@@ -84,11 +113,12 @@ const AddAccount = (
   //     setAccountVerificationError("Verification failed");
   //   }
   // }
+  // "/supplier/wallet/add-bank-account",
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
-      const response = await requestClient({token: token}).post(
-        "/supplier/wallet/add-bank-account",
+      const response = await requestClient({ token: token }).post(
+        endpoint,
         data
       )
       if(response.status === 200){
@@ -105,48 +135,48 @@ const AddAccount = (
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Bank Account</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form className='space-y-4 mb-6' onSubmit={handleSubmit(onSubmit)}>
-              <FormControl
-                className="col-span-2"
-                isInvalid={!!errors.bankName}
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Add Bank Account</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <form className='space-y-4 mb-6' onSubmit={handleSubmit(onSubmit)}>
+            <FormControl
+              className="col-span-2"
+              isInvalid={!!errors.bankName}
+            >
+              <Select
+                placeholder="Choose Bank"
+                {...register("bankCode", {
+                  required: "Please select a bank",
+                })}
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  const selectedText =
+                    e.target.options[e.target.selectedIndex].text;
+                  setValue("bankCode", selectedValue);
+                  setValue("bankName", selectedText);
+                  trigger(["bankCode", "bankName"]);
+                }}
               >
-                <Select
-                  placeholder="Choose Bank"
-                  {...register("bankCode", {
-                    required: "Please select a bank",
-                  })}
-                  onChange={(e) => {
-                    const selectedValue = e.target.value;
-                    const selectedText =
-                      e.target.options[e.target.selectedIndex].text;
-                    setValue("bankCode", selectedValue);
-                    setValue("bankName", selectedText);
-                    trigger(["bankCode", "bankName"]);
-                  }}
-                >
-                  {banks?.map((bank, index) => (
-                    <option key={index} value={bank.value}>
-                      {bank.label}
-                    </option>
-                  ))}
-                </Select>
-                {errors.bankName && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.bankName.message}
-                  </Text>
-                )}
-              </FormControl>
-              <FormControl isInvalid={!!errors.accountNumber}>
-                <FormLabel>Account Number</FormLabel>
-                <Input 
+                {banks?.map((bank, index) => (
+                  <option key={index} value={bank.value}>
+                    {bank.label}
+                  </option>
+                ))}
+              </Select>
+              {errors.bankName && (
+                <Text fontSize="sm" color="red.500">
+                  {errors.bankName.message}
+                </Text>
+              )}
+            </FormControl>
+            <FormControl isInvalid={!!errors.accountNumber}>
+              <FormLabel>Account Number</FormLabel>
+              <Input
                 id="accountNumber"
                 name="accountNumber"
-                placeholder="e.g 123456789" 
+                placeholder="e.g 123456789"
                 type="number"
                 isInvalid={!!errors.accountNumber}
                 _focus={{
@@ -155,19 +185,19 @@ const AddAccount = (
                 {...register("accountNumber", {
                   required: "Account Number is Required"
                 })}
-                />
-                {errors.accountNumber && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.accountNumber.message}
-                  </Text>
-                )}
-              </FormControl>
-              <FormControl isInvalid={!!errors.accountName}>
-                <FormLabel>Account Name</FormLabel>
-                <Input 
+              />
+              {errors.accountNumber && (
+                <Text fontSize="sm" color="red.500">
+                  {errors.accountNumber.message}
+                </Text>
+              )}
+            </FormControl>
+            <FormControl isInvalid={!!errors.accountName}>
+              <FormLabel>Account Name</FormLabel>
+              <Input
                 id="accountName"
                 name="accountName"
-                placeholder="Chidi Victor" 
+                placeholder="Chidi Victor"
                 type="text"
                 isInvalid={!!errors.accountName}
                 _focus={{
@@ -192,19 +222,19 @@ const AddAccount = (
                   required: "Account Name is Required",
                   validate: (value) => !/\d/.test(value) || "Account name should not contain numbers",
                 })}
-                />
-                {errors.accountName && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.accountName.message}
-                  </Text>
-                )}
-              </FormControl>
-              <FormControl isInvalid={!!errors.bankCode}>
-                <FormLabel>Bank Code</FormLabel>
-                <Input 
+              />
+              {errors.accountName && (
+                <Text fontSize="sm" color="red.500">
+                  {errors.accountName.message}
+                </Text>
+              )}
+            </FormControl>
+            <FormControl isInvalid={!!errors.bankCode}>
+              <FormLabel>Bank Code</FormLabel>
+              <Input
                 id="bankCode"
                 name="bankCode"
-                placeholder="e.g 139-0568" 
+                placeholder="e.g 139-0568"
                 type="number"
                 disabled
                 isInvalid={!!errors.bankCode}
@@ -218,19 +248,19 @@ const AddAccount = (
                 {...register("bankCode", {
                   required: "Bank Code is Required"
                 })}
-                />
-                {errors.bankCode && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.bankCode.message}
-                  </Text>
-                )}
-              </FormControl>
-              <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
-                Add Account
-              </Button>
-            </form>
-          </ModalBody>
-        </ModalContent>
+              />
+              {errors.bankCode && (
+                <Text fontSize="sm" color="red.500">
+                  {errors.bankCode.message}
+                </Text>
+              )}
+            </FormControl>
+            <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
+              Add Account
+            </Button>
+          </form>
+        </ModalBody>
+      </ModalContent>
     </Modal>
   )
 }

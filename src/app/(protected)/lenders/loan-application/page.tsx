@@ -36,6 +36,7 @@ import SearchInput from "../../vendors/_components/SearchInput";
 import { IFilterInput } from "../../vendors/customers-management/page";
 import FilterDrawer from "../../vendors/_components/FilterDrawer";
 import { useDebouncedValue } from "@/utils/debounce";
+import { formatDateRange } from "@/lib/dateFormatter";
 
 export interface OverviewCardData {
   title: string;
@@ -56,12 +57,12 @@ export default function LoanApplicationPage() {
   );
   const [isPending, startTransition] = useTransition();
   const [pageCount, setPageCount] = useState(1);
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const sessionToken = sessionData?.user?.token;
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
 
   const {
@@ -78,11 +79,8 @@ export default function LoanApplicationPage() {
         );
         if (response.status === 200) {
           setLenderData(response.data.data);
-        } else {
-          toast.error("Error fetching dashboard data");
         }
       } catch (error: any) {
-        toast.error("Error fetching dashboard data");
         console.error(error);
       }
     });
@@ -102,10 +100,10 @@ export default function LoanApplicationPage() {
           query += `&status=${status}`;
         }
         if (createdAtStart) {
-          query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+          query += `&dateFrom=${createdAtStart}`;
         }
         if (createdAtEnd) {
-          query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+          query += `&dateTo=${createdAtEnd}`;
         }
 
         const response = await requestClient({ token: sessionToken }).get(
@@ -114,24 +112,18 @@ export default function LoanApplicationPage() {
 
         if (response.status === 200) {
           setLoanData(response.data.data);
-        } else {
-          toast.error("Error fetching Loan Application data");
         }
       } catch (error: any) {
-        toast.error(
-          "Error fetching dashboard data: ",
-          handleServerErrorMessage(error)
-        );
         console.error(error);
       }
     });
   }, [
     sessionToken,
+    createdAtStart,
+    createdAtEnd,
     pageCount,
     debouncedSearch,
     status,
-    createdAtStart,
-    createdAtEnd,
   ]); // Add pageCount to dependency array
 
   const handleApprove = async (id: string) => {

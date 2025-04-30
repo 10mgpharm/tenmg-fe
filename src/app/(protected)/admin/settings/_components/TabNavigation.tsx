@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
 
-// Define which tabs are admin-only
 const adminOnlyTabs = ["API Management", "Members"];
 
 const tabs = [

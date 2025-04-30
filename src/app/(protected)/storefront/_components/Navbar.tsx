@@ -72,7 +72,6 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
     BusinessStatus.PENDING_VERIFICATION,
     BusinessStatus.PENDING_APPROVAL,
     BusinessStatus.REJECTED,
-    BusinessStatus.LICENSE_EXPIRED,
     BusinessStatus.SUSPENDED,
     BusinessStatus.BANNED,
   ].includes(businessStatus);
@@ -230,8 +229,8 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
               className="relative">
               <span className="sr-only">View notifications</span>
               <BellIcon aria-hidden="true" className="h-6 w-6 mx-auto" />
-              <div className="px-1 rounded-full bg-red-500 absolute top-0 right-6 text-[9px] text-white">{notificationCount}</div>
-              <Text>Notifications</Text>
+              <div className="px-1 rounded-full bg-red-500 absolute top-0 right-0 md:right-6 text-[9px] text-white">{notificationCount}</div>
+              <Text className=" hidden md:block">Notifications</Text>
             </MenuButton>
             <MenuList
               bg="white"

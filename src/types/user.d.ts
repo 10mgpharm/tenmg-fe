@@ -194,7 +194,7 @@ export interface RepaymentSchedule {
   lateFee: string | null;
   loanId: number;
   paymentId: number | null;
-  paymentStatus: 'PENDING' | 'SUCCESS' | 'OVERDUE' | 'PARTIAL' | 'success';
+  paymentStatus: 'PENDING' | 'SUCCESS' | 'OVERDUE' | 'PARTIAL' | 'success' | 'PAID';
   principal: string;
   totalAmount: string;
   updatedAt: string;

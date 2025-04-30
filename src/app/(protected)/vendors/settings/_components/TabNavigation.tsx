@@ -21,6 +21,8 @@ const tabs = [
   { label: "API Key and Web-hooks", href: "/vendors/settings/api_keys" },
 ];
 
+const vendorOnlyTabs = ["API Key and Web-hooks", "Team Members", "License Upload"];
+
 const mustAlwaysBeEnabled = (name: string) =>
   ["General Settings", "Business Information", "Notification", "License Upload"].includes(name);
 
@@ -29,14 +31,11 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
     BusinessStatus.PENDING_VERIFICATION,
     BusinessStatus.PENDING_APPROVAL,
     BusinessStatus.REJECTED,
-    BusinessStatus.LICENSE_EXPIRED,
     BusinessStatus.SUSPENDED,
     BusinessStatus.BANNED,
   ];
-  return disabledBusinessStatuses.includes(businessStatus as BusinessStatus) &&
-    !mustAlwaysBeEnabled(name)
-    ? true
-    : false;
+  
+  return disabledBusinessStatuses.includes(businessStatus as BusinessStatus) && !mustAlwaysBeEnabled(name);
 };
 
 export default function TabsNavigation({
@@ -50,6 +49,11 @@ export default function TabsNavigation({
   const [isLoading, setIsLoading] = useState(true);
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
+
+  const isTabDisabled = (tabLabel: string) => {
+    if (isLoading || isVendor === null) return true;
+    return !isVendor && vendorOnlyTabs.includes(tabLabel);
+  };
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -65,7 +69,6 @@ export default function TabsNavigation({
           "/account/profile"
         );
 
-        console.log("User role response:", response.data?.data);
         setIsVendor(response?.data?.data?.role === "VENDOR");
       } catch (error) {
         console.error("Error fetching user role:", error);
@@ -75,22 +78,24 @@ export default function TabsNavigation({
       }
     };
 
-    fetchUserRole();
-  }, [sessionData?.user?.token]);
+    if (sessionData?.user?.token) {
+      fetchUserRole();
+    }
+  }, [sessionData]);
 
   return (
     <Tabs index={activeIndex} variant="unstyled">
       <TabList overflow={"auto"}>
         {tabs.map((tab, index) => {
           const disabledByStatus = isLinkDisabled(businessStatus, tab.label);
-          const disabledByRole = isLoading || isVendor === null || !isVendor;
+          const disabledByRole = isTabDisabled(tab.label);
           const isDisabled = disabledByStatus || disabledByRole;
           
-          const tooltipLabel = disabledByRole && !disabledByStatus 
-            ? "Vendor access only" 
-            : disabledByStatus 
-              ? "Not available with current business status" 
-              : "";
+          const tooltipLabel = isDisabled 
+            ? disabledByRole 
+              ? "Vendor access only" 
+              : "Not available with current business status"
+            : "";
 
           return (
             <Tooltip
@@ -104,9 +109,13 @@ export default function TabsNavigation({
                 cursor={isDisabled ? "not-allowed" : "pointer"}
                 opacity={isDisabled ? 0.5 : 1}
                 _selected={{
+                  color: "primary.500",
+                  bg: "primary.50",
+                  borderRadius: "10px",
+                }}
+                _hover={{
                   color: isDisabled ? "gray.400" : "primary.500",
                   bg: isDisabled ? "gray.100" : "primary.50",
-                  borderRadius: "10px",
                 }}
               >
                 <div className="flex items-center gap-3">

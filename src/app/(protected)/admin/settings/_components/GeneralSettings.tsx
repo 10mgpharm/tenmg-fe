@@ -189,7 +189,7 @@ const GeneralSettings = () => {
       setUserEmail(data.contactEmail);
       setUserName(data.businessName);
       setFilePreview(data.owner.avatar);
-      setValue("role", data.role);
+      setValue("role", `10mg ${data.role.toLowerCase()}`);
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);

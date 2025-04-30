@@ -38,7 +38,8 @@ import { formatAmount } from "@/utils/formatAmount";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
-import { formatAmountString } from "@/utils";
+import { formatAmountString, handleServerErrorMessage } from "@/utils";
+import { toast } from "react-toastify";
 
 const LoanManagement = () => {
   const onOpen = () => {};
@@ -47,8 +48,6 @@ const LoanManagement = () => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -78,12 +77,6 @@ const LoanManagement = () => {
     if (status) {
       query += `&status=${status}`;
     }
-    if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
-    }
-    if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
-    }
 
     try {
       const response = await requestClient({ token: token }).get(query);
@@ -94,7 +87,7 @@ const LoanManagement = () => {
       console.error(error);
     }
     setLoading(false);
-  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token, pageCount, debouncedSearch, status]);
 
   const fetchLoanStats = useCallback(async () => {
     setLoading(true);
@@ -114,6 +107,21 @@ const LoanManagement = () => {
     }
   }, [token]);
 
+  const sendRepaymentLink = useCallback(async (id: string) => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/client/repayment/test-repayment-mail/${id}`
+      );
+      if (response.status === 200) {
+        toast.success("Repayment link sent successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  }, [token]);
+
   const tableData = useMemo(() => loan?.data, [loan?.data]);
 
   useEffect(() => {
@@ -124,7 +132,7 @@ const LoanManagement = () => {
 
   const table = useReactTable({
     data: tableData || [],
-    columns: ColumsLoanFN(onOpen),
+    columns: ColumsLoanFN(onOpen, sendRepaymentLink),
     state: {
       columnVisibility,
       columnOrder,
@@ -139,14 +147,10 @@ const LoanManagement = () => {
   });
 
   const applyFilters = (filters: IFilterInput) => {
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
   };
 
   const clearFilters = () => {
-    setCreatedAtStart(null);
-    setCreatedAtEnd(null);
     setStatus("");
     setGlobalFilter("");
   };

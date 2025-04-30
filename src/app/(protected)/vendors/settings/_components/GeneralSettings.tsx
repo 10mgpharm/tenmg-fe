@@ -25,7 +25,6 @@ import ChangePassword from "@/app/(protected)/admin/settings/_components/ChangeP
 import TwoFactorAuth from "@/app/(protected)/admin/settings/_components/TwoFactorAuth";
 import EnabledTwoFactor from "@/app/(protected)/admin/settings/_components/EnabledTwoFactor";
 
-
 interface IFormInput {
   name: string;
   email: string;
@@ -99,7 +98,37 @@ const GeneralSettings = () => {
     if (sessionData) {
       setValue("name", sessionData.user.name, { shouldValidate: true });
       setValue("email", sessionData.user.email, { shouldValidate: true });
-      setValue("role",sessionData.user.role);
+
+      // Normalize and map role
+     const rawRole = sessionData.user.role?.toLowerCase();
+     const entityType = sessionData.user.entityType?.toLowerCase();
+
+     let displayRole = "";
+
+     // Helper to capitalize
+     const capitalize = (str: string) =>
+       str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+     if (entityType === "vendor") {
+       switch (rawRole) {
+         case "vendor":
+           displayRole = "Vendor Admin";
+           break;
+         default:
+           displayRole = `Vendor ${capitalize(rawRole ?? "Unknown")}`;
+           break;
+       }
+     } else if (entityType === "admin") {
+       displayRole = `10mg ${capitalize(rawRole ?? "Admin")}`;
+     } else if (entityType === "lender") {
+       displayRole = "Lender";
+     } else if (entityType === "supplier") {
+       displayRole = "Supplier";
+     } else {
+       displayRole = capitalize(rawRole ?? "Unknown");
+     }
+
+     setValue("role", displayRole);
     }
   }, [sessionData, setValue]);
 

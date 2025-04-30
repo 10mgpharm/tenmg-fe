@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi",
+    "prepare": "husky install",
     "typeorm": "dotenv -- node -r tsconfig-paths/register -r ts-node/register ../../node_modules/typeorm/cli.js",
     "migration:run": "npm run typeorm migration:run -- -d ./src/config/typeOrmDatasource.ts",
     "migration:generate": "npm run typeorm -- -d ./src/config/typeOrmDatasource.ts migration:generate ./src/migrations",

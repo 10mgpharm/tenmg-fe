@@ -33,9 +33,9 @@ import {
 } from "@tanstack/react-table";
 import Pagination from "../../suppliers/_components/Pagination";
 import { ColumnsLoanApplicationFN } from "./_components/table";
-import { IFilterInput } from "../customers-management/page";
 import FilterDrawer from "../_components/FilterDrawer";
 import SendApplicationLink from "./_components/SendApplicationLink";
+import { formatDateRange } from "@/lib/dateFormatter";
 
 export interface OverviewCardData {
   title: string;
@@ -91,10 +91,10 @@ const LoanApplication = () => {
       query += `&status=${status}`;
     }
     if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+      query += `&dateFrom=${formatDateRange(createdAtStart, false)}`;
     }
     if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+      query += `&dateTo=${formatDateRange(createdAtEnd, true)}`;
     }
 
     try {
@@ -140,6 +140,7 @@ const LoanApplication = () => {
   }, [fetchLoanApplication, fetchAllCustomers, token]);
 
   const applyFilters = (filters: IApplyFilters) => {
+    console.log(filters);
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
@@ -168,6 +169,7 @@ const LoanApplication = () => {
     { option: "APPROVED", value: "APPROVED" },
     { option: "INITIATED", value: "INITIATED" },
     { option: "CANCELED", value: "CANCELED" },
+    { option: "PENDING_MANDATE", value: "PENDING_MANDATE" },
   ];
 
   return (
@@ -215,7 +217,8 @@ const LoanApplication = () => {
             border="1px solid #F9FAFB"
             borderRadius="10px"
             overflowX="auto"
-            w="100%">
+            w="100%"
+          >
             <Table variant="simple" size="sm">
               <Thead bg={"blue.50"}>
                 {tableData &&
@@ -235,9 +238,9 @@ const LoanApplication = () => {
                           {header.isPlaceholder
                             ? null
                             : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                         </Th>
                       ))}
                     </Tr>
@@ -248,9 +251,12 @@ const LoanApplication = () => {
                   table?.getRowModel()?.rows?.map((row) => (
                     <Tr key={row.id}>
                       {row.getVisibleCells()?.map((cell) => (
-                        <Td key={cell.id} px={{ base: "8px", md: "16px" }}
+                        <Td
+                          key={cell.id}
+                          px={{ base: "8px", md: "16px" }}
                           minW="120px"
-                          whiteSpace="nowrap">
+                          whiteSpace="nowrap"
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

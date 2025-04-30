@@ -47,7 +47,7 @@ export function ColumnsRepaymentFN(onOpen: () => void) {
                   ? "bg-[#FFFAEB] text-[#F79009]"
                   : info?.row?.original?.paymentStatus === "OVERDUE"
                   ? "bg-[#FEF3F2] text-[#C62828]"
-                  : info?.row?.original?.paymentStatus === "success"
+                  : info?.row?.original?.paymentStatus === "PAID"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : "text-gray-500",
                 " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"

@@ -60,7 +60,6 @@ interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
 }
 
-// Chart configuration
 const chartOptions = {
   chart: {
     stacked: true,
@@ -86,7 +85,6 @@ const chartSeries = [
 ];
 
 const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
-  // State management
   const [lenderData, setLenderData] = useState<LenderDashboardData | null>(
     null
   );
@@ -100,7 +98,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const [wallet, setWallet] = useState([]);
   const [isWithdraw, setIsWithdraw] = useState(false);
 
-  // Modal/drawer state management
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenDeposit,
@@ -126,7 +123,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const sessionToken = sessionData?.user?.token;
   const router = useRouter();
 
-  // Fetch dashboard data
   const fetchLenderData = useCallback(() => {
     if (!sessionToken) return;
 
@@ -234,13 +230,13 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     [sessionToken, fetchLenderData]
   );
 
-  // Memoized calculations
   const { totalBalance, investmentWalletBalance, ledgerBalance } =
     useMemo(() => {
       const wallet = lenderData?.wallets || [];
 
-      const totalBal = wallet?.find((item) => item.type === "deposit")?.currentBalance ||
-      "0.00";
+      const totalBal =
+        wallet?.find((item) => item.type === "deposit")?.currentBalance ||
+        "0.00";
 
       const investmentBal =
         wallet?.find((item) => item.type === "investment")?.currentBalance ||
@@ -351,7 +347,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
               onOpenGenerateStatement={onOpenGenerate}
             />
 
-            {/* CHARTS */}
             <div className="space-y-6">
               <ChartSection
                 title="Balance Allocation"
@@ -371,7 +366,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
             </div>
           </div>
 
-          {/* LOAN REQUEST */}
           <div className="w-full lg:w-2/5 flex flex-col gap-4 h-full">
             <div className="bg-white border border-gray-200 rounded-lg p-6">
               <div className="flex items-center justify-between mb-2">
@@ -465,14 +459,17 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         onSuccess={onOpenSuccess}
         setAmount={setAmount}
       />
-      <WithdrawFunds
-        isOpen={isOpenWithdraw}
-        onClose={onCloseWithdraw}
-        wallet={wallet}
-        setAmount={setAmount}
-        onSuccess={onOpenSuccess}
-        setIsWithdraw={setIsWithdraw}
-      />
+      {isOpenWithdraw && (
+        <WithdrawFunds
+          isOpen={isOpenWithdraw}
+          onClose={onCloseWithdraw}
+          wallet={wallet}
+          setAmount={setAmount}
+          onSuccess={onOpenSuccess}
+          setIsWithdraw={setIsWithdraw}
+        />
+      )}
+
       <GenerateStatement isOpen={isOpenGenerate} onClose={onCloseGenerate} />
 
       <CongratsModal

@@ -83,6 +83,9 @@ export default function LoanApplicationView({
               action === "approve" ? "approved" : "declined"
             } successfully`
           );
+          if (action === "decline") {
+            router.back();
+          }
           fetchLoanDetails();
           if (onRefresh) onRefresh();
         } else {
@@ -102,7 +105,7 @@ export default function LoanApplicationView({
         console.error(error);
       }
     },
-    [sessionToken, id, fetchLoanDetails, onRefresh]
+    [sessionToken, id, fetchLoanDetails, onRefresh, router]
   );
 
   const creditScoreValue =
@@ -191,25 +194,25 @@ export default function LoanApplicationView({
           </Button>
 
           {userRole === "lender" &&
-            (loanData?.status !== "APPROVED" &&
-              loanData?.status !== "EXPIRED") && (
+            loanData?.status !== "APPROVED" &&
+            loanData?.status !== "EXPIRED" && (
               <>
                 <Button
                   size="sm"
                   colorScheme="red"
-                onClick={() => handleAction("decline")}
-              >
-                Decline Offer
-              </Button>
-              <Button
-                size="sm"
-                colorScheme="success"
-                onClick={() => handleAction("approve")}
-              >
-                Accept Offer
-              </Button>
-            </>
-          )}
+                  onClick={() => handleAction("decline")}
+                >
+                  Decline Offer
+                </Button>
+                <Button
+                  size="sm"
+                  colorScheme="success"
+                  onClick={() => handleAction("approve")}
+                >
+                  Accept Offer
+                </Button>
+              </>
+            )}
         </div>
       </div>
 

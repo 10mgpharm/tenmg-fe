@@ -1,11 +1,53 @@
 import AddAccount from '@/app/(protected)/suppliers/wallet/_components/AddAccount';
+import { BankInfo } from '@/app/(protected)/suppliers/wallet/page';
+import requestClient from '@/lib/requestClient';
+import { NextAuthUserSession } from '@/types';
 import { useDisclosure } from '@chakra-ui/react';
-import React from 'react'
+import { useSession } from 'next-auth/react';
+import React, { useCallback, useEffect, useState } from 'react'
 
-export default function AccoundDetailsCard() {
 
-  const hasAccountNumber = false;
+interface WalletProps {
+  currentBalance: string;
+  previousBalance: string;
+  bankAccount: BankInfo;
+}
+
+export default function AccoundDetailsCard({ showBalance }: { showBalance?: boolean }) {
+
+  // const hasAccountNumber = false;
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+  const [accountDetails, setAccountDetails] = useState<any>();
+  const [hasAccountNumber, sethasAccountNumber] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+
+
+  const fetchingWallet = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token }).get(`/vendor/wallet/bank-account`);
+      if (response.status === 200) {
+        setAccountDetails(response?.data?.data);
+        sethasAccountNumber(response?.data?.data?.accountNumber ? true : false);
+        console.log(response?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetchingWallet();
+  }, [token, fetchingWallet]);
+
 
   return (
     <>
@@ -14,16 +56,24 @@ export default function AccoundDetailsCard() {
           <div className="flex items-center justify-between">
             <div className="p-1 rounded-full bg-white">
               <p className="text-gray-600 text-sm font-semibold">
-                Chidi Victor
+                {/* truncates the text if it is longer than 10 letters */}
+                {accountDetails?.accountName?.length > 10
+                  ? `${accountDetails?.accountName.slice(0, 10)}...`
+                  : accountDetails?.accountName}
               </p>
             </div>
             <div className="p-1 rounded-full bg-white">
-              <p className="text-gray-600 text-sm font-semibold">GT Bank</p>
+              <p className="text-gray-600 text-sm font-semibold">{accountDetails?.bankName}</p>
             </div>
           </div>
           <div className="text-gray-100 mt-8">
             <p className="text-sm mb-2">Payout Account</p>
-            <h2 className="text-xl font-semibold">12345***7890</h2>
+            <h2 className="text-xl font-semibold">
+              {showBalance ?
+                `${'*'.repeat(7)}${accountDetails?.accountNumber.slice(-3)}`
+                : accountDetails?.accountNumber}
+
+            </h2>
           </div>
         </div>
       ) : (
@@ -45,8 +95,9 @@ export default function AccoundDetailsCard() {
 
       <AddAccount
         isOpen={isOpen}
-        onClose={onClose} 
-        banks={[]}      
+        onClose={onClose}
+        // banks={[]}   
+        endpoint={"vendor/wallet/add-bank-account"}
       />
     </>
   )
