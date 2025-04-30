@@ -31,7 +31,7 @@ export function ColumnsLoanApplicationFN() {
         <div onClick={() => {}} className="flex flex-col gap-2  justify-start">
           <p className="text-gray-500">{info.row.original?.identifier}</p>
           <span className="text-gray-700 text-xs">
-            {convertDate(info.row.original?.updatedAt)}{" "}
+            {convertDate(info.row.original?.createdAt)}{" "}
           </span>
         </div>
       ),

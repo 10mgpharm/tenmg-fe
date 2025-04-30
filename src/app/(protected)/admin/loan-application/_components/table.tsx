@@ -139,7 +139,7 @@ const DataTable = () => {
     { option: "APPROVED", value: "APPROVED" },
     { option: "INITIATED", value: "INITIATED" },
     { option: "CANCELED", value: "CANCELED" },
-    { option: "PENDING_MANDAT", value: "PENDING_MANDAT" },
+    { option: "PENDING_MANDATE", value: "PENDING_MANDATE" },
   ];
 
   const table = useReactTable({
