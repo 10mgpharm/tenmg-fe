@@ -31,7 +31,10 @@ interface SelectOption {
   value: number;
 }
 
-const AddAccount = ({isOpen, onClose, banks }: {isOpen: boolean, onClose: () => void; banks: SelectOption[] }) => {
+const AddAccount = (
+  {isOpen, onClose, banks, fetchingWallet }: 
+  {isOpen: boolean, onClose: () => void; banks: SelectOption[], fetchingWallet: () => void }
+) => {
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
@@ -89,6 +92,7 @@ const AddAccount = ({isOpen, onClose, banks }: {isOpen: boolean, onClose: () => 
         data
       )
       if(response.status === 200){
+        fetchingWallet();
         setIsLoading(false);
         onClose();
       }

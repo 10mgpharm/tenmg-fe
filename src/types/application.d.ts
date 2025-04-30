@@ -177,3 +177,55 @@ export interface UserListProps {
     role: string;
     email: string;
 }
+
+export interface TransactionDataProps {
+    data: TransactionProps[]
+    links: any;
+    meta: any;
+    message: string;
+    status: string;
+}
+
+export interface TransactionProps {
+    id: number
+    business: BusinessProp
+    identifier: string
+    amount: string
+    type: string
+    transactionGroup: string
+    description: string
+    status: string
+    paymentMethod: string
+    reference: any
+    walletId: number
+    loanApplicationId: any
+    meta: any
+    createdAt: string
+    updatedAt: string
+}
+  
+export interface BusinessProp {
+    id: number
+    ownerId: number
+    name: string
+    shortName: string
+    code: string
+    logoId: any
+    type: string
+    address: string
+    contactPerson: string
+    contactPhone: string
+    contactEmail: string
+    contactPersonPosition: string
+    active: number
+    status: string
+    licenseNumber: string
+    expiryDate: string
+    licenseVerificationStatus: string
+    licenseSubmissionDate: any
+    licenseVerificationComment: string
+    cacDocumentId: number
+    createdAt: string
+    updatedAt: string
+}
+  

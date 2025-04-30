@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import OverviewCard from "./OverviewCard";
 import {
   Flex,
@@ -16,12 +16,15 @@ import productPattern from "@public/assets/images/productpatterns.svg";
 import Link from "next/link";
 import WalletTable from "./table";
 import { transactionData } from "@/data/mockdata";
+import { TransactionDataProps, TransactionProps } from "@/types";
 
-const ProductWallet = ({ filterDate }: { filterDate: string }) => {
+const ProductWallet = (
+  { transactions, setPageCount }: 
+  { transactions: TransactionDataProps, setPageCount: Dispatch<SetStateAction<number>>; }
+) => {
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
   const completed = transactionData.filter((item) => item.type === "Completed");
   const history = transactionData.filter((item) => item.type === "History");
-
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 c">
@@ -106,21 +109,22 @@ const ProductWallet = ({ filterDate }: { filterDate: string }) => {
         <TabPanels>
           <TabPanel px={0}>
             <WalletTable
-              data={awaiting}
+              data={transactions}
+              setPageCount={setPageCount}
               type="awaiting"
               walletType="product_wallet"
             />
           </TabPanel>
           <TabPanel px={0}>
             <WalletTable
-              data={completed}
+              data={transactions}
               type="completed"
               walletType="product_wallet"
             />
           </TabPanel>
           <TabPanel px={0}>
             <WalletTable
-              data={history}
+              data={transactions}
               type="history"
               walletType="product_wallet"
             />
