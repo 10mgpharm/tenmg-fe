@@ -141,76 +141,51 @@ const TopNavBar = ({
     }
   };
 
-  const renderUserRole = (role?: string, entityType?: string) => {
-    if (!entityType) return null;
+ const renderUserRole = (role?: string, entityType?: string) => {
+   if (!role || !entityType) return null;
 
-    const normalized = entityType.trim().toLowerCase();
+   const entity = entityType.trim().toLowerCase();
+   const normalizedRole = role.trim().toLowerCase();
 
-    const capitalizeWords = (text: string) =>
-      text
-        .split(/[_\s]/)
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
+   const capitalizeWords = (text: string) =>
+     text
+       .split(/[_\s]/)
+       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+       .join(" ");
 
-    // Admin roles
-    if (normalized === "admin") {
-      return (
-        <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
-          10mg {role}
-        </Tag>
-      );
-    }
-    if (normalized.startsWith("admin_")) {
-      const suffix = capitalizeWords(normalized.replace("admin_", ""));
-      return (
-        <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
-          10mg {suffix}
-        </Tag>
-      );
-    }
+   let roleDisplay = "";
 
-    // Vendor roles
-    if (normalized === "vendor") {
-      return (
-        <Tag size="sm" variant="solid" bg="green.100" color="green.700">
-          Vendor
-        </Tag>
-      );
-    }
-    if (normalized.startsWith("vendor_")) {
-      const suffix = capitalizeWords(normalized.replace("vendor_", ""));
-      return (
-        <Tag size="sm" variant="solid" bg="green.100" color="green.700">
-          Vendor {suffix}
-        </Tag>
-      );
-    }
+   if (entity === "vendor") {
+     switch (normalizedRole) {
+       case "vendor":
+         roleDisplay = "Vendor Admin";
+         break;
+       case "supporter":
+         roleDisplay = "Vendor Support";
+         break;
+       case "operator":
+         roleDisplay = "Vendor Operator";
+         break;
+       default:
+         roleDisplay = `Vendor ${capitalizeWords(normalizedRole)}`;
+     }
+   } else if (entity === "supplier") {
+     roleDisplay = "Supplier";
+   } else if (entity === "lender") {
+     roleDisplay = "Lender";
+   } else if (entity === "admin") {
+     roleDisplay = `10mg ${capitalizeWords(normalizedRole)}`;
+   } else {
+     roleDisplay = capitalizeWords(role);
+   }
 
-    // Supplier
-    if (normalized === "supplier") {
-      return (
-        <Tag size="sm" variant="solid" bg="red.100" color="red.700">
-          Supplier
-        </Tag>
-      );
-    }
+   return (
+     <Tag size="sm" variant="solid" bg="green.100" color="green.700">
+       {roleDisplay}
+     </Tag>
+   );
+ };
 
-    // Lender
-    if (normalized === "lender") {
-      return (
-        <Tag size="sm" variant="solid" bg="purple.100" color="purple.700">
-          Lender
-        </Tag>
-      );
-    }
-
-    // Fallback
-    return (
-      <Tag size="sm" variant="solid" bg="gray.100" color="gray.700">
-        {capitalizeWords(entityType)}
-      </Tag>
-    );
-  };
   return (
     <div className="lg:fixed w-full bg-white z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
