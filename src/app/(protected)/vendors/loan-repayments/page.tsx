@@ -1,24 +1,49 @@
 "use client";
 
-import { CiFilter } from "react-icons/ci"
-import SearchInput from "../_components/SearchInput"
+import { CiFilter } from "react-icons/ci";
+import SearchInput from "../_components/SearchInput";
 import { useCallback, useEffect, useState } from "react";
-import { Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  Flex,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+} from "@chakra-ui/react";
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import EmptyResult from "../_components/EmptyResult";
 import { ColumnsLoanRepaymentFN } from "./_components/table";
-import { loanRepaymentData } from "@/data/mockdata";
 import { LoanDataProp, NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import requestClient from "@/lib/requestClient";
 import { useDebouncedValue } from "@/utils/debounce";
+import FilterDrawer from "../_components/FilterDrawer";
+import { IApplyFilters } from "../loan-applications/page";
+import Pagination from "../../suppliers/_components/Pagination";
 
 const LoanRepayments = () => {
-
   const [loading, setLoading] = useState(false);
-  const [loans, setLoans] = useState<LoanDataProp>();
+  const [data, setData] = useState<LoanDataProp>();
   const [pageCount, setPageCount] = useState<number>(1);
   const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [status, setStatus] = useState("");
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -28,29 +53,39 @@ const LoanRepayments = () => {
 
   const fetchingLoans = useCallback(async () => {
     setLoading(true);
-    let query = `/vendor/loans?page=${pageCount}`;
+    let query = `/vendor/loan-repayment?page=${pageCount}`;
     if (debouncedSearch) {
       query += `&search=${debouncedSearch}`;
     }
+    if (status) {
+      query += `&status=${status}`;
+    }
+    if (createdAtStart) {
+      query += `&dateFrom=${createdAtStart}`;
+    }
+    if (createdAtEnd) {
+      query += `&dateTo=${createdAtEnd}`;
+    }
+
     try {
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
-        setLoans(response.data.data);
+        setData(response.data.data);
       }
       setLoading(false);
     } catch (error) {
       console.error(error);
       setLoading(false);
     }
-  }, [token, pageCount, debouncedSearch]);
+  }, [token, pageCount, debouncedSearch, createdAtEnd, createdAtStart, status]);
 
   useEffect(() => {
     if (!token) return;
     fetchingLoans();
-  }, [token, fetchingLoans])
+  }, [token, fetchingLoans]);
 
   const table = useReactTable({
-    data: loanRepaymentData ? loanRepaymentData : [],
+    data: data ? data.data : [],
     columns: ColumnsLoanRepaymentFN(),
     state: {
       globalFilter,
@@ -60,6 +95,24 @@ const LoanRepayments = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  const filterOptions = [
+    { option: "PAID", value: "PAID" },
+    { option: "PENDING", value: "PENDING" },
+  ];
+
+  const applyFilters = (filters: IApplyFilters) => {
+    console.log(filters);
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+  };
 
   return (
     <div className="p-8">
@@ -73,7 +126,7 @@ const LoanRepayments = () => {
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
             <div
-              // onClick={onOpenFilter}
+              onClick={onOpenFilter}
               className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
             >
               <CiFilter className="w-5 h-5" />
@@ -87,7 +140,7 @@ const LoanRepayments = () => {
           <Flex justify="center" align="center" height="200px">
             <Spinner size="xl" />
           </Flex>
-        ) : loanRepaymentData && loanRepaymentData?.length === 0 ? (
+        ) : data && data.data?.length === 0 ? (
           <EmptyResult
             heading={`Nothing to show here yet`}
             content={`No active loans repayment yet. Once you've a repaid loan, the details will appear here.`}
@@ -99,66 +152,53 @@ const LoanRepayments = () => {
             overflowX="auto"
             w="100%"
           >
-            <Table variant="simple" size="sm">
-              <Thead bg="blue.50">
-                {loanRepaymentData && table?.getHeaderGroups()?.map((headerGroup) => (
+            <Table>
+              <Thead bg={"blue.50"}>
+                {table?.getHeaderGroups()?.map((headerGroup) => (
                   <Tr key={headerGroup.id}>
                     {headerGroup.headers?.map((header) => (
-                      <Th
-                        key={header.id}
-                        textTransform="initial"
-                        px={{ base: "8px", md: "16px" }}
-                        minW="120px"
-                        whiteSpace="nowrap"
-                        color="primary.500"
-                        fontWeight="500"
-                      >
+                      <Th textTransform={"initial"} px="0px" key={header.id}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </Th>
                     ))}
                   </Tr>
                 ))}
               </Thead>
-
-              <Tbody bg="white" color="#606060" fontSize="14px">
-                {loanRepaymentData?.length &&
-                  table?.getRowModel()?.rows?.map((row) => (
-                    <Tr key={row.id}>
-                      {row.getVisibleCells()?.map((cell) => (
-                        <Td
-                          key={cell.id}
-                          px={{ base: "8px", md: "16px" }}
-                          minW="120px"
-                          whiteSpace="nowrap"
-                          overflow="hidden"
-                          textOverflow="ellipsis"
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </Td>
-                      ))}
-                    </Tr>
-                  ))}
-
-                <Tr>
-                  {/* Optional: Pagination row */}
-                </Tr>
+              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                {table?.getRowModel()?.rows?.map((row) => (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells()?.map((cell) => (
+                      <Td key={cell.id} px="0px">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </Td>
+                    ))}
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
+
+            <Pagination meta={data?.meta} setPageCount={setPageCount} />
           </TableContainer>
-
-        )
-        }
+        )}
       </div>
-    </div>
-  )
-}
 
-export default LoanRepayments
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+      />
+    </div>
+  );
+};
+
+export default LoanRepayments;
