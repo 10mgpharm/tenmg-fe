@@ -57,6 +57,8 @@ export default function LoanApplicationPage() {
   );
   const [isPending, startTransition] = useTransition();
   const [pageCount, setPageCount] = useState(1);
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -77,11 +79,8 @@ export default function LoanApplicationPage() {
         );
         if (response.status === 200) {
           setLenderData(response.data.data);
-        } else {
-          toast.error("Error fetching dashboard data");
         }
       } catch (error: any) {
-        toast.error("Error fetching dashboard data");
         console.error(error);
       }
     });
@@ -100,6 +99,12 @@ export default function LoanApplicationPage() {
         if (status) {
           query += `&status=${status}`;
         }
+        if (createdAtStart) {
+          query += `&dateFrom=${createdAtStart}`;
+        }
+        if (createdAtEnd) {
+          query += `&dateTo=${createdAtEnd}`;
+        }
 
         const response = await requestClient({ token: sessionToken }).get(
           query
@@ -107,18 +112,19 @@ export default function LoanApplicationPage() {
 
         if (response.status === 200) {
           setLoanData(response.data.data);
-        } else {
-          toast.error("Error fetching Loan Application data");
         }
       } catch (error: any) {
-        toast.error(
-          "Error fetching dashboard data: ",
-          handleServerErrorMessage(error)
-        );
         console.error(error);
       }
     });
-  }, [sessionToken, pageCount, debouncedSearch, status]); // Add pageCount to dependency array
+  }, [
+    sessionToken,
+    createdAtStart,
+    createdAtEnd,
+    pageCount,
+    debouncedSearch,
+    status,
+  ]); // Add pageCount to dependency array
 
   const handleApprove = async (id: string) => {
     try {
@@ -158,10 +164,14 @@ export default function LoanApplicationPage() {
   }, [sessionData, fetchLoanData, fetchLenderData]);
 
   const applyFilters = (filters: IFilterInput) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
   };
 
   const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
     setStatus("");
     setGlobalFilter("");
   };
@@ -246,7 +256,6 @@ export default function LoanApplicationPage() {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         filterOptions={filterOptions}
-        isNotDate
       />
     </>
   );

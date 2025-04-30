@@ -28,7 +28,7 @@ export function ColumnsLoanFN({
         <div className="pl-6">
           <p className="text-gray-500">{info.row.original?.identifier}</p>
           <p className="text-gray-700 text-xs">
-            {convertDate(info.row.original?.updatedAt)}
+            {convertDate(info.row.original?.createdAt)}
           </p>
         </div>
       ),

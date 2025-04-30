@@ -169,6 +169,7 @@ const LoanApplication = () => {
     { option: "APPROVED", value: "APPROVED" },
     { option: "INITIATED", value: "INITIATED" },
     { option: "CANCELED", value: "CANCELED" },
+    { option: "PENDING_MANDATE", value: "PENDING_MANDATE" },
   ];
 
   return (

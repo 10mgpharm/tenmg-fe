@@ -65,8 +65,6 @@ export default function TransactionWalletPage() {
   const token = sessionData?.user?.token;
 
   const [pageCount, setPageCount] = useState<number>(1);
-  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
 
   const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
@@ -80,12 +78,6 @@ export default function TransactionWalletPage() {
     if (status) {
       query += `&status=${status}`;
     }
-    if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
-    }
-    if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
-    }
 
     try {
       const response = await requestClient({ token: token }).get(query);
@@ -97,7 +89,7 @@ export default function TransactionWalletPage() {
       console.error(error);
       setLoading(false);
     }
-  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token, pageCount, debouncedSearch, status]);
 
   const fetchLoanStats = useCallback(async () => {
     setLoading(true);
@@ -128,14 +120,10 @@ export default function TransactionWalletPage() {
   }, [fetchLoans, fetchLoanStats, token]);
 
   const applyFilters = (filters) => {
-    setCreatedAtStart(filters.startDate);
-    setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
   };
 
   const clearFilters = () => {
-    setCreatedAtStart(null);
-    setCreatedAtEnd(null);
     setStatus("");
     setGlobalFilter("");
   };
@@ -301,6 +289,7 @@ export default function TransactionWalletPage() {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         filterOptions={filterOptions}
+        isNotDate
       />
     </>
   );
