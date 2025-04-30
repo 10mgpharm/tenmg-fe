@@ -164,7 +164,11 @@ const CreditScore = () => {
               </Table>
             </TableContainer>
           ) : (
-            <EmptyResult heading={`Nothing to show here`} content={``} />
+            <EmptyResult
+              heading={`Nothing to show here`}
+              content={`Record Not Found!
+              No credit score found for your search`}
+            />
           )
         ) : (
           <Flex justify="center" align="center" height="200px">
