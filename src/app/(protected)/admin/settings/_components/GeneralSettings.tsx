@@ -113,34 +113,6 @@ const GeneralSettings = () => {
     },
   });
 
-  // const formatRoleLabel = (role?: string): string => {
-  //   if (!role) return "";
-
-  //   const normalized = role.trim().toLowerCase();
-
-  //   const capitalizeWords = (text: string) =>
-  //     text
-  //       .split(/[_\s]/)
-  //       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-  //       .join(" ");
-
-  //   if (normalized === "admin") return "10MG Admin";
-  //   if (normalized.startsWith("admin_")) {
-  //     return `10MG ${capitalizeWords(normalized.replace("admin_", ""))}`;
-  //   }
-
-  //   if (normalized === "vendor") return "Vendor";
-  //   if (normalized.startsWith("vendor_")) {
-  //     return `Vendor ${capitalizeWords(normalized.replace("vendor_", ""))}`;
-  //   }
-
-  //   if (normalized === "supplier") return "Supplier";
-  //   if (normalized === "lender") return "Lender";
-
-  //   return capitalizeWords(role);
-  // };
-
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileError(null);
     const selectedFile = event.target.files?.[0];
@@ -217,7 +189,7 @@ const GeneralSettings = () => {
       setUserEmail(data.contactEmail);
       setUserName(data.businessName);
       setFilePreview(data.owner.avatar);
-      setValue("role",`10mg ${data.role}`);
+      setValue("role", `10mg ${data.role.toLowerCase()}`);
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
