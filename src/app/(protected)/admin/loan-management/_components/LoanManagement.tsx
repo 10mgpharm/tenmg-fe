@@ -107,20 +107,23 @@ const LoanManagement = () => {
     }
   }, [token]);
 
-  const sendRepaymentLink = useCallback(async (id: string) => {
-    try {
-      const response = await requestClient({ token: token }).get(
-        `/client/repayment/test-repayment-mail/${id}`
-      );
-      if (response.status === 200) {
-        toast.success("Repayment link sent successfully");
+  const sendRepaymentLink = useCallback(
+    async (id: string) => {
+      try {
+        const response = await requestClient({ token: token }).get(
+          `/admin/repayment/test-repayment-mail/${id}`
+        );
+        if (response.status === 200) {
+          toast.success("Repayment link sent successfully");
+        }
+      } catch (error) {
+        const errorMessage = handleServerErrorMessage(error);
+        console.error(errorMessage);
+        toast.error(errorMessage);
       }
-    } catch (error) {
-      console.error(error);
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-    }
-  }, [token]);
+    },
+    [token]
+  );
 
   const tableData = useMemo(() => loan?.data, [loan?.data]);
 
