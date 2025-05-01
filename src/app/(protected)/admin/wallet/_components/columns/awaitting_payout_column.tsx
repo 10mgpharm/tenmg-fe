@@ -2,8 +2,10 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { classNames } from "@/utils";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { TransactionProps } from "@/types";
+import { convertDate } from "@/utils/formatDate";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<TransactionProps>();
 
 export function Awaiting_columnFn(
   walletType: "product_wallet" | "loan_wallet",
@@ -11,18 +13,18 @@ export function Awaiting_columnFn(
   onOpenPayout: () => void
 ) {
   return [
-    columnHelper.accessor("name", {
+    columnHelper.accessor("identifier", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
       cell: (info) => {
         const serialNumber = info?.row?.index + 1;
         return (
           <div className="pl-6">
-            <p>{serialNumber}</p>
+            <p>{info.row.original.identifier}</p>
           </div>
         );
       },
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("business", {
       header: ({ column }) => (
         <p className="pl-6">
           {walletType === "loan_wallet" ? "Vendor's Name" : "Supplier's Name"}
@@ -31,17 +33,17 @@ export function Awaiting_columnFn(
       cell: (info) => {
         return (
           <div className="pl-6">
-            <p>{info?.row?.original?.name}</p>
+            <p>{info?.row?.original?.business?.name}</p>
           </div>
         );
       },
     }),
-    columnHelper.accessor("transaction_type", {
+    columnHelper.accessor("type", {
       header: ({ column }) => <p className="">Transaction Type</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium capitalize">
-            {info.row.original?.transaction_type}
+            {info.row.original?.type}
           </p>
         </div>
       ),
@@ -54,11 +56,11 @@ export function Awaiting_columnFn(
         </div>
       ),
     }),
-    columnHelper.accessor("date", {
+    columnHelper.accessor("createdAt", {
       header: ({ column }) => <p className="">Date</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.date}</p>
+          <p className="font-medium">{convertDate(info.row.original?.createdAt)}</p>
         </div>
       ),
     }),

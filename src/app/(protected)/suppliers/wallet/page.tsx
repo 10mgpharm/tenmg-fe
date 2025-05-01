@@ -134,7 +134,7 @@ const Wallet = () => {
       <div className="flex gap-5">
         {/* Balance section */}
         <div className="flex-1 bg-primary-50 pt-3 pl-5 rounded-lg flex justify-between">
-          <div>
+          <div className="relative">
             <div className="mt-5 flex items-center gap-3">
               <p className="text-xl">Wallet Balance</p>
               <button onClick={() => setShowBalance(!showBalance)}>
@@ -144,10 +144,16 @@ const Wallet = () => {
             <p className="font-semibold text-2xl text-gray-700 mt-3">
               {showBalance ? `₦${formattedBalance}` : "******"}
             </p>
+            <div className="mt-8 mb-2">
+              <div className="bg-black bg-opacity-30 rounded-md p-1 w-4/5 pl-2.5">
+                <p className="text-white font-medium text-xs">Pending Balance</p>
+                <p className="text-white text-xs font-medium">₦{walletBalance?.previousBalance}</p>
+              </div>
+            </div>
             {walletBalance?.bankAccount && (
               <button
                 onClick={onOpenWithdraw}
-                className="mt-8 bg-primary-500 px-5 py-2 text-white rounded-md"
+                className="bg-primary-500 px-5 py-2 text-white rounded-md"
               >
                 Withdraw Funds
               </button>
@@ -233,6 +239,7 @@ const Wallet = () => {
         isOpen={isOpen}
         onClose={onClose}
         // banks={banks}
+        fetchingWallet={fetchingWallet}
         endpoint="/supplier/wallet/add-bank-account"
       />
       <WithdrawFunds

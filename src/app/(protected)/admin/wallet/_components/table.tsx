@@ -22,13 +22,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import TransactionDetails from "./TransactionDetail";
 import InitiatePayout from "./InitiatePayout";
 import { Awaiting_columnFn } from "./columns/awaitting_payout_column";
 import { Completed_ColumnFN } from "./columns/completed-payout_column";
 import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
+import { TransactionDataProps, TransactionProps } from "@/types";
 
 const WalletTable = ({
   data,
@@ -39,7 +40,7 @@ const WalletTable = ({
   setPageCount,
   isLoading = false,
 }: {
-  data: any;
+  data: TransactionDataProps;
   type: string;
   walletType?: "product_wallet" | "loan_wallet";
   hasPagination?: boolean;
@@ -75,9 +76,11 @@ const WalletTable = ({
       : Awaiting_columnFn(walletType, onOpen, onOpenPayout);
   };
 
+  const prevData = data?.data?.slice(0, 5);
+  const memoizedData = useMemo(() => prevData, [prevData]);
   // table
   const table = useReactTable({
-    data: data,
+    data: memoizedData,
     columns: getSelectColumn(),
     onSortingChange: setSorting,
     state: {
@@ -104,7 +107,7 @@ const WalletTable = ({
 
   return (
     <div>
-      {data?.length === 0 ? (
+      {data?.data?.length === 0 ? (
         <EmptyOrder
           heading={`No Wallet Yet`}
           content={`You currently have no wallet. All wallets will appear here.`}
@@ -129,7 +132,7 @@ const WalletTable = ({
               ))}
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {table?.getRowModel()?.rows?.map((row) => (
+              {memoizedData?.length > 0 && table?.getRowModel()?.rows?.map((row) => (
                 <Tr key={row.id}>
                   {row.getVisibleCells()?.map((cell) => (
                     <Td key={cell.id} px="6px">

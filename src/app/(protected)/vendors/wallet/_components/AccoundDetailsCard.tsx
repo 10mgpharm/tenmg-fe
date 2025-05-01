@@ -25,8 +25,6 @@ export default function AccoundDetailsCard({ showBalance }: { showBalance?: bool
   const [hasAccountNumber, sethasAccountNumber] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
-
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
     try {
@@ -34,7 +32,6 @@ export default function AccoundDetailsCard({ showBalance }: { showBalance?: bool
       if (response.status === 200) {
         setAccountDetails(response?.data?.data);
         sethasAccountNumber(response?.data?.data?.accountNumber ? true : false);
-        console.log(response?.data?.data);
       }
     } catch (error) {
       console.error(error);
@@ -96,7 +93,7 @@ export default function AccoundDetailsCard({ showBalance }: { showBalance?: bool
       <AddAccount
         isOpen={isOpen}
         onClose={onClose}
-        // banks={[]}   
+        fetchingWallet={fetchingWallet}
         endpoint={"vendor/wallet/add-bank-account"}
       />
     </>
