@@ -318,7 +318,8 @@ const CustomerManagement = () => {
         ) : (
           <EmptyResult
             heading="Nothing to show here yet"
-            content="You don’t have any customer yet. When you do, they’ll appear here."
+            content="Record Not Found!
+            No customer found for your search criteria."
           />
         )}
       </div>

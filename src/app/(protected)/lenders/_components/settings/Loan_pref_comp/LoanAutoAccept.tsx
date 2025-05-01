@@ -79,8 +79,8 @@ export default function LoanAutoAccept({
               auto-accept).
             </h3>
             <Text fontSize={"14px"} color={"gray.500"}>
-              Two-Factor authentication adds another layer of security to your
-              account.
+              Choose to manually approve loan requests instead or allow
+              auto-accept by default.
             </Text>
           </div>
           <FormControl flex={1} display="flex" justifyContent="flex-end">
