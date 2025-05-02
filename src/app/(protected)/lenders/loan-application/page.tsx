@@ -136,7 +136,7 @@ export default function LoanApplicationPage() {
       fetchLenderData();
       fetchLoanData();
     } catch (error: any) {
-      toast.error("Error approving loan application");
+      toast.error(handleServerErrorMessage(error));
       console.error(error);
     }
   };
