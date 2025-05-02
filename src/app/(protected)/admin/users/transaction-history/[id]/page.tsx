@@ -2,7 +2,6 @@
 
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import React, { useMemo, useState } from "react";
-import OverviewCard from "../../../wallet/_components/OverviewCard";
 import { ArrowLeft, ListFilter } from "lucide-react";
 import { Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";

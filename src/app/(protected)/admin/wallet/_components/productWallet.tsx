@@ -1,7 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import OverviewCard from "./OverviewCard";
 import {
-  Flex,
   HStack,
   Text,
   Tab,
@@ -10,44 +8,48 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
+import Link from "next/link";
+import { WalletProductProps } from "@/types";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
-import Link from "next/link";
-import WalletTable from "./table";
-import { transactionData } from "@/data/mockdata";
-import { TransactionDataProps, TransactionProps } from "@/types";
+import TransactionTab from "./TransactionTab";
+import WalletOverview from "./WalletOverview";
 
-const ProductWallet = (
-  { transactions, setPageCount }: 
-  { transactions: TransactionDataProps, setPageCount: Dispatch<SetStateAction<number>>; }
-) => {
-  const awaiting = transactionData.filter((item) => item.type === "Awaiting");
-  const completed = transactionData.filter((item) => item.type === "Completed");
-  const history = transactionData.filter((item) => item.type === "History");
+interface Props {
+  transactions: WalletProductProps;
+  setPageCount: Dispatch<SetStateAction<number>>;
+}
+const ProductWallet = ({ transactions, setPageCount }: Props) => {
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 c">
-        <OverviewCard
+        <WalletOverview
           title="Total Commission Earned"
-          value="₦5,600"
+          value={`₦${Number(transactions?.totalCommissionsEarned ?? 0.00)?.toLocaleString()}`}
           fromColor="from-[#53389E]"
           toColor="to-[#7F56D9]"
           image={totalPattern}
+          hasPendingBalance={true}
+          pendingBalance={`${Number(transactions?.totalPendingCommissions ?? 0.00)?.toLocaleString()}`}
         />
-        <OverviewCard
+        <WalletOverview
           title="Total Payouts to Suppliers"
-          value="₦2,300"
+          value={`₦${Number(transactions?.totalSupplierPayout ?? 0.00)?.toLocaleString()}`}
           fromColor="from-[#DC6803]"
           toColor="to-[#DC6803]"
           image={orderPattern}
+          hasPendingBalance={true}
+          pendingBalance={`${Number(transactions?.totalPendingSupplierPayout ?? 0.00)?.toLocaleString()}`}
         />
-        <OverviewCard
+        <WalletOverview
           title="Wallet Balance"
-          value="₦50,000"
+          value={`₦${Number(transactions?.wallet?.currentBalance ?? 0.00)?.toLocaleString()}`}
           fromColor="from-[#E31B54]"
           toColor="to-[#E31B54]"
           image={productPattern}
+          hasPendingBalance={true}
+          pendingBalance={"0.00"}
         />
       </div>
 
@@ -76,23 +78,10 @@ const ProductWallet = (
             <div className="flex items-center gap-3">
               <Text className="text-nowrap">Awaiting Payout </Text>
               <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                {awaiting?.length}
+                {transactions?.payouts?.total}
               </p>
             </div>
           </Tab>
-
-          <Tab
-            _selected={{ color: "white", bg: "#1A70B8" }}
-            className="rounded-lg text-gray-700 bg-gray-100"
-          >
-            <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Completed Payout</Text>
-              <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                {completed?.length}
-              </p>
-            </div>
-          </Tab>
-
           <Tab
             _selected={{ color: "white", bg: "#1A70B8" }}
             className="rounded-lg text-gray-700 bg-gray-100"
@@ -100,7 +89,7 @@ const ProductWallet = (
             <div className="flex items-center gap-3">
               <Text className="text-nowrap">Transaction History</Text>
               <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {history?.length}
+                {transactions?.transactions?.total}
               </p>
             </div>
           </Tab>
@@ -108,25 +97,17 @@ const ProductWallet = (
 
         <TabPanels>
           <TabPanel px={0}>
-            <WalletTable
-              data={transactions}
-              setPageCount={setPageCount}
+            <TransactionTab
               type="awaiting"
-              walletType="product_wallet"
+              setPageCount={setPageCount}
+              data={transactions?.payouts}
             />
           </TabPanel>
           <TabPanel px={0}>
-            <WalletTable
-              data={transactions}
-              type="completed"
-              walletType="product_wallet"
-            />
-          </TabPanel>
-          <TabPanel px={0}>
-            <WalletTable
-              data={transactions}
-              type="history"
-              walletType="product_wallet"
+            <TransactionTab
+              type="transaction"
+              setPageCount={setPageCount}
+              data={transactions?.transactions}
             />
           </TabPanel>
         </TabPanels>

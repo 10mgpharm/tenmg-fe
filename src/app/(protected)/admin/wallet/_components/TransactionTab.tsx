@@ -22,19 +22,27 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import TransactionDetails from "./TransactionDetail";
+import InitiatePayout from "./InitiatePayout";
+import { Awaiting_columnFn } from "./columns/awaitting_payout_column";
+import { Completed_ColumnFN } from "./columns/completed-payout_column";
+import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
-import { WalletColumn_FN } from "./columns/WalletColumn";
-import TransactionDetails from "../../wallet/_components/TransactionDetail";
+import { Payouts } from "@/types";
 
-const WalletTable = ({
+const TransactionTab = ({
   data,
+  type,
+  walletType,
   hasPagination = false,
   metaData,
   setPageCount,
   isLoading = false,
 }: {
-  data: any;
+  data: Payouts;
+  type: string;
+  walletType?: "product_wallet" | "loan_wallet";
   hasPagination?: boolean;
   metaData?: {
     links: any;
@@ -43,6 +51,11 @@ const WalletTable = ({
     currentPage: number;
     firstPageUrl: any;
     lastPageUrl: any;
+    total: number;
+    perPage: number;
+    from: number;
+    to: number;
+    lastPage: number;
   };
   setPageCount?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
@@ -53,11 +66,25 @@ const WalletTable = ({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenPayout,
+    onOpen: onOpenPayout,
+    onClose: onClosePayout,
+  } = useDisclosure();
 
+  // Get selected column
+  const getSelectColumn = () => {
+    return type === "transaction"
+      ? Completed_ColumnFN( onOpen, onOpenPayout)
+      : Awaiting_columnFn( onOpen, onOpenPayout);
+  };
+
+  const prevData = hasPagination ? data?.data : data?.data?.slice(0, 5);
+  const memoizedData = useMemo(() => prevData, [prevData]);
   // table
   const table = useReactTable({
-    data: data,
-    columns: WalletColumn_FN(onOpen),
+    data: memoizedData,
+    columns: getSelectColumn(),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -75,12 +102,12 @@ const WalletTable = ({
 
   return (
     <div>
-      {data?.length === 0 ? (
+      {data?.data?.length === 0 ? (
         <EmptyOrder
           heading={`No Wallet Yet`}
           content={`You currently have no wallet. All wallets will appear here.`}
         />
-      ) : data?.length > 0 ? (
+      ) : data?.data?.length > 0 ? (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
             <Thead bg={"#F2F4F7"}>
@@ -100,7 +127,7 @@ const WalletTable = ({
               ))}
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {table?.getRowModel()?.rows?.map((row) => (
+              {memoizedData?.length > 0 && table?.getRowModel()?.rows?.map((row) => (
                 <Tr key={row.id}>
                   {row.getVisibleCells()?.map((cell) => (
                     <Td key={cell.id} px="6px">
@@ -119,14 +146,20 @@ const WalletTable = ({
             <Pagination {...metaData} setPageCount={setPageCount} />
           )}
         </TableContainer>
-      ): (
+      ) : (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
         </Flex>
-      )}
+      )
+    }
       <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
+      <InitiatePayout
+        isOpen={isOpenPayout}
+        onClose={onClosePayout}
+        walletType={walletType}
+      />
     </div>
   );
 };
 
-export default WalletTable;
+export default TransactionTab;

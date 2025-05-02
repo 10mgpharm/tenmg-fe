@@ -2,46 +2,41 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { classNames } from "@/utils";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { Daum } from "@/types";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<Daum>();
 
 export function Completed_ColumnFN(
-  walletType: "product_wallet" | "loan_wallet",
   onOpen: () => void,
   onOpenPayout: () => void
 ) {
   return [
-    columnHelper.accessor("name", {
-      header: ({ column }) => <p className="pl-6"> S/N</p>,
-      cell: (info) => {
-        const serialNumber = info?.row?.index + 1;
-        return (
-          <div className="pl-6">
-            <p>{serialNumber}</p>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("name", {
-      header: ({ column }) => (
-        <p className="pl-6">
-          {walletType === "loan_wallet" ? "Vendor's Name" : "Supplier's Name"}
-        </p>
+    columnHelper.accessor("txnGroup", {
+      header: ({ column }) => <p className="pl-6">Date</p>,
+      cell: (info) => (
+        <div className="pl-6">
+          <p className="font-medium">
+            {info.row.original?.createdAt}
+          </p>
+        </div>
       ),
-      cell: (info) => {
-        return (
-          <div className="pl-6">
-            <p>{info?.row?.original?.name}</p>
-          </div>
-        );
-      },
     }),
-    columnHelper.accessor("transaction_type", {
-      header: ({ column }) => <p className="">Transaction Type</p>,
+    columnHelper.accessor("tenmgCommission", {
+      header: ({ column }) => <p className="">Commission</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium capitalize">
-            {info.row.original?.transaction_type}
+          <p className="font-medium">
+          ₦{info.row.original?.tenmgCommission ?? `0.00`}
+          </p>
+        </div>
+      ),
+    }),
+    columnHelper.accessor("orderId", {
+      header: ({ column }) => <p className="">OrderId</p>,
+      cell: (info) => (
+        <div className="">
+          <p className="font-medium">
+            {info.row.original?.orderId}
           </p>
         </div>
       ),
@@ -54,24 +49,24 @@ export function Completed_ColumnFN(
         </div>
       ),
     }),
-    columnHelper.accessor("date", {
-      header: ({ column }) => <p className="">Date</p>,
+    columnHelper.accessor("balanceAfter", {
+      header: ({ column }) => <p className="">Balance</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.date}</p>
+          <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
         </div>
       ),
     }),
     columnHelper.accessor("status", {
-      header: ({ column }) => <p>Status</p>,
+      header: ({ column }) => <p>Type</p>,
       cell: (info) => {
         return (
           <div>
             <p
               className={classNames(
-                info?.row?.original?.status === "Failed"
+                info?.row?.original?.status === "DEBIT"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "Completed" ||
+                  : info?.row?.original?.status === "CREDIT" ||
                     info?.row?.original?.status === "Successful"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : "text-orange-500 bg-orange-50",

@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "../_components/TimeLineSelector";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import WalletTable from "../_components/table";
+import WalletTable from "../_components/TransactionTab";
 import { transactionData } from "@/data/mockdata";
 const completed = transactionData.filter((item) => item.type === "Completed");
 import {
@@ -16,25 +16,69 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
+import { useDebouncedValue } from "@/utils/debounce";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
 
 const LoanWallet = () => {
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [pagecount, setPageCount] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+  const [isLoadingTable, setIsLoadingTable] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [status, setStatus] = useState("pending");
+  const [dataType, setDataType] = useState<
+    "awaiting" | "completed" | "history"
+  >("awaiting");
+  const [tableData, setTableData] = useState(null);
 
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
   const completed = transactionData.filter((item) => item.type === "Completed");
   const history = transactionData.filter((item) => item.type === "History");
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
-  // random data
-  const metaData = {
-    links: "",
-    prevPageUrl: "",
-    nextPageUrl: "",
-    currentPage: 1,
-    firstPageUrl: "",
-    lastPageUrl: "",
-  };
+  const fetchTableData = useCallback(async () => {
+    setIsLoadingTable(true);
+
+    let query = `/admin/wallet/transactions?page=${pageCount}`;
+
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
+    }
+    if (status) {
+      query += `&status=${status}`;
+    }
+    if (createdAtStart) {
+      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
+    }
+    if (createdAtEnd) {
+      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
+    }
+
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setTableData(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setIsLoadingTable(false);
+  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchTableData();
+  }, [fetchTableData, token]);
+
+  console.log(tableData);
 
   return (
     <div className="px-6 py-8 md:p-8">
@@ -56,7 +100,7 @@ const LoanWallet = () => {
         />
       </div>
 
-      <Tabs variant={"unstyled"} className="mt-7">
+      <Tabs variant={"unstyled"} className="mt-5">
         <div className="flex items-center justify-between gap-4 max-lg:flex-col-reverse max-lg:items-start">
           {/* Tabs */}
           <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  max-lg:w-full">
@@ -71,19 +115,6 @@ const LoanWallet = () => {
                 </p>
               </div>
             </Tab>
-
-            <Tab
-              _selected={{ color: "white", bg: "#1A70B8" }}
-              className="rounded-lg text-gray-700 bg-gray-100"
-            >
-              <div className="flex items-center gap-3">
-                <Text className="text-nowrap">Completed Payout</Text>
-                <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                  {completed?.length}
-                </p>
-              </div>
-            </Tab>
-
             <Tab
               _selected={{ color: "white", bg: "#1A70B8" }}
               className="rounded-lg text-gray-700 bg-gray-100"

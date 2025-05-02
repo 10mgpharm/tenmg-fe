@@ -230,4 +230,97 @@ export interface BusinessProp {
     createdAt: string
     updatedAt: string
 }
+
+export interface LoanWalletProps {
+  totalLenders: string;
+  vendorPayouts: string;
+  walletBalance: string;
+}
+
+export interface WalletProductProps {
+  wallet: WalletDataProps
+  totalCommissionsEarned: string;
+  totalPendingSupplierPayout: string;
+  totalPendingCommissions: string;
+  totalSupplierPayout: string
+  transactions: TransactionsProps
+  payouts: Payouts
+}
+
+export interface WalletDataProps {
+  id: number
+  previousBalance: string
+  currentBalance: string
+}
+
+export interface TransactionsProps {
+  currentPage: number
+  data: Daum[]
+  firstPageUrl: string
+  from: number
+  lastPage: number
+  lastPageUrl: string
+  links: Link[]
+  nextPageUrl: any
+  path: string
+  perPage: number
+  prevPageUrl: any
+  to: number
+  total: number
+}
+
+export interface Daum {
+  id: number
+  orderId: number
+  txnType: string
+  txnGroup: string
+  amount: string
+  balanceBefore: string
+  balanceAfter: string
+  status: string;
+  tenmgCommission: string;
+  createdAt: string;
+}
+
+export interface Link {
+  url?: string
+  label: string
+  active: boolean
+}
+
+export interface Payouts {
+  currentPage: number
+  data: Daum2[]
+  firstPageUrl: string
+  from: number
+  lastPage: number
+  lastPageUrl: string
+  links: Link2[]
+  nextPageUrl: any
+  path: string
+  perPage: number
+  prevPageUrl: any
+  to: number
+  total: number
+}
+
+export interface Daum2 {
+  id: number
+  orderId: number
+  txnType: string
+  txnGroup: string
+  amount: string
+  balanceBefore: string
+  balanceAfter: string
+  status: string;
+  tenmgCommission: string;
+  createdAt: string;
+}
+
+export interface Link2 {
+  url?: string
+  label: string
+  active: boolean
+}
+
   

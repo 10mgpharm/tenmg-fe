@@ -22,7 +22,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import OverviewCard from "../../wallet/_components/OverviewCard";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
@@ -40,6 +39,7 @@ import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
 import { IFilterInput } from "@/app/(protected)/vendors/customers-management/page";
 import { formatAmountString, handleServerErrorMessage } from "@/utils";
 import { toast } from "react-toastify";
+import WalletOverview from "../../wallet/_components/WalletOverview";
 
 const LoanManagement = () => {
   const onOpen = () => {};
@@ -165,7 +165,7 @@ const LoanManagement = () => {
     <>
       <div className="">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
-          <OverviewCard
+          <WalletOverview
             title="Total Loan Amount"
             value={
               loanStats
@@ -175,8 +175,10 @@ const LoanManagement = () => {
             fromColor="from-[#53389E]"
             toColor="to-[#7F56D9]"
             image={totalPattern}
+            hasPendingBalance={false}
+            pendingBalance={"0.00"}
           />
-          <OverviewCard
+          <WalletOverview
             title="Total Interest"
             value={
               loanStats
@@ -186,15 +188,17 @@ const LoanManagement = () => {
             fromColor="from-[#DC6803]"
             toColor="to-[#DC6803]"
             image={orderPattern}
+            hasPendingBalance={false}
           />
-          <OverviewCard
+          <WalletOverview
             title="Active Loans"
             value={loanStats ? loanStats?.activeLoan : 0}
             fromColor="from-[#3E4784]"
             toColor="to-[#3E4784]"
             image={productPattern}
+            hasPendingBalance={false}
           />
-          <OverviewCard
+          <WalletOverview
             title="Pending Repayment"
             value={
               loanStats
@@ -204,6 +208,7 @@ const LoanManagement = () => {
             fromColor="from-[#E31B54]"
             toColor="to-[#E31B54]"
             image={productPattern}
+            hasPendingBalance={false}
           />
         </div>
         <Flex mt={4} gap={2}>
