@@ -173,7 +173,7 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
           <TabPanels>
             <TabPanel px={0}>
               <WalletTable
-                data={awaiting}
+                data={null}
                 type="payout"
                 walletType="loan_wallet"
                 emptyStateHeader="No payout yet"

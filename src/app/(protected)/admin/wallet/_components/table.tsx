@@ -28,6 +28,7 @@ import InitiatePayout from "./InitiatePayout";
 import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
 import { TransactionDataProps, TransactionProps } from "@/types";
+import { Payout_columnFn } from "./columns/payout_column";
 
 const WalletTable = ({
   data,
