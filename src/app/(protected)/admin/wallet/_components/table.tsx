@@ -41,7 +41,7 @@ const WalletTable = ({
   emptyStateHeader,
 }: {
   data: TransactionDataProps;
-  type: string;
+  type: "history" | "payout";
   walletType?: "product_wallet" | "loan_wallet";
   hasPagination?: boolean;
   metaData?: {
@@ -60,7 +60,7 @@ const WalletTable = ({
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
+  const [userId, setUserId] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenPayout,
@@ -71,12 +71,12 @@ const WalletTable = ({
   // Get selected column
   const getSelectColumn = () => {
     return type === "history"
-      ? History_ColumnFN(walletType, onOpen, onOpenPayout)
+      ? History_ColumnFN(walletType, onOpen, onOpenPayout, setUserId)
       : Payout_columnFn(walletType, onOpen, onOpenPayout);
   };
 
-  const prevData = data?.data?.slice(0, 5);
-  const memoizedData = useMemo(() => prevData, [prevData]);
+  const memoizedData = useMemo(() => data?.data?.slice(0, 5), [data]);
+
   // table
   const table = useReactTable({
     data: memoizedData,
@@ -152,7 +152,9 @@ const WalletTable = ({
           )}
         </TableContainer>
       )}
-      <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
+
+      <TransactionDetails isOpen={isOpen} onClose={onClose} userId={userId} />
+
       <InitiatePayout
         isOpen={isOpenPayout}
         onClose={onClosePayout}

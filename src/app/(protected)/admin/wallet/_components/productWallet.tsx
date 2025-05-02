@@ -18,10 +18,13 @@ import WalletTable from "./table";
 import { transactionData } from "@/data/mockdata";
 import { TransactionDataProps, TransactionProps } from "@/types";
 
-const ProductWallet = (
-  { transactions, setPageCount }: 
-  { transactions: TransactionDataProps, setPageCount: Dispatch<SetStateAction<number>>; }
-) => {
+const ProductWallet = ({
+  transactions,
+  setPageCount,
+}: {
+  transactions: TransactionDataProps;
+  setPageCount: Dispatch<SetStateAction<number>>;
+}) => {
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
   const completed = transactionData.filter((item) => item.type === "Completed");
   const history = transactionData.filter((item) => item.type === "History");
@@ -108,26 +111,26 @@ const ProductWallet = (
 
         <TabPanels>
           <TabPanel px={0}>
-            <WalletTable
+            {/* <WalletTable
               data={transactions}
               setPageCount={setPageCount}
               type="awaiting"
               walletType="product_wallet"
-            />
+            /> */}
           </TabPanel>
           <TabPanel px={0}>
-            <WalletTable
+            {/* <WalletTable
               data={transactions}
               type="completed"
               walletType="product_wallet"
-            />
+            /> */}
           </TabPanel>
           <TabPanel px={0}>
-            <WalletTable
+            {/* <WalletTable
               data={transactions}
               type="history"
               walletType="product_wallet"
-            />
+            /> */}
           </TabPanel>
         </TabPanels>
       </Tabs>

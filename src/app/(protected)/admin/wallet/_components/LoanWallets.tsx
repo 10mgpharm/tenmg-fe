@@ -49,14 +49,7 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
   const fetchOverViewData = useCallback(async () => {
     setIsLoading(true);
 
-    let query = `"/admin/wallet"`;
-
-    if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
-    }
-    if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
-    }
+    let query = `/admin/wallet`;
 
     try {
       const response = await requestClient({ token: token }).get(query);
@@ -73,14 +66,7 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
   const fetchTableData = useCallback(async () => {
     setIsLoadingTable(true);
 
-    let query = `/admin/wallet/transactions?page=${pageCount}`;
-
-    if (createdAtStart) {
-      query += `&dateFrom=${createdAtStart.toISOString().split("T")[0]}`;
-    }
-    if (createdAtEnd) {
-      query += `&dateTo=${createdAtEnd.toISOString().split("T")[0]}`;
-    }
+    let query = `/admin/wallet/transactions?page=1`;
 
     try {
       const response = await requestClient({ token: token }).get(query);
@@ -91,7 +77,7 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
       console.error(error);
     }
     setIsLoadingTable(false);
-  }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
+  }, [token]);
 
   useEffect(() => {
     fetchOverViewData();
@@ -181,11 +167,12 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
             </TabPanel>
             <TabPanel px={0}>
               <WalletTable
-                data={transactionData?.data?.data.slice(0, 5) ?? []}
+                data={transactionData?.data}
                 type="history"
                 walletType="loan_wallet"
                 isLoading={isLoadingTable}
                 emptyStateHeader="No transaction history yet"
+                metaData={transactionData?.data?.meta}
               />
             </TabPanel>
           </TabPanels>
