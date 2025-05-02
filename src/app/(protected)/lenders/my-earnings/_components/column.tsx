@@ -1,19 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { classNames } from "@/utils";
-import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
-import { BsThreeDotsVertical } from "react-icons/bs";
 
-type dataType = {
-  loanId: string;
-  BorrowerName: string;
-  loanAmount: number;
-  projectedInterest: number;
-  repaidInterest: number;
-  balanceInterest: number;
-  id: string;
-};
-
-const columnHelper = createColumnHelper<dataType>();
+const columnHelper = createColumnHelper<any>();
 
 export function MyEarningsColumn(
   onOpenDetails: () => void,
@@ -31,62 +18,62 @@ export function MyEarningsColumn(
         );
       },
     }),
-    columnHelper.accessor("loanId", {
+    columnHelper.accessor("identifier", {
       header: ({ column }) => <p className="pl-6">Loan ID</p>,
       cell: (info) => {
         return (
           <div className="pl-6">
-            <p>{info?.row?.original?.loanId}</p>
+            <p>{info?.row?.original?.identifier}</p>
           </div>
         );
       },
     }),
-    columnHelper.accessor("BorrowerName", {
+    columnHelper.accessor("customer.name", {
       header: ({ column }) => <p className="">{"Borrower's Name"}</p>,
       cell: (info) => (
         <div className="">
-          <p className=" capitalize">{info.row.original?.BorrowerName}</p>
+          <p className=" capitalize">{info.row.original?.customer.name}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("loanAmount", {
+    columnHelper.accessor("capitalAmount", {
       header: ({ column }) => <p className="">Loan Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="">₦{info.row.original?.loanAmount}</p>
+          <p className="">₦{info.row.original?.capitalAmount}</p>
           <span className="text-primary-700 text-[12px]">
-            Loan Interest: 200.00
+            Loan Interest: ₦{info.row.original?.interestAmount}
           </span>
         </div>
       ),
     }),
 
-    columnHelper.accessor("repaidInterest", {
+    columnHelper.accessor("interestAmount", {
       header: ({ column }) => <p className="">Repaid Interest</p>,
       cell: (info) => (
         <div className="">
-          <p className="">₦{info.row.original?.repaidInterest}</p>
+          <p className="">₦{info.row.original?.interestAmount}</p>
         </div>
       ),
     }),
 
-    columnHelper.accessor("id", {
-      header: ({ column }) => <p className="">Actions</p>,
-      cell: (info) => {
-        return (
-          <div className="">
-            <p
-              className="cursor-pointer text-primary-600 font-medium"
-              onClick={() => {
-                onOpenDetails();
-                setSelectedUserId(info.row.original.id);
-              }}
-            >
-              View
-            </p>
-          </div>
-        );
-      },
-    }),
+    // columnHelper.accessor("id", {
+    //   header: ({ column }) => <p className="">Actions</p>,
+    //   cell: (info) => {
+    //     return (
+    //       <div className="">
+    //         <p
+    //           className="cursor-pointer text-primary-600 font-medium"
+    //           onClick={() => {
+    //             onOpenDetails();
+    //             setSelectedUserId(info.row.original.id);
+    //           }}
+    //         >
+    //           View
+    //         </p>
+    //       </div>
+    //     );
+    //   },
+    // }),
   ];
 }

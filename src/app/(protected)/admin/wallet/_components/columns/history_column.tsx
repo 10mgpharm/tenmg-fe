@@ -9,7 +9,8 @@ const columnHelper = createColumnHelper<any>();
 export function History_ColumnFN(
   walletType: "product_wallet" | "loan_wallet",
   onOpen: () => void,
-  onOpenPayout: () => void
+  onOpenPayout: () => void,
+  setUserId: (value: string) => void
 ) {
   return [
     columnHelper.accessor("identifier", {
@@ -95,7 +96,13 @@ export function History_ColumnFN(
                   </>
                 ) : (
                   <>
-                    <MenuItem onClick={() => onOpen()}>
+                    <MenuItem
+                      onClick={() => {
+                        // setUserId(info.row.original?.identifier);
+                        // console.log(info.row.original?.identifier);
+                        onOpen();
+                      }}
+                    >
                       View Transaction Details
                     </MenuItem>
                   </>

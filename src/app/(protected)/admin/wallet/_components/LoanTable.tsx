@@ -78,7 +78,7 @@ const LoanTable = ({data}: LoanTableProps) => {
         </Flex>
       )}
       <TransactionDetails 
-      data={selectedRow} 
+      selectedRow={selectedRow} 
       isOpen={isOpen} 
       onClose={onClose} 
       type="" 

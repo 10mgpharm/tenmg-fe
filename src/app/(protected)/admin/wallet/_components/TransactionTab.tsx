@@ -66,7 +66,7 @@ const TransactionTab = ({
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
+  const [userId, setUserId] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenPayout,
