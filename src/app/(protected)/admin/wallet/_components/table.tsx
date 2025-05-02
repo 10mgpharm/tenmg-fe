@@ -25,11 +25,10 @@ import {
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import TransactionDetails from "./TransactionDetail";
 import InitiatePayout from "./InitiatePayout";
-import { Awaiting_columnFn } from "./columns/awaitting_payout_column";
-import { Completed_ColumnFN } from "./columns/completed-payout_column";
 import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
 import { TransactionDataProps, TransactionProps } from "@/types";
+import { Payout_columnFn } from "./columns/payout_column";
 
 const WalletTable = ({
   data,
@@ -39,6 +38,7 @@ const WalletTable = ({
   metaData,
   setPageCount,
   isLoading = false,
+  emptyStateHeader,
 }: {
   data: TransactionDataProps;
   type: string;
@@ -54,6 +54,7 @@ const WalletTable = ({
   };
   setPageCount?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
+  emptyStateHeader: string;
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -69,11 +70,9 @@ const WalletTable = ({
 
   // Get selected column
   const getSelectColumn = () => {
-    return type === "completed"
-      ? Completed_ColumnFN(walletType, onOpen, onOpenPayout)
-      : type === "history"
+    return type === "history"
       ? History_ColumnFN(walletType, onOpen, onOpenPayout)
-      : Awaiting_columnFn(walletType, onOpen, onOpenPayout);
+      : Payout_columnFn(walletType, onOpen, onOpenPayout);
   };
 
   const prevData = data?.data?.slice(0, 5);
@@ -109,8 +108,8 @@ const WalletTable = ({
     <div>
       {data?.data?.length === 0 ? (
         <EmptyOrder
-          heading={`No Wallet Yet`}
-          content={`You currently have no wallet. All wallets will appear here.`}
+          heading={emptyStateHeader}
+          content={`All data will appear here.`}
         />
       ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -132,18 +131,19 @@ const WalletTable = ({
               ))}
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {memoizedData?.length > 0 && table?.getRowModel()?.rows?.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="6px">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
+              {memoizedData?.length > 0 &&
+                table?.getRowModel()?.rows?.map((row) => (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells()?.map((cell) => (
+                      <Td key={cell.id} px="6px">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </Td>
+                    ))}
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
 
