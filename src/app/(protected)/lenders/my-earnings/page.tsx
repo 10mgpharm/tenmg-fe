@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
@@ -8,12 +8,61 @@ import productPattern from "@public/assets/images/productpatterns.svg";
 import OverviewCard from "../../admin/wallet/_components/OverviewCard";
 import SearchComponent from "../../suppliers/orders/_components/SearchComponent";
 import DataTable from "./_components/DataTable";
-import { myEarningsData } from "@/data/mockdata";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import { useDebouncedValue } from "@/utils/debounce";
 
 const MyEarnings = () => {
   const [searchValue, setSearchValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [pageCount, setPageCount] = useState(1);
+  const [overViewData, setOverViewData] = useState(null);
+  const [tableData, setTableData] = useState(null);
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
+  const fetchStatData = useCallback(async () => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        "/lender/earnings/stats"
+      );
+      if (response.status === 200) {
+        setOverViewData(response?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [token]);
+
+  const fetchTableData = useCallback(async () => {
+    setIsLoading(true);
+
+    let query = `/lender/earnings?page=${pageCount}`;
+
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
+    }
+
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setTableData(response?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setIsLoading(false);
+  }, [token, pageCount, debouncedSearch]);
+
+  useEffect(() => {
+    fetchTableData();
+    fetchStatData();
+  }, [fetchTableData, fetchStatData]);
 
   return (
     <div className="px-4">
@@ -22,21 +71,21 @@ const MyEarnings = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 c">
         <OverviewCard
           title="Total Projected Interest"
-          value="₦5,600"
+          value={`₦${overViewData?.data?.totalProjectedInterest ?? 0.0}`}
           fromColor="from-[#53389E]"
           toColor="to-[#7F56D9]"
           image={totalPattern}
         />
         <OverviewCard
           title="Total Repaid Interest"
-          value="₦2,300"
+          value={`₦${overViewData?.data?.totalRepaidInterest ?? 0.0}`}
           fromColor="from-[#DC6803]"
           toColor="to-[#DC6803]"
           image={orderPattern}
         />
         <OverviewCard
           title="Total Balance Interest"
-          value="₦50,000"
+          value={`₦${overViewData?.data?.totalBalanceInterest ?? 0.0}`}
           fromColor="from-[#E31B54]"
           toColor="to-[#E31B54]"
           image={productPattern}
@@ -45,14 +94,13 @@ const MyEarnings = () => {
 
       <div className="mt-5 flex flex-col gap-4">
         <SearchComponent
-          placeholder="Search for a user"
-          onChange={() => setSearchValue}
+          placeholder="Search for a loan"
+          onChange={(e) => setGlobalFilter(e.target.value)}
         />
 
         <DataTable
-          data={myEarningsData}
+          data={tableData?.data}
           loading={isLoading}
-          pageCount={pageCount}
           setPageCount={setPageCount}
         />
       </div>
