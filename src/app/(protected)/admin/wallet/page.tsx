@@ -2,12 +2,12 @@
 
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
-import LoanWallets from "./_components/LoanWallets";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
-import { LoanWalletProps, NextAuthUserSession, TransactionDataProps, WalletProductProps } from "@/types";
+import { LoanWalletProps, NextAuthUserSession, WalletProductProps } from "@/types";
 import requestClient from "@/lib/requestClient";
-import ProductWallet from "./_components/productWallet";
+import ProductWalletTab from "./_components/ProductWalletTab";
+import LoanWalletTab from "./_components/LoanWalletTab";
 
 const Page = () => {
   const session = useSession();
@@ -99,13 +99,13 @@ const Page = () => {
         {/* panels */}
         <TabPanels className="mt-10 max-sm:mt-8">
           <TabPanel className="!p-0">
-            <ProductWallet 
+            <ProductWalletTab 
             transactions={walletStats}
             setPageCount={setPageCount}
             />
           </TabPanel>
           <TabPanel className=" !p-0">
-            <LoanWallets 
+            <LoanWalletTab
             data={loanWallet}
             transactions={walletStats}
             filterDate={selectedTimeLine}

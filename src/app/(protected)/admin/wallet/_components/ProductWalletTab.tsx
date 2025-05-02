@@ -20,7 +20,7 @@ interface Props {
   transactions: WalletProductProps;
   setPageCount: Dispatch<SetStateAction<number>>;
 }
-const ProductWallet = ({ transactions, setPageCount }: Props) => {
+const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 c">
@@ -120,4 +120,4 @@ const ProductWallet = ({ transactions, setPageCount }: Props) => {
   );
 };
 
-export default ProductWallet;
+export default ProductWalletTab;

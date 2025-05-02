@@ -19,7 +19,7 @@ import { useDebouncedValue } from "@/utils/debounce";
 import WalletOverview from "./WalletOverview";
 import TransactionTab from "./TransactionTab";
 
-const LoanWallets = ({ filterDate, data, transactions }: { filterDate: string, data: LoanWalletProps, transactions: WalletProductProps }) => {
+const LoanWalletTab = ({ filterDate, data, transactions }: { filterDate: string, data: LoanWalletProps, transactions: WalletProductProps }) => {
 
   const [overViewData, setOverViewData] = useState<{
     totalLenders: string;
@@ -130,4 +130,4 @@ const LoanWallets = ({ filterDate, data, transactions }: { filterDate: string, d
   );
 };
 
-export default LoanWallets;
+export default LoanWalletTab;
