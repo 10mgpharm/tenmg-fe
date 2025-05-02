@@ -14,18 +14,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import {
-  ColumnOrderState,
-  RowSelectionState,
-  SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import TransactionDetails from "./TransactionDetail";
 import InitiatePayout from "./InitiatePayout";
-import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
 import { Payouts } from "@/types";
 import { Completed_ColumnFN } from "./columns/completed-payout_column";
@@ -62,11 +58,7 @@ const TransactionTab = ({
   isLoading?: boolean;
   emptyStateHeader: string;
 }) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [userId, setUserId] = useState("");
+ 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenPayout,
@@ -87,17 +79,7 @@ const TransactionTab = ({
   const table = useReactTable({
     data: memoizedData,
     columns: getSelectColumn(),
-    // onSortingChange: setSorting,
-    state: {
-      // sorting,
-      // columnVisibility,
-      // columnOrder,
-      // rowSelection,
-    },
-    // enableRowSelection: true,
-    // onRowSelectionChange: setRowSelection,
-    // onColumnVisibilityChange: setColumnVisibility,
-    // onColumnOrderChange: setColumnOrder,
+    state: {},
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
