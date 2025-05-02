@@ -86,7 +86,7 @@ const DataTable = <T extends object>({
       {data?.length === 0 ? (
         <EmptyOrder
           heading={`No Wallet Yet`}
-          content={`You currently have no wallet. All wallets will appear here.`}
+          content={`You currently have no transactions. All transactions will appear here.`}
         />
       ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>

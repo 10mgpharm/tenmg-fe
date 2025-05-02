@@ -32,7 +32,9 @@ interface SelectOption {
   value: number;
 }
 
-const AddAccount = ({ isOpen, onClose, endpoint }: { isOpen: boolean, onClose: () => void; endpoint: string }) => {
+const AddAccount = ({ isOpen, onClose, endpoint, info }: { isOpen: boolean, onClose: () => void; endpoint: string, info?: any }) => {
+
+  // console.log("info", info)
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
@@ -47,15 +49,16 @@ const AddAccount = ({ isOpen, onClose, endpoint }: { isOpen: boolean, onClose: (
     setValue,
     trigger,
     getValues,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<IFormInput>({
     mode: "onChange",
     defaultValues: {
-      bankCode: "",
-      bankName: "",
-      accountName: "",
-      accountNumber: "",
+      bankCode: info?.bankCode ?? "",
+      bankName: info?.bankName ?? "",
+      accountName: info?.accountName ?? "",
+      accountNumber: info?.accountNumber ?? "",
     }
   });
 
@@ -88,6 +91,17 @@ const AddAccount = ({ isOpen, onClose, endpoint }: { isOpen: boolean, onClose: (
     fetchingBankList();
   }, [token]);
 
+
+  useEffect(() => {
+    if (info) {
+      reset({
+        bankCode: info.bankCode ?? '',
+        bankName: info.bankName ?? '',
+        accountName: info.accountName ?? '',
+        accountNumber: info.accountNumber ?? '',
+      });
+    }
+  }, [info, reset]);
   // const verifyingBankAccount = async () => {
   //   const accountNumber = getValues("accountNumber");
   //   const bankCode = getValues("bankCode");

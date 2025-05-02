@@ -69,7 +69,7 @@ const LoanWallet = () => {
         );
         if (response.status === 200) {
           // console.log(response?.data?.data);
-          console.log(response?.data);
+          // console.log(response?.data);
           setStats(response?.data);
           setLoading(false);
         }
@@ -103,7 +103,8 @@ const LoanWallet = () => {
     token && fetchTransactions()
   }, [token])
 
-  const [showBalance, setShowBalance] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
+  const [accountInfo, setAccountInfo] = useState(null);
 
   return (
     <div>
@@ -128,17 +129,10 @@ const LoanWallet = () => {
             toColor="to-[#DC6803]"
             image={orderPattern}
             func_btn="Withdraw Funds"
-            func={() => setOpenPayout(true)}
+            func={onOpenWithdraw}
           />
         </div>
-        {/* <OverviewCard
-          title="Total Payout"
-          value="₦50,000"
-          fromColor="from-[#E31B54]"
-          toColor="to-[#E31B54]"
-          image={productPattern}
-        /> */}
-        <AccoundDetailsCard showBalance={showBalance} />
+        <AccoundDetailsCard showBalance={showBalance} setAccountInfo={setAccountInfo} />
       </div>
 
       <div className="flex items-center justify-between my-5">
@@ -171,21 +165,20 @@ const LoanWallet = () => {
         />
       )}
 
-      {openPayout && (
+      {/* {openPayout && (
         <InitiatePayout
           isOpen={openPayout}
           onClose={() => setOpenPayout(false)}
+          accountInfo={accountInfo}
         />
-      )}
+      )} */}
 
-      {/* <WithdrawFunds
+      <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
-        wallet={wallet}
-        setAmount={setAmount}
-        onSuccess={onOpenSuccess}
-        setIsWithdraw={setIsWithdraw}
-      /> */}
+        otpOpen={onOpenOTP}
+        bankDetails={accountInfo}
+      />
 
       <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
     </div>

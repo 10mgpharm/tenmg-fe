@@ -2,7 +2,7 @@ import AddAccount from '@/app/(protected)/suppliers/wallet/_components/AddAccoun
 import { BankInfo } from '@/app/(protected)/suppliers/wallet/page';
 import requestClient from '@/lib/requestClient';
 import { NextAuthUserSession } from '@/types';
-import { useDisclosure } from '@chakra-ui/react';
+import { Button, useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react'
 
@@ -13,7 +13,7 @@ interface WalletProps {
   bankAccount: BankInfo;
 }
 
-export default function AccoundDetailsCard({ showBalance }: { showBalance?: boolean }) {
+export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { showBalance?: boolean, setAccountInfo?: (accountInfo: BankInfo) => void }) {
 
   // const hasAccountNumber = false;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,7 +25,7 @@ export default function AccoundDetailsCard({ showBalance }: { showBalance?: bool
   const [hasAccountNumber, sethasAccountNumber] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
+  // console.log("accountDetails", accountDetails);
 
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
@@ -33,8 +33,9 @@ export default function AccoundDetailsCard({ showBalance }: { showBalance?: bool
       const response = await requestClient({ token }).get(`/vendor/wallet/bank-account`);
       if (response.status === 200) {
         setAccountDetails(response?.data?.data);
+        setAccountInfo && setAccountInfo(response?.data?.data);
         sethasAccountNumber(response?.data?.data?.accountNumber ? true : false);
-        console.log(response?.data?.data);
+        // console.log(response?.data?.data);
       }
     } catch (error) {
       console.error(error);
@@ -54,26 +55,31 @@ export default function AccoundDetailsCard({ showBalance }: { showBalance?: bool
       {hasAccountNumber ? (
         <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
           <div className="flex items-center justify-between">
-            <div className="p-1 rounded-full bg-white">
+            <div className="p-2 rounded-full bg-white">
               <p className="text-gray-600 text-sm font-semibold">
                 {/* truncates the text if it is longer than 10 letters */}
-                {accountDetails?.accountName?.length > 10
-                  ? `${accountDetails?.accountName.slice(0, 10)}...`
-                  : accountDetails?.accountName}
+                {accountDetails?.accountName}
               </p>
             </div>
-            <div className="p-1 rounded-full bg-white">
-              <p className="text-gray-600 text-sm font-semibold">{accountDetails?.bankName}</p>
+            <div className="p-2 rounded-full bg-white">
+              <p className="text-gray-600 text-sm font-semibold">{accountDetails?.bankName?.length > 6 ? `${accountDetails?.bankName.slice(0, 10)}...` : accountDetails?.bankName}</p>
             </div>
           </div>
-          <div className="text-gray-100 mt-8">
-            <p className="text-sm mb-2">Payout Account</p>
-            <h2 className="text-xl font-semibold">
-              {showBalance ?
-                `${'*'.repeat(7)}${accountDetails?.accountNumber.slice(-3)}`
-                : accountDetails?.accountNumber}
+          <div className='flex items-end justify-between'>
+            <div className="text-gray-100 mt-8">
+              <p className="text-sm mb-2">Payout Account</p>
+              <h2 className="text-xl font-semibold">
+                {showBalance ?
+                  `${'*'.repeat(7)}${accountDetails?.accountNumber.slice(-3)}`
+                  : accountDetails?.accountNumber}
 
-            </h2>
+              </h2>
+            </div>
+            {/* <div className="flex justify-between mt-5"> */}
+            <Button size={"xs"} className="px-2 py-1" style={{ backgroundColor: "#000000cf" }}
+              onClick={onOpen}
+            >Edit Account</Button>
+            {/* </div> */}
           </div>
         </div>
       ) : (
@@ -97,6 +103,7 @@ export default function AccoundDetailsCard({ showBalance }: { showBalance?: bool
         isOpen={isOpen}
         onClose={onClose}
         // banks={[]}   
+        info={accountDetails}
         endpoint={"vendor/wallet/add-bank-account"}
       />
     </>

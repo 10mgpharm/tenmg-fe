@@ -18,6 +18,7 @@ import ExploreData from '../_components/ExploreData';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import { NextAuthUserSession, ProductDataProps } from '@/types';
 import productImage from '../../../../../../public/assets/images/product.svg'
+import RatingComponent from '@/app/(protected)/storefront/_components/RatingComponent';
 
 const ProductDetail = ({ params }: { params: { id: string } }) => {
     const router = useRouter();
@@ -133,6 +134,15 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                                 ${products?.variation?.strengthValue}${products?.measurement.name ?? ""}
                                 - ${products?.presentation?.name}`}
                                 </h2>
+                                <div className='my-2'>
+                                    <RatingComponent
+                                        rating={products?.rating ?? 0}
+                                        // rating={0}
+                                        handleRating={() => { }}
+                                        readonly={true}
+                                    />
+                                </div>
+
                                 <p className='max-w-sm text-gray-500 text-sm'>{products?.description}</p>
                             </div>
                             <div className="">
