@@ -34,7 +34,7 @@ export const OverviewCard = ({
             {value}
           </p>
           {(func && func_btn) && <div className="absolute top-[-15px] right-0">
-            <Button size={"xs"} className="absolute top-6 right-3 z-20 " disabled={(func && func_btn) && (parseInt(value) <= 0 || value === "******")} style={{ backgroundColor: "#000000cf" }} onClick={func}>Withdraw Funds</Button>
+            <Button size={"xs"} className="absolute top-6 right-3 z-20 " disabled={(func && func_btn) && (parseInt(value) <= 0)} style={{ backgroundColor: "#000000cf" }} onClick={func}>Withdraw Funds</Button>
           </div>}
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { NextAuthUserSession } from "@/types";
 import {
   Drawer,
   DrawerBody,
@@ -15,15 +16,25 @@ import {
 } from "@chakra-ui/react";
 
 import shape from "@public/assets/images/Rectangle 43.svg";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 const InitiatePayout = ({
   isOpen,
   onClose,
+  accountInfo
 }: {
   isOpen: boolean;
   onClose: () => void;
+  accountInfo?: any;
 }) => {
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  // const token = sessionData?.user?.token;
+  // console.log("accountInfo", accountInfo);
+
+
   const handleAction = (actionType: "Discard" | "Pay") => {
     if (actionType === "Discard") {
       // write action fn
