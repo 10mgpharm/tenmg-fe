@@ -27,7 +27,7 @@ export function Awaiting_column(
       cell: (info) => {
         return (
           <div className="pl-6">
-            <p>{info?.row?.original?.businessId?.contactPerson}</p>
+            <p>{info?.row?.original?.customer?.name}</p>
           </div>
         );
       },

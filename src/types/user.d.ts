@@ -391,6 +391,7 @@ export interface ProductDataProps {
   medicationType: MeasurementType;
   package: MeasurementType;
   presentation: MeasurementType;
+  rating: any|null;
 }
 export interface ProductResponseData {
   data: ProductDataProps[];

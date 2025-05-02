@@ -101,6 +101,8 @@ const ProductWallet = ({ transactions, setPageCount }: Props) => {
               type="awaiting"
               setPageCount={setPageCount}
               data={transactions?.payouts}
+              hasPagination={false}
+              emptyStateHeader="No Payouts"
             />
           </TabPanel>
           <TabPanel px={0}>
@@ -108,6 +110,8 @@ const ProductWallet = ({ transactions, setPageCount }: Props) => {
               type="transaction"
               setPageCount={setPageCount}
               data={transactions?.transactions}
+              hasPagination={false}
+              emptyStateHeader={"No Transactions"}
             />
           </TabPanel>
         </TabPanels>

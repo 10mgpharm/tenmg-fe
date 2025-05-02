@@ -33,8 +33,10 @@ interface SelectOption {
 }
 
 const AddAccount = (
-  { isOpen, onClose, endpoint, fetchingWallet }: 
-  { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void; }) => {
+  { isOpen, onClose, endpoint, fetchingWallet, info }:
+    { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, info?: any }) => {
+
+  // console.log("info", info)
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
@@ -49,15 +51,16 @@ const AddAccount = (
     setValue,
     trigger,
     getValues,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<IFormInput>({
     mode: "onChange",
     defaultValues: {
-      bankCode: "",
-      bankName: "",
-      accountName: "",
-      accountNumber: "",
+      bankCode: info?.bankCode ?? "",
+      bankName: info?.bankName ?? "",
+      accountName: info?.accountName ?? "",
+      accountNumber: info?.accountNumber ?? "",
     }
   });
 
@@ -90,6 +93,18 @@ const AddAccount = (
     fetchingBankList();
   }, [token]);
 
+
+  useEffect(() => {
+    if (info) {
+      reset({
+        bankCode: info.bankCode ?? '',
+        bankName: info.bankName ?? '',
+        accountName: info.accountName ?? '',
+        accountNumber: info.accountNumber ?? '',
+      });
+      setValue("bankName", info.bankName ?? "")
+    }
+  }, [info, reset, setValue]);
   // const verifyingBankAccount = async () => {
   //   const accountNumber = getValues("accountNumber");
   //   const bankCode = getValues("bankCode");
@@ -117,11 +132,17 @@ const AddAccount = (
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
-      const response = await requestClient({ token: token }).post(
-        endpoint,
-        data
-      )
-      if(response.status === 200){
+      const response =
+        info ?
+          await requestClient({ token: token }).patch(
+            `${endpoint}/${info.id}`,
+            data
+          ) :
+          await requestClient({ token: token }).post(
+            endpoint,
+            data
+          )
+      if (response.status === 200) {
         fetchingWallet();
         setIsLoading(false);
         onClose();
@@ -256,7 +277,7 @@ const AddAccount = (
               )}
             </FormControl>
             <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
-              Add Account
+              {info ? "Edit Account" : "Add Account"}
             </Button>
           </form>
         </ModalBody>

@@ -107,7 +107,7 @@ const LoanManagement = () => {
     async (id: string) => {
       try {
         const response = await requestClient({ token: token }).get(
-          `/client/repayment/test-repayment-mail/${id}`
+          `/vendor/repayment/test-repayment-mail/${id}`
         );
         if (response.status === 200) {
           toast.success("Repayment link sent successfully");

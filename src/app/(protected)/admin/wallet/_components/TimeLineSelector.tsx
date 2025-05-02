@@ -4,6 +4,7 @@ import React from "react";
 
 const TimeLineSelector = ({ selectedTimeLine, setSelectedTimeLine }) => {
   const timeLines = [
+    { id: 0, timeline: "All time" },
     { id: 1, timeline: "12 months" },
     { id: 2, timeline: "30 days" },
     { id: 3, timeline: "7 days" },
@@ -12,11 +13,13 @@ const TimeLineSelector = ({ selectedTimeLine, setSelectedTimeLine }) => {
 
   return (
     <>
-      <div className="hidden max-md:block">
+      <div className="">
         <Select
           placeholder="Select date"
           className="w-[200px]"
           onChange={(e) => setSelectedTimeLine(e.target.value)}
+          defaultValue={"All time"}
+          value={selectedTimeLine}
         >
           {timeLines.map((i) => (
             <option value={i.timeline} key={i.id}>
@@ -25,27 +28,6 @@ const TimeLineSelector = ({ selectedTimeLine, setSelectedTimeLine }) => {
           ))}
         </Select>
       </div>
-
-      <Flex
-        className="border rounded-md w-fit "
-        display={["none", "none", "flex"]}
-      >
-        {timeLines?.map((item) => (
-          <Text
-            onClick={() => setSelectedTimeLine(item.timeline)}
-            key={item.id}
-            p={3}
-            cursor={"pointer"}
-            className={classNames(
-              selectedTimeLine === item.timeline
-                ? "bg-gray-200 text-gray-900 text-[15px]  "
-                : "white text-gray-500  text-[15px]   "
-            )}
-          >
-            {item.timeline}
-          </Text>
-        ))}
-      </Flex>
     </>
   );
 };

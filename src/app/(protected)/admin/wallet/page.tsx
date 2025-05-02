@@ -10,7 +10,6 @@ import requestClient from "@/lib/requestClient";
 import ProductWallet from "./_components/productWallet";
 
 const Page = () => {
-  
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
@@ -52,7 +51,7 @@ const Page = () => {
   }, [token]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchingWallet();
     fetchingLoanWallet();
   }, [token]);
@@ -61,7 +60,11 @@ const Page = () => {
 
   return (
     <div className="px-6 py-8 md:p-8 ">
-      <Tabs variant={"unstyled"} className="w-full">
+      <Tabs
+        variant={"unstyled"}
+        className="w-full"
+        onChange={() => setSelectedTimeLine("All time")}
+      >
         {/* Tabs */}
         <div className="flex items-center justify-between max-sm:flex-col max-sm:items-start max-sm:gap-4">
           <TabList className="flex items-center gap-4">

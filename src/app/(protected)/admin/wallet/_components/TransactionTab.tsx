@@ -25,11 +25,11 @@ import {
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import TransactionDetails from "./TransactionDetail";
 import InitiatePayout from "./InitiatePayout";
-import { Awaiting_columnFn } from "./columns/awaitting_payout_column";
-import { Completed_ColumnFN } from "./columns/completed-payout_column";
 import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
 import { Payouts } from "@/types";
+import { Completed_ColumnFN } from "./columns/completed-payout_column";
+import { Awaiting_columnFn } from "./columns/payout_column";
 
 const TransactionTab = ({
   data,
@@ -39,6 +39,7 @@ const TransactionTab = ({
   metaData,
   setPageCount,
   isLoading = false,
+  emptyStateHeader,
 }: {
   data: Payouts;
   type: string;
@@ -59,6 +60,7 @@ const TransactionTab = ({
   };
   setPageCount?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
+  emptyStateHeader: string;
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -104,8 +106,8 @@ const TransactionTab = ({
     <div>
       {data?.data?.length === 0 ? (
         <EmptyOrder
-          heading={`No Wallet Yet`}
-          content={`You currently have no wallet. All wallets will appear here.`}
+          heading={emptyStateHeader}
+          content={`All data will appear here.`}
         />
       ) : data?.data?.length > 0 ? (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -127,18 +129,19 @@ const TransactionTab = ({
               ))}
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {memoizedData?.length > 0 && table?.getRowModel()?.rows?.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="6px">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
+              {memoizedData?.length > 0 &&
+                table?.getRowModel()?.rows?.map((row) => (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells()?.map((cell) => (
+                      <Td key={cell.id} px="6px">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </Td>
+                    ))}
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
 

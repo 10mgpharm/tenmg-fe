@@ -107,6 +107,8 @@ const LoanWallets = ({ filterDate, data, transactions }: { filterDate: string, d
               type="awaiting"
               setPageCount={setPageCount}
               data={transactions?.payouts}
+              hasPagination={false}
+              emptyStateHeader="No Payouts"
             />
           </TabPanel>
           <TabPanel px={0}>
@@ -114,6 +116,8 @@ const LoanWallets = ({ filterDate, data, transactions }: { filterDate: string, d
               type="transaction"
               setPageCount={setPageCount}
               data={transactions?.transactions}
+              hasPagination={false}
+              emptyStateHeader="No Transactions"
             />
           </TabPanel>
         </TabPanels>
