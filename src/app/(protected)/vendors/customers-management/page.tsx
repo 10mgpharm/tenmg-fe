@@ -317,7 +317,7 @@ const CustomerManagement = () => {
           </TableContainer>
         ) : (
           <EmptyResult
-            heading="Nothing to show here yet"
+            heading="Nothing to show here"
             content="Record Not Found!
             No customer found for your search criteria."
           />

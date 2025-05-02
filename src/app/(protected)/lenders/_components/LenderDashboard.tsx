@@ -36,7 +36,7 @@ import DepositFunds from "./drawers/DepositFunds";
 import WithdrawFunds from "./drawers/WithdrawFunds";
 import GenerateStatement from "./drawers/GenerateStatement";
 import requestClient from "@/lib/requestClient";
-import { formatAmountString } from "@/utils";
+import { formatAmountString, handleServerErrorMessage } from "@/utils";
 import NoRequest from "@public/assets/images/no_request.png";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -192,13 +192,9 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         if (response.status === 200) {
           toast.success("Loan application approved successfully");
           fetchLenderData();
-        } else {
-          toast.error("Error approving loan application");
         }
       } catch (error: any) {
-        toast.error(
-          error?.response?.data?.message || "Error approving loan application"
-        );
+        toast.error(handleServerErrorMessage(error));
         console.error(error);
       }
     },
