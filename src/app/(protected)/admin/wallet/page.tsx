@@ -4,7 +4,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
-import { LoanWalletProps, NextAuthUserSession, WalletProductProps } from "@/types";
+import { LoanTransactionProps, LoanWalletProps, NextAuthUserSession, WalletProductProps } from "@/types";
 import requestClient from "@/lib/requestClient";
 import ProductWalletTab from "./_components/ProductWalletTab";
 import LoanWalletTab from "./_components/LoanWalletTab";
@@ -18,6 +18,7 @@ const Page = () => {
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [walletStats, setWalletStats] = useState<WalletProductProps>();
   const [loanWallet, setLoanWallet] = useState<LoanWalletProps>();
+  const [loanTransaction, setLoanTransaction] = useState<LoanTransactionProps[]>([]);
 
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
@@ -50,13 +51,28 @@ const Page = () => {
     setLoading(false);
   }, [token]);
 
+  const fetchingLoanTransactions = useCallback(async () => {
+    setLoading(true);
+    let query = `/admin/wallet/transactions?page=${pageCount}`;
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setLoanTransaction(response.data?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, [token, pageCount]);
+
   useEffect(() => {
     if (!token) return;
     fetchingWallet();
     fetchingLoanWallet();
+    fetchingLoanTransactions();
   }, [token]);
 
-  console.log(loanWallet);
+  console.log(loanTransaction);
 
   return (
     <div className="px-6 py-8 md:p-8 ">
@@ -107,7 +123,7 @@ const Page = () => {
           <TabPanel className=" !p-0">
             <LoanWalletTab
             data={loanWallet}
-            transactions={walletStats}
+            transactions={loanTransaction}
             filterDate={selectedTimeLine}
             />
           </TabPanel>

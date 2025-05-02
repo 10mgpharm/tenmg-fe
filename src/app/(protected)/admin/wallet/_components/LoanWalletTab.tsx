@@ -1,4 +1,3 @@
-import React, { useCallback, useState } from "react";
 import {
   HStack,
   Text,
@@ -12,24 +11,15 @@ import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import Link from "next/link";
-import requestClient from "@/lib/requestClient";
-import { useSession } from "next-auth/react";
-import { LoanWalletProps, NextAuthUserSession, WalletProductProps } from "@/types";
-import { useDebouncedValue } from "@/utils/debounce";
+import { LoanTransactionProps, LoanWalletProps, WalletProductProps } from "@/types";
 import WalletOverview from "./WalletOverview";
 import TransactionTab from "./TransactionTab";
+import LoanTable from "./LoanTable";
 
-const LoanWalletTab = ({ filterDate, data, transactions }: { filterDate: string, data: LoanWalletProps, transactions: WalletProductProps }) => {
-
-  const [overViewData, setOverViewData] = useState<{
-    totalLenders: string;
-    vendorPayouts: string;
-    walletBalance: string;
-  }>();
- 
-  const [pageCount, setPageCount] = useState(1);
-
-  console.log(overViewData);
+const LoanWalletTab = (
+  { filterDate, data, transactions }: 
+  { filterDate: string, data: LoanWalletProps, transactions: LoanTransactionProps[] }
+) => {
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 ">
@@ -75,7 +65,7 @@ const LoanWalletTab = ({ filterDate, data, transactions }: { filterDate: string,
         </Link>
       </HStack>
 
-      <Tabs variant={"unstyled"}>
+      {/* <Tabs variant={"unstyled"}>
         <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
           <Tab
             _selected={{ color: "white", bg: "#1A70B8" }}
@@ -105,7 +95,7 @@ const LoanWalletTab = ({ filterDate, data, transactions }: { filterDate: string,
           <TabPanel px={0}>
             <TransactionTab
               type="awaiting"
-              setPageCount={setPageCount}
+              // setPageCount={setPageCount}
               data={transactions?.payouts}
               hasPagination={false}
               emptyStateHeader="No Payouts"
@@ -114,17 +104,20 @@ const LoanWalletTab = ({ filterDate, data, transactions }: { filterDate: string,
           <TabPanel px={0}>
             <TransactionTab
               type="transaction"
-              setPageCount={setPageCount}
+              // setPageCount={setPageCount}
               data={transactions?.transactions}
               hasPagination={false}
               emptyStateHeader="No Transactions"
             />
           </TabPanel>
         </TabPanels>
-      </Tabs>
+      </Tabs> */}
 
       <div className="flex flex-col gap-3">
         {/* TODO: adeola said there is no need for status, but include transaction type */}
+        <LoanTable 
+        data={transactions}
+        />
       </div>
     </div>
   );

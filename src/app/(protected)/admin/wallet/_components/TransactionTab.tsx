@@ -87,17 +87,17 @@ const TransactionTab = ({
   const table = useReactTable({
     data: memoizedData,
     columns: getSelectColumn(),
-    onSortingChange: setSorting,
+    // onSortingChange: setSorting,
     state: {
-      sorting,
-      columnVisibility,
-      columnOrder,
-      rowSelection,
+      // sorting,
+      // columnVisibility,
+      // columnOrder,
+      // rowSelection,
     },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
+    // enableRowSelection: true,
+    // onRowSelectionChange: setRowSelection,
+    // onColumnVisibilityChange: setColumnVisibility,
+    // onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -113,10 +113,10 @@ const TransactionTab = ({
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
             <Thead bg={"#F2F4F7"}>
-              {table?.getHeaderGroups()?.map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers?.map((header) => (
-                    <Th textTransform={"initial"} px="6px" key={header.id}>
+              {table?.getHeaderGroups()?.map((headerGroup, idx) => (
+                <Tr key={idx}>
+                  {headerGroup.headers?.map((header, index) => (
+                    <Th textTransform={"initial"} px="6px" key={index}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -130,10 +130,10 @@ const TransactionTab = ({
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
               {memoizedData?.length > 0 &&
-                table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="6px">
+                table?.getRowModel()?.rows?.map((row, i) => (
+                  <Tr key={i}>
+                    {row.getVisibleCells()?.map((cell, ix) => (
+                      <Td key={ix} px="6px">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

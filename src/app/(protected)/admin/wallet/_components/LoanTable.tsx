@@ -1,68 +1,32 @@
-"use client";
-
+import { useMemo, useState } from "react";
+import { LoanTransactionProps } from "@/types";
+import { loanColumnFn } from "./columns/loanColumn";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import {
-  Flex,
-  Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-} from "@chakra-ui/react";
-import {
-  ColumnOrderState,
-  RowSelectionState,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useState } from "react";
-// import Pagination from "../../products/_components/Pagination";
-// import { WalletColumn_FN } from "./columns/WalletColumn";
-// import TransactionDetails from "../../wallet/_components/TransactionDetail";
-import { WalletColumn_FN } from "../../users/_components/columns/WalletColumn";
-import Pagination from "../../products/_components/Pagination";
+import { Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
+import {  flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import TransactionDetails from "./TransactionDetail";
 
-const AdminWalletTable = ({
-  data,
-  hasPagination = false,
-  metaData,
-  setPageCount,
-  isLoading = false,
-}: {
-  data: any;
-  hasPagination?: boolean;
-  metaData?: {
-    links: any;
-    prevPageUrl: string | null;
-    nextPageUrl: string | null;
-    currentPage: number;
-    firstPageUrl: any;
-    lastPageUrl: any;
-  };
-  setPageCount?: Dispatch<SetStateAction<number>>;
-  isLoading?: boolean;
-}) => {
+interface LoanTableProps {
+    data: LoanTransactionProps[];
+}
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const LoanTable = ({data}: LoanTableProps) => {
 
-  // table
-  const table = useReactTable({
-    data: data,
-    columns: WalletColumn_FN(onOpen),
-    state: {},
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  });
+    console.log(data)
+    const filterTransactions = data?.slice(0, 6);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
+    const memoizedData = useMemo(() => filterTransactions, [filterTransactions]);
 
-  return (
+    const table = useReactTable({
+        data: memoizedData,
+        columns: loanColumnFn(onOpen, setSelectedRow),
+        state: {},
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+    });
+
+    return (
     <div>
       {data?.length === 0 ? (
         <EmptyOrder
@@ -104,18 +68,22 @@ const AdminWalletTable = ({
             </Tbody>
           </Table>
 
-          {hasPagination && metaData && setPageCount && (
+          {/* {hasPagination && metaData && setPageCount && (
             <Pagination {...metaData} setPageCount={setPageCount} />
-          )}
+          )} */}
         </TableContainer>
       ): (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
         </Flex>
       )}
-      <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
+      <TransactionDetails 
+      data={selectedRow} 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      type="" 
+      />
     </div>
   );
 };
-
-export default AdminWalletTable;
+export default LoanTable;

@@ -323,4 +323,29 @@ export interface Link2 {
   active: boolean
 }
 
+export interface LoanTransactionDataProps {
+  data: LoanTransactionProps[]
+  links: any;
+  meta: any;
+  message: string;
+  status: string;
+}
+
+export interface LoanTransactionProps  {
+  id: number
+  business: BusinessProp
+  identifier: string
+  amount: string
+  type: string
+  transactionGroup: string
+  description: string
+  status: string
+  paymentMethod: any
+  reference: any
+  walletId: any
+  loanApplicationId: any
+  meta: string
+  createdAt: string
+  updatedAt: string
+}
   

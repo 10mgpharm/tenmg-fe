@@ -18,11 +18,13 @@ import Image from "next/image";
 const TransactionDetails = ({
   isOpen,
   onClose,
+  data,
   type,
 }: {
   isOpen: boolean;
   onClose: () => void;
   type: string;
+  data?: any;
 }) => {
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
