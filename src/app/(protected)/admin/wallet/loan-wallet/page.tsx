@@ -107,7 +107,7 @@ const LoanWallet = () => {
 
         <TabPanels>
           <TabPanel px={0}>
-            <WalletTable
+            {/* <WalletTable
               data={awaiting}
               type="awaiting"
               walletType="product_wallet"
@@ -115,10 +115,10 @@ const LoanWallet = () => {
               metaData={metaData}
               setPageCount={setPageCount}
               isLoading={false}
-            />
+            /> */}
           </TabPanel>
           <TabPanel px={0}>
-            <WalletTable
+            {/* <WalletTable
               data={completed}
               type="completed"
               walletType="product_wallet"
@@ -126,10 +126,10 @@ const LoanWallet = () => {
               metaData={metaData}
               setPageCount={setPageCount}
               isLoading={false}
-            />
+            /> */}
           </TabPanel>
           <TabPanel px={0}>
-            <WalletTable
+            {/* <WalletTable
               data={history}
               type="history"
               walletType="product_wallet"
@@ -137,7 +137,7 @@ const LoanWallet = () => {
               metaData={metaData}
               setPageCount={setPageCount}
               isLoading={false}
-            />
+            /> */}
           </TabPanel>
         </TabPanels>
       </Tabs>

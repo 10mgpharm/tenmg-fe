@@ -7,19 +7,18 @@ const columnHelper = createColumnHelper<any>();
 
 export function ColumnsLoanRepaymentFN() {
   return [
-    columnHelper.accessor("identifier", {
-      header: () => (
-        <div className="pl-6">
-          <p>Loan ID</p>
-        </div>
-      ),
-      cell: (info) => (
-        <div>
-          <p className="pl-6">{info.row.original?.loanId}</p>
-        </div>
-      ),
-    }),
     columnHelper.accessor("name", {
+      header: ({ column }) => <p className="pl-6"> S/N</p>,
+      cell: (info) => {
+        const serialNumber = info?.row?.index + 1;
+        return (
+          <div className="pl-6">
+            <p>{serialNumber}</p>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("loan.customer.name", {
       header: () => (
         <div>
           <p>Customer Name</p>
@@ -27,71 +26,69 @@ export function ColumnsLoanRepaymentFN() {
       ),
       cell: (info) => (
         <div>
-          <p className="font-bold">{info.row.original?.name} </p>
+          <p className="font-bold">{info.row.original?.loan.customer.name} </p>
         </div>
       ),
     }),
-    columnHelper.accessor("amount", {
+    columnHelper.accessor("loan.capitalAmount", {
       header: () => <p>Loan Amount</p>,
       cell: (info) => (
         <div>
-          <p>₦{info.row.original?.amount}</p>
+          <p className=" font-medium">
+            ₦{info.row.original?.loan.capitalAmount}
+          </p>
         </div>
       ),
     }),
-    columnHelper.accessor("repay", {
+    columnHelper.accessor("totalAmount", {
       header: () => <p>Repayment Amount</p>,
       cell: (info) => (
         <div>
-          <p className="pl-6">₦{info.row.original?.repay}</p>
+          <p className="pl-6 font-medium">₦{info.row.original?.totalAmount}</p>
         </div>
       ),
     }),
-    columnHelper.accessor("date", {
+    columnHelper.accessor("dueDate", {
       header: () => <p>Due Date</p>,
       cell: (info) => (
         <div>
-          <p>{convertDate(info.row.original?.date || null)}</p>
+          <p>{convertDate(info.row.original?.dueDate || null)}</p>
         </div>
       ),
     }),
     // Status
-    columnHelper.accessor("status", {
+    columnHelper.accessor("paymentStatus", {
       header: () => <p>Payment Status</p>,
       cell: (info) => (
         <div>
           <p
             className={classNames(
-              info?.row?.original?.status === "Completed"
+              info?.row?.original?.paymentStatus === "PAID"
                 ? "text-[#027A48] bg-[#ECFDF3]"
-                : info?.row?.original?.status === "Pending Payment"
-                ? "bg-[#FEF3F2] text-[#eaa640]"
-                : info?.row?.original?.status === "Payment Overdue"
-                ? "bg-[#FEF3F2] text-[#B42318]"
-                : "text-gray-500",
-              " max-w-min p-1 px-2 rounded-2xl text-xs font-medium items-center justify-center flex gap-1"
+                : "bg-[#FFFAEB] text-[#F79009]",
+              " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
             )}
           >
-            {" "}
-            <span className="rounded-full text-[1.2rem]">•</span>
-            {info.row.original?.status}
+            <span className="rounded-full text-[1.2rem]">•</span>{" "}
+            {info.row.original?.paymentStatus}
           </p>
         </div>
       ),
     }),
-    columnHelper.accessor("id", {
-      header: () => <p>Action</p>,
-      cell: (info) => {
-        return (
-          <div className="flex gap-4">
-            <Link 
-            href={`/vendors/loan-repayments/${info.row.original?.loanId}`} 
-            className="text-primary font-medium">
-              View
-            </Link>
-          </div>
-        );
-      },
-    }),
+    // columnHelper.accessor("id", {
+    //   header: () => <p>Action</p>,
+    //   cell: (info) => {
+    //     return (
+    //       <div className="flex gap-4">
+    //         <Link
+    //           href={`/vendors/loan-repayments/${info.row.original?.loanId}`}
+    //           className="text-primary font-medium"
+    //         >
+    //           View
+    //         </Link>
+    //       </div>
+    //     );
+    //   },
+    // }),
   ];
 }

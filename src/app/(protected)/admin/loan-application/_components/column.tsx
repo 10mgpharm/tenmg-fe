@@ -27,10 +27,13 @@ export function ColumsApplicationFN() {
         </div>
       ),
       cell: (info) => (
-        <div onClick={() => {}} className="flex flex-col gap-2 pl-4 justify-start">
+        <div
+          onClick={() => {}}
+          className="flex flex-col gap-2 pl-4 justify-start"
+        >
           <p className="text-gray-500">{info.row.original?.identifier}</p>
           <span className="text-gray-700 text-xs">
-            {convertDate(info.row.original?.updatedAt)}{" "}
+            {convertDate(info.row.original?.createdAt)}{" "}
           </span>
         </div>
       ),
@@ -69,7 +72,9 @@ export function ColumsApplicationFN() {
       cell: (info) => {
         return (
           <div className="pl-4">
-            <p className="font-medium flex justify-center">{info?.row?.original?.customer.score}</p>
+            <p className="font-medium flex justify-center">
+              {info?.row?.original?.customer.score}
+            </p>
           </div>
         );
       },

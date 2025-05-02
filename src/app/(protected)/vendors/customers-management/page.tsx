@@ -185,6 +185,7 @@ const CustomerManagement = () => {
    * Handle the filters
    */
   const applyFilters = (filters: IApplyFilters) => {
+    console.log(filters);
     setCreatedAtStart(filters.startDate || null);
     setCreatedAtEnd(filters.endDate || null);
     setStatus(filters.status || "");
@@ -215,11 +216,7 @@ const CustomerManagement = () => {
   const table = useReactTable({
     data: tableData ? tableData.data : [],
     columns: columns,
-    state: {
-      globalFilter,
-    },
     manualFiltering: true,
-    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
@@ -261,10 +258,12 @@ const CustomerManagement = () => {
             <Spinner size="xl" />
           </Flex>
         ) : tableData && tableData.data.length !== 0 ? (
-          <TableContainer border="1px solid #F9FAFB"
+          <TableContainer
+            border="1px solid #F9FAFB"
             borderRadius="10px"
             overflowX="auto"
-            w="100%">
+            w="100%"
+          >
             <Table variant="simple" size="sm">
               <Thead bg="blue.50">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -282,9 +281,9 @@ const CustomerManagement = () => {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </Th>
                     ))}
                   </Tr>
@@ -294,9 +293,12 @@ const CustomerManagement = () => {
                 {table.getRowModel().rows.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} px={{ base: "8px", md: "16px" }}
+                      <Td
+                        key={cell.id}
+                        px={{ base: "8px", md: "16px" }}
                         minW="120px"
-                        whiteSpace="nowrap">
+                        whiteSpace="nowrap"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -316,7 +318,8 @@ const CustomerManagement = () => {
         ) : (
           <EmptyResult
             heading="Nothing to show here yet"
-            content="You don’t have any customer yet. When you do, they’ll appear here."
+            content="Record Not Found!
+            No customer found for your search criteria."
           />
         )}
       </div>

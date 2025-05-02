@@ -129,7 +129,7 @@ const TopNavBar = ({
       case "LENDER":
         return (
           <Tag size="sm" variant="solid" bg="blue.50" color="blue.700">
-            {convertLetterCase(businessType)}1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+            {convertLetterCase(businessType)}1
           </Tag>
         );
       default:
@@ -141,46 +141,50 @@ const TopNavBar = ({
     }
   };
 
-const renderUserRole = (role?: string) => {
-  if (!role) return null;
+ const renderUserRole = (role?: string, entityType?: string) => {
+   if (!role || !entityType) return null;
 
-  const roleUpper = role.toUpperCase();
+   const entity = entityType.trim().toLowerCase();
+   const normalizedRole = role.trim().toLowerCase();
 
-  switch (roleUpper) {
-    case "ADMIN":
-      return (
-        <Tag size="sm" variant="solid" bg="blue.100" color="blue.700">
-          10mg {convertLetterCase(role)}
-        </Tag>
-      );
-    case "VENDOR":
-      return (
-        <Tag size="sm" variant="solid" bg="green.100" color="green.700">
-          {convertLetterCase(role)}
-        </Tag>
-      );
-    case "SUPPLIER":
-      return (
-        <Tag size="sm" variant="solid" bg="red.100" color="red.700">
-          {convertLetterCase(role)}
-        </Tag>
-      );
-    case "LENDER":
-      return (
-        <Tag size="sm" variant="solid" bg="purple.100" color="purple.700">
-          {convertLetterCase(role)}
-        </Tag>
-      );
-    default:
-      return (
-        <Tag size="sm" variant="solid" bg="gray.100" color="gray.600">
-          {convertLetterCase(role)}
-        </Tag>
-      );
-  }
-};
+   const capitalizeWords = (text: string) =>
+     text
+       .split(/[_\s]/)
+       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+       .join(" ");
 
+   let roleDisplay = "";
 
+   if (entity === "vendor") {
+     switch (normalizedRole) {
+       case "vendor":
+         roleDisplay = "Vendor Admin";
+         break;
+       case "supporter":
+         roleDisplay = "Vendor Support";
+         break;
+       case "operator":
+         roleDisplay = "Vendor Operator";
+         break;
+       default:
+         roleDisplay = `Vendor ${capitalizeWords(normalizedRole)}`;
+     }
+   } else if (entity === "supplier") {
+     roleDisplay = "Supplier";
+   } else if (entity === "lender") {
+     roleDisplay = "Lender";
+   } else if (entity === "admin") {
+     roleDisplay = `10mg ${capitalizeWords(normalizedRole)}`;
+   } else {
+     roleDisplay = capitalizeWords(role);
+   }
+
+   return (
+     <Tag size="sm" variant="solid" bg="green.100" color="green.700">
+       {roleDisplay}
+     </Tag>
+   );
+ };
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
@@ -251,7 +255,7 @@ const renderUserRole = (role?: string) => {
                     >
                       {data?.user.name}
                     </span>
-                    {renderUserRole(data?.user?.role)}
+                    {renderUserRole(data?.user?.role, data?.user?.entityType)}
                   </div>
                   <p className="text-gray-600 text-sm">
                     {data?.user?.businessName}

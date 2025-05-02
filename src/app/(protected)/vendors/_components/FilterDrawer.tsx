@@ -25,8 +25,6 @@ interface IFormInput {
   status?: string;
 }
 
-
-
 interface FilterOptions {
   option: string;
   value: string;
@@ -51,7 +49,7 @@ const FilterDrawer = ({
 }) => {
   const {
     handleSubmit,
-    formState: { },
+    formState: {},
     control,
     watch,
     setValue,
@@ -60,15 +58,12 @@ const FilterDrawer = ({
     mode: "onChange",
   });
 
-  //   {
-  //     "status": "",
-  //     "startDate": "2025-04-07T23:00:00.000Z",
-  //     "endDate": "2025-04-18T23:00:00.000Z"
-  // }
   const onSubmit = (data: IFormInput) => {
-    // console.log('data', data)
-    const refData = { ...data, startDate: formatDateRange(data.startDate, false), endDate: formatDateRange(data.endDate, true) };
-    // console.log('refData', refData)
+    const refData = {
+      ...data,
+      startDate: formatDateRange(data.startDate, false),
+      endDate: formatDateRange(data.endDate, true),
+    };
     applyFilters(refData);
     onClose();
   };

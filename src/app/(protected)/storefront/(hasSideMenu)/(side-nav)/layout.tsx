@@ -49,7 +49,6 @@ export default function VendorSettingsLayout({
     BusinessStatus.PENDING_VERIFICATION,
     BusinessStatus.PENDING_APPROVAL,
     BusinessStatus.REJECTED,
-    BusinessStatus.LICENSE_EXPIRED,
     BusinessStatus.SUSPENDED,
     BusinessStatus.BANNED,
   ].includes(businessStatus);

@@ -54,17 +54,24 @@ export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { sh
     <>
       {hasAccountNumber ? (
         <div className="flex-1 bg-[#20232D] p-5 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div className="p-2 rounded-full bg-white">
-              <p className="text-gray-600 text-sm font-semibold">
-                {/* truncates the text if it is longer than 10 letters */}
+          <div className="flex items-center justify-between gap-2 group">
+            {/* Account Name */}
+            <div className="p-2 rounded-full bg-white shadow-md transition-all duration-300 
+                  w-auto group-hover:w-full">
+              <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
                 {accountDetails?.accountName}
               </p>
             </div>
-            <div className="p-2 rounded-full bg-white">
-              <p className="text-gray-600 text-sm font-semibold">{accountDetails?.bankName?.length > 6 ? `${accountDetails?.bankName.slice(0, 10)}...` : accountDetails?.bankName}</p>
+
+            {/* Bank Name */}
+            <div className="p-2 rounded-full bg-white transition-all duration-300 
+                  w-auto group-hover:w-full overflow-hidden">
+              <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
+                {accountDetails?.bankName}
+              </p>
             </div>
           </div>
+
           <div className='flex items-end justify-between'>
             <div className="text-gray-100 mt-8">
               <p className="text-sm mb-2">Payout Account</p>
@@ -102,7 +109,7 @@ export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { sh
       <AddAccount
         isOpen={isOpen}
         onClose={onClose}
-        // banks={[]}   
+        fetchingWallet={fetchingWallet}
         info={accountDetails}
         endpoint={"vendor/wallet/add-bank-account"}
       />

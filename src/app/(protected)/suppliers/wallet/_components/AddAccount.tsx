@@ -32,7 +32,9 @@ interface SelectOption {
   value: number;
 }
 
-const AddAccount = ({ isOpen, onClose, endpoint, info }: { isOpen: boolean, onClose: () => void; endpoint: string, info?: any }) => {
+const AddAccount = (
+  { isOpen, onClose, endpoint, fetchingWallet, info }:
+    { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, info?: any }) => {
 
   // console.log("info", info)
 
@@ -100,8 +102,9 @@ const AddAccount = ({ isOpen, onClose, endpoint, info }: { isOpen: boolean, onCl
         accountName: info.accountName ?? '',
         accountNumber: info.accountNumber ?? '',
       });
+      setValue("bankName", info.bankName ?? "")
     }
-  }, [info, reset]);
+  }, [info, reset, setValue]);
   // const verifyingBankAccount = async () => {
   //   const accountNumber = getValues("accountNumber");
   //   const bankCode = getValues("bankCode");
@@ -129,11 +132,18 @@ const AddAccount = ({ isOpen, onClose, endpoint, info }: { isOpen: boolean, onCl
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
-      const response = await requestClient({ token: token }).post(
-        endpoint,
-        data
-      )
+      const response =
+        info ?
+          await requestClient({ token: token }).patch(
+            `${endpoint}/${info.id}`,
+            data
+          ) :
+          await requestClient({ token: token }).post(
+            endpoint,
+            data
+          )
       if (response.status === 200) {
+        fetchingWallet();
         setIsLoading(false);
         onClose();
       }
@@ -267,7 +277,7 @@ const AddAccount = ({ isOpen, onClose, endpoint, info }: { isOpen: boolean, onCl
               )}
             </FormControl>
             <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
-              Add Account
+              {info ? "Edit Account" : "Add Account"}
             </Button>
           </form>
         </ModalBody>

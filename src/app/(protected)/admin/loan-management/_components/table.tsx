@@ -209,11 +209,11 @@ export function ColumsLoanFN(
                 View
               </Link>
             </MenuItem>
-            {/* <MenuItem
+            <MenuItem
               onClick={() => sendRepaymentLink(info.row.original?.identifier)}
             >
               Send Repayment Link
-            </MenuItem> */}
+            </MenuItem>
           </MenuList>
         </Menu>
       ),
