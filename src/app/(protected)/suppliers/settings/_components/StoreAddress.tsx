@@ -15,7 +15,7 @@ export default function StoreAddress() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Shopping List</h1>
+      <h1 className="text-2xl font-bold mb-4">List</h1>
       <p className="text-gray-600 mb-6">List of items you plan to purchase.</p>
       <button
         onClick={() => router.push("/add-item")}
