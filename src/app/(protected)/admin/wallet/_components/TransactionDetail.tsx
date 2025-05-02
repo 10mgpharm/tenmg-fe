@@ -26,7 +26,8 @@ const TransactionDetails = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  userId: string;
+  userId?: string;
+  type?: string;
 }) => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
