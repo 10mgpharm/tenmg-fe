@@ -11,8 +11,7 @@ interface LoanTableProps {
 }
 
 const LoanTable = ({data}: LoanTableProps) => {
-
-    console.log(data)
+    
     const filterTransactions = data?.slice(0, 6);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();

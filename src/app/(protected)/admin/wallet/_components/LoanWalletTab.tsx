@@ -65,56 +65,7 @@ const LoanWalletTab = (
         </Link>
       </HStack>
 
-      {/* <Tabs variant={"unstyled"}>
-        <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
-          <Tab
-            _selected={{ color: "white", bg: "#1A70B8" }}
-            className="rounded-lg text-gray-700 bg-gray-100"
-          >
-            <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Awaiting Payout </Text>
-              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                {transactions?.payouts?.total}
-              </p>
-            </div>
-          </Tab>
-          <Tab
-            _selected={{ color: "white", bg: "#1A70B8" }}
-            className="rounded-lg text-gray-700 bg-gray-100"
-          >
-            <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Transaction History</Text>
-              <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                {transactions?.transactions?.total}
-              </p>
-            </div>
-          </Tab>
-        </TabList>
-
-        <TabPanels>
-          <TabPanel px={0}>
-            <TransactionTab
-              type="awaiting"
-              // setPageCount={setPageCount}
-              data={transactions?.payouts}
-              hasPagination={false}
-              emptyStateHeader="No Payouts"
-            />
-          </TabPanel>
-          <TabPanel px={0}>
-            <TransactionTab
-              type="transaction"
-              // setPageCount={setPageCount}
-              data={transactions?.transactions}
-              hasPagination={false}
-              emptyStateHeader="No Transactions"
-            />
-          </TabPanel>
-        </TabPanels>
-      </Tabs> */}
-
       <div className="flex flex-col gap-3">
-        {/* TODO: adeola said there is no need for status, but include transaction type */}
         <LoanTable 
         data={transactions}
         />
