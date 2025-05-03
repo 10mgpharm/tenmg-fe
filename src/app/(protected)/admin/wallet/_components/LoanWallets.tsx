@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import OverviewCard from "./OverviewCard";
 import {
   HStack,
   Text,
@@ -13,13 +12,14 @@ import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import Link from "next/link";
-import WalletTable from "./table";
 import { transactionData as txnData } from "@/data/mockdata";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import { cn } from "@/lib/utils";
+import WalletOverview from "./WalletOverview";
+import AdminWalletTable from "./WalletTable";
 
 const LoanWallets = ({ filterDate }: { filterDate: string }) => {
   const awaiting = txnData.filter((item) => item.type === "Awaiting");
@@ -87,26 +87,29 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 ">
-        <OverviewCard
+        <WalletOverview
           title="Total Amount from Lenders"
           value={`₦${overViewData?.totalLenders ?? "0.00"}`}
           fromColor="from-[#53389E]"
           toColor="to-[#7F56D9]"
           image={totalPattern}
+          hasPendingBalance={false}
         />
-        <OverviewCard
+        <WalletOverview
           title=" Total Payout for Vendors"
           value={`₦${overViewData?.vendorPayouts ?? "0.00"}`}
           fromColor="from-[#DC6803]"
           toColor="to-[#DC6803]"
           image={orderPattern}
+          hasPendingBalance={false}
         />
-        <OverviewCard
+        <WalletOverview
           title="Wallet Balance"
           value={`₦${overViewData?.walletBalance ?? "0.00"}`}
           fromColor="from-[#E31B54]"
           toColor="to-[#E31B54]"
           image={productPattern}
+          hasPendingBalance={false}
         />
       </div>
 
@@ -158,20 +161,20 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
 
           <TabPanels>
             <TabPanel px={0}>
-              <WalletTable
+              <AdminWalletTable
                 data={null}
-                type="payout"
-                walletType="loan_wallet"
-                emptyStateHeader="No payout yet"
+                // type="payout"
+                // walletType="loan_wallet"
+                // emptyStateHeader="No payout yet"
               />
             </TabPanel>
             <TabPanel px={0}>
-              <WalletTable
+              <AdminWalletTable
                 data={transactionData?.data}
-                type="history"
-                walletType="loan_wallet"
+                // type="history"
+                // walletType="loan_wallet"
                 isLoading={isLoadingTable}
-                emptyStateHeader="No transaction history yet"
+                // emptyStateHeader="No transaction history yet"
                 metaData={transactionData?.data?.meta}
               />
             </TabPanel>

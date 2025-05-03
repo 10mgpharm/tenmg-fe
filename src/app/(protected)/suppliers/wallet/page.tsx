@@ -144,10 +144,12 @@ const Wallet = () => {
             <p className="font-semibold text-2xl text-gray-700 mt-3">
               {showBalance ? `₦${formattedBalance}` : "******"}
             </p>
-            <div className="mt-8 mb-2">
-              <div className="bg-black bg-opacity-30 rounded-md p-1 w-4/5 pl-2.5">
-                <p className="text-white font-medium text-xs">Pending Balance</p>
-                <p className="text-white text-xs font-medium">₦{walletBalance?.previousBalance}</p>
+            <div className="mt-2 mb-6">
+              <div className="bg-green-50 rounded-md p-1 w-100 pl-2.5">
+                <p className="text-green-600 font-medium text-xs">Pending Balance</p>
+                <p className="text-green-600 text-xs font-medium">
+                  {showBalance? `₦${walletBalance?.currentBalance}` : "******"}
+                </p>
               </div>
             </div>
             {walletBalance?.bankAccount && (

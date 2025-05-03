@@ -14,23 +14,20 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import {
-  ColumnOrderState,
-  RowSelectionState,
-  SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import TransactionDetails from "./TransactionDetail";
 import InitiatePayout from "./InitiatePayout";
-import { History_ColumnFN } from "./columns/history_column";
 import Pagination from "../../products/_components/Pagination";
-import { TransactionDataProps, TransactionProps } from "@/types";
-import { Payout_columnFn } from "./columns/payout_column";
+import { Payouts } from "@/types";
+import { Completed_ColumnFN } from "./columns/completed-payout_column";
+import { Awaiting_columnFn } from "./columns/payout_column";
 
-const WalletTable = ({
+const TransactionTab = ({
   data,
   type,
   walletType,
@@ -40,8 +37,8 @@ const WalletTable = ({
   isLoading = false,
   emptyStateHeader,
 }: {
-  data: TransactionDataProps;
-  type: "history" | "payout";
+  data: Payouts;
+  type: string;
   walletType?: "product_wallet" | "loan_wallet";
   hasPagination?: boolean;
   metaData?: {
@@ -51,16 +48,17 @@ const WalletTable = ({
     currentPage: number;
     firstPageUrl: any;
     lastPageUrl: any;
+    total: number;
+    perPage: number;
+    from: number;
+    to: number;
+    lastPage: number;
   };
   setPageCount?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
   emptyStateHeader: string;
 }) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [userId, setUserId] = useState("");
+ 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenPayout,
@@ -70,39 +68,21 @@ const WalletTable = ({
 
   // Get selected column
   const getSelectColumn = () => {
-    return type === "history"
-      ? History_ColumnFN(walletType, onOpen, onOpenPayout, setUserId)
-      : Payout_columnFn(walletType, onOpen, onOpenPayout);
+    return type === "transaction"
+      ? Completed_ColumnFN( onOpen, onOpenPayout)
+      : Awaiting_columnFn( onOpen, onOpenPayout);
   };
 
-  const memoizedData = useMemo(() => data?.data?.slice(0, 5), [data]);
-
+  const prevData = hasPagination ? data?.data : data?.data?.slice(0, 5);
+  const memoizedData = useMemo(() => prevData, [prevData]);
   // table
   const table = useReactTable({
     data: memoizedData,
     columns: getSelectColumn(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-      columnVisibility,
-      columnOrder,
-      rowSelection,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
+    state: {},
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-
-  if (isLoading) {
-    return (
-      <Flex justify="center" align="center" height="200px">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
 
   return (
     <div>
@@ -111,14 +91,14 @@ const WalletTable = ({
           heading={emptyStateHeader}
           content={`All data will appear here.`}
         />
-      ) : (
+      ) : data?.data?.length > 0 ? (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
             <Thead bg={"#F2F4F7"}>
-              {table?.getHeaderGroups()?.map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers?.map((header) => (
-                    <Th textTransform={"initial"} px="6px" key={header.id}>
+              {table?.getHeaderGroups()?.map((headerGroup, idx) => (
+                <Tr key={idx}>
+                  {headerGroup.headers?.map((header, index) => (
+                    <Th textTransform={"initial"} px="6px" key={index}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -132,10 +112,10 @@ const WalletTable = ({
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
               {memoizedData?.length > 0 &&
-                table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="6px">
+                table?.getRowModel()?.rows?.map((row, i) => (
+                  <Tr key={i}>
+                    {row.getVisibleCells()?.map((cell, ix) => (
+                      <Td key={ix} px="6px">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -151,10 +131,13 @@ const WalletTable = ({
             <Pagination {...metaData} setPageCount={setPageCount} />
           )}
         </TableContainer>
-      )}
-
-      <TransactionDetails isOpen={isOpen} onClose={onClose} userId={userId} />
-
+      ) : (
+        <Flex justify="center" align="center" height="200px">
+          <Spinner size="xl" />
+        </Flex>
+      )
+    }
+      <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
       <InitiatePayout
         isOpen={isOpenPayout}
         onClose={onClosePayout}
@@ -164,4 +147,4 @@ const WalletTable = ({
   );
 };
 
-export default WalletTable;
+export default TransactionTab;

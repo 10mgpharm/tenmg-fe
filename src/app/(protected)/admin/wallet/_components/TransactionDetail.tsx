@@ -22,12 +22,13 @@ import { useCallback, useEffect, useState } from "react";
 const TransactionDetails = ({
   isOpen,
   onClose,
-  userId,
+  selectedRow,
+  type,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  userId?: string;
-  type?: string;
+  type: string;
+  selectedRow?: any;
 }) => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -37,7 +38,7 @@ const TransactionDetails = ({
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-    let query = `/admin/wallet/transactions/${userId}`;
+    let query = `/admin/wallet/transactions`;
 
     try {
       const response = await requestClient({ token: token }).get(query);
@@ -49,12 +50,12 @@ const TransactionDetails = ({
       console.error(error);
     }
     setIsLoading(false);
-  }, [token, userId]);
+  }, [token]);
 
   useEffect(() => {
-    if (!userId) return;
+    // if (!userId) return;
     fetchData();
-  }, [fetchData, userId]);
+  }, [fetchData]);
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>

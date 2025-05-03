@@ -28,6 +28,5 @@ export default async function AdminLayout({
 
   return (
     <AdminLayoutClient>{children}</AdminLayoutClient>
-
   );
 }

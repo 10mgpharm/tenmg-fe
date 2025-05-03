@@ -2,11 +2,11 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { classNames } from "@/utils";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Daum2} from "@/types";
+import { Daum } from "@/types";
 
-const columnHelper = createColumnHelper<Daum2>();
+const columnHelper = createColumnHelper<Daum>();
 
-export function Awaiting_columnFn(
+export function Completed_ColumnFN(
   onOpen: () => void,
   onOpenPayout: () => void
 ) {
@@ -66,7 +66,8 @@ export function Awaiting_columnFn(
               className={classNames(
                 info?.row?.original?.status === "DEBIT"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "CREDIT"
+                  : info?.row?.original?.status === "CREDIT" ||
+                    info?.row?.original?.status === "Successful"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : "text-orange-500 bg-orange-50",
                 " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
