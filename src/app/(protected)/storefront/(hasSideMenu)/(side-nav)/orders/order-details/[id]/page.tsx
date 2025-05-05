@@ -5,11 +5,7 @@ import {
   Divider,
   Flex,
   HStack,
-  Progress,
   Spinner,
-  Tag,
-  TagLabel,
-  VStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,20 +13,17 @@ import {
   StepDescription,
   StepIcon,
   StepIndicator,
-  StepNumber,
   StepSeparator,
   StepStatus,
-  StepTitle,
   Stepper,
   useSteps,
 } from "@chakra-ui/react";
 import { FaDotCircle } from "react-icons/fa";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { useOrdersStore } from "@/app/(protected)/storefront/(NoSideMenu)/storeFrontState/useMyOrders";
 import OrderDetailsCardComp from "@/app/(protected)/storefront/_components/(my-orders-component)/OrderDetailsCardComponent";
-import { set } from "react-hook-form";
 
 export default function OrderDetailsPage() {
   const { id } = useParams();
@@ -112,7 +105,6 @@ export default function OrderDetailsPage() {
                 borderRadius="xl"
                 variant={"solid"}
               >
-                {/* <span style={{ textTransform: 'capitalize' }}>{order?.status}</span> */}
                 <span style={{ textTransform: "capitalize" }}>
                   {order?.status.toLowerCase() === "cancelled" ||
                     order?.status.toLowerCase() === "canceled"

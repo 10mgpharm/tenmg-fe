@@ -66,19 +66,22 @@ const TransactionTab = ({
     onClose: onClosePayout,
   } = useDisclosure();
 
-  // Get selected column
-  const getSelectColumn = () => {
+  const columns = useMemo(() => {
     return type === "transaction"
-      ? Completed_ColumnFN( onOpen, onOpenPayout)
-      : Awaiting_columnFn( onOpen, onOpenPayout);
-  };
+      ? Completed_ColumnFN(onOpen, onOpenPayout)
+      : Awaiting_columnFn(onOpen, onOpenPayout);
+  }, [type, onOpen, onOpenPayout]);
 
-  const prevData = hasPagination ? data?.data : data?.data?.slice(0, 5);
-  const memoizedData = useMemo(() => prevData, [prevData]);
+  const prevData = useMemo(() => {
+    return hasPagination ? data?.data : data?.data?.slice(0, 5);
+  }, [data?.data, hasPagination]);
+
+  const memoizedData = useMemo(() => prevData || [], [prevData]);
+
   // table
   const table = useReactTable({
-    data: memoizedData,
-    columns: getSelectColumn(),
+    data: memoizedData || [],
+    columns: columns,
     state: {},
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
