@@ -76,10 +76,10 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
             className="rounded-lg text-gray-700 bg-gray-100"
           >
             <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Awaiting Payout </Text>
-              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
+              <Text className="text-nowrap">Payout </Text>
+              {/* <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
                 {transactions?.payouts?.total}
-              </p>
+              </p> */}
             </div>
           </Tab>
           <Tab
@@ -88,9 +88,9 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           >
             <div className="flex items-center gap-3">
               <Text className="text-nowrap">Transaction History</Text>
-              <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
+              {/* <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
                 {transactions?.transactions?.total}
-              </p>
+              </p> */}
             </div>
           </Tab>
         </TabList>

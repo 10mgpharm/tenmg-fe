@@ -21,17 +21,17 @@ const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) 
                     <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                         <div className='flex items-center gap-3'>
                             <Text>All Transactions</Text>
-                            <p className='bg-purple-50 text-purple-500 py-0.5 px-2 rounded-full text-sm'>
+                            {/* <p className='bg-purple-50 text-purple-500 py-0.5 px-2 rounded-full text-sm'>
                                 {data?.total}
-                            </p>
+                            </p> */}
                         </div>
                     </Tab>
                     <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                         <div className='flex items-center gap-3'>
                             <Text>Pending Payout</Text>
-                            <p className='bg-orange-50 text-orange-500 py-0.5 px-2 rounded-full text-sm'>
+                            {/* <p className='bg-orange-50 text-orange-500 py-0.5 px-2 rounded-full text-sm'>
                                 {payoutData?.total}
-                            </p>
+                            </p> */}
                         </div>
                     </Tab>
                 </TabList>

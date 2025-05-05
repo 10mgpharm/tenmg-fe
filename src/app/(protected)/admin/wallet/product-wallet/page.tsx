@@ -81,7 +81,7 @@ const ProductWallet = () => {
               className="rounded-lg text-gray-700 bg-gray-100"
             >
               <div className="flex items-center gap-3">
-                <Text className="text-nowrap">Awaiting Payout </Text>
+                <Text className="text-nowrap">Payout </Text>
                 <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
                   {data?.payouts?.total}
                 </p>
