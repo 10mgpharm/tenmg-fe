@@ -8,6 +8,8 @@ interface OverviewProps {
   fromColor: string;
   toColor: string;
   image: string;
+  pendingBg?: string;
+  pendingText?: string;
   hasPendingBalance: boolean;
   pendingBalance?: string;
 }
@@ -17,6 +19,8 @@ const WalletOverview = ({
   fromColor,
   toColor,
   image,
+  pendingBg,
+  pendingText,
   hasPendingBalance,
   pendingBalance,
 }: OverviewProps) => {
@@ -37,9 +41,9 @@ const WalletOverview = ({
           {
             hasPendingBalance &&
             <div className="absolute bottom-0 left-6">
-              <div className="bg-green-50 rounded-md p-1 w-100 pl-2.5">
-                <p className="text-green-600 font-medium text-xs">Pending Balance</p>
-                <p className="text-green-600 text-xs font-medium">₦{pendingBalance}</p>
+              <div className={classNames(`${pendingBg} rounded-md p-1 w-100 pl-2.5`)}>
+                <p className={classNames(`${pendingText} font-medium text-xs`)}>Pending Balance</p>
+                <p className={classNames(`${pendingText} text-xs font-medium`)}>₦{pendingBalance}</p>
               </div>
             </div>
           }

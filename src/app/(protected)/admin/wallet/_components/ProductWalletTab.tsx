@@ -31,6 +31,8 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#7F56D9]"
           image={totalPattern}
           hasPendingBalance={true}
+          pendingBg="bg-[#c5b4f5]"
+          pendingText="text-[#7F56D9]"
           pendingBalance={`${Number(transactions?.totalPendingCommissions ?? 0.00)?.toLocaleString()}`}
         />
         <WalletOverview
@@ -40,6 +42,8 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#DC6803]"
           image={orderPattern}
           hasPendingBalance={true}
+          pendingBg="bg-[#FFF4E5]"
+          pendingText="text-[#DC6803]"
           pendingBalance={`${Number(transactions?.totalPendingSupplierPayout ?? 0.00)?.toLocaleString()}`}
         />
         <WalletOverview
@@ -49,6 +53,8 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#E31B54]"
           image={productPattern}
           hasPendingBalance={true}
+          pendingBg="bg-[#FFE5ED]"
+          pendingText="text-[#E31B54]"
           pendingBalance={"0.00"}
         />
       </div>

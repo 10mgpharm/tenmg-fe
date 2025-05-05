@@ -20,6 +20,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { BankInfo } from '../page';
 
 interface IFormInput {
   bankName: string;
@@ -33,10 +34,10 @@ interface SelectOption {
 }
 
 const AddAccount = (
-  { isOpen, onClose, endpoint, fetchingWallet, info }:
-  { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, info?: any }) => {
+  { isOpen, onClose, endpoint, fetchingWallet, bank }:
+  { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, bank?: BankInfo }) => {
 
-  // console.log("info", info)
+  console.log("info", bank)
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;
@@ -57,10 +58,10 @@ const AddAccount = (
   } = useForm<IFormInput>({
     mode: "onChange",
     defaultValues: {
-      bankCode: info?.bankCode ?? "",
-      bankName: info?.bankName ?? "",
-      accountName: info?.accountName ?? "",
-      accountNumber: info?.accountNumber ?? "",
+      bankCode: bank?.bankCode ?? "",
+      bankName: bank?.bankName ?? "",
+      accountName: bank?.accountName ?? "",
+      accountNumber: bank?.accountNumber ?? "",
     }
   });
 
@@ -93,49 +94,24 @@ const AddAccount = (
     fetchingBankList();
   }, [token]);
 
-
   useEffect(() => {
-    if (info) {
+    if (bank) {
       reset({
-        bankCode: info.bankCode ?? '',
-        bankName: info.bankName ?? '',
-        accountName: info.accountName ?? '',
-        accountNumber: info.accountNumber ?? '',
+        bankCode: bank.bankCode ?? '',
+        bankName: bank.bankName ?? '',
+        accountName: bank.accountName ?? '',
+        accountNumber: bank.accountNumber ?? '',
       });
-      setValue("bankName", info.bankName ?? "")
+      setValue("bankName", bank.bankName ?? "")
     }
-  }, [info, reset, setValue]);
-  // const verifyingBankAccount = async () => {
-  //   const accountNumber = getValues("accountNumber");
-  //   const bankCode = getValues("bankCode");
-  //   setAccountVerificationError(null);
-  //   try {
-  //     const { data, status, message } = await verifyBankAccount(token, {
-  //       accountNumber: accountNumber,
-  //       bankCode: bankCode,
-  //     });
-  //     if (status === "error") {
-  //       setAccountVerificationError(message);
-  //     } else {
-  //       console.log(data)
-  //       // if (data.success) {
-  //       //   setValue("accountName", data?.data?.accountName);
-  //       // } else {
-  //       //   setAccountVerificationError(data?.message);
-  //       // }
-  //     }
-  //   } catch (error) {
-  //     setAccountVerificationError("Verification failed");
-  //   }
-  // }
-  // "/supplier/wallet/add-bank-account",
+  }, [bank, reset, setValue]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
       const response =
-        info ?
+        bank ?
           await requestClient({ token: token }).patch(
-            `${endpoint}/${info.id}`,
+            `${endpoint}/${bank.id}`,
             data
           ) :
           await requestClient({ token: token }).post(
@@ -171,6 +147,7 @@ const AddAccount = (
                 {...register("bankCode", {
                   required: "Please select a bank",
                 })}
+                value={getValues("bankCode") || ""}
                 onChange={(e) => {
                   const selectedValue = e.target.value;
                   const selectedText =
@@ -257,6 +234,7 @@ const AddAccount = (
                 name="bankCode"
                 placeholder="e.g 139-0568"
                 type="number"
+                value={getValues("bankCode")}
                 disabled
                 isInvalid={!!errors.bankCode}
                 _disabled={{
@@ -277,7 +255,7 @@ const AddAccount = (
               )}
             </FormControl>
             <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
-              {info ? "Edit Account" : "Add Account"}
+              {bank ? "Edit Account" : "Add Account"}
             </Button>
           </form>
         </ModalBody>
