@@ -134,7 +134,13 @@ const AddAccount = (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add Bank Account</ModalHeader>
+        <ModalHeader>
+          {
+            bank ?
+              "Edit Bank Account" :
+              "Add Bank Account"
+          }
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form className='space-y-4 mb-6' onSubmit={handleSubmit(onSubmit)}>

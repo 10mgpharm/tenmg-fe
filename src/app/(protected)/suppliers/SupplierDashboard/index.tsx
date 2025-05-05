@@ -53,8 +53,6 @@ const Supplier = () => {
         fetchingOverview();
     }, [token, fetchingOverview]);
 
-    // console.log(data);
-
     const formatValue = (value: any) => {
         if (value >= 1000000) {
           return `₦${(value / 1000000).toFixed(1)}M`;

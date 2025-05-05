@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaPenAlt } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
 
 import folder from "@public/assets/images/Group 3.svg";
@@ -18,6 +18,7 @@ import { BankDto, Daum, NextAuthUserSession, PayoutDataProps, PayoutTypeProps, S
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 import { FaPencil } from "react-icons/fa6";
 import EditBank from "./_components/EditBank";
+import { PencilIcon } from "lucide-react";
 
 export interface BankInfo {
   accountName: string;
@@ -198,11 +199,11 @@ const Wallet = () => {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <FaPencil onClick={onOpen} className="w-5 h-5 text-white cursor-pointer"/>
-                <div className="py-1 px-2 rounded-full bg-white">
+                <div onClick={onOpen} className="py-1 flex items-center gap-2 px-2 rounded-full bg-white cursor-pointer">
                   <p className="text-gray-600 text-sm font-semibold">
                     {walletBalance.bankAccount.bankName}
                   </p>
+                  <PencilIcon className="w-4 h-4 text-black"/>
                 </div>
               </div>
             </div>
