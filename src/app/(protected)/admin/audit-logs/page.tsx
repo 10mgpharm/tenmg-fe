@@ -61,9 +61,13 @@ const Page = () => {
 
         // Apply search manually on actor.name
         if (searchValue.trim()) {
-          results = results.filter((log: any) =>
-            log.actor?.name?.toLowerCase().includes(searchValue.toLowerCase())
-          );
+         const lowerSearch = searchValue.toLowerCase();
+         results = results.filter(
+           (log: any) =>
+             log.actor?.name?.toLowerCase().includes(lowerSearch) ||
+             log.action?.toLowerCase().includes(lowerSearch)
+         );
+
         }
 
         setData({
@@ -86,7 +90,7 @@ const Page = () => {
     if (token) {
       fetchData();
     }
-  }, [token]);
+  }, [token, pageCount, searchValue]);
 
   const table = useReactTable({
     data: data?.data,
@@ -115,7 +119,7 @@ const Page = () => {
     <div className="p-8">
       <h2 className="text-2xl font-semibold text-gray-700 mb-2">Audit Logs</h2>
       <SearchComponent
-        placeholder="Search by user name"
+        placeholder="Search by name or action"
         onChange={(e) => setSearchValue(e.target.value)}
       />
 
