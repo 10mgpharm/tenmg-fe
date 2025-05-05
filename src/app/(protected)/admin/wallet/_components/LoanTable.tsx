@@ -7,7 +7,7 @@ import {  flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "
 import TransactionDetails from "./TransactionDetail";
 
 interface LoanTableProps {
-    data: LoanTransactionProps[];
+  data: LoanTransactionProps[];
 }
 
 const LoanTable = ({data}: LoanTableProps) => {
