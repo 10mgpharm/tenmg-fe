@@ -14,10 +14,11 @@ import Link from "next/link";
 import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { BankDto, Daum, NextAuthUserSession } from "@/types";
+import { BankDto, Daum, NextAuthUserSession, PayoutDataProps, PayoutTypeProps, SupplierTransactionDataProps } from "@/types";
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 import { FaPencil } from "react-icons/fa6";
 import EditBank from "./_components/EditBank";
+
 export interface BankInfo {
   accountName: string;
   accountNumber: string;
@@ -43,8 +44,8 @@ const Wallet = () => {
   const [showBalance, setShowBalance] = useState(true);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
   const [walletBalance, setWalletBalance] = useState<WalletProps>();
-  const [transactions, setTransactions] = useState<Daum[]>([]);
-  const [pendingPayouts, setPendingPayout] = useState<Daum[]>([]);
+  const [transactions, setTransactions] = useState<SupplierTransactionDataProps>();
+  const [pendingPayouts, setPendingPayout] = useState<PayoutDataProps>();
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -112,7 +113,7 @@ const Wallet = () => {
         `/supplier/wallet/transactions`
       );
       if (response.status === 200) {
-        setTransactions(response?.data?.data?.data);
+        setTransactions(response?.data?.data);
       }
     } catch (error) {
       console.error(error);
@@ -148,7 +149,7 @@ const Wallet = () => {
     ? Number(walletBalance?.currentBalance).toFixed(2)
     : "0.00";
 
-  console.log(pendingPayouts)
+  console.log(transactions)
 
   return (
     <div className="p-8">
@@ -241,9 +242,13 @@ const Wallet = () => {
             <Flex justify="center" align="center" height="200px">
               <Spinner size="xl" />
             </Flex>
-            : transactions?.length > 0 ? (
+            : transactions?.data?.length > 0 ? (
               <div className="mt-5">
-                <Transaction data={transactions} />
+                <Transaction 
+                data={transactions} 
+                payoutData={pendingPayouts}
+                hasPagination={false}
+                />
               </div>
             ) :
               (

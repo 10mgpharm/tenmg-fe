@@ -348,4 +348,45 @@ export interface LoanTransactionProps  {
   createdAt: string
   updatedAt: string
 }
+
+export interface SupplierTransactionDataProps  {
+  data: Daum[];
+  links: any;
+  to: number;
+  total: number;
+  currentPage: number;
+  from: number;
+  perPage: number;
+  lastPage: number;
+  firstPageUrl: string;
+  lastPageUrl: string;
+  nextPageUrl: any;
+  path: string;
+  prevPageUrl: any;
+}
+
+export interface PayoutDataProps {
+  data: PayoutProps[]
+  links: any;
+  to: number;
+  total: number;
+  currentPage: number;
+  from: number;
+  perPage: number;
+  lastPage: number;
+  firstPageUrl: string;
+  lastPageUrl: string;
+  nextPageUrl: any;
+  path: string;
+  prevPageUrl: any;
+}
   
+export interface PayoutTypeProps  {
+  id: number
+  actualPrice: string
+  discountPrice: string
+  quantity: number
+  createdAt: string;
+  tenmgCommission: string;
+}
+

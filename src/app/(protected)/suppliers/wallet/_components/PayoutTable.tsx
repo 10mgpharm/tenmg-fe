@@ -1,4 +1,5 @@
 "use client";
+import React, { Dispatch, SetStateAction } from 'react'
 
 import { 
     flexRender, 
@@ -6,15 +7,15 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { ColumsTransactionFN } from "./table";
-import EmptyOrder from "../../orders/_components/EmptyOrder";
-import { Flex, Spinner, Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
-import { Daum, LoanTransactionProps } from "@/types";
-import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
+import { useMemo, useState } from "react";
+import EmptyOrder from '../../orders/_components/EmptyOrder';
+import { Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
+import { ColumsPayoutFN } from './tablePayout';
+import { PayoutTypeProps } from '@/types';
+import Pagination from '@/app/(protected)/admin/products/_components/Pagination';
 
-interface TransactionTableProps {
-    data: Daum[];
+interface PayoutTableProps {
+    data: PayoutTypeProps[];
     hasPagination: boolean;
     setPageCount?: Dispatch<SetStateAction<number>>;
     metaData?: {
@@ -31,10 +32,12 @@ interface TransactionTableProps {
         lastPage: number;
     };
 }
-const TransactionTable = ({data, hasPagination, metaData, setPageCount}: TransactionTableProps) => {
 
+const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableProps) => {
+
+    // const filterTransactions = data?.slice(0, 6);
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
+    const [selectedRow, setSelectedRow] = useState<any>();
 
     const {
         isOpen: isOpenPayout,
@@ -42,11 +45,10 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount}: Transac
         onClose: onClosePayout,
     } = useDisclosure();
 
-     // Memoize the columns
-     const columns = useMemo(() => ColumsTransactionFN(onOpen, onOpenPayout), [onOpen, onOpenPayout]);
+    const columns = useMemo(() => ColumsPayoutFN(onOpen, onOpenPayout), [onOpen, onOpenPayout]);
     
-     // Memoize the filtered data
-     const filterTransactions = useMemo(() => data?.slice(0, 5), [data]);
+    // Memoize the filtered data
+    const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
 
     const table = useReactTable({
         data: filterTransactions || [],
@@ -59,12 +61,11 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount}: Transac
   return (
     <div>
       {
-        data?.length === 0 
-        ? <EmptyOrder 
-        heading={`No Transactions Yet`} 
-        content={`You currently have no transaction. All transactions will appear here.`} 
-        /> : 
-        data?.length > 0 ? (
+            data?.length === 0 
+            ? <EmptyOrder
+            heading={`No Transactions Yet`} 
+            content={`You currently have no transaction. All transactions will appear here.`} 
+            /> : 
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
@@ -106,13 +107,9 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount}: Transac
                     <Pagination {...metaData} setPageCount={setPageCount} />
                 )}
             </TableContainer>
-        ) : (
-            <Flex justify="center" align="center" height="200px">
-              <Spinner size="xl" />
-            </Flex>
-        )}  
+        }  
     </div>
   )
 }
 
-export default TransactionTable;
+export default PayoutTable
