@@ -9,49 +9,33 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ColumsTransactionFN } from "./table";
 import EmptyOrder from "../../orders/_components/EmptyOrder";
-import { Table,TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
 import Pagination from "../../_components/Pagination";
-import { WalletData } from "@/types";
+import { Daum, LoanTransactionProps } from "@/types";
 
-const TransactionTable = ({data}: {data: WalletData[]}) => {
+const TransactionTable = ({data}: {data: Daum[]}) => {
 
-    const onOpen = () => {}
-    const [pageCount, setPageCount] = useState<number>(1);
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnVisibility, setColumnVisibility] = useState({});
-    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const filterTransactions = data?.slice(0, 6);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
+    const memoizedData = useMemo(() => filterTransactions, [filterTransactions]);
+
+    const {
+        isOpen: isOpenPayout,
+        onOpen: onOpenPayout,
+        onClose: onClosePayout,
+      } = useDisclosure();
 
     const table = useReactTable({
-        data: data,
-        columns: ColumsTransactionFN(onOpen),
-        onSortingChange: setSorting,
-        state: {
-          sorting,
-          columnVisibility,
-          columnOrder,
-          rowSelection,
-        },
-        enableRowSelection: true,
-        onRowSelectionChange: setRowSelection,
-        onColumnVisibilityChange: setColumnVisibility,
-        onColumnOrderChange: setColumnOrder,
+        data: memoizedData,
+        columns: ColumsTransactionFN(onOpen, onOpenPayout),
+        state: {},
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
-
-    const meta = {
-        meta: {
-            links: [
-                {label: 'Previous', active: false},
-                {label: 1, active: true}
-            ]
-        }
-    }
-
 
   return (
     <div>
@@ -64,13 +48,13 @@ const TransactionTable = ({data}: {data: WalletData[]}) => {
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
-                    {data && table?.getHeaderGroups()?.map((headerGroup) => (
-                        <Tr key={headerGroup.id}>
-                        {headerGroup.headers?.map((header) => (
+                    {data && table?.getHeaderGroups()?.map((headerGroup, i) => (
+                        <Tr key={i}>
+                        {headerGroup.headers?.map((header, idx) => (
                             <Th
                             textTransform={"initial"}
                             px="0px"
-                            key={header.id}
+                            key={idx}
                             >
                             {header.isPlaceholder
                                 ? null
@@ -84,10 +68,10 @@ const TransactionTable = ({data}: {data: WalletData[]}) => {
                     ))}
                     </Thead>
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {data && table?.getRowModel()?.rows?.map((row) => (
-                        <Tr key={row.id}>
-                        {row.getVisibleCells()?.map((cell) => (
-                            <Td key={cell.id} px="0px">
+                    {data && table?.getRowModel()?.rows?.map((row, index) => (
+                        <Tr key={index}>
+                        {row.getVisibleCells()?.map((cell, idxs) => (
+                            <Td key={idxs} px="0px">
                             {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
@@ -98,7 +82,7 @@ const TransactionTable = ({data}: {data: WalletData[]}) => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination meta={meta} setPageCount={setPageCount}/>
+                {/* <Pagination meta={meta} setPageCount={setPageCount}/> */}
             </TableContainer>
         }  
     </div>

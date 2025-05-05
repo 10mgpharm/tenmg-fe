@@ -97,9 +97,7 @@ const DepositFunds = ({
     script.src = process.env.NEXT_PUBLIC_FINCRA_SDK_URL;
     // script.src = config?.;
     script.async = true;
-
     document.body.appendChild(script);
-
     return () => {
       document.body.removeChild(script);
     };

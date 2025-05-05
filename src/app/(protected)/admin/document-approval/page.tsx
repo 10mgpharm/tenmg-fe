@@ -21,11 +21,6 @@ import requestClient from "@/lib/requestClient";
 import UsersTab from "./_components/UsersTab";
 import { useDebouncedValue } from "@/utils/debounce";
 
-// interface ResponseData {
-//   data: AdminApprovalsProps;
-//   stats: { type: string; total: number }[];
-// }
-
 const DocumentApproval = () => {
   const [type, setType] = useState<"supplier" | "vendor" | "pharmacy" | "">("");
   const { data: sessionData } = useSession();

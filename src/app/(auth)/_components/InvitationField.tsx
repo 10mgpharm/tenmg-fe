@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Suspense, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 import requestClient from "@/lib/requestClient";

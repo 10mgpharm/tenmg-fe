@@ -34,7 +34,7 @@ interface SelectOption {
 
 const AddAccount = (
   { isOpen, onClose, endpoint, fetchingWallet, info }:
-    { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, info?: any }) => {
+  { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, info?: any }) => {
 
   // console.log("info", info)
 

@@ -14,8 +14,10 @@ import Link from "next/link";
 import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { BankDto, NextAuthUserSession, WalletResponseData } from "@/types";
+import { BankDto, Daum, NextAuthUserSession } from "@/types";
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
+import { FaPencil } from "react-icons/fa6";
+import EditBank from "./_components/EditBank";
 export interface BankInfo {
   accountName: string;
   accountNumber: string;
@@ -41,16 +43,14 @@ const Wallet = () => {
   const [showBalance, setShowBalance] = useState(true);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
   const [walletBalance, setWalletBalance] = useState<WalletProps>();
-  const [transactions, setTransactions] = useState<WalletResponseData>();
+  const [transactions, setTransactions] = useState<Daum[]>([]);
+  const [pendingPayouts, setPendingPayout] = useState<Daum[]>([]);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-
-
   useEffect(() => {
-
     const fetchingBankList = async () => {
       try {
         const response = await getBankList(token);
@@ -70,7 +70,6 @@ const Wallet = () => {
         setBanks([]);
       }
     }
-
     if (!token) return;
     fetchingBankList();
   }, [token]);
@@ -85,6 +84,11 @@ const Wallet = () => {
     isOpen: isOpenOTP,
     onOpen: onOpenOTP,
     onClose: onCloseOTP,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEditBank,
+    onOpen: onOpenEditBank,
+    onClose: onCloseEditBank,
   } = useDisclosure();
 
   const fetchingWallet = useCallback(async () => {
@@ -108,7 +112,23 @@ const Wallet = () => {
         `/supplier/wallet/transactions`
       );
       if (response.status === 200) {
-        setTransactions(response?.data?.data);
+        setTransactions(response?.data?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  const fetchingPendingPayout = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token }).get(
+        `/supplier/wallet/pending-payout`
+      );
+      if (response.status === 200) {
+        setPendingPayout(response?.data?.data);
       }
     } catch (error) {
       console.error(error);
@@ -119,18 +139,20 @@ const Wallet = () => {
 
   useEffect(() => {
     if (!token) return;
-    fetchingTransactions();
     fetchingWallet();
-  }, [token, fetchingTransactions, fetchingWallet]);
+    fetchingTransactions();
+    fetchingPendingPayout();
+  }, [token, fetchingTransactions, fetchingWallet, fetchingPendingPayout]);
 
   const formattedBalance = walletBalance?.currentBalance
     ? Number(walletBalance?.currentBalance).toFixed(2)
     : "0.00";
 
+  console.log(pendingPayouts)
+
   return (
     <div className="p-8">
       <h3 className="font-semibold text-xl text-gray-700 mb-4">Wallet</h3>
-
       <div className="flex gap-5">
         {/* Balance section */}
         <div className="flex-1 bg-primary-50 pt-3 pl-5 rounded-lg flex justify-between">
@@ -148,7 +170,7 @@ const Wallet = () => {
               <div className="bg-green-50 rounded-md p-1 w-100 pl-2.5">
                 <p className="text-green-600 font-medium text-xs">Pending Balance</p>
                 <p className="text-green-600 text-xs font-medium">
-                  {showBalance? `₦${walletBalance?.currentBalance}` : "******"}
+                  {showBalance? `₦${walletBalance?.currentBalance ?? 0.00}` : "******"}
                 </p>
               </div>
             </div>
@@ -173,10 +195,13 @@ const Wallet = () => {
                   {walletBalance.bankAccount.accountName}
                 </p>
               </div>
-              <div className="py-1 px-2 rounded-full bg-white">
-                <p className="text-gray-600 text-sm font-semibold">
-                  {walletBalance.bankAccount.bankName}
-                </p>
+              <div className="flex items-center gap-2">
+                <FaPencil onClick={onOpenEditBank} className="w-5 h-5 text-white cursor-pointer"/>
+                <div className="py-1 px-2 rounded-full bg-white">
+                  <p className="text-gray-600 text-sm font-semibold">
+                    {walletBalance.bankAccount.bankName}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="mt-8">
@@ -216,9 +241,9 @@ const Wallet = () => {
             <Flex justify="center" align="center" height="200px">
               <Spinner size="xl" />
             </Flex>
-            : transactions?.data?.length > 0 ? (
+            : transactions?.length > 0 ? (
               <div className="mt-5">
-                <Transaction data={transactions?.data} />
+                <Transaction data={transactions} />
               </div>
             ) :
               (
@@ -243,6 +268,13 @@ const Wallet = () => {
         // banks={banks}
         fetchingWallet={fetchingWallet}
         endpoint="/supplier/wallet/add-bank-account"
+      />
+      <EditBank
+        isOpen={isOpenEditBank}
+        onClose={onCloseEditBank}
+        // banks={banks}
+        fetchingWallet={fetchingWallet}
+        endpoint="/supplier/wallet/add-bank-account/1"
       />
       <WithdrawFunds
         isOpen={isOpenWithdraw}

@@ -13,8 +13,8 @@ const TransactionUI = () => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
-  const [loading, setLoading] = useState(false);
-  const [transactions, setTransactions] = useState<WalletResponseData>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [transactions, setTransactions] = useState<any>();
 
   const fetchingTransactions = useCallback(async () => {
       setLoading(true);
