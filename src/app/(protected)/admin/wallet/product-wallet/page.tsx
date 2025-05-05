@@ -31,7 +31,6 @@ const ProductWallet = () => {
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [searchValue, setSearchValue] = useState<string>("");
 
-
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
     try {
@@ -52,9 +51,6 @@ const ProductWallet = () => {
     if(!token) return;
     fetchingWallet();
   }, [token]);
-
-  console.log("data", data);
-
 
   return (
     <div className="px-6 py-8 md:p-8">

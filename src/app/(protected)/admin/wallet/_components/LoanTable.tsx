@@ -12,14 +12,14 @@ interface LoanTableProps {
 
 const LoanTable = ({data}: LoanTableProps) => {
     
-    const filterTransactions = data?.slice(0, 6);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
-    const memoizedData = useMemo(() => filterTransactions, [filterTransactions]);
+    const columns = useMemo(() => loanColumnFn(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
+    const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
 
     const table = useReactTable({
-        data: memoizedData,
-        columns: loanColumnFn(onOpen, setSelectedRow),
+        data: filterTransactions || [],
+        columns: columns,
         state: {},
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
