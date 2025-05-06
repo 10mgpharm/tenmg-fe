@@ -19,6 +19,7 @@ import { NextAuthUserSession, User } from "@/types";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { useSession } from "next-auth/react";
+import BankInfoFormComp from "./BankInfoFormComp";
 
 interface IFormInput {
   businessName: string;
@@ -35,6 +36,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [defaultBankDetail, setDefaultBankDetail] = useState<any>(null);
 
   const isMainAdmin = sessionData?.user?.entityType === "ADMIN";
 
@@ -82,6 +84,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
           setValue("contactPhone", data.contactPhone);
           setValue("businessAddress", data.businessAddress);
           setValue("contactPersonPosition", data.contactPersonPosition || "");
+          setDefaultBankDetail(data.lenderBankAccount);
         }
       } catch (error) {
         const errorMessage = handleServerErrorMessage(error);
@@ -143,124 +146,132 @@ const BusinessInformation = ({ user }: { user?: User }) => {
   };
 
   return (
-    <div className="p-2 md:p-5 rounded-md bg-white md:max-w-5xl">
-      <form
-        className="space-y-5 mt-2 md:mt-5 mb-3 md:mb-8"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <Skeleton isLoaded={!isInfoLoading}>
-          <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl isInvalid={!!errors.businessName?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Business Name
-              </FormLabel>
-              <Input
-                type="text"
-                isDisabled={!isAdmin}
-                placeholder="Enter business name"
-                {...register("businessName")}
-              />
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.contactPerson?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Contact Person&apos;s Name
-              </FormLabel>
-              <Input
-                type="text"
-                isDisabled={!isAdmin}
-                placeholder="Enter contact name"
-                {...register("contactPerson")}
-              />
-            </FormControl>
-          </HStack>
-        </Skeleton>
-
-        <Skeleton isLoaded={!isInfoLoading}>
-          <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl isInvalid={!!errors.contactEmail?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Business Email
-              </FormLabel>
-              <InputGroup>
-                <InputLeftElement pointerEvents="none" fontSize="1.2em">
-                  <MdOutlineEmail color="gray.300" />
-                </InputLeftElement>
-                <Input
-                  type="email"
-                  isDisabled={!isAdmin}
-                  placeholder="Enter business email"
-                  pl={10}
-                  {...register("contactEmail")}
-                />
-              </InputGroup>
-              <FormErrorMessage>
-                {errors.contactEmail?.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={!!errors.contactPhone?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Contact Phone Number
-              </FormLabel>
-              <Input
-                type="number"
-                isDisabled={!isAdmin}
-                placeholder="Enter phone number"
-                {...register("contactPhone")}
-              />
-            </FormControl>
-          </HStack>
-        </Skeleton>
-
-        <Skeleton isLoaded={!isInfoLoading}>
-          <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            <FormControl isInvalid={!!errors.businessAddress?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Business Address
-              </FormLabel>
-              <Input
-                type="text"
-                isDisabled={!isAdmin}
-                placeholder="Enter business address"
-                {...register("businessAddress")}
-              />
-            </FormControl>
-            <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
-              <FormLabel fontSize={"sm"} fontWeight={"medium"}>
-                Position
-              </FormLabel>
-              <Input
-                type="text"
-                isDisabled={!isAdmin}
-                placeholder="Enter position"
-                {...register("contactPersonPosition")}
-              />
-            </FormControl>
-          </HStack>
-        </Skeleton>
-
-        {isAdmin && (
+    <>
+      <div className="p-2 md:p-5 rounded-md bg-white md:max-w-5xl">
+        <form
+          className="space-y-5 mt-2 md:mt-5 mb-3 md:mb-8"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Skeleton isLoaded={!isInfoLoading}>
-            <HStack
-              justify={"center"}
-              pt={16}
-              flexDirection={{ base: "column", md: "row" }}
-            >
-              <Flex>
-                <Button
-                  colorScheme="blue"
-                  type="submit"
-                  isLoading={isLoading}
-                  isDisabled={isLoading || isInfoLoading}
-                >
-                  Save Changes
-                </Button>
-              </Flex>
+            <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
+              <FormControl isInvalid={!!errors.businessName?.message}>
+                <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                  Business Name
+                </FormLabel>
+                <Input
+                  type="text"
+                  isDisabled={!isAdmin}
+                  placeholder="Enter business name"
+                  {...register("businessName")}
+                />
+              </FormControl>
+
+              <FormControl isInvalid={!!errors.contactPerson?.message}>
+                <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                  Contact Person&apos;s Name
+                </FormLabel>
+                <Input
+                  type="text"
+                  isDisabled={!isAdmin}
+                  placeholder="Enter contact name"
+                  {...register("contactPerson")}
+                />
+              </FormControl>
             </HStack>
           </Skeleton>
-        )}
-      </form>
-    </div>
+
+          <Skeleton isLoaded={!isInfoLoading}>
+            <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
+              <FormControl isInvalid={!!errors.contactEmail?.message}>
+                <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                  Business Email
+                </FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none" fontSize="1.2em">
+                    <MdOutlineEmail color="gray.300" />
+                  </InputLeftElement>
+                  <Input
+                    type="email"
+                    isDisabled={!isAdmin}
+                    placeholder="Enter business email"
+                    pl={10}
+                    {...register("contactEmail")}
+                  />
+                </InputGroup>
+                <FormErrorMessage>
+                  {errors.contactEmail?.message}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!errors.contactPhone?.message}>
+                <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                  Contact Phone Number
+                </FormLabel>
+                <Input
+                  type="number"
+                  isDisabled={!isAdmin}
+                  placeholder="Enter phone number"
+                  {...register("contactPhone")}
+                />
+              </FormControl>
+            </HStack>
+          </Skeleton>
+
+          <Skeleton isLoaded={!isInfoLoading}>
+            <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
+              <FormControl isInvalid={!!errors.businessAddress?.message}>
+                <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                  Business Address
+                </FormLabel>
+                <Input
+                  type="text"
+                  isDisabled={!isAdmin}
+                  placeholder="Enter business address"
+                  {...register("businessAddress")}
+                />
+              </FormControl>
+              <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
+                <FormLabel fontSize={"sm"} fontWeight={"medium"}>
+                  Position
+                </FormLabel>
+                <Input
+                  type="text"
+                  isDisabled={!isAdmin}
+                  placeholder="Enter position"
+                  {...register("contactPersonPosition")}
+                />
+              </FormControl>
+            </HStack>
+          </Skeleton>
+
+          {isAdmin && (
+            <Skeleton isLoaded={!isInfoLoading}>
+              <HStack
+                justify={"center"}
+                pt={16}
+                flexDirection={{ base: "column", md: "row" }}
+              >
+                <Flex>
+                  <Button
+                    colorScheme="blue"
+                    type="submit"
+                    isLoading={isLoading}
+                    isDisabled={isLoading || isInfoLoading}
+                  >
+                    Save Changes
+                  </Button>
+                </Flex>
+              </HStack>
+            </Skeleton>
+          )}
+        </form>
+      </div>
+
+      <BankInfoFormComp
+        sessionData={sessionData}
+        defaultBankDetail={defaultBankDetail}
+        isInfoLoading={isInfoLoading}
+      />
+    </>
   );
 };
 
