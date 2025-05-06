@@ -194,7 +194,13 @@ export interface RepaymentSchedule {
   lateFee: string | null;
   loanId: number;
   paymentId: number | null;
-  paymentStatus: 'PENDING' | 'SUCCESS' | 'OVERDUE' | 'PARTIAL' | 'success' | 'PAID';
+  paymentStatus:
+    | "PENDING"
+    | "SUCCESS"
+    | "OVERDUE"
+    | "PARTIAL"
+    | "success"
+    | "PAID";
   principal: string;
   totalAmount: string;
   updatedAt: string;
@@ -391,7 +397,7 @@ export interface ProductDataProps {
   medicationType: MeasurementType;
   package: MeasurementType;
   presentation: MeasurementType;
-  rating: any|null;
+  rating: any | null;
 }
 export interface ProductResponseData {
   data: ProductDataProps[];
@@ -407,6 +413,7 @@ export interface ProductResponseData {
 
 export interface OrderData {
   createdAt: string;
+  identifier?: string;
   customer: CustomerData;
   deliveryAddress: string;
   deliveryType: string;
