@@ -15,7 +15,7 @@ import {
   Input,
   Select,
   Text,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -36,8 +36,6 @@ interface SelectOption {
 const AddAccount = (
   { isOpen, onClose, endpoint, fetchingWallet, bank }:
   { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, bank?: BankInfo }) => {
-
-  console.log("info", bank)
 
   const session = useSession();
   const sessionToken = session?.data as NextAuthUserSession;

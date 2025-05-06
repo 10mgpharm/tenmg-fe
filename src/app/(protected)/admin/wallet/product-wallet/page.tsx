@@ -35,7 +35,7 @@ const ProductWallet = () => {
     setLoading(true);
     try {
       const response = await requestClient({ token: token }).get(
-        `/admin/wallet-product`
+        `/admin/wallet-product?page=${pageCount}`
       );
       if (response.status === 200) {
         setData(response.data?.data);
@@ -45,12 +45,14 @@ const ProductWallet = () => {
       console.error(error);
       setLoading(false);
     }
-  }, [token]);
+  }, [token, pageCount]);
+
+  console.log(pageCount);
 
   useEffect(() => {
     if(!token) return;
     fetchingWallet();
-  }, [token]);
+  }, [token, fetchingWallet]);
 
   return (
     <div className="px-6 py-8 md:p-8">
@@ -79,6 +81,7 @@ const ProductWallet = () => {
             <Tab
               _selected={{ color: "white", bg: "#1A70B8" }}
               className="rounded-lg text-gray-700 bg-gray-100"
+              onClick={() => setPageCount(1)}
             >
               <div className="flex items-center gap-3">
                 <Text className="text-nowrap">Payout </Text>
@@ -90,6 +93,7 @@ const ProductWallet = () => {
             <Tab
               _selected={{ color: "white", bg: "#1A70B8" }}
               className="rounded-lg text-gray-700 bg-gray-100"
+              onClick={() => setPageCount(1)}
             >
               <div className="flex items-center gap-3">
                 <Text className="text-nowrap">Transaction History</Text>
