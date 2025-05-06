@@ -23,11 +23,11 @@ export function ColumsTransactionFN(
       ),
     }),
     columnHelper.accessor("tenmgCommission", {
-      header: ({ column }) => <p className="">Commission</p>,
+      header: ({ column }) => <p className="">Description</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-          ₦{info.row.original?.tenmgCommission ?? `0.00`}
+          {info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ? "Order Cancelled" : info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" : info.row.original?.txnGroup}
           </p>
         </div>
       ),
@@ -47,17 +47,24 @@ export function ColumsTransactionFN(
       cell: (info) => (
         <div className="">
           <p className="font-medium">₦{info.row.original?.amount}</p>
+          {
+            (info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" || info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION") && (
+              <span className="text-xs text-red-400">
+                Commission: ₦{info.row.original?.tenmgCommission ?? `0.00`}
+              </span>
+            )
+          }
         </div>
       ),
     }),
-    columnHelper.accessor("balanceAfter", {
-      header: ({ column }) => <p className="">Balance</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("balanceAfter", {
+    //   header: ({ column }) => <p className="">Balance</p>,
+    //   cell: (info) => (
+    //     <div className="">
+    //       <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
+    //     </div>
+    //   ),
+    // }),
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Type</p>,
       cell: (info) => {

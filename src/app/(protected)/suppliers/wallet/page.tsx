@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaPenAlt } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
 
 import folder from "@public/assets/images/Group 3.svg";
@@ -18,6 +18,7 @@ import { BankDto, Daum, NextAuthUserSession, PayoutDataProps, PayoutTypeProps, S
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 import { FaPencil } from "react-icons/fa6";
 import EditBank from "./_components/EditBank";
+import { PencilIcon } from "lucide-react";
 
 export interface BankInfo {
   accountName: string;
@@ -149,8 +150,6 @@ const Wallet = () => {
     ? Number(walletBalance?.currentBalance).toFixed(2)
     : "0.00";
 
-  console.log(transactions)
-
   return (
     <div className="p-8">
       <h3 className="font-semibold text-xl text-gray-700 mb-4">Wallet</h3>
@@ -161,17 +160,20 @@ const Wallet = () => {
             <div className="mt-5 flex items-center gap-3">
               <p className="text-xl">Wallet Balance</p>
               <button onClick={() => setShowBalance(!showBalance)}>
-                {showBalance ? <FaEye className="w-5 h-5" /> : <FaEyeSlash className="w-5 h-5" />}
+                {showBalance ? 
+                <FaEye className="w-5 h-5" /> : 
+                <FaEyeSlash className="w-5 h-5" />
+                }
               </button>
             </div>
             <p className="font-semibold text-2xl text-gray-700 mt-3">
               {showBalance ? `₦${formattedBalance}` : "******"}
             </p>
             <div className="mt-2 mb-6">
-              <div className="bg-green-50 rounded-md p-1 w-100 pl-2.5">
+              <div className="bg-green-50 rounded-md py-1 max-w-max px-2.5">
                 <p className="text-green-600 font-medium text-xs">Pending Balance</p>
-                <p className="text-green-600 text-xs font-medium">
-                  {showBalance? `₦${walletBalance?.currentBalance ?? 0.00}` : "******"}
+                <p className="text-green-600 text-xs font-semibold">
+                  {showBalance ? `₦${walletBalance?.currentBalance ?? 0.00}` : "******"}
                 </p>
               </div>
             </div>
@@ -197,11 +199,11 @@ const Wallet = () => {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <FaPencil onClick={onOpenEditBank} className="w-5 h-5 text-white cursor-pointer"/>
-                <div className="py-1 px-2 rounded-full bg-white">
+                <div onClick={onOpen} className="py-1 flex items-center gap-2 px-2 rounded-full bg-white cursor-pointer">
                   <p className="text-gray-600 text-sm font-semibold">
                     {walletBalance.bankAccount.bankName}
                   </p>
+                  <PencilIcon className="w-4 h-4 text-black"/>
                 </div>
               </div>
             </div>
@@ -270,16 +272,9 @@ const Wallet = () => {
       <AddAccount
         isOpen={isOpen}
         onClose={onClose}
-        // banks={banks}
+        bank={walletBalance?.bankAccount}
         fetchingWallet={fetchingWallet}
         endpoint="/supplier/wallet/add-bank-account"
-      />
-      <EditBank
-        isOpen={isOpenEditBank}
-        onClose={onCloseEditBank}
-        // banks={banks}
-        fetchingWallet={fetchingWallet}
-        endpoint="/supplier/wallet/add-bank-account/1"
       />
       <WithdrawFunds
         isOpen={isOpenWithdraw}

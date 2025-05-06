@@ -31,6 +31,8 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#7F56D9]"
           image={totalPattern}
           hasPendingBalance={true}
+          pendingBg="bg-[#c5b4f5]"
+          pendingText="text-[#7F56D9]"
           pendingBalance={`${Number(transactions?.totalPendingCommissions ?? 0.00)?.toLocaleString()}`}
         />
         <WalletOverview
@@ -40,6 +42,8 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#DC6803]"
           image={orderPattern}
           hasPendingBalance={true}
+          pendingBg="bg-[#FFF4E5]"
+          pendingText="text-[#DC6803]"
           pendingBalance={`${Number(transactions?.totalPendingSupplierPayout ?? 0.00)?.toLocaleString()}`}
         />
         <WalletOverview
@@ -49,6 +53,8 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#E31B54]"
           image={productPattern}
           hasPendingBalance={true}
+          pendingBg="bg-[#FFE5ED]"
+          pendingText="text-[#E31B54]"
           pendingBalance={"0.00"}
         />
       </div>
@@ -76,10 +82,10 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
             className="rounded-lg text-gray-700 bg-gray-100"
           >
             <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Awaiting Payout </Text>
-              <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
+              <Text className="text-nowrap">Payout </Text>
+              {/* <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
                 {transactions?.payouts?.total}
-              </p>
+              </p> */}
             </div>
           </Tab>
           <Tab
@@ -88,9 +94,9 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           >
             <div className="flex items-center gap-3">
               <Text className="text-nowrap">Transaction History</Text>
-              <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
+              {/* <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
                 {transactions?.transactions?.total}
-              </p>
+              </p> */}
             </div>
           </Tab>
         </TabList>

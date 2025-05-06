@@ -307,6 +307,7 @@ export interface Payouts {
 export interface Daum2 {
   id: number
   orderId: number
+  name?: string;
   txnType: string
   txnGroup: string
   amount: string

@@ -22,11 +22,11 @@ export function Completed_ColumnFN(
       ),
     }),
     columnHelper.accessor("tenmgCommission", {
-      header: ({ column }) => <p className="">Commission</p>,
+      header: ({ column }) => <p className="">Description</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-          ₦{info.row.original?.tenmgCommission ?? `0.00`}
+          {info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Payment Commission" : info.row.original?.txnGroup === "DEBIT_COMMISSION_ON_ORDER_CANCELLATION" ? "Order Cancelled Commission" : ""}
           </p>
         </div>
       ),
@@ -49,14 +49,14 @@ export function Completed_ColumnFN(
         </div>
       ),
     }),
-    columnHelper.accessor("balanceAfter", {
-      header: ({ column }) => <p className="">Balance</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("balanceAfter", {
+    //   header: ({ column }) => <p className="">Balance</p>,
+    //   cell: (info) => (
+    //     <div className="">
+    //       <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
+    //     </div>
+    //   ),
+    // }),
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Type</p>,
       cell: (info) => {

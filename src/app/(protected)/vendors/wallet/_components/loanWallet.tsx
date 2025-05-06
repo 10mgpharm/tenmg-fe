@@ -113,7 +113,10 @@ const LoanWallet = () => {
             func={onOpenWithdraw}
           />
         </div>
-        <AccoundDetailsCard showBalance={showBalance} setAccountInfo={setAccountInfo} />
+        <AccoundDetailsCard 
+        showBalance={showBalance} 
+        setAccountInfo={setAccountInfo} 
+        />
       </div>
 
       <div className="flex items-center justify-between my-5">

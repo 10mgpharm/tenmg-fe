@@ -13,7 +13,7 @@ export function loanColumnFn(
 ) {
   return [
     columnHelper.accessor("identifier", {
-      header: ({ column }) => <p className="pl-6">Identifier</p>,
+      header: ({ column }) => <p className="pl-6">Loan ID</p>,
       cell: (info) => (
         <div className="pl-6">
           <p className="font-medium">
