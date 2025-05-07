@@ -236,13 +236,13 @@ export default function BusinessInformationForm({
                     render={() => (
                       <CustomRadio
                         name="businessType"
-                        options={["Supplier", "Pharmacy"]}
+                        options={["Supplier", "Pharmacy", "Lender"]}
                         defaultValue={getValues("businessType")}
                         onChangeCallback={(selectedValue: string) => {
-                          const value: "supplier" | "customer_pharmacy" =
-                            selectedValue == "Supplier"
-                              ? "supplier"
-                              : "customer_pharmacy";
+                          let value: "supplier" | "customer_pharmacy" | "lender";
+                          if (selectedValue === "Supplier") value = "supplier";
+                          else if (selectedValue === "Pharmacy") value = "customer_pharmacy";
+                          else value = "lender";
                           setValue("businessType", value);
                         }}
                       />
