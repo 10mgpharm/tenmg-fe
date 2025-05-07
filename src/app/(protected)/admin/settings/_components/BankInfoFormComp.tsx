@@ -189,20 +189,20 @@ export default function BankInfoFormComp({
   const onSubmit: SubmitHandler<FormInput> = async (formData) => {
     try {
       setIsLoading(true);
-      // const response = await requestClient({
-      //   token: sessionData.user.token,
-      // }).patch("/lender/settings/business-account", {
-      //   ...formData,
-      //   bvn: "8335845871",
-      // });
+      const response = await requestClient({
+        token: sessionData.user.token,
+      }).post("admin/wallet/add-bank-account", {
+        ...formData,
+        bvn: "8335845871",
+      });
 
-      // if (response.status === 200) {
-      //   toast.success("Bank Information successfully updated");
-      //   setDefaultBankAccount(response.data.data);
-      //   setEdit(false);
-      // } else {
-      //   toast.error(`Error: ${response.data.message}`);
-      // }
+      if (response.status === 200) {
+        toast.success("Bank Information successfully updated");
+        setDefaultBankAccount(response.data.data);
+        setEdit(false);
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
