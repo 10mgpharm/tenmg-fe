@@ -51,7 +51,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ColumnsTransactionHistoryFN } from "./_components/table";
-import TransactionTab from "./_components/transactionTab";
+import TransactionTabs from "./_components/TransactionsTab";
 
 export default function TransactionHistoryPage() {
   const session = useSession();
@@ -279,21 +279,21 @@ export default function TransactionHistoryPage() {
                 {transactions?.data?.length > 0 ? (
                   <TabPanels>
                     <TabPanel px={0}>
-                      <TransactionTab
+                      <TransactionTabs
                         table={table}
                         setPageCount={setPageCount}
                         transactions={transactions}
                       />
                     </TabPanel>
                     <TabPanel>
-                      <TransactionTab
+                      <TransactionTabs
                         table={table}
                         setPageCount={setPageCount}
                         transactions={transactions}
                       />
                     </TabPanel>
                     <TabPanel>
-                      <TransactionTab
+                      <TransactionTabs
                         table={table}
                         setPageCount={setPageCount}
                         transactions={transactions}
