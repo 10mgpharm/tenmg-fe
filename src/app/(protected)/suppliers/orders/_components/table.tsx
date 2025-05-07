@@ -45,14 +45,12 @@ export function ColumsOrderFN(
         </div>
       ),
     }),
-    columnHelper.accessor("id", {
-      header: ({ column }) => (
-        <p>Order ID</p>
-      ),
+    columnHelper.accessor("identifier", {
+      header: () => <p>Order ID</p>,
       cell: (info) => (
-       <div className="">
-        <p>{info.row.original?.id}</p>
-       </div>
+        <div>
+          <p>{info.row.original?.identifier || "NA"}</p>
+        </div>
       ),
     }),
     columnHelper.accessor("grandTotal", {

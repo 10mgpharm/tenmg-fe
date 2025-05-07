@@ -4,15 +4,23 @@ import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsRepaymentFN(onOpen: () => void) {
+export function ColumsRepaymentFN(
+  onOpen: () => void,
+  pageIndex: number,
+  pageSize?: number
+) {
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
       cell: (info) => {
-        const serialNumber = info?.row?.index + 1;
+        !pageSize ? (pageSize = 10) : pageSize;
+        const serialNumber =
+          pageIndex > 1
+            ? (pageIndex - 1) * pageSize + info?.row.index + 1
+            : info?.row.index + 1;
         return (
-          <div className="pl-6">
-            <p>{serialNumber}</p>
+          <div>
+            <p className="pl-6">{serialNumber}</p>
           </div>
         );
       },
@@ -61,6 +69,14 @@ export function ColumsRepaymentFN(onOpen: () => void) {
       cell: (info) => (
         <div className="">
           <p>{convertDate(info.row.original?.updatedAt)}</p>
+        </div>
+      ),
+    }),
+    columnHelper.accessor("createdAt", {
+      header: ({ column }) => <p>Created at</p>,
+      cell: (info) => (
+        <div className="">
+          <p>{convertDate(info.row.original?.createdAt)}</p>
         </div>
       ),
     }),
