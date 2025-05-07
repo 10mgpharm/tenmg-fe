@@ -1,5 +1,5 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   Drawer,
   DrawerBody,
@@ -14,8 +14,10 @@ import {
 } from '@chakra-ui/react'
 import Image from 'next/image'
 import StatusBadge from '../../_components/StatusBadge'
+import { convertDate } from '@/utils/formatDate'
+import { convertLetterCase, formatAmountString } from '@/utils'
 
-export default function TransactionHistoryDrawer() {
+export default function TransactionHistoryDrawer({records}: {records: any}) {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef()
@@ -40,14 +42,14 @@ export default function TransactionHistoryDrawer() {
           <DrawerBody>
             <div>
               <div>
-                <h4 className='font-semibold text-xl mb-2'>₦9000</h4>
-                <p className='font-light text-sm'>Tue, 10 Sept 2024. 19:40</p>
+                <h4 className='font-semibold text-xl mb-2'>₦{formatAmountString(records?.amount)}</h4>
+                <p className='font-light text-sm'>{convertDate(records?.createdAt)}</p>
               </div>
 
               <div>
                 <p className='mt-4 font-light text-sm mb-2'>Details</p>
                 <p className='border border-slate-500 rounded-md py-2 px-4 text-semibold'>
-                  Lisa Olanrawaju
+                  {records?.business?.name}
                 </p>
               </div>
 
@@ -55,23 +57,23 @@ export default function TransactionHistoryDrawer() {
 
                 <div className='flex items-center justify-between text-xs my-3'>
                   <p className='font-light'>Status</p>
-                  <p className='font-semibold'><StatusBadge status='Completed' bgColor="green.50" color="green.500" isDot/></p>
+                  <p className='font-semibold '><StatusBadge status={convertLetterCase(records?.status)} bgColor="green.50" color="green.500" isDot/></p>
                 </div>
-                <div className='flex items-center justify-between text-xs my-3'>
+                {/* <div className='flex items-center justify-between text-xs my-3'>
                   <p className='font-light'>Wallet debited</p>
                   <p className='font-semibold'>Admin</p>
-                </div>
+                </div> */}
                 <div className='flex items-center justify-between text-xs my-3'>
                   <p className='font-light'>Transaction Type</p>
-                  <p className='font-semibold'>NIP OUTWARD TRANSFER</p>
+                  <p className='font-semibold'>{records?.type}</p>
                 </div>
                 <div className='flex items-center justify-between text-xs my-3'>
-                  <p className='font-light'>SessionID</p>
-                  <p className='font-semibold'>00001324019929464</p>
+                  <p className='font-light'>Transaction ID</p>
+                  <p className='font-semibold'>{records?.identifier}</p>
                 </div>
                 <div className='flex items-center justify-between text-xs my-3'>
                   <p className='font-light'>Remark</p>
-                  <p className='font-semibold'>00001324019929464</p>
+                  <p className='font-semibold'>{records?.description}</p>
                 </div>
               </div>
             </div>
