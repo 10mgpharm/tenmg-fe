@@ -49,41 +49,43 @@ const Page = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    const url = `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
-    try {
-      const response = await requestClient({ token }).get(url);
+const fetchData = useCallback(async () => {
+  setLoading(true);
+  setError("");
 
-      if (response.status === 200 && response.data.data) {
-        let results = response.data.data.data || [];
+  const url = `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
+  try {
+    const response = await requestClient({ token }).get(url);
 
-        // Apply search manually on actor.name
-        if (searchValue.trim()) {
-         const lowerSearch = searchValue.toLowerCase();
-         results = results.filter(
-           (log: any) =>
-             log.actor?.name?.toLowerCase().includes(lowerSearch) ||
-             log.action?.toLowerCase().includes(lowerSearch)
-         );
+    if (response.status === 200 && response.data.data) {
+      let results = response.data.data.data || [];
 
-        }
+      const lowerSearch = searchValue.trim().toLowerCase();
 
-        setData({
-          ...response.data.data,
-          data: results,
+      if (lowerSearch) {
+        results = results.filter((log: any) => {
+          const actorName = log.actor?.name?.toLowerCase() || "";
+          const event = log.event?.toLowerCase() || "";
+          return actorName.includes(lowerSearch) || event.includes(lowerSearch);
         });
-      } else {
-        setError("Failed to load audit logs. Please try again.");
       }
-    } catch (err: any) {
-      console.error(err);
-      setError("An unexpected error occurred while fetching audit logs.");
-    } finally {
-      setLoading(false);
+
+      setData({
+        ...response.data.data,
+        data: results,
+      });
+    } else {
+      setError("Failed to load audit logs. Please try again.");
     }
-  }, [token, pageCount, searchValue]);
+  } catch (err: any) {
+    console.error(err);
+    setError("An unexpected error occurred while fetching audit logs.");
+  } finally {
+    setLoading(false);
+  }
+}, [token, pageCount, searchValue]);
+
+
 
   useEffect(() => {
     setPageCount(1);
@@ -141,7 +143,7 @@ const Page = () => {
             heading={searchValue ? "No Matching Results" : "No Audit Logs Yet"}
             content={
               searchValue
-                ? `No audit log found for the user name "${searchValue}".`
+                ? `No audit log found for the user name or action "${searchValue}".`
                 : `You currently have no audit logs. All audit logs will appear here.`
             }
           />
