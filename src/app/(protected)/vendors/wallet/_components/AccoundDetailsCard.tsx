@@ -5,9 +5,6 @@ import { NextAuthUserSession } from '@/types';
 import { Button, useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react'
-import { FaPenAlt } from 'react-icons/fa';
-import { FaPencil } from 'react-icons/fa6';
-
 
 interface WalletProps {
   currentBalance: string;
@@ -20,7 +17,6 @@ export default function AccoundDetailsCard(
   { showBalance?: boolean, setAccountInfo?: (accountInfo: BankInfo) => void }
 ) {
 
-  
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
@@ -65,12 +61,11 @@ export default function AccoundDetailsCard(
             </div>
 
             {/* Bank Name */}
-            <div onClick={onOpen} className="p-2 cursor-pointer flex items-center gap-2 rounded-full bg-white transition-all duration-300 
+            <div className="p-2 cursor-pointer rounded-full bg-white transition-all duration-300 
               w-auto group-hover:w-full overflow-hidden">
                 <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
                   {accountDetails?.bankName}
                 </p>
-                <FaPenAlt className="w-4 h-4 text-black"/>
             </div>
           </div>
 
@@ -80,8 +75,8 @@ export default function AccoundDetailsCard(
               <h2 className="text-xl font-semibold">
                 {showBalance ?
                   `${'*'.repeat(7)}${accountDetails?.accountNumber.slice(-3)}`
-                  : accountDetails?.accountNumber}
-
+                  : accountDetails?.accountNumber
+                }
               </h2>
             </div>
             <Button size={"xs"} className="px-2 py-1" style={{ backgroundColor: "#000000cf" }}

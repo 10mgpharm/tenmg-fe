@@ -3,12 +3,14 @@ import { classNames } from "@/utils";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { Dispatch, SetStateAction } from "react";
 
 const columnHelper = createColumnHelper<Daum2>();
 
 export function Awaiting_columnFn(
   onOpen: () => void,
-  onOpenPayout: () => void
+  onOpenPayout: () => void,
+  setSelectedRow: Dispatch<SetStateAction<Daum2 | null>>
 ) {
   return [
     columnHelper.accessor("txnGroup", {
@@ -57,7 +59,7 @@ export function Awaiting_columnFn(
       ),
     }),
     columnHelper.accessor("status", {
-      header: ({ column }) => <p>Type</p>,
+      header: ({ column }) => <p>Status</p>,
       cell: (info) => {
         return (
           <div>
@@ -97,7 +99,10 @@ export function Awaiting_columnFn(
                   </>
                 ) : (
                   <>
-                    <MenuItem onClick={() => onOpen()}>
+                    <MenuItem onClick={() => {
+                      setSelectedRow(info.row.original);
+                      onOpen();
+                      }}>
                       View Transaction Details
                     </MenuItem>
                   </>
