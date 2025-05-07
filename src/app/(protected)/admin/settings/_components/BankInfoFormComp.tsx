@@ -12,7 +12,13 @@ import {
   Skeleton,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useRef, useState, useTransition } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { set, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -21,20 +27,13 @@ import {
   getBankList,
   verifyBankAccount,
 } from "@/app/(standalone)/widgets/applications/actions";
-import { FaCamera } from "react-icons/fa";
-
-interface Props {
-  sessionData: NextAuthUserSession;
-  defaultBankDetail: BankAccountDto;
-  isInfoLoading: boolean;
-}
+import { useSession } from "next-auth/react";
 
 interface IFormInput {
   bankName: string;
   accountName: string;
   accountNumber: string;
   bankCode: string;
-  bvn?: string;
 }
 
 interface SelectOption {
@@ -53,28 +52,48 @@ const formSchema = z.object({
     .string({ invalid_type_error: "Please select a bank." })
     .min(1, "Please select a valid bank."),
   bankName: z.string().nonempty(),
-  bvn: z.string(),
 });
 
 type FormInput = z.infer<typeof formSchema>;
 
-export default function BankInfoFormComp({
-  sessionData,
-  defaultBankDetail,
-  isInfoLoading,
-}: Props) {
+export default function BankInfoFormComp() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isInfoLoading, setIsInfoLoading] = useState(false);
+  const session = useSession();
+  const sessionData = session.data as NextAuthUserSession;
+  const [useBankDetails, setUserBankDetails] = useState(null);
   const [accountVerificationInProgress, startBankAccountVerification] =
     useTransition();
   const [accountVerificationError, setAccountVerificationError] = useState<
     string | null
   >(null);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
-  const [edit, setEdit] = useState<boolean>(true);
-  const [defaultBankAccount, setDefaultBankAccount] =
-    useState<BankAccountDto>(defaultBankDetail);
 
   const token = sessionData?.user?.token;
+
+  const fetchTableData = useCallback(async () => {
+    setIsInfoLoading(true);
+
+    try {
+      const response = await requestClient({ token: token }).get(
+        "admin/wallet/bank-account"
+      );
+      if (response.status === 200) {
+        setUserBankDetails(response?.data?.data);
+        setValue("accountName", response?.data?.data.accountName);
+        setValue("accountNumber", response?.data?.data.accountNumber);
+        setValue("bankName", response?.data?.data.bankName);
+        setValue("bankCode", response?.data?.data.bankCode);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setIsInfoLoading(false);
+  }, [token]);
+
+  useEffect(() => {
+    fetchTableData();
+  }, [fetchTableData]);
 
   const {
     register,
@@ -91,7 +110,6 @@ export default function BankInfoFormComp({
       accountName: "",
       accountNumber: "",
       bankCode: "",
-      bvn: "",
     },
   });
 
@@ -144,12 +162,6 @@ export default function BankInfoFormComp({
     });
   };
 
-  useEffect(() => {
-    if (defaultBankDetail) {
-      setDefaultBankAccount(defaultBankDetail);
-    }
-  }, [defaultBankDetail]);
-
   // When account number reaches 10 digits and a bank is selected, verify account
   useEffect(() => {
     if (accountNumber && accountNumber.length === 10 && bankCode && bankName) {
@@ -166,17 +178,6 @@ export default function BankInfoFormComp({
     }
   }, [token]);
 
-  // When editing, prefill the form with default bank detail
-  useEffect(() => {
-    if (defaultBankAccount && edit) {
-      setValue("accountName", defaultBankAccount.accountName);
-      setValue("accountNumber", defaultBankAccount.accountNumber);
-      setValue("bankCode", defaultBankAccount.bankCode);
-      setValue("bankName", defaultBankAccount.bankName);
-      setValue("bvn", defaultBankAccount.bvn);
-    }
-  }, [defaultBankAccount, edit, setValue]);
-
   useEffect(() => {
     if (banks && bankCode) {
       const matchedBank = banks.find((b) => b.value === Number(bankCode));
@@ -189,20 +190,17 @@ export default function BankInfoFormComp({
   const onSubmit: SubmitHandler<FormInput> = async (formData) => {
     try {
       setIsLoading(true);
-      // const response = await requestClient({
-      //   token: sessionData.user.token,
-      // }).patch("/lender/settings/business-account", {
-      //   ...formData,
-      //   bvn: "8335845871",
-      // });
+      const response = await requestClient({
+        token: sessionData.user.token,
+      }).patch(`/admin/wallet/add-bank-account/${useBankDetails?.id}`, {
+        ...formData,
+      });
 
-      // if (response.status === 200) {
-      //   toast.success("Bank Information successfully updated");
-      //   setDefaultBankAccount(response.data.data);
-      //   setEdit(false);
-      // } else {
-      //   toast.error(`Error: ${response.data.message}`);
-      // }
+      if (response.status === 200) {
+        toast.success("Bank Information successfully updated");
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
@@ -213,192 +211,134 @@ export default function BankInfoFormComp({
 
   return (
     <div>
-      {edit ? (
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          {/* Header */}
-          <div className="space-y-5 w-full flex justify-between py-5">
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        {/* Header */}
+        <div className="space-y-5 w-full flex justify-between py-5">
+          <div>
+            <h3 className="font-semibold text-lg">Bank Information</h3>
+            <Text fontSize={"14px"} color={"gray.500"}>
+              Manage your bank information and details for payout.
+            </Text>
+          </div>
+          <Button
+            size="sm"
+            variant="solid"
+            colorScheme="primary"
+            isLoading={isLoading}
+            loadingText="Submitting..."
+            type="submit"
+          >
+            Save Changes
+          </Button>
+        </div>
+
+        <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
+          {/* Account Number Field */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
-              <h3 className="font-semibold text-lg">Bank Information</h3>
-              <Text fontSize={"14px"} color={"gray.500"}>
-                Manage your bank information and details for payout.
+              <FormLabel m={0}>Account Number</FormLabel>
+              <Text fontSize="14px" color="gray.500">
+                Associated account number
               </Text>
             </div>
-            <Button
-              size="sm"
-              variant="solid"
-              colorScheme="primary"
-              isLoading={isLoading}
-              loadingText="Submitting..."
-              type="submit"
-            >
-              Save Changes
-            </Button>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl className="col-span-2">
+                <NumberInput
+                  value={accountNumber || ""}
+                  onChange={(val) => {
+                    setValue("accountNumber", val);
+                    trigger("accountNumber");
+                  }}
+                  inputMode="numeric"
+                >
+                  <NumberInputField placeholder="0000000000" />
+                </NumberInput>
+                {errors.accountNumber && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.accountNumber.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Skeleton>
           </div>
 
-          <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
-            {/* Account Number Field */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div>
-                <FormLabel m={0}>Account Number</FormLabel>
-                <Text fontSize="14px" color="gray.500">
-                  Associated account number
-                </Text>
-              </div>
-              <Skeleton isLoaded={!isInfoLoading}>
-                <FormControl className="col-span-2">
-                  <NumberInput
-                    value={accountNumber || ""}
-                    onChange={(val) => {
-                      setValue("accountNumber", val);
-                      trigger("accountNumber");
-                    }}
-                    inputMode="numeric"
-                  >
-                    <NumberInputField placeholder="0000000000" />
-                  </NumberInput>
-                  {errors.accountNumber && (
-                    <Text fontSize="sm" color="red.500">
-                      {errors.accountNumber.message}
-                    </Text>
-                  )}
-                </FormControl>
-              </Skeleton>
-            </div>
-
-            {/* Bank Selection Field */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div>
-                <FormLabel m={0}>Bank</FormLabel>
-                <Text fontSize="14px" color="gray.500">
-                  Associated bank name
-                </Text>
-              </div>
-              <Skeleton isLoaded={!isInfoLoading}>
-                <FormControl
-                  className="col-span-2"
-                  isInvalid={!!errors.bankCode}
-                >
-                  <Select
-                    placeholder="Choose Bank"
-                    {...register("bankCode", {
-                      required: "Please select a bank",
-                    })}
-                    onChange={(e) => {
-                      const selectedValue = e.target.value;
-                      const selectedText =
-                        e.target.options[e.target.selectedIndex].text;
-                      setValue("bankCode", selectedValue);
-                      setValue("bankName", selectedText);
-                      trigger(["bankCode", "bankName"]);
-                    }}
-                  >
-                    {banks?.map((bank, index) => (
-                      <option key={index} value={bank.value}>
-                        {bank.label}
-                      </option>
-                    ))}
-                  </Select>
-                  {errors.bankCode && (
-                    <Text fontSize="sm" color="red.500">
-                      {errors.bankCode.message}
-                    </Text>
-                  )}
-                </FormControl>
-              </Skeleton>
-            </div>
-
-            {/* Account Name Field */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div>
-                <FormLabel m={0}>Account Name</FormLabel>
-                <Text fontSize="14px" color="gray.500">
-                  Account name verified from bank
-                </Text>
-              </div>
-              <Skeleton isLoaded={!isInfoLoading}>
-                <FormControl
-                  className="col-span-2"
-                  isInvalid={!!errors.accountName || !!accountVerificationError}
-                >
-                  <Skeleton
-                    isLoaded={!accountVerificationInProgress}
-                    fadeDuration={0.5}
-                    borderRadius="md"
-                  >
-                    <Text p={2} bg="gray.100" borderRadius="md">
-                      {accountName || "Account name will appear here"}
-                    </Text>
-                    {accountVerificationError && (
-                      <Text fontSize="sm" color="red.500">
-                        {accountVerificationError}
-                      </Text>
-                    )}
-                  </Skeleton>
-                  {!accountName && errors.accountName && (
-                    <Text fontSize="sm" color="red.500">
-                      {errors.accountName.message}
-                    </Text>
-                  )}
-                </FormControl>
-              </Skeleton>
-            </div>
-          </div>
-        </form>
-      ) : (
-        // Display Mode
-        <div className="space-y-4">
-          <div className="space-y-5 w-full flex justify-between py-5">
+          {/* Bank Selection Field */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div>
-              <h3 className="font-semibold text-lg">Bank Information</h3>
-
-              <Text fontSize={"14px"} color={"gray.500"}>
-                Manage your bank information and details for payout.
+              <FormLabel m={0}>Bank</FormLabel>
+              <Text fontSize="14px" color="gray.500">
+                Associated bank name
               </Text>
             </div>
-            <Button
-              size="sm"
-              variant="solid"
-              colorScheme="primary"
-              isLoading={isLoading}
-              loadingText="Submitting..."
-              type="button"
-              onClick={() => setEdit(true)}
-            >
-              Edit Changes
-            </Button>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl className="col-span-2" isInvalid={!!errors.bankCode}>
+                <Select
+                  placeholder="Choose Bank"
+                  {...register("bankCode", {
+                    required: "Please select a bank",
+                  })}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    const selectedText =
+                      e.target.options[e.target.selectedIndex].text;
+                    setValue("bankCode", selectedValue);
+                    setValue("bankName", selectedText);
+                    trigger(["bankCode", "bankName"]);
+                  }}
+                  defaultValue={useBankDetails.bankName}
+                >
+                  {banks?.map((bank, index) => (
+                    <option key={index} value={bank.value}>
+                      {bank.label}
+                    </option>
+                  ))}
+                </Select>
+                {errors.bankCode && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.bankCode.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Skeleton>
           </div>
-          <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
-            {/* Account Number */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
-              <div>
-                <FormLabel>Account Number</FormLabel>
-              </div>
-              <Text color="gray.800">{defaultBankAccount?.accountNumber}</Text>
+
+          {/* Account Name Field */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div>
+              <FormLabel m={0}>Account Name</FormLabel>
+              <Text fontSize="14px" color="gray.500">
+                Account name verified from bank
+              </Text>
             </div>
-            {/* Bank */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
-              <div>
-                <FormLabel>Bank</FormLabel>
-              </div>
-              <Text color="gray.800">{defaultBankAccount?.bankName}</Text>
-            </div>
-            {/* Account Name */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
-              <div>
-                <FormLabel>Account Name</FormLabel>
-              </div>
-              <Text color="gray.800">{defaultBankAccount?.accountName}</Text>
-            </div>
-            {/* BVN */}
-            {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
-              <div>
-                <FormLabel>BVN</FormLabel>
-              </div>
-              <Text color="gray.800">{defaultBankDetail?.bvn}</Text>
-            </div> */}
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl
+                className="col-span-2"
+                isInvalid={!!errors.accountName || !!accountVerificationError}
+              >
+                <Skeleton
+                  isLoaded={!accountVerificationInProgress}
+                  fadeDuration={0.5}
+                  borderRadius="md"
+                >
+                  <Text p={2} bg="gray.100" borderRadius="md">
+                    {accountName || "Account name will appear here"}
+                  </Text>
+                  {accountVerificationError && (
+                    <Text fontSize="sm" color="red.500">
+                      {accountVerificationError}
+                    </Text>
+                  )}
+                </Skeleton>
+                {!accountName && errors.accountName && (
+                  <Text fontSize="sm" color="red.500">
+                    {errors.accountName.message}
+                  </Text>
+                )}
+              </FormControl>
+            </Skeleton>
           </div>
         </div>
-      )}
+      </form>
     </div>
   );
 }

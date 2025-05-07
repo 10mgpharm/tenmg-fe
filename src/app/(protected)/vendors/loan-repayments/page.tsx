@@ -85,7 +85,7 @@ const LoanRepayments = () => {
 
   const table = useReactTable({
     data: data ? data.data : [],
-    columns: ColumnsLoanRepaymentFN(),
+    columns: ColumnsLoanRepaymentFN(pageCount),
     state: {
       globalFilter,
     },
