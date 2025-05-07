@@ -730,3 +730,28 @@ export interface LoanApplicationDataResponse {
   links: any;
   meta: MetaDataProp;
 }
+
+export interface LenderTransactionHistoryData {
+  id: number;
+  identifier: string;
+  amount: string;
+  type: string;
+  transactionGroup: string;
+  description: string;
+  status: string;
+  paymentMethod: string;
+  reference: string;
+  walletId: number;
+  loanApplicationId: number;
+  meta: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LenderTransactionHistoryDataProps {
+  data: LenderTransactionHistoryData[];
+  links: any;
+  meta: MetaDataProp;
+}
+
+
