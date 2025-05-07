@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SearchInput from "../_components/SearchInput";
-import { CiFilter } from "react-icons/ci";
 import {
   Flex,
   Spinner,
@@ -13,7 +12,6 @@ import {
   Th,
   Thead,
   Tr,
-  useDisclosure,
 } from "@chakra-ui/react";
 import EmptyResult from "../_components/EmptyResult";
 import {
@@ -31,7 +29,6 @@ import {
   CreditScoreResponseData,
   NextAuthUserSession,
 } from "@/types";
-import FilterDrawer from "../_components/FilterDrawer";
 import { useDebouncedValue } from "@/utils/debounce";
 
 export interface IFilterInput {

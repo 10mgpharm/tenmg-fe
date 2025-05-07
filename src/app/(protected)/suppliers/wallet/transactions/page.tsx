@@ -4,7 +4,7 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import { CiFilter, CiSearch } from "react-icons/ci"
 import Transaction from "../_components/Transaction"
 import { useCallback, useEffect, useState } from "react"
-import { NextAuthUserSession, WalletResponseData } from "@/types"
+import { NextAuthUserSession, PayoutDataProps, SupplierTransactionDataProps, WalletResponseData } from "@/types"
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 
@@ -13,8 +13,10 @@ const TransactionUI = () => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
-  const [loading, setLoading] = useState(false);
-  const [transactions, setTransactions] = useState<WalletResponseData>();
+  const [pageCount, setPageCount] = useState(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [transactions, setTransactions] = useState<SupplierTransactionDataProps>();
+  const [pendingPayouts, setPendingPayout] = useState<PayoutDataProps>();
 
   const fetchingTransactions = useCallback(async () => {
       setLoading(true);
@@ -31,11 +33,28 @@ const TransactionUI = () => {
         setLoading(false);
       }
   }, [token]);
+
+  const fetchingPendingPayout = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token }).get(
+        `/supplier/wallet/pending-payout`
+      );
+      if (response.status === 200) {
+        setPendingPayout(response?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
   
   useEffect(() => {
     if (!token) return;
     fetchingTransactions();
-  }, [token, fetchingTransactions]);
+    fetchingPendingPayout();
+  }, [token, fetchingTransactions, fetchingPendingPayout]);
     
   return (
     <div className="p-8">
@@ -61,7 +80,12 @@ const TransactionUI = () => {
             </div>
         </div>
         <div className="mt-4">
-            <Transaction data={transactions?.data} />
+            <Transaction 
+            data={transactions} 
+            payoutData={pendingPayouts} 
+            hasPagination={true}
+            setPageCount={setPageCount}
+            />
         </div>
     </div>
   )

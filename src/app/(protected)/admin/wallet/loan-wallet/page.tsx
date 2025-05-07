@@ -71,17 +71,16 @@ const LoanWallet = () => {
     fetchTableData();
   }, [fetchTableData, token]);
 
+  const columns = useMemo(() => loanColumnFn(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
   const memoizedData = useMemo(() => tableData?.data, [tableData?.data]);
 
   const table = useReactTable({
-    data: memoizedData,
-    columns: loanColumnFn(onOpen, setSelectedRow),
+    data: memoizedData || [],
+    columns: columns,
     state: {},
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
 });
-
-  console.log(tableData);
 
   return (
     <div className="px-6 py-8 md:p-8">

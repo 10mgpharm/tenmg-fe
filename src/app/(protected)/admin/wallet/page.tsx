@@ -72,8 +72,6 @@ const Page = () => {
     fetchingLoanTransactions();
   }, [token]);
 
-  console.log(loanTransaction);
-
   return (
     <div className="px-6 py-8 md:p-8 ">
       <Tabs

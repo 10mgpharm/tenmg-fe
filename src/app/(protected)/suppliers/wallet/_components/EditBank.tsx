@@ -1,147 +1,21 @@
-import { getBankList } from '@/app/(standalone)/widgets/applications/actions';
-import requestClient from '@/lib/requestClient';
-import { BankDto, NextAuthUserSession } from '@/types';
-import { handleServerErrorMessage } from '@/utils';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
-  Text,
-} from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { BankInfo } from '../page';
+import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text } from '@chakra-ui/react'
+import Select from 'react-select';
 
-interface IFormInput {
-  bankName: string;
-  accountNumber: string;
-  accountName: string;
-  bankCode: string;
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    fetchingWallet: () => void;
+    endpoint: string;
 }
-interface SelectOption {
-  label: string;
-  value: number;
-}
-
-const AddAccount = (
-  { isOpen, onClose, endpoint, fetchingWallet, bank }:
-  { isOpen: boolean, onClose: () => void; endpoint: string, fetchingWallet: () => void, bank?: BankInfo }) => {
-
-  const session = useSession();
-  const sessionToken = session?.data as NextAuthUserSession;
-  const token = sessionToken?.user?.token;
-  const [isLoading, setIsLoading] = useState(false);
-  const [accountVerificationError, setAccountVerificationError] = useState<
-    string | null
-  >(null);
-
-  const {
-    register,
-    setValue,
-    trigger,
-    getValues,
-    reset,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<IFormInput>({
-    mode: "onChange",
-    defaultValues: {
-      bankCode: bank?.bankCode ?? "",
-      bankName: bank?.bankName ?? "",
-      accountName: bank?.accountName ?? "",
-      accountNumber: bank?.accountNumber ?? "",
-    }
-  });
-
-  const [banks, setBanks] = useState<SelectOption[] | null>(null);
-
-
-  useEffect(() => {
-
-    const fetchingBankList = async () => {
-      try {
-        const response = await getBankList(token);
-        if (response.status === "error") {
-          setBanks([]);
-        } else {
-          const bankList: BankDto[] = response.data;
-          setBanks(
-            bankList.map((bank) => ({
-              label: bank.name,
-              value: bank.code,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching bank list:", error);
-        setBanks([]);
-      }
-    }
-
-    if (!token) return;
-    fetchingBankList();
-  }, [token]);
-
-  useEffect(() => {
-    if (bank) {
-      reset({
-        bankCode: bank.bankCode ?? '',
-        bankName: bank.bankName ?? '',
-        accountName: bank.accountName ?? '',
-        accountNumber: bank.accountNumber ?? '',
-      });
-      setValue("bankName", bank.bankName ?? "")
-    }
-  }, [bank, reset, setValue]);
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    try {
-      const response =
-        bank ?
-          await requestClient({ token: token }).patch(
-            `${endpoint}/${bank.id}`,
-            data
-          ) :
-          await requestClient({ token: token }).post(
-            endpoint,
-            data
-          )
-      if (response.status === 200) {
-        fetchingWallet();
-        setIsLoading(false);
-        onClose();
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-      toast.error(handleServerErrorMessage(error));
-    }
-  }
-
+const EditBank = ({isOpen, onClose}: Props) => {
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          {
-            bank ?
-              "Edit Bank Account" :
-              "Add Bank Account"
-          }
-        </ModalHeader>
-        <ModalCloseButton />
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Add Bank Account</ModalHeader>
+      <ModalCloseButton />
         <ModalBody>
-          <form className='space-y-4 mb-6' onSubmit={handleSubmit(onSubmit)}>
+            {/* <form className='space-y-4 mb-6' onSubmit={handleSubmit(onSubmit)}>
             <FormControl
               className="col-span-2"
               isInvalid={!!errors.bankName}
@@ -151,7 +25,6 @@ const AddAccount = (
                 {...register("bankCode", {
                   required: "Please select a bank",
                 })}
-                value={getValues("bankCode") || ""}
                 onChange={(e) => {
                   const selectedValue = e.target.value;
                   const selectedText =
@@ -238,7 +111,6 @@ const AddAccount = (
                 name="bankCode"
                 placeholder="e.g 139-0568"
                 type="number"
-                value={getValues("bankCode")}
                 disabled
                 isInvalid={!!errors.bankCode}
                 _disabled={{
@@ -259,13 +131,13 @@ const AddAccount = (
               )}
             </FormControl>
             <Button type='submit' w={"full"} mt={4} colorScheme='blue'>
-              {bank ? "Edit Account" : "Add Account"}
+              {info ? "Edit Account" : "Add Account"}
             </Button>
-          </form>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          </form> */}
+      </ModalBody>
+    </ModalContent>
+  </Modal>
   )
 }
 
-export default AddAccount
+export default EditBank

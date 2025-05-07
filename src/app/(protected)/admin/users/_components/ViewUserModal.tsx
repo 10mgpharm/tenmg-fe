@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { classNames, handleServerErrorMessage } from "@/utils";
@@ -46,30 +46,29 @@ export default function ViewUserModal({
   const { data: session } = useSession();
   const sessionToken = session as NextAuthUserSession | null;
   const token = sessionToken?.user?.token;
-
   // Fetch user data when drawer is open, and we have a valid id + token
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!id || !token) return;
-      setIsUserLoading(true);
-      try {
-        const response = await requestClient({ token }).get(
-          `admin/users/${id}`
-        );
-        if (response.status === 200) {
-          setUserData(response.data.data);
-        }
-      } catch (error) {
-        toast.error(handleServerErrorMessage(error));
-      } finally {
-        setIsUserLoading(false);
+  const fetchUserData = useCallback(async () => {
+    if (!id || !token) return;
+    setIsUserLoading(true);
+    try {
+      const response = await requestClient({ token }).get(
+        `admin/users/${id}`
+      );
+      if (response.status === 200) {
+        setUserData(response.data.data);
       }
-    };
+    } catch (error) {
+      toast.error(handleServerErrorMessage(error));
+    } finally {
+      setIsUserLoading(false);
+    }
+  }, [id, token]);
 
+  useEffect(() => {
     if (isOpen) {
       fetchUserData();
     }
-  }, [id, token, isOpen]);
+  }, [token, isOpen]);
 
   // If no valid ID is provided, do not render the drawer at all
   if (!id) {

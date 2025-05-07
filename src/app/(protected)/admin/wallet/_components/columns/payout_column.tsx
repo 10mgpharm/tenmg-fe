@@ -1,8 +1,8 @@
-import { createColumnHelper } from "@tanstack/react-table";
+import { Daum2} from "@/types";
 import { classNames } from "@/utils";
+import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Daum2} from "@/types";
 
 const columnHelper = createColumnHelper<Daum2>();
 
@@ -21,12 +21,12 @@ export function Awaiting_columnFn(
         </div>
       ),
     }),
-    columnHelper.accessor("tenmgCommission", {
-      header: ({ column }) => <p className="">Commission</p>,
+    columnHelper.accessor("name", {
+      header: ({ column }) => <p className="">Supplier</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-          ₦{info.row.original?.tenmgCommission ?? `0.00`}
+          {info.row.original?.name ?? ""}
           </p>
         </div>
       ),
@@ -46,14 +46,13 @@ export function Awaiting_columnFn(
       cell: (info) => (
         <div className="">
           <p className="font-medium">₦{info.row.original?.amount}</p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("balanceAfter", {
-      header: ({ column }) => <p className="">Balance</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
+          {
+            info?.row?.original?.tenmgCommission && (
+              <span className="text-xs text-green-500">
+                Commission: ₦{info.row.original?.tenmgCommission ?? ""}
+              </span>
+            )
+          }
         </div>
       ),
     }),
@@ -73,7 +72,7 @@ export function Awaiting_columnFn(
               )}
             >
               <span className="rounded-full text-[1.2rem]">•</span>{" "}
-              {info?.row?.original?.status}
+              PAID
             </p>
           </div>
         );
