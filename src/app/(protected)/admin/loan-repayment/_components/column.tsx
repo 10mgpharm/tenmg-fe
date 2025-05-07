@@ -72,5 +72,13 @@ export function ColumsRepaymentFN(
         </div>
       ),
     }),
+    columnHelper.accessor("createdAt", {
+      header: ({ column }) => <p>Created at</p>,
+      cell: (info) => (
+        <div className="">
+          <p>{convertDate(info.row.original?.createdAt)}</p>
+        </div>
+      ),
+    }),
   ];
 }
