@@ -98,7 +98,7 @@ export function ColumnsTransactionHistoryFN(onOpen?: () => void) {
       cell: (info) => {
         return (
           <div>
-            <TransactionHistoryDrawer id={info?.row?.original?.id} records={info?.row?.original} />
+            <TransactionHistoryDrawer records={info?.row?.original} />
           </div>
         );
       },
