@@ -31,7 +31,6 @@ export default function ReviewPage() {
 
   useEffect(() => {
     const url = window.location.href.split('/');
-    // console.log(url[url.length - 1])
     setId(url[url.length - 1])
   }, [])
 
@@ -40,8 +39,6 @@ export default function ReviewPage() {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // console.log(id)
 
   useEffect(() => {
     const fetchProductData = async () => {

@@ -138,47 +138,47 @@ const AddMedicationType = (
     const [presentationList, setPresentationList] = useState<SelectedOption[]>(null);
     const [measurementList, setMeasurementList] = useState<SelectedOption[]>(null);
 
+    const fetchPresentations = async () => {
+        try {
+            const response = await requestClient({ token: token })
+                .get("/admin/settings/presentations/dropdown");
+
+            if (response.status === 200) {
+                const data = response.data.data;
+                const mappedData = data?.map((item: any) => {
+                    return {
+                        label: item.name,
+                        value: item.name
+                    }
+                })
+                setPresentationList(mappedData)
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const fetchMeasurements = async () => {
+        try {
+            const response = await requestClient({ token: token })
+                .get("/admin/settings/measurements/dropdown");
+
+            if (response.status === 200) {
+                const data = response.data.data;
+                const mappedData = data?.map((item: any) => {
+                    return {
+                        label: item.name,
+                        value: item.name
+                    }
+                })
+                setMeasurementList(mappedData)
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
-        const fetchPresentations = async () => {
-            try {
-                const response = await requestClient({ token: token })
-                    .get("/admin/settings/presentations/dropdown");
-
-                if (response.status === 200) {
-                    const data = response.data.data;
-                    const mappedData = data?.map((item: any) => {
-                        return {
-                            label: item.name,
-                            value: item.name
-                        }
-                    })
-                    setPresentationList(mappedData)
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        const fetchMeasurements = async () => {
-            try {
-                const response = await requestClient({ token: token })
-                    .get("/admin/settings/measurements/dropdown");
-
-                if (response.status === 200) {
-                    const data = response.data.data;
-                    const mappedData = data?.map((item: any) => {
-                        return {
-                            label: item.name,
-                            value: item.name
-                        }
-                    })
-                    setMeasurementList(mappedData)
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
         if (isOpen) {
             fetchPresentations();
             fetchMeasurements();
@@ -210,7 +210,6 @@ const AddMedicationType = (
         resetSelectedItem();
     }
 
-    console.log(medication)
     return (
         <Drawer
             isOpen={isOpen}

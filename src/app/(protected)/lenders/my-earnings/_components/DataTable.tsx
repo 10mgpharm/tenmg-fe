@@ -31,21 +31,19 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MyEarningsColumn } from "./column";
-import Pagination from "../../_components/Pagination";
 import EmptyResult from "@/app/(protected)/vendors/_components/EmptyResult";
 import shape from "@public/assets/images/Rectangle 43.svg";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 type DataTableProps = {
   data: any;
   loading: boolean;
-  pageCount: number;
   setPageCount: Dispatch<SetStateAction<number>>;
 };
 
 const DataTable = ({
   data: myEarningsData,
   loading,
-  pageCount,
   setPageCount,
 }: DataTableProps) => {
   const [selectedUserId, setSelectedUserId] = useState<null | string>(null);
@@ -59,7 +57,7 @@ const DataTable = ({
   const memoizedData = useMemo(() => myEarningsData, [myEarningsData]);
 
   const table = useReactTable({
-    data: memoizedData,
+    data: memoizedData?.data,
     columns: MyEarningsColumn(onOpenDetails, setSelectedUserId),
 
     enableRowSelection: true,
@@ -77,55 +75,50 @@ const DataTable = ({
 
   return (
     <div>
-      {myEarningsData?.length === 0 ? (
+      {!myEarningsData?.data || myEarningsData?.data?.length === 0 ? (
         <EmptyResult heading={`Nothing to show here`} content={``} />
       ) : (
-        myEarningsData?.length > 0 && (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-            <Table>
-              <Thead bg="blue.50">
-                {table?.getHeaderGroups()?.map((headerGroup) => (
-                  <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
-                      <Th
-                        textTransform={"initial"}
-                        px="0px"
-                        key={header.id}
-                        color="primary.500"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </Th>
-                    ))}
-                  </Tr>
-                ))}
-              </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </Td>
-                    ))}
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
+        <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+          <Table>
+            <Thead bg="blue.50">
+              {table?.getHeaderGroups()?.map((headerGroup) => (
+                <Tr key={headerGroup.id}>
+                  {headerGroup.headers?.map((header) => (
+                    <Th
+                      textTransform={"initial"}
+                      px="0px"
+                      key={header.id}
+                      color="primary.500"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </Th>
+                  ))}
+                </Tr>
+              ))}
+            </Thead>
+            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+              {table?.getRowModel()?.rows?.map((row) => (
+                <Tr key={row.id}>
+                  {row.getVisibleCells()?.map((cell) => (
+                    <Td key={cell.id} px="0px">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </Td>
+                  ))}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
 
-            <Pagination
-            //   meta={meta}
-            //   setPageCount={setPageCount}
-            />
-          </TableContainer>
-        )
+          <Pagination meta={myEarningsData?.meta} setPageCount={setPageCount} />
+        </TableContainer>
       )}
 
       {/* product details modal */}

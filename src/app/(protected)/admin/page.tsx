@@ -18,8 +18,6 @@ import {
 
 import Link from "next/link";
 import {
-  ColumnOrderState,
-  RowSelectionState,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -43,9 +41,6 @@ const Admin = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [columnVisibility, setColumnVisibility] = useState({});
-    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
     const fetchingOverview = useCallback(async () => {
       try {
@@ -67,23 +62,17 @@ const Admin = () => {
     fetchingOverview();
   }, [token]);
 
-  const loanData = data?.loans?.data?.slice(0, 4);
-  const memoizedData = useMemo(() => loanData, [loanData]);
+  const columns = useMemo(() => ColumsFN(), []);
+  const loanData = useMemo(() => data?.loans?.data?.slice(0, 4), [data?.loans?.data]);
 
   const table = useReactTable({
-    data: memoizedData,
-    columns: ColumsFN(),
+    data: loanData || [],
+    columns: columns,
     onSortingChange: setSorting,
     state: {
       sorting,
-      columnVisibility,
-      columnOrder,
-      rowSelection,
     },
     enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -159,11 +148,11 @@ const Admin = () => {
         </HStack>
         <Stack bg={"white"}>
           {
-            memoizedData?.length === 0 ? 
+            loanData?.length === 0 ? 
             (
               <EmptyCard/> 
             )
-            : memoizedData?.length > 0 ? (
+            : loanData?.length > 0 ? (
               <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                   <Thead bg={"#F2F4F7"}>
@@ -183,7 +172,7 @@ const Admin = () => {
                     ))}
                   </Thead>
                   <Tbody color="#606060" fontSize={"14px"}>
-                    {memoizedData && table?.getRowModel()?.rows?.map((row, i) => (
+                    {table?.getRowModel()?.rows?.map((row, i) => (
                       <Tr key={i}>
                         {row.getVisibleCells()?.map((cell, i) => (
                           <Td key={i} px="0px">

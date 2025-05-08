@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   ColumnOrderState,
   RowSelectionState,
@@ -49,47 +49,48 @@ const Page = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
 
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    const url = `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
+    try {
+      const response = await requestClient({ token }).get(url);
+
+      if (response.status === 200 && response.data.data) {
+        let results = response.data.data.data || [];
+
+        // Apply search manually on actor.name
+        if (searchValue.trim()) {
+         const lowerSearch = searchValue.toLowerCase();
+         results = results.filter(
+           (log: any) =>
+             log.actor?.name?.toLowerCase().includes(lowerSearch) ||
+             log.action?.toLowerCase().includes(lowerSearch)
+         );
+
+        }
+
+        setData({
+          ...response.data.data,
+          data: results,
+        });
+      } else {
+        setError("Failed to load audit logs. Please try again.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError("An unexpected error occurred while fetching audit logs.");
+    } finally {
+      setLoading(false);
+    }
+  }, [token, pageCount, searchValue]);
+
   useEffect(() => {
     setPageCount(1);
-   const fetchData = async () => {
-     setLoading(true);
-     setError("");
-
-     const url = `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
-
-     try {
-       const response = await requestClient({ token }).get(url);
-
-       if (response.status === 200 && response.data.data) {
-         let results = response.data.data.data || [];
-
-         // Apply search manually on actor.name
-         if (searchValue.trim()) {
-           results = results.filter((log: any) =>
-             log.actor?.name?.toLowerCase().includes(searchValue.toLowerCase())
-           );
-         }
-
-         setData({
-           ...response.data.data,
-           data: results,
-         });
-       } else {
-         setError("Failed to load audit logs. Please try again.");
-       }
-     } catch (err: any) {
-       console.error(err);
-       setError("An unexpected error occurred while fetching audit logs.");
-     } finally {
-       setLoading(false);
-     }
-   };
-
-
     if (token) {
       fetchData();
     }
-  }, [token, searchValue, pageCount]);
+  }, [token, pageCount, searchValue]);
 
   const table = useReactTable({
     data: data?.data,
@@ -109,8 +110,6 @@ const Page = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  // const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
   const meta = {
     links: data?.links,
     currentPage: data?.currentPage,
@@ -120,7 +119,7 @@ const Page = () => {
     <div className="p-8">
       <h2 className="text-2xl font-semibold text-gray-700 mb-2">Audit Logs</h2>
       <SearchComponent
-        placeholder="Search by user name"
+        placeholder="Search by name or action"
         onChange={(e) => setSearchValue(e.target.value)}
       />
 

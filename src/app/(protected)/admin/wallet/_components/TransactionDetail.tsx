@@ -1,3 +1,5 @@
+import requestClient from "@/lib/requestClient";
+import { NextAuthUserSession } from "@/types";
 import {
   Drawer,
   DrawerBody,
@@ -13,17 +15,48 @@ import {
 } from "@chakra-ui/react";
 
 import shape from "@public/assets/images/Rectangle 43.svg";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
 
 const TransactionDetails = ({
   isOpen,
   onClose,
+  selectedRow,
   type,
 }: {
   isOpen: boolean;
   onClose: () => void;
   type: string;
+  selectedRow?: any;
 }) => {
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    let query = `/admin/wallet/transactions`;
+
+    try {
+      const response = await requestClient({ token: token }).get(query);
+
+      if (response.status === 200) {
+        setData(response?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setIsLoading(false);
+  }, [token]);
+
+  useEffect(() => {
+    // if (!userId) return;
+    fetchData();
+  }, [fetchData]);
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
       <DrawerOverlay />

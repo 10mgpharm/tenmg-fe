@@ -106,40 +106,40 @@ const TopNavBar = ({
     }
   }, [token]);
 
-  const renderBusinessType = (businessType: string) => {
-    switch (businessType) {
-      case "VENDOR":
-        return (
-          <Tag size="sm" borderRadius="full" color="green.500" bg="green.50">
-            <TagLabel>{convertLetterCase(businessType)}</TagLabel>
-          </Tag>
-        );
-      case "SUPPLIER":
-        return (
-          <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
-            {convertLetterCase(businessType)}
-          </Tag>
-        );
-      case "ADMIN":
-        return (
-          <Tag size="sm" variant="solid" bg="#0000" color="red.700">
-            {convertLetterCase(businessType)}
-          </Tag>
-        );
-      case "LENDER":
-        return (
-          <Tag size="sm" variant="solid" bg="blue.50" color="blue.700">
-            {convertLetterCase(businessType)}1
-          </Tag>
-        );
-      default:
-        return (
-          <Tag size="sm" variant="solid" colorScheme="red">
-            {businessType?.toLowerCase()}
-          </Tag>
-        );
-    }
-  };
+  // const renderBusinessType = (businessType: string) => {
+  //   switch (businessType) {
+  //     case "VENDOR":
+  //       return (
+  //         <Tag size="sm" borderRadius="full" color="green.500" bg="green.50">
+  //           <TagLabel>{convertLetterCase(businessType)}</TagLabel>
+  //         </Tag>
+  //       );
+  //     case "SUPPLIER":
+  //       return (
+  //         <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
+  //           {convertLetterCase(businessType)}
+  //         </Tag>
+  //       );
+  //     case "ADMIN":
+  //       return (
+  //         <Tag size="sm" variant="solid" bg="#0000" color="red.700">
+  //           {convertLetterCase(businessType)}
+  //         </Tag>
+  //       );
+  //     case "LENDER":
+  //       return (
+  //         <Tag size="sm" variant="solid" bg="blue.50" color="blue.700">
+  //           {convertLetterCase(businessType)}1
+  //         </Tag>
+  //       );
+  //     default:
+  //       return (
+  //         <Tag size="sm" variant="solid" colorScheme="red">
+  //           {businessType?.toLowerCase()}
+  //         </Tag>
+  //       );
+  //   }
+  // };
 
  const renderUserRole = (role?: string, entityType?: string) => {
    if (!role || !entityType) return null;
@@ -179,11 +179,7 @@ const TopNavBar = ({
      roleDisplay = capitalizeWords(role);
    }
 
-   return (
-     <Tag size="sm" variant="solid" bg="green.100" color="green.700">
-       {roleDisplay}
-     </Tag>
-   );
+   return roleDisplay;
  };
 
   return (
@@ -255,7 +251,9 @@ const TopNavBar = ({
                     >
                       {data?.user.name}
                     </span>
+                    <Tag size="sm" variant="solid" bg="green.100" color="green.700">
                     {renderUserRole(data?.user?.role, data?.user?.entityType)}
+                    </Tag>
                   </div>
                   <p className="text-gray-600 text-sm">
                     {data?.user?.businessName}

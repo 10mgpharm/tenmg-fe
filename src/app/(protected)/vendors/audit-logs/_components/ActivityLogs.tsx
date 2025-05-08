@@ -12,7 +12,6 @@ import { NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
 
-
 const ActivityLogs = () => {
 
     const session = useSession();

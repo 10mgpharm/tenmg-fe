@@ -160,14 +160,10 @@ const Page = () => {
 
     useEffect(() => {
         if (!token) return;
-        fetchProducts();
-    }, [fetchProducts, token]);
-
-    useEffect(() => {
-        if (!token) return;
         fetchingBrands();
+        fetchProducts();
         fetchingCategory();
-    }, [fetchingBrands, fetchingCategory, token]);
+    }, [fetchingBrands, fetchingCategory, fetchProducts, token]);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 

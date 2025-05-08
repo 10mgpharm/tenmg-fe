@@ -1,9 +1,7 @@
 "use client";
-import SearchComponent from "@/app/(protected)/suppliers/orders/_components/SearchComponent";
 import {
   Button,
   Flex,
-  HStack,
   Spinner,
   Table,
   TableContainer,
@@ -26,9 +24,7 @@ import {
 } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
-import { repaymentData } from "@/data/mockdata";
 import { ColumsRepaymentFN } from "./column";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
@@ -36,9 +32,11 @@ import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import { IApplyFilters } from "@/app/(protected)/vendors/loan-applications/page";
 import FilterDrawer from "@/app/(protected)/vendors/_components/FilterDrawer";
+import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 
 const DataTable = () => {
   const onOpen = () => {};
+  const [globalFilter, setGlobalFilter] = useState("");
   const [pageCount, setPageCount] = useState<number>(1);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -58,14 +56,17 @@ const DataTable = () => {
     onOpen: onOpenFilter,
   } = useDisclosure();
 
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
   const fetchTableData = useCallback(async () => {
     setIsLoadingTable(true);
 
     let query = `/admin/loan-repayment?page=${pageCount}`;
 
-    if (status) {
-      query += `&status=${status}`;
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
     }
+
     if (createdAtStart) {
       query += `&dateFrom=${createdAtStart}`;
     }
@@ -82,17 +83,20 @@ const DataTable = () => {
       console.error(error);
     }
     setIsLoadingTable(false);
-  }, [token, pageCount, status, createdAtStart, createdAtEnd]);
+  }, [token, pageCount, debouncedSearch, createdAtStart, createdAtEnd]);
 
   useEffect(() => {
     fetchTableData();
   }, [fetchTableData]);
 
-  const repaymentData = useMemo(() => tableData?.data, [tableData?.data]);
+  const repaymentData = useMemo(
+    () => tableData?.data?.data,
+    [tableData?.data.data]
+  );
 
   const table = useReactTable({
-    data: repaymentData?.data,
-    columns: ColumsRepaymentFN(onOpen),
+    data: repaymentData,
+    columns: ColumsRepaymentFN(onOpen, pageCount),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -108,13 +112,7 @@ const DataTable = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const filterOptions = [
-    { option: "PAID", value: "PAID" },
-    { option: "PENDING", value: "PENDING" },
-  ];
-
   const applyFilters = (filters: IApplyFilters) => {
-    console.log(filters);
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
@@ -128,10 +126,16 @@ const DataTable = () => {
 
   return (
     <div>
-      <Flex mt={4} gap={2} justifyContent={"space-between"}>
-        <Text fontSize={"1.3rem"} fontWeight={700} color={"gray.900"}>
-          Loan Repayments
-        </Text>
+      <Text fontSize={"1.3rem"} fontWeight={700} color={"gray.900"}>
+        Loan Repayments
+      </Text>
+
+      <Flex mt={4} gap={2}>
+        <SearchInput
+          placeholder="Search by customer name"
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          value={globalFilter}
+        />
 
         <Button
           h={"40px"}
@@ -144,13 +148,13 @@ const DataTable = () => {
         </Button>
       </Flex>
 
-      {isLoadingTable ? (
+      {isLoadingTable || !repaymentData ? (
         <div className="flex justify-center mt-10">
           <Spinner size={"lg"} />
         </div>
       ) : (
         <div className="mt-5">
-          {!repaymentData?.data ? (
+          {repaymentData.length === 0 ? (
             <EmptyOrder
               heading={`No Loan Yet`}
               content={`You currently have no loan repayment. All loan repayment will appear here.`}
@@ -203,7 +207,7 @@ const DataTable = () => {
         onClose={onCloseFilter}
         applyFilters={applyFilters}
         clearFilters={clearFilters}
-        filterOptions={filterOptions}
+        noStatus
       />
     </div>
   );

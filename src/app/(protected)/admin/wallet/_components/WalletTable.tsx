@@ -23,11 +23,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useState } from "react";
+// import Pagination from "../../products/_components/Pagination";
+// import { WalletColumn_FN } from "./columns/WalletColumn";
+// import TransactionDetails from "../../wallet/_components/TransactionDetail";
+import { WalletColumn_FN } from "../../users/_components/columns/WalletColumn";
 import Pagination from "../../products/_components/Pagination";
-import { WalletColumn_FN } from "./columns/WalletColumn";
-import TransactionDetails from "../../wallet/_components/TransactionDetail";
+import TransactionDetails from "./TransactionDetail";
 
-const WalletTable = ({
+const AdminWalletTable = ({
   data,
   hasPagination = false,
   metaData,
@@ -47,10 +50,6 @@ const WalletTable = ({
   setPageCount?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
 }) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -58,17 +57,7 @@ const WalletTable = ({
   const table = useReactTable({
     data: data,
     columns: WalletColumn_FN(onOpen),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-      columnVisibility,
-      columnOrder,
-      rowSelection,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
+    state: {},
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -84,10 +73,10 @@ const WalletTable = ({
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
             <Thead bg={"#F2F4F7"}>
-              {table?.getHeaderGroups()?.map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers?.map((header) => (
-                    <Th textTransform={"initial"} px="6px" key={header.id}>
+              {table?.getHeaderGroups()?.map((headerGroup, index) => (
+                <Tr key={index}>
+                  {headerGroup.headers?.map((header, idx) => (
+                    <Th textTransform={"initial"} px="6px" key={idx}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -100,10 +89,10 @@ const WalletTable = ({
               ))}
             </Thead>
             <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {table?.getRowModel()?.rows?.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="6px">
+              {table?.getRowModel()?.rows?.map((row, i) => (
+                <Tr key={i}>
+                  {row.getVisibleCells()?.map((cell, ix) => (
+                    <Td key={ix} px="6px">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -129,4 +118,4 @@ const WalletTable = ({
   );
 };
 
-export default WalletTable;
+export default AdminWalletTable;

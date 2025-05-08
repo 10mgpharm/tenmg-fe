@@ -5,15 +5,19 @@ import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<any>();
 
-export function ColumnsLoanRepaymentFN() {
+export function ColumnsLoanRepaymentFN(pageIndex: number, pageSize?: number) {
   return [
     columnHelper.accessor("name", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
       cell: (info) => {
-        const serialNumber = info?.row?.index + 1;
+        !pageSize ? (pageSize = 10) : pageSize;
+        const serialNumber =
+          pageIndex > 1
+            ? (pageIndex - 1) * pageSize + info?.row.index + 1
+            : info?.row.index + 1;
         return (
-          <div className="pl-6">
-            <p>{serialNumber}</p>
+          <div>
+            <p className="pl-6">{serialNumber}</p>
           </div>
         );
       },
@@ -56,39 +60,13 @@ export function ColumnsLoanRepaymentFN() {
         </div>
       ),
     }),
-    // Status
-    columnHelper.accessor("paymentStatus", {
-      header: () => <p>Payment Status</p>,
+    columnHelper.accessor("updatedAt", {
+      header: ({ column }) => <p>Payment Date</p>,
       cell: (info) => (
-        <div>
-          <p
-            className={classNames(
-              info?.row?.original?.paymentStatus === "PAID"
-                ? "text-[#027A48] bg-[#ECFDF3]"
-                : "bg-[#FFFAEB] text-[#F79009]",
-              " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
-            )}
-          >
-            <span className="rounded-full text-[1.2rem]">•</span>{" "}
-            {info.row.original?.paymentStatus}
-          </p>
+        <div className="">
+          <p>{convertDate(info.row.original?.updatedAt)}</p>
         </div>
       ),
     }),
-    // columnHelper.accessor("id", {
-    //   header: () => <p>Action</p>,
-    //   cell: (info) => {
-    //     return (
-    //       <div className="flex gap-4">
-    //         <Link
-    //           href={`/vendors/loan-repayments/${info.row.original?.loanId}`}
-    //           className="text-primary font-medium"
-    //         >
-    //           View
-    //         </Link>
-    //       </div>
-    //     );
-    //   },
-    // }),
   ];
 }
