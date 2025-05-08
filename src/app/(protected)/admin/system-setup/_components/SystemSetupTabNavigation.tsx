@@ -6,7 +6,6 @@ import Link from "next/link";
 
 const tabs = [
   { label: "Medication Setup", href: "/admin/system-setup/medication_setup" },
-  { label: "Notification", href: "/admin/system-setup/notification" },
   {
     label: "Interest and Loan Config",
     href: "/admin/system-setup/loan_config",
