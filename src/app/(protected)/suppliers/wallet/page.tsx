@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { FaEye, FaEyeSlash, FaPenAlt } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
 
 import folder from "@public/assets/images/Group 3.svg";
@@ -173,7 +173,7 @@ const Wallet = () => {
               <div className="bg-green-50 rounded-md py-1 max-w-max px-2.5">
                 <p className="text-green-600 font-medium text-xs">Pending Balance</p>
                 <p className="text-green-600 text-xs font-semibold">
-                  {showBalance ? `₦${walletBalance?.currentBalance ?? 0.00}` : "******"}
+                  {showBalance ? `₦${pendingPayouts?.totalPendingPayouts ?? 0.00}` : "******"}
                 </p>
               </div>
             </div>
@@ -240,11 +240,20 @@ const Wallet = () => {
           </Link>
         </div>
         {
-          loading ?
-            <Flex justify="center" align="center" height="200px">
-              <Spinner size="xl" />
-            </Flex>
-            : transactions?.data?.length > 0 ? (
+          transactions?.data?.length === 0 ? (
+            <div className="mt-5 max-w-sm mx-auto">
+              <div className="text-center py-12">
+                <Image src={folder} alt="" className="mx-auto" />
+                <h3 className="font-semibold text-lg text-gray-700 mt-4">
+                  Nothing to show here yet
+                </h3>
+                <p className="text-gray-600">
+                  You don’t have any transactions yet. When you do, they’ll
+                  appear here.
+                </p>
+              </div>
+            </div>
+            ) : transactions?.data?.length > 0 ? (
               <div className="mt-5">
                 <Transaction 
                 data={transactions} 
@@ -253,20 +262,11 @@ const Wallet = () => {
                 />
               </div>
             ) :
-              (
-                <div className="mt-5 max-w-sm mx-auto">
-                  <div className="text-center py-12">
-                    <Image src={folder} alt="" className="mx-auto" />
-                    <h3 className="font-semibold text-lg text-gray-700 mt-4">
-                      Nothing to show here yet
-                    </h3>
-                    <p className="text-gray-600">
-                      You don’t have any transactions yet. When you do, they’ll
-                      appear here.
-                    </p>
-                  </div>
-                </div>
-              )
+            (
+              <Flex justify="center" align="center" height="200px">
+                <Spinner size="xl" />
+              </Flex>
+            )
         }
       </div>
       <AddAccount

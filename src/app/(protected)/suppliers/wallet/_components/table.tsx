@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { classNames } from "@/utils";
-import { Daum, LoanTransactionProps } from "@/types";
+import { Daum } from "@/types";
 import { Dispatch, SetStateAction } from "react";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -9,7 +9,7 @@ const columnHelper = createColumnHelper<Daum>();
 
 export function ColumsTransactionFN(
   onOpen: () => void,
-  onOpenPayout: () => void
+  setSelectedRow: Dispatch<SetStateAction<Daum | null>>,
 ) {
   return [
     columnHelper.accessor("txnGroup", {
@@ -98,20 +98,12 @@ export function ColumsTransactionFN(
                 <BsThreeDotsVertical className="w-5 h-auto" />
               </MenuButton>
               <MenuList>
-                {info?.row?.original?.status === "Pending" ? (
-                  <>
-                    <MenuItem onClick={() => {}}>
-                      Mark Transaction As Completed
-                    </MenuItem>
-                    <MenuItem onClick={onOpenPayout}>Initiate Payout</MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem onClick={() => onOpen()}>
-                      View Transaction Details
-                    </MenuItem>
-                  </>
-                )}
+                <MenuItem onClick={() => {
+                  setSelectedRow(info.row.original);
+                  onOpen();
+                  }}>
+                  View Transaction Details
+                </MenuItem>
               </MenuList>
             </Menu>
           </Flex>
