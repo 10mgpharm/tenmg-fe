@@ -13,6 +13,7 @@ import { Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@
 import { ColumsPayoutFN } from './tablePayout';
 import { PayoutTypeProps } from '@/types';
 import Pagination from '@/app/(protected)/admin/products/_components/Pagination';
+import TransactionDetails from '@/app/(protected)/admin/wallet/_components/TransactionDetail';
 
 interface PayoutTableProps {
     data: PayoutTypeProps[];
@@ -39,16 +40,14 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedRow, setSelectedRow] = useState<any>();
 
-    const {
-        isOpen: isOpenPayout,
-        onOpen: onOpenPayout,
-        onClose: onClosePayout,
-    } = useDisclosure();
-
-    const columns = useMemo(() => ColumsPayoutFN(onOpen, onOpenPayout), [onOpen, onOpenPayout]);
+    const columns = useMemo(() => ColumsPayoutFN(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
     
     // Memoize the filtered data
-    const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
+    // const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
+    const filterTransactions = useMemo(() => {
+        if (!data) return [];
+        return hasPagination ? data : data.slice(0, 6);
+    }, [data, hasPagination]);
 
     const table = useReactTable({
         data: filterTransactions || [],
@@ -108,6 +107,12 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
                 )}
             </TableContainer>
         }  
+        <TransactionDetails
+            isOpen={isOpen}
+            onClose={onClose}
+            selectedRow={selectedRow}
+            type='sup_payout'
+        />
     </div>
   )
 }

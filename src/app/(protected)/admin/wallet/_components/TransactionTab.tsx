@@ -19,11 +19,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import TransactionDetails from "./TransactionDetail";
 import InitiatePayout from "./InitiatePayout";
 import Pagination from "../../products/_components/Pagination";
-import { Payouts } from "@/types";
+import { Daum2, Payouts } from "@/types";
 import { Completed_ColumnFN } from "./columns/completed-payout_column";
 import { Awaiting_columnFn } from "./columns/payout_column";
 
@@ -66,10 +66,12 @@ const TransactionTab = ({
     onClose: onClosePayout,
   } = useDisclosure();
 
+  const [selectedRow, setSelectedRow] = useState<Daum2 | null>(null);
+
   const columns = useMemo(() => {
     return type === "transaction"
-      ? Completed_ColumnFN(onOpen, onOpenPayout)
-      : Awaiting_columnFn(onOpen, onOpenPayout);
+      ? Completed_ColumnFN(onOpen, onOpenPayout, setSelectedRow)
+      : Awaiting_columnFn(onOpen, onOpenPayout, setSelectedRow);
   }, [type, onOpen, onOpenPayout]);
 
   const prevData = useMemo(() => {
@@ -140,13 +142,18 @@ const TransactionTab = ({
         </Flex>
       )
     }
-      <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
-      <InitiatePayout
-        isOpen={isOpenPayout}
-        onClose={onClosePayout}
-        walletType={walletType}
-      />
-    </div>
+    <TransactionDetails 
+    isOpen={isOpen} 
+    onClose={onClose} 
+    type="" 
+    selectedRow={selectedRow}
+    />
+    <InitiatePayout
+      isOpen={isOpenPayout}
+      onClose={onClosePayout}
+      walletType={walletType}
+    />
+  </div>
   );
 };
 

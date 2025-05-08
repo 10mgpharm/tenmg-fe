@@ -3,12 +3,14 @@ import { classNames } from "@/utils";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Daum } from "@/types";
+import { Dispatch, SetStateAction } from "react";
 
 const columnHelper = createColumnHelper<Daum>();
 
 export function Completed_ColumnFN(
   onOpen: () => void,
-  onOpenPayout: () => void
+  onOpenPayout: () => void,
+  setSelectedRow: Dispatch<SetStateAction<Daum | null>>,
 ) {
   return [
     columnHelper.accessor("txnGroup", {
@@ -49,16 +51,8 @@ export function Completed_ColumnFN(
         </div>
       ),
     }),
-    // columnHelper.accessor("balanceAfter", {
-    //   header: ({ column }) => <p className="">Balance</p>,
-    //   cell: (info) => (
-    //     <div className="">
-    //       <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
-    //     </div>
-    //   ),
-    // }),
     columnHelper.accessor("status", {
-      header: ({ column }) => <p>Type</p>,
+      header: ({ column }) => <p>Status</p>,
       cell: (info) => {
         return (
           <div>
@@ -99,7 +93,12 @@ export function Completed_ColumnFN(
                   </>
                 ) : (
                   <>
-                    <MenuItem onClick={() => onOpen()}>
+                    <MenuItem 
+                    onClick={ () => {
+                      setSelectedRow(info.row.original)
+                      onOpen()
+                      }}
+                    >
                       View Transaction Details
                     </MenuItem>
                   </>

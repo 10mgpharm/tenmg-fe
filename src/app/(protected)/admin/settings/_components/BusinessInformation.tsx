@@ -266,11 +266,7 @@ const BusinessInformation = ({ user }: { user?: User }) => {
         </form>
       </div>
 
-      <BankInfoFormComp
-        sessionData={sessionData}
-        defaultBankDetail={defaultBankDetail}
-        isInfoLoading={isInfoLoading}
-      />
+      <BankInfoFormComp />
     </>
   );
 };

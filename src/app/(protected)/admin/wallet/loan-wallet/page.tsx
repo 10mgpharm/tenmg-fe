@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import TimeLineSelector from "../_components/TimeLineSelector";
 import {
   useDisclosure,
   TableContainer,
@@ -32,14 +31,10 @@ const LoanWallet = () => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
-  const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [pageCount, setPageCount] = useState(1);
   const [isLoadingTable, setIsLoadingTable] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const [status, setStatus] = useState("");
-  const [dataType, setDataType] = useState<
-    "awaiting" | "completed" | "history"
-  >("awaiting");
   const [tableData, setTableData] = useState<LoanTransactionDataProps>();
   const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,9 +47,6 @@ const LoanWallet = () => {
     if (debouncedSearch) {
       query += `&search=${debouncedSearch}`;
     }
-    // if (status) {
-    //   query += `&status=${status}`;
-    // }
     try {
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {

@@ -59,12 +59,12 @@ const Page = () => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
+  const [pageCount, setPageCount] = useState(1);
   // const memoizedData = useMemo(() => data, [data]);
 
   const table = useReactTable({
     data: repaymentData,
-    columns: ColumsRepaymentFN(onOpen),
+    columns: ColumsRepaymentFN(onOpen, pageCount),
     onSortingChange: setSorting,
     state: {
       sorting,

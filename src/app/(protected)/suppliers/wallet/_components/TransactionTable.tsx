@@ -12,6 +12,7 @@ import EmptyOrder from "../../orders/_components/EmptyOrder";
 import { Flex, Spinner, Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
 import { Daum, LoanTransactionProps } from "@/types";
 import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
+import TransactionDetails from "@/app/(protected)/admin/wallet/_components/TransactionDetail";
 
 interface TransactionTableProps {
     data: Daum[];
@@ -34,17 +35,10 @@ interface TransactionTableProps {
 const TransactionTable = ({data, hasPagination, metaData, setPageCount}: TransactionTableProps) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
-
-    const {
-        isOpen: isOpenPayout,
-        onOpen: onOpenPayout,
-        onClose: onClosePayout,
-    } = useDisclosure();
+    const [selectedRow, setSelectedRow] = useState<Daum>();
 
      // Memoize the columns
-     const columns = useMemo(() => ColumsTransactionFN(onOpen, onOpenPayout), [onOpen, onOpenPayout]);
-    
+     const columns = useMemo(() => ColumsTransactionFN(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
      // Memoize the filtered data
      const filterTransactions = useMemo(() => data?.slice(0, 5), [data]);
 
@@ -111,6 +105,12 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount}: Transac
               <Spinner size="xl" />
             </Flex>
         )}  
+        <TransactionDetails 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        type="" 
+        selectedRow={selectedRow} 
+        />
     </div>
   )
 }

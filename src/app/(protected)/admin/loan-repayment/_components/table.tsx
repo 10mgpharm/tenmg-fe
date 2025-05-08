@@ -96,7 +96,7 @@ const DataTable = () => {
 
   const table = useReactTable({
     data: repaymentData,
-    columns: ColumsRepaymentFN(onOpen),
+    columns: ColumsRepaymentFN(onOpen, pageCount),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -130,7 +130,7 @@ const DataTable = () => {
         Loan Repayments
       </Text>
 
-      <Flex mt={4} gap={2} justifyContent={"space-between"}>
+      <Flex mt={4} gap={2}>
         <SearchInput
           placeholder="Search by customer name"
           onChange={(e) => setGlobalFilter(e.target.value)}
