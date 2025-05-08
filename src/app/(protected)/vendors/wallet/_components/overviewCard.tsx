@@ -22,20 +22,27 @@ export const OverviewCard = ({
   return (
     <div
       className={classNames(
-        `bg-gradient-to-r ${fromColor} ${toColor} rounded-lg relative overflow-hidden `
+        `bg-gradient-to-r ${fromColor} ${toColor} rounded-lg relative overflow-hidden w-full`
       )}
     >
-      <div className="flex items-center justify-between py-8 sm:py-12  lg:py-14 px-6 relative">
-        <div className="">
+      <div className="flex items-center justify-between py-8 sm:py-12  lg:py-14 px-6 relative w-full">
+        <div className="w-full">
           <p className="text-white text-[15px] lg:text-lg font-medium mb-1">
             {title}
           </p>
-          <p className="font-bold text-white text-[18px] sm:text-[20px] lg:text-3xl">
-            {value}
-          </p>
-          {(func && func_btn) && <div className="absolute top-[-15px] right-0">
-            <Button size={"xs"} className="absolute top-6 right-3 z-20 " disabled={(func && func_btn) && (parseInt(value) <= 0)} style={{ backgroundColor: "#000000cf" }} onClick={func}>Withdraw Funds</Button>
-          </div>}
+          <div className="flex items-center justify-between w-full ">
+
+            <p className="font-bold text-white text-[18px] sm:text-[20px] lg:text-3xl">
+              {value}
+            </p>
+
+            {(func && func_btn) &&
+              <div className="relative top-6">
+                <Button size={"xs"} className="" disabled={(func && func_btn) && (parseInt(value) <= 0)} style={{ backgroundColor: "#000000cf" }} onClick={func}>Withdraw Funds</Button>
+              </div>
+            }
+          </div>
+
         </div>
       </div>
       <div className="absolute top-3 inset-x-0 mx-auto">
