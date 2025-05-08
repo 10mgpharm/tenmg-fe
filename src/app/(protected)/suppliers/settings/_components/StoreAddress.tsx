@@ -8,7 +8,7 @@ export default function StoreAddress() {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <button
-        onClick={() => router.push("/store")}
+        onClick={() => router.push("/stores")}
         className="bg-blue-600 text-white px-6 py-3 rounded-md text-lg shadow hover:bg-blue-700 transition"
       >
         Add Item
