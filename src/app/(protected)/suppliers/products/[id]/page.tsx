@@ -69,7 +69,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
             </Flex>
             <div className="mt-5">
                 <div className="flex gap-5 mb-3">
-                    <div className="">
+                    <div className="relative">
                         <Image
                             src={products?.thumbnailFile}
                             fallbackSrc={productImage}
@@ -78,6 +78,27 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                             height={340}
                             className='w-[380px] h-[340px] object-cover rounded-md'
                         />
+
+                        <div className='mb-2 absolute top-3 right-3'>
+                            <p className={classNames(
+                                (products?.inventory === "OUT OF STOCK")
+                                    ? "bg-[#FEF3F2] text-[#B42318]"
+                                    : products?.inventory === "IN STOCK"
+                                        ? "text-[#027A48] bg-[#ECFDF3]"
+                                        : products?.inventory === "LOW STOCK"
+                                            ? "bg-orange-50 text-orange-500"
+                                            : "text-gray-500", " px-2 rounded-xl py-0.5 text-xs font-medium flex items-center gap-1"
+                            )}>
+                                <span className="text-[1.2rem] rounded-full">•</span>
+                                {" "}
+                                {products?.inventory && formatText(products?.inventory)}
+                                {":"}
+                                {" "}
+                                {products?.quantity}
+                                {" "}
+                                Items left
+                            </p>
+                        </div>
                     </div>
                     <div className="flex-1 bg-white p-5 rounded-md pb-9">
                         <div className="flex items-center gap-2">
@@ -98,26 +119,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                                     {products?.status}
                                 </p>
                             </div>
-                            <div className='mb-2'>
-                                <p className={classNames(
-                                    (products?.inventory === "OUT OF STOCK")
-                                        ? "bg-[#FEF3F2] text-[#B42318]"
-                                        : products?.inventory === "IN STOCK"
-                                            ? "text-[#027A48] bg-[#ECFDF3]"
-                                            : products?.inventory === "LOW STOCK"
-                                                ? "bg-orange-50 text-orange-500"
-                                                : "text-gray-500", " px-2 rounded-xl py-0.5 text-xs font-medium flex items-center gap-1"
-                                )}>
-                                    <span className="text-[1.2rem] rounded-full">•</span>
-                                    {" "}
-                                    {products?.inventory && formatText(products?.inventory)}
-                                    {":"}
-                                    {" "}
-                                    {products?.quantity}
-                                    {" "}
-                                    Items left
-                                </p>
-                            </div>
+
                         </div>
                         <div className="flex justify-between">
                             <div className="">
