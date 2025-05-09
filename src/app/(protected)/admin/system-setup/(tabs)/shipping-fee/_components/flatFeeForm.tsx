@@ -15,18 +15,22 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
+import { ShippingFeeDataType } from "../page";
 
 interface IFormInput {
   amount: number;
-  reasons: string;
 }
 
 export const FlatFeeForm = ({
   onClose,
   setFormStep,
+  setShippingFeeData,
+  shippingFeeData,
 }: {
   setFormStep: (value: number) => void;
   onClose: () => void;
+  setShippingFeeData: (value: ShippingFeeDataType) => void;
+  shippingFeeData: ShippingFeeDataType;
 }) => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
@@ -36,7 +40,15 @@ export const FlatFeeForm = ({
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true);
     try {
-      // Call enpoint
+      // Call endpoint
+      setShippingFeeData({
+        ...shippingFeeData,
+        type: "FLAT",
+        amount: data.amount,
+      });
+
+      toast.success("Your flat fee is set successfully");
+      onClose();
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
