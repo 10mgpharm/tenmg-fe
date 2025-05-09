@@ -1,223 +1,316 @@
-import { Badge, Button, Menu, MenuButton, MenuItem, MenuList, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import { SearchIcon } from 'lucide-react';
-import Image from 'next/image';
-import React from 'react'
-import TransactionHistoryDrawer from '../_components/TransactionHistoryDrawer';
-import SearchInput from '../../vendors/_components/SearchInput';
+"use client";
+
+import {
+  Badge,
+  Button,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Tab,
+  TabList,
+  Tabs,
+  Spinner,
+  Flex,
+  TabPanels,
+  TabPanel,
+} from "@chakra-ui/react";
+import { SearchIcon } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import TransactionHistoryDrawer from "../_components/TransactionHistoryDrawer";
+import SearchInput from "../../vendors/_components/SearchInput";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
-} from '@chakra-ui/react'
-import Pagination from '../_components/Pagination';
-import LenderEmptyScreen from '../_components/EmptyScreen';
+} from "@chakra-ui/react";
+import LenderEmptyScreen from "../_components/EmptyScreen";
+import { useSession } from "next-auth/react";
+import requestClient from "@/lib/requestClient";
+import {
+  LenderTransactionHistoryDataProps,
+  LoanApplicationDataResponse,
+  LoanStats,
+  NextAuthUserSession,
+} from "@/types";
+import { formatAmountString } from "@/utils";
+import { convertDate } from "@/utils/formatDate";
+import Pagination from "../../suppliers/_components/Pagination";
+import { useDebouncedValue } from "@/utils/debounce";
+import { flexRender, getSortedRowModel } from "@tanstack/react-table";
+import { getCoreRowModel } from "@tanstack/react-table";
+import {
+  SortingState,
+  ColumnOrderState,
+  RowSelectionState,
+  useReactTable,
+} from "@tanstack/react-table";
+import { ColumnsTransactionHistoryFN } from "./_components/table";
+import TransactionTabs from "./_components/TransactionsTab";
 
 export default function TransactionHistoryPage() {
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const sessionToken = sessionData?.user?.token;
 
-  const card_info = [
-    {
-      title: "Total Deposits",
-      value: "₦150,000,000",
-      bgColor: "#53389E",
-      bgImg: "/assets/images/disb_bg.png",
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<any>(null);
+  const [transactions, setTransactions] =
+    useState<LenderTransactionHistoryDataProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pageCount, setPageCount] = useState(1);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [type, setType] = useState<string>("");
+  const [tabIndex, setTabIndex] = useState(0);
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
+  const fetchData = useCallback(
+    async (page: number) => {
+      setLoading(true);
+      setError(null);
+
+      const query = `/lender/transactions?page=${page}${
+        debouncedSearch ? `&search=${debouncedSearch}` : `&type=${type}`
+      }`;
+      try {
+        const [statsRes, txnsRes] = await Promise.all([
+          requestClient({ token: sessionToken }).get(
+            "/lender/transactions/stats"
+          ),
+          requestClient({ token: sessionToken }).get(query),
+        ]);
+        setStats(statsRes.data?.data);
+        setTransactions(txnsRes.data?.data || []);
+        setPageCount(txnsRes.data?.data?.meta?.currentPage);
+      } catch (err: any) {
+        setError("Failed to load data.");
+        setStats(null);
+        setTransactions(null);
+      } finally {
+        setLoading(false);
+      }
     },
-    {
-      title: "Total Withdrawals",
-      value: "₦50,000,000",
-      bgColor: "#DC6803",
-      bgImg: "/assets/images/app_bg.png",
+    [sessionToken, debouncedSearch, type]
+  );
+
+  useEffect(() => {
+    if (sessionToken) fetchData(pageCount);
+  }, [sessionToken, fetchData, pageCount]);
+
+  const card_info = useMemo(
+    () =>
+      stats
+        ? [
+            {
+              title: "Total Deposits",
+              value: stats.totalDeposit
+                ? `₦${formatAmountString(stats.totalDeposit)}`
+                : "₦0",
+              bgColor: "#53389E",
+              bgImg: "/assets/images/disb_bg.png",
+            },
+            {
+              title: "Total Withdrawals",
+              value: stats.totalWithdrawal
+                ? `₦${formatAmountString(stats.totalWithdrawal)}`
+                : "₦0",
+              bgColor: "#DC6803",
+              bgImg: "/assets/images/app_bg.png",
+            },
+            {
+              title: "Net Wallet Balance",
+              value: stats.netWalletBalance
+                ? `₦${formatAmountString(stats.netWalletBalance)}`
+                : "₦0",
+              bgColor: "#3E4784",
+              bgImg: "/assets/images/pend_bg.png",
+            },
+            {
+              title: "Last Transaction Date",
+              value: convertDate(stats.lastTransactionDate) || "-",
+              bgColor: "#E31B54",
+              bgImg: "/assets/images/tot_bg.png",
+            },
+          ]
+        : [],
+    [stats]
+  );
+
+  const records = useMemo(() => transactions?.data || [], [transactions?.data]);
+  const renderedColumn = ColumnsTransactionHistoryFN();
+
+  const table = useReactTable({
+    data: records,
+    columns: renderedColumn,
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+      columnVisibility,
+      columnOrder,
+      rowSelection,
+      globalFilter,
     },
-    {
-      title: "Net Wallet Balance",
-      value: "₦2,500,000",
-      bgColor: "#3E4784",
-      bgImg: "/assets/images/pend_bg.png",
-    },
-    {
-      title: "Last Transaction Date",
-      value: "2024-12-7",
-      bgColor: "#E31B54",
-      bgImg: "/assets/images/tot_bg.png",
-    },
-  ];
+    manualFiltering: true,
+    onGlobalFilterChange: setGlobalFilter,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const handleTabsChange = (index: number) => {
+    setTabIndex(index);
+    setPageCount(1);
+    if (index === 0) {
+      setType("");
+    } else if (index === 1) {
+      setType("Credit");
+    } else if (index === 2) {
+      setType("Debit");
+    }
+  };
+
+  console.log("table", pageCount, "dfdfd", transactions);
 
   return (
-    <div className='px-4'>
-
+    <div className="px-4">
       <h3 className="font-semibold text-xl my-4">Transaction History</h3>
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
-        {card_info.map((item, index) => (
-          <div
-            key={index}
-            className="relative h-32 bg-cover bg-center bg-no-repeat rounded-lg p-4 flex items-center"
-            style={{
-              // backgroundColor: item.bgColor, // Apply solid color  
-              backgroundImage: `url(${item.bgImg})`, // Apply background image
-              // backgroundBlendMode: "overlay", // Ensures color and image blend well
-            }}
-          >
-            {/* Dark Overlay to Fade Background */}
-            <div className="absolute inset-0  bg-opacity-10 rounded-md" style={{ backgroundColor: item.bgColor, }}></div>
 
-            {/* Card Content */}
-            <div className="relative z-10 text-white">
-              <h4 className="text-sm font-medium">{item.title}</h4>
-              <p className="text-base font-semibold">{item.value}</p>
+      <>
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+          {card_info.map((item, index) => (
+            <div
+              key={index}
+              className="relative h-32 bg-cover bg-center bg-no-repeat rounded-lg p-4 flex items-center"
+              style={{ backgroundImage: `url(${item.bgImg})` }}
+            >
+              <div
+                className="absolute inset-0  bg-opacity-10 rounded-md"
+                style={{ backgroundColor: item.bgColor }}
+              ></div>
+              <div className="relative z-10 text-white">
+                <h4 className="text-sm font-medium">{item.title}</h4>
+                <p className="text-base font-semibold">{item.value}</p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      {
-        true ?
+          ))}
+        </div>
 
-          <div>
-            <div className='flex items-center justify-between flex-col lg:flex-row mt-8'>
-
-              <Tabs variant="enclosed-colored" isFitted>
-                <TabList>
-                  <Tab>All</Tab>
-                  <Tab>Incoming</Tab>
-                  <Tab>Outgoing</Tab>
-                </TabList>
-
-                {/* <TabPanels>
-              <TabPanel>
-                <p>one!</p>
-              </TabPanel>
-              <TabPanel>
-                <p>two!</p>
-              </TabPanel>
-              <TabPanel>
-                <p>three!</p>
-              </TabPanel>
-            </TabPanels> */}
-              </Tabs>
+        <div>
+          <Tabs
+            variant="enclosed-colored"
+            isFitted
+            onChange={handleTabsChange}
+            index={tabIndex}
+          >
+            <div className="flex items-center justify-between flex-col lg:flex-row mt-8">
+              <TabList>
+                <Tab
+                  _selected={{
+                    color: "white",
+                    bg: "#1A70B8",
+                  }}
+                >
+                  All
+                </Tab>
+                <Tab
+                  _selected={{
+                    color: "white",
+                    bg: "#1A70B8",
+                  }}
+                >
+                  Incoming
+                </Tab>
+                <Tab
+                  _selected={{
+                    color: "white",
+                    bg: "#1A70B8",
+                  }}
+                >
+                  Outgoing
+                </Tab>
+              </TabList>
 
               <div className="flex items-center gap-3 my-5">
                 <SearchInput
                   placeholder="Search for Transaction Id"
-                // value={globalFilter}
-                // onChange={(e) => setGlobalFilter(e.target.value)}
+                  value={globalFilter}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
                 />
-                <Menu>
-                  <MenuButton as={Button} variant={'unstyled'} size={'md'} px="8px" className=" cursor-pointer  " >
-                    <p className="text-gray-500 border border-gray-300 rounded-md flex items-center" style={{ padding: '8px 20px' }}>Filters</p>
+                {/* <Menu>
+                  <MenuButton
+                    as={Button}
+                    variant={"unstyled"}
+                    size={"md"}
+                    px="8px"
+                    className=" cursor-pointer  "
+                  >
+                    <p
+                      className="text-gray-500 border border-gray-300 rounded-md flex items-center"
+                      style={{ padding: "8px 20px" }}
+                    >
+                      Filters
+                    </p>
                   </MenuButton>
-                  <MenuList>
-                    {/* <MenuItem>By Date</MenuItem>
-                <MenuItem>Credit Score</MenuItem>
-                <MenuItem>Vendor Name</MenuItem> */}
-                  </MenuList>
-                </Menu>
+                  <MenuList></MenuList>
+                </Menu> */}
               </div>
             </div>
-
-            <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-              <Table variant='simple'>
-                {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
-                <Thead bg="blue.50">
-                  <Tr>
-                    <Th textTransform="initial"
-                      color="primary.500"
-                      fontWeight="500">Transaction ID</Th>
-                    <Th textTransform="initial"
-                      color="primary.500"
-                      fontWeight="500">{`Date`}</Th>
-                    <Th textTransform="initial"
-                      color="primary.500"
-                      fontWeight="500">Description</Th>
-                    <Th textTransform="initial"
-                      color="primary.500"
-                      fontWeight="500">Type</Th>
-                    <Th textTransform="initial"
-                      color="primary.500"
-                      fontWeight="500">Amount Paid</Th>
-                    <Th textTransform="initial"
-                      color="primary.500"
-                      fontWeight="500">Payment Status</Th>
-                    <Th textTransform="initial"
-                      color="primary.500"
-                      fontWeight="500">Action</Th>
-                  </Tr>
-                </Thead>
-                <Tbody bg={"white"}>
-                  {TH_table_data.map((item, index) => (
-                    <Tr key={index} className="border-b border-b-slate-400 text-xs">
-                      <Td className="py-4">
-                        <p>{item?.id}</p>
-                      </Td>
-                      <Td className="py-4">
-                        {item?.date}
-                      </Td>
-                      <Td className="py-4">
-                        {item?.desc}
-                      </Td>
-                      <Td className="py-4">{item?.type}</Td>
-                      <Td className="py-4">{item?.amount}</Td>
-                      <Td>
-                        {index % 2 === 0 ? (
-                          <Badge colorScheme="green" fontSize="10px" px="2" py="1" borderRadius="xl" className="">
-                            • <span style={{ textTransform: 'capitalize' }}> successful</span>
-                          </Badge>
-                        ) : (
-                          <Badge colorScheme="red" fontSize="10px" px="2" py="1" borderRadius="xl">
-                            • <span style={{ textTransform: 'capitalize' }}>failed</span>
-                          </Badge>
-                        )}
-                      </Td>
-                      <Td className="py-4">
-                        <TransactionHistoryDrawer />
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-              <Pagination />
-            </TableContainer>
-          </div>
-          :
-          <LenderEmptyScreen heading='Nothing to show here yet' content='You don’t have any transactions yet. When you do, they’ll appear here.' />}
+            {loading ? (
+              <Flex justify="center" align="center" height="300px">
+                <Spinner size="xl" />
+              </Flex>
+            ) : error ? (
+              <div className="text-center text-red-500 my-8">{error}</div>
+            ) : (
+              <>
+                {transactions?.data?.length > 0 ? (
+                  <TabPanels>
+                    <TabPanel px={0}>
+                      <TransactionTabs
+                        table={table}
+                        setPageCount={setPageCount}
+                        transactions={transactions}
+                      />
+                    </TabPanel>
+                    <TabPanel>
+                      <TransactionTabs
+                        table={table}
+                        setPageCount={setPageCount}
+                        transactions={transactions}
+                      />
+                    </TabPanel>
+                    <TabPanel>
+                      <TransactionTabs
+                        table={table}
+                        setPageCount={setPageCount}
+                        transactions={transactions}
+                      />
+                    </TabPanel>
+                  </TabPanels>
+                ) : (
+                  <LenderEmptyScreen
+                    heading="Nothing to show here yet"
+                    content="You don't have any transactions yet. When you do, they'll appear here."
+                  />
+                )}
+              </>
+            )}
+          </Tabs>
+        </div>
+      </>
     </div>
-  )
+  );
 }
-
-export const TH_table_data = [
-  {
-    id: "MG-TXN-001",
-    date: "Aug 21, 2024",
-    desc: " Wallet Deposit",
-    type: "Deposit",
-    amount: "₦1,300,000",
-    status: "Failed",
-  },
-  {
-    id: "MG-TXN-001",
-    date: "Aug 21, 2024",
-    desc: " Wallet Deposit",
-    type: "Deposit",
-    amount: "₦1,300,000",
-    status: "Failed",
-  },
-  {
-    id: "MG-TXN-001",
-    date: "Aug 21, 2024",
-    desc: " Wallet Deposit",
-    type: "Deposit",
-    amount: "₦1,300,000",
-    status: "Failed",
-  },
-  {
-    id: "MG-TXN-001",
-    date: "Aug 21, 2024",
-    desc: " Wallet Deposit",
-    type: "Deposit",
-    amount: "₦1,300,000",
-    status: "Failed",
-  },
-]

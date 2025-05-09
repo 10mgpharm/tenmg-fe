@@ -1,25 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { OverviewCard } from "./overviewCard";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
-import productPattern from "@public/assets/images/productpatterns.svg";
 import Link from "next/link";
 import {
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { transactionData } from "@/data/mockdata";
 import DataTable from "./table";
 import { Awaiting_column } from "./colunms/awaiting_column";
-import { Completed_column } from "./colunms/completed_column";
-import { Transaction_column } from "./colunms/transaction_column";
 import TransactionDetails from "./transactionDetails";
-import InitiatePayout from "./initiate_payout";
 import AccoundDetailsCard from "./AccoundDetailsCard";
 import OTPModal from "@/app/(protected)/suppliers/wallet/_components/OTPModal";
 import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/WithdrawFunds";
@@ -29,10 +18,6 @@ import { NextAuthUserSession } from "@/types";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const LoanWallet = () => {
-  // const awaiting = transactionData.filter((item) => item.type === "Awaiting");
-  // const completed = transactionData.filter((item) => item.type === "Completed");
-  const history = transactionData.filter((item) => item.type === "History");
-
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -56,52 +41,48 @@ const LoanWallet = () => {
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>({});
-  const [amount, setAmount] = useState<number>(0);
   const [transactions, setTransactions] = useState<any>([]);
 
-  useEffect(() => {
+  const fetchStat = useCallback(async () => {
     setLoading(true);
-    const fetchStat = async () => {
-
-      try {
-        const response = await requestClient({ token: token }).get(
-          `/vendor/wallet`,
-        );
-        if (response.status === 200) {
-          // console.log(response?.data?.data);
-          // console.log(response?.data);
-          setStats(response?.data);
-          setLoading(false);
-        }
-      }
-      catch (error) {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/vendor/wallet`,
+      );
+      if (response.status === 200) {
+        setStats(response?.data);
         setLoading(false);
-        console.error(error);
       }
     }
-    token && fetchStat()
-  }, [token])
-  useEffect(() => {
-    setLoading(true);
-    const fetchTransactions = async () => {
+    catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
+  }, [token]);
 
-      try {
-        const response = await requestClient({ token: token }).get(
-          `/vendor/wallet/transactions`,
-        );
-        if (response.status === 200) {
-          console.log(response?.data?.data?.data);
-          setTransactions(response?.data?.data?.data);
-          setLoading(false);
-        }
-      }
-      catch (error) {
+  const fetchTransactions = useCallback(async () => {
+
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/vendor/wallet/transactions`,
+      );
+      if (response.status === 200) {
+        console.log(response?.data?.data?.data);
+        setTransactions(response?.data?.data?.data);
         setLoading(false);
-        console.error(error);
       }
     }
-    token && fetchTransactions()
-  }, [token])
+    catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchStat();
+    fetchTransactions()
+  }, [token, fetchStat, fetchTransactions])
 
   const [showBalance, setShowBalance] = useState(true);
   const [accountInfo, setAccountInfo] = useState(null);
@@ -132,7 +113,10 @@ const LoanWallet = () => {
             func={onOpenWithdraw}
           />
         </div>
-        <AccoundDetailsCard showBalance={showBalance} setAccountInfo={setAccountInfo} />
+        <AccoundDetailsCard 
+        showBalance={showBalance} 
+        setAccountInfo={setAccountInfo} 
+        />
       </div>
 
       <div className="flex items-center justify-between my-5">

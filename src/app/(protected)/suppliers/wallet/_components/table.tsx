@@ -1,111 +1,114 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { classNames, formatText } from "@/utils";
+import { classNames } from "@/utils";
+import { Daum } from "@/types";
+import { Dispatch, SetStateAction } from "react";
+import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<Daum>();
 
-export function ColumsTransactionFN(onOpen: () => void) {
-
+export function ColumsTransactionFN(
+  onOpen: () => void,
+  setSelectedRow: Dispatch<SetStateAction<Daum | null>>,
+) {
   return [
-    columnHelper.accessor("name", {
-      header: () => (
-        <div className="pl-6">
-          <p>Name</p>
-        </div>
-      ),
+    columnHelper.accessor("txnGroup", {
+      header: ({ column }) => <p className="pl-6">Date</p>,
       cell: (info) => (
         <div className="pl-6">
-          <p className="font-medium text-sm">
-            {info.row.original?.name} 
-          </p>
-          <p className="text-sm text-gray-500">
-            {info.row.original?.email} 
+          <p className="font-medium">
+            {info.row.original?.createdAt}
           </p>
         </div>
       ),
     }),
-    columnHelper.accessor("brand", {
-      header: ({ column }) => (
-        <div
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <p>Drugs Bought</p>
-        </div>
-      ),
+    columnHelper.accessor("tenmgCommission", {
+      header: ({ column }) => <p className="">Description</p>,
       cell: (info) => (
-        <div>
-            <p className="font-medium text-sm">{info.row.original?.brand} </p>
+        <div className="">
+          <p className="font-medium">
+          {info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ? "Order Cancelled" : info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" : info.row.original?.txnGroup}
+          </p>
         </div>
       ),
     }),
-    columnHelper.accessor("quantity", {
-      header: ({ column }) => (
-        <p>Quantity</p>
-      ),
+    columnHelper.accessor("orderId", {
+      header: ({ column }) => <p className="">OrderId</p>,
       cell: (info) => (
-       <div className="">
-        <p>{info.row.original?.quantity}</p>
-       </div>
+        <div className="">
+          <p className="font-medium">
+            {info.row.original?.orderId}
+          </p>
+        </div>
       ),
     }),
     columnHelper.accessor("amount", {
-        header: ({ column }) => (
-          <p>Price</p>
-        ),
-        cell: (info) => {
-          return (
-            <div>
-             <p className="font-medium">{info?.row?.original?.amount}</p>
-            </div>
-          );
-        },
-    }),
-    columnHelper.accessor("dateOfPurchase", {
-        header: ({ column }) => (
-          <p>Date of Purchase</p>
-        ),
-        cell: (info) => {
-          return (
-            <div>
-             <p className="font-medium">{info?.row?.original?.dateOfPurchase}</p>
-            </div>
-          );
-        },
-    }),
-    columnHelper.accessor("paymentMethod", {
-        header: ({ column }) => (
-          <p>Payment Method</p>
-        ),
-        cell: (info) => {
-          return (
-            <div>
-             <p className="font-medium">{info?.row?.original?.paymentMethod}</p>
-            </div>
-          );
-        },
-    }),
-    columnHelper.accessor("status", {
-      header: ({ column }) => (
-        <p>Status</p>
+      header: ({ column }) => <p className="">Amount</p>,
+      cell: (info) => (
+        <div className="">
+          <p className="font-medium">₦{info.row.original?.amount}</p>
+          {
+            (info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" || info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION") && (
+              <span className="text-xs text-red-400">
+                Commission: ₦{info.row.original?.tenmgCommission ?? `0.00`}
+              </span>
+            )
+          }
+        </div>
       ),
+    }),
+    // columnHelper.accessor("balanceAfter", {
+    //   header: ({ column }) => <p className="">Balance</p>,
+    //   cell: (info) => (
+    //     <div className="">
+    //       <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
+    //     </div>
+    //   ),
+    // }),
+    columnHelper.accessor("status", {
+      header: ({ column }) => <p>Type</p>,
       cell: (info) => {
         return (
           <div>
-            <p className={classNames(
-            info?.row?.original?.status === "DEBIT" 
-            ? "bg-[#FFFAEB] text-[#F79009]" 
-            : info?.row?.original?.status === "Cancelled" 
-            ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "CREDIT"
-            ? "text-[#027A48] bg-[#ECFDF3]"
-            : "text-gray-500", " max-w-min p-1 px-2 rounded-2xl text-sm"
-            )}>
-                <span className="w-3 h-3 rounded-full"></span>
-                {" "}
-               {formatText(info?.row?.original?.status)}
+            <p
+              className={classNames(
+                info?.row?.original?.status === "DEBIT"
+                  ? "bg-[#FEF3F2] text-[#B42318]"
+                  : info?.row?.original?.status === "CREDIT" ||
+                    info?.row?.original?.status === "Successful"
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : "text-orange-500 bg-orange-50",
+                " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+              )}
+            >
+              <span className="rounded-full text-[1.2rem]">•</span>{" "}
+              {info?.row?.original?.status}
             </p>
           </div>
         );
       },
-    })
+    }),
+    columnHelper.accessor("status", {
+      header: ({ column }) => <p className="text-center">Actions</p>,
+      cell: (info) => {
+        return (
+          <Flex justify={"center"}>
+            <Menu>
+              <MenuButton>
+                <BsThreeDotsVertical className="w-5 h-auto" />
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => {
+                  setSelectedRow(info.row.original);
+                  onOpen();
+                  }}>
+                  View Transaction Details
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        );
+      },
+    }),
   ];
 }

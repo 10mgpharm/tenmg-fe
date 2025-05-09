@@ -37,27 +37,26 @@ const LoanWallet = () => {
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  useEffect(() => {
+  const fetchTransactions = async () => {
     setLoading(true);
-    const fetchTransactions = async () => {
-
-      try {
-        const response = await requestClient({ token: token }).get(
-          `/vendor/wallet/transactions`,
-        );
-        if (response.status === 200) {
-          // console.log(response?.data?.data?.data);
-          setTransactions(response?.data?.data?.data);
-          setLoading(false);
-        }
-      }
-      catch (error) {
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/vendor/wallet/transactions`,
+      );
+      if (response.status === 200) {
+        // console.log(response?.data?.data?.data);
+        setTransactions(response?.data?.data?.data);
         setLoading(false);
-        console.error(error);
       }
     }
+    catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
+  };
+  useEffect(() => {
     token && fetchTransactions()
-  }, [token])
+  }, [token, fetchTransactions]);
 
   const metaData = {
     links: "",

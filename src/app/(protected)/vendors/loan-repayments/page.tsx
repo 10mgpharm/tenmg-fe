@@ -54,12 +54,11 @@ const LoanRepayments = () => {
   const fetchingLoans = useCallback(async () => {
     setLoading(true);
     let query = `/vendor/loan-repayment?page=${pageCount}`;
+
     if (debouncedSearch) {
       query += `&search=${debouncedSearch}`;
     }
-    if (status) {
-      query += `&status=${status}`;
-    }
+
     if (createdAtStart) {
       query += `&dateFrom=${createdAtStart}`;
     }
@@ -77,7 +76,7 @@ const LoanRepayments = () => {
       console.error(error);
       setLoading(false);
     }
-  }, [token, pageCount, debouncedSearch, createdAtEnd, createdAtStart, status]);
+  }, [token, pageCount, debouncedSearch, createdAtEnd, createdAtStart]);
 
   useEffect(() => {
     if (!token) return;
@@ -86,7 +85,7 @@ const LoanRepayments = () => {
 
   const table = useReactTable({
     data: data ? data.data : [],
-    columns: ColumnsLoanRepaymentFN(),
+    columns: ColumnsLoanRepaymentFN(pageCount),
     state: {
       globalFilter,
     },
@@ -96,13 +95,7 @@ const LoanRepayments = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const filterOptions = [
-    { option: "PAID", value: "PAID" },
-    { option: "PENDING", value: "PENDING" },
-  ];
-
   const applyFilters = (filters: IApplyFilters) => {
-    console.log(filters);
     setCreatedAtStart(filters.startDate);
     setCreatedAtEnd(filters.endDate);
     setStatus(filters.status);
@@ -121,7 +114,7 @@ const LoanRepayments = () => {
         <div className="mb-5">
           <div className="flex items-center gap-3 mt-5 flex-wrap">
             <SearchInput
-              placeholder="Search for a loan"
+              placeholder="Search by customer name"
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
@@ -195,7 +188,7 @@ const LoanRepayments = () => {
         onClose={onCloseFilter}
         applyFilters={applyFilters}
         clearFilters={clearFilters}
-        filterOptions={filterOptions}
+        noStatus
       />
     </div>
   );

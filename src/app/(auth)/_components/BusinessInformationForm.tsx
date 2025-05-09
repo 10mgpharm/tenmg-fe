@@ -106,6 +106,8 @@ export default function BusinessInformationForm({
           user: {
             ...sessionData.user,
             completeProfile: true,
+            businessName: data.businessName,
+            entityType: data.businessType.toUpperCase(),
           },
         });
         router.replace("/");
@@ -173,7 +175,7 @@ export default function BusinessInformationForm({
           {/* Heading */}
           <Flex direction="column" mb={8}>
             <Text fontWeight="normal" fontSize="4xl" color="gray.900" mb={3}>
-            Business Information
+              Business Information
             </Text>
             {name && provider === "google" && (
               <Text fontSize="lg" color="gray.500">
@@ -236,13 +238,17 @@ export default function BusinessInformationForm({
                     render={() => (
                       <CustomRadio
                         name="businessType"
-                        options={["Supplier", "Pharmacy"]}
+                        options={["Supplier", "Pharmacy", "Lender"]}
                         defaultValue={getValues("businessType")}
                         onChangeCallback={(selectedValue: string) => {
-                          const value: "supplier" | "customer_pharmacy" =
-                            selectedValue == "Supplier"
-                              ? "supplier"
-                              : "customer_pharmacy";
+                          let value:
+                            | "supplier"
+                            | "customer_pharmacy"
+                            | "lender";
+                          if (selectedValue === "Supplier") value = "supplier";
+                          else if (selectedValue === "Pharmacy")
+                            value = "customer_pharmacy";
+                          else value = "lender";
                           setValue("businessType", value);
                         }}
                       />
@@ -384,7 +390,7 @@ export default function BusinessInformationForm({
                 {errors.termsAndConditions?.message}
               </FormErrorMessage>
             </FormControl>
-            
+
             {/* Submit Button */}
             <Flex direction="column" gap={4} mb={8}>
               <Button

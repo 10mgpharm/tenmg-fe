@@ -2,16 +2,12 @@
 
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
-import ProductWallet from "./_components/productWallet";
-import LoanWallets from "./_components/LoanWallets";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
-import {
-  NextAuthUserSession,
-  TransactionDataProps,
-  TransactionProps,
-} from "@/types";
+import { LoanTransactionProps, LoanWalletProps, NextAuthUserSession, WalletProductProps } from "@/types";
 import requestClient from "@/lib/requestClient";
+import ProductWalletTab from "./_components/ProductWalletTab";
+import LoanWalletTab from "./_components/LoanWalletTab";
 
 const Page = () => {
   const session = useSession();
@@ -20,34 +16,18 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
-  const [transactions, setTransactions] = useState<TransactionDataProps>();
-  const [walletStats, setWalletStats] = useState<TransactionProps>();
-
-  const fetchingTransactions = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await requestClient({ token: token }).get(
-        `/admin/wallet/transactions?page=${pageCount}&perPage=10`
-      );
-      if (response.status === 200) {
-        setTransactions(response.data.data);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [token, pageCount]);
+  const [walletStats, setWalletStats] = useState<WalletProductProps>();
+  const [loanWallet, setLoanWallet] = useState<LoanWalletProps>();
+  const [loanTransaction, setLoanTransaction] = useState<LoanTransactionProps[]>([]);
 
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
     try {
       const response = await requestClient({ token: token }).get(
-        `/admin/wallet`
+        `/admin/wallet-product`
       );
-      console.log(response);
       if (response.status === 200) {
-        setWalletStats(response.data);
+        setWalletStats(response.data?.data);
         setLoading(false);
       }
     } catch (error) {
@@ -56,13 +36,41 @@ const Page = () => {
     }
   }, [token]);
 
+  const fetchingLoanWallet = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token: token }).get(
+        "/admin/wallet"
+      );
+      if (response.status === 200) {
+        setLoanWallet(response?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, [token]);
+
+  const fetchingLoanTransactions = useCallback(async () => {
+    setLoading(true);
+    let query = `/admin/wallet/transactions?page=${pageCount}`;
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setLoanTransaction(response.data?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, [token, pageCount]);
+
   useEffect(() => {
     if (!token) return;
     fetchingWallet();
-    fetchingTransactions();
+    fetchingLoanWallet();
+    fetchingLoanTransactions();
   }, [token]);
-
-  console.log(walletStats);
 
   return (
     <div className="px-6 py-8 md:p-8 ">
@@ -105,13 +113,17 @@ const Page = () => {
         {/* panels */}
         <TabPanels className="mt-10 max-sm:mt-8">
           <TabPanel className="!p-0">
-            <ProductWallet
-              transactions={transactions}
-              setPageCount={setPageCount}
+            <ProductWalletTab 
+            transactions={walletStats}
+            setPageCount={setPageCount}
             />
           </TabPanel>
           <TabPanel className=" !p-0">
-            <LoanWallets filterDate={selectedTimeLine} />
+            <LoanWalletTab
+            data={loanWallet}
+            transactions={loanTransaction}
+            filterDate={selectedTimeLine}
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>

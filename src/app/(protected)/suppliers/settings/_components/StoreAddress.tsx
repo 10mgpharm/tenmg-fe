@@ -1,58 +1,18 @@
 "use client";
 
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function StoreAddress() {
-  const [items, setItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    const savedItems = JSON.parse(localStorage.getItem("shoppingList") || "[]");
-    setItems(savedItems);
-  }, []);
-
   const router = useRouter();
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">List</h1>
-      <p className="text-gray-600 mb-6">List of items you plan to purchase.</p>
+    <div className="flex items-center justify-center h-screen bg-gray-100">
       <button
-        onClick={() => router.push("/add-item")}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        onClick={() => router.push("/stores")}
+        className="bg-blue-600 text-white px-6 py-3 rounded-md text-lg shadow hover:bg-blue-700 transition"
       >
         Add Item
       </button>
-
-      <div className="mt-6 space-y-4">
-        {items.map((item, idx) => (
-          <div
-            key={idx}
-            className="border rounded p-4 flex items-center justify-between bg-white"
-          >
-            <div>
-              <h2 className="text-lg font-semibold">{item.name}</h2>
-              <p>{item.description}</p>
-              <p className="text-sm text-gray-500">{item.date}</p>
-            </div>
-            <div className="space-x-2">
-              <button className="text-blue-600 border px-3 py-1 rounded">
-                Buy Now
-              </button>
-              <button
-                className="text-red-600 border px-3 py-1 rounded"
-                onClick={() => {
-                  const updated = items.filter((_, i) => i !== idx);
-                  localStorage.setItem("shoppingList", JSON.stringify(updated));
-                  setItems(updated);
-                }}
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

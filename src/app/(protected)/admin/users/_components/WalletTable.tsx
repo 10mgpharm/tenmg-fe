@@ -73,14 +73,6 @@ const WalletTable = ({
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (isLoading) {
-    return (
-      <Flex justify="center" align="center" height="200px">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
-
   return (
     <div>
       {data?.length === 0 ? (
@@ -88,7 +80,7 @@ const WalletTable = ({
           heading={`No Wallet Yet`}
           content={`You currently have no wallet. All wallets will appear here.`}
         />
-      ) : (
+      ) : data?.length > 0 ? (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
             <Thead bg={"#F2F4F7"}>
@@ -127,6 +119,10 @@ const WalletTable = ({
             <Pagination {...metaData} setPageCount={setPageCount} />
           )}
         </TableContainer>
+      ): (
+        <Flex justify="center" align="center" height="200px">
+          <Spinner size="xl" />
+        </Flex>
       )}
       <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
     </div>

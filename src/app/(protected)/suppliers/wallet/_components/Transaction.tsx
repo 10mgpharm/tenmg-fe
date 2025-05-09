@@ -1,41 +1,49 @@
 "use client";
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from '@chakra-ui/react'
 import TransactionTable from './TransactionTable';
-import { WalletData } from '@/types';
+import { PayoutDataProps, SupplierTransactionDataProps } from '@/types';
+import PayoutTable from './PayoutTable';
+import { Dispatch, SetStateAction } from 'react';
 
-const Transaction = ({ data }: { data: WalletData[] }) => {
+interface Props {
+    data: SupplierTransactionDataProps;
+    payoutData?: PayoutDataProps;
+    hasPagination: boolean;
+    setPageCount?: Dispatch<SetStateAction<number>>;
+}
+const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) => {
+    console.log(payoutData);
     return (
         <div>
             <Tabs variant={"unstyled"}>
-                <TabList className=" overflow-x-scroll">
+                <TabList 
+                borderBottom={"none"}
+                className="">
                     <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                         <div className='flex items-center gap-3'>
                             <Text>All Transactions</Text>
-                            <p className='bg-purple-50 text-purple-500 py-0.5 px-2 rounded-full text-sm'>{0}</p>
                         </div>
                     </Tab>
                     <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                         <div className='flex items-center gap-3'>
-                            <Text>Completed</Text>
-                            <p className='bg-green-50 text-green-500 py-0.5 px-2 rounded-full text-sm'>{0}</p>
-                        </div>
-                    </Tab>
-                    <Tab _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                        <div className='flex items-center gap-3'>
-                            <Text>Pending</Text>
-                            <p className='bg-orange-50 text-orange-500 py-0.5 px-2 rounded-full text-sm'>{0}</p>
+                            <Text>Pending Payout</Text>
                         </div>
                     </Tab>
                 </TabList>
                 <TabPanels>
                     <TabPanel px={0}>
-                        <TransactionTable data={data} />
+                        <TransactionTable 
+                        data={data?.data} 
+                        hasPagination={hasPagination} 
+                        setPageCount={setPageCount}
+                        />
                     </TabPanel>
-                    <TabPanel>
-                        <TransactionTable data={data} />
-                    </TabPanel>
-                    <TabPanel>
-                        <TransactionTable data={data} />
+                    <TabPanel px={0}>
+                        <PayoutTable 
+                        data={payoutData?.pendingPayouts?.data} 
+                        hasPagination={hasPagination}
+                        setPageCount={setPageCount}
+                        />
                     </TabPanel>
                 </TabPanels>
             </Tabs>

@@ -117,7 +117,7 @@ const Users = () => {
     fetchTeamUser("pharmacy", pageCount);
     fetchTeamUser("vendor", pageCount);
     fetchTeamUser("lender", pageCount);
-  }, [fetchTeamUser, token, pageCount, debouncedSearch, selectedStatuses]);
+  }, [fetchTeamUser, token, pageCount]);
 
   const handleTabsChange = (index: number) => {
     setPageCount(1);

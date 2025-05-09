@@ -8,7 +8,6 @@ import SideBar from "./SideBar";
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   return (
     <>
       <TopNavBar

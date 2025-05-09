@@ -19,7 +19,7 @@ const getErrorMessage = (error?: string | null | undefined) => {
         case 'CredentialsSignin':
             return 'Provided credentials are invalid';
         default:
-            return 'Error processing your request. Please try again.';
+            return error;
     }
 };
 
@@ -45,7 +45,7 @@ export default function ErrorMessage({ error, onClose }: ErrorMessageProps) {
                 <AlertIcon />
                 <Box>
                     <AlertDescription>
-                        {errorMessage}
+                        {getErrorMessage(errorMessage)}
                     </AlertDescription>
                 </Box>
                 <CloseButton
@@ -53,7 +53,10 @@ export default function ErrorMessage({ error, onClose }: ErrorMessageProps) {
                     position='relative'
                     right={-1}
                     top={-1}
-                    onClick={() => setErrorMessage(null)}
+                    onClick={() => {
+                        setErrorMessage(null);
+                        onClose();
+                    }}
                 />
             </Alert>
             }

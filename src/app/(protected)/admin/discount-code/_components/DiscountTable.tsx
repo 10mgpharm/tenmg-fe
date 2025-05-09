@@ -59,22 +59,16 @@ const DiscountTable = (
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    const memoizedData = useMemo(() => data?.data, [data?.data]);
-
     const { isOpen: isOpenActivate, onClose: onCloseActivate, onOpen: onOpenActivate } = useDisclosure();
     const { isOpen: isOpenDeactivate, onClose: onCloseDeactivate, onOpen: onOpenDeactivate } = useDisclosure();
     const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpen: onOpenDelete } = useDisclosure();
+    
+    const memoizedData = useMemo(() => data?.data, [data?.data]);
+    const columns = useMemo(() => ColumsDiscountFN(pageCount, PAGESIZE, setSelectedDiscount, onOpenDeactivate, onOpenActivate, onOpenDelete), [pageCount]);
 
     const table = useReactTable({
-        data: memoizedData,
-        columns: ColumsDiscountFN(
-            pageCount, 
-            PAGESIZE, 
-            setSelectedDiscount, 
-            onOpenDeactivate, 
-            onOpenActivate, 
-            onOpenDelete
-        ),
+        data: memoizedData || [],
+        columns: columns,
         onSortingChange: setSorting,
         state: {
           sorting,
@@ -178,7 +172,7 @@ const DiscountTable = (
                 ))}
                 </Thead>
                 <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {data?.data && table?.getRowModel()?.rows?.map((row) => (
+                {table?.getRowModel()?.rows?.map((row) => (
                     <Tr key={row.id}>
                     {row.getVisibleCells()?.map((cell) => (
                         <Td key={cell.id} px="0px">

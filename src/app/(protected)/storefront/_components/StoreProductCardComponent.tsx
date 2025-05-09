@@ -106,7 +106,9 @@ export default function StoreProductCardComponent({
     />
   );
 
+
   const renderProductDetails = () => (
+
     <div className="w-full">
       <div className="flex items-center justify-between my-2">
         <p className="text-gray-950 font-semibold text-sm capitalize">
@@ -153,26 +155,32 @@ export default function StoreProductCardComponent({
           ml="1"
           borderRadius="full"
           color={
-            product?.inventory?.toLowerCase() === "in stock"
-              ? "green.500"
-              : "error.500"
+            product?.quantity <= (product?.outStockLevel ?? 0)
+              ? "error.500"
+              : product?.quantity >= (product?.outStockLevel ?? 0) && product?.quantity <= product?.lowStockLevel
+                ? "warning.500"
+                : "green.500"
           }
           bgColor={
-            product?.inventory?.toLowerCase() === "in stock"
-              ? "green.100"
-              : "error.100"
+            product?.quantity <= (product?.outStockLevel ?? 0)
+              ? "error.100"
+              : product?.quantity >= (product?.outStockLevel ?? 0) && product?.quantity <= product?.lowStockLevel
+                ? "warning.100"
+                : "green.100"
           }
         >
           <TagLabel className="">
-            {product?.inventory
-              .toLowerCase()
-              .split(" ")
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ")}
+            {
+              product?.quantity <= (product?.outStockLevel ?? 0)
+                ? "Out of Stock"
+                : product?.quantity >= (product?.outStockLevel ?? 0) && product?.quantity <= product?.lowStockLevel
+                  ? "Low In Stock"
+                  : "In Stock"
+            }
           </TagLabel>
         </Tag>
       </div>
-    </div>
+    </div >
   );
 
   const renderButtons = () => (
@@ -180,7 +188,7 @@ export default function StoreProductCardComponent({
       <button
         disabled={
           !isProductClickable ||
-          product?.inventory?.toLowerCase() !== "in stock"
+          product?.quantity <= (product?.outStockLevel ?? 0)
         }
         className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer disabled:cursor-not-allowed"
         onClick={() => {
@@ -191,7 +199,7 @@ export default function StoreProductCardComponent({
         Buy Now
       </button>
       <button
-        disabled={!isProductClickable || updateLoading}
+        disabled={!isProductClickable || updateLoading || product?.quantity <= (product?.outStockLevel ?? 0)}
         className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
         onClick={() => {
           handleAddToCart(product?.id, addedTocart ? "remove" : "add");

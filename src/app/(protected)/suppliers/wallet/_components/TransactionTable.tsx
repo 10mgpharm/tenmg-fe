@@ -1,76 +1,74 @@
 "use client";
 
 import { 
-    ColumnOrderState, 
-    RowSelectionState, 
-    SortingState, 
     flexRender, 
     getCoreRowModel, 
     getSortedRowModel, 
     useReactTable 
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ColumsTransactionFN } from "./table";
 import EmptyOrder from "../../orders/_components/EmptyOrder";
-import { Table,TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import Pagination from "../../_components/Pagination";
-import { WalletData } from "@/types";
+import { Flex, Spinner, Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
+import { Daum, LoanTransactionProps } from "@/types";
+import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
+import TransactionDetails from "@/app/(protected)/admin/wallet/_components/TransactionDetail";
 
-const TransactionTable = ({data}: {data: WalletData[]}) => {
+interface TransactionTableProps {
+    data: Daum[];
+    hasPagination: boolean;
+    setPageCount?: Dispatch<SetStateAction<number>>;
+    metaData?: {
+        links: any;
+        prevPageUrl: string | null;
+        nextPageUrl: string | null;
+        currentPage: number;
+        firstPageUrl: any;
+        lastPageUrl: any;
+        total: number;
+        perPage: number;
+        from: number;
+        to: number;
+        lastPage: number;
+    };
+}
+const TransactionTable = ({data, hasPagination, metaData, setPageCount}: TransactionTableProps) => {
 
-    const onOpen = () => {}
-    const [pageCount, setPageCount] = useState<number>(1);
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnVisibility, setColumnVisibility] = useState({});
-    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [selectedRow, setSelectedRow] = useState<Daum>();
+
+     // Memoize the columns
+     const columns = useMemo(() => ColumsTransactionFN(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
+     // Memoize the filtered data
+     const filterTransactions = useMemo(() => data?.slice(0, 5), [data]);
 
     const table = useReactTable({
-        data: data,
-        columns: ColumsTransactionFN(onOpen),
-        onSortingChange: setSorting,
-        state: {
-          sorting,
-          columnVisibility,
-          columnOrder,
-          rowSelection,
-        },
-        enableRowSelection: true,
-        onRowSelectionChange: setRowSelection,
-        onColumnVisibilityChange: setColumnVisibility,
-        onColumnOrderChange: setColumnOrder,
+        data: filterTransactions || [],
+        columns: columns,
+        state: {},
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
 
-    const meta = {
-        meta: {
-            links: [
-                {label: 'Previous', active: false},
-                {label: 1, active: true}
-            ]
-        }
-    }
-
-
   return (
     <div>
       {
-            data?.length === 0 
-            ? <EmptyOrder 
-            heading={`No Transactions Yet`} 
-            content={`You currently have no transaction. All transactions will appear here.`} 
-            /> : 
+        data?.length === 0 
+        ? <EmptyOrder 
+        heading={`No Transactions Yet`} 
+        content={`You currently have no transaction. All transactions will appear here.`} 
+        /> : 
+        data?.length > 0 ? (
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
-                    {data && table?.getHeaderGroups()?.map((headerGroup) => (
-                        <Tr key={headerGroup.id}>
-                        {headerGroup.headers?.map((header) => (
+                    {table?.getHeaderGroups()?.map((headerGroup, i) => (
+                        <Tr key={i}>
+                        {headerGroup.headers?.map((header, idx) => (
                             <Th
                             textTransform={"initial"}
                             px="0px"
-                            key={header.id}
+                            key={idx}
                             >
                             {header.isPlaceholder
                                 ? null
@@ -84,10 +82,10 @@ const TransactionTable = ({data}: {data: WalletData[]}) => {
                     ))}
                     </Thead>
                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {data && table?.getRowModel()?.rows?.map((row) => (
-                        <Tr key={row.id}>
-                        {row.getVisibleCells()?.map((cell) => (
-                            <Td key={cell.id} px="0px">
+                    {table?.getRowModel()?.rows?.map((row, index) => (
+                        <Tr key={index}>
+                        {row.getVisibleCells()?.map((cell, idxs) => (
+                            <Td key={idxs} px="0px">
                             {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
@@ -98,9 +96,21 @@ const TransactionTable = ({data}: {data: WalletData[]}) => {
                     ))}
                     </Tbody>
                 </Table>
-                <Pagination meta={meta} setPageCount={setPageCount}/>
+                {hasPagination && metaData && (
+                    <Pagination {...metaData} setPageCount={setPageCount} />
+                )}
             </TableContainer>
-        }  
+        ) : (
+            <Flex justify="center" align="center" height="200px">
+              <Spinner size="xl" />
+            </Flex>
+        )}  
+        <TransactionDetails 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        type="" 
+        selectedRow={selectedRow} 
+        />
     </div>
   )
 }

@@ -230,4 +230,170 @@ export interface BusinessProp {
     createdAt: string
     updatedAt: string
 }
+
+export interface LoanWalletProps {
+  totalLenders: string;
+  vendorPayouts: string;
+  walletBalance: string;
+}
+
+export interface WalletProductProps {
+  wallet: WalletDataProps
+  totalCommissionsEarned: string;
+  totalPendingSupplierPayout: string;
+  totalPendingCommissions: string;
+  totalSupplierPayout: string
+  transactions: TransactionsProps
+  payouts: Payouts
+}
+
+export interface WalletDataProps {
+  id: number
+  previousBalance: string
+  currentBalance: string
+}
+
+export interface TransactionsProps {
+  currentPage: number
+  data: Daum[]
+  firstPageUrl: string
+  from: number
+  lastPage: number
+  lastPageUrl: string
+  links: Link[]
+  nextPageUrl: any
+  path: string
+  perPage: number
+  prevPageUrl: any
+  to: number
+  total: number
+}
+
+export interface Daum {
+  id: number
+  orderId: number
+  txnType: string
+  txnGroup: string
+  amount: string
+  balanceBefore: string
+  balanceAfter: string
+  status: string;
+  tenmgCommission: string;
+  createdAt: string;
+}
+
+export interface Link {
+  url?: string
+  label: string
+  active: boolean
+}
+
+export interface Payouts {
+  currentPage: number
+  data: Daum2[]
+  firstPageUrl: string
+  from: number
+  lastPage: number
+  lastPageUrl: string
+  links: Link2[]
+  nextPageUrl: any
+  path: string
+  perPage: number
+  prevPageUrl: any
+  to: number
+  total: number
+}
+
+export interface Daum2 {
+  id: number
+  orderId: number
+  name?: string;
+  txnType: string
+  txnGroup: string
+  amount: string
+  balanceBefore: string
+  balanceAfter: string
+  status: string;
+  tenmgCommission: string;
+  createdAt: string;
+}
+
+export interface Link2 {
+  url?: string
+  label: string
+  active: boolean
+}
+
+export interface LoanTransactionDataProps {
+  data: LoanTransactionProps[]
+  links: any;
+  meta: any;
+  message: string;
+  status: string;
+}
+
+export interface LoanTransactionProps  {
+  id: number
+  business: BusinessProp
+  identifier: string
+  amount: string
+  type: string
+  transactionGroup: string
+  description: string
+  status: string
+  paymentMethod: any
+  reference: any
+  walletId: any
+  loanApplicationId: any
+  meta: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface SupplierTransactionDataProps  {
+  data: Daum[];
+  links: any;
+  to: number;
+  total: number;
+  currentPage: number;
+  from: number;
+  perPage: number;
+  lastPage: number;
+  firstPageUrl: string;
+  lastPageUrl: string;
+  nextPageUrl: any;
+  path: string;
+  prevPageUrl: any;
+}
+
+export interface PayoutProps {
+  data: PayoutTypeProps[];
+  links: any;
+  to: number;
+  total: number;
+  currentPage: number;
+  from: number;
+  perPage: number;
+  lastPage: number;
+  firstPageUrl: string;
+  lastPageUrl: string;
+  nextPageUrl: any;
+  path: string;
+  prevPageUrl: any;
+}
+export interface PayoutDataProps {
+  payouts: PayoutProps;
+  pendingPayouts: PayoutProps;
+  totalPendingPayouts: string;
+}
   
+export interface PayoutTypeProps  {
+  id: number
+  actualPrice: string
+  discountPrice: string
+  quantity: number;
+  status?: string;
+  createdAt: string;
+  tenmgCommission: string;
+}
+

@@ -14,8 +14,12 @@ import Link from "next/link";
 import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { BankDto, NextAuthUserSession, WalletResponseData } from "@/types";
+import { BankDto, Daum, NextAuthUserSession, PayoutDataProps, PayoutTypeProps, SupplierTransactionDataProps } from "@/types";
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
+import { FaPencil } from "react-icons/fa6";
+import EditBank from "./_components/EditBank";
+import { PencilIcon } from "lucide-react";
+
 export interface BankInfo {
   accountName: string;
   accountNumber: string;
@@ -41,16 +45,14 @@ const Wallet = () => {
   const [showBalance, setShowBalance] = useState(true);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
   const [walletBalance, setWalletBalance] = useState<WalletProps>();
-  const [transactions, setTransactions] = useState<WalletResponseData>();
+  const [transactions, setTransactions] = useState<SupplierTransactionDataProps>();
+  const [pendingPayouts, setPendingPayout] = useState<PayoutDataProps>();
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-
-
   useEffect(() => {
-
     const fetchingBankList = async () => {
       try {
         const response = await getBankList(token);
@@ -70,7 +72,6 @@ const Wallet = () => {
         setBanks([]);
       }
     }
-
     if (!token) return;
     fetchingBankList();
   }, [token]);
@@ -85,6 +86,11 @@ const Wallet = () => {
     isOpen: isOpenOTP,
     onOpen: onOpenOTP,
     onClose: onCloseOTP,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEditBank,
+    onOpen: onOpenEditBank,
+    onClose: onCloseEditBank,
   } = useDisclosure();
 
   const fetchingWallet = useCallback(async () => {
@@ -117,11 +123,28 @@ const Wallet = () => {
     }
   }, [token]);
 
+  const fetchingPendingPayout = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token }).get(
+        `/supplier/wallet/pending-payout`
+      );
+      if (response.status === 200) {
+        setPendingPayout(response?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
   useEffect(() => {
     if (!token) return;
-    fetchingTransactions();
     fetchingWallet();
-  }, [token, fetchingTransactions, fetchingWallet]);
+    fetchingTransactions();
+    fetchingPendingPayout();
+  }, [token, fetchingTransactions, fetchingWallet, fetchingPendingPayout]);
 
   const formattedBalance = walletBalance?.currentBalance
     ? Number(walletBalance?.currentBalance).toFixed(2)
@@ -130,7 +153,6 @@ const Wallet = () => {
   return (
     <div className="p-8">
       <h3 className="font-semibold text-xl text-gray-700 mb-4">Wallet</h3>
-
       <div className="flex gap-5">
         {/* Balance section */}
         <div className="flex-1 bg-primary-50 pt-3 pl-5 rounded-lg flex justify-between">
@@ -138,16 +160,21 @@ const Wallet = () => {
             <div className="mt-5 flex items-center gap-3">
               <p className="text-xl">Wallet Balance</p>
               <button onClick={() => setShowBalance(!showBalance)}>
-                {showBalance ? <FaEye className="w-5 h-5" /> : <FaEyeSlash className="w-5 h-5" />}
+                {showBalance ? 
+                <FaEye className="w-5 h-5" /> : 
+                <FaEyeSlash className="w-5 h-5" />
+                }
               </button>
             </div>
             <p className="font-semibold text-2xl text-gray-700 mt-3">
               {showBalance ? `₦${formattedBalance}` : "******"}
             </p>
-            <div className="mt-8 mb-2">
-              <div className="bg-black bg-opacity-30 rounded-md p-1 w-4/5 pl-2.5">
-                <p className="text-white font-medium text-xs">Pending Balance</p>
-                <p className="text-white text-xs font-medium">₦{walletBalance?.previousBalance}</p>
+            <div className="mt-2 mb-6">
+              <div className="bg-green-50 rounded-md py-1 max-w-max px-2.5">
+                <p className="text-green-600 font-medium text-xs">Pending Balance</p>
+                <p className="text-green-600 text-xs font-semibold">
+                  {showBalance ? `₦${pendingPayouts?.totalPendingPayouts ?? 0.00}` : "******"}
+                </p>
               </div>
             </div>
             {walletBalance?.bankAccount && (
@@ -171,10 +198,13 @@ const Wallet = () => {
                   {walletBalance.bankAccount.accountName}
                 </p>
               </div>
-              <div className="py-1 px-2 rounded-full bg-white">
-                <p className="text-gray-600 text-sm font-semibold">
-                  {walletBalance.bankAccount.bankName}
-                </p>
+              <div className="flex items-center gap-2">
+                <div onClick={onOpen} className="py-1 flex items-center gap-2 px-2 rounded-full bg-white cursor-pointer">
+                  <p className="text-gray-600 text-sm font-semibold">
+                    {walletBalance.bankAccount.bankName}
+                  </p>
+                  <PencilIcon className="w-4 h-4 text-black"/>
+                </div>
               </div>
             </div>
             <div className="mt-8">
@@ -210,35 +240,39 @@ const Wallet = () => {
           </Link>
         </div>
         {
-          loading ?
-            <Flex justify="center" align="center" height="200px">
-              <Spinner size="xl" />
-            </Flex>
-            : transactions?.data?.length > 0 ? (
+          transactions?.data?.length === 0 ? (
+            <div className="mt-5 max-w-sm mx-auto">
+              <div className="text-center py-12">
+                <Image src={folder} alt="" className="mx-auto" />
+                <h3 className="font-semibold text-lg text-gray-700 mt-4">
+                  Nothing to show here yet
+                </h3>
+                <p className="text-gray-600">
+                  You don’t have any transactions yet. When you do, they’ll
+                  appear here.
+                </p>
+              </div>
+            </div>
+            ) : transactions?.data?.length > 0 ? (
               <div className="mt-5">
-                <Transaction data={transactions?.data} />
+                <Transaction 
+                data={transactions} 
+                payoutData={pendingPayouts}
+                hasPagination={false}
+                />
               </div>
             ) :
-              (
-                <div className="mt-5 max-w-sm mx-auto">
-                  <div className="text-center py-12">
-                    <Image src={folder} alt="" className="mx-auto" />
-                    <h3 className="font-semibold text-lg text-gray-700 mt-4">
-                      Nothing to show here yet
-                    </h3>
-                    <p className="text-gray-600">
-                      You don’t have any transactions yet. When you do, they’ll
-                      appear here.
-                    </p>
-                  </div>
-                </div>
-              )
+            (
+              <Flex justify="center" align="center" height="200px">
+                <Spinner size="xl" />
+              </Flex>
+            )
         }
       </div>
       <AddAccount
         isOpen={isOpen}
         onClose={onClose}
-        // banks={banks}
+        bank={walletBalance?.bankAccount}
         fetchingWallet={fetchingWallet}
         endpoint="/supplier/wallet/add-bank-account"
       />

@@ -6,26 +6,25 @@ import { Button, useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react'
 
-
 interface WalletProps {
   currentBalance: string;
   previousBalance: string;
   bankAccount: BankInfo;
 }
 
-export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { showBalance?: boolean, setAccountInfo?: (accountInfo: BankInfo) => void }) {
-
-  // const hasAccountNumber = false;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+export default function AccoundDetailsCard(
+  { showBalance, setAccountInfo }: 
+  { showBalance?: boolean, setAccountInfo?: (accountInfo: BankInfo) => void }
+) {
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
+  const [loading, setLoading] = useState(false);
   const [accountDetails, setAccountDetails] = useState<any>();
   const [hasAccountNumber, sethasAccountNumber] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  // console.log("accountDetails", accountDetails);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
@@ -35,7 +34,6 @@ export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { sh
         setAccountDetails(response?.data?.data);
         setAccountInfo && setAccountInfo(response?.data?.data);
         sethasAccountNumber(response?.data?.data?.accountNumber ? true : false);
-        // console.log(response?.data?.data);
       }
     } catch (error) {
       console.error(error);
@@ -49,7 +47,6 @@ export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { sh
     fetchingWallet();
   }, [token, fetchingWallet]);
 
-
   return (
     <>
       {hasAccountNumber ? (
@@ -57,18 +54,18 @@ export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { sh
           <div className="flex items-center justify-between gap-2 group">
             {/* Account Name */}
             <div className="p-2 rounded-full bg-white shadow-md transition-all duration-300 
-                  w-auto group-hover:w-full">
+                  w-auto">
               <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
                 {accountDetails?.accountName}
               </p>
             </div>
 
             {/* Bank Name */}
-            <div className="p-2 rounded-full bg-white transition-all duration-300 
-                  w-auto group-hover:w-full overflow-hidden">
-              <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
-                {accountDetails?.bankName}
-              </p>
+            <div className="p-2 cursor-pointer rounded-full bg-white transition-all duration-300 
+              w-auto group-hover:w-full overflow-hidden">
+                <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
+                  {accountDetails?.bankName}
+                </p>
             </div>
           </div>
 
@@ -78,15 +75,15 @@ export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { sh
               <h2 className="text-xl font-semibold">
                 {showBalance ?
                   `${'*'.repeat(7)}${accountDetails?.accountNumber.slice(-3)}`
-                  : accountDetails?.accountNumber}
-
+                  : accountDetails?.accountNumber
+                }
               </h2>
             </div>
-            {/* <div className="flex justify-between mt-5"> */}
             <Button size={"xs"} className="px-2 py-1" style={{ backgroundColor: "#000000cf" }}
               onClick={onOpen}
-            >Edit Account</Button>
-            {/* </div> */}
+            >
+              Edit Account
+            </Button>
           </div>
         </div>
       ) : (
@@ -110,7 +107,7 @@ export default function AccoundDetailsCard({ showBalance, setAccountInfo }: { sh
         isOpen={isOpen}
         onClose={onClose}
         fetchingWallet={fetchingWallet}
-        info={accountDetails}
+        bank={accountDetails}
         endpoint={"vendor/wallet/add-bank-account"}
       />
     </>

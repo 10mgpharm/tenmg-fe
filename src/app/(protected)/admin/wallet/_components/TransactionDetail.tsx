@@ -18,12 +18,17 @@ import Image from "next/image";
 const TransactionDetails = ({
   isOpen,
   onClose,
+  selectedRow,
   type,
 }: {
   isOpen: boolean;
   onClose: () => void;
   type: string;
+  selectedRow?: any;
 }) => {
+
+  console.log("selectedRow", selectedRow);
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
       <DrawerOverlay />
@@ -32,24 +37,36 @@ const TransactionDetails = ({
         <DrawerHeader className="capitalize">Transaction Details</DrawerHeader>
         <DrawerBody>
           <Text color={"gray.900"} fontWeight={600} fontSize={"1.4rem"}>
-            ₦9000
+            ₦{type === "sup_payout" ? Number(selectedRow?.actualPrice)?.toLocaleString() 
+            : Number(selectedRow?.amount)?.toLocaleString()
+            }
           </Text>
           <Text fontSize={"13px"} color={"gray.500"}>
-            Tue, 10 Sept 2024, 19:40
+            {selectedRow?.createdAt}
           </Text>
-          <Stack mt={5}>
-            <Text fontSize={"14px"} color={"gray.500"}>
-              Details
-            </Text>
-            <div className="border p-2 rounded-md">
-              <Text>Chudi Victor Ahmed</Text>
-            </div>
-          </Stack>
+          {
+            type !== "sup_payout" && (
+              <Stack mt={5}>
+                <Text fontSize={"14px"} color={"gray.500"}>
+                  Details
+                </Text>
+                <div className="border p-2 rounded-md">
+                  <Text>{selectedRow?.name ?? "N/A"}</Text>
+                </div>
+              </Stack>
+            )
+          }
           <Stack gap={4} mt={4} px={3} py={5} rounded={"md"} className="border">
             <Flex justify={"space-between"}>
               <Text>Status</Text>
-              <Tag colorScheme={"green"} fontWeight={500}>
-                Completed
+              <Tag 
+              colorScheme={
+                selectedRow?.txnType === "CREDIT" 
+                ? "green" : 
+                selectedRow?.txnType === "DEBIT" 
+                ? "red" : "orange"} fontWeight={500}
+              >
+                {selectedRow?.status ?? "PENDING"}
               </Tag>
             </Flex>
             <Flex justify={"space-between"}>
@@ -58,15 +75,22 @@ const TransactionDetails = ({
             </Flex>
             <Flex justify={"space-between"}>
               <Text>Transaction Type</Text>
-              <Text fontWeight={500}>NIP OUTWARD TRANSFER</Text>
+              <Text fontWeight={500}>
+                {(selectedRow?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" || selectedRow?.txnGroup === "DEBIT_COMMISSION_ON_ORDER_CANCELLATION") 
+                ? "Order Cancelled" 
+                : selectedRow?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" :
+                selectedRow?.txnGroup === "CREDIT_COMMISSION_ON_ORDER_COMPLETION" ? "Commission On Order Completed" :
+                ""
+              }
+              </Text>
             </Flex>
             <Flex justify={"space-between"}>
-              <Text>SessionID</Text>
-              <Text fontWeight={500}>00001324019929464</Text>
+              <Text>OrderID</Text>
+              <Text fontWeight={500}>{type === "sup_payout" ? selectedRow?.id : selectedRow?.orderId}</Text>
             </Flex>
             <Flex justify={"space-between"}>
-              <Text>Remark</Text>
-              <Text fontWeight={500}>00001324019929464</Text>
+              <Text>Tenmg Commission</Text>
+              <Text fontWeight={500}>₦{selectedRow?.tenmgCommission ?? "0.00"}</Text>
             </Flex>
           </Stack>
         </DrawerBody>

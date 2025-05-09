@@ -2,19 +2,17 @@ import { classNames } from "@/utils";
 import { Button, HStack, Text } from "@chakra-ui/react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { Dispatch, SetStateAction } from "react";
-const Pagination = (
-    {links, setPageCount, prevPageUrl, nextPageUrl, currentPage, firstPageUrl, lastPageUrl}: 
-    {
-        links: any, 
-        setPageCount: Dispatch<SetStateAction<number>>, 
-        prevPageUrl: string | null, 
-        nextPageUrl: string | null,
-        currentPage: number;
-        firstPageUrl: any;
-        lastPageUrl: any;
-    }
-    ) => {
 
+interface PaginationProps {
+    links: any, 
+    setPageCount: Dispatch<SetStateAction<number>>, 
+    prevPageUrl: string | null, 
+    nextPageUrl: string | null,
+    currentPage: number;
+    firstPageUrl: any;
+    lastPageUrl: any;
+}
+const Pagination = ({links, setPageCount, prevPageUrl, nextPageUrl, currentPage, firstPageUrl, lastPageUrl}: PaginationProps) => {
     const isArrayFormat = Array.isArray(links);
 
     const paginateList = isArrayFormat

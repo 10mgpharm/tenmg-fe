@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "../_components/TimeLineSelector";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import WalletTable from "../_components/table";
-import { transactionData } from "@/data/mockdata";
-const completed = transactionData.filter((item) => item.type === "Completed");
+import WalletTable from "../_components/TransactionTab";
+
 import {
   Text,
   Tab,
@@ -16,25 +15,44 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
+import { NextAuthUserSession, WalletProductProps } from "@/types";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import TransactionTab from "../_components/TransactionTab";
 
 const ProductWallet = () => {
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+  const [loading, setLoading] = useState(false);
+  const [pageCount, setPageCount] = useState(1);
+  const [data, setData] = useState<WalletProductProps>();
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [pagecount, setPageCount] = useState(1);
 
-  const awaiting = transactionData.filter((item) => item.type === "Awaiting");
-  const completed = transactionData.filter((item) => item.type === "Completed");
-  const history = transactionData.filter((item) => item.type === "History");
+  const fetchingWallet = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/wallet-product?page=${pageCount}`
+      );
+      if (response.status === 200) {
+        setData(response.data?.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [token, pageCount]);
 
-  // random data
-  const metaData = {
-    links: "",
-    prevPageUrl: "",
-    nextPageUrl: "",
-    currentPage: 1,
-    firstPageUrl: "",
-    lastPageUrl: "",
-  };
+  console.log(pageCount);
+
+  useEffect(() => {
+    if(!token) return;
+    fetchingWallet();
+  }, [token, fetchingWallet]);
 
   return (
     <div className="px-6 py-8 md:p-8">
@@ -63,36 +81,19 @@ const ProductWallet = () => {
             <Tab
               _selected={{ color: "white", bg: "#1A70B8" }}
               className="rounded-lg text-gray-700 bg-gray-100"
+              onClick={() => setPageCount(1)}
             >
               <div className="flex items-center gap-3">
-                <Text className="text-nowrap">Awaiting Payout </Text>
-                <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                  {awaiting?.length}
-                </p>
+                <Text className="text-nowrap">Payout </Text>
               </div>
             </Tab>
-
             <Tab
               _selected={{ color: "white", bg: "#1A70B8" }}
               className="rounded-lg text-gray-700 bg-gray-100"
-            >
-              <div className="flex items-center gap-3">
-                <Text className="text-nowrap">Completed Payout</Text>
-                <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                  {completed?.length}
-                </p>
-              </div>
-            </Tab>
-
-            <Tab
-              _selected={{ color: "white", bg: "#1A70B8" }}
-              className="rounded-lg text-gray-700 bg-gray-100"
+              onClick={() => setPageCount(1)}
             >
               <div className="flex items-center gap-3">
                 <Text className="text-nowrap">Transaction History</Text>
-                <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                  {history?.length}
-                </p>
               </div>
             </Tab>
           </TabList>
@@ -107,37 +108,48 @@ const ProductWallet = () => {
 
         <TabPanels>
           <TabPanel px={0}>
-            {/* <WalletTable
-              data={awaiting}
-              type="awaiting"
-              walletType="product_wallet"
-              hasPagination={true}
-              metaData={metaData}
-              setPageCount={setPageCount}
-              isLoading={false}
-            /> */}
+            <TransactionTab 
+            type="awaiting"
+            data={data?.payouts}
+            setPageCount={setPageCount}
+            hasPagination={true}
+            metaData={{
+              links: data?.payouts?.links,
+              total: data?.payouts?.total,
+              lastPage: data?.payouts?.lastPage,
+              perPage: data?.payouts?.perPage,
+              from: data?.payouts?.from,
+              to: data?.payouts?.to,
+              prevPageUrl: data?.payouts?.prevPageUrl,
+              nextPageUrl: data?.payouts?.nextPageUrl,
+              currentPage: data?.payouts?.currentPage,
+              firstPageUrl: data?.payouts?.firstPageUrl,
+              lastPageUrl: data?.payouts?.lastPageUrl,
+            }}
+            emptyStateHeader="No awaiting payout"
+            />
           </TabPanel>
           <TabPanel px={0}>
-            {/* <WalletTable
-              data={completed}
-              type="completed"
-              walletType="product_wallet"
-              hasPagination={true}
-              metaData={metaData}
-              setPageCount={setPageCount}
-              isLoading={false}
-            /> */}
-          </TabPanel>
-          <TabPanel px={0}>
-            {/* <WalletTable
-              data={history}
-              type="history"
-              walletType="product_wallet"
-              hasPagination={true}
-              metaData={metaData}
-              setPageCount={setPageCount}
-              isLoading={false}
-            /> */}
+          <TransactionTab 
+            type="transaction"
+            data={data?.transactions}
+            setPageCount={setPageCount}
+            hasPagination={true}
+            metaData={{
+              links: data?.transactions?.links,
+              total: data?.transactions?.total,
+              lastPage: data?.transactions?.lastPage,
+              perPage: data?.transactions?.perPage,
+              from: data?.transactions?.from,
+              to: data?.transactions?.to,
+              prevPageUrl: data?.transactions?.prevPageUrl,
+              nextPageUrl: data?.transactions?.nextPageUrl,
+              currentPage: data?.transactions?.currentPage,
+              firstPageUrl: data?.transactions?.firstPageUrl,
+              lastPageUrl: data?.transactions?.lastPageUrl,
+            }}
+            emptyStateHeader="No transaction history"
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>

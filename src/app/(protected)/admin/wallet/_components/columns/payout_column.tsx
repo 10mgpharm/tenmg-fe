@@ -1,48 +1,45 @@
-import { createColumnHelper } from "@tanstack/react-table";
+import { Daum2} from "@/types";
 import { classNames } from "@/utils";
+import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { TransactionProps } from "@/types";
-import { convertDate } from "@/utils/formatDate";
+import { Dispatch, SetStateAction } from "react";
 
-const columnHelper = createColumnHelper<TransactionProps>();
+const columnHelper = createColumnHelper<Daum2>();
 
-export function Payout_columnFn(
-  walletType: "product_wallet" | "loan_wallet",
+export function Awaiting_columnFn(
   onOpen: () => void,
-  onOpenPayout: () => void
+  onOpenPayout: () => void,
+  setSelectedRow: Dispatch<SetStateAction<Daum2 | null>>
 ) {
   return [
-    columnHelper.accessor("identifier", {
-      header: ({ column }) => <p className="pl-6"> S/N</p>,
-      cell: (info) => {
-        const serialNumber = info?.row?.index + 1;
-        return (
-          <div className="pl-6">
-            <p>{info.row.original.identifier}</p>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("business", {
-      header: ({ column }) => (
-        <p className="pl-6">
-          {walletType === "loan_wallet" ? "Vendor's Name" : "Supplier's Name"}
-        </p>
+    columnHelper.accessor("txnGroup", {
+      header: ({ column }) => <p className="pl-6">Date</p>,
+      cell: (info) => (
+        <div className="pl-6">
+          <p className="font-medium">
+            {info.row.original?.createdAt}
+          </p>
+        </div>
       ),
-      cell: (info) => {
-        return (
-          <div className="pl-6">
-            <p>{info?.row?.original?.business?.name}</p>
-          </div>
-        );
-      },
     }),
-    columnHelper.accessor("type", {
-      header: ({ column }) => <p className="">Transaction Type</p>,
+    columnHelper.accessor("name", {
+      header: ({ column }) => <p className="">Supplier</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium capitalize">{info.row.original?.type}</p>
+          <p className="font-medium">
+          {info.row.original?.name ?? ""}
+          </p>
+        </div>
+      ),
+    }),
+    columnHelper.accessor("orderId", {
+      header: ({ column }) => <p className="">OrderId</p>,
+      cell: (info) => (
+        <div className="">
+          <p className="font-medium">
+            {info.row.original?.orderId}
+          </p>
         </div>
       ),
     }),
@@ -51,20 +48,38 @@ export function Payout_columnFn(
       cell: (info) => (
         <div className="">
           <p className="font-medium">₦{info.row.original?.amount}</p>
+          {
+            info?.row?.original?.tenmgCommission && (
+              <span className="text-xs text-green-500">
+                Commission: ₦{info.row.original?.tenmgCommission ?? ""}
+              </span>
+            )
+          }
         </div>
       ),
     }),
-    columnHelper.accessor("createdAt", {
-      header: ({ column }) => <p className="">Date</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="font-medium">
-            {convertDate(info.row.original?.createdAt)}
-          </p>
-        </div>
-      ),
+    columnHelper.accessor("status", {
+      header: ({ column }) => <p>Status</p>,
+      cell: (info) => {
+        return (
+          <div>
+            <p
+              className={classNames(
+                info?.row?.original?.status === "DEBIT"
+                  ? "bg-[#FEF3F2] text-[#B42318]"
+                  : info?.row?.original?.status === "CREDIT"
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : "text-orange-500 bg-orange-50",
+                " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+              )}
+            >
+              <span className="rounded-full text-[1.2rem]">•</span>{" "}
+              PAID
+            </p>
+          </div>
+        );
+      },
     }),
-
     columnHelper.accessor("status", {
       header: ({ column }) => <p className="text-center">Actions</p>,
       cell: (info) => {
@@ -84,7 +99,10 @@ export function Payout_columnFn(
                   </>
                 ) : (
                   <>
-                    <MenuItem onClick={() => onOpen()}>
+                    <MenuItem onClick={() => {
+                      setSelectedRow(info.row.original);
+                      onOpen();
+                      }}>
                       View Transaction Details
                     </MenuItem>
                   </>

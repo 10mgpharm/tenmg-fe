@@ -32,6 +32,7 @@ interface Props {
   pendingPaymentDate: any;
   isSuccessStatus: (status: string | undefined) => boolean;
   lastPaidBalance: string | null;
+  pendingAmounts: any[];
 }
 
 export default function StepOneLoanDetails({
@@ -44,12 +45,15 @@ export default function StepOneLoanDetails({
   pendingPaymentDate,
   isSuccessStatus,
   lastPaidBalance,
+  pendingAmounts,
 }: Props) {
   const [showAll, setShowAll] = useState(false);
 
   const displayItems = showAll
     ? data?.repaymentSchedule
     : data?.repaymentSchedule?.slice(0, 3) || [];
+
+    console.log(lastPaidBalance)
 
   return (
     <LoanLayout
@@ -85,7 +89,11 @@ export default function StepOneLoanDetails({
           </Flex>
           <Flex justifyContent="center" alignItems="center" fontSize={60}>
             <TbCurrencyNaira size="24px" className="mt-6" />
-            <Text>{formatAmountString(lastPaidBalance)}</Text>
+            <Text>{
+              pendingAmounts.length > 0
+                ? formatAmountString(pendingAmounts.reduce((sum, item) => sum + Number(item.totalAmount), 0))
+                : formatAmountString(lastPaidBalance || 0)
+            }</Text>
           </Flex>
           <Stack justifyContent="center" alignItems="center" fontSize={20}>
             <Badge
