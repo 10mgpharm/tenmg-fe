@@ -253,7 +253,7 @@ const VendorDashboard = () => {
               </Tabs>
             </Flex>
             {/* Overview Cards */}
-            <Grid templateColumns="repeat(3, 1fr)" gap={5}>
+            <Grid className="grid grid-cols-1 md:grid-cols-3" gap={5}>
               <OverviewCard
                 title="Total Customers"
                 value={data.totalCustomers.toLocaleString()}
@@ -278,8 +278,8 @@ const VendorDashboard = () => {
             </Grid>
 
             {/* Balance Card */}
-            <Box borderRadius="lg" p={6} borderWidth="1px" bg={"white"}>
-              <Flex justifyContent="space-between" alignItems="center" pb={5}>
+            <Box borderRadius="lg" p={2} borderWidth="1px" bg={"white"}>
+              <Flex justifyContent="space-between" alignItems="center" pb={5} flexWrap={"wrap"}>
                 <Stack gap={3} flex={1} mt={2}>
                   <Text color="gray.500">Your Balance</Text>
                   <Text fontSize="4xl" fontWeight="semibold">

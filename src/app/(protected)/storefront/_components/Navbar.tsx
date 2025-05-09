@@ -185,19 +185,19 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
           <Image
             src={Logo}
             alt="10mg Health Logo"
-            className="w-[160px] md:h-auto hidden md:block"
+            className="w-[160px] md:h-auto "
             width={75}
             height={75}
           />
 
-          {/* for mobile */}
+          {/* for mobile
           <Image
             src={LogoSymbol}
             alt="10mg Health Logo"
             className="w-10 h-10 block md:hidden"
             width={25}
             height={25}
-          />
+          /> */}
         </HStack>
 
         {/* Navigation */}

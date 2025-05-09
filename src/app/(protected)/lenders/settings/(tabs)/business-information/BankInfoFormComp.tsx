@@ -217,7 +217,7 @@ export default function BankInfoFormComp({
       {edit ? (
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           {/* Header */}
-          <div className="space-y-5 w-full flex justify-between py-5">
+          <div className="space-y-5 w-full flex justify-between py-5 flex-col lg:flex-row gap-4">
             <div>
               <h3 className="font-semibold text-lg">Bank Information</h3>
               <Text fontSize={"14px"} color={"gray.500"}>
@@ -348,7 +348,7 @@ export default function BankInfoFormComp({
       ) : (
         // Display Mode
         <div className="space-y-4">
-          <div className="space-y-5 w-full flex justify-between py-5">
+          <div className="space-y-5 w-full flex flex-col lg:flex-row gap-4 justify-between py-5">
             <div>
               <h3 className="font-semibold text-lg">Bank Information</h3>
 

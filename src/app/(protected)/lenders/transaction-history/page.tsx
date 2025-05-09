@@ -79,9 +79,8 @@ export default function TransactionHistoryPage() {
       setLoading(true);
       setError(null);
 
-      const query = `/lender/transactions?page=${page}${
-        debouncedSearch ? `&search=${debouncedSearch}` : `&type=${type}`
-      }`;
+      const query = `/lender/transactions?page=${page}${debouncedSearch ? `&search=${debouncedSearch}` : `&type=${type}`
+        }`;
       try {
         const [statsRes, txnsRes] = await Promise.all([
           requestClient({ token: sessionToken }).get(
@@ -111,37 +110,37 @@ export default function TransactionHistoryPage() {
     () =>
       stats
         ? [
-            {
-              title: "Total Deposits",
-              value: stats.totalDeposit
-                ? `₦${formatAmountString(stats.totalDeposit)}`
-                : "₦0",
-              bgColor: "#53389E",
-              bgImg: "/assets/images/disb_bg.png",
-            },
-            {
-              title: "Total Withdrawals",
-              value: stats.totalWithdrawal
-                ? `₦${formatAmountString(stats.totalWithdrawal)}`
-                : "₦0",
-              bgColor: "#DC6803",
-              bgImg: "/assets/images/app_bg.png",
-            },
-            {
-              title: "Net Wallet Balance",
-              value: stats.netWalletBalance
-                ? `₦${formatAmountString(stats.netWalletBalance)}`
-                : "₦0",
-              bgColor: "#3E4784",
-              bgImg: "/assets/images/pend_bg.png",
-            },
-            {
-              title: "Last Transaction Date",
-              value: convertDate(stats.lastTransactionDate) || "-",
-              bgColor: "#E31B54",
-              bgImg: "/assets/images/tot_bg.png",
-            },
-          ]
+          {
+            title: "Total Deposits",
+            value: stats.totalDeposit
+              ? `₦${formatAmountString(stats.totalDeposit)}`
+              : "₦0",
+            bgColor: "#53389E",
+            bgImg: "/assets/images/disb_bg.png",
+          },
+          {
+            title: "Total Withdrawals",
+            value: stats.totalWithdrawal
+              ? `₦${formatAmountString(stats.totalWithdrawal)}`
+              : "₦0",
+            bgColor: "#DC6803",
+            bgImg: "/assets/images/app_bg.png",
+          },
+          {
+            title: "Net Wallet Balance",
+            value: stats.netWalletBalance
+              ? `₦${formatAmountString(stats.netWalletBalance)}`
+              : "₦0",
+            bgColor: "#3E4784",
+            bgImg: "/assets/images/pend_bg.png",
+          },
+          {
+            title: "Last Transaction Date",
+            value: convertDate(stats.lastTransactionDate) || "-",
+            bgColor: "#E31B54",
+            bgImg: "/assets/images/tot_bg.png",
+          },
+        ]
         : [],
     [stats]
   );
@@ -249,23 +248,32 @@ export default function TransactionHistoryPage() {
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
                 />
-                <Menu>
+                <Button
+                  h={"40px"}
+                  px={4}
+                  variant={"outline"}
+                  className="border text-gray-600 bg-white"
+                >
+                  Filter
+                </Button>
+                {/* <Menu>
                   <MenuButton
-                    as={Button}
-                    variant={"unstyled"}
+                    // as={Button}
+                    variant={"outline"}
                     size={"md"}
                     px="8px"
-                    className=" cursor-pointer  "
+                    className=" cursor-pointer border text-gray-600 bg-white"
+
                   >
                     <p
                       className="text-gray-500 border border-gray-300 rounded-md flex items-center"
                       style={{ padding: "8px 20px" }}
                     >
-                      Filters
-                    </p>
+                    </p> 
+                    Filters
                   </MenuButton>
                   <MenuList></MenuList>
-                </Menu>
+                </Menu> */}
               </div>
             </div>
             {loading ? (

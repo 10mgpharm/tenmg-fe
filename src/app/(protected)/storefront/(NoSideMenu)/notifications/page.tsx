@@ -63,7 +63,7 @@ const Notifications = () => {
       setIsLoading(false);
     }
   }, [token, id]);
-
+  console.log("selectedNotification", selectedNotification);
   useEffect(() => {
     if (token) {
       fetchingData();
@@ -168,7 +168,7 @@ const Notifications = () => {
                   <div
                     className={cn(
                       selectedNotification?.id === notification.id
-                        ? "border-r-4 border-primary-500 bg-gray-100"
+                        ? "lg:border-r-4 border-primary-500 bg-gray-100"
                         : "",
                       "flex px-2 py-1.5"
                     )}
@@ -176,7 +176,7 @@ const Notifications = () => {
                     <div className="p-1 bg-blue-100 text-blue-600 rounded-full max-h-max">
                       <IoMdNotificationsOutline className="w-5 h-5 cursor-pointer" />
                     </div>
-                    <div className="flex-1 flex items-center">
+                    <div className="flex-1 flex lg:items-center">
                       <div
                         className="flex-1"
                         onClick={() => handleItemClick(notification.id)}
@@ -188,6 +188,12 @@ const Notifications = () => {
                         <p className="text-sm text-gray-500 my-2 px-4">
                           {notification?.createdAt}
                         </p>
+
+                        {(selectedNotification && selectedNotification?.id === notification.id) && <div className="px-1 text-justify border border-gray-200 rounded-md bg-gray-50 block lg:hidden">
+                          <p className="text-sm text-gray-500 my-2 px-4">
+                            {notification?.data?.message}
+                          </p>
+                        </div>}
                       </div>
                       <Menu as="div" className="relative">
                         <MenuButton className="-m-2.5 p-2.5 text-gray-600">
@@ -224,7 +230,7 @@ const Notifications = () => {
               ))}
             </div>
           </div>
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-6  hidden lg:block">
             {isLoading ? (
               <Flex justify="center" align="center" height="200px">
                 <Spinner size="xl" />
@@ -240,7 +246,36 @@ const Notifications = () => {
                       {selectedNotification?.data?.subject}
                     </h3>
                   </div>
-                  {/* {selectedNotification?.type ===
+
+                </div>
+                <h3 className="text-base font-normal mt-5 max-w-2xl">
+                  {selectedNotification?.data?.message}
+                </h3>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center mt-48">
+                <p className="text-gray-500 text-xl">
+                  Select a notification to see details.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : data?.length === 0 ? (
+        <div className="flex flex-col items-center justify-center pt-24 text-center ">
+          <IoIosNotifications className="w-32 h-32 text-primary-500" />
+          <p className="text-gray-500 font-medium mt-4">
+            This is where your notifications will appear.
+          </p>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+export default Notifications;
+
+{/* {selectedNotification?.type ===
                                     "payment" ? <div className="inline-flex p-1 bg-blue-100 text-blue-600 rounded-full">
                                                 <IoMdNotificationsOutline
                                                     className="w-10 h-10 cursor-pointer"
@@ -264,30 +299,3 @@ const Notifications = () => {
                                                 />
                                             </div>
                                 } */}
-                </div>
-                <h3 className="text-base font-normal mt-5 max-w-2xl">
-                  {selectedNotification?.data?.message}
-                </h3>
-              </div>
-            ) : (
-              <div className="flex justify-center items-center mt-48">
-                <p className="text-gray-500 text-xl">
-                  Select a notification to see details.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      ) : data?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center pt-24 text-center">
-          <IoIosNotifications className="w-32 h-32 text-primary-500" />
-          <p className="text-gray-500 font-medium mt-4">
-            This is where your notifications will appear.
-          </p>
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
-export default Notifications;

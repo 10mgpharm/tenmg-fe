@@ -157,7 +157,7 @@ export default function ShippingAddressList() {
         ))}
       </div>
 
-      <div className="mt-10 mb-6 w-1/4 mx-auto">
+      <div className="mt-10 mb-6 w-fit lg:w-1/4 mx-auto">
         {/* Button to Add a new address */}
         <EditAddressModal onSuccess={refreshAddresses} />
       </div>

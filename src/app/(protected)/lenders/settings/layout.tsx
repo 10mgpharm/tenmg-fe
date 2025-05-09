@@ -20,7 +20,7 @@ export default function StorefrontSettingsLayout({
           <Divider my={[2, 5]} border="1px solid gray.200" />
           <TabPanels>
             <TabPanel px={0}>
-              <div className="px-10">{children}</div>
+              <div className="px-1 lg:px-10">{children}</div>
             </TabPanel>
           </TabPanels>
         </Tabs>

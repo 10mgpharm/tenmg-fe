@@ -153,7 +153,7 @@ export default function Page() {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="w-full flex justify-between py-5 ">
+        <div className="w-full flex  flex-col lg:flex-row gap-3 justify-between py-5 ">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-lg">Personal Information</h3>
@@ -224,7 +224,7 @@ export default function Page() {
         </div>
       </div>
       <div className="p-5 rounded-lg bg-white/70 border border-slate-200">
-        <div className="space-y-5 w-full flex justify-between p-5 ">
+        <div className="space-y-5 w-full flex flex-col lg:flex-row justify-between p-5 ">
           <div>
             <h3 className="font-semibold text-lg">Password</h3>
             <Text fontSize={"14px"} color={"gray.500"}>
