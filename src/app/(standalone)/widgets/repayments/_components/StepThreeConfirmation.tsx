@@ -18,6 +18,7 @@ interface Props {
   pendingPaymentDate: any;
   isSuccessStatus: (status: string | undefined) => boolean;
   lastPaidBalance: string | null;
+  pendingAmounts: any[];
 }
 
 export default function StepThreeConfirmation({
@@ -29,12 +30,13 @@ export default function StepThreeConfirmation({
   pendingPaymentDate,
   isSuccessStatus,
   lastPaidBalance,
+  pendingAmounts,
 }: Props) {
   return (
     <LoanLayout name={""} logo={""}>
       <LoanInnerWrapper
         headerIcon={<Text fontSize="7xl">🎉</Text>}
-        heading="Payment Received! "
+        heading="Payment Received!"
         text={`We've received your recent loan payment of ₦${formatAmountString(
           Number(lastPaidBalance)
         )}.`}
@@ -55,7 +57,11 @@ export default function StepThreeConfirmation({
           Amount Paid: ₦{formatAmountString(Number(lastPaidBalance))}
         </Text>
         <Text fontSize="md" fontWeight="bold">
-          Amount Remaining: ₦{formatAmountString(Number(lastPaidBalance))}
+          Amount Remaining: ₦{formatAmountString(
+            pendingAmounts && pendingAmounts.length > 0
+              ? pendingAmounts.reduce((sum, item) => sum + Number(item?.totalAmount), 0)
+              : 0
+          )}
         </Text>
         <Text fontSize="md" fontWeight="bold">
           Next Payment Due: {convertDate(pendingPaymentDate?.dueDate)}
