@@ -135,7 +135,7 @@ export function ColumsOrderFN(
                 onClick={() =>
                   router.push(
                     `/admin/orders/${
-                      info.row.original.identifier || info.row.original.id
+                      info.row.original.id || info.row.original.identifier
                     }`
                   )
                 }

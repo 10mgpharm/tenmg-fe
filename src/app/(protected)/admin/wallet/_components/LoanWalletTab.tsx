@@ -55,7 +55,7 @@ const LoanWalletTab = (
         className="flex justify-between pb-2"
       >
         <Text fontSize={"xl"} fontWeight={"medium"} color={"gray.800"}>
-          Transaction
+          Transactions
         </Text>
         <Link
           className="py-2 px-4 rounded-md border text-sm font-medium text-gray-600 border-gray-300"
@@ -65,11 +65,45 @@ const LoanWalletTab = (
         </Link>
       </HStack>
 
-      <div className="flex flex-col gap-3">
+      <Tabs variant={"unstyled"}>
+        <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
+          <Tab
+            _selected={{ color: "white", bg: "#1A70B8" }}
+            className="rounded-lg text-gray-700 bg-gray-100"
+          >
+            <div className="flex items-center gap-3">
+              <Text className="text-nowrap">Tab 1 </Text>
+            </div>
+          </Tab>
+          <Tab
+            _selected={{ color: "white", bg: "#1A70B8" }}
+            className="rounded-lg text-gray-700 bg-gray-100"
+          >
+            <div className="flex items-center gap-3">
+              <Text className="text-nowrap">Tab 2</Text>
+            </div>
+          </Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel px={0}>
+          <LoanTable 
+          data={transactions}
+          />
+          </TabPanel>
+          <TabPanel px={0}>
+          <LoanTable 
+          data={transactions}
+          />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+
+      {/* <div className="flex flex-col gap-3">
         <LoanTable 
         data={transactions}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

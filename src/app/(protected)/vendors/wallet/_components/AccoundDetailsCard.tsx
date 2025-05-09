@@ -5,9 +5,6 @@ import { NextAuthUserSession } from '@/types';
 import { Button, Tooltip, useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react'
-import { FaPenAlt } from 'react-icons/fa';
-import { FaPencil } from 'react-icons/fa6';
-
 
 interface WalletProps {
   currentBalance: string;
@@ -75,6 +72,12 @@ export default function AccoundDetailsCard(
                   {accountDetails?.bankName}
                 </p>
               </Tooltip>
+              <div className="p-2 cursor-pointer rounded-full bg-white transition-all duration-300 
+              w-auto group-hover:w-full overflow-hidden">
+                <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
+                  {accountDetails?.bankName}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -84,8 +87,8 @@ export default function AccoundDetailsCard(
               <h2 className="text-xl font-semibold">
                 {showBalance ?
                   `${'*'.repeat(7)}${accountDetails?.accountNumber.slice(-3)}`
-                  : accountDetails?.accountNumber}
-
+                  : accountDetails?.accountNumber
+                }
               </h2>
             </div>
             <Button size={"xs"} className="px-2 py-1 rounded-full" style={{ backgroundColor: "#000000" }}

@@ -89,15 +89,15 @@ export default function OrderDetailsPage() {
               <Badge
                 colorScheme={
                   order?.status?.toLowerCase() === "completed" ||
-                    order?.status?.toLowerCase() === "delivered"
+                  order?.status?.toLowerCase() === "delivered"
                     ? "green"
                     : order?.status?.toLowerCase() === "pending"
-                      ? "warning"
-                      : order?.status?.toLowerCase() === "processing"
-                        ? "purple"
-                        : order?.status?.toLowerCase() === "shipped"
-                          ? "primary"
-                          : "red"
+                    ? "warning"
+                    : order?.status?.toLowerCase() === "processing"
+                    ? "purple"
+                    : order?.status?.toLowerCase() === "shipped"
+                    ? "primary"
+                    : "red"
                 }
                 fontSize="10px"
                 px="2"
@@ -107,7 +107,7 @@ export default function OrderDetailsPage() {
               >
                 <span style={{ textTransform: "capitalize" }}>
                   {order?.status.toLowerCase() === "cancelled" ||
-                    order?.status.toLowerCase() === "canceled"
+                  order?.status.toLowerCase() === "canceled"
                     ? order?.refundStatus
                     : order?.status}
                 </span>
@@ -125,7 +125,7 @@ export default function OrderDetailsPage() {
               <HStack>
                 <h4 className="text-xs lg:text-sm ">Order No:</h4>
                 <span className="text-sm lg:text-base font-semibold">
-                  {order?.id}
+                  {order?.identifier || "NA"}
                 </span>
               </HStack>
               <HStack>

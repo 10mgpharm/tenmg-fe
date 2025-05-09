@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Flex,
   Stack,
@@ -25,10 +25,17 @@ import CompleteAccountModal from "./CompleteAccountModal";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import { BusinessStatus } from "@/constants/enum";
+import { formatAmountString, handleServerErrorMessage } from "@/utils";
+import { formatAmount } from "@/utils/formatAmount";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import Loader from "../../admin/_components/Loader";
+import { useRouter } from "next/navigation";
 
 export interface IVendorDashboard {
   totalCustomers: number;
-  applications: number;
+  totalPendingApplications: number;
+  totalApplications: number;
   creditVoucher: string;
   txnHistoryEval: number;
   apiCalls: number;
@@ -41,41 +48,6 @@ export interface IVendorData {
   "7 days": IVendorDashboard;
   "24 hours": IVendorDashboard;
 }
-
-const vendorData: IVendorData = {
-  "12 months": {
-    totalCustomers: 12000,
-    applications: 3000,
-    creditVoucher: "180,000",
-    txnHistoryEval: 8500,
-    apiCalls: 60000,
-    balance: 180000,
-  },
-  "30 days": {
-    totalCustomers: 3500,
-    applications: 900,
-    creditVoucher: "54,000",
-    txnHistoryEval: 2500,
-    apiCalls: 18000,
-    balance: 54000,
-  },
-  "7 days": {
-    totalCustomers: 800,
-    applications: 200,
-    creditVoucher: "12,000",
-    txnHistoryEval: 600,
-    apiCalls: 4200,
-    balance: 12000,
-  },
-  "24 hours": {
-    totalCustomers: 120,
-    applications: 30,
-    creditVoucher: "1,800",
-    txnHistoryEval: 85,
-    apiCalls: 600,
-    balance: 1800,
-  },
-};
 
 const VendorDashboard = () => {
   const session = useSession();
@@ -97,7 +69,82 @@ const VendorDashboard = () => {
   const [selectedBalancePeriod, setSelectedBalancedPeriod] =
     useState<(typeof balanceTimePeriods)[number]>("12 months");
 
-  const data: IVendorDashboard = vendorData[selectedPeriod];
+  const [dashboardData, setDashboardData] = useState<IVendorDashboard | null>(
+    null
+  );
+  const [reportSeries, setReportSeries] = useState<number[]>([0, 0, 0]);
+  const [loading, setLoading] = useState(false);
+  const [chartSeries, setChartSeries] = useState([
+    { name: "Completed Loan", data: [] as number[] },
+    { name: "Outgoing Loan", data: [] as number[] },
+  ]);
+  const [chartCategories, setChartCategories] = useState<string[]>([]);
+
+  const token = sessionData?.user?.token;
+
+  const router = useRouter();
+
+  const fetchDashboard = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const res = await requestClient({ token }).get("/vendor/dashboard");
+      const d = res.data.data;
+      setDashboardData({
+        totalCustomers: d.totalCustomers,
+        totalApplications: d.totalApplications,
+        totalPendingApplications: d.totalPendingApplications,
+        creditVoucher: d.creditVoucher,
+        txnHistoryEval: d.transactionEvaluation,
+        apiCalls: d.apiCalls,
+        balance: Number(d.payOutWallet),
+      });
+      setReportSeries([
+        d.accountLinking.successfulCalls,
+        d.accountLinking.errors,
+        d.accountLinking.dropOffs || 0,
+      ]);
+    } catch (e) {
+      // handle error
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  const fetchChartStats = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await requestClient({ token }).get(
+        "/vendor/dashboard/graph-stats"
+      );
+      const stats = res.data.data;
+      setChartCategories(stats.map((item: any) => item.month));
+      setChartSeries([
+        {
+          name: "Credit Repayment",
+          data: stats.map((item: any) => item.completed),
+        },
+        { name: "Outgoing Loan", data: stats.map((item: any) => item.ongoing) },
+      ]);
+    } catch (e) {
+      const error = handleServerErrorMessage(e);
+      toast.error(error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchDashboard();
+    fetchChartStats();
+  }, [fetchDashboard, fetchChartStats]);
+
+  if (loading || !dashboardData)
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
+
+  const data: IVendorDashboard = dashboardData;
 
   const options: ApexOptions = {
     chart: {
@@ -112,22 +159,7 @@ const VendorDashboard = () => {
     yaxis: {
       show: false,
     },
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-    },
+    xaxis: { categories: chartCategories },
     colors: ["#84CAFF", "#FF9C66"],
     legend: {
       //   position: "top",
@@ -141,19 +173,6 @@ const VendorDashboard = () => {
     },
   };
 
-  // Define the series data with proper types
-  const series = [
-    {
-      name: "Credit Repayment",
-      data: [86, 97, 102, 89, 90, 70, 87, 89, 100, 89, 98, 101],
-    },
-    {
-      name: "Outgoing Loan",
-      data: [78, 87, 98, 78, 80, 60, 78, 91, 105, 78, 89, 96],
-    },
-  ];
-
-  const reportSeries = [10, 46, 82]; // Replace with actual data
   const reportLabels = ["Successful Calls", "Errors", "Drop-off/Cancellations"];
 
   const reportTotal = reportSeries.reduce((a, b) => a + b, 0);
@@ -164,7 +183,7 @@ const VendorDashboard = () => {
       position: "bottom",
       show: false,
     },
-    colors: ["#7086FD", "#6FD195", "#FFAE4C"],
+    colors: ["#6FD195", "#F56565", "#FFAE4C"],
     dataLabels: {
       enabled: false,
     },
@@ -220,14 +239,15 @@ const VendorDashboard = () => {
             >
               <Stack flex={1}>
                 <Text fontWeight="medium" fontSize="3xl">
-                  Welcome back, {sessionData?.user?.name}
+                  Welcome back!
                 </Text>
                 <Text fontSize="sm" color="#667085">
-                  Keep track of vendors and their security ratings.
+                  Manage your 10mg API, track customer loans, and view credit
+                  insights.
                 </Text>
               </Stack>
               {/* Time Period Tabs */}
-              <Tabs
+              {/* <Tabs
                 isFitted
                 variant="unstyled"
                 onChange={(index) => setSelectedPeriod(timePeriods[index])}
@@ -250,30 +270,27 @@ const VendorDashboard = () => {
                     </Tab>
                   ))}
                 </TabList>
-              </Tabs>
+              </Tabs> */}
             </Flex>
             {/* Overview Cards */}
             <Grid className="grid grid-cols-1 md:grid-cols-3" gap={5}>
               <OverviewCard
                 title="Total Customers"
-                value={data.totalCustomers.toLocaleString()}
-                percentageFooter={2.5}
-                increasePercentage={false}
+                value={data.totalCustomers}
+                color="blue.400"
               />
               <OverviewCard
-                title="Applications"
-                value={data.applications.toLocaleString()}
-                percentageFooter={2.2}
-                increasePercentage={true}
+                title="Loan Applications"
+                value={data.totalApplications}
                 isPending
-                pendingValue={200}
+                pendingValue={data.totalPendingApplications}
+                color="green.400"
               />
               <OverviewCard
                 title="Credit Voucher"
-                value={data.creditVoucher}
+                value={formatAmountString(data.creditVoucher)}
                 type="currency"
-                percentageFooter={2.5}
-                increasePercentage={false}
+                color="purple.400"
               />
             </Grid>
 
@@ -282,11 +299,8 @@ const VendorDashboard = () => {
               <Flex justifyContent="space-between" alignItems="center" pb={5} flexWrap={"wrap"}>
                 <Stack gap={3} flex={1} mt={2}>
                   <Text color="gray.500">Your Balance</Text>
-                  <Text fontSize="4xl" fontWeight="semibold">
-                    {data.balance.toLocaleString("en-NG", {
-                      style: "currency",
-                      currency: "NGN",
-                    })}
+                  <Text fontSize="3xl" fontWeight="semibold">
+                    ₦{formatAmountString(data.balance)}
                   </Text>
                   <Tabs
                     isFitted
@@ -319,12 +333,12 @@ const VendorDashboard = () => {
                 </Stack>
                 <Box>
                   <Flex gap={2} alignItems="center">
-                    <Badge bgColor="#FF9C66" p={1} rounded="lg" />
+                    <Badge bgColor="#FF9C66" p={1} rounded="xs" />
                     <Text>Outgoing Loan</Text>
                   </Flex>
                   <Flex gap={2} alignItems="center" mt={2}>
-                    <Badge bgColor="#84CAFF" p={1} rounded="lg" />
-                    <Text>Credit Repayment</Text>
+                    <Badge bgColor="#84CAFF" p={1} rounded="xs" />
+                    <Text>Completed Loan</Text>
                   </Flex>
                 </Box>
               </Flex>
@@ -333,7 +347,7 @@ const VendorDashboard = () => {
                 {/* Column Bar Chart */}
                 <ChartComponent
                   options={options}
-                  series={series}
+                  series={chartSeries}
                   type="bar"
                   width={"100%"}
                   height={320}
@@ -354,8 +368,10 @@ const VendorDashboard = () => {
               value={data.txnHistoryEval.toLocaleString()}
               color="primary.50"
               footer={
-                <Button rounded="lg" w="full" fontSize="sm" py={2} px={6}>
-                  View Transaction History Evaluations
+                <Button rounded="lg" w="full" fontSize="sm" py={2} px={6} onClick={() => {
+                  router.push("/vendors/transactions-history");
+                }}>
+                  View All Evaluations
                 </Button>
               }
             />
@@ -367,7 +383,9 @@ const VendorDashboard = () => {
               footer={
                 <Flex alignItems="center" gap={1}>
                   <Icon as={ArrowDown} color="red.500" />
-                  <Text color="red.500">2.5%</Text>
+                  <Text color="red.500" fontSize="sm">
+                    2.5%
+                  </Text>
                   <Text fontSize="sm">vs last 7 days</Text>
                 </Flex>
               }
@@ -393,11 +411,11 @@ const VendorDashboard = () => {
               />
               <Box mt={4}>
                 <Flex gap={2} alignItems="center">
-                  <Badge bgColor="#7086FD" p={1} rounded="lg" />
+                  <Badge bgColor="#6FD195" p={1} rounded="lg" />
                   <Text>Successful Calls</Text>
                 </Flex>
                 <Flex gap={2} alignItems="center" mt={2}>
-                  <Badge bgColor="#6FD195" p={1} rounded="lg" />
+                  <Badge bgColor="#F56565" p={1} rounded="lg" />
                   <Text>Errors</Text>
                 </Flex>
                 <Flex gap={2} alignItems="center" mt={2}>

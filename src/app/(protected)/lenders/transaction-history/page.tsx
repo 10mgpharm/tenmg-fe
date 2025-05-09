@@ -256,7 +256,7 @@ export default function TransactionHistoryPage() {
                 >
                   Filter
                 </Button>
-                {/* <Menu>
+                {/* {/* <Menu>
                   <MenuButton
                     // as={Button}
                     variant={"outline"}
@@ -269,7 +269,7 @@ export default function TransactionHistoryPage() {
                       className="text-gray-500 border border-gray-300 rounded-md flex items-center"
                       style={{ padding: "8px 20px" }}
                     >
-                    </p> 
+                    </p>
                     Filters
                   </MenuButton>
                   <MenuList></MenuList>

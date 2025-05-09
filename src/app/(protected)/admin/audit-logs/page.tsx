@@ -30,8 +30,7 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { AuditLogsResponse, NextAuthUserSession } from "@/types";
 import Pagination from "../../suppliers/_components/Pagination";
-
-const ITEMS_PER_PAGE = 10;
+import { useDebouncedValue } from "@/utils/debounce";
 
 const Page = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -48,49 +47,36 @@ const Page = () => {
   const token = sessionData?.user?.token;
 
   const [searchValue, setSearchValue] = useState<string>("");
+  const debouncedSearch = useDebouncedValue(searchValue, 500);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError("");
-    const url = `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
+    let query = `/admin/settings/audit-logs?page=${pageCount}&limit=${10}`;
+
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
+    }
+
     try {
-      const response = await requestClient({ token }).get(url);
-
-      if (response.status === 200 && response.data.data) {
-        let results = response.data.data.data || [];
-
-        // Apply search manually on actor.name
-        if (searchValue.trim()) {
-         const lowerSearch = searchValue.toLowerCase();
-         results = results.filter(
-           (log: any) =>
-             log.actor?.name?.toLowerCase().includes(lowerSearch) ||
-             log.action?.toLowerCase().includes(lowerSearch)
-         );
-
-        }
-
-        setData({
-          ...response.data.data,
-          data: results,
-        });
-      } else {
-        setError("Failed to load audit logs. Please try again.");
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setData(response.data.data);
       }
-    } catch (err: any) {
-      console.error(err);
-      setError("An unexpected error occurred while fetching audit logs.");
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
-  }, [token, pageCount, searchValue]);
+  }, [token, pageCount, debouncedSearch]);
 
   useEffect(() => {
-    setPageCount(1);
     if (token) {
       fetchData();
     }
-  }, [token, pageCount, searchValue]);
+  }, [token, pageCount, searchValue, fetchData]);
 
   const table = useReactTable({
     data: data?.data,
@@ -141,7 +127,7 @@ const Page = () => {
             heading={searchValue ? "No Matching Results" : "No Audit Logs Yet"}
             content={
               searchValue
-                ? `No audit log found for the user name "${searchValue}".`
+                ? `No audit log found for the user name or action "${searchValue}".`
                 : `You currently have no audit logs. All audit logs will appear here.`
             }
           />

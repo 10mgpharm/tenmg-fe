@@ -366,8 +366,8 @@ export interface SupplierTransactionDataProps  {
   prevPageUrl: any;
 }
 
-export interface PayoutDataProps {
-  data: PayoutProps[]
+export interface PayoutProps {
+  data: PayoutTypeProps[];
   links: any;
   to: number;
   total: number;
@@ -381,12 +381,18 @@ export interface PayoutDataProps {
   path: string;
   prevPageUrl: any;
 }
+export interface PayoutDataProps {
+  payouts: PayoutProps;
+  pendingPayouts: PayoutProps;
+  totalPendingPayouts: string;
+}
   
 export interface PayoutTypeProps  {
   id: number
   actualPrice: string
   discountPrice: string
-  quantity: number
+  quantity: number;
+  status?: string;
   createdAt: string;
   tenmgCommission: string;
 }

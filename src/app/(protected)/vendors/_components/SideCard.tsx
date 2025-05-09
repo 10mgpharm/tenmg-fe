@@ -17,10 +17,10 @@ const SideCard = ({
       <CardHeader p={0} fontSize="sm" fontWeight="medium">
         {title}
       </CardHeader>
-      <CardBody p={0} fontSize="4xl" fontWeight="semibold">
+      <CardBody p={0} fontSize="3xl" fontWeight="semibold">
         {value}
       </CardBody>
-      <CardFooter p={0}>{footer}</CardFooter>
+      <CardFooter p={0} >{footer}</CardFooter>
     </Card>
   );
 };
