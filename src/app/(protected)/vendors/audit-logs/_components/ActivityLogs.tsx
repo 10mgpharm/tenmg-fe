@@ -31,7 +31,7 @@ const ActivityLogs = () => {
         setLoading(true);
         setError("");
         //audit-logs?event=login
-        const url = searchValue ? `vendor/audit-logs?event=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `vendor/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
+        const url = searchValue ? `vendor/audit-logs?search=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `vendor/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
 
         try {
             const response = await requestClient({ token }).get(url);

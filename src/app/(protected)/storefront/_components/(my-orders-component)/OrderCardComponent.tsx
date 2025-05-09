@@ -31,8 +31,8 @@ export default function OrderCardComponent({ product }) {
       </div>
       <Divider className='my-3' />
       <div>
-        <div className='grid grid-cols-6 gap-x-8 items-center'>
-          <div className='col-span-5'>
+        <div className='grid grid-cols-2 lg:grid-cols-6 gap-x-8 items-center'>
+          <div className='col-span-1 lg:col-span-5'>
             <Flex
               overflowX="auto"
               gap={6}
