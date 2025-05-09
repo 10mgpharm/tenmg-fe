@@ -249,7 +249,7 @@ export default function TransactionHistoryPage() {
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
                 />
-                <Menu>
+                {/* <Menu>
                   <MenuButton
                     as={Button}
                     variant={"unstyled"}
@@ -265,7 +265,7 @@ export default function TransactionHistoryPage() {
                     </p>
                   </MenuButton>
                   <MenuList></MenuList>
-                </Menu>
+                </Menu> */}
               </div>
             </div>
             {loading ? (

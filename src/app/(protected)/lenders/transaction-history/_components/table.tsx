@@ -56,7 +56,17 @@ export function ColumnsTransactionHistoryFN(onOpen?: () => void) {
       cell: (info) => {
         return (
           <div>
-            <p className="font-medium">{info?.row?.original?.type}</p>
+            <p
+              className={classNames(
+                info?.row?.original?.type === "CREDIT"
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : "bg-[#FEF3F2] text-[#B42318]",
+                " max-w-min p-0.5 px-2 rounded-2xl capitalize text-[11px] font-medium"
+              )}
+            >
+              <span className="text-[1.2rem] rounded-full">•</span>{" "}
+              {info?.row?.original?.type}
+            </p>
           </div>
         );
       },
