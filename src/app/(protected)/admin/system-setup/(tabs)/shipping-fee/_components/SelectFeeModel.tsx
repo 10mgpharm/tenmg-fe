@@ -14,6 +14,7 @@ import {
 import React, { useState } from "react";
 import { FlatFeeForm } from "./flatFeeForm";
 import { CustomFeeForm } from "./customeFeeAmount";
+import { ShippingFeeDataType } from "../page";
 
 const items = [
   {
@@ -33,20 +34,23 @@ const items = [
 const SelectFeeModel = ({
   open,
   setIsOpen,
-  shippingFeeType,
-  setShippingFeeType,
+  setShippingFeeData,
+  shippingFeeData,
   onClose,
 }: {
   open: boolean;
   setIsOpen: () => void;
   onClose: () => void;
-  setShippingFeeType: (value: "FLAT" | "CUSTOM") => void;
-  shippingFeeType: "FLAT" | "CUSTOM";
+  setShippingFeeData: (value: ShippingFeeDataType) => void;
+  shippingFeeData: ShippingFeeDataType;
 }) => {
   const [formStep, setFormStep] = useState(1);
+  const [selectedShippingFeeType, setSelectedShippingFeeType] = useState<
+    "FLAT" | "CUSTOM"
+  >(shippingFeeData.type);
 
   const { value, getRadioProps, getRootProps } = useRadioGroup({
-    defaultValue: shippingFeeType,
+    defaultValue: shippingFeeData.type,
     onChange: () => {},
   });
 
@@ -56,14 +60,14 @@ const SelectFeeModel = ({
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>
-          {shippingFeeType === "FLAT" ? (
+          {selectedShippingFeeType === "FLAT" ? (
             <div>
               <h2 className="text-[20px] font-semibold">Flat Shipping Fee</h2>
               <p className="text-[15px] font-[400] ">
                 Setup your flat shipping fee.
               </p>
             </div>
-          ) : shippingFeeType === "CUSTOM" ? (
+          ) : selectedShippingFeeType === "CUSTOM" ? (
             <div>
               {" "}
               <h2 className="text-[20px] font-semibold">Custom Shipping Fee</h2>
@@ -101,7 +105,7 @@ const SelectFeeModel = ({
                   className="mt-4"
                   onClick={() => {
                     setFormStep(2);
-                    setShippingFeeType(value as "FLAT" | "CUSTOM");
+                    setSelectedShippingFeeType(value as "FLAT" | "CUSTOM");
                   }}
                 >
                   Continue
@@ -110,10 +114,20 @@ const SelectFeeModel = ({
             </div>
           ) : (
             <div>
-              {shippingFeeType === "FLAT" ? (
-                <FlatFeeForm onClose={onClose} setFormStep={setFormStep} />
+              {selectedShippingFeeType === "FLAT" ? (
+                <FlatFeeForm
+                  onClose={onClose}
+                  setFormStep={setFormStep}
+                  setShippingFeeData={setShippingFeeData}
+                  shippingFeeData={shippingFeeData}
+                />
               ) : (
-                <CustomFeeForm onClose={onClose} setFormStep={setFormStep} />
+                <CustomFeeForm
+                  onClose={onClose}
+                  setFormStep={setFormStep}
+                  setShippingFeeData={setShippingFeeData}
+                  shippingFeeData={shippingFeeData}
+                />
               )}
             </div>
           )}

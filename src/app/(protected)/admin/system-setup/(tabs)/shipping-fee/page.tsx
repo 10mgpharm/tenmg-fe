@@ -5,10 +5,24 @@ import React, { useState } from "react";
 import ShippingFeeTable from "./_components/ShippingFeeTable";
 import SelectFeeModel from "./_components/SelectFeeModel";
 
+export type ShippingFeeDataType = {
+  type: "FLAT" | "CUSTOM";
+  amount?: number;
+  locations?: {
+    country: string;
+    state: string;
+    city: string;
+    address: string;
+    amount: number;
+  }[];
+};
+
 const ShippingFee = () => {
-  const [shippingFeeType, setShippingFeeType] = useState<"FLAT" | "CUSTOM">(
-    "FLAT"
-  );
+  const [shippingFeeData, setShippingFeeData] = useState<ShippingFeeDataType>({
+    type: "FLAT",
+    amount: 0,
+    locations: [],
+  });
 
   const {
     isOpen: openConfigModel,
@@ -36,38 +50,45 @@ const ShippingFee = () => {
         <div className="flex flex-col ">
           <label className="text-[15px] font-semibold">Selected fee type</label>
           <Input
-            className="!bg-gray-200 mt-1 uppercase mb-2 w-full max-w-[500px]"
-            disabled
+            className="!bg-gray-100 mt-1 uppercase mb-2 w-full max-w-[500px]  pointer-events-none"
+            value={shippingFeeData.type + " FEE"}
           />
           <small className="text-primary-600 w-fit text-[13px] bg-primary-600/5 rounded-full px-2 py-1 ">
-            {shippingFeeType === "FLAT"
+            {shippingFeeData.type === "FLAT"
               ? "One price for all locations"
               : "Different location, Different price"}
           </small>
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-[15px] font-semibold">Amount</label>
-          <Input
-            className="!bg-gray-200 mt-1 uppercase mb-2 w-full max-w-[500px]"
-            disabled
-          />
-          <small className="text-primary-600 w-fit text-[13px] bg-primary-600/5 rounded-full px-2 py-1 ">
-            {shippingFeeType === "FLAT"
-              ? "This amount serves as a uniform shipping fee for all regions."
-              : "Set specific shipping fees based on location."}
-          </small>
-        </div>
+        {shippingFeeData.type === "FLAT" && (
+          <div className="flex flex-col">
+            <label className="text-[15px] font-semibold">Amount</label>
+            <Input
+              className="!bg-gray-100 mt-1 uppercase mb-2 w-full max-w-[500px] pointer-events-none"
+              value={shippingFeeData.amount}
+            />
+            <small className="text-primary-600 w-fit text-[13px] bg-primary-600/5 rounded-full px-2 py-1 ">
+              {shippingFeeData.type === "FLAT"
+                ? "This amount serves as a uniform shipping fee for all regions."
+                : "Set specific shipping fees based on location."}
+            </small>
+          </div>
+        )}
       </div>
 
-      <ShippingFeeTable />
+      {shippingFeeData.type === "CUSTOM" && (
+        <ShippingFeeTable
+          shippingFeeData={shippingFeeData}
+          setShippingFeeData={setShippingFeeData}
+        />
+      )}
 
       {openConfigModel && (
         <SelectFeeModel
           open={openConfigModel}
           setIsOpen={setOpenConfigModel}
-          setShippingFeeType={setShippingFeeType}
-          shippingFeeType={shippingFeeType}
+          setShippingFeeData={setShippingFeeData}
+          shippingFeeData={shippingFeeData}
           onClose={onClose}
         />
       )}

@@ -10,6 +10,7 @@ import {
   InputGroup,
   InputLeftElement,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
@@ -18,20 +19,28 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import axios from "axios";
 import Image from "next/image";
+import { ShippingFeeDataType } from "../page";
 
 interface IFormInput {
   country: string;
   state: string;
   city: string;
   address: string;
+  amount: number;
 }
 
 export const CustomFeeForm = ({
   onClose,
   setFormStep,
+  setShippingFeeData,
+  shippingFeeData,
+  isAdding = false,
 }: {
-  setFormStep: (value: number) => void;
+  setFormStep?: (value: number) => void;
   onClose: () => void;
+  setShippingFeeData: (value: ShippingFeeDataType) => void;
+  shippingFeeData: ShippingFeeDataType;
+  isAdding?: boolean;
 }) => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
@@ -130,7 +139,7 @@ export const CustomFeeForm = ({
         `https://nominatim.openstreetmap.org/search?city=${selectedCity}&state=${selectedState}&country=${selectedCountry}&format=json`
       );
       sortData(
-        response?.data?.[0].map((i) => ({ name: i.display_name })),
+        response?.data?.map((i) => ({ name: i.display_name })),
         setAddressList
       );
     } catch (error) {
@@ -139,17 +148,6 @@ export const CustomFeeForm = ({
     }
     setIsLoadingAddress(false);
   }, [selectedCountry, selectedState, selectedCity]);
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setIsLoading(true);
-    try {
-      // Call enpoint
-    } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-    }
-    setIsLoading(false);
-  };
 
   //   useEffect for countries
   useEffect(() => {
@@ -173,6 +171,45 @@ export const CustomFeeForm = ({
     if (!selectedCity) return;
     getRespectiveAddress();
   }, [selectedCity, getRespectiveAddress]);
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setIsLoading(true);
+    try {
+      // Call enpoint
+      setShippingFeeData({
+        ...shippingFeeData,
+        type: "CUSTOM",
+        locations: shippingFeeData.locations
+          ? [
+              {
+                country: selectedCountry,
+                state: selectedState,
+                city: selectedCity,
+                address: selectedAddress,
+                amount: data.amount,
+              },
+              ...shippingFeeData.locations,
+            ]
+          : [
+              {
+                country: selectedCountry,
+                state: selectedState,
+                city: selectedCity,
+                address: selectedAddress,
+                amount: data.amount,
+              },
+            ],
+      });
+
+      toast.success("Your custom fee is set successfully");
+      onClose();
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+      console.log(error);
+    }
+    setIsLoading(false);
+  };
 
   const {
     register,
@@ -209,7 +246,7 @@ export const CustomFeeForm = ({
 
         <FormControl isInvalid={!!errors.state} mb={6}>
           <FormLabel htmlFor="amount">Select State</FormLabel>
-          <InputGroup>
+          <InputGroup className="relative">
             <Select
               id="state"
               placeholder="Select state"
@@ -227,13 +264,19 @@ export const CustomFeeForm = ({
                 </option>
               ))}
             </Select>
+
+            {isLoadingStates && (
+              <span className="absolute right-3 top-2 bg-white">
+                <Spinner size={"xs"} opacity={0.5} />
+              </span>
+            )}
           </InputGroup>
           <FormErrorMessage>{errors.country?.message}</FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!errors.city} mb={6}>
           <FormLabel>Select City</FormLabel>
-          <InputGroup>
+          <InputGroup className="relative">
             <Select
               id="city"
               placeholder="Select city"
@@ -251,13 +294,19 @@ export const CustomFeeForm = ({
                 </option>
               ))}
             </Select>
+
+            {isLoadingCities && (
+              <span className="absolute right-3 top-2 bg-white">
+                <Spinner size={"xs"} opacity={0.5} />
+              </span>
+            )}
           </InputGroup>
           <FormErrorMessage>{errors.city?.message}</FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!errors.address} mb={6}>
           <FormLabel>Enter Address</FormLabel>
-          <InputGroup>
+          <InputGroup className="relative">
             <Select
               id="address"
               placeholder="Select address"
@@ -280,19 +329,49 @@ export const CustomFeeForm = ({
                 </option>
               ))}
             </Select>
+
+            {isLoadingAddress && (
+              <span className="absolute right-3 top-2 bg-white">
+                <Spinner size={"xs"} opacity={0.5} />
+              </span>
+            )}
           </InputGroup>
           <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
         </FormControl>
 
+        <FormControl isInvalid={!!errors.amount} mb={6}>
+          <FormLabel htmlFor="amount">Enter Amount</FormLabel>
+          <InputGroup>
+            <InputLeftElement>₦</InputLeftElement>
+            <Input
+              id="amount"
+              type="number"
+              placeholder="E.g. N12,092,894"
+              {...register("amount", {
+                required: "Amount is required",
+              })}
+              disabled={
+                !selectedCountry ||
+                !selectedState ||
+                !selectedCity ||
+                !selectedAddress
+              }
+            />
+          </InputGroup>
+          <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
+        </FormControl>
+
         <div className="flex items-center gap-4 justify-between">
-          <Button
-            type="button"
-            w="full"
-            variant={"outline"}
-            onClick={() => setFormStep(1)}
-          >
-            Back
-          </Button>
+          {!isAdding && (
+            <Button
+              type="button"
+              w="full"
+              variant={"outline"}
+              onClick={() => setFormStep(1)}
+            >
+              Back
+            </Button>
+          )}
 
           <Button
             size="lg"
