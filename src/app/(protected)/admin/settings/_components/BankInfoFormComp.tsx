@@ -285,7 +285,7 @@ export default function BankInfoFormComp() {
                     setValue("bankName", selectedText);
                     trigger(["bankCode", "bankName"]);
                   }}
-                  defaultValue={useBankDetails.bankName}
+                  defaultValue={useBankDetails?.bankName}
                 >
                   {banks?.map((bank, index) => (
                     <option key={index} value={bank.value}>
