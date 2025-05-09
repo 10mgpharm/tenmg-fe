@@ -31,7 +31,9 @@ export default function RepaymentWidget({
   token,
 }: Props) {
   const [activeStep, setActiveStep] = useState<number>(1);
-  const [currentPaidAmount, setCurrentPaidAmount] = useState<string | number>("");
+  const [currentPaidAmount, setCurrentPaidAmount] = useState<string | number>(
+    ""
+  );
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -64,7 +66,10 @@ export default function RepaymentWidget({
         .pop()
     : null;
 
-  const lastPaidBalance = lastPaidPayment?.balance || null;
+  const lastPaidBalance =
+    lastPaidPayment?.balance !== "0.00" ? lastPaidPayment?.totalAmount : "0";
+
+  const pendingAmounts = data?.repaymentSchedule?.filter((item) => isPendingStatus(item.paymentStatus)) || [];
 
   switch (activeStep) {
     case 1:
@@ -80,6 +85,7 @@ export default function RepaymentWidget({
           pendingPaymentDate={pendingPaymentDate}
           isSuccessStatus={isSuccessStatus}
           lastPaidBalance={lastPaidBalance}
+          pendingAmounts={pendingAmounts}
         />
       );
     case 2:
@@ -99,6 +105,7 @@ export default function RepaymentWidget({
           navigateBackAction={() => {
             setActiveStep(activeStep - 1);
           }}
+          pendingAmounts={pendingAmounts}
           lastPaidBalance={lastPaidBalance}
         />
       );
@@ -112,7 +119,10 @@ export default function RepaymentWidget({
           application={application}
           pendingPaymentDate={pendingPaymentDate}
           isSuccessStatus={isSuccessStatus}
-          lastPaidBalance={currentPaidAmount ? String(currentPaidAmount) : lastPaidBalance}
+          lastPaidBalance={
+            currentPaidAmount ? String(currentPaidAmount) : lastPaidBalance
+          }
+          pendingAmounts={pendingAmounts}
         />
       );
     default:
