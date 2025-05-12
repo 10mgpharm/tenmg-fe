@@ -63,20 +63,17 @@ const Page = () => {
       if (response.status === 200) {
         setData(response.data.data);
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
-      setLoading(false);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }, [token, pageCount, debouncedSearch]);
 
   useEffect(() => {
     if (token) {
       fetchData();
     }
-  }, [token, pageCount, searchValue, fetchData]);
+  }, [token, fetchData]);
 
   const table = useReactTable({
     data: data?.data,
