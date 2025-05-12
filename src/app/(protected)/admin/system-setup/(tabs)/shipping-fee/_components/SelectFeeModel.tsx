@@ -26,7 +26,7 @@ const items = [
   {
     header: "Custom Shipping Fee ",
     description:
-      "Define shipping prices based on location, region, or delivery zone",
+      "Define shipping prices based on location, region, or delivery zone.",
     value: "CUSTOM",
   },
 ];
@@ -55,7 +55,7 @@ const SelectFeeModel = ({
   });
 
   return (
-    <Drawer isOpen={open} placement="right" onClose={setIsOpen} size={"sm"}>
+    <Drawer isOpen={open} placement="right" onClose={onClose} size={"sm"}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />

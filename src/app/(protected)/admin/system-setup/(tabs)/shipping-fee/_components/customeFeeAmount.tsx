@@ -305,7 +305,7 @@ export const CustomFeeForm = ({
         </FormControl>
 
         <FormControl isInvalid={!!errors.address} mb={6}>
-          <FormLabel>Enter Address</FormLabel>
+          <FormLabel>Select Closest Bus Stop</FormLabel>
           <InputGroup className="relative">
             <Select
               id="address"
@@ -340,7 +340,7 @@ export const CustomFeeForm = ({
         </FormControl>
 
         <FormControl isInvalid={!!errors.amount} mb={6}>
-          <FormLabel htmlFor="amount">Enter Amount</FormLabel>
+          <FormLabel htmlFor="amount">Enter Shipping Amount</FormLabel>
           <InputGroup>
             <InputLeftElement>₦</InputLeftElement>
             <Input
