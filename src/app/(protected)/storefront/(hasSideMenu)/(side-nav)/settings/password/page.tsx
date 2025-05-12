@@ -97,7 +97,7 @@ export default function Password() {
               className="flex w-full flex-col"
               isInvalid={!!errors.currentPassword?.message}
             >
-              <div className="w-2/4 relative">
+              <div className="w-full lg:w-2/4 relative">
                 <div className="w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ">
                   {showCurrentPassword ? (
                     <EyeSlashIcon
@@ -140,7 +140,7 @@ export default function Password() {
               className="flex w-full flex-col"
               isInvalid={!!errors.newPassword?.message}
             >
-              <div className="w-2/4">
+              <div className="w-full lg:w-2/4">
                 <div className="w-full relative">
                   <div className="w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ">
                     {showPassword ? (
@@ -184,7 +184,7 @@ export default function Password() {
               className="flex w-full flex-col"
               isInvalid={!!errors.passwordConfirmation?.message}
             >
-              <div className="w-2/4 relative">
+              <div className="w-full lg:w-2/4 relative">
                 <div className="w-fit absolute z-10 top-1/2 -translate-y-1/2 right-2 ">
                   {showConfirmedPassword ? (
                     <EyeSlashIcon

@@ -197,7 +197,7 @@ export default function ProfileInformation() {
         fileError={fileError}
       />
       <form className="space-y-5 mt-6" onSubmit={handleSubmit(onSubmit)}>
-        <HStack gap={5}>
+        <HStack gap={5} flexWrap={"wrap"}>
           <FormControl isInvalid={!!errors.businessName?.message}>
             <FormLabel>Business Name</FormLabel>
             <Input
@@ -219,7 +219,7 @@ export default function ProfileInformation() {
             />
           </FormControl>
         </HStack>
-        <HStack gap={5}>
+        <HStack gap={5} flexWrap={"wrap"}>
           <FormControl isInvalid={!!errors.contactEmail?.message}>
             <FormLabel>Business Email</FormLabel>
             <Input
@@ -242,7 +242,7 @@ export default function ProfileInformation() {
             />
           </FormControl>
         </HStack>
-        <HStack gap={5}>
+        <HStack gap={5} flexWrap={"wrap"}>
           <FormControl isInvalid={!!errors.businessAddress?.message}>
             <FormLabel>Business Address</FormLabel>
             <Input

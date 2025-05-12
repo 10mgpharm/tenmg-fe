@@ -35,10 +35,10 @@ const ShippingFee = () => {
       {/* header */}
       <div className="flex items-center justify-between ">
         <div>
-          <h2 className="font-medium text-[20px] text-gray-700">
+          <h2 className="text-[17px] font-semibold">
             Shipping Fee Configuration
           </h2>
-          <p className="text-gray-500 text-[15px] pt-1">
+          <p className="text-[15px] text-gray-700 pt-1">
             Customize how much you charge for shipping — by location
           </p>
         </div>

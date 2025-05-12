@@ -7,7 +7,6 @@ import { RxDashboard } from "react-icons/rx";
 import EmptyOrder from "../orders/_components/EmptyOrder";
 import {
     Button,
-    Checkbox,
     Flex,
     Spinner,
     Table,
@@ -66,11 +65,10 @@ const Products = () => {
     const sessionData = session?.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
 
+    const [status, setStatus] = useState<string[]>();
     const [loading, setLoading] = useState<boolean>(false);
     const [pageCount, setPageCount] = useState<number>(1);
     const [sorting, setSorting] = useState<SortingState>([]);
-
-    const [status, setStatus] = useState<string[]>();
     const [brandQuery, setBrandQuery] = useState<string[]>();
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [brandFilter, setBrandFilter] = useState<string>("");
@@ -295,58 +293,60 @@ const Products = () => {
                     <h3 className="font-semibold text-2xl">
                         Products
                     </h3>
-                    <div className="flex items-center gap-3 mt-5 flex-wrap">
-                        <SearchInput
-                            placeholder="Search for a Product"
-                            value={globalFilter}
-                            onChange={(e) => setGlobalFilter(e.target.value)}
-                        />
-                        <div
-                            onClick={onOpenFilter}
-                            className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2">
-                            <CiFilter className="w-5 h-5" />
-                            <p className="text-gray-500 font-medium">Filter</p>
+                    <div className="flex items-center justify-between mt-5">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <SearchInput
+                                placeholder="Search for a Product"
+                                value={globalFilter}
+                                onChange={(e) => setGlobalFilter(e.target.value)}
+                            />
+                            <div
+                                onClick={onOpenFilter}
+                                className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2">
+                                <CiFilter className="w-5 h-5" />
+                                <p className="text-gray-500 font-medium">Filter</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div
+                                className={
+                                    classNames(
+                                        currentView === PRODUCTVIEW.LIST ?
+                                            "bg-primary-50 rounded-md border border-primary-500"
+                                            : "",
+                                        "cursor-pointer p-2")
+                                }
+                                onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
+                            >
+                                <IoListOutline
+                                    className={classNames(currentView === PRODUCTVIEW.LIST ?
+                                        "text-primary-500" :
+                                        "text-gray-600",
+                                        " w-5 h-5")}
+                                />
+                            </div>
+                            <div className={
+                                classNames(
+                                    currentView === PRODUCTVIEW.GRID ?
+                                        "bg-primary-50 rounded-md border border-primary-500"
+                                        : "",
+                                    "cursor-pointer p-2")
+                            }
+                                onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
+                                <RxDashboard
+                                    className={classNames(currentView === PRODUCTVIEW.GRID ?
+                                        "text-primary-500"
+                                        : "text-gray-600",
+                                        " w-5 h-5")}
+                                />
+                            </div>
+                            <Link
+                                href={'/suppliers/products/add-product'}
+                                className="bg-primary-500 text-white p-2 px-5 rounded-md">
+                                Add Product
+                            </Link>
                         </div>
                     </div>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div
-                        className={
-                            classNames(
-                                currentView === PRODUCTVIEW.LIST ?
-                                    "bg-primary-50 rounded-md border border-primary-500"
-                                    : "",
-                                "cursor-pointer p-2")
-                        }
-                        onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
-                    >
-                        <IoListOutline
-                            className={classNames(currentView === PRODUCTVIEW.LIST ?
-                                "text-primary-500" :
-                                "text-gray-600",
-                                " w-5 h-5")}
-                        />
-                    </div>
-                    <div className={
-                        classNames(
-                            currentView === PRODUCTVIEW.GRID ?
-                                "bg-primary-50 rounded-md border border-primary-500"
-                                : "",
-                            "cursor-pointer p-2")
-                    }
-                        onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
-                        <RxDashboard
-                            className={classNames(currentView === PRODUCTVIEW.GRID ?
-                                "text-primary-500"
-                                : "text-gray-600",
-                                " w-5 h-5")}
-                        />
-                    </div>
-                    <Link
-                        href={'/suppliers/products/add-product'}
-                        className="bg-primary-500 text-white p-2 px-5 rounded-md">
-                        Add Product
-                    </Link>
                 </div>
             </div>
             <div className="">
@@ -363,18 +363,18 @@ const Products = () => {
                                         {memoizedData?.length > 0 && table?.getHeaderGroups()?.map((headerGroup) => (
                                             <Tr key={headerGroup.id}>
                                                 {/* <Th textTransform={"initial"} px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={table.getIsAllRowsSelected()}
-                            onChange={table.getToggleAllRowsSelectedHandler()}
-                            />
-                        </Th> */}
+                                                    <Checkbox
+                                                    _checked={{
+                                                        "& .chakra-checkbox__control": {
+                                                        background: "#1A70B8",
+                                                        borderRadius: 5,
+                                                        },
+                                                    }}
+                                                    marginLeft={5}
+                                                    isChecked={table.getIsAllRowsSelected()}
+                                                    onChange={table.getToggleAllRowsSelectedHandler()}
+                                                        />
+                                                    </Th> */}
                                                 {headerGroup.headers?.map((header) => (
                                                     <Th
                                                         textTransform={"initial"}

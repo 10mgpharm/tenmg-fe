@@ -5,16 +5,39 @@ import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrde
 import { Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
 import {  flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import TransactionDetails from "./TransactionDetail";
+import { repaymentColumnFn } from "./columns/repaymentColumn";
+import Pagination from "../../products/_components/Pagination";
 
 interface LoanTableProps {
+  type: string;
+  hasPagination: boolean;
+  pageCount?: number;
+  setPageCount?: (pageCount: number) => void;
   data: LoanTransactionProps[];
+  metaData?: {
+    links: any;
+    prevPageUrl: string | null;
+    nextPageUrl: string | null;
+    currentPage: number;
+    firstPageUrl: any;
+    lastPageUrl: any;
+    total: number;
+    perPage: number;
+    from: number;
+    to: number;
+    lastPage: number;
+  };
 }
 
-const LoanTable = ({data}: LoanTableProps) => {
+const LoanTable = ({type, data, hasPagination, metaData, setPageCount}: LoanTableProps) => {
     
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
-    const columns = useMemo(() => loanColumnFn(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
+    const columns = useMemo(() => {
+      return type === "credit"
+        ? loanColumnFn(onOpen, setSelectedRow)
+        : repaymentColumnFn(onOpen, setSelectedRow);
+    }, [type, onOpen, selectedRow]);
     const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
 
     const table = useReactTable({
@@ -67,9 +90,9 @@ const LoanTable = ({data}: LoanTableProps) => {
             </Tbody>
           </Table>
 
-          {/* {hasPagination && metaData && setPageCount && (
+          {hasPagination && metaData && setPageCount && (
             <Pagination {...metaData} setPageCount={setPageCount} />
-          )} */}
+          )}
         </TableContainer>
       ): (
         <Flex justify="center" align="center" height="200px">

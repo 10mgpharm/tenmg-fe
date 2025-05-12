@@ -74,7 +74,7 @@ const InterestConfigSegment = ({
     <div>
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-[17spx] font-semibold">Product Configuration</h2>
+          <h2 className="text-[17px] font-semibold">Product Configuration</h2>
           <p className="text-[15px] text-gray-700 pt-1">
             Set 10mg commission on each product
           </p>
