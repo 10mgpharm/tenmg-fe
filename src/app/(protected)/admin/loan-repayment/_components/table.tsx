@@ -208,6 +208,7 @@ const DataTable = () => {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         noStatus
+        title="Filter by due date"
       />
     </div>
   );
