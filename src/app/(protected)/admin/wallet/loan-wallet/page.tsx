@@ -2,29 +2,20 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  useDisclosure,
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  Flex,
-  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
 } from "@chakra-ui/react";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
-import { useDebouncedValue } from "@/utils/debounce";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { LoanTransactionDataProps, LoanTransactionProps, NextAuthUserSession } from "@/types";
-import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
-import { loanColumnFn } from "../_components/columns/loanColumn";
-import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import TransactionDetails from "../_components/TransactionDetail";
-import Pagination from "../../products/_components/Pagination";
+import { LoanTransactionDataProps, NextAuthUserSession } from "@/types";
+import LoanTable from "../_components/LoanTable";
 
 const LoanWallet = () => {
 
@@ -32,47 +23,44 @@ const LoanWallet = () => {
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
   const [pageCount, setPageCount] = useState(1);
-  const [isLoadingTable, setIsLoadingTable] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
-  const [status, setStatus] = useState("");
-  const [tableData, setTableData] = useState<LoanTransactionDataProps>();
-  const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [loanTransaction, setLoanTransaction] = useState<LoanTransactionDataProps>();
+  const [adminTransaction, setAdminTransaction] = useState<LoanTransactionDataProps>();
 
-  const debouncedSearch = useDebouncedValue(globalFilter, 500);
-
-  const fetchTableData = useCallback(async () => {
-    setIsLoadingTable(true);
+  const fetchingLoanTransactions = useCallback(async () => {
+    setLoading(true);
     let query = `/admin/wallet/transactions?page=${pageCount}`;
-    if (debouncedSearch) {
-      query += `&search=${debouncedSearch}`;
-    }
     try {
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
-        setTableData(response.data?.data);
+        setLoanTransaction(response.data?.data);
       }
     } catch (error) {
       console.error(error);
     }
-    setIsLoadingTable(false);
-  }, [token, pageCount, debouncedSearch, status]);
+    setLoading(false);
+  }, [token, pageCount]);
+
+  const fetchingLoanWalletTransactions = useCallback(async () => {
+    setLoading(true);
+    let query = `/admin/wallet/admin-transactions?page=${pageCount}`;
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setAdminTransaction(response.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, [token, pageCount]);
 
   useEffect(() => {
     if(!token) return;
-    fetchTableData();
-  }, [fetchTableData, token]);
-
-  const columns = useMemo(() => loanColumnFn(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
-  const memoizedData = useMemo(() => tableData?.data, [tableData?.data]);
-
-  const table = useReactTable({
-    data: memoizedData || [],
-    columns: columns,
-    state: {},
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-});
+    fetchingLoanTransactions();
+    fetchingLoanWalletTransactions();
+  }, [fetchingLoanTransactions, fetchingLoanWalletTransactions, token]);
 
   return (
     <div className="px-6 py-8 md:p-8">
@@ -83,7 +71,6 @@ const LoanWallet = () => {
         <ArrowLeft size={20} />
         Back
       </Link>
-
       <div className="flex items-center justify-between max-sm:flex-wrap max-sm:items-start max-sm:gap-3 mb-5">
         <div className="text-[18px] font-semibold">Loan Wallet</div>
       </div>
@@ -95,60 +82,49 @@ const LoanWallet = () => {
         />
       </div>
       <div className="mt-5">
-      {memoizedData?.length === 0 ? (
-        <EmptyOrder
-          heading={`No Wallet Yet`}
-          content={`You currently have no wallet. All wallets will appear here.`}
-        />
-      ) : memoizedData?.length > 0 ? (
-        <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-          <Table>
-            <Thead bg={"#F2F4F7"}>
-              {table?.getHeaderGroups()?.map((headerGroup, index) => (
-                <Tr key={index}>
-                  {headerGroup.headers?.map((header, idx) => (
-                    <Th textTransform={"initial"} px="6px" key={idx}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </Th>
-                  ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {table?.getRowModel()?.rows?.map((row, i) => (
-                <Tr key={i}>
-                  {row.getVisibleCells()?.map((cell, ix) => (
-                    <Td key={ix} px="6px">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-
-          <Pagination {...tableData?.meta} setPageCount={setPageCount} />
-        </TableContainer>
-      ): (
-        <Flex justify="center" align="center" height="200px">
-          <Spinner size="xl" />
-        </Flex>
-      )}
-      <TransactionDetails 
-      selectedRow={selectedRow} 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      type="" 
-      />
-    </div>
+        <Tabs variant={"unstyled"}>
+          <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
+            <Tab
+              _selected={{ color: "white", bg: "#1A70B8" }}
+              className="rounded-lg text-gray-700 bg-gray-100"
+            >
+              <div className="flex items-center gap-3">
+                <Text className="text-nowrap">Credit Activity </Text>
+              </div>
+            </Tab>
+            <Tab
+              _selected={{ color: "white", bg: "#1A70B8" }}
+              className="rounded-lg text-gray-700 bg-gray-100"
+            >
+              <div className="flex items-center gap-3">
+                <Text className="text-nowrap">Transactions</Text>
+              </div>
+            </Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel px={0}>
+              <LoanTable 
+              type="credit"
+              pageCount={pageCount}
+              hasPagination={true}
+              data={loanTransaction?.data}
+              setPageCount={setPageCount}
+              metaData={loanTransaction?.meta}
+              />
+            </TabPanel>
+            <TabPanel px={0}>
+              <LoanTable 
+              type="repayment"
+              pageCount={pageCount}
+              hasPagination={true}
+              data={adminTransaction?.data}
+              setPageCount={setPageCount}
+              metaData={adminTransaction?.meta}
+              />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </div>
     </div>
   );
 };

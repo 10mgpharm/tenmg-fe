@@ -27,8 +27,6 @@ const TransactionDetails = ({
   selectedRow?: any;
 }) => {
 
-  console.log("selectedRow", selectedRow);
-
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
       <DrawerOverlay />

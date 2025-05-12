@@ -17,8 +17,8 @@ import TransactionTab from "./TransactionTab";
 import LoanTable from "./LoanTable";
 
 const LoanWalletTab = (
-  { filterDate, data, transactions }: 
-  { filterDate: string, data: LoanWalletProps, transactions: LoanTransactionProps[] }
+  { filterDate, data, transactions, adminTransactions }: 
+  { filterDate: string, data: LoanWalletProps, transactions: LoanTransactionProps[], adminTransactions: LoanTransactionProps[]  }
 ) => {
   return (
     <div>
@@ -72,7 +72,7 @@ const LoanWalletTab = (
             className="rounded-lg text-gray-700 bg-gray-100"
           >
             <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Tab 1 </Text>
+              <Text className="text-nowrap">Credit Activity </Text>
             </div>
           </Tab>
           <Tab
@@ -80,7 +80,7 @@ const LoanWalletTab = (
             className="rounded-lg text-gray-700 bg-gray-100"
           >
             <div className="flex items-center gap-3">
-              <Text className="text-nowrap">Tab 2</Text>
+              <Text className="text-nowrap">Transactions</Text>
             </div>
           </Tab>
         </TabList>
@@ -88,22 +88,20 @@ const LoanWalletTab = (
         <TabPanels>
           <TabPanel px={0}>
           <LoanTable 
+          type="credit"
           data={transactions}
+          hasPagination={false}
           />
           </TabPanel>
           <TabPanel px={0}>
           <LoanTable 
-          data={transactions}
+          type="repayment"
+          data={adminTransactions}
+          hasPagination={false}
           />
           </TabPanel>
         </TabPanels>
       </Tabs>
-
-      {/* <div className="flex flex-col gap-3">
-        <LoanTable 
-        data={transactions}
-        />
-      </div> */}
     </div>
   );
 };

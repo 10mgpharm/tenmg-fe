@@ -77,17 +77,10 @@ const OrderUI = () => {
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                     />
-                    <Button
-                        h={4}
-                        px={4}
-                        variant={"outline"}
-                        className="border-primary-500 text-primary-600 bg-white">
-                        View shopping list
-                    </Button>
                 </Flex>
             </HStack>
             <Tabs variant={"unstyled"}>
-                <TabList className=" overflow-x-scroll">
+                <TabList>
                     <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
                         <div className='flex items-center gap-3'>
                             <Text>All Orders</Text>
