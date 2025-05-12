@@ -76,7 +76,7 @@ const VendorDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [chartSeries, setChartSeries] = useState([
     { name: "Completed Loan", data: [] as number[] },
-    { name: "Outgoing Loan", data: [] as number[] },
+    { name: "Ongoing Loan", data: [] as number[] },
   ]);
   const [chartCategories, setChartCategories] = useState<string[]>([]);
 
@@ -124,7 +124,7 @@ const VendorDashboard = () => {
           name: "Credit Repayment",
           data: stats.map((item: any) => item.completed),
         },
-        { name: "Outgoing Loan", data: stats.map((item: any) => item.ongoing) },
+        { name: "Ongoing Loan", data: stats.map((item: any) => item.ongoing) },
       ]);
     } catch (e) {
       const error = handleServerErrorMessage(e);
@@ -239,7 +239,7 @@ const VendorDashboard = () => {
             >
               <Stack flex={1}>
                 <Text fontWeight="medium" fontSize="3xl">
-                  Welcome back!
+                  Welcome Back!
                 </Text>
                 <Text fontSize="sm" color="#667085">
                   Manage your 10mg API, track customer loans, and view credit
@@ -334,7 +334,7 @@ const VendorDashboard = () => {
                 <Box>
                   <Flex gap={2} alignItems="center">
                     <Badge bgColor="#FF9C66" p={1} rounded="xs" />
-                    <Text>Outgoing Loan</Text>
+                    <Text>Ongoing Loan</Text>
                   </Flex>
                   <Flex gap={2} alignItems="center" mt={2}>
                     <Badge bgColor="#84CAFF" p={1} rounded="xs" />
