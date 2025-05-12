@@ -85,7 +85,7 @@ const LoanConfigSegment = ({
     <div>
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-[17spx] font-semibold"> Loan Configuration</h2>
+          <h2 className="text-[17px] font-semibold"> Loan Configuration</h2>
           <p className="text-[15px] text-gray-700 pt-1">
             Setup lender interest and 10mg commission on each loan
           </p>
