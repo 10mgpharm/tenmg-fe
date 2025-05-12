@@ -111,7 +111,7 @@ export default function BusinessInfoFormComp() {
   return (
     <div>
       <form className="space-y-4 mb-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5 w-full flex justify-between py-5">
+        <div className="space-y-5 w-full flex justify-between py-5 flex-col lg:flex-row">
           <div>
             <h3 className="font-semibold text-lg">Business Information</h3>
             <Text fontSize={"14px"} color={"gray.500"}>

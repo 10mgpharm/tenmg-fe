@@ -32,6 +32,7 @@ interface Props {
   navigateBackAction?: () => void;
   onContinueAction?: (paidAmount?: string | number) => void;
   lastPaidBalance: string | null;
+  pendingAmounts: any[];
 }
 
 type PaymentOption = "custom" | "full";
@@ -49,6 +50,7 @@ export default function StepTwoPaymentSchedule({
   navigateBackAction,
   onContinueAction,
   lastPaidBalance,
+  pendingAmounts,
 }: Props) {
   const [paymentOption, setPaymentOption] = useState<PaymentOption>("full");
   const [selectedPayments, setSelectedPayments] = useState<number[]>([]);
@@ -77,9 +79,9 @@ export default function StepTwoPaymentSchedule({
     isSuccessStatus(item.paymentStatus)
   );
 
-  const fullPaymentAmount = hasPaidPayment 
-    ? lastPaidBalance 
-    : data?.totalAmount;
+  const fullPaymentAmount = pendingAmounts && pendingAmounts.length > 0
+    ? pendingAmounts.reduce((sum, item) => sum + Number(item?.totalAmount), 0)
+    : 0;
 
   useEffect(() => {
     const script = document.createElement("script");

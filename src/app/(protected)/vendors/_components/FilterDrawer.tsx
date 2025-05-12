@@ -38,6 +38,7 @@ const FilterDrawer = ({
   filterOptions,
   isNotDate,
   noStatus,
+  title,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -46,6 +47,7 @@ const FilterDrawer = ({
   filterOptions?: FilterOptions[];
   isNotDate?: boolean;
   noStatus?: boolean;
+  title?: string;
 }) => {
   const {
     handleSubmit,
@@ -87,7 +89,7 @@ const FilterDrawer = ({
             Filters
           </Text>
           <Text fontWeight={"normal"} fontSize={"13px"} color={"gray.500"}>
-            Apply filters to table data.
+            {title ?? "Apply filters to table data."}
           </Text>
         </DrawerHeader>
         <DrawerBody>

@@ -1,18 +1,17 @@
 "use client";
 
-import Image from 'next/image';
-import { ArrowLeft } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-import requestClient from '@/lib/requestClient';
-import { NextAuthUserSession, OrderData } from '@/types';
-import { convertDate } from '@/utils/formatDate';
-import { Avatar, Flex, Spinner } from '@chakra-ui/react';
-import { formatAmountString } from '@/utils';
+import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import requestClient from "@/lib/requestClient";
+import { NextAuthUserSession, OrderData } from "@/types";
+import { convertDate } from "@/utils/formatDate";
+import { Avatar, Flex, Spinner } from "@chakra-ui/react";
+import { formatAmountString } from "@/utils";
 
-const OrderDetails = ({params}: {params : any}) => {
-
+const OrderDetails = ({ params }: { params: any }) => {
   const navigate = useRouter();
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -24,7 +23,7 @@ const OrderDetails = ({params}: {params : any}) => {
   const fetchOrderDetail = useCallback(async () => {
     setLoading(true);
     try {
-      let query = `/admin/orders/get-order-details/${params?.id}`
+      let query = `/admin/orders/get-order-details/${params?.id}`;
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
         setOrder(response.data.data);
@@ -37,16 +36,16 @@ const OrderDetails = ({params}: {params : any}) => {
   }, [token, params?.id]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchOrderDetail();
-  },[fetchOrderDetail, token]);
+  }, [fetchOrderDetail, token]);
 
-  if(loading){
-    return(
+  if (loading) {
+    return (
       <Flex justify="center" align="center" height="200px">
         <Spinner size="xl" />
       </Flex>
-    )
+    );
   }
 
   return (
@@ -56,17 +55,19 @@ const OrderDetails = ({params}: {params : any}) => {
         <span className="ml-3 text-xl font-bold">
           Order {order?.identifier}
         </span>
+        <ArrowLeft className="w-6 h-6" onClick={() => navigate.back()} />
+        <span className="ml-3 text-xl font-bold">
+          Order - {order?.identifier}
+        </span>
       </div>
       <div className="flex justify-between gap-10">
         <div className="w-full space-y-5">
           <div className="w-full border rounded-lg shadow-sm p-4">
             <div className="flex justify-between">
               <div className="">
-                <h2 className="text-base font-semibold">{order?.id}</h2>
-                <p className="text-xs text-gray-400 py12">
-                  {convertDate(order?.createdAt)}
-                </p>
-              </div>
+                <h2 className='text-base font-semibold'>{order?.id}</h2>
+                <p className="text-xs text-gray-400 py12">{convertDate(order?.createdAt)}</p>
+              </div>  
               <div className="flex items-center">
                 <div className="border px-2 py-1 rounded-md text-xs">
                   {order?.status}
@@ -176,7 +177,7 @@ const OrderDetails = ({params}: {params : any}) => {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default OrderDetails;

@@ -79,8 +79,7 @@ export default function LoanApplicationView({
 
         if (response.status === 200) {
           toast.success(
-            `Loan application ${
-              action === "approve" ? "approved" : "declined"
+            `Loan application ${action === "approve" ? "approved" : "declined"
             } successfully`
           );
           if (action === "decline") {
@@ -90,17 +89,15 @@ export default function LoanApplicationView({
           if (onRefresh) onRefresh();
         } else {
           toast.error(
-            `Error ${
-              action === "approve" ? "approving" : "declining"
+            `Error ${action === "approve" ? "approving" : "declining"
             } loan application`
           );
         }
       } catch (error: any) {
         toast.error(
           error?.response?.data?.message ||
-            `Error ${
-              action === "approve" ? "approving" : "declining"
-            } loan application`
+          `Error ${action === "approve" ? "approving" : "declining"
+          } loan application`
         );
         console.error(error);
       }
@@ -175,7 +172,7 @@ export default function LoanApplicationView({
         Back
       </Button>
 
-      <div className="flex items-center justify-between w-full gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full gap-4">
         <div>
           <h4 className="font-semibold">Application Details</h4>
           <p className="text-sm">

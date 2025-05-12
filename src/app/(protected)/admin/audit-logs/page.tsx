@@ -30,8 +30,7 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { AuditLogsResponse, NextAuthUserSession } from "@/types";
 import Pagination from "../../suppliers/_components/Pagination";
-
-const ITEMS_PER_PAGE = 10;
+import { useDebouncedValue } from "@/utils/debounce";
 
 const Page = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -48,51 +47,36 @@ const Page = () => {
   const token = sessionData?.user?.token;
 
   const [searchValue, setSearchValue] = useState<string>("");
+  const debouncedSearch = useDebouncedValue(searchValue, 500);
 
-const fetchData = useCallback(async () => {
-  setLoading(true);
-  setError("");
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    let query = `/admin/settings/audit-logs?page=${pageCount}&limit=${10}`;
 
-  const url = `admin/settings/audit-logs?page=${pageCount}&limit=${ITEMS_PER_PAGE}`;
-  try {
-    const response = await requestClient({ token }).get(url);
-
-    if (response.status === 200 && response.data.data) {
-      let results = response.data.data.data || [];
-
-      const lowerSearch = searchValue.trim().toLowerCase();
-
-      if (lowerSearch) {
-        results = results.filter((log: any) => {
-          const actorName = log.actor?.name?.toLowerCase() || "";
-          const event = log.event?.toLowerCase() || "";
-          return actorName.includes(lowerSearch) || event.includes(lowerSearch);
-        });
-      }
-
-      setData({
-        ...response.data.data,
-        data: results,
-      });
-    } else {
-      setError("Failed to load audit logs. Please try again.");
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
     }
-  } catch (err: any) {
-    console.error(err);
-    setError("An unexpected error occurred while fetching audit logs.");
-  } finally {
-    setLoading(false);
-  }
-}, [token, pageCount, searchValue]);
 
-
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setData(response.data.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [token, pageCount, debouncedSearch]);
 
   useEffect(() => {
-    setPageCount(1);
     if (token) {
       fetchData();
     }
-  }, [token, pageCount, searchValue]);
+  }, [token, pageCount, searchValue, fetchData]);
 
   const table = useReactTable({
     data: data?.data,
