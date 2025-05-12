@@ -2,7 +2,7 @@ import AddAccount from '@/app/(protected)/suppliers/wallet/_components/AddAccoun
 import { BankInfo } from '@/app/(protected)/suppliers/wallet/page';
 import requestClient from '@/lib/requestClient';
 import { NextAuthUserSession } from '@/types';
-import { Button, useDisclosure } from '@chakra-ui/react';
+import { Button, Tooltip, useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react'
 
@@ -13,9 +13,10 @@ interface WalletProps {
 }
 
 export default function AccoundDetailsCard(
-  { showBalance, setAccountInfo }: 
-  { showBalance?: boolean, setAccountInfo?: (accountInfo: BankInfo) => void }
+  { showBalance, setAccountInfo }:
+    { showBalance?: boolean, setAccountInfo?: (accountInfo: BankInfo) => void }
 ) {
+
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
@@ -54,18 +55,29 @@ export default function AccoundDetailsCard(
           <div className="flex items-center justify-between gap-2 group">
             {/* Account Name */}
             <div className="p-2 rounded-full bg-white shadow-md transition-all duration-300 
-                  w-auto">
-              <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
-                {accountDetails?.accountName}
-              </p>
+                  w-1/2">
+              <Tooltip isDisabled={accountDetails.accountName.length < 18} label={accountDetails.accountName} placement='top' hasArrow >
+
+                <p className="text-gray-600 text-xs font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
+                  {accountDetails?.accountName}
+                </p>
+              </Tooltip>
             </div>
 
             {/* Bank Name */}
-            <div className="p-2 cursor-pointer rounded-full bg-white transition-all duration-300 
+            <div className="p-2 cursor-pointer flex items-center gap-2 rounded-full bg-white transition-all duration-300 
+              w-1/2 overflow-hidden">
+              <Tooltip isDisabled={accountDetails.bankName.length < 18} label={accountDetails.bankName} placement='top' hasArrow >
+                <p className="text-gray-600 text-xs font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
+                  {accountDetails?.bankName}
+                </p>
+              </Tooltip>
+              <div className="p-2 cursor-pointer rounded-full bg-white transition-all duration-300 
               w-auto group-hover:w-full overflow-hidden">
                 <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
                   {accountDetails?.bankName}
                 </p>
+              </div>
             </div>
           </div>
 
@@ -79,7 +91,7 @@ export default function AccoundDetailsCard(
                 }
               </h2>
             </div>
-            <Button size={"xs"} className="px-2 py-1" style={{ backgroundColor: "#000000cf" }}
+            <Button size={"xs"} className="px-2 py-1 rounded-full" style={{ backgroundColor: "#000000" }}
               onClick={onOpen}
             >
               Edit Account

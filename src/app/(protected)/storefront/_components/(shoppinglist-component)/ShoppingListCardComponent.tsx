@@ -46,14 +46,13 @@ export default function ShoppingListCardComponent({ product }) {
   return (
     <div className="m-4 border border-gray-200 rounded-md p-4">
       <div className="flex justify-between items-center flex-col md:flex-row">
-        <div className="flex items-center gap-4 w-8/12 flex-col md:flex-row">
+        <div className="flex items-center gap-4 w-11/12 lg:w-8/12 flex-row sm:justify-between lg:justify-normal">
           <div
             style={{
-              backgroundImage: `url( ${
-                product?.image && product?.image?.length > 5
-                  ? product?.image
-                  : "/assets/images/pillImage.png"
-              })`,
+              backgroundImage: `url( ${product?.image && product?.image?.length > 5
+                ? product?.image
+                : "/assets/images/pillImage.png"
+                })`,
             }}
             className="size-16 bg-cover bg-center bg-no-repeat shadow-sm shadow-black/50 rounded-sm"
           />

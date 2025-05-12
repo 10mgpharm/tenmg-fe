@@ -53,6 +53,10 @@ const OrderDetails = ({ params }: { params: any }) => {
       <div className="flex items-center mb-5">
         <ArrowLeft className="w-6 h-6" onClick={() => navigate.back()} />
         <span className="ml-3 text-xl font-bold">
+          Order {order?.identifier}
+        </span>
+        <ArrowLeft className="w-6 h-6" onClick={() => navigate.back()} />
+        <span className="ml-3 text-xl font-bold">
           Order - {order?.identifier}
         </span>
       </div>
@@ -61,11 +65,9 @@ const OrderDetails = ({ params }: { params: any }) => {
           <div className="w-full border rounded-lg shadow-sm p-4">
             <div className="flex justify-between">
               <div className="">
-                <h2 className="text-base font-semibold">{order?.identifier}</h2>
-                <p className="text-xs text-gray-400 py12">
-                  {convertDate(order?.createdAt)}
-                </p>
-              </div>
+                <h2 className='text-base font-semibold'>{order?.id}</h2>
+                <p className="text-xs text-gray-400 py12">{convertDate(order?.createdAt)}</p>
+              </div>  
               <div className="flex items-center">
                 <div className="border px-2 py-1 rounded-md text-xs">
                   {order?.status}
@@ -175,7 +177,7 @@ const OrderDetails = ({ params }: { params: any }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default OrderDetails;
