@@ -218,11 +218,12 @@ export default function LoanApplicationPage() {
       <div className="m-5">
         <h3 className="font-semibold text-xl my-4">Loan Application</h3>
 
-        <div className="grid grid-cols-4 gap-4 mt-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
           <OverviewCards overviewData={overviewData} />
         </div>
-        <HStack justify={"space-between"}>
-          <Flex mt={4} gap={2}>
+        {/* <HStack justify={"space-between"}> */}
+        <div className="flex justify-between items-center mt-5">
+          <Flex mt={4} gap={2} width={"fit-content"}>
             <SearchInput
               placeholder="Search for a loan"
               value={globalFilter}
@@ -238,7 +239,8 @@ export default function LoanApplicationPage() {
               Filter
             </Button>
           </Flex>
-        </HStack>
+        </div>
+        {/* </HStack> */}
         <div className="mt-5">
           <LoanTable
             data={Array.isArray(loanData?.data) ? loanData.data : []}
