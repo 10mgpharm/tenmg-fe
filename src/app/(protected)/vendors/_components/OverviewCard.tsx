@@ -21,6 +21,7 @@ const OverviewCard = ({
   increasePercentage,
   isPending,
   pendingValue,
+  color = "",
 }: {
   title: string;
   value: number | string;
@@ -29,6 +30,7 @@ const OverviewCard = ({
   increasePercentage?: Boolean;
   isPending?: Boolean;
   pendingValue?: number;
+  color?: string;
 }) => {
   return (
     <Card borderRadius="lg" p={6} gap={6}>
@@ -37,25 +39,34 @@ const OverviewCard = ({
       </CardHeader>
       <CardBody
         p={0}
-        fontSize={{ base: "x-large", md: "2xl", lg: "4xl" }}
+        fontSize={{ base: "x-large", md: "xl", lg: "2xl" }}
         fontWeight="semibold"
       >
-        <Flex gap={2} alignItems="center">
-          {type === "currency" ? `₦${value}` : value}
+        <Flex gap={2} alignItems="center" flexWrap="wrap" minWidth={0}>
+          <Box as="span" minWidth={0} textOverflow="ellipsis" overflow="hidden" color={color}>
+            {type === "currency" ? `₦${value}` : value}
+          </Box>
           {isPending && (
             <Tag
               size="sm"
               variant="subtle"
               colorScheme="warning"
               fontWeight="bold"
+              maxWidth={{ base: "100%", sm: "150px" }}
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
             >
-              <TagLabel>{pendingValue} Pending</TagLabel>
+              <TagLabel fontSize="xs" isTruncated>
+                {pendingValue} Ongoing Loan
+              </TagLabel>
             </Tag>
           )}
         </Flex>
       </CardBody>
-      <CardFooter p={0}>
-        <Flex alignItems="center" gap={1}>
+      {percentageFooter && (
+        <CardFooter p={0}>
+          <Flex alignItems="center" gap={1} fontSize="xs">
           {increasePercentage ? (
             <Icon as={ArrowUp} color="success.500" />
           ) : (
@@ -66,9 +77,10 @@ const OverviewCard = ({
           >
             {percentageFooter}%
           </Text>
-          <Text fontSize="sm">vs last 7 days</Text>
-        </Flex>
-      </CardFooter>
+          <Text>vs last 7 days</Text>
+          </Flex>
+        </CardFooter>
+      )}
     </Card>
   );
 };

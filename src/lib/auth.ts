@@ -148,6 +148,8 @@ export const authOptions: NextAuthOptions = {
         params.token.businessStatus = params?.session.user?.businessStatus;
         params.token.businessName = params?.session.user?.businessName;
         params.token.picture = params?.session.user?.picture;
+        params.token.entityType = params?.session.user?.entityType;
+        params.token.role = params?.session.user?.role;
       }
 
       return params.token;

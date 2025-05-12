@@ -15,6 +15,10 @@ const tabs = [
     label: "System Configuration",
     href: "/admin/system-setup/system_configuration",
   },
+  {
+    label: "Shipping Fee",
+    href: "/admin/system-setup/shipping-fee",
+  },
 ];
 
 export default function SystemSetupTabNavigation() {

@@ -82,7 +82,7 @@ const CustomerManagement = () => {
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
-    let query = `/vendor/customers?page=${pageCount}`;
+    let query = `/vendor/customers?vendorId=${sessionData?.user?.id}&page=${pageCount}`;
 
     if (debouncedSearch) {
       query += `&search=${debouncedSearch}`;

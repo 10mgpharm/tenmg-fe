@@ -31,7 +31,7 @@ const ActivityLogs = () => {
         setLoading(true);
         setError("");
         //audit-logs?event=login
-        const url = searchValue ? `vendor/audit-logs?event=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `vendor/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
+        const url = searchValue ? `vendor/audit-logs?search=${searchValue}&page=${page}&limit=${ITEMS_PER_PAGE}` : `vendor/audit-logs?page=${page}&limit=${ITEMS_PER_PAGE}`;
 
         try {
             const response = await requestClient({ token }).get(url);
@@ -73,75 +73,75 @@ const ActivityLogs = () => {
             <div className="mb-5 mt-3">
                 <div className="flex items-center gap-3">
                     <SearchInput
-                        placeholder="Search by action"
+                        placeholder="Search by user/action"
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
-                    <div
+                    {/* <div
                         // onClick={onOpenFilter}
                         className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
                     >
                         <CiFilter className="w-5 h-5" />
                         <p className="text-gray-500 font-medium">Filter</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="">
                 {
-                    data?.data?.length === 0 ? 
-                    <EmptyResult heading="No Activity Log" content="All Activity Logs will appear here!"/>
-                    : data?.data?.length > 1
-                    ? (
-                    <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >
-                        <Table>
-                            <Thead bg={"#F2F4F7"}>
-                                {table?.getHeaderGroups()?.map((headerGroup) => (
-                                    <Tr key={headerGroup.id}>
-                                        {headerGroup.headers?.map((header) => (
-                                            <Th textTransform={"initial"} px="16px" key={header.id}>
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                            </Th>
-                                        ))}
-                                    </Tr>
-                                ))}
-                            </Thead>
-                            <Tbody bg={"white"} color="#606060" fontSize={"14px"} >
-                                {table?.getRowModel()?.rows?.map((row) => (
-                                    <Tr key={row.id}>
-                                        {row.getVisibleCells()?.map((cell) => (
-                                            <Td key={cell.id} px="16px">
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </Td>
-                                        ))}
-                                    </Tr>
-                                ))}
-                            </Tbody>
-                        </Table>
-                        <Pagination 
-                            links={data?.links}
-                            prevPageUrl={data?.prevPageUrl}
-                            nextPageUrl={data?.nextPageUrl}
-                            firstPageUrl={data?.firstPageUrl} 
-                            lastPageUrl={data?.lastPageUrl}
-                            setPageCount={setPageCount}
-                            currentPage={data?.currentPage}
-                        />
-                    </TableContainer>
-                )
-                : (
-                <Flex justify="center" align="center" height="200px">
-                    <Spinner size="xl" />
-                </Flex>
-                )
-            }
+                    data?.data?.length === 0 ?
+                        <EmptyResult heading="No Activity Log" content="All Activity Logs will appear here!" />
+                        : data?.data?.length > 1
+                            ? (
+                                <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >
+                                    <Table>
+                                        <Thead bg={"#F2F4F7"}>
+                                            {table?.getHeaderGroups()?.map((headerGroup) => (
+                                                <Tr key={headerGroup.id}>
+                                                    {headerGroup.headers?.map((header) => (
+                                                        <Th textTransform={"initial"} px="16px" key={header.id}>
+                                                            {header.isPlaceholder
+                                                                ? null
+                                                                : flexRender(
+                                                                    header.column.columnDef.header,
+                                                                    header.getContext()
+                                                                )}
+                                                        </Th>
+                                                    ))}
+                                                </Tr>
+                                            ))}
+                                        </Thead>
+                                        <Tbody bg={"white"} color="#606060" fontSize={"14px"} >
+                                            {table?.getRowModel()?.rows?.map((row) => (
+                                                <Tr key={row.id}>
+                                                    {row.getVisibleCells()?.map((cell) => (
+                                                        <Td key={cell.id} px="16px">
+                                                            {flexRender(
+                                                                cell.column.columnDef.cell,
+                                                                cell.getContext()
+                                                            )}
+                                                        </Td>
+                                                    ))}
+                                                </Tr>
+                                            ))}
+                                        </Tbody>
+                                    </Table>
+                                    <Pagination
+                                        links={data?.links}
+                                        prevPageUrl={data?.prevPageUrl}
+                                        nextPageUrl={data?.nextPageUrl}
+                                        firstPageUrl={data?.firstPageUrl}
+                                        lastPageUrl={data?.lastPageUrl}
+                                        setPageCount={setPageCount}
+                                        currentPage={data?.currentPage}
+                                    />
+                                </TableContainer>
+                            )
+                            : (
+                                <Flex justify="center" align="center" height="200px">
+                                    <Spinner size="xl" />
+                                </Flex>
+                            )
+                }
             </div>
         </div>
     )
