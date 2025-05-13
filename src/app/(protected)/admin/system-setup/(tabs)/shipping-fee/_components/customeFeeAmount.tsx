@@ -223,7 +223,7 @@ export const CustomFeeForm = ({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-5 text-gray mb-10">
         <FormControl isInvalid={!!errors.country} mb={6}>
-          <FormLabel htmlFor="amount">Select Country</FormLabel>
+          {/* <FormLabel htmlFor="amount">Select Country</FormLabel> */}
           <InputGroup>
             <Select
               id="country"
@@ -245,7 +245,7 @@ export const CustomFeeForm = ({
         </FormControl>
 
         <FormControl isInvalid={!!errors.state} mb={6}>
-          <FormLabel htmlFor="amount">Select State</FormLabel>
+          {/* <FormLabel htmlFor="amount">Select State</FormLabel> */}
           <InputGroup className="relative">
             <Select
               id="state"
@@ -275,7 +275,7 @@ export const CustomFeeForm = ({
         </FormControl>
 
         <FormControl isInvalid={!!errors.city} mb={6}>
-          <FormLabel>Select City</FormLabel>
+          {/* <FormLabel>Select City</FormLabel> */}
           <InputGroup className="relative">
             <Select
               id="city"
@@ -305,11 +305,11 @@ export const CustomFeeForm = ({
         </FormControl>
 
         <FormControl isInvalid={!!errors.address} mb={6}>
-          <FormLabel>Select Closest Bus Stop</FormLabel>
+          {/* <FormLabel>Select Closest Bus Stop</FormLabel> */}
           <InputGroup className="relative">
             <Select
               id="address"
-              placeholder="Select address"
+              placeholder="Select Closest Bus Stop"
               {...register("address", {
                 required: "Select a address",
               })}
@@ -340,13 +340,13 @@ export const CustomFeeForm = ({
         </FormControl>
 
         <FormControl isInvalid={!!errors.amount} mb={6}>
-          <FormLabel htmlFor="amount">Enter Shipping Amount</FormLabel>
+          {/* <FormLabel htmlFor="amount">Enter Shipping Amount</FormLabel> */}
           <InputGroup>
             <InputLeftElement>₦</InputLeftElement>
             <Input
               id="amount"
               type="number"
-              placeholder="E.g. N12,092,894"
+              placeholder="Enter Shipping Amount"
               {...register("amount", {
                 required: "Amount is required",
               })}
