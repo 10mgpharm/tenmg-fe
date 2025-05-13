@@ -280,6 +280,7 @@ export interface Daum {
   status: string;
   tenmgCommission: string;
   createdAt: string;
+  order?: Order;
 }
 
 export interface Link {
@@ -314,6 +315,7 @@ export interface Daum2 {
   balanceBefore: string
   balanceAfter: string
   status: string;
+  order?: Order;
   tenmgCommission: string;
   createdAt: string;
 }
@@ -395,5 +397,26 @@ export interface PayoutTypeProps  {
   status?: string;
   createdAt: string;
   tenmgCommission: string;
+  order?: Order;
+}
+
+export interface Order {
+  id: number
+  identifier: string
+  customerId: number
+  ecommercePaymentMethodId: any
+  qtyTotal: number
+  orderTotal: string
+  grandTotal: string
+  logisticTotal: string
+  totalWeight: number
+  deliveryAddress: string
+  deliveryType: string
+  createdAt: string
+  updatedAt: string
+  status: string
+  refundStatus: any
+  requiresRefund: number
+  paymentStatus: string
 }
 

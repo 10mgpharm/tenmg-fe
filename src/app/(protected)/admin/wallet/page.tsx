@@ -4,7 +4,12 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
-import { LoanTransactionProps, LoanWalletProps, NextAuthUserSession, WalletProductProps } from "@/types";
+import { 
+  LoanTransactionProps, 
+  LoanWalletProps, 
+  NextAuthUserSession, 
+  WalletProductProps 
+} from "@/types";
 import requestClient from "@/lib/requestClient";
 import ProductWalletTab from "./_components/ProductWalletTab";
 import LoanWalletTab from "./_components/LoanWalletTab";
@@ -87,8 +92,6 @@ const Page = () => {
     fetchingLoanTransactions();
     fetchingLoanWalletTransactions();
   }, [token]);
-  
-  console.log("walletStats", adminTransaction);
 
   return (
     <div className="px-6 py-8 md:p-8 ">
