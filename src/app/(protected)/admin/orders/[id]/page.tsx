@@ -53,10 +53,6 @@ const OrderDetails = ({ params }: { params: any }) => {
       <div className="flex items-center mb-5">
         <ArrowLeft className="w-6 h-6" onClick={() => navigate.back()} />
         <span className="ml-3 text-xl font-bold">
-          Order {order?.identifier}
-        </span>
-        <ArrowLeft className="w-6 h-6" onClick={() => navigate.back()} />
-        <span className="ml-3 text-xl font-bold">
           Order - {order?.identifier}
         </span>
       </div>
