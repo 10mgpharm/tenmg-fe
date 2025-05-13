@@ -52,7 +52,7 @@ const Page = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError("");
-    let query = `/admin/settings/audit-logs?page=${pageCount}&limit=${10}`;
+    let query = `/admin/settings/audit-logs?page=${pageCount}&perPage=${10}`;
 
     if (debouncedSearch) {
       query += `&search=${debouncedSearch}`;
