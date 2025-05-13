@@ -118,15 +118,34 @@ export default function ProductDetailPage() {
                   borderRadius="xl"
                 />
                 <div className="absolute top-4 right-4">
-                  {" "}
                   <Tag
                     size="sm"
                     ml="1"
-                    // borderRadius={"50%"}
-                    color={"green.500"}
-                    bgColor={"green.50"}
+                    borderRadius="full"
+                    color={
+                      parseInt(productData?.quantity) <= (productData?.outStockLevel ?? 0)
+                        ? "error.500"
+                        : parseInt(productData?.quantity) >= (productData?.outStockLevel ?? 0) && parseInt(productData?.quantity) <= productData?.lowStockLevel
+                          ? "warning.500"
+                          : "green.500"
+                    }
+                    bgColor={
+                      parseInt(productData?.quantity) <= (productData?.outStockLevel ?? 0)
+                        ? "error.100"
+                        : parseInt(productData?.quantity) >= (productData?.outStockLevel ?? 0) && parseInt(productData?.quantity) <= productData?.lowStockLevel
+                          ? "warning.100"
+                          : "green.100"
+                    }
                   >
-                    <TagLabel>{`${productData?.inventory}: ${productData?.quantity} items left`}</TagLabel>
+                    <TagLabel className="">
+                      {
+                        parseInt(productData?.quantity) <= (productData?.outStockLevel ?? 0)
+                          ? "Out of Stock"
+                          : parseInt(productData?.quantity) >= (productData?.outStockLevel ?? 0) && parseInt(productData?.quantity) <= productData?.lowStockLevel
+                            ? "Low In Stock"
+                            : "In Stock"
+                      }
+                    </TagLabel>
                   </Tag>
                 </div>
               </div>
