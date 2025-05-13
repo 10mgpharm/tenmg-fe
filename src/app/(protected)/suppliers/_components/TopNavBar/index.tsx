@@ -298,7 +298,8 @@ const TopNavBar = ({
           </Menu>
 
           {(data?.user?.entityType === "ADMIN" ||
-            data?.user?.entityType === "SUPPLIER") && (
+            data?.user?.entityType === "SUPPLIER" ||
+            data?.user?.entityType === "VENDOR") && (
             <div
               className="lg:hidden p-2 text-gray-700 w-fit"
               onClick={onMenuClick}
