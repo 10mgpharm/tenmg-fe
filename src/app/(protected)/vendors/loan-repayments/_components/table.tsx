@@ -68,5 +68,13 @@ export function ColumnsLoanRepaymentFN(pageIndex: number, pageSize?: number) {
         </div>
       ),
     }),
+    columnHelper.accessor("createdAt", {
+      header: ({ column }) => <p>Created At</p>,
+      cell: (info) => (
+        <div className="">
+          <p>{convertDate(info.row.original?.createdAt)}</p>
+        </div>
+      ),
+    }),
   ];
 }

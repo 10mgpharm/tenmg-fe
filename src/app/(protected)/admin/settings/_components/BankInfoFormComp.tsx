@@ -210,132 +210,139 @@ export default function BankInfoFormComp() {
   };
 
   return (
-    <div>
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+    <div className="w-full md:max-w-5xl">
+      <form onSubmit={handleSubmit(onSubmit)}>
         {/* Header */}
-        <div className="space-y-5 w-full flex justify-between py-5">
+        <div className="space-y-5 w-full flex justify-between mt-10 pb-3">
           <div>
             <h3 className="font-semibold text-lg">Bank Information</h3>
             <Text fontSize={"14px"} color={"gray.500"}>
               Manage your bank information and details for payout.
             </Text>
           </div>
-          <Button
-            size="sm"
-            variant="solid"
-            colorScheme="primary"
-            isLoading={isLoading}
-            loadingText="Submitting..."
-            type="submit"
-          >
-            Save Changes
-          </Button>
         </div>
 
-        <div className="p-5 rounded-lg bg-white/70 border border-slate-300 space-y-4">
-          {/* Account Number Field */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div>
-              <FormLabel m={0}>Account Number</FormLabel>
-              <Text fontSize="14px" color="gray.500">
-                Associated account number
-              </Text>
-            </div>
-            <Skeleton isLoaded={!isInfoLoading}>
-              <FormControl className="col-span-2">
-                <NumberInput
-                  value={accountNumber || ""}
-                  onChange={(val) => {
-                    setValue("accountNumber", val);
-                    trigger("accountNumber");
-                  }}
-                  inputMode="numeric"
-                >
-                  <NumberInputField placeholder="0000000000" />
-                </NumberInput>
-                {errors.accountNumber && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.accountNumber.message}
-                  </Text>
-                )}
-              </FormControl>
-            </Skeleton>
-          </div>
-
-          {/* Bank Selection Field */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div>
-              <FormLabel m={0}>Bank</FormLabel>
-              <Text fontSize="14px" color="gray.500">
-                Associated bank name
-              </Text>
-            </div>
-            <Skeleton isLoaded={!isInfoLoading}>
-              <FormControl className="col-span-2" isInvalid={!!errors.bankCode}>
-                <Select
-                  placeholder="Choose Bank"
-                  {...register("bankCode", {
-                    required: "Please select a bank",
-                  })}
-                  onChange={(e) => {
-                    const selectedValue = e.target.value;
-                    const selectedText =
-                      e.target.options[e.target.selectedIndex].text;
-                    setValue("bankCode", selectedValue);
-                    setValue("bankName", selectedText);
-                    trigger(["bankCode", "bankName"]);
-                  }}
-                  defaultValue={useBankDetails?.bankName}
-                >
-                  {banks?.map((bank, index) => (
-                    <option key={index} value={bank.value}>
-                      {bank.label}
-                    </option>
-                  ))}
-                </Select>
-                {errors.bankCode && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.bankCode.message}
-                  </Text>
-                )}
-              </FormControl>
-            </Skeleton>
-          </div>
-
-          {/* Account Name Field */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div>
-              <FormLabel m={0}>Account Name</FormLabel>
-              <Text fontSize="14px" color="gray.500">
-                Account name verified from bank
-              </Text>
-            </div>
-            <Skeleton isLoaded={!isInfoLoading}>
-              <FormControl
-                className="col-span-2"
-                isInvalid={!!errors.accountName || !!accountVerificationError}
-              >
-                <Skeleton
-                  isLoaded={!accountVerificationInProgress}
-                  fadeDuration={0.5}
-                  borderRadius="md"
-                >
-                  <Text p={2} bg="gray.100" borderRadius="md">
-                    {accountName || "Account name will appear here"}
-                  </Text>
-                  {accountVerificationError && (
+        <div className="p-5 rounded-lg bg-white/70">
+          <div className="space-y-4">
+            {/* Account Number Field */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div>
+                <FormLabel m={0}>Account Number</FormLabel>
+                <Text fontSize="14px" color="gray.500">
+                  Associated account number
+                </Text>
+              </div>
+              <Skeleton isLoaded={!isInfoLoading}>
+                <FormControl className="col-span-2">
+                  <NumberInput
+                    value={accountNumber || ""}
+                    onChange={(val) => {
+                      setValue("accountNumber", val);
+                      trigger("accountNumber");
+                    }}
+                    inputMode="numeric"
+                  >
+                    <NumberInputField placeholder="0000000000" />
+                  </NumberInput>
+                  {errors.accountNumber && (
                     <Text fontSize="sm" color="red.500">
-                      {accountVerificationError}
+                      {errors.accountNumber.message}
                     </Text>
                   )}
-                </Skeleton>
-                {!accountName && errors.accountName && (
-                  <Text fontSize="sm" color="red.500">
-                    {errors.accountName.message}
-                  </Text>
-                )}
-              </FormControl>
-            </Skeleton>
+                </FormControl>
+              </Skeleton>
+            </div>
+
+            {/* Bank Selection Field */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div>
+                <FormLabel m={0}>Bank</FormLabel>
+                <Text fontSize="14px" color="gray.500">
+                  Associated bank name
+                </Text>
+              </div>
+              <Skeleton isLoaded={!isInfoLoading}>
+                <FormControl
+                  className="col-span-2"
+                  isInvalid={!!errors.bankCode}
+                >
+                  <Select
+                    placeholder="Choose Bank"
+                    {...register("bankCode", {
+                      required: "Please select a bank",
+                    })}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value;
+                      const selectedText =
+                        e.target.options[e.target.selectedIndex].text;
+                      setValue("bankCode", selectedValue);
+                      setValue("bankName", selectedText);
+                      trigger(["bankCode", "bankName"]);
+                    }}
+                    defaultValue={useBankDetails?.bankName}
+                  >
+                    {banks?.map((bank, index) => (
+                      <option key={index} value={bank.value}>
+                        {bank.label}
+                      </option>
+                    ))}
+                  </Select>
+                  {errors.bankCode && (
+                    <Text fontSize="sm" color="red.500">
+                      {errors.bankCode.message}
+                    </Text>
+                  )}
+                </FormControl>
+              </Skeleton>
+            </div>
+
+            {/* Account Name Field */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div>
+                <FormLabel m={0}>Account Name</FormLabel>
+                <Text fontSize="14px" color="gray.500">
+                  Account name verified from bank
+                </Text>
+              </div>
+              <Skeleton isLoaded={!isInfoLoading}>
+                <FormControl
+                  className="col-span-2"
+                  isInvalid={!!errors.accountName || !!accountVerificationError}
+                >
+                  <Skeleton
+                    isLoaded={!accountVerificationInProgress}
+                    fadeDuration={0.5}
+                    borderRadius="md"
+                  >
+                    <Text p={2} bg="gray.100" borderRadius="md">
+                      {accountName || "Account name will appear here"}
+                    </Text>
+                    {accountVerificationError && (
+                      <Text fontSize="sm" color="red.500">
+                        {accountVerificationError}
+                      </Text>
+                    )}
+                  </Skeleton>
+                  {!accountName && errors.accountName && (
+                    <Text fontSize="sm" color="red.500">
+                      {errors.accountName.message}
+                    </Text>
+                  )}
+                </FormControl>
+              </Skeleton>
+            </div>
+          </div>
+
+          <div className="flex justify-center !mt-8">
+            <Button
+              variant="solid"
+              colorScheme="primary"
+              isLoading={isLoading}
+              loadingText="Submitting..."
+              type="submit"
+            >
+              Save Changes
+            </Button>
           </div>
         </div>
       </form>

@@ -23,7 +23,7 @@ const AddNewFee = ({
   shippingFeeData: ShippingFeeDataType;
 }) => {
   return (
-    <Drawer isOpen={open} placement="right" onClose={setIsOpen} size={"sm"}>
+    <Drawer isOpen={open} placement="right" onClose={onClose} size={"sm"}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
