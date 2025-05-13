@@ -4,8 +4,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "../_components/TimeLineSelector";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import WalletTable from "../_components/TransactionTab";
-
 import {
   Text,
   Tab,
@@ -46,8 +44,6 @@ const ProductWallet = () => {
       setLoading(false);
     }
   }, [token, pageCount]);
-
-  console.log(pageCount);
 
   useEffect(() => {
     if(!token) return;
