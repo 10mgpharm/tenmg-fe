@@ -112,12 +112,13 @@ const LoanRepayments = () => {
       <h3 className="font-semibold text-2xl">Loan Repayment</h3>
       <div className="flex justify-between">
         <div className="mb-5">
-          <div className="flex items-center gap-3 mt-5 flex-wrap">
+          <div className="flex items-center gap-3 mt-5 ">
             <SearchInput
               placeholder="Search by customer name"
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
+
             <div
               onClick={onOpenFilter}
               className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
@@ -189,6 +190,7 @@ const LoanRepayments = () => {
         applyFilters={applyFilters}
         clearFilters={clearFilters}
         noStatus
+        title="Filter by due date"
       />
     </div>
   );
