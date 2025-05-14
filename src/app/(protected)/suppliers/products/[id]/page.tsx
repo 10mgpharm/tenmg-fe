@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { Flex, HStack, Image, Spinner, Text } from '@chakra-ui/react';
+import { Flex, HStack, Image, Spinner, Tag, TagLabel, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
 import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
@@ -68,7 +68,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                 </Link>
             </Flex>
             <div className="mt-5">
-                <div className="flex gap-5 mb-3">
+                <div className="flex gap-5 mb-3 flex-wrap">
                     <div className="relative">
                         <Image
                             src={products?.thumbnailFile}
@@ -80,24 +80,35 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                         />
 
                         <div className='mb-2 absolute top-3 right-3'>
-                            <p className={classNames(
-                                (products?.inventory === "OUT OF STOCK")
-                                    ? "bg-[#FEF3F2] text-[#B42318]"
-                                    : products?.inventory === "IN STOCK"
-                                        ? "text-[#027A48] bg-[#ECFDF3]"
-                                        : products?.inventory === "LOW STOCK"
-                                            ? "bg-orange-50 text-orange-500"
-                                            : "text-gray-500", " px-2 rounded-xl py-0.5 text-xs font-medium flex items-center gap-1"
-                            )}>
-                                <span className="text-[1.2rem] rounded-full">•</span>
-                                {" "}
-                                {products?.inventory && formatText(products?.inventory)}
-                                {":"}
-                                {" "}
-                                {products?.quantity}
-                                {" "}
-                                Items left
-                            </p>
+                            <Tag
+                                size="sm"
+                                ml="1"
+                                borderRadius="full"
+                                color={
+                                    parseInt(products?.quantity) <= (products?.outStockLevel ?? 0)
+                                        ? "error.500"
+                                        : parseInt(products?.quantity) >= (products?.outStockLevel ?? 0) && parseInt(products?.quantity) <= products?.lowStockLevel
+                                            ? "warning.500"
+                                            : "green.500"
+                                }
+                                bgColor={
+                                    parseInt(products?.quantity) <= (products?.outStockLevel ?? 0)
+                                        ? "error.100"
+                                        : parseInt(products?.quantity) >= (products?.outStockLevel ?? 0) && parseInt(products?.quantity) <= products?.lowStockLevel
+                                            ? "warning.100"
+                                            : "green.100"
+                                }
+                            >
+                                <TagLabel className="">
+                                    {
+                                        parseInt(products?.quantity) <= (products?.outStockLevel ?? 0)
+                                            ? "Out of Stock"
+                                            : parseInt(products?.quantity) >= (products?.outStockLevel ?? 0) && parseInt(products?.quantity) <= products?.lowStockLevel
+                                                ? "Low In Stock"
+                                                : "In Stock"
+                                    }
+                                </TagLabel>
+                            </Tag>
                         </div>
                     </div>
                     <div className="flex-1 bg-white p-5 rounded-md pb-9">
@@ -167,3 +178,22 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
 }
 
 export default ProductDetail
+
+//     < p className = { classNames(
+//                                 (products?.inventory === "OUT OF STOCK")
+//         ? "bg-[#FEF3F2] text-[#B42318]"
+//         : products?.inventory === "IN STOCK"
+//             ? "text-[#027A48] bg-[#ECFDF3]"
+//             : products?.inventory === "LOW STOCK"
+//                 ? "bg-orange-50 text-orange-500"
+//                 : "text-gray-500", " px-2 rounded-xl py-0.5 text-xs font-medium flex items-center gap-1"
+//                             )}>
+//     <span className="text-[1.2rem] rounded-full">•</span>
+// { " " }
+// { products?.inventory && formatText(products?.inventory) }
+// { ":" }
+// { " " }
+// { products?.quantity }
+// { " " }
+//                                 Items left
+//                             </ >
