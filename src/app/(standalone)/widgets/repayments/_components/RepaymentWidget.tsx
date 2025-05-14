@@ -12,6 +12,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import StepOneLoanDetails from "./StepOneLoanDetails";
 import StepTwoPaymentSchedule from "./StepTwoPaymentSchedule";
 import StepThreeConfirmation from "./StepThreeConfirmation";
+import { getRepaymentDetails } from "../actions";
 
 interface Props {
   business: BusinessDto;
@@ -34,6 +35,7 @@ export default function RepaymentWidget({
   const [currentPaidAmount, setCurrentPaidAmount] = useState<string | number>(
     ""
   );
+  const [repaymentData, setRepaymentData] = useState(data);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -69,7 +71,17 @@ export default function RepaymentWidget({
   const lastPaidBalance =
     lastPaidPayment?.balance !== "0.00" ? lastPaidPayment?.totalAmount : "0";
 
-  const pendingAmounts = data?.repaymentSchedule?.filter((item) => isPendingStatus(item.paymentStatus)) || [];
+  const pendingAmounts =
+    data?.repaymentSchedule?.filter((item) =>
+      isPendingStatus(item.paymentStatus)
+    ) || [];
+
+  const refreshRepaymentData = async () => {
+    const response = await getRepaymentDetails(token, reference);
+    if (response.status === "success") {
+      setRepaymentData(response.data);
+    }
+  };
 
   switch (activeStep) {
     case 1:
@@ -107,6 +119,7 @@ export default function RepaymentWidget({
           }}
           pendingAmounts={pendingAmounts}
           lastPaidBalance={lastPaidBalance}
+          onPaymentSuccess={refreshRepaymentData}
         />
       );
     case 3:

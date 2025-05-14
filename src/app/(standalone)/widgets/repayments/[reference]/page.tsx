@@ -33,67 +33,44 @@ export default async function Page({
       <>
         <div className="flex flex-col items-center justify-center h-screen">
           <h1 className="text-2xl font-bold">
-            Invalid application link provided
+            Invalid repayment link provided
           </h1>
         </div>
       </>
     );
   }
 
-  try {
-    const response: ResponseDto<RepaymentWidgetConfig> =
-      await getRepaymentDetails(token, reference);
+  const response: ResponseDto<RepaymentWidgetConfig> =
+    await getRepaymentDetails(token, reference);
 
-    if (!response || response.status === "error") {
-      return (
-        <>
-          <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-2xl font-bold">
-              {response?.message || "An error occurred"}
-            </h1>
-          </div>
-        </>
-      );
-    }
-
-    const data: RepaymentWidgetConfig = response.data;
-
-    console.log("data", data);
-
-    if (!data || !data.vendor || !data.customer || !data.application) {
-      return (
-        <>
-          <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-2xl font-bold">Invalid repayment data</h1>
-          </div>
-        </>
-      );
-    }
-
-    const business: BusinessDto = data.vendor;
-    const customer: CustomerDto = data.customer;
-    const application: ApplicationDto = data.application;
-
-    return (
-      <RepaymentWidget
-        business={business}
-        customer={customer}
-        application={application}
-        data={data}
-        reference={reference}
-        token={token}
-      />
-    );
-  } catch (error) {
-    console.error("Error loading repayment details:", error);
+  if (!response || response.status === "error") {
     return (
       <>
         <div className="flex flex-col items-center justify-center h-screen">
           <h1 className="text-2xl font-bold">
-            Failed to load repayment details
+            {response?.message === "Unauthenticated." ? "Invalid Link" : response?.message}
           </h1>
         </div>
       </>
     );
   }
+
+  const data: RepaymentWidgetConfig = response.data;
+
+  console.log("data", data);
+
+  const business: BusinessDto = data.vendor;
+  const customer: CustomerDto = data.customer;
+  const application: ApplicationDto = data.application;
+
+  return (
+    <RepaymentWidget
+      business={business}
+      customer={customer}
+      application={application}
+      data={data}
+      reference={reference}
+      token={token}
+    />
+  );
 }
