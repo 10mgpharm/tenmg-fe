@@ -32,24 +32,35 @@ export function ColumsPayoutFN(
         </div>
       ),
     }),
-    columnHelper.accessor("tenmgCommission", {
-      header: ({ column }) => <p className="">Commission</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="font-medium">
-          ₦{info.row.original?.tenmgCommission ?? `0.00`}
-          </p>
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("tenmgCommission", {
+    //   header: ({ column }) => <p className="">Commission</p>,
+    //   cell: (info) => (
+    //     <div className="">
+    //       <p className="font-medium">
+    //       ₦{info.row.original?.tenmgCommission ?? `0.00`}
+    //       </p>
+    //     </div>
+    //   ),
+    // }),
     columnHelper.accessor("actualPrice", {
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">₦{info.row.original?.actualPrice}</p>
+          <span className="text-xs text-red-500">
+            Commission: ₦{info.row.original?.tenmgCommission ?? "0.00"}
+          </span>
         </div>
       ),
     }),
+    // columnHelper.accessor("actualPrice", {
+    //   header: ({ column }) => <p className="">Amount</p>,
+    //   cell: (info) => (
+    //     <div className="">
+    //       <p className="font-medium">₦{info.row.original?.actualPrice}</p>
+    //     </div>
+    //   ),
+    // }),
     columnHelper.accessor("status", {
         header: ({ column }) => <p>Status</p>,
         cell: (info) => {
@@ -57,11 +68,11 @@ export function ColumsPayoutFN(
             <div>
               <p
                 className={classNames(
-                  "text-orange-500 bg-orange-50 max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+                  "text-green-500 bg-green-50 max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
                 )}
               >
                 <span className="rounded-full text-[1.2rem]">•</span>{" "}
-                PENDING
+                PAID
               </p>
             </div>
           );
