@@ -57,8 +57,6 @@ export default async function Page({
 
   const data: RepaymentWidgetConfig = response.data;
 
-  console.log("data", data);
-
   const business: BusinessDto = data.vendor;
   const customer: CustomerDto = data.customer;
   const application: ApplicationDto = data.application;
