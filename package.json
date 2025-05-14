@@ -55,6 +55,7 @@
     "react-circular-progressbar": "^2.1.0",
     "react-confetti": "^6.1.0",
     "react-copy-to-clipboard": "^5.1.0",
+    "react-csv": "^2.2.2",
     "react-datepicker": "^7.4.0",
     "react-dom": "^18",
     "react-flexible-star-rating": "^1.0.7",
