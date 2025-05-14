@@ -36,14 +36,12 @@ interface PayoutTableProps {
 
 const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableProps) => {
 
-    // const filterTransactions = data?.slice(0, 6);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedRow, setSelectedRow] = useState<any>();
 
     const columns = useMemo(() => ColumsPayoutFN(onOpen, setSelectedRow), [onOpen, setSelectedRow]);
     
     // Memoize the filtered data
-    // const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
     const filterTransactions = useMemo(() => {
         if (!data) return [];
         return hasPagination ? data : data.slice(0, 6);

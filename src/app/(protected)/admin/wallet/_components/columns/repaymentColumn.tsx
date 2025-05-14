@@ -28,7 +28,7 @@ export function repaymentColumnFn(
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-          {info.row.original?.description}
+          {info.row.original?.description} Commission
           </p>
         </div>
       ),
