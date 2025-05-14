@@ -72,12 +72,7 @@ export default function AccoundDetailsCard(
                   {accountDetails?.bankName}
                 </p>
               </Tooltip>
-              <div className="p-2 cursor-pointer rounded-full bg-white transition-all duration-300 
-              w-auto group-hover:w-full overflow-hidden">
-                <p className="text-gray-600 text-sm font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
-                  {accountDetails?.bankName}
-                </p>
-              </div>
+
             </div>
           </div>
 

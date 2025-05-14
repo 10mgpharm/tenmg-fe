@@ -37,29 +37,29 @@ const Supplier = () => {
     const fetchingOverview = useCallback(async () => {
         try {
             setLoading(true);
-          const res = await requestClient({token: token}).get(
-            `/supplier/dashboard?dateFilter=one_year`
-          )
-          setData(res.data?.data);
+            const res = await requestClient({ token: token }).get(
+                `/supplier/dashboard?dateFilter=one_year`
+            )
+            setData(res.data?.data);
         } catch (error) {
-          console.error(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
     }, [token]);
 
     useEffect(() => {
-        if(!token) return;
+        if (!token) return;
         fetchingOverview();
     }, [token, fetchingOverview]);
 
     const formatValue = (value: any) => {
         if (value >= 1000000) {
-          return `₦${(value / 1000000).toFixed(1)}M`;
+            return `₦${(value / 1000000).toFixed(1)}M`;
         } else if (value >= 1000) {
-          return `₦${(value / 1000).toFixed(1)}K`;
+            return `₦${(value / 1000).toFixed(1)}K`;
         } else {
-          return ` ₦${value.toFixed(1)}`;
+            return ` ₦${value.toFixed(1)}`;
         }
     };
 
@@ -82,42 +82,42 @@ const Supplier = () => {
             },
         },
         dataLabels: {
-          enabled: false,
+            enabled: false,
         },
         yaxis: {
             show: true,
             labels: {
-              formatter: formatValue // Format y-axis labels
+                formatter: formatValue // Format y-axis labels
             }
         },
         xaxis: {
-          categories: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
+            categories: [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ],
         },
         stroke: {
             curve: 'straight',
             width: 1
         },
         legend: {
-          show: false,
+            show: false,
         },
     };
 
     const pieSeries = [
         Number(data?.analytics?.stockStatus?.inStock),
-        Number(data?.analytics?.stockStatus?.lowStock), 
+        Number(data?.analytics?.stockStatus?.lowStock),
         Number(data?.analytics?.stockStatus?.outOfStock)
     ];
     const total = pieSeries.reduce((a, b) => a + b, 0);
@@ -137,33 +137,33 @@ const Supplier = () => {
         },
         dataLabels: {
             enabled: false,
-          },
-          responsive: [
+        },
+        responsive: [
             {
-              breakpoint: 480,
-              options: {
-                legend: {
-                  position: 'bottom',
+                breakpoint: 480,
+                options: {
+                    legend: {
+                        position: 'bottom',
+                    },
                 },
-              },
             },
         ],
         plotOptions: {
             pie: {
-              donut: {
-                size: '55%',
-                labels: {
-                  show: true,
-                  total: {
-                    show: true,
-                    label: 'Total',
-                    formatter: () => `${total}`,
-                    color: '#333',
-                    fontSize: '20px',
-                    fontFamily: 'Arial, sans-serif',
-                  },
+                donut: {
+                    size: '55%',
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: 'Total',
+                            formatter: () => `${total}`,
+                            color: '#333',
+                            fontSize: '20px',
+                            fontFamily: 'Arial, sans-serif',
+                        },
+                    },
                 },
-              },
             },
         },
     };
@@ -172,18 +172,18 @@ const Supplier = () => {
         {
             name: "Revenue",
             data: [
-                data?.analytics?.revenue?.january, 
-                data?.analytics?.revenue?.february, 
-                data?.analytics?.revenue?.march, 
-                data?.analytics?.revenue?.april, 
-                data?.analytics?.revenue?.may, 
-                data?.analytics?.revenue?.june, 
-                data?.analytics?.revenue?.july, 
-                data?.analytics?.revenue?.august, 
-                data?.analytics?.revenue?.september, 
-                data?.analytics?.revenue?.october, 
-                data?.analytics?.revenue?.november, 
-                data?.analytics?.revenue?.december, 
+                data?.analytics?.revenue?.january,
+                data?.analytics?.revenue?.february,
+                data?.analytics?.revenue?.march,
+                data?.analytics?.revenue?.april,
+                data?.analytics?.revenue?.may,
+                data?.analytics?.revenue?.june,
+                data?.analytics?.revenue?.july,
+                data?.analytics?.revenue?.august,
+                data?.analytics?.revenue?.september,
+                data?.analytics?.revenue?.october,
+                data?.analytics?.revenue?.november,
+                data?.analytics?.revenue?.december,
             ],
         },
     ];
@@ -204,7 +204,7 @@ const Supplier = () => {
                         <CalendarIcon className="w-4 h-4 text-gray-500 text-default-400 pointer-events-none flex-shrink-0" />
                     </div> */}
                 </div>
-                <div className="grid grid-cols-4 gap-4 mt-5">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
                     <OverviewCardWithoutBG
                         title="Total Income"
                         value={`₦${data?.analytics?.totalIncome?.count || "0.00"}`}
@@ -246,17 +246,17 @@ const Supplier = () => {
                         <React.Fragment>
                             <div className="">
                                 {loading ? (
-                                <div className="flex items-center justify-center h-80 text-gray-500">
-                                    Loading chart...
-                                </div>
+                                    <div className="flex items-center justify-center h-80 text-gray-500">
+                                        Loading chart...
+                                    </div>
                                 ) : (
-                                <ChartComponent
-                                    options={graphOptions}
-                                    series={series}
-                                    type="area"
-                                    width="100%"
-                                    height={320}
-                                />
+                                    <ChartComponent
+                                        options={graphOptions}
+                                        series={series}
+                                        type="area"
+                                        width="100%"
+                                        height={320}
+                                    />
                                 )}
                             </div>
                         </React.Fragment>
@@ -281,27 +281,27 @@ const Supplier = () => {
                         <React.Fragment>
                             <div className="">
                                 {loading ? (
-                                <div className="flex items-center justify-center h-80 text-gray-500">
-                                    Loading chart...
-                                </div>
+                                    <div className="flex items-center justify-center h-80 text-gray-500">
+                                        Loading chart...
+                                    </div>
                                 ) : (
-                                <ChartComponent
-                                    options={pieOptions}
-                                    series={pieSeries}
-                                    type="donut"
-                                    width={"100%"}
-                                    height={320}
-                                />
+                                    <ChartComponent
+                                        options={pieOptions}
+                                        series={pieSeries}
+                                        type="donut"
+                                        width={"100%"}
+                                        height={320}
+                                    />
                                 )}
                             </div>
                         </React.Fragment>
                     </div>
                 </div>
                 <div className="mt-5">
-                   <RevenuePerProduct 
-                   data={data?.analytics?.revenuePerProduct} 
-                   loading={loading}
-                   />
+                    <RevenuePerProduct
+                        data={data?.analytics?.revenuePerProduct}
+                        loading={loading}
+                    />
                 </div>
             </div>
             <CompleteAccountModal

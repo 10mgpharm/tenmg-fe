@@ -34,11 +34,11 @@ export function Completed_ColumnFN(
       ),
     }),
     columnHelper.accessor("orderId", {
-      header: ({ column }) => <p className="">OrderId</p>,
+      header: ({ column }) => <p className="">OrderID</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-            {info.row.original?.orderId}
+            {info.row.original?.order?.identifier}
           </p>
         </div>
       ),
