@@ -95,7 +95,7 @@ const Orders = () => {
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
-          <Button
+          {/* <Button
             h={""}
             px={4}
             variant={"outline"}
@@ -105,7 +105,7 @@ const Orders = () => {
             }}
           >
             View shopping list
-          </Button>
+          </Button> */}
         </Flex>
       </HStack>
       <Tabs variant={"unstyled"}>
