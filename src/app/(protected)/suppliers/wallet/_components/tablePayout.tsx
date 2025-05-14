@@ -22,22 +22,22 @@ export function ColumsPayoutFN(
         </div>
       ),
     }),
+    columnHelper.accessor("id", {
+      header: ({ column }) => <p className="">OrderID</p>,
+      cell: (info) => (
+        <div className="">
+          <p className="font-medium">
+            {info.row.original?.order?.identifier}
+          </p>
+        </div>
+      ),
+    }),
     columnHelper.accessor("tenmgCommission", {
       header: ({ column }) => <p className="">Commission</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
           ₦{info.row.original?.tenmgCommission ?? `0.00`}
-          </p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("id", {
-      header: ({ column }) => <p className="">OrderId</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="font-medium">
-            {info.row.original?.id}
           </p>
         </div>
       ),

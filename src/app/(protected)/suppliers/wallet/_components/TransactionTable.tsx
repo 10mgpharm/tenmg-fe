@@ -10,7 +10,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ColumsTransactionFN } from "./table";
 import EmptyOrder from "../../orders/_components/EmptyOrder";
 import { Flex, Spinner, Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
-import { Daum, LoanTransactionProps } from "@/types";
+import { Daum } from "@/types";
 import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
 import TransactionDetails from "@/app/(protected)/admin/wallet/_components/TransactionDetail";
 

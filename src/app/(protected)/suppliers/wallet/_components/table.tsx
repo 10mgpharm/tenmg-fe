@@ -37,7 +37,7 @@ export function ColumsTransactionFN(
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-            {info.row.original?.orderId}
+            {info.row.original?.order?.identifier}
           </p>
         </div>
       ),
