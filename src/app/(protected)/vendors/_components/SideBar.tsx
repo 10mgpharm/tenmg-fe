@@ -201,7 +201,7 @@ const SideBar = ({
                     </ul>
                   </Box>
                 ))}
-                <li className="mt-auto">
+                <div className="mt-auto">
                   <button
                     onClick={async () => {
                       await signOut();
@@ -225,7 +225,7 @@ const SideBar = ({
                     </svg>
                     Logout
                   </button>
-                </li>
+                </div>
               </nav>
             </div>
           </DialogPanel>
@@ -288,7 +288,7 @@ const SideBar = ({
                 </ul>
               </Box>
             ))}
-            <li className="mt-auto">
+            <div className="mt-auto">
               <button
                 onClick={async () => {
                   await signOut();
@@ -312,7 +312,7 @@ const SideBar = ({
                 </svg>
                 Logout
               </button>
-            </li>
+            </div>
           </nav>
         </div>
       </Box>
