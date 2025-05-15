@@ -13,11 +13,6 @@ const Wallets = () => {
         <h3 className="font-semibold  text-[18px]  md:text-[20px]">
           Loan Wallet
         </h3>
-
-        {/* <TimeLineSelector
-          selectedTimeLine={selectedTimeLine}
-          setSelectedTimeLine={setSelectedTimeLine}
-        /> */}
       </div>
 
       <div>
