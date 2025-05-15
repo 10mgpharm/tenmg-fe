@@ -46,7 +46,7 @@ export function ColumsPayoutFN(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">₦{info.row.original?.actualPrice}</p>
+          <p className="font-medium">₦{info.row.original?.discountPrice}</p>
           <span className="text-xs text-red-500">
             Commission: ₦{info.row.original?.tenmgCommission ?? "0.00"}
           </span>
