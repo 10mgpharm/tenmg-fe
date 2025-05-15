@@ -35,7 +35,7 @@ export default async function Page({ params: { reference }, searchParams: { toke
     return (
       <>
         <div className="flex flex-col items-center justify-center h-screen">
-          <h1 className="text-2xl font-bold">{response.message}</h1>
+          <h1 className="text-2xl font-bold">{response?.message === "Unauthenticated." ? "Invalid Link" : response?.message}</h1>
         </div>
       </>
     )

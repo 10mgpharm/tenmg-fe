@@ -37,6 +37,7 @@ export interface IVendorDashboard {
   totalPendingApplications: number;
   totalApplications: number;
   creditVoucher: string;
+  ongoingApplications: number;
   txnHistoryEval: number;
   apiCalls: number;
   balance: number;
@@ -95,6 +96,7 @@ const VendorDashboard = () => {
         totalApplications: d.totalApplications,
         totalPendingApplications: d.totalPendingApplications,
         creditVoucher: d.creditVoucher,
+        ongoingApplications: d.ongoingApplications,
         txnHistoryEval: d.transactionEvaluation,
         apiCalls: d.apiCalls,
         balance: Number(d.payOutWallet),
@@ -105,7 +107,8 @@ const VendorDashboard = () => {
         d.accountLinking.dropOffs || 0,
       ]);
     } catch (e) {
-      // handle error
+      const error = handleServerErrorMessage(e);
+      toast.error(error);
     } finally {
       setLoading(false);
     }
@@ -173,7 +176,7 @@ const VendorDashboard = () => {
     },
   };
 
-  const reportLabels = ["Successful Calls", "Errors", "Drop-off/Cancellations"];
+  const reportLabels = ["Successful Calls", "Errors"];
 
   const reportTotal = reportSeries.reduce((a, b) => a + b, 0);
 
@@ -183,7 +186,7 @@ const VendorDashboard = () => {
       position: "bottom",
       show: false,
     },
-    colors: ["#6FD195", "#F56565", "#FFAE4C"],
+    colors: ["#6FD195", "#F56565"],
     dataLabels: {
       enabled: false,
     },
@@ -283,7 +286,7 @@ const VendorDashboard = () => {
                 title="Loan Applications"
                 value={data.totalApplications}
                 isPending
-                pendingValue={data.totalPendingApplications}
+                pendingValue={data.ongoingApplications}
                 color="green.400"
               />
               <OverviewCard
@@ -418,10 +421,10 @@ const VendorDashboard = () => {
                   <Badge bgColor="#F56565" p={1} rounded="lg" />
                   <Text>Errors</Text>
                 </Flex>
-                <Flex gap={2} alignItems="center" mt={2}>
+                {/* <Flex gap={2} alignItems="center" mt={2}>
                   <Badge bgColor="#FFAE4C" p={1} rounded="lg" />
                   <Text>Drop-off/Cancellations</Text>
-                </Flex>
+                </Flex> */}
               </Box>
             </Stack>
           </Stack>
