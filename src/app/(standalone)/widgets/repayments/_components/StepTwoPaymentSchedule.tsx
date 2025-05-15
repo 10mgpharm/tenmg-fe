@@ -33,6 +33,7 @@ interface Props {
   onContinueAction?: (paidAmount?: string | number) => void;
   lastPaidBalance: string | null;
   pendingAmounts: any[];
+  onPaymentSuccess?: () => void;
 }
 
 type PaymentOption = "custom" | "full";
@@ -51,6 +52,7 @@ export default function StepTwoPaymentSchedule({
   onContinueAction,
   lastPaidBalance,
   pendingAmounts,
+  onPaymentSuccess,
 }: Props) {
   const [paymentOption, setPaymentOption] = useState<PaymentOption>("full");
   const [selectedPayments, setSelectedPayments] = useState<number[]>([]);
@@ -104,6 +106,7 @@ export default function StepTwoPaymentSchedule({
       if (onContinueAction) {
         onContinueAction(amount);
       }
+      if (onPaymentSuccess) await onPaymentSuccess();
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(`Repayment Error: ${errorMessage}`);
