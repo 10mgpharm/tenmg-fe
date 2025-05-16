@@ -12,6 +12,7 @@ interface Props {
     setPageCount?: Dispatch<SetStateAction<number>>;
 }
 const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) => {
+    console.log(payoutData)
     return (
         <div>
             <Tabs variant={"unstyled"}>

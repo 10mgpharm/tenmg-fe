@@ -125,7 +125,7 @@ const ProductWallet = () => {
               firstPageUrl: data?.payouts?.firstPageUrl,
               lastPageUrl: data?.payouts?.lastPageUrl,
             }}
-            emptyStateHeader="No awaiting payout"
+            emptyStateHeader="No payout"
             />
           </TabPanel>
           <TabPanel px={0}>

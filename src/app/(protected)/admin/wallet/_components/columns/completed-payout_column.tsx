@@ -28,7 +28,12 @@ export function Completed_ColumnFN(
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-          {info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Payment Commission" : info.row.original?.txnGroup === "DEBIT_COMMISSION_ON_ORDER_CANCELLATION" ? "Order Cancelled Commission" : ""}
+          {
+          info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Payment" 
+          :info.row.original?.txnGroup === "CREDIT_COMMISSION_ON_ORDER_COMPLETION" ? "Order Payment Commission" 
+          : info.row.original?.txnGroup === "DEBIT_COMMISSION_ON_ORDER_CANCELLATION" ? "Order Cancelled Commission" 
+          : info.row.original?.txnGroup === "WITHDRAW_TO_BANK" ? "Withdrawal" : ""
+          }
           </p>
         </div>
       ),
