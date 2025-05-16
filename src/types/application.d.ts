@@ -57,6 +57,7 @@ export interface ApplicationWidgetConfig {
   customer: CustomerDto;
   application: ApplicationDto;
   defaultBank: BankAccountDto;
+  token: string;
 }
 
 export interface BankDto {
