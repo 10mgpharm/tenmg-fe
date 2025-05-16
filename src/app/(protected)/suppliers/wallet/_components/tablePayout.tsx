@@ -68,11 +68,11 @@ export function ColumsPayoutFN(
             <div>
               <p
                 className={classNames(
-                  "text-green-500 bg-green-50 max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+                  "text-yellow-500 bg-yellow-50 max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
                 )}
               >
                 <span className="rounded-full text-[1.2rem]">•</span>{" "}
-                PAID
+                PENDING
               </p>
             </div>
           );

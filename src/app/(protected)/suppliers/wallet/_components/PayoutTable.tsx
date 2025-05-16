@@ -36,6 +36,7 @@ interface PayoutTableProps {
 
 const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableProps) => {
 
+    console.log(data)
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedRow, setSelectedRow] = useState<any>();
 
