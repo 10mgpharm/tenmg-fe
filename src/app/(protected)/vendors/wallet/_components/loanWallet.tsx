@@ -3,9 +3,7 @@ import { OverviewCard } from "./overviewCard";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import Link from "next/link";
-import {
-  useDisclosure,
-} from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import DataTable from "./table";
 import { Awaiting_column } from "./colunms/awaiting_column";
 import TransactionDetails from "./transactionDetails";
@@ -18,7 +16,6 @@ import { NextAuthUserSession } from "@/types";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const LoanWallet = () => {
-
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
@@ -26,6 +23,8 @@ const LoanWallet = () => {
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openPayout, setOpenPayout] = React.useState(false);
   const [openCompleted, setOpenCompleted] = React.useState(false);
+  const [selectedTransactionDetails, setSelectedTransactionDetails] =
+    useState<any>(null);
 
   const {
     isOpen: isOpenWithdraw,
@@ -47,42 +46,39 @@ const LoanWallet = () => {
     setLoading(true);
     try {
       const response = await requestClient({ token: token }).get(
-        `/vendor/wallet`,
+        `/vendor/wallet`
       );
       if (response.status === 200) {
         setStats(response?.data);
         setLoading(false);
       }
-    }
-    catch (error) {
+    } catch (error) {
       setLoading(false);
       console.error(error);
     }
   }, [token]);
 
   const fetchTransactions = useCallback(async () => {
-
     try {
       const response = await requestClient({ token: token }).get(
-        `/vendor/wallet/transactions`,
+        `/vendor/wallet/transactions`
       );
       if (response.status === 200) {
         console.log(response?.data?.data?.data);
         setTransactions(response?.data?.data?.data);
         setLoading(false);
       }
-    }
-    catch (error) {
+    } catch (error) {
       setLoading(false);
       console.error(error);
     }
   }, [token]);
 
   useEffect(() => {
-    if(!token) return;
+    if (!token) return;
     fetchStat();
-    fetchTransactions()
-  }, [token, fetchStat, fetchTransactions])
+    fetchTransactions();
+  }, [token, fetchStat, fetchTransactions]);
 
   const [showBalance, setShowBalance] = useState(true);
   const [accountInfo, setAccountInfo] = useState(null);
@@ -91,8 +87,15 @@ const LoanWallet = () => {
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 ">
         <div className="w-full relative">
-          <div className="absolute top-2 right-2 cursor-pointer z-40 text-white" onClick={() => setShowBalance(!showBalance)}>
-            {showBalance ? (<FaEye className="w-5 h-5" />) : (<FaEyeSlash className="w-5 h-5" />)}
+          <div
+            className="absolute top-2 right-2 cursor-pointer z-40 text-white"
+            onClick={() => setShowBalance(!showBalance)}
+          >
+            {showBalance ? (
+              <FaEye className="w-5 h-5" />
+            ) : (
+              <FaEyeSlash className="w-5 h-5" />
+            )}
           </div>
           <OverviewCard
             title=" Credit Voucher"
@@ -113,9 +116,9 @@ const LoanWallet = () => {
             func={onOpenWithdraw}
           />
         </div>
-        <AccoundDetailsCard 
-        showBalance={showBalance} 
-        setAccountInfo={setAccountInfo} 
+        <AccoundDetailsCard
+          showBalance={showBalance}
+          setAccountInfo={setAccountInfo}
         />
       </div>
 
@@ -135,7 +138,8 @@ const LoanWallet = () => {
         column={Awaiting_column(
           setOpenDetails,
           setOpenPayout,
-          setOpenCompleted
+          setOpenCompleted,
+          setSelectedTransactionDetails
         )}
         hasPagination={false}
         isLoading={loading}
@@ -146,6 +150,7 @@ const LoanWallet = () => {
         <TransactionDetails
           isOpen={openDetails}
           onClose={() => setOpenDetails(false)}
+          data={selectedTransactionDetails}
         />
       )}
 

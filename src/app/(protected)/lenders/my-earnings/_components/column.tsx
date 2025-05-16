@@ -59,29 +59,10 @@ export function MyEarningsColumn(
         <div className="">
           <p className="">₦{info.row.original?.paidInterest}</p>
           <span className="text-primary-700 text-[12px]">
-            Loan Interest: ₦{info.row.original?.adminInterest}
+            Admin commission: ₦{info.row.original?.adminInterest}
           </span>
         </div>
       ),
     }),
-
-    // columnHelper.accessor("id", {
-    //   header: ({ column }) => <p className="">Actions</p>,
-    //   cell: (info) => {
-    //     return (
-    //       <div className="">
-    //         <p
-    //           className="cursor-pointer text-primary-600 font-medium"
-    //           onClick={() => {
-    //             onOpenDetails();
-    //             setSelectedUserId(info.row.original.id);
-    //           }}
-    //         >
-    //           View
-    //         </p>
-    //       </div>
-    //     );
-    //   },
-    // }),
   ];
 }
