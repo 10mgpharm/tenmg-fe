@@ -16,6 +16,7 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { LoanTransactionDataProps, NextAuthUserSession } from "@/types";
 import LoanTable from "../_components/LoanTable";
+import { useDebouncedValue } from "@/utils/debounce";
 
 const LoanWallet = () => {
 
@@ -28,9 +29,11 @@ const LoanWallet = () => {
   const [loanTransaction, setLoanTransaction] = useState<LoanTransactionDataProps>();
   const [adminTransaction, setAdminTransaction] = useState<LoanTransactionDataProps>();
 
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+
   const fetchingLoanTransactions = useCallback(async () => {
     setLoading(true);
-    let query = `/admin/wallet/transactions?page=${pageCount}`;
+    let query = `/admin/wallet/transactions?page=${pageCount}&search=${debouncedSearch}`;
     try {
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
@@ -40,11 +43,11 @@ const LoanWallet = () => {
       console.error(error);
     }
     setLoading(false);
-  }, [token, pageCount]);
+  }, [token, pageCount, debouncedSearch]);
 
   const fetchingLoanWalletTransactions = useCallback(async () => {
     setLoading(true);
-    let query = `/admin/wallet/admin-transactions?page=${pageCount}`;
+    let query = `/admin/wallet/admin-transactions?page=${pageCount}&search=${debouncedSearch}`;
     try {
       const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
@@ -54,7 +57,7 @@ const LoanWallet = () => {
       console.error(error);
     }
     setLoading(false);
-  }, [token, pageCount]);
+  }, [token, pageCount, debouncedSearch]);
 
   useEffect(() => {
     if(!token) return;

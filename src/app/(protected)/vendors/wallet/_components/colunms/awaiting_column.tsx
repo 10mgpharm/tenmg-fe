@@ -8,7 +8,8 @@ const columnHelper = createColumnHelper<any>();
 export function Awaiting_column(
   setOpenDetails: (value: boolean) => void,
   setOpenPayout: (value: boolean) => void,
-  setOpenCompleted: (value: boolean) => void
+  setOpenCompleted: (value: boolean) => void,
+  setSelectedTransactionDetails: (value: any) => void
 ) {
   return [
     columnHelper.accessor("id", {
@@ -44,9 +45,35 @@ export function Awaiting_column(
       header: ({ column }) => <p className="">Date</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">{info.row.original?.createdAt.split("T")[0]}</p>
+          <p className="font-medium">
+            {info.row.original?.createdAt.split("T")[0]}
+          </p>
         </div>
       ),
+    }),
+
+    columnHelper.accessor("type", {
+      header: ({ column }) => <p>Transaction Type</p>,
+      cell: (info) => {
+        return (
+          <div>
+            <p
+              className={classNames(
+                info?.row?.original?.type === "DEBIT"
+                  ? "bg-[#FEF3F2] text-[#B42318]"
+                  : info?.row?.original?.type === "Completed" ||
+                    info?.row?.original?.type === "CREDIT"
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : "text-orange-500 bg-orange-50",
+                " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+              )}
+            >
+              <span className="rounded-full text-[1.2rem]">•</span>{" "}
+              {info?.row?.original?.type}
+            </p>
+          </div>
+        );
+      },
     }),
 
     columnHelper.accessor("status", {
@@ -56,16 +83,16 @@ export function Awaiting_column(
           <div>
             <p
               className={classNames(
-                info?.row?.original?.status === "Failed"
+                info?.row?.original?.status === "failed"
                   ? "bg-[#FEF3F2] text-[#B42318]"
                   : info?.row?.original?.status === "Completed" ||
-                    info?.row?.original?.status === "Successful"
-                    ? "text-[#027A48] bg-[#ECFDF3]"
-                    : "text-orange-500 bg-orange-50",
-                " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
+                    info?.row?.original?.status === "success"
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : "text-orange-500 bg-orange-50",
+                " max-w-min p-1 px-2 rounded-2xl text-sm font-medium capitalize"
               )}
             >
-              <span className="rounded-full text-[1.2rem]">•</span>{" "}
+              <span className="rounded-full text-[1.2rem] ">•</span>{" "}
               {info?.row?.original?.status}
             </p>
           </div>
@@ -94,7 +121,12 @@ export function Awaiting_column(
                   </>
                 ) : (
                   <>
-                    <MenuItem onClick={() => setOpenDetails(true)}>
+                    <MenuItem
+                      onClick={() => {
+                        setOpenDetails(true);
+                        setSelectedTransactionDetails(info?.row?.original);
+                      }}
+                    >
                       View Transaction Details
                     </MenuItem>
                   </>
