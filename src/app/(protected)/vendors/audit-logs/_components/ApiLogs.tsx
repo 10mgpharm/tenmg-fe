@@ -13,10 +13,7 @@ import {
   Th,
   Thead,
   Tr,
-<<<<<<< HEAD
   useDisclosure,
-=======
->>>>>>> 2388513 (feat: edited user wallet page)
 } from "@chakra-ui/react";
 import EmptyResult from "../../_components/EmptyResult";
 import {
@@ -36,7 +33,6 @@ import { IApplyFilters } from "../../loan-applications/page";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 const ApiLogs = () => {
-<<<<<<< HEAD
   const [apiLogData, setApiLogData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -110,13 +106,6 @@ const ApiLogs = () => {
 
   const table = useReactTable({
     data: apiLogData?.data ?? [],
-=======
-  const [loading, setLoading] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState<string>("");
-
-  const table = useReactTable({
-    data: APILogData ?? [],
->>>>>>> 2388513 (feat: edited user wallet page)
     columns: ColumnsApiLogFN(),
     state: {
       globalFilter,
@@ -137,11 +126,7 @@ const ApiLogs = () => {
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
           <div
-<<<<<<< HEAD
             onClick={onOpenFilter}
-=======
-            // onClick={onOpenFilter}
->>>>>>> 2388513 (feat: edited user wallet page)
             className="border cursor-pointer border-gray-300 p-2 rounded-md flex items-center gap-2"
           >
             <CiFilter className="w-5 h-5" />
@@ -151,11 +136,7 @@ const ApiLogs = () => {
       </div>
       <div className="">
         {!loading ? (
-<<<<<<< HEAD
           apiLogData?.data?.length !== 0 ? (
-=======
-          APILogData?.length !== 0 ? (
->>>>>>> 2388513 (feat: edited user wallet page)
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
               <Table>
                 <Thead bg={"blue.50"}>
@@ -194,31 +175,18 @@ const ApiLogs = () => {
                     </Tr>
                   ))}
                   <Tr>
-<<<<<<< HEAD
                     <Td py={4} w="full" colSpan={7}>
                       <Pagination
                         meta={apiLogData?.meta}
                         setPageCount={setPageCount}
                       />
                     </Td>
-=======
-                    {/* <Td py={4} w="full" colSpan={7}>
-                        <Pagination
-                            meta={tablePagination}
-                            setPageCount={setPageCount}
-                        />
-                        </Td> */}
->>>>>>> 2388513 (feat: edited user wallet page)
                   </Tr>
                 </Tbody>
               </Table>
             </TableContainer>
           ) : (
-<<<<<<< HEAD
             <EmptyResult heading={`Nothing to show here`} content={``} />
-=======
-            <EmptyResult heading={`Nothing to show here`} content={`jsjsj`} />
->>>>>>> 2388513 (feat: edited user wallet page)
           )
         ) : (
           <Flex justify="center" align="center" height="200px">
@@ -226,7 +194,6 @@ const ApiLogs = () => {
           </Flex>
         )}
       </div>
-<<<<<<< HEAD
 
       <FilterDrawer
         isOpen={isOpenFilter}
@@ -239,10 +206,4 @@ const ApiLogs = () => {
   );
 };
 
-=======
-    </div>
-  );
-};
-
->>>>>>> 2388513 (feat: edited user wallet page)
 export default ApiLogs;
