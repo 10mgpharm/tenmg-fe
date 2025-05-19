@@ -27,6 +27,7 @@ export function ColumnsApiLogFN() {
               " max-w-min p-0.5 px-2 rounded-2xl capitalize text-sm font-medium"
             )}
           >
+            <span className="rounded-full text-[1.2rem]">•</span>{" "}
             {info.row.original?.status}
           </p>
         </div>
