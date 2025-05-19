@@ -186,7 +186,10 @@ const ApiLogs = () => {
               </Table>
             </TableContainer>
           ) : (
-            <EmptyResult heading={`Nothing to show here`} content={``} />
+            <EmptyResult
+              heading={`No Results Found`}
+              content={`We couldn’t find anything that matches "${debouncedSearch}". Try different keywords or check your spelling.`}
+            />
           )
         ) : (
           <Flex justify="center" align="center" height="200px">
