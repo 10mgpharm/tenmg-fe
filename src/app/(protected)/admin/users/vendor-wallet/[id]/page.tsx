@@ -67,29 +67,37 @@ const VendorWallet = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-7 c">
               <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5 flex items-center`}
+                className={` bg-gradient-to-r from-[#53389E] to-[#7F56D9]  rounded-md p-5 flex items-center`}
               >
                 <div className="flex-col flex gap-2">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
+                  <p className="text-white text-[15px] font-semibold ">
                     {" Ledger Account"}
                   </p>
-                  <p className="font-bold text-[20px] ">{"₦5,600"}</p>
+                  <p className="font-bold text-[20px] text-white ">
+                    {"₦5,600"}
+                  </p>
                 </div>
               </div>
 
               <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5 flex items-center `}
+                className={`
+                  bg-gradient-to-r from-[#3E4784] to-[#3E4784]
+                  
+                  border-2 rounded-md p-5 flex items-center `}
               >
                 <div className="flex-col flex gap-2  ">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
+                  <p className="text-white text-[15px] font-semibold ">
                     {"Wallet Balance"}
                   </p>
-                  <p className="font-bold text-[20px] ">{"₦2,300"}</p>
+                  <p className="font-bold text-[20px] text-white">{"₦2,300"}</p>
                 </div>
               </div>
 
               <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5`}
+                className={`
+                  bg-gradient-to-r from-[#DC6803] to-[#DC6803]
+                  
+                  rounded-md p-5`}
               >
                 <div className="flex justify-end">
                   <select
@@ -105,10 +113,12 @@ const VendorWallet = ({
                 </div>
 
                 <div className="flex-col flex gap-2 mt-2">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
+                  <p className="text-white text-[15px] font-semibold ">
                     {"Admin Commission"}
                   </p>
-                  <p className="font-bold text-[20px] ">{"₦50,000"}</p>
+                  <p className="font-bold text-[20px] text-white">
+                    {"₦50,000"}
+                  </p>
                 </div>
               </div>
             </div>
