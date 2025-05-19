@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "../_components/TimeLineSelector";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -10,62 +10,99 @@ import TransactionDetails from "../_components/transactionDetails";
 import InitiatePayout from "../_components/initiate_payout";
 
 import {
+  Button,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import SearchInput from "../../_components/SearchInput";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { Awaiting_column } from "../_components/colunms/awaiting_column";
+import { useDebouncedValue } from "@/utils/debounce";
+import { IApplyFilters } from "../../loan-applications/page";
+import FilterDrawer from "../../_components/FilterDrawer";
 
 const LoanWallet = () => {
   // const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openPayout, setOpenPayout] = React.useState(false);
   const [openCompleted, setOpenCompleted] = React.useState(false);
-  // const [searchValue, setSearchValue] = useState<string>("");
-  // const [pagecount, setPageCount] = useState(1);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [pageCount, setPageCount] = useState(1);
   const [transactions, setTransactions] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [status, setStatus] = useState("");
+
+  const [selectedTransactionDetails, setSelectedTransactionDetails] =
+    useState<any>(null);
 
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  const fetchTransactions = async () => {
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
+
+  const debouncedSearch = useDebouncedValue(searchValue, 500);
+
+  const fetchTransactions = useCallback(async () => {
     setLoading(true);
+    let query = `/vendor/wallet/transactions?page=${pageCount}`;
+
+    if (debouncedSearch) {
+      query += `&search=${debouncedSearch}`;
+    }
+
+    if (status) {
+      query += `&search=${status}`;
+    }
+
+    if (createdAtStart) {
+      query += `&dateFrom=${createdAtStart}`;
+    }
+    if (createdAtEnd) {
+      query += `&dateTo=${createdAtEnd}`;
+    }
+
     try {
-      const response = await requestClient({ token: token }).get(
-        `/vendor/wallet/transactions`,
-      );
+      const response = await requestClient({ token: token }).get(query);
       if (response.status === 200) {
-        // console.log(response?.data?.data?.data);
-        setTransactions(response?.data?.data?.data);
-        setLoading(false);
+        setTransactions(response.data.data);
       }
-    }
-    catch (error) {
       setLoading(false);
+    } catch (error) {
       console.error(error);
+      setLoading(false);
     }
-  };
+  }, [token, pageCount, debouncedSearch, createdAtEnd, createdAtStart, status]);
+
   useEffect(() => {
-    token && fetchTransactions()
+    token && fetchTransactions();
   }, [token, fetchTransactions]);
 
-  const metaData = {
-    links: "",
-    prevPageUrl: "",
-    nextPageUrl: "",
-    currentPage: 1,
-    firstPageUrl: "",
-    lastPageUrl: "",
+  const applyFilters = (filters: IApplyFilters) => {
+    setCreatedAtStart(filters.startDate);
+    setCreatedAtEnd(filters.endDate);
+    setStatus(filters.status);
   };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus("");
+  };
+
   return (
     <div className="px-6 py-8 md:p-8">
       <Link
@@ -76,30 +113,39 @@ const LoanWallet = () => {
         Back
       </Link>
 
-      <div className="flex items-center justify-between max-sm:flex-wrap max-sm:items-start max-sm:gap-3">
-        <div className="text-[18px] font-semibold">Loan Wallet</div>
+      <h2 className="text-[18px] font-bold">Loan Wallet</h2>
+      <div className="flex items-center justify-between mt-3 mb-4 ">
+        <SearchInput
+          placeholder="Search by customer name"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+
+        <Button variant={"outline"} onClick={onOpenFilter}>
+          Filter{" "}
+        </Button>
       </div>
 
-      {/* <div className="flex items-center justify-between gap-3 max-lg:flex-col-reverse max-lg:items-start"> */}
       <DataTable
-        data={transactions}
+        data={transactions?.data}
         column={Awaiting_column(
           setOpenDetails,
           setOpenPayout,
-          setOpenCompleted
+          setOpenCompleted,
+          setSelectedTransactionDetails
         )}
-        hasPagination={false}
+        hasPagination={true}
         isLoading={loading}
+        metaData={transactions?.meta}
+        setPageCount={setPageCount}
       />
-      {/* </div> */}
-
-
 
       {/* Side sheets */}
       {openDetails && (
         <TransactionDetails
           isOpen={openDetails}
           onClose={() => setOpenDetails(false)}
+          data={selectedTransactionDetails}
         />
       )}
 
@@ -109,6 +155,17 @@ const LoanWallet = () => {
           onClose={() => setOpenPayout(false)}
         />
       )}
+
+      <FilterDrawer
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={[
+          { option: "CREDIT", value: "CREDIT" },
+          { option: "DEBIT", value: "DEBIT" },
+        ]}
+      />
     </div>
   );
 };

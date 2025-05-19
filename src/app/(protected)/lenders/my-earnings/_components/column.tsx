@@ -44,6 +44,11 @@ export function MyEarningsColumn(
           <span className="text-primary-700 text-[12px]">
             Loan Interest: ₦{info.row.original?.interestAmount}
           </span>
+          <br />
+
+          <span className="text-primary-700 text-[12px]">
+            Admin Interest: ₦{info.row.original?.adminAmount}
+          </span>
         </div>
       ),
     }),
@@ -52,28 +57,12 @@ export function MyEarningsColumn(
       header: ({ column }) => <p className="">Repaid Interest</p>,
       cell: (info) => (
         <div className="">
-          <p className="">₦{info.row.original?.interestAmount}</p>
+          <p className="">₦{info.row.original?.paidInterest}</p>
+          <span className="text-primary-700 text-[12px]">
+            Admin commission: ₦{info.row.original?.adminInterest}
+          </span>
         </div>
       ),
     }),
-
-    // columnHelper.accessor("id", {
-    //   header: ({ column }) => <p className="">Actions</p>,
-    //   cell: (info) => {
-    //     return (
-    //       <div className="">
-    //         <p
-    //           className="cursor-pointer text-primary-600 font-medium"
-    //           onClick={() => {
-    //             onOpenDetails();
-    //             setSelectedUserId(info.row.original.id);
-    //           }}
-    //         >
-    //           View
-    //         </p>
-    //       </div>
-    //     );
-    //   },
-    // }),
   ];
 }

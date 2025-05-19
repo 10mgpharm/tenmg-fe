@@ -14,7 +14,7 @@ import Link from "next/link";
 import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { BankDto, Daum, NextAuthUserSession, PayoutDataProps, PayoutTypeProps, SupplierTransactionDataProps } from "@/types";
+import { BankDto, NextAuthUserSession, PayoutDataProps, SupplierTransactionDataProps } from "@/types";
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 import { FaPencil } from "react-icons/fa6";
 import EditBank from "./_components/EditBank";

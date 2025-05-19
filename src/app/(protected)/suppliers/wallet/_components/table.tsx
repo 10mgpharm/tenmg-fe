@@ -27,7 +27,9 @@ export function ColumsTransactionFN(
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-          {info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ? "Order Cancelled" : info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" : info.row.original?.txnGroup}
+          {info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ? "Order Cancelled" 
+          : info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" 
+          : info.row.original?.txnGroup === "WITHDRAW_TO_BANK" ? "Withdrawal" : ""}
           </p>
         </div>
       ),
@@ -37,7 +39,7 @@ export function ColumsTransactionFN(
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-            {info.row.original?.orderId}
+            {info.row.original?.order?.identifier}
           </p>
         </div>
       ),

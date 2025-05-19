@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
+import VendorClientLayout from "./_components/VendorClientLayout";
 
 const appName = config.appName;
 
@@ -24,18 +25,12 @@ export default async function VendorLayout({
   if (!session) redirect("/auth/signin");
 
   if (session.user?.entityType !== "VENDOR") redirect("/");
-  
 
   return (
     <>
-      <TopNavBar route="/vendors/notifications"/>
-      <SideBar businessStatus={session?.user?.businessStatus} />
-      <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
-        <div className="min-h-[calc(100vh-150px)]">
-          {children}
-        </div>
-        <Footer />
-      </main>
+      <VendorClientLayout businessStatus={session?.user?.businessStatus}>
+        {children}
+      </VendorClientLayout>
     </>
   );
 }

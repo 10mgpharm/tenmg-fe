@@ -11,9 +11,8 @@ import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import Link from "next/link";
-import { LoanTransactionProps, LoanWalletProps, WalletProductProps } from "@/types";
+import { LoanTransactionProps, LoanWalletProps } from "@/types";
 import WalletOverview from "./WalletOverview";
-import TransactionTab from "./TransactionTab";
 import LoanTable from "./LoanTable";
 
 const LoanWalletTab = (

@@ -96,8 +96,7 @@ const Orders = () => {
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
           <Button
-            h={""}
-            px={4}
+            px={10}
             variant={"outline"}
             className="border-primary-500 text-primary-600 bg-white"
             onClick={() => {

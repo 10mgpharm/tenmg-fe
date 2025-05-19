@@ -183,6 +183,37 @@ export default function StoreProductCardComponent({
     </div >
   );
 
+  const [loadingBuynow, setLoadingBuynow] = useState(false);
+  const buyNowFunction = () => {
+    setLoadingBuynow(true);
+    if (product?.quantity <= (product?.outStockLevel ?? 0)) {
+      toast.error("Product is out of stock");
+      setLoadingBuynow(false);
+      return;
+    }
+    try {
+
+      handleAddToCart(product?.id, "add");
+      router.push("/storefront/checkout");
+      setLoadingBuynow(false);
+    } catch (e) {
+      toast.error("An error occurred, please try again");
+      setLoadingBuynow(false);
+    }
+  }
+
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const addToCartFunction = () => {
+    setLoadingAdd(true);
+    if (product?.quantity <= (product?.outStockLevel ?? 0)) {
+      toast.error("Product is out of stock");
+      setLoadingAdd(false);
+      return;
+    }
+    handleAddToCart(product?.id, addedTocart ? "remove" : "add");
+    setLoadingAdd(false);
+  }
+
   const renderButtons = () => (
     <div className="flex items-center justify-between w-full gap-4 my-2">
       <button
@@ -191,21 +222,23 @@ export default function StoreProductCardComponent({
           product?.quantity <= (product?.outStockLevel ?? 0)
         }
         className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer disabled:cursor-not-allowed"
-        onClick={() => {
-          handleAddToCart(product?.id, "add");
-          router.push("/storefront/checkout");
-        }}
+        onClick={buyNowFunction}
+      // onClick={() => {
+      //   handleAddToCart(product?.id, "add");
+      //   router.push("/storefront/checkout");
+      // }}
       >
-        Buy Now
+        {loadingBuynow ? <LoaderIcon className="size-3 mx-auto" /> : "Buy Now"}
       </button>
       <button
-        disabled={!isProductClickable || updateLoading || product?.quantity <= (product?.outStockLevel ?? 0)}
+        disabled={!isProductClickable || updateLoading || loadingAdd || loadingBuynow || product?.quantity <= (product?.outStockLevel ?? 0)}
         className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
-        onClick={() => {
-          handleAddToCart(product?.id, addedTocart ? "remove" : "add");
-        }}
+        onClick={addToCartFunction}
+      // onClick={() => {
+      //   handleAddToCart(product?.id, addedTocart ? "remove" : "add");
+      // }}
       >
-        {loadingAddToCart ? (
+        {loadingAdd ? (
           <LoaderIcon className="size-3 mx-auto" />
         ) : addedTocart ? (
           "Remove From Cart"

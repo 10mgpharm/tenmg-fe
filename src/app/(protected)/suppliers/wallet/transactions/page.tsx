@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react"
 import { NextAuthUserSession, PayoutDataProps, SupplierTransactionDataProps, WalletResponseData } from "@/types"
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
+import { useDebouncedValue } from "@/utils/debounce";
 
 const TransactionUI = () => {
 
@@ -15,14 +16,17 @@ const TransactionUI = () => {
   const token = sessionData?.user?.token;
   const [pageCount, setPageCount] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [globalFilter, setGlobalFilter] = useState("");
   const [transactions, setTransactions] = useState<SupplierTransactionDataProps>();
   const [pendingPayouts, setPendingPayout] = useState<PayoutDataProps>();
+
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
 
   const fetchingTransactions = useCallback(async () => {
       setLoading(true);
       try {
         const response = await requestClient({ token }).get(
-          `/supplier/wallet/transactions`
+          `/supplier/wallet/transactions?page=${pageCount}&search=${debouncedSearch}`
         );
         if (response.status === 200) {
           setTransactions(response?.data?.data);
@@ -32,13 +36,13 @@ const TransactionUI = () => {
       } finally {
         setLoading(false);
       }
-  }, [token]);
+  }, [token, pageCount, debouncedSearch]);
 
   const fetchingPendingPayout = useCallback(async () => {
     setLoading(true);
     try {
       const response = await requestClient({ token }).get(
-        `/supplier/wallet/pending-payout`
+        `/supplier/wallet/pending-payout?page=${pageCount}&search=${debouncedSearch}`
       );
       if (response.status === 200) {
         setPendingPayout(response?.data?.data);
@@ -48,7 +52,7 @@ const TransactionUI = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, pageCount, debouncedSearch]);
   
   useEffect(() => {
     if (!token) return;
@@ -69,6 +73,8 @@ const TransactionUI = () => {
                     <CiSearch className="w-5 h-5" />
                     <input 
                     type="text" 
+                    value={globalFilter}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
                     placeholder="Search for transactions" 
                     className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
                     />

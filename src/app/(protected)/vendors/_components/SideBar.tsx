@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Text, Box } from "@chakra-ui/layout";
 import { LuFileText } from "react-icons/lu";
 import { MdPercent } from "react-icons/md";
@@ -26,6 +26,15 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import Link from "next/link";
 import { BiMessageDetail } from "react-icons/bi";
 import { LuWallet } from "react-icons/lu";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  TransitionChild,
+} from "@headlessui/react";
+import { signOut, useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import requestClient from "@/lib/requestClient";
 
 const navSections = [
   {
@@ -121,115 +130,194 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
     : false;
 };
 
-const SideBar = ({ businessStatus }: { businessStatus: string }) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-
-  const variants = useBreakpointValue({ base: smVariant, md: mdVariant });
-
-  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-
+const SideBar = ({
+  businessStatus,
+  isOpen,
+  onClose,
+}: {
+  businessStatus: string;
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
   const pathname = usePathname();
 
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
+  const [count, setCount] = useState(0);
 
-  return variants.navigation === "drawer" ? (
+  return (
     <>
-      <Box p={4}>
-        <IconButton
-          variant="outline"
-          aria-label="Menu"
-          icon={<RxHamburgerMenu />}
-          onClick={toggleSidebar}
-        />
-      </Box>
+      {/* Mobile Sidebar */}
+      <Dialog
+        open={isOpen}
+        onClose={onClose}
+        className="relative z-50 lg:hidden"
+      >
+        <DialogBackdrop className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0" />
+        <div className="fixed inset-0 flex">
+          <DialogPanel className="relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-[closed]:-translate-x-full">
+            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 pt-8">
+              <nav className="flex flex-1 flex-col">
+                {navSections.map((section) => (
+                  <Box key={section.title} mb={6}>
+                    <Text
+                      fontSize="xs"
+                      fontWeight="medium"
+                      letterSpacing="widest"
+                      mb={2}
+                    >
+                      {section.title}
+                    </Text>
+                    <ul role="list" className="-mx-2 space-y-8">
+                      {section.items.map((item) => {
+                        const isActive = item.href === pathname;
+                        return (
+                          <li key={item.name}>
+                            <a
+                              href={item.href}
+                              className={classNames(
+                                isActive
+                                  ? "bg-primary-50 text-primary-500 p-0.5"
+                                  : "text-gray-500 px-3",
+                                "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
+                              )}
+                            >
+                              <item.icon
+                                aria-label={item.name}
+                                className={classNames(
+                                  isActive
+                                    ? "text-white bg-primary-500 rounded-full p-2 w-10 h-10"
+                                    : "text-gray-500 h-6 w-6"
+                                )}
+                              />
+                              {item.name}
+                              {item.name === "Messages" && (
+                                <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                                  {count}
+                                </div>
+                              )}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </Box>
+                ))}
+                <div className="mt-auto">
+                  <button
+                    onClick={async () => {
+                      await signOut();
+                      redirect("/");
+                    }}
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:bg-red-50"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      className="h-6 w-6 shrink-0 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7"
+                      />
+                    </svg>
+                    Logout
+                  </button>
+                </div>
+              </nav>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog>
 
-      <Drawer isOpen={isSidebarOpen} placement="left" onClose={toggleSidebar}>
-        <DrawerOverlay>
-          <DrawerContent>
-            <DrawerCloseButton />
-            <DrawerBody>
-              <SidebarContent
-                pathname={pathname}
-                businessStatus={businessStatus}
-              />
-            </DrawerBody>
-          </DrawerContent>
-        </DrawerOverlay>
-      </Drawer>
+      {/* Desktop Sidebar */}
+      <Box
+        display={{ base: "none", lg: "flex" }}
+        mt={{ lg: "98px" }}
+        position="fixed"
+        zIndex={50}
+        w="72"
+        h="calc(100vh - 98px)"
+      >
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 pt-8 border-r border-gray-200 w-full">
+          <nav className="flex flex-1 flex-col">
+            {navSections.map((section) => (
+              <Box key={section.title} mb={6}>
+                <Text
+                  fontSize="xs"
+                  fontWeight="medium"
+                  letterSpacing="widest"
+                  mb={2}
+                >
+                  {section.title}
+                </Text>
+                <ul role="list" className="-mx-2 space-y-8">
+                  {section.items.map((item) => {
+                    const isActive = item.href === pathname;
+                    return (
+                      <li key={item.name}>
+                        <a
+                          href={item.href}
+                          className={classNames(
+                            isActive
+                              ? "bg-primary-50 text-primary-500 p-0.5"
+                              : "text-gray-500 px-3",
+                            "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
+                          )}
+                        >
+                          <item.icon
+                            aria-label={item.name}
+                            className={classNames(
+                              isActive
+                                ? "text-white bg-primary-500 rounded-full p-2 w-10 h-10"
+                                : "text-gray-500 h-6 w-6"
+                            )}
+                          />
+                          {item.name}
+                          {item.name === "Messages" && (
+                            <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
+                              {count}
+                            </div>
+                          )}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </Box>
+            ))}
+            <div className="mt-auto">
+              <button
+                onClick={async () => {
+                  await signOut();
+                  redirect("/");
+                }}
+                className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:bg-red-50"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="h-6 w-6 shrink-0 text-red-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7"
+                  />
+                </svg>
+                Logout
+              </button>
+            </div>
+          </nav>
+        </div>
+      </Box>
     </>
-  ) : (
-    <Box
-      display={{ base: "none", lg: "flex" }}
-      mt={{ lg: "98px" }}
-      position="fixed"
-      zIndex={50}
-      w="72"
-      h="calc(100vh - 98px)"
-    >
-      <SidebarContent pathname={pathname} businessStatus={businessStatus} />
-    </Box>
   );
 };
 
 export default SideBar;
-
-const SidebarContent = ({
-  pathname,
-  businessStatus,
-}: {
-  pathname: string;
-  businessStatus: string;
-}) => (
-  <Box className="flex grow flex-col gap-y-5 md:overflow-y-auto bg-white md:px-6 pb-4 pt-8 md:border-r border-gray-200">
-    <nav className="flex flex-1 flex-col">
-      {navSections.map((section) => (
-        <Box key={section.title} mb={6}>
-          {/* Section Title */}
-          <Text fontSize="xs" fontWeight="medium" letterSpacing="widest" mb={2}>
-            {section.title}
-          </Text>
-
-          {/* Section Items */}
-          <ul role="list" className="-mx-2 space-y-8">
-            {section.items.map((item) => {
-              const isActive = item.href === pathname;
-              const disabled = isLinkDisabled(businessStatus, item.name);
-              return (
-                <li key={item.name}>
-                  <Link
-                    href={disabled ? "#" : item.href}
-                    className={classNames(
-                      isActive
-                        ? "bg-primary-50 text-primary-500 p-0.5"
-                        : "text-gray-500 px-3",
-                      disabled ? "pointer-events-none opacity-50" : "",
-                      "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
-                    )}
-                  >
-                    <item.icon
-                      aria-label={item.name}
-                      className={classNames(
-                        isActive
-                          ? "text-white bg-primary-500 rounded-full p-2 w-10 h-10"
-                          : "text-gray-500 h-6 w-6"
-                      )}
-                    />
-                    {item.name}
-                    {
-                      item.name === "Messages" &&
-                      <div className="px-2 py-0 rounded-full bg-red-500 text-[9px] text-white">
-                        {0}
-                      </div>
-                    }
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </Box>
-      ))}
-    </nav>
-  </Box>
-);
