@@ -19,6 +19,7 @@ export interface ApplicationUrl {
 export interface StartApplicationPayload {
   customer: CustomerDto;
   requestedAmount: number;
+  txnReference?: string;
 }
 
 export interface BusinessDto {
