@@ -1,5 +1,6 @@
 'use server';
 
+import config from "@/lib/config";
 import requestClient from "@/lib/requestClient";
 import {
     ApplicationWidgetConfig,
@@ -15,7 +16,7 @@ import {
 import { handleServerErrorMessage } from "@/utils";
 
 const CLIENT_BASE_URL = "/client";
-const publicKey = process.env.NEXT_PUBLIC_TENMG_PUBKEY || "";
+const publicKey = config.tenmg.pkey;
 
 export async function getApplicationConfig(reference: string): Promise<ResponseDto<ApplicationWidgetConfig>> {
     try {
