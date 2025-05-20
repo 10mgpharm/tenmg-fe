@@ -26,7 +26,13 @@ import { config } from "process";
 
 export default function PaymentPage() {
   const [cartItems, setCartItems] = useState<any>({});
-  const { cart, fetchCart, clearCart, cartSize, isLoading: cartLoading } = useCartStore();
+  const {
+    cart,
+    fetchCart,
+    clearCart,
+    cartSize,
+    isLoading: cartLoading,
+  } = useCartStore();
   // const cartItems = cart;
 
   const session = useSession();
@@ -49,7 +55,7 @@ export default function PaymentPage() {
     if (cartSize == 0) {
       redirect("/storefront");
     }
-  }, [cartSize])
+  }, [cartSize]);
 
   const breadCrumb = [
     {
@@ -69,7 +75,7 @@ export default function PaymentPage() {
   const [shippingData, setShippingData] = useState<any>({});
   const [shippingAddress, setShippingAddress] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [value, setValue] = useState("1");
+  const [paymentMethod, setPaymentMethod] = useState("1");
 
   useEffect(() => {
     if (!userToken) return;
@@ -201,10 +207,10 @@ export default function PaymentPage() {
     });
   };
 
-  const submiOrder = async (e) => {
+  const payWithFincra = async (event: any) => {
     const orderData = {
       orderId: cartItems?.id,
-      paymentMethodId: 1,
+      paymentMethodId: Number(paymentMethod),
       deliveryAddress: shippingAddress,
       deliveryType: "STANDARD",
     };
@@ -223,7 +229,7 @@ export default function PaymentPage() {
       // console.log("submit order res", response?.data?.data?.reference)
       if (response.status === 200) {
         await payFincra(
-          e,
+          event,
           response?.data?.data?.reference,
           response?.data?.data?.totalAmount
         );
@@ -239,18 +245,32 @@ export default function PaymentPage() {
     }
   };
 
-  return (
+  const payWith10Mg = async () => {};
 
-    <>{
-      isLoading || cartLoading ? <div className="w-full h-[50vh] flex items-center justify-center">
-        <Spinner />
-      </div> :
-        <>{
-          cartSize === 0 ? (
+  const submiOrder = async (e: any) => {
+    if (!paymentMethod) return toast.error("Select payment method to proceed.");
+
+    if (Number(paymentMethod) === 1) payWithFincra(e);
+
+    // else
+    payWith10Mg();
+  };
+
+  return (
+    <>
+      {isLoading || cartLoading ? (
+        <div className="w-full h-[50vh] flex items-center justify-center">
+          <Spinner />
+        </div>
+      ) : (
+        <>
+          {cartSize === 0 ? (
             <div className="w-full h-[50vh] flex items-center justify-center">
-              <p className="text-lg font-semibold text-gray-500">No items in cart</p>
+              <p className="text-lg font-semibold text-gray-500">
+                No items in cart
+              </p>
             </div>
-          ) :
+          ) : (
             <>
               <BreadCrumbBanner breadCrumbsData={breadCrumb} />
               <Box
@@ -263,10 +283,14 @@ export default function PaymentPage() {
                     {shippingData ? (
                       <>
                         <div className="flex items-center justify-between p-4 bg-primary-100">
-                          <h3 className="font-semibold text-lg">Order Summary</h3>
+                          <h3 className="font-semibold text-lg">
+                            Order Summary
+                          </h3>
                           <Button
                             onClick={() =>
-                              router.push("/storefront/settings/shipping-address")
+                              router.push(
+                                "/storefront/settings/shipping-address"
+                              )
                             }
                             variant={"outline"}
                             colorScheme={"primary"}
@@ -276,11 +300,15 @@ export default function PaymentPage() {
                           </Button>
                         </div>
                         <div className="p-5 flex flex-col gap-2 mx-auto w-full">
-                          <h2 className="text-xl font-bold">{shippingData.name}</h2>
+                          <h2 className="text-xl font-bold">
+                            {shippingData.name}
+                          </h2>
                           <p className="text-base font-bold">
                             {shippingData.phoneNumber}
                           </p>
-                          <p className="text-sm text-gray-500">{shippingAddress}</p>
+                          <p className="text-sm text-gray-500">
+                            {shippingAddress}
+                          </p>
                         </div>
                       </>
                     ) : (
@@ -307,16 +335,28 @@ export default function PaymentPage() {
                       <h3 className="font-semibold text-lg">Payment Method</h3>
                     </div>
                     <div className="p-4">
-                      <RadioGroup onChange={setValue} value={value} className="w-full">
+                      <RadioGroup
+                        onChange={setPaymentMethod}
+                        value={paymentMethod}
+                        className="w-full"
+                      >
                         <Stack direction="column">
-                          <div className="flex items-center justify-between w-full hover:bg-primary-50 p-3">
+                          <Box
+                            as="label"
+                            className="flex items-center justify-between w-full cursor-pointer  hover:bg-primary-50 p-3"
+                          >
                             <p className="font-semibold">Pay with Card</p>
-                            <Radio value="1" className="" />
-                          </div>
-                          <div className="flex items-center p-3 justify-between w-full cursor-not-allowed hover:bg-primary-50">
-                            <p className="font-semibold">Pay with 10Mg Credit</p>
-                            <Radio value="2" className="" disabled />
-                          </div>
+                            <Radio value={"1"} className="" />
+                          </Box>
+                          <Box
+                            as="label"
+                            className="flex items-center p-3 justify-between w-full cursor-pointer hover:bg-primary-50"
+                          >
+                            <p className="font-semibold">
+                              Pay with 10Mg Credit
+                            </p>
+                            <Radio value={"2"} className="" />
+                          </Box>
                         </Stack>
                       </RadioGroup>
                     </div>
@@ -371,10 +411,11 @@ export default function PaymentPage() {
                                 </p>
                               )}
                               <p
-                                className={`font-semibold my-2 text-sm ${item?.discountPrice > 0
-                                  ? "text-gray-400 line-through"
-                                  : "text-gray-900"
-                                  }`}
+                                className={`font-semibold my-2 text-sm ${
+                                  item?.discountPrice > 0
+                                    ? "text-gray-400 line-through"
+                                    : "text-gray-900"
+                                }`}
                               >
                                 ₦{item?.actualPrice}
                               </p>
@@ -426,8 +467,9 @@ export default function PaymentPage() {
                 </div>
               </Box>
             </>
-        }</>
-    }
+          )}
+        </>
+      )}
     </>
   );
 }

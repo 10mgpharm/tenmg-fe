@@ -1,11 +1,11 @@
 "use client";
 
 import { Button, Divider, Flex, Spinner, Switch } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
+import { NextAuthUserSession, NotificationResponseData } from "@/types";
 import { handleServerErrorMessage } from "@/utils";
 
 const Notifications = () => {
@@ -14,78 +14,47 @@ const Notifications = () => {
 
   const [notificationId, setNotificationId] = useState<number[]>([]);
 
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] =
+    useState<NotificationResponseData>();
 
   const { data: sessionData } = useSession() as {
     data: NextAuthUserSession;
   };
 
-  useEffect(() => {
-    const fetchUserNotificationSubscription = async () => {
-      try {
-        setIsNotificationLoading(true);
-
-        const response = await requestClient({
-          token: sessionData.user.token,
-        }).get("/account/app-notifications");
-
-        if (response?.status === 200) {
-          const fetchedNotifications = response?.data.data.data ?? [];
-          setNotifications(fetchedNotifications);
-
-          const alreadySubscribedIds = fetchedNotifications
-            .filter((noti: any) => noti.isSubscribed)
-            .map((noti: any) => noti.id);
-          setNotificationId(alreadySubscribedIds);
-          setIsNotificationLoading(false);
-        } else {
-          toast.error(
-            `Notification Subscription failed: ${response.data.message}`
-          );
-        }
-      } catch (error) {
-        const errorMessage = handleServerErrorMessage(error);
-        toast.error(errorMessage);
-        setIsNotificationLoading(false);
-      }
-    };
-
-    if (sessionData?.user?.token) fetchUserNotificationSubscription();
-  }, [sessionData?.user?.token]);
-
-  const handleNotificationChange = (id: number) => {
-    setNotificationId((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((item) => item !== id);
-      } else {
-        return [...prev, id];
-      }
-    });
-  };
-
-  const handleNotification = async () => {
+  const fetchNotifications = useCallback(async () => {
+    setIsNotificationLoading(true);
     try {
-      setIsNotificationLoading(true);
-
       const response = await requestClient({
         token: sessionData.user.token,
-      }).patch(`/account/notifications/subscriptions`, {
-        notificationIds: notificationId,
-      });
-
+      }).get(`/account/app-notifications`);
       if (response.status === 200) {
-        console.log(response.data.data);
-        toast.success(response.data.message);
-      } else {
-        toast.error(
-          `Notification Subscription failed: ${response.data.message}`
-        );
+        setNotifications(response.data.data);
       }
-    } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-    } finally {
       setIsNotificationLoading(false);
+    } catch (error) {
+      console.error(error);
+      setIsNotificationLoading(false);
+    }
+  }, [sessionData?.user?.token]);
+
+  useEffect(() => {
+    if (!sessionData?.user?.token) return;
+    fetchNotifications();
+  }, [fetchNotifications, sessionData?.user?.token]);
+
+  const subscribeToNotification = async (id: number) => {
+    if (id) {
+      try {
+        const response = await requestClient({
+          token: sessionData.user.token,
+        }).patch(`/account/app-notifications/${id}/subscription`);
+        if (response.status === 200) {
+          toast.success(response.data?.message);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error(handleServerErrorMessage(error));
+      }
     }
   };
 
@@ -105,7 +74,7 @@ const Notifications = () => {
           </Flex>
         )}
         {!isNotificationLoading &&
-          notifications.map((item) => (
+          notifications?.data?.map((item) => (
             <div
               key={item.id}
               className="border p-4 rounded-md flex items-center justify-between mb-5"
@@ -116,24 +85,11 @@ const Notifications = () => {
               </div>
               <Switch
                 size={"lg"}
-                onChange={() => handleNotificationChange(item.id)}
-                isChecked={notificationId.includes(item.id)}
-                isDisabled={isNotificationLoading}
+                onChange={() => subscribeToNotification(item.id)}
+                defaultChecked={item?.isSubscribed}
               />
             </div>
           ))}
-      </div>
-      <div className="flex justify-end">
-        <div className="flex items-center gap-3">
-          {/* <Button variant={"outline"}>Discard</Button> */}
-          <Button
-            bg={"blue.700"}
-            onClick={handleNotification}
-            disabled={isNotificationLoading}
-          >
-            Save Changes
-          </Button>
-        </div>
       </div>
     </div>
   );

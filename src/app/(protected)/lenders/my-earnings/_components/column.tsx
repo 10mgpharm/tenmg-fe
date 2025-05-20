@@ -1,3 +1,4 @@
+import { formatAmount } from "@/utils/formatAmount";
 import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<any>();
@@ -47,7 +48,7 @@ export function MyEarningsColumn(
           <br />
 
           <span className="text-primary-700 text-[12px]">
-            Admin Interest: ₦{info.row.original?.adminAmount}
+            Admin Interest: {formatAmount(info.row.original?.adminAmount)}
           </span>
         </div>
       ),
