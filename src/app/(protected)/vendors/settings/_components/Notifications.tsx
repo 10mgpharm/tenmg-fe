@@ -86,7 +86,7 @@ const Notifications = () => {
               <Switch
                 size={"lg"}
                 onChange={() => subscribeToNotification(item.id)}
-                isChecked={item?.isSubscribed}
+                defaultChecked={item?.isSubscribed}
               />
             </div>
           ))}
