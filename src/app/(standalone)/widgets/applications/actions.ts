@@ -15,12 +15,11 @@ import {
 import { handleServerErrorMessage } from "@/utils";
 
 const CLIENT_BASE_URL = "/client";
-const secretKey = process.env.TENMG_SECKEY || "";
 const publicKey = process.env.NEXT_PUBLIC_TENMG_PUBKEY || "";
 
 export async function getApplicationConfig(reference: string): Promise<ResponseDto<ApplicationWidgetConfig>> {
     try {
-        const response = await requestClient({ "Secret-Key": secretKey, "Public-Key": publicKey })
+        const response = await requestClient({ "Public-Key": publicKey })
             .get<ResponseDto<ApplicationWidgetConfig>>(`${CLIENT_BASE_URL}/applications/config/${reference}`);
         return response.data;
     } catch (error) {
