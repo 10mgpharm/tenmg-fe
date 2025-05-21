@@ -209,7 +209,27 @@ export default function BusinessInfoFormComp() {
                   type="tel"
                   placeholder={"(123) 456-7890"}
                   {...register("contactPhone", {
-                    required: "phone number is required",
+                    required: "Phone number is required",
+                  })}
+                />
+              </FormControl>
+            </Skeleton>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="">
+              <FormLabel m={0}>{`Business Address`}</FormLabel>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Associated business address
+              </Text>
+            </div>
+            <Skeleton isLoaded={!isInfoLoading}>
+              <FormControl className="col-span-2">
+                <Input
+                  type="text"
+                  placeholder={"123 Main St, Anytown, USA"}
+                  {...register("businessAddress", {
+                    required: "Business address is required",
                   })}
                 />
               </FormControl>
