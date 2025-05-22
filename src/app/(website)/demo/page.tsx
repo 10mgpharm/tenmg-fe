@@ -69,12 +69,21 @@ export default function CheckoutPage() {
       return toast.info("Select customer to proceed", {
         position: "bottom-center",
       });
+    
+    // TODO: call to intialize credit transaction - Need Backend
+    // initializeTransaction -> tell 10mg db -> return txnReference
+    // {
+    //   applicationId: 
+    //   customer: selectedCustomer,
+    //   requestedAmount: grandTotal,
+    // }
 
     startPaymentTransition(async () => {
       try {
         const { data, message, status } = await initializeLoanApplicationUrl({
           customer: selectedCustomer,
           requestedAmount: grandTotal,
+          // txnReference: XXXXX //TODO: use the return reference to call 10mg credit widget
         });
         if (status === "success") {
           window.open(data.url, "_blank");

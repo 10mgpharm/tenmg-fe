@@ -12,7 +12,7 @@ import { NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import Pagination from "@/app/(protected)/admin/products/_components/Pagination";
 
-const ActivityLogs = () => {
+const ActivityLogs = ({ setAuditLogCSV }: any) => {
 
     const session = useSession();
     const sessionData = session?.data as NextAuthUserSession;
@@ -56,6 +56,32 @@ const ActivityLogs = () => {
 
     const memomizedData = useMemo(() => data?.data, [data?.data]);
 
+    useEffect(() => {
+
+        if (memomizedData) {
+            const csvData = memomizedData.map((item: any) => ({
+                "actor.name": item.actor.name,
+                "properties.action": item.properties.action,
+                description: item.description,
+                createdAt: new Date(item.createdAt).toLocaleString(),
+            }));
+
+            setAuditLogCSV(csvData);
+        }
+    }, [memomizedData]);
+
+    const csv_data = {
+        data: memomizedData,
+        filename: "audit_logs.csv",
+        headers: [
+            { label: "User", key: "actor.name" },
+            { label: "Action", key: "properties.action" },
+            { label: "Description", key: "description" },
+            { label: "Timestamp", key: "createdAt" },
+        ],
+    }
+
+    // console.log("ColumnsAuditLogFN", ColumnsAuditLogFN)
     const table = useReactTable({
         data: memomizedData,
         columns: ColumnsAuditLogFN(),
@@ -67,6 +93,7 @@ const ActivityLogs = () => {
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
     });
+
 
     return (
         <div>
@@ -89,7 +116,7 @@ const ActivityLogs = () => {
             <div className="">
                 {
                     data?.data?.length === 0 ?
-                        <EmptyResult heading="No Activity Log" content="All Activity Logs will appear here!" />
+                        <EmptyResult heading={searchValue ? `No Match Found` : `No Activity Log`} content={searchValue ? `` : `All Activity Logs will appear here!`} />
                         : data?.data?.length > 1
                             ? (
                                 <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >

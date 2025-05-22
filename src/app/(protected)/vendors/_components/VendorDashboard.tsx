@@ -37,6 +37,7 @@ export interface IVendorDashboard {
   totalPendingApplications: number;
   totalApplications: number;
   creditVoucher: string;
+  ongoingApplications: number;
   txnHistoryEval: number;
   apiCalls: number;
   balance: number;
@@ -76,7 +77,7 @@ const VendorDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [chartSeries, setChartSeries] = useState([
     { name: "Completed Loan", data: [] as number[] },
-    { name: "Outgoing Loan", data: [] as number[] },
+    { name: "Ongoing Loan", data: [] as number[] },
   ]);
   const [chartCategories, setChartCategories] = useState<string[]>([]);
 
@@ -95,6 +96,7 @@ const VendorDashboard = () => {
         totalApplications: d.totalApplications,
         totalPendingApplications: d.totalPendingApplications,
         creditVoucher: d.creditVoucher,
+        ongoingApplications: d.ongoingApplications,
         txnHistoryEval: d.transactionEvaluation,
         apiCalls: d.apiCalls,
         balance: Number(d.payOutWallet),
@@ -105,7 +107,8 @@ const VendorDashboard = () => {
         d.accountLinking.dropOffs || 0,
       ]);
     } catch (e) {
-      // handle error
+      const error = handleServerErrorMessage(e);
+      toast.error(error);
     } finally {
       setLoading(false);
     }
@@ -124,7 +127,7 @@ const VendorDashboard = () => {
           name: "Credit Repayment",
           data: stats.map((item: any) => item.completed),
         },
-        { name: "Outgoing Loan", data: stats.map((item: any) => item.ongoing) },
+        { name: "Ongoing Loan", data: stats.map((item: any) => item.ongoing) },
       ]);
     } catch (e) {
       const error = handleServerErrorMessage(e);
@@ -173,7 +176,7 @@ const VendorDashboard = () => {
     },
   };
 
-  const reportLabels = ["Successful Calls", "Errors", "Drop-off/Cancellations"];
+  const reportLabels = ["Successful Calls", "Errors"];
 
   const reportTotal = reportSeries.reduce((a, b) => a + b, 0);
 
@@ -183,7 +186,7 @@ const VendorDashboard = () => {
       position: "bottom",
       show: false,
     },
-    colors: ["#6FD195", "#F56565", "#FFAE4C"],
+    colors: ["#6FD195", "#F56565"],
     dataLabels: {
       enabled: false,
     },
@@ -239,7 +242,7 @@ const VendorDashboard = () => {
             >
               <Stack flex={1}>
                 <Text fontWeight="medium" fontSize="3xl">
-                  Welcome back!
+                  Welcome Back!
                 </Text>
                 <Text fontSize="sm" color="#667085">
                   Manage your 10mg API, track customer loans, and view credit
@@ -283,7 +286,7 @@ const VendorDashboard = () => {
                 title="Loan Applications"
                 value={data.totalApplications}
                 isPending
-                pendingValue={data.totalPendingApplications}
+                pendingValue={data.ongoingApplications}
                 color="green.400"
               />
               <OverviewCard
@@ -334,7 +337,7 @@ const VendorDashboard = () => {
                 <Box>
                   <Flex gap={2} alignItems="center">
                     <Badge bgColor="#FF9C66" p={1} rounded="xs" />
-                    <Text>Outgoing Loan</Text>
+                    <Text>Ongoing Loan</Text>
                   </Flex>
                   <Flex gap={2} alignItems="center" mt={2}>
                     <Badge bgColor="#84CAFF" p={1} rounded="xs" />
@@ -418,10 +421,10 @@ const VendorDashboard = () => {
                   <Badge bgColor="#F56565" p={1} rounded="lg" />
                   <Text>Errors</Text>
                 </Flex>
-                <Flex gap={2} alignItems="center" mt={2}>
+                {/* <Flex gap={2} alignItems="center" mt={2}>
                   <Badge bgColor="#FFAE4C" p={1} rounded="lg" />
                   <Text>Drop-off/Cancellations</Text>
-                </Flex>
+                </Flex> */}
               </Box>
             </Stack>
           </Stack>

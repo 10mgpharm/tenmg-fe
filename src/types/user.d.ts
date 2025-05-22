@@ -678,9 +678,9 @@ export interface AuditLogData {
 export interface ApiLogData {
   status: string;
   event: string;
-  endpoint: string;
-  server_response: string;
-  timestamp: string;
+  route: string;
+  response: string;
+  createdAt: string;
 }
 
 export interface UserLoan {
@@ -760,5 +760,3 @@ export interface LenderTransactionHistoryDataProps {
   links: any;
   meta: MetaDataProp;
 }
-
-

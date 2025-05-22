@@ -1,45 +1,44 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { classNames } from "@/utils";
-import { Daum } from "@/types";
-import { Dispatch, SetStateAction } from "react";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { LoanTransactionProps } from "@/types";
+import { Dispatch, SetStateAction } from "react";
+import { convertDate } from "@/utils/formatDate";
 
-const columnHelper = createColumnHelper<Daum>();
+const columnHelper = createColumnHelper<LoanTransactionProps>();
 
-export function ColumsTransactionFN(
+export function repaymentColumnFn(
   onOpen: () => void,
-  setSelectedRow: Dispatch<SetStateAction<Daum | null>>,
+  setSelectedRow: Dispatch<SetStateAction<LoanTransactionProps>>
 ) {
   return [
-    columnHelper.accessor("txnGroup", {
-      header: ({ column }) => <p className="pl-6">Date</p>,
+    columnHelper.accessor("identifier", {
+      header: ({ column }) => <p className="pl-6">Loan ID</p>,
       cell: (info) => (
         <div className="pl-6">
           <p className="font-medium">
-            {info.row.original?.createdAt}
+            {info.row.original?.identifier}
           </p>
         </div>
       ),
     }),
-    columnHelper.accessor("tenmgCommission", {
+    columnHelper.accessor("description", {
       header: ({ column }) => <p className="">Description</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-          {info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ? "Order Cancelled" 
-          : info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" 
-          : info.row.original?.txnGroup === "WITHDRAW_TO_BANK" ? "Withdrawal" : ""}
+          {info.row.original?.description} Commission
           </p>
         </div>
       ),
     }),
-    columnHelper.accessor("orderId", {
-      header: ({ column }) => <p className="">OrderId</p>,
+    columnHelper.accessor("description", {
+      header: ({ column }) => <p className="">Date</p>,
       cell: (info) => (
         <div className="">
           <p className="font-medium">
-            {info.row.original?.order?.identifier}
+          {convertDate(info.row.original?.createdAt)}
           </p>
         </div>
       ),
@@ -48,25 +47,10 @@ export function ColumsTransactionFN(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">₦{info.row.original?.amount}</p>
-          {
-            (info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" || info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION") && (
-              <span className="text-xs text-red-400">
-                Commission: ₦{info.row.original?.tenmgCommission ?? `0.00`}
-              </span>
-            )
-          }
+          <p className="font-medium">₦{info.row.original?.amount ?? `0.00`}</p>
         </div>
       ),
     }),
-    // columnHelper.accessor("balanceAfter", {
-    //   header: ({ column }) => <p className="">Balance</p>,
-    //   cell: (info) => (
-    //     <div className="">
-    //       <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
-    //     </div>
-    //   ),
-    // }),
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Type</p>,
       cell: (info) => {
@@ -74,17 +58,16 @@ export function ColumsTransactionFN(
           <div>
             <p
               className={classNames(
-                info?.row?.original?.status === "DEBIT"
+                info?.row?.original?.type === "DEBIT"
                   ? "bg-[#FEF3F2] text-[#B42318]"
-                  : info?.row?.original?.status === "CREDIT" ||
-                    info?.row?.original?.status === "Successful"
+                  : info?.row?.original?.type === "CREDIT"
                   ? "text-[#027A48] bg-[#ECFDF3]"
                   : "text-orange-500 bg-orange-50",
                 " max-w-min p-1 px-2 rounded-2xl text-sm font-medium"
               )}
             >
               <span className="rounded-full text-[1.2rem]">•</span>{" "}
-              {info?.row?.original?.status}
+              {info?.row?.original?.type}
             </p>
           </div>
         );
@@ -101,10 +84,10 @@ export function ColumsTransactionFN(
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={() => {
-                  setSelectedRow(info.row.original);
-                  onOpen();
-                  }}>
-                  View Transaction Details
+                    setSelectedRow(info.row.original);
+                    onOpen();
+                }}>
+                    View Transaction Details
                 </MenuItem>
               </MenuList>
             </Menu>

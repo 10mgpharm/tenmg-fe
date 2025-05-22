@@ -16,6 +16,7 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  Spinner,
 } from "@chakra-ui/react";
 import { Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -42,6 +43,7 @@ import { handleServerErrorMessage } from "@/utils";
 import { ConfirmationModal } from "@/app/(protected)/_components/ConfirmationModal";
 import ViewUserModal from "../../users/_components/ViewUserModal";
 import Email from "next-auth/providers/email";
+import LoadingScreen from "@/app/(standalone)/widgets/applications/_components/LoadingScreen";
 
 interface IFormInput {
   fullName: string;
@@ -85,6 +87,7 @@ const Members = () => {
 
   const fetchTeamMembers = useCallback(async () => {
     try {
+      setIsLoading(true)
       const response = await requestClient({ token: token }).get(
         "/admin/settings/invite"
       );
@@ -93,6 +96,8 @@ const Members = () => {
       }
     } catch (error) {
       toast.error(handleServerErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   }, [token, setAllMembersData]);
 
@@ -219,47 +224,57 @@ const Members = () => {
       </HStack>
       <div className="mt-5">
         {/* {MemberData?.length === 0 ? ( */}
-        {memoizedData?.length === 0 ? (
-          <EmptyOrder
-            heading={`No Member Yet`}
-            content={`You currently have no member added. All members will appear here.`}
-          />
-        ) : (
-          <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-            <Table>
-              <Thead bg={"#F2F4F7"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
-                  <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </Th>
-                    ))}
-                  </Tr>
-                ))}
-              </Thead>
-              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
-                  <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </Td>
-                    ))}
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        )}
+        {isLoading ?
+          <div className="w-full h-full flex items-center justify-center"><Spinner /></div>
+
+          :
+
+          <>
+            {
+              memoizedData?.length === 0 ? (
+                <EmptyOrder
+                  heading={`No Member Yet`}
+                  content={`You currently have no member added. All members will appear here.`}
+                />
+              ) : (
+                <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                  <Table>
+                    <Thead bg={"#F2F4F7"}>
+                      {table?.getHeaderGroups()?.map((headerGroup) => (
+                        <Tr key={headerGroup.id}>
+                          {headerGroup.headers?.map((header) => (
+                            <Th textTransform={"initial"} px="0px" key={header.id}>
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                            </Th>
+                          ))}
+                        </Tr>
+                      ))}
+                    </Thead>
+                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                      {table?.getRowModel()?.rows?.map((row) => (
+                        <Tr key={row.id}>
+                          {row.getVisibleCells()?.map((cell) => (
+                            <Td key={cell.id} px="0px">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </Td>
+                          ))}
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              )
+            }
+          </>
+        }
       </div>
 
       {isOpen && (

@@ -12,7 +12,7 @@ interface Props {
     setPageCount?: Dispatch<SetStateAction<number>>;
 }
 const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) => {
-    console.log(payoutData);
+    console.log(payoutData)
     return (
         <div>
             <Tabs variant={"unstyled"}>
@@ -36,6 +36,19 @@ const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) 
                         data={data?.data} 
                         hasPagination={hasPagination} 
                         setPageCount={setPageCount}
+                        metaData={{
+                            links: data?.links,
+                            total: data?.total,
+                            lastPage: data?.lastPage,
+                            perPage: data?.perPage,
+                            from: data?.from,
+                            to: data?.to,
+                            prevPageUrl: data?.prevPageUrl,
+                            nextPageUrl: data?.nextPageUrl,
+                            currentPage: data?.currentPage,
+                            firstPageUrl: data?.firstPageUrl,
+                            lastPageUrl: data?.lastPageUrl,
+                        }}
                         />
                     </TabPanel>
                     <TabPanel px={0}>
@@ -43,6 +56,19 @@ const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) 
                         data={payoutData?.pendingPayouts?.data} 
                         hasPagination={hasPagination}
                         setPageCount={setPageCount}
+                        metaData={{
+                            links: data?.links,
+                            total: data?.total,
+                            lastPage: data?.lastPage,
+                            perPage: data?.perPage,
+                            from: data?.from,
+                            to: data?.to,
+                            prevPageUrl: data?.prevPageUrl,
+                            nextPageUrl: data?.nextPageUrl,
+                            currentPage: data?.currentPage,
+                            firstPageUrl: data?.firstPageUrl,
+                            lastPageUrl: data?.lastPageUrl,
+                        }}
                         />
                     </TabPanel>
                 </TabPanels>

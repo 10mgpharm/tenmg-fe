@@ -18,6 +18,12 @@ const config: IConfig = {
         skey: process.env.TENMG_SECKEY ?? ''
     },
 
+    tenmgDemo: {
+        url: process.env.NEXT_PUBLIC_TENMG_URL_DEMO ?? '',
+        pkey: process.env.NEXT_PUBLIC_TENMG_PUBKEY_DEMO ?? '',
+        skey: process.env.TENMG_SECKEY_DEMO ?? ''
+    },
+
     email: {
         host: process.env.EMAIL_SERVER_HOST,
         port: parseInt(process.env.EMAIL_SERVER_PORT as string, 10),

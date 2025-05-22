@@ -14,7 +14,7 @@ import Link from "next/link";
 import Transaction from "./_components/Transaction";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
-import { BankDto, Daum, NextAuthUserSession, PayoutDataProps, PayoutTypeProps, SupplierTransactionDataProps } from "@/types";
+import { BankDto, NextAuthUserSession, PayoutDataProps, SupplierTransactionDataProps } from "@/types";
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
 import { FaPencil } from "react-icons/fa6";
 import EditBank from "./_components/EditBank";
@@ -30,9 +30,12 @@ export interface BankInfo {
 }
 
 interface WalletProps {
-  currentBalance: string;
-  previousBalance: string;
-  bankAccount: BankInfo;
+  wallet: {
+    currentBalance: string;
+    previousBalance: string;
+    bankAccount: BankInfo;
+  }
+  pendingBalance: string;
 }
 
 interface SelectOption {
@@ -146,8 +149,8 @@ const Wallet = () => {
     fetchingPendingPayout();
   }, [token, fetchingTransactions, fetchingWallet, fetchingPendingPayout]);
 
-  const formattedBalance = walletBalance?.currentBalance
-    ? Number(walletBalance?.currentBalance).toFixed(2)
+  const formattedBalance = walletBalance?.wallet?.currentBalance
+    ? Number(walletBalance?.wallet?.currentBalance).toFixed(2)
     : "0.00";
 
   return (
@@ -173,11 +176,11 @@ const Wallet = () => {
               <div className="bg-green-50 rounded-md py-1 max-w-max px-2.5">
                 <p className="text-green-600 font-medium text-xs">Pending Balance</p>
                 <p className="text-green-600 text-xs font-semibold">
-                  {showBalance ? `₦${pendingPayouts?.totalPendingPayouts ?? 0.00}` : "******"}
+                  {showBalance ? `₦${walletBalance?.pendingBalance ?? 0.00}` : "******"}
                 </p>
               </div>
             </div>
-            {walletBalance?.bankAccount && (
+            {walletBalance?.wallet?.bankAccount && (
               <button
                 onClick={onOpenWithdraw}
                 className="bg-primary-500 px-5 py-2 text-white rounded-md"
@@ -190,18 +193,18 @@ const Wallet = () => {
         </div>
 
         {/* Bank info or Add account */}
-        {walletBalance?.bankAccount ? (
+        {walletBalance?.wallet?.bankAccount ? (
           <div className="flex-1 bg-[#20232D] p-5 rounded-lg text-white">
             <div className="flex items-center justify-between">
               <div className="py-1 px-2 rounded-full bg-white">
                 <p className="text-gray-600 text-sm font-semibold">
-                  {walletBalance.bankAccount.accountName}
+                  {walletBalance?.wallet?.bankAccount?.accountName}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <div onClick={onOpen} className="py-1 flex items-center gap-2 px-2 rounded-full bg-white cursor-pointer">
                   <p className="text-gray-600 text-sm font-semibold">
-                    {walletBalance.bankAccount.bankName}
+                    {walletBalance?.wallet?.bankAccount?.bankName}
                   </p>
                   <PencilIcon className="w-4 h-4 text-black"/>
                 </div>
@@ -209,7 +212,7 @@ const Wallet = () => {
             </div>
             <div className="mt-8">
               <p className="text-sm mb-2">Payout Account</p>
-              <h2 className="text-xl font-semibold">{walletBalance.bankAccount.accountNumber}</h2>
+              <h2 className="text-xl font-semibold">{walletBalance?.wallet?.bankAccount?.accountNumber}</h2>
             </div>
           </div>
         ) : (
@@ -272,7 +275,7 @@ const Wallet = () => {
       <AddAccount
         isOpen={isOpen}
         onClose={onClose}
-        bank={walletBalance?.bankAccount}
+        bank={walletBalance?.wallet?.bankAccount}
         fetchingWallet={fetchingWallet}
         endpoint="/supplier/wallet/add-bank-account"
       />
@@ -280,7 +283,7 @@ const Wallet = () => {
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
         otpOpen={onOpenOTP}
-        bankDetails={walletBalance?.bankAccount}
+        bankDetails={walletBalance?.wallet?.bankAccount}
       />
       <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
     </div>

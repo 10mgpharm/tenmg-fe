@@ -72,6 +72,8 @@ export default function OrderDetailsPage() {
     setActiveStep(stepIndex);
   }, [order?.status, setActiveStep]);
 
+  console.log("activeStep", activeStep);
+
   return (
     <>
       {loading ? (
@@ -89,15 +91,15 @@ export default function OrderDetailsPage() {
               <Badge
                 colorScheme={
                   order?.status?.toLowerCase() === "completed" ||
-                  order?.status?.toLowerCase() === "delivered"
+                    order?.status?.toLowerCase() === "delivered"
                     ? "green"
                     : order?.status?.toLowerCase() === "pending"
-                    ? "warning"
-                    : order?.status?.toLowerCase() === "processing"
-                    ? "purple"
-                    : order?.status?.toLowerCase() === "shipped"
-                    ? "primary"
-                    : "red"
+                      ? "warning"
+                      : order?.status?.toLowerCase() === "processing"
+                        ? "purple"
+                        : order?.status?.toLowerCase() === "shipped"
+                          ? "primary"
+                          : "red"
                 }
                 fontSize="10px"
                 px="2"
@@ -107,7 +109,7 @@ export default function OrderDetailsPage() {
               >
                 <span style={{ textTransform: "capitalize" }}>
                   {order?.status.toLowerCase() === "cancelled" ||
-                  order?.status.toLowerCase() === "canceled"
+                    order?.status.toLowerCase() === "canceled"
                     ? order?.refundStatus
                     : order?.status}
                 </span>
@@ -140,6 +142,7 @@ export default function OrderDetailsPage() {
               {steps.map((step, index) => (
                 <Step key={index} className="">
                   <div className="flex flex-col items-center relative">
+
                     <StepIndicator className="border-none">
                       <StepStatus
                         complete={<StepIcon />}
@@ -151,8 +154,8 @@ export default function OrderDetailsPage() {
                         }
                       />
                     </StepIndicator>
-                    <StepDescription className="text-xs mt-2 absolute text-nowrap top-3/4">
-                      {step.title}
+                    <StepDescription className=" md:text-xs mt-2 absolute text-nowrap top-3/4">
+                      {activeStep === index && step.title}
                     </StepDescription>
                   </div>
                   <StepSeparator className=" w-[100%] absolute left-4" />

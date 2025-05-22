@@ -4,7 +4,12 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
-import { LoanTransactionProps, LoanWalletProps, NextAuthUserSession, WalletProductProps } from "@/types";
+import { 
+  LoanTransactionProps, 
+  LoanWalletProps, 
+  NextAuthUserSession, 
+  WalletProductProps 
+} from "@/types";
 import requestClient from "@/lib/requestClient";
 import ProductWalletTab from "./_components/ProductWalletTab";
 import LoanWalletTab from "./_components/LoanWalletTab";
@@ -19,6 +24,7 @@ const Page = () => {
   const [walletStats, setWalletStats] = useState<WalletProductProps>();
   const [loanWallet, setLoanWallet] = useState<LoanWalletProps>();
   const [loanTransaction, setLoanTransaction] = useState<LoanTransactionProps[]>([]);
+  const [adminTransaction, setAdminTransaction] = useState<LoanTransactionProps[]>([]);
 
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
@@ -65,11 +71,26 @@ const Page = () => {
     setLoading(false);
   }, [token, pageCount]);
 
+  const fetchingLoanWalletTransactions = useCallback(async () => {
+    setLoading(true);
+    let query = `/admin/wallet/admin-transactions?page=${pageCount}`;
+    try {
+      const response = await requestClient({ token: token }).get(query);
+      if (response.status === 200) {
+        setAdminTransaction(response.data?.data?.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, [token, pageCount]);
+
   useEffect(() => {
     if (!token) return;
     fetchingWallet();
     fetchingLoanWallet();
     fetchingLoanTransactions();
+    fetchingLoanWalletTransactions();
   }, [token]);
 
   return (
@@ -121,6 +142,7 @@ const Page = () => {
           <TabPanel className=" !p-0">
             <LoanWalletTab
             data={loanWallet}
+            adminTransactions={adminTransaction}
             transactions={loanTransaction}
             filterDate={selectedTimeLine}
             />

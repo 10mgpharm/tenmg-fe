@@ -4,8 +4,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "../_components/TimeLineSelector";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import WalletTable from "../_components/TransactionTab";
-
 import {
   Text,
   Tab,
@@ -19,6 +17,7 @@ import { NextAuthUserSession, WalletProductProps } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import TransactionTab from "../_components/TransactionTab";
+import { useDebouncedValue } from "@/utils/debounce";
 
 const ProductWallet = () => {
 
@@ -31,11 +30,13 @@ const ProductWallet = () => {
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [searchValue, setSearchValue] = useState<string>("");
 
+  const debouncedSearch = useDebouncedValue(searchValue, 500);
+
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
     try {
       const response = await requestClient({ token: token }).get(
-        `/admin/wallet-product?page=${pageCount}`
+        `/admin/wallet-product?page=${pageCount}&search=${debouncedSearch}`
       );
       if (response.status === 200) {
         setData(response.data?.data);
@@ -45,9 +46,7 @@ const ProductWallet = () => {
       console.error(error);
       setLoading(false);
     }
-  }, [token, pageCount]);
-
-  console.log(pageCount);
+  }, [token, pageCount, debouncedSearch]);
 
   useEffect(() => {
     if(!token) return;
@@ -68,10 +67,10 @@ const ProductWallet = () => {
         <div className="text-[18px] font-semibold">Product Wallet</div>
 
         {/* time line selector */}
-        <TimeLineSelector
+        {/* <TimeLineSelector
           selectedTimeLine={selectedTimeLine}
           setSelectedTimeLine={setSelectedTimeLine}
-        />
+        /> */}
       </div>
 
       <Tabs variant={"unstyled"} className="mt-7">
@@ -126,7 +125,7 @@ const ProductWallet = () => {
               firstPageUrl: data?.payouts?.firstPageUrl,
               lastPageUrl: data?.payouts?.lastPageUrl,
             }}
-            emptyStateHeader="No awaiting payout"
+            emptyStateHeader="No payout"
             />
           </TabPanel>
           <TabPanel px={0}>

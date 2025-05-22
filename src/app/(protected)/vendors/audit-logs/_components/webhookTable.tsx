@@ -1,5 +1,6 @@
 import { ApiLogData } from "@/types";
 import { classNames } from "@/utils";
+import { convertDateWithTime } from "@/utils/formatDate";
 import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<ApiLogData>();
@@ -14,19 +15,21 @@ export function ColumnsWebhookLogFN() {
       ),
       cell: (info) => (
         <div className="pl-6">
-          <p className={classNames(
-            (info?.row?.original?.status === "Failed")
-            ? "bg-[#FEF3F2] text-[#B42318]" 
-            : info?.row?.original?.status === "Delivered"
-            ? "text-[#027A48] bg-[#ECFDF3]"
-            : info.row.original?.status === "Processing"
-            ? "bg-orange-50 text-orange-500"
-            : "text-gray-500", " max-w-min p-0.5 px-2 rounded-2xl capitalize text-sm font-medium"
+          <p
+            className={classNames(
+              info?.row?.original?.status === "failed"
+                ? "bg-[#FEF3F2] text-[#B42318]"
+                : info?.row?.original?.status === "successful"
+                ? "text-[#027A48] bg-[#ECFDF3]"
+                : info.row.original?.status === "processing"
+                ? "bg-orange-50 text-orange-500"
+                : "text-gray-500",
+              " max-w-min p-0.5 px-2 rounded-2xl capitalize text-sm font-medium"
             )}
           >
+            <span className="rounded-full text-[1.2rem]">•</span>{" "}
             {info.row.original?.status}
           </p>
-          {/* <p className="text-gray-500"></p> */}
         </div>
       ),
     }),
@@ -42,39 +45,41 @@ export function ColumnsWebhookLogFN() {
         </div>
       ),
     }),
-    columnHelper.accessor("endpoint", {
-        header: () => (
-          <div>
-            <p>Endpoint</p>
-          </div>
-        ),
-        cell: (info) => (
-          <div>
-            <p className="font-medium">{info.row.original?.endpoint} </p>
-          </div>
-        ),
-      }),
-    columnHelper.accessor("server_response", {
-        header: () => (
-          <div>
-            <p>Service Response</p>
-          </div>
-        ),
-        cell: (info) => (
-          <div>
-            <p className="font-medium">{info.row.original?.server_response} </p>
-          </div>
-        ),
-      }),
-    columnHelper.accessor("timestamp", {
+    columnHelper.accessor("route", {
       header: () => (
         <div>
-          <p>Timestamp</p>
+          <p>Endpoint</p>
         </div>
       ),
       cell: (info) => (
         <div>
-          <p className="font-medium">{info.row.original?.timestamp}</p>
+          <p className="font-medium">{info.row.original?.route} </p>
+        </div>
+      ),
+    }),
+    columnHelper.accessor("response", {
+      header: () => (
+        <div>
+          <p>Service Response</p>
+        </div>
+      ),
+      cell: (info) => (
+        <div>
+          <p className="font-medium">{info.row.original?.response} </p>
+        </div>
+      ),
+    }),
+    columnHelper.accessor("createdAt", {
+      header: () => (
+        <div>
+          <p>Created At</p>
+        </div>
+      ),
+      cell: (info) => (
+        <div>
+          <p className="font-medium">
+            {convertDateWithTime(info.row.original?.createdAt)}
+          </p>
         </div>
       ),
     }),
