@@ -117,9 +117,9 @@ export default function LoanPreferenceComp() {
         const tenureOptions =
           Array.isArray(loanTenure) && loanTenure.length > 0
             ? loanTenure.map((t: number) => ({
-                value: t,
-                label: `${t} months`,
-              }))
+              value: t,
+              label: `${t} months`,
+            }))
             : [];
 
         // Map the returned credit score categories (e.g. ["A", "B"]) to option objects.
@@ -135,9 +135,9 @@ export default function LoanPreferenceComp() {
               );
               return found
                 ? {
-                    value: found.value,
-                    label: `Category ${found.value} (Above ${found.loanAbove}%)`,
-                  }
+                  value: found.value,
+                  label: `Category ${found.value} (Above ${found.loanAbove}%)`,
+                }
                 : { value: catVal, label: `Category ${catVal}` };
             }
           );
@@ -171,7 +171,7 @@ export default function LoanPreferenceComp() {
       setValue(
         "loanInterest",
         loanTenurePrefill?.interestRate ||
-          "Your interest 15%, Processing fee (0%)"
+        "Your interest 15%, Processing fee (0%)"
       );
     } else {
       setValue("loanInterest", "");
@@ -204,7 +204,7 @@ export default function LoanPreferenceComp() {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-5 w-full flex justify-between py-5">
+        <div className="space-y-5 w-full flex flex-wrap justify-between py-5">
           <div>
             <h3 className="font-semibold text-lg">Loan Information</h3>
             <Text fontSize={"14px"} color={"gray.500"}>

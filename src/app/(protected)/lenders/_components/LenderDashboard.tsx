@@ -551,7 +551,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({
           onChange={handleTabChange}
           index={BALANCE_TIME_PERIODS.indexOf(selectedPeriod)}
         >
-          <TabList width="80%">
+          <TabList width="100%" className="overflow-x-scroll">
             {BALANCE_TIME_PERIODS.map((period) => (
               <Tab
                 key={period}

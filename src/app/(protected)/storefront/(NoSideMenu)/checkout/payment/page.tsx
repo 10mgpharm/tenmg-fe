@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BreadCrumbBanner from "../../../_components/BreadCrumbBanner";
 import {
   Box,
@@ -13,7 +13,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import { NextAuthUserSession } from "@/types";
+import { NextAuthUserSession, Order } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
@@ -23,6 +23,14 @@ import { FaCheck } from "react-icons/fa6";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { config } from "process";
+import axios from "axios";
+
+type OrderDataType = {
+  orderId: string;
+  paymentMethod: string;
+  deliveryAddress: string;
+  deliveryType: string;
+};
 
 export default function PaymentPage() {
   const [cartItems, setCartItems] = useState<any>({});
@@ -33,11 +41,16 @@ export default function PaymentPage() {
     cartSize,
     isLoading: cartLoading,
   } = useCartStore();
-  // const cartItems = cart;
-
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
   const userToken = sessionData?.user?.token;
+  const [shippingData, setShippingData] = useState<any>({});
+  const [shippingAddress, setShippingAddress] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+    "fincra" | "tenmg_credit"
+  >("fincra");
 
   const router = useRouter();
 
@@ -72,36 +85,50 @@ export default function PaymentPage() {
     },
   ];
 
-  const [shippingData, setShippingData] = useState<any>({});
-  const [shippingAddress, setShippingAddress] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("1");
+  // fetch addresses
+  const fetchAddresses = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        "/storefront/shipping-addresses"
+      );
+      if (response.status === 200) {
+        const data = response.data.data;
+        setShippingData(data?.find((item) => item?.isDefault === true));
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userToken]);
+
+  // fetch payment methods
+  const fetchPaymentMethods = useCallback(async () => {
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        "/storefront/get-payment-methods"
+      );
+      if (response.status === 200) {
+        setPaymentMethods(response.data.data);
+        setSelectedPaymentMethod(response?.data?.data[0].slug);
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  }, [userToken]);
 
   useEffect(() => {
     if (!userToken) return;
-
-    const fetchAddresses = async () => {
-      setIsLoading(true);
-      try {
-        const response = await requestClient({ token: userToken }).get(
-          "/storefront/shipping-addresses"
-        );
-        if (response.status === 200) {
-          const data = response.data.data;
-          setShippingData(data?.find((item) => item?.isDefault === true));
-        } else {
-          toast.error(`Error: ${response.data.message}`);
-        }
-      } catch (error) {
-        const errorMessage = handleServerErrorMessage(error);
-        toast.error(errorMessage);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchAddresses();
-  }, [userToken]);
+    fetchPaymentMethods();
+  }, [fetchAddresses, fetchPaymentMethods, userToken]);
 
   useEffect(() => {
     shippingData &&
@@ -127,12 +154,6 @@ export default function PaymentPage() {
       document.body.removeChild(script);
     };
   }, []);
-
-  // console.log("shippingAddress", shippingAddress)
-
-  //   Card Number: 5319 3178 0136 6660
-  // Expiry Date: 10/26
-  // CVV: 000
 
   const verifyPayment = async (ref) => {
     try {
@@ -207,53 +228,78 @@ export default function PaymentPage() {
     });
   };
 
-  const payWithFincra = async (event: any) => {
+  const paywith10mg = async (requestedAmount: number, reference: string) => {
+    try {
+      const response = axios.post(
+        `/client/applications/start`,
+        {
+          requestedAmount,
+          reference,
+          customer: sessionData?.user,
+        },
+        {
+          headers: {
+            "Public-Key": `${process.env.NEXT_PUBLIC_TENMG_PUBKEY}`,
+            "Secret-Key": `${process.env.TENMG_SECKEY}`,
+          },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  };
+
+  const initailizePayment = async (event: any, orderData: OrderDataType) => {
+    setLoadingPayment(true);
+
+    try {
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/checkout",
+        orderData
+      );
+
+      if (response.status === 200 && selectedPaymentMethod === "fincra") {
+        await payFincra(
+          event,
+          response?.data?.data?.reference,
+          response?.data?.data?.totalAmount
+        );
+      } else if (
+        response.status === 200 &&
+        selectedPaymentMethod === "tenmg_credit"
+      ) {
+        await paywith10mg(
+          response?.data?.data?.totalAmount,
+          response?.data?.data?.reference
+        );
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+
+    setLoadingPayment(false);
+  };
+
+  const submiOrder = async (e: any) => {
     const orderData = {
       orderId: cartItems?.id,
-      paymentMethodId: Number(paymentMethod),
+      paymentMethod: selectedPaymentMethod,
       deliveryAddress: shippingAddress,
       deliveryType: "STANDARD",
     };
+
+    if (!selectedPaymentMethod)
+      return toast.error("Select payment method to proceed.");
 
     if (!shippingData) {
       toast.error("Please set a default shipping address");
       return;
     }
 
-    setLoadingPayment(true);
-    try {
-      const response = await requestClient({ token: userToken }).post(
-        "/storefront/checkout",
-        orderData
-      );
-      // console.log("submit order res", response?.data?.data?.reference)
-      if (response.status === 200) {
-        await payFincra(
-          event,
-          response?.data?.data?.reference,
-          response?.data?.data?.totalAmount
-        );
-        // console.log("submit order res", response)
-      } else {
-        toast.error(`Error: ${response.data.message}`);
-      }
-      setLoadingPayment(false);
-    } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-      setLoadingPayment(false);
-    }
-  };
-
-  const payWith10Mg = async () => {};
-
-  const submiOrder = async (e: any) => {
-    if (!paymentMethod) return toast.error("Select payment method to proceed.");
-
-    if (Number(paymentMethod) === 1) payWithFincra(e);
-
-    // else
-    payWith10Mg();
+    await initailizePayment(e, orderData);
   };
 
   return (
@@ -336,27 +382,29 @@ export default function PaymentPage() {
                     </div>
                     <div className="p-4">
                       <RadioGroup
-                        onChange={setPaymentMethod}
-                        value={paymentMethod}
+                        onChange={(e) =>
+                          setSelectedPaymentMethod(
+                            e as "fincra" | "tenmg_credit"
+                          )
+                        }
+                        value={selectedPaymentMethod}
                         className="w-full"
                       >
                         <Stack direction="column">
-                          <Box
-                            as="label"
-                            className="flex items-center justify-between w-full cursor-pointer  hover:bg-primary-50 p-3"
-                          >
-                            <p className="font-semibold">Pay with Card</p>
-                            <Radio value={"1"} className="" />
-                          </Box>
-                          <Box
-                            as="label"
-                            className="flex items-center p-3 justify-between w-full cursor-pointer hover:bg-primary-50"
-                          >
-                            <p className="font-semibold">
-                              Pay with 10Mg Credit
-                            </p>
-                            <Radio value={"2"} className="" />
-                          </Box>
+                          {paymentMethods?.map((i) => (
+                            <Box
+                              key={i.id}
+                              as="label"
+                              className="flex items-center justify-between w-full cursor-pointer  hover:bg-primary-50 p-3"
+                            >
+                              <p className="font-semibold">
+                                {i.slug === "tenmg_credit"
+                                  ? "Pay with 10Mg Credit"
+                                  : "Pay with Card"}
+                              </p>
+                              <Radio value={i.slug} className="" />
+                            </Box>
+                          ))}
                         </Stack>
                       </RadioGroup>
                     </div>
