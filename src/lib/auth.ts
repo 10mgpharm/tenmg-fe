@@ -36,8 +36,6 @@ export const authOptions: NextAuthOptions = {
           });
           const { data, accessToken }: ResponseDto<User> = response.data;
 
-          console.log("Data ", data);
-
           return {
             id: data.id,
             name: data.name,
