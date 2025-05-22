@@ -169,6 +169,10 @@ const SideBar = ({
                     <ul role="list" className="-mx-2 space-y-8">
                       {section.items.map((item) => {
                         const isActive = item.href === pathname;
+                        const disabled = isLinkDisabled(
+                          businessStatus,
+                          item.name
+                        );
                         return (
                           <li key={item.name}>
                             <a
@@ -177,6 +181,9 @@ const SideBar = ({
                                 isActive
                                   ? "bg-primary-50 text-primary-500 p-0.5"
                                   : "text-gray-500 px-3",
+                                disabled
+                                  ? "pointer-events-none opacity-50"
+                                  : "",
                                 "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
                               )}
                             >
@@ -256,6 +263,7 @@ const SideBar = ({
                 <ul role="list" className="-mx-2 space-y-8">
                   {section.items.map((item) => {
                     const isActive = item.href === pathname;
+                    const disabled = isLinkDisabled(businessStatus, item.name);
                     return (
                       <li key={item.name}>
                         <a
@@ -264,6 +272,7 @@ const SideBar = ({
                             isActive
                               ? "bg-primary-50 text-primary-500 p-0.5"
                               : "text-gray-500 px-3",
+                            disabled ? "pointer-events-none opacity-50" : "",
                             "group group-hover:bg-primary-50 flex gap-x-3 items-center rounded-md text-sm font-semibold leading-6"
                           )}
                         >
