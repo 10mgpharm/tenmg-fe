@@ -154,8 +154,9 @@ export default function OrderDetailsPage() {
                         }
                       />
                     </StepIndicator>
-                    <StepDescription className=" md:text-xs mt-2 absolute text-nowrap top-3/4">
-                      {activeStep === index && step.title}
+                    <StepDescription className="  md:text-xs mt-2 absolute md:text-nowrap top-3/4">
+                      {/* {activeStep === index && step.title} */}
+                      {step.title}
                     </StepDescription>
                   </div>
                   <StepSeparator className=" w-[100%] absolute left-4" />

@@ -271,7 +271,7 @@ export default function EditAddressModal({
                     type="text"
                     placeholder="Address One 2"
                     {...register("name", {
-                      required: "Name is required",
+                      required: "Address name is required",
                     })}
                   />
                   <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
@@ -297,6 +297,18 @@ export default function EditAddressModal({
                     placeholder="0812345689"
                     {...register("phoneNumber", {
                       required: "Phone number is required",
+                      pattern: {
+                        value: /^0[789][01]\d{8}$/,
+                        message: "Enter a valid phone number ",
+                      },
+                      minLength: {
+                        value: 11,
+                        message: "Phone number must be 11 digits",
+                      },
+                      maxLength: {
+                        value: 11,
+                        message: "Phone number must be 11 digits",
+                      },
                     })}
                   />
                   <FormErrorMessage>
@@ -316,16 +328,14 @@ export default function EditAddressModal({
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
                       colorScheme="gray"
-                      size={`${
-                        selectedCountry && countryPlaceholder?.length > 14
-                          ? "sm"
-                          : "md"
-                      }`}
-                      className={`${
-                        selectedCountry && countryPlaceholder?.length > 14
-                          ? "py-[23px]"
-                          : ""
-                      }`}
+                      size={`${selectedCountry && countryPlaceholder?.length > 14
+                        ? "sm"
+                        : "md"
+                        }`}
+                      className={`${selectedCountry && countryPlaceholder?.length > 14
+                        ? "py-[23px]"
+                        : ""
+                        }`}
                     >
                       {countryPlaceholder}
                     </MenuButton>
@@ -359,16 +369,14 @@ export default function EditAddressModal({
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
                       colorScheme="gray"
-                      size={`${
-                        selectedState && statePlaceholder?.length > 14
-                          ? "sm"
-                          : "md"
-                      }`}
-                      className={`${
-                        selectedState && statePlaceholder?.length > 14
-                          ? "py-[23px]"
-                          : ""
-                      }`}
+                      size={`${selectedState && statePlaceholder?.length > 14
+                        ? "sm"
+                        : "md"
+                        }`}
+                      className={`${selectedState && statePlaceholder?.length > 14
+                        ? "py-[23px]"
+                        : ""
+                        }`}
                     >
                       {statePlaceholder}
                     </MenuButton>
@@ -397,16 +405,14 @@ export default function EditAddressModal({
                       w="100%"
                       rightIcon={<ChevronDownIcon />}
                       colorScheme="gray"
-                      size={`${
-                        selectedCity && cityPlaceholder?.length > 14
-                          ? "sm"
-                          : "md"
-                      }`}
-                      className={`${
-                        selectedCity && cityPlaceholder?.length > 14
-                          ? "py-[23px]"
-                          : ""
-                      }`}
+                      size={`${selectedCity && cityPlaceholder?.length > 14
+                        ? "sm"
+                        : "md"
+                        }`}
+                      className={`${selectedCity && cityPlaceholder?.length > 14
+                        ? "py-[23px]"
+                        : ""
+                        }`}
                     >
                       {cityPlaceholder}
                     </MenuButton>
