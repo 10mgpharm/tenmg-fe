@@ -75,6 +75,7 @@ export default function BusinessInformationForm({
       // set this from session if exist
       setValue("businessName", sessionData?.user?.businessName);
       setValue("businessEmail", sessionData?.user?.email);
+      setValue("businessType", sessionData?.user?.entityType.toLowerCase());
       if (sessionData?.user?.account?.provider === "google") {
         setValue("businessType", "supplier");
       }
@@ -101,20 +102,21 @@ export default function BusinessInformationForm({
           `You have successfully completed sign up process. Redirect to Dashboard....`
         );
 
+        console.log(data, "data");
+
         await session.update({
           ...sessionData,
           user: {
             ...sessionData.user,
             completeProfile: true,
             businessName: data.businessName,
-            entityType: data.businessType.toUpperCase(),
+            businessType: data.businessType.toLowerCase(),
           },
         });
-        router.replace("/");
-      } else {
-        toast.error(`Sign up failed: ${response.data.message}`);
+        router.push("/");
       }
     } catch (error) {
+      console.log(error);
       setIsLoading(false);
       const errorMessage = handleServerErrorMessage(error);
       toast.error(`Sign up failed: ${errorMessage}`);
