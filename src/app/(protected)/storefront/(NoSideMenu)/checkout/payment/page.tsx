@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BreadCrumbBanner from "../../../_components/BreadCrumbBanner";
 import {
   Box,
@@ -33,11 +33,14 @@ export default function PaymentPage() {
     cartSize,
     isLoading: cartLoading,
   } = useCartStore();
-  // const cartItems = cart;
-
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
   const userToken = sessionData?.user?.token;
+  const [shippingData, setShippingData] = useState<any>({});
+  const [shippingAddress, setShippingAddress] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState();
 
   const router = useRouter();
 
@@ -72,36 +75,49 @@ export default function PaymentPage() {
     },
   ];
 
-  const [shippingData, setShippingData] = useState<any>({});
-  const [shippingAddress, setShippingAddress] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("1");
+  // fetch addresses
+  const fetchAddresses = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        "/storefront/shipping-addresses"
+      );
+      if (response.status === 200) {
+        const data = response.data.data;
+        setShippingData(data?.find((item) => item?.isDefault === true));
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userToken]);
+
+  // fetch payment methods
+  const fetchPaymentMethods = useCallback(async () => {
+    try {
+      const response = await requestClient({ token: userToken }).get(
+        "/storefront/get-payment-methods"
+      );
+      if (response.status === 200) {
+        setPaymentMethods(response.data.data);
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+  }, [userToken]);
 
   useEffect(() => {
     if (!userToken) return;
-
-    const fetchAddresses = async () => {
-      setIsLoading(true);
-      try {
-        const response = await requestClient({ token: userToken }).get(
-          "/storefront/shipping-addresses"
-        );
-        if (response.status === 200) {
-          const data = response.data.data;
-          setShippingData(data?.find((item) => item?.isDefault === true));
-        } else {
-          toast.error(`Error: ${response.data.message}`);
-        }
-      } catch (error) {
-        const errorMessage = handleServerErrorMessage(error);
-        toast.error(errorMessage);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchAddresses();
-  }, [userToken]);
+    fetchPaymentMethods();
+  }, [fetchAddresses, fetchPaymentMethods, userToken]);
 
   useEffect(() => {
     shippingData &&
@@ -127,12 +143,6 @@ export default function PaymentPage() {
       document.body.removeChild(script);
     };
   }, []);
-
-  // console.log("shippingAddress", shippingAddress)
-
-  //   Card Number: 5319 3178 0136 6660
-  // Expiry Date: 10/26
-  // CVV: 000
 
   const verifyPayment = async (ref) => {
     try {
@@ -210,7 +220,7 @@ export default function PaymentPage() {
   const payWithFincra = async (event: any) => {
     const orderData = {
       orderId: cartItems?.id,
-      paymentMethodId: Number(paymentMethod),
+      paymentMethodId: Number(selectedPaymentMethod),
       deliveryAddress: shippingAddress,
       deliveryType: "STANDARD",
     };
@@ -248,9 +258,10 @@ export default function PaymentPage() {
   const payWith10Mg = async () => {};
 
   const submiOrder = async (e: any) => {
-    if (!paymentMethod) return toast.error("Select payment method to proceed.");
+    if (!selectedPaymentMethod)
+      return toast.error("Select payment method to proceed.");
 
-    if (Number(paymentMethod) === 1) payWithFincra(e);
+    // if (Number(paymentMethod) === 1) payWithFincra(e);
 
     // else
     payWith10Mg();
@@ -330,17 +341,20 @@ export default function PaymentPage() {
                     )}
                   </div>
 
-                  <div className="w-full border border-r-gray-100 rounded-t-2xl overflow-hidden mt-10">
+                  {/* <div className="w-full border border-r-gray-100 rounded-t-2xl overflow-hidden mt-10">
                     <div className="p-4 bg-primary-100">
                       <h3 className="font-semibold text-lg">Payment Method</h3>
                     </div>
                     <div className="p-4">
                       <RadioGroup
-                        onChange={setPaymentMethod}
-                        value={paymentMethod}
+                        onChange={setSelectedPaymentMethod}
+                        value={selectedPaymentMethod}
                         className="w-full"
                       >
                         <Stack direction="column">
+
+                        {paymentMethods.map()
+                        }
                           <Box
                             as="label"
                             className="flex items-center justify-between w-full cursor-pointer  hover:bg-primary-50 p-3"
@@ -360,7 +374,7 @@ export default function PaymentPage() {
                         </Stack>
                       </RadioGroup>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col-span-1 lg:col-span-2 border border-r-gray-100 rounded-2xl overflow-hidden">
                   <div className=" flex items-center justify-between p-4">
