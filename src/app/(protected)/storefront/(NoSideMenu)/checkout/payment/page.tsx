@@ -24,6 +24,7 @@ import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { config } from "process";
 import axios from "axios";
+import { ConfirmPaymentModal } from "../_components/confirmPaymentModel";
 
 type OrderDataType = {
   orderId: string;
@@ -51,7 +52,13 @@ export default function PaymentPage() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     "fincra" | "tenmg_credit"
   >("fincra");
-
+  const {
+    isOpen,
+    onClose: closeConfirmPayment,
+    onOpen: openConfirmPayment,
+  } = useDisclosure();
+  const [checkoutRefId, setCheckoutRefid] = useState("");
+  const [isConfirming, setConfirming] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -229,61 +236,44 @@ export default function PaymentPage() {
   };
 
   const paywith10mg = async (requestedAmount: number, reference: string) => {
-    try {
-      const response = axios.post(
-        `/client/applications/start`,
-        {
-          requestedAmount,
-          reference,
-          customer: sessionData?.user,
-        },
-        {
-          headers: {
-            "Public-Key": `${process.env.NEXT_PUBLIC_TENMG_PUBKEY}`,
-            "Secret-Key": `${process.env.TENMG_SECKEY}`,
-          },
-        }
-      );
-      console.log(response);
-    } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-    }
-  };
-
-  const initailizePayment = async (event: any, orderData: OrderDataType) => {
-    setLoadingPayment(true);
+    const customer = {
+      id: sessionData?.user.id,
+      businessId: null,
+      avatarId: null,
+      name: sessionData?.user?.name,
+      email: sessionData?.user?.email,
+      phone: null,
+      identifier: null,
+      creditScoreId: null,
+      active: sessionData?.user?.active,
+      createdAt: null,
+      updatedAt: null,
+      reference: null,
+    };
 
     try {
-      const response = await requestClient({ token: userToken }).post(
-        "/storefront/checkout",
-        orderData
-      );
+      const { data, status } = await requestClient({
+        "Public-Key": process.env.NEXT_PUBLIC_TENMG_PUBKEY,
+        "Secret-Key": process.env.TENMG_SECKEY,
+      }).post(`/client/applications/start`, {
+        requestedAmount,
+        reference,
+        customer,
+      });
 
-      if (response.status === 200 && selectedPaymentMethod === "fincra") {
-        await payFincra(
-          event,
-          response?.data?.data?.reference,
-          response?.data?.data?.totalAmount
-        );
-      } else if (
-        response.status === 200 &&
-        selectedPaymentMethod === "tenmg_credit"
-      ) {
-        await paywith10mg(
-          response?.data?.data?.totalAmount,
-          response?.data?.data?.reference
-        );
+      if (status === 200) {
+        return data?.data.url;
+      } else {
+        toast.error(`Error: ${data.message}`);
       }
     } catch (error) {
       const errorMessage = handleServerErrorMessage(error);
       toast.error(errorMessage);
     }
-
-    setLoadingPayment(false);
+    return null;
   };
 
-  const submiOrder = async (e: any) => {
+  const submiOrder = async (event: any) => {
     const orderData = {
       orderId: cartItems?.id,
       paymentMethod: selectedPaymentMethod,
@@ -299,7 +289,67 @@ export default function PaymentPage() {
       return;
     }
 
-    await initailizePayment(e, orderData);
+    setLoadingPayment(true);
+
+    try {
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/checkout",
+        orderData
+      );
+
+      let popupWindow: Window | null = null;
+      popupWindow = window.open("", "_blank");
+
+      setCheckoutRefid(response?.data?.data?.reference);
+
+      if (response.status === 200 && selectedPaymentMethod === "fincra") {
+        await payFincra(
+          event,
+          response?.data?.data?.reference,
+          response?.data?.data?.totalAmount
+        );
+      } else if (
+        response.status === 200 &&
+        selectedPaymentMethod === "tenmg_credit"
+      ) {
+        const url = await paywith10mg(
+          response?.data?.data?.totalAmount,
+          response?.data?.data?.reference
+        );
+
+        if (url && popupWindow) {
+          popupWindow.location.href = url;
+          openConfirmPayment();
+        } else if (popupWindow) {
+          popupWindow.close();
+        }
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+
+    setLoadingPayment(false);
+  };
+
+  const handleConfirmPayment = async () => {
+    setConfirming(true);
+
+    try {
+      const response = await requestClient({
+        "Public-Key": process.env.NEXT_PUBLIC_TENMG_PUBKEY,
+        "Secret-Key": process.env.TENMG_SECKEY,
+      }).get(`client/applications/payment/verify/${checkoutRefId}`);
+
+      if (response.status === 200) {
+        toast.success("Payment confirmed");
+        closeConfirmPayment();
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    }
+    setConfirming(false);
   };
 
   return (
@@ -509,7 +559,11 @@ export default function PaymentPage() {
 
                     <Divider my={5} />
                     <Button colorScheme={"primary"} onClick={submiOrder}>
-                      {loadingPayment ? <Loader2 /> : "Pay Now"}
+                      {loadingPayment ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Pay Now"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -518,6 +572,12 @@ export default function PaymentPage() {
           )}
         </>
       )}
+
+      <ConfirmPaymentModal
+        isOpen={isOpen}
+        onConfirm={handleConfirmPayment}
+        isLoading={isConfirming}
+      />
     </>
   );
 }
