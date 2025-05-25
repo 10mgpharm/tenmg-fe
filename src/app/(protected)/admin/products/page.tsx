@@ -303,7 +303,7 @@ const Page = () => {
         <div className="p-8">
             <div className="flex justify-between flex-wrap">
                 <h3 className="font-semibold text-2xl">Products</h3>
-                <div className="mb-4 flex items-center flex-wrap gap-3">
+                <div className="mb-4 flex items-center gap-3">
                     <SearchInput
                         placeholder="Search for a Product"
                         value={globalFilter}
@@ -317,7 +317,7 @@ const Page = () => {
                     </div>
                     <Link
                         href={'/admin/products/add-product'}
-                        className="bg-primary-500 text-white p-2 px-5 rounded-md">
+                        className="bg-primary-500 text-white p-2 px-5 rounded-md min-w-max">
                         Add Product
                     </Link>
                     <div className="flex items-center gap-2">
@@ -365,7 +365,14 @@ const Page = () => {
                         /> :
                         memoizedData?.length > 0 && (
                             currentView === PRODUCTVIEW.LIST ? (
-                                <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                                <TableContainer 
+                                sx={{
+                                    "&::-webkit-scrollbar": {
+                                       display: "none"
+                                    },
+                                }}
+                                border={"1px solid #F9FAFB"} 
+                                borderRadius={"10px"}>
                                     <Table>
                                         <Thead bg={"#F2F4F7"}>
                                             {table?.getHeaderGroups()?.map((headerGroup) => (

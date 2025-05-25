@@ -99,7 +99,7 @@ const ProductWallet = () => {
 
           {/* Search */}
           <SearchInput
-            placeholder="Search..."
+            placeholder="Search by supplier name"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
@@ -125,7 +125,7 @@ const ProductWallet = () => {
               firstPageUrl: data?.payouts?.firstPageUrl,
               lastPageUrl: data?.payouts?.lastPageUrl,
             }}
-            emptyStateHeader="No payout"
+            emptyStateHeader="No payout result"
             />
           </TabPanel>
           <TabPanel px={0}>

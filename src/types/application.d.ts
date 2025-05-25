@@ -420,3 +420,12 @@ export interface Order {
   paymentStatus: string
 }
 
+export interface BankAccountProps {
+  id: number
+  accountName: string
+  accountNumber: string
+  bankName: string
+  bankCode: string
+  active: number
+}
+

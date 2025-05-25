@@ -7,20 +7,36 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { WalletProductProps } from "@/types";
+import { BankAccountProps, WalletProductProps } from "@/types";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import TransactionTab from "./TransactionTab";
 import WalletOverview from "./WalletOverview";
+import OTPModal from "@/app/(protected)/suppliers/wallet/_components/OTPModal";
+import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/WithdrawFunds";
 
 interface Props {
   transactions: WalletProductProps;
+  bankInfo?: BankAccountProps;
   setPageCount: Dispatch<SetStateAction<number>>;
 }
-const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
+const ProductWalletTab = ({ transactions, setPageCount, bankInfo }: Props) => {
+
+  const {
+    isOpen: isOpenWithdraw,
+    onOpen: onOpenWithdraw,
+    onClose: onCloseWithdraw,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenOTP,
+    onOpen: onOpenOTP,
+    onClose: onCloseOTP,
+  } = useDisclosure();
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 c">
@@ -31,6 +47,7 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#7F56D9]"
           image={totalPattern}
           hasPendingBalance={true}
+          hasWidthdrawButton={false}
           pendingBg="bg-[#c5b4f5]"
           pendingText="text-[#7F56D9]"
           pendingBalance={`${Number(transactions?.totalPendingCommissions ?? 0.00)?.toLocaleString()}`}
@@ -42,6 +59,7 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#DC6803]"
           image={orderPattern}
           hasPendingBalance={true}
+          hasWidthdrawButton={false}
           pendingBg="bg-[#FFF4E5]"
           pendingText="text-[#DC6803]"
           pendingBalance={`${Number(transactions?.totalPendingSupplierPayout ?? 0.00)?.toLocaleString()}`}
@@ -53,9 +71,11 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           toColor="to-[#E31B54]"
           image={productPattern}
           hasPendingBalance={true}
+          hasWidthdrawButton={true}
           pendingBg="bg-[#FFE5ED]"
           pendingText="text-[#E31B54]"
           pendingBalance={"0.00"}
+          onOpenWithdraw={onOpenWithdraw}
         />
       </div>
 
@@ -116,6 +136,13 @@ const ProductWalletTab = ({ transactions, setPageCount }: Props) => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <WithdrawFunds
+        isOpen={isOpenWithdraw}
+        onClose={onCloseWithdraw}
+        otpOpen={onOpenOTP}
+        bankDetails={bankInfo}
+      />
+      <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
     </div>
   );
 };

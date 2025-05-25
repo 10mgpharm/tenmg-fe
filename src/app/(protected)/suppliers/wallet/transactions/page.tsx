@@ -75,18 +75,15 @@ const TransactionUI = () => {
                     type="text" 
                     value={globalFilter}
                     onChange={(e) => setGlobalFilter(e.target.value)}
-                    placeholder="Search for transactions" 
+                    placeholder="Search by description or transaction ID" 
                     className="outline-none flex-1 placeholder:text-gray-400 bg-transparent" 
                     />
-                </div>
-                <div className="border border-gray-300 p-3 rounded-md flex items-center gap-2">
-                    <CiFilter className="w-5 h-5" />
-                    <p className="text-gray-500 font-medium">Filter</p>
                 </div>
             </div>
         </div>
         <div className="mt-4">
             <Transaction 
+            globalFilter={globalFilter}
             data={transactions} 
             payoutData={pendingPayouts} 
             hasPagination={true}
