@@ -80,7 +80,8 @@ const PasswordForm = () => {
       }
     } catch (error) {
       setIsLoading(false);
-      console.error(error);
+      toast.error(error.response.data.errors.currentPassword[0]);
+      // console.error(error.response.data.errors.currentPassword[0]);
     }
   };
 

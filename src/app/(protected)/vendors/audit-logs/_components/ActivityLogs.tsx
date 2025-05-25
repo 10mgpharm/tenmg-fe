@@ -116,7 +116,7 @@ const ActivityLogs = ({ setAuditLogCSV }: any) => {
             <div className="">
                 {
                     data?.data?.length === 0 ?
-                        <EmptyResult heading="No Activity Log" content="All Activity Logs will appear here!" />
+                        <EmptyResult heading={searchValue ? `No Match Found` : `No Activity Log`} content={searchValue ? `` : `All Activity Logs will appear here!`} />
                         : data?.data?.length > 1
                             ? (
                                 <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} >

@@ -8,6 +8,7 @@ import { transactionData } from "@/data/mockdata";
 import WalletTable from "../../_components/WalletTable";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import { cn } from "@/lib/utils";
+import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
 
 const Wallet = ({
   params,
@@ -66,55 +67,26 @@ const Wallet = ({
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-7 c">
-              <div
-                className={`bg-white border-gray-200 border-2 rounded-md px-5 pt-5`}
-              >
-                <div className="flex-col flex gap-2">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
-                    {" Wallet Balance"}
-                  </p>
-                  <p className="font-bold text-[20px] ">{"₦5,600"}</p>
-                </div>
-                <p className="flex flex-col  pt-5 pb-5 text-gray-700  text-[15px]">
-                  Last withdrawal date:
-                  <span>2 march, 2025</span>
-                </p>
-              </div>
+              <OverviewCard
+                fromColor="from-[#E31B54]"
+                toColor="to-[#E31B54]"
+                value="₦2,300"
+                title="Total Pending Orders Amount"
+              />
 
-              <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5 flex items-center `}
-              >
-                <div className="flex-col flex gap-2  ">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
-                    {"Ledger Account"}
-                  </p>
-                  <p className="font-bold text-[20px] ">{"₦2,300"}</p>
-                </div>
-              </div>
+              <OverviewCard
+                fromColor="from-[#53389E]"
+                toColor="to-[#7F56D9]"
+                value="₦5,600"
+                title="Current Wallet Amount"
+              />
 
-              <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5`}
-              >
-                <div className="flex justify-end">
-                  <select
-                    className="bg-gray-200 rounded-full pl-3 outline-none ring-0 text-[13px] py-1 "
-                    onChange={(e) => setAdminCommissionFilter(e.target.value)}
-                    value={adminCommisionFilter}
-                  >
-                    <option value="10">Last 7 Days</option>
-                    <option value="20">Last 14 Days</option>
-                    <option value="delayed">1 Month Ago</option>
-                    <option value="canceled">All Time</option>
-                  </select>
-                </div>
-
-                <div className="flex-col flex gap-2 mt-2">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
-                    {"Admin Commission"}
-                  </p>
-                  <p className="font-bold text-[20px] ">{"₦50,000"}</p>
-                </div>
-              </div>
+              <OverviewCard
+                fromColor="from-[#DC6803]"
+                toColor="to-[#DC6803]"
+                value="₦5,600"
+                title="Transaction History"
+              />
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-6 pb-4">

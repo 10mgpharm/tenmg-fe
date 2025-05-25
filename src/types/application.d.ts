@@ -19,6 +19,7 @@ export interface ApplicationUrl {
 export interface StartApplicationPayload {
   customer: CustomerDto;
   requestedAmount: number;
+  txnReference?: string;
 }
 
 export interface BusinessDto {
@@ -57,6 +58,7 @@ export interface ApplicationWidgetConfig {
   customer: CustomerDto;
   application: ApplicationDto;
   defaultBank: BankAccountDto;
+  token: string;
 }
 
 export interface BankDto {

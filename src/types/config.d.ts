@@ -23,4 +23,5 @@ export interface IConfig {
     fincraSdkUrl: string;
     email: EmailConfig;
     tenmg: TenMgConfig;
+    tenmgDemo: TenMgConfig;
 }

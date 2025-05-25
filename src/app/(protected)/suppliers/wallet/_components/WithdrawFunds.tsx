@@ -11,7 +11,7 @@ import {
     FormLabel,
     Input,
     Select,
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
 import { BankInfo } from '../page';
 import requestClient from '@/lib/requestClient';
 import { useSession } from 'next-auth/react';

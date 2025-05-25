@@ -9,6 +9,8 @@ import WalletTable from "../../_components/WalletTable";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import { cn } from "@/lib/utils";
 
+import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
+
 const LenderWallet = ({
   params,
 }: {
@@ -66,62 +68,33 @@ const LenderWallet = ({
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[10px] md:gap-4 mt-7 c">
-              <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5 flex items-center`}
-              >
-                <div className="flex-col flex gap-2">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
-                    {"Wallet Balance"}
-                  </p>
-                  <p className="font-bold text-[20px] ">{"₦5,600"}</p>
-                </div>
-              </div>
+              <OverviewCard
+                fromColor="from-[#3E4784]"
+                toColor="to-[#3E4784]"
+                value="₦2,300"
+                title="Total Balance"
+              />
 
-              <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5 flex items-center `}
-              >
-                <div className="flex-col flex gap-2  ">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
-                    {"Investment Wallet"}
-                  </p>
-                  <p className="font-bold text-[20px] ">{"₦2,300"}</p>
-                </div>
-              </div>
+              <OverviewCard
+                fromColor="from-[#53389E]"
+                toColor="to-[#7F56D9]"
+                value="₦2,300"
+                title="Investment Wallet"
+              />
 
-              <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5 flex items-center `}
-              >
-                <div className="flex-col flex gap-2  ">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
-                    {"Ledger Account"}
-                  </p>
-                  <p className="font-bold text-[20px] ">{"₦2,300"}</p>
-                </div>
-              </div>
+              <OverviewCard
+                fromColor="from-[#E31B54]"
+                toColor="to-[#E31B54]"
+                value="₦2,300"
+                title="Amount On Loan"
+              />
 
-              <div
-                className={`bg-white border-gray-200 border-2 rounded-md p-5`}
-              >
-                <div className="flex justify-end">
-                  <select
-                    className="bg-gray-200 rounded-full pl-3 outline-none ring-0 text-[13px] py-1 "
-                    onChange={(e) => setAdminCommissionFilter(e.target.value)}
-                    value={adminCommisionFilter}
-                  >
-                    <option value="10">Last 7 Days</option>
-                    <option value="20">Last 14 Days</option>
-                    <option value="delayed">1 Month Ago</option>
-                    <option value="canceled">All Time</option>
-                  </select>
-                </div>
-
-                <div className="flex-col flex gap-2 mt-2">
-                  <p className="text-gray-800 text-[15px] font-semibold ">
-                    {"Lenders Commission"}
-                  </p>
-                  <p className="font-bold text-[20px] ">{"₦50,000"}</p>
-                </div>
-              </div>
+              <OverviewCard
+                fromColor="from-[#DC6803]"
+                toColor="to-[#DC6803]"
+                value="₦50,000"
+                title="Transaction History"
+              />
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-6 pb-4">
