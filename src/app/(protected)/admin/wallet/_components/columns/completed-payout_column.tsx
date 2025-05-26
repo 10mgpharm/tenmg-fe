@@ -52,7 +52,9 @@ export function Completed_ColumnFN(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">₦{info.row.original?.amount}</p>
+          <p className="font-medium">
+            ₦{Number(info.row.original?.amount)?.toLocaleString()}
+          </p>
         </div>
       ),
     }),

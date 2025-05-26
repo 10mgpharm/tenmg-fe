@@ -47,7 +47,7 @@ export function repaymentColumnFn(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">₦{info.row.original?.amount ?? `0.00`}</p>
+          <p className="font-medium">₦{Number(info.row.original?.amount)?.toLocaleString() ?? `0.00`}</p>
         </div>
       ),
     }),

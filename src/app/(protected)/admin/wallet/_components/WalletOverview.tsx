@@ -11,7 +11,9 @@ interface OverviewProps {
   pendingBg?: string;
   pendingText?: string;
   hasPendingBalance: boolean;
+  hasWidthdrawButton?: boolean;
   pendingBalance?: string;
+  onOpenWithdraw?: () => void;
 }
 const WalletOverview = ({
   title,
@@ -22,7 +24,9 @@ const WalletOverview = ({
   pendingBg,
   pendingText,
   hasPendingBalance,
+  hasWidthdrawButton,
   pendingBalance,
+  onOpenWithdraw
 }: OverviewProps) => {
   return (
     <div
@@ -41,9 +45,18 @@ const WalletOverview = ({
           {
             hasPendingBalance &&
             <div className="absolute bottom-0 left-6">
-              <div className={classNames(`${pendingBg} rounded-md p-1 w-100 pl-2.5`)}>
-                <p className={classNames(`${pendingText} font-medium text-xs`)}>Pending Balance</p>
-                <p className={classNames(`${pendingText} text-xs font-medium`)}>₦{pendingBalance}</p>
+              <div className="flex gap-6 items-center">
+                <div className={classNames(`${pendingBg} rounded-md p-1 w-100 pl-2.5`)}>
+                  <p className={classNames(`${pendingText} font-medium text-xs`)}>Pending Balance</p>
+                  <p className={classNames(`${pendingText} text-xs font-medium`)}>₦{pendingBalance}</p>
+                </div>
+                {hasWidthdrawButton &&
+                  <button 
+                  onClick={onOpenWithdraw} 
+                  className="z-50 cursor-pointer bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Withdraw Funds
+                  </button>
+                }
               </div>
             </div>
           }

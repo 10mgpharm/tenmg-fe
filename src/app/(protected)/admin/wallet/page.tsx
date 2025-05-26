@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
 import { 
+  BankAccountProps,
   LoanTransactionProps, 
   LoanWalletProps, 
   NextAuthUserSession, 
@@ -21,6 +22,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
+  const [bankInfo, setBankInfo] = useState<BankAccountProps>();
   const [walletStats, setWalletStats] = useState<WalletProductProps>();
   const [loanWallet, setLoanWallet] = useState<LoanWalletProps>();
   const [loanTransaction, setLoanTransaction] = useState<LoanTransactionProps[]>([]);
@@ -85,12 +87,26 @@ const Page = () => {
     setLoading(false);
   }, [token, pageCount]);
 
+  const fetchingBankInfo = useCallback(async () => {
+    try {
+      const response = await requestClient({ token: token }).get(
+        "admin/wallet/bank-account"
+      );
+      if (response.status === 200) {
+        setBankInfo(response?.data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching bank account information:", error);
+    }
+  }, [token]);
+
   useEffect(() => {
     if (!token) return;
     fetchingWallet();
     fetchingLoanWallet();
     fetchingLoanTransactions();
     fetchingLoanWalletTransactions();
+    fetchingBankInfo();
   }, [token]);
 
   return (
@@ -137,6 +153,7 @@ const Page = () => {
             <ProductWalletTab 
             transactions={walletStats}
             setPageCount={setPageCount}
+            bankInfo={bankInfo}
             />
           </TabPanel>
           <TabPanel className=" !p-0">
