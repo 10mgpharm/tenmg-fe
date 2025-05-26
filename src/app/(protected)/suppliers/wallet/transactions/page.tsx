@@ -61,14 +61,14 @@ const TransactionUI = () => {
   }, [token, fetchingTransactions, fetchingPendingPayout]);
     
   return (
-    <div className="p-8">
-        <Link href={"/suppliers/wallet"} className="flex items-center gap-3">
+    <div className="p-5 sm:p-8">
+        <Link href={"/suppliers/wallet"} className="flex items-center gap-3 mb-5">
           <ArrowLeftIcon className="w-5 h-5"/>
           <p className="text-lg font-normal">Back</p>
         </Link>
-        <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold">All Transactions</h2>
-            <div className="flex items-center gap-3 mt-5">
+        <div className="md:flex justify-between items-center">
+            <h2 className="text-xl sm:text-2xl font-semibold">All Transactions</h2>
+            <div className="flex items-center gap-3 mt-3 md:mt-5">
                 <div className="border border-gray-300 rounded-md flex items-center gap-3 p-3 w-[350px]">
                     <CiSearch className="w-5 h-5" />
                     <input 

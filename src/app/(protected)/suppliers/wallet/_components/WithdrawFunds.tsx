@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import {
     Modal,
     ModalOverlay,
@@ -18,8 +18,8 @@ import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
 
 const WithdrawFunds = (
-    {isOpen, onClose, otpOpen, bankDetails}: 
-    {isOpen: boolean, onClose: () => void; otpOpen: () => void; bankDetails: BankInfo}
+    {isOpen, onClose, otpOpen, bankDetails, amount, setAmount}: 
+    {isOpen: boolean, onClose: () => void; otpOpen: () => void; bankDetails: BankInfo, amount: number, setAmount: Dispatch<SetStateAction<number>>; }
 ) => {
 
     const [loading, setLoading] = useState(false);
@@ -32,7 +32,7 @@ const WithdrawFunds = (
         try {
           const response = await requestClient({ token }).post(
             `/resend-otp`,
-            { type: "SUPPLIER_ADD_BANK_ACCOUNT" }
+            { type: "WITHDRAW_FUND_TO_BANK_ACCOUNT" }
           );
           if (response.status === 200) {
             onClose();
@@ -83,7 +83,12 @@ const WithdrawFunds = (
                 </FormControl>
                 <FormControl>
                     <FormLabel>Amount</FormLabel>
-                    <Input type='number' placeholder='#50,0000'/>
+                    <Input 
+                    type='number'
+                     value={amount} 
+                     onChange={(e) => setAmount(Number(e.target.value))}
+                     placeholder='#50,0000'
+                     />
                 </FormControl> 
                 <Button
                     w={"full"}
