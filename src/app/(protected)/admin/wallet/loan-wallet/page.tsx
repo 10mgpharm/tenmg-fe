@@ -79,7 +79,7 @@ const LoanWallet = () => {
       </div>
       <div className="flex items-center justify-between gap-4 max-lg:flex-col-reverse max-lg:items-start">
         <SearchInput
-          placeholder="Search..."
+          placeholder="Search by Transaction ID"
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
         />

@@ -52,8 +52,8 @@ const LoanTable = ({type, data, hasPagination, metaData, setPageCount}: LoanTabl
     <div>
       {data?.length === 0 ? (
         <EmptyOrder
-          heading={`No Wallet Yet`}
-          content={`You currently have no wallet. All wallets will appear here.`}
+          heading={`No Result Found`}
+          content={`No record found for this request`}
         />
       ) : data?.length > 0 ? (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
