@@ -352,6 +352,36 @@ export default function PaymentPage() {
     setConfirming(false);
   };
 
+  const [couponCode, setCouponCode] = useState<string | number | null>();
+  const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
+
+  const vetCouponCode = async () => {
+    setLoadingCoupon(true);
+    if (!couponCode) {
+      toast.error("Please enter a coupon code");
+      setLoadingCoupon(false);
+      return;
+    }
+
+    try {
+      setLoadingCoupon(true);
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/orders/coupon/verify",
+        { coupon: couponCode }
+      );
+      if (response.status === 200) {
+        toast.success("Coupon code applied successfully");
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      setLoadingCoupon(false);
+    }
+  };
+
   return (
     <>
       {isLoading || cartLoading ? (
@@ -509,11 +539,10 @@ export default function PaymentPage() {
                                 </p>
                               )}
                               <p
-                                className={`font-semibold my-2 text-sm ${
-                                  item?.discountPrice > 0
-                                    ? "text-gray-400 line-through"
-                                    : "text-gray-900"
-                                }`}
+                                className={`font-semibold my-2 text-sm ${item?.discountPrice > 0
+                                  ? "text-gray-400 line-through"
+                                  : "text-gray-900"
+                                  }`}
                               >
                                 ₦{item?.actualPrice}
                               </p>
@@ -526,9 +555,13 @@ export default function PaymentPage() {
                     <div className="">
                       <FormLabel>Coupon Code</FormLabel>
                       <div className="flex items-center gap-2">
-                        <Input type="text" placeholder="" />
-                        <Button colorScheme={"primary"} size={"sm"}>
-                          <FaCheck className="text-white text-xl" />
+                        <Input type="text" placeholder="" css={{ "--error-color": "primary" }}
+                          value={couponCode}
+                          onChange={(e) => {
+                            setCouponCode(e.target.value)
+                          }} />
+                        <Button colorScheme={"primary"} size={"sm"} onClick={vetCouponCode} disabled={!couponCode || couponCode?.length < 3}>
+                          {loadingCoupon ? <Loader2 className="animate-spin" /> : <FaCheck className="text-white text-xl" />}
                         </Button>
                       </div>
                     </div>

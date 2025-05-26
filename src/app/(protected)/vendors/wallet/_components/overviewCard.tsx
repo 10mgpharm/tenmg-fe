@@ -1,6 +1,7 @@
 import { classNames } from "@/utils";
 import { Button } from "@chakra-ui/react";
 import Image from "next/image";
+import { formatAmount } from "@/utils/formatAmount";
 
 export const OverviewCard = ({
   title,
@@ -33,11 +34,26 @@ export const OverviewCard = ({
           <div className="flex items-center justify-between w-full ">
 
             <p className="font-bold text-white text-[18px] sm:text-[20px] lg:text-3xl">
-              {value}
+              {value === "******" ? "******" : formatAmount(value, "en-NG")}
             </p>
+            {/* {value} */}
 
             {(func && func_btn) &&
-              <Button size={"xs"} className="relative top-6 z-20" disabled={(func && func_btn) && (parseInt(value) <= 0)} style={{ backgroundColor: "#000000" }} onClick={func}>Withdraw Funds</Button>
+              <Button
+                size={"xs"}
+                className="relative top-6 z-20 transition-all duration-200"
+                disabled={(func && func_btn) && (parseInt(value) <= 0)}
+                style={{
+                  backgroundColor: "#000000",
+                  color: "#ffffff",
+                  borderRadius: "0.375rem",
+                  padding: "0.5rem 1.25rem",
+                  fontWeight: "600",
+                  boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                }}
+                onClick={func}>
+                Withdraw Funds
+              </Button>
             }
           </div>
 
