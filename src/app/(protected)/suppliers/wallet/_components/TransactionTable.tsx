@@ -16,6 +16,7 @@ import TransactionDetails from "@/app/(protected)/admin/wallet/_components/Trans
 
 interface TransactionTableProps {
     data: Daum[];
+    globalFilter?: string;
     hasPagination: boolean;
     setPageCount?: Dispatch<SetStateAction<number>>;
     metaData?: {
@@ -32,7 +33,7 @@ interface TransactionTableProps {
         lastPage: number;
     };
 }
-const TransactionTable = ({data, hasPagination, metaData, setPageCount}: TransactionTableProps) => {
+const TransactionTable = ({data, hasPagination, metaData, setPageCount, globalFilter}: TransactionTableProps) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedRow, setSelectedRow] = useState<Daum>();
@@ -55,8 +56,8 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount}: Transac
       {
         data?.length === 0 
         ? <EmptyOrder 
-        heading={`No Transactions Yet`} 
-        content={`You currently have no transaction. All transactions will appear here.`} 
+        heading={globalFilter ? "No Result Found" : `No Transactions Yet`} 
+        content={globalFilter ? "No result found for this search" : `You currently have no transaction. All transactions will appear here.`}
         /> : 
         data?.length > 0 ? (
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
@@ -67,7 +68,7 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount}: Transac
                         {headerGroup.headers?.map((header, idx) => (
                             <Th
                             textTransform={"initial"}
-                            px="0px"
+                            px="10px"
                             key={idx}
                             >
                             {header.isPlaceholder
@@ -85,7 +86,7 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount}: Transac
                     {table?.getRowModel()?.rows?.map((row, index) => (
                         <Tr key={index}>
                         {row.getVisibleCells()?.map((cell, idxs) => (
-                            <Td key={idxs} px="0px">
+                            <Td key={idxs} px="10px">
                             {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()

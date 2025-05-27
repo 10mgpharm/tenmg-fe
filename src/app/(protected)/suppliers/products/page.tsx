@@ -294,7 +294,7 @@ const Products = () => {
                         Products
                     </h3>
                     <div className="flex items-center justify-between mt-5">
-                        <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center gap-3">
                             <SearchInput
                                 placeholder="Search for a Product"
                                 value={globalFilter}
