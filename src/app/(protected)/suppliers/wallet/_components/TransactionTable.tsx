@@ -68,7 +68,7 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount, globalFi
                         {headerGroup.headers?.map((header, idx) => (
                             <Th
                             textTransform={"initial"}
-                            px="0px"
+                            px="10px"
                             key={idx}
                             >
                             {header.isPlaceholder
@@ -86,7 +86,7 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount, globalFi
                     {table?.getRowModel()?.rows?.map((row, index) => (
                         <Tr key={index}>
                         {row.getVisibleCells()?.map((cell, idxs) => (
-                            <Td key={idxs} px="0px">
+                            <Td key={idxs} px="10px">
                             {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()

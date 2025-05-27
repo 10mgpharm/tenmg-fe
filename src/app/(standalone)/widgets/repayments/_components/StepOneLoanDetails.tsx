@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import LoanLayout from "../../_components/LoanLayout";
+import LoanProfile from "../../_components/LoanProfile";
 import {
   ApplicationDto,
   BusinessDto,
@@ -13,12 +14,10 @@ import {
   Link,
   Stack,
   Text,
-  VStack,
   Badge,
   Divider,
 } from "@chakra-ui/react";
 import { TbCurrencyNaira } from "react-icons/tb";
-import LoanProfile from "../../_components/LoanProfile";
 import { formatAmountString } from "@/utils";
 import { convertDate } from "@/utils/formatDate";
 
@@ -35,6 +34,14 @@ interface Props {
   pendingAmounts: any[];
 }
 
+const getTotalPending = (amounts: any[], fallback: string | number) => {
+  return amounts.length > 0
+    ? formatAmountString(
+        amounts.reduce((sum, item) => sum + Number(item.totalAmount), 0)
+      )
+    : formatAmountString(fallback || 0);
+};
+
 export default function StepOneLoanDetails({
   business,
   customer,
@@ -48,12 +55,9 @@ export default function StepOneLoanDetails({
   pendingAmounts,
 }: Props) {
   const [showAll, setShowAll] = useState(false);
-
   const displayItems = showAll
     ? data?.repaymentSchedule
     : data?.repaymentSchedule?.slice(0, 3) || [];
-
-    console.log(lastPaidBalance)
 
   return (
     <LoanLayout
@@ -66,20 +70,16 @@ export default function StepOneLoanDetails({
 
       <Stack
         spacing={4}
-        borderColor="gray.200"
         border="1px solid var(--tenmg-colors-gray-200)"
         borderRadius="md"
         my={6}
         py={5}
       >
         <Box>
-          <Flex gap={3} justifyContent="center" alignItems="center">
+          <Flex justifyContent="center">
             <Badge
               bg="warning.100"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              textColor="warning.700"
+              color="warning.700"
               rounded={16}
               py={1}
               px={3}
@@ -89,26 +89,15 @@ export default function StepOneLoanDetails({
           </Flex>
           <Flex justifyContent="center" alignItems="center" fontSize={60}>
             <TbCurrencyNaira size="24px" className="mt-6" />
-            <Text>{
-              pendingAmounts.length > 0
-                ? formatAmountString(pendingAmounts.reduce((sum, item) => sum + Number(item.totalAmount), 0))
-                : formatAmountString(lastPaidBalance || 0)
-            }</Text>
+            <Text>
+              {getTotalPending(pendingAmounts, lastPaidBalance)}
+            </Text>
           </Flex>
-          <Stack justifyContent="center" alignItems="center" fontSize={20}>
-            <Badge
-              bg="success.100"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              textColor="success.700"
-              rounded={16}
-              py={1}
-              px={3}
-            >
-              <Text color="success.700">Total Loan Amount</Text>
+          <Stack alignItems="center" fontSize={20}>
+            <Badge bg="success.100" color="success.700" rounded={16} py={1} px={3}>
+              Total Loan Amount
             </Badge>
-            <Flex justifyContent="center" alignItems="center" fontSize={24}>
+            <Flex alignItems="center" fontSize={24}>
               <TbCurrencyNaira className="mt-1" />
               <Text>{formatAmountString(application?.totalAmount)}</Text>
             </Flex>
@@ -142,27 +131,11 @@ export default function StepOneLoanDetails({
             <Text>{application?.durationInMonths} Months</Text>
           </Stack>
         </Flex>
-        {/* {lastPaidBalance !== null && (
-          <Flex justifyContent="center" mt={2}>
-            <Stack alignItems="center">
-              <Text color="gray.500" fontSize="sm">
-                Remaining Balance (Last Payment)
-              </Text>
-              <Flex alignItems="center">
-                <TbCurrencyNaira />
-                <Text fontWeight="500">
-                  {formatAmountString(lastPaidBalance)}
-                </Text>
-              </Flex>
-            </Stack>
-          </Flex>
-        )} */}
       </Stack>
 
-      {data?.repaymentSchedule && data.repaymentSchedule.length > 0 && (
+      {data?.repaymentSchedule?.length > 0 && (
         <Stack
           spacing={5}
-          borderColor="gray.200"
           border="1px solid var(--tenmg-colors-gray-200)"
           borderRadius="md"
           my={6}
@@ -186,28 +159,23 @@ export default function StepOneLoanDetails({
                 </Text>
                 <Text color="gray.400">{convertDate(item.dueDate)}</Text>
               </Box>
-              <Flex direction="column" alignItems="flex-end" gap={1}>
-                <Badge
-                  bg={`${
-                    isSuccessStatus(item.paymentStatus)
-                      ? "success.50"
-                      : "warning.50"
-                  } `}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  textColor={`${
-                    isSuccessStatus(item.paymentStatus)
-                      ? "success.700"
-                      : "warning.700"
-                  } `}
-                  rounded={16}
-                  py={1}
-                  px={3}
-                >
-                  {item.paymentStatus}
-                </Badge>
-              </Flex>
+              <Badge
+                bg={
+                  isSuccessStatus(item.paymentStatus)
+                    ? "success.50"
+                    : "warning.50"
+                }
+                color={
+                  isSuccessStatus(item.paymentStatus)
+                    ? "success.700"
+                    : "warning.700"
+                }
+                rounded={16}
+                py={1}
+                px={3}
+              >
+                {item.paymentStatus}
+              </Badge>
             </Flex>
           ))}
 

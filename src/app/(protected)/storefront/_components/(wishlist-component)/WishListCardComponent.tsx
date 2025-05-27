@@ -25,11 +25,11 @@ export default function WishListCardComponent({ product, token }) {
   return (
     <div className="m-4 border border-gray-200 rounded-md p-4">
       <div>
-        <div className="grid grid-cols-1 lg:grid-cols-5 justify-between items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-5 justify-between items-center lg:gap-5">
           <div className="flex items-center gap-2 lg:col-span-4 col-span-1">
             <div
               style={{ backgroundImage: "url('/assets/images/pillImage.png')" }}
-              className="size-16 bg-cover bg-center bg-no-repeat"
+              className="size-16 min-h-16 min-w-16 bg-cover bg-center bg-no-repeat"
             />
             <div>
               <h4 className="text-lg font-medium text-gray-700">
@@ -38,7 +38,6 @@ export default function WishListCardComponent({ product, token }) {
               <p className="text-sm  text-gray-500 my-1">
                 {product?.product?.description}
               </p>
-              {/* <p className={`text-sm text-gray-500`}>Quantity: {product?.product??.quantity} Pcs</p> */}
             </div>
           </div>
           <div className="space-y-4 col-span-1">

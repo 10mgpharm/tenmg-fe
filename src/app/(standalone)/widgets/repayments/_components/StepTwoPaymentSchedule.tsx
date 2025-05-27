@@ -42,6 +42,11 @@ interface IFormInput {
   amount: number;
 }
 
+const isSuccessStatus = (status: string | undefined) => {
+  const upper = status?.toUpperCase();
+  return upper === "SUCCESS" || upper === "PAID";
+};
+
 export default function StepTwoPaymentSchedule({
   business,
   customer,
@@ -57,7 +62,6 @@ export default function StepTwoPaymentSchedule({
   const [paymentOption, setPaymentOption] = useState<PaymentOption>("full");
   const [selectedPayments, setSelectedPayments] = useState<number[]>([]);
   const [loadingPayment, setLoadingPayment] = useState(false);
-  const [paidAmount, setPaidAmount] = useState<string | number>("");
 
   const handlePaymentToggle = (id: number) => {
     setSelectedPayments((prev) =>
@@ -70,59 +74,45 @@ export default function StepTwoPaymentSchedule({
     return total + (item ? Number(item.totalAmount) : 0);
   }, 0);
 
-  const isSuccessStatus = (status: string | undefined) => {
-    if (!status) return false;
-    return (
-      status.toUpperCase() === "SUCCESS" || status.toUpperCase() === "PAID"
-    );
-  };
-
-  const hasPaidPayment = data?.repaymentSchedule?.some(item => 
-    isSuccessStatus(item.paymentStatus)
+  const fullPaymentAmount = pendingAmounts?.reduce(
+    (sum, item) => sum + Number(item?.totalAmount),
+    0
   );
-
-  const fullPaymentAmount = pendingAmounts && pendingAmounts.length > 0
-    ? pendingAmounts.reduce((sum, item) => sum + Number(item?.totalAmount), 0)
-    : 0;
 
   useEffect(() => {
     const script = document.createElement("script");
     script.src = process.env.NEXT_PUBLIC_FINCRA_SDK_URL;
     script.async = true;
-
     document.body.appendChild(script);
-
     return () => {
       document.body.removeChild(script);
     };
   }, []);
 
-  const verifyPayment = async (ref, amount) => {
+  const verifyPayment = async (ref: string, amount: string | number) => {
     try {
-      const response = await requestClient({ token: token }).get(
+      const response = await requestClient({ token }).get(
         `/client/repayment/verify-payment/${ref}`
       );
       toast.success("Fund Repayment is successful");
       if (onContinueAction) {
-        onContinueAction(amount);
+        await handlePaymentSuccess(amount);
       }
-      if (onPaymentSuccess) await onPaymentSuccess();
     } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(`Repayment Error: ${errorMessage}`);
+      toast.error(`Repayment Error: ${handleServerErrorMessage(error)}`);
     }
   };
 
-  const cancelRepayment = async (ref) => {
+  const cancelRepayment = async (ref: string) => {
     try {
-      const response = await requestClient({ token: token }).get(
+      const response = await requestClient({ token }).get(
         `/client/repayment/cancel-payment/${ref}`
       );
       if (response?.status === 200) {
-        toast.success("Repayment cancelled successfully...!");
+        toast.success("Repayment cancelled successfully");
       }
-    } catch (e) {
-      toast.error("Something went wrong, could not cancel repayment!");
+    } catch {
+      toast.error("Could not cancel repayment. Please try again.");
     }
   };
 
@@ -134,7 +124,7 @@ export default function StepTwoPaymentSchedule({
 
     window.Fincra.initialize({
       key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
-      amount: amount,
+      amount,
       currency: "NGN",
       reference: ref,
       customer: {
@@ -142,25 +132,25 @@ export default function StepTwoPaymentSchedule({
         email: customer?.email,
       },
       feeBearer: "business",
-      onClose: () => {
-        cancelRepayment(ref);
-      },
-      onSuccess: (data: any) => {
-        verifyPayment(ref, amount);
-      },
+      onClose: () => cancelRepayment(ref),
+      onSuccess: () => verifyPayment(ref, amount),
     });
   };
 
-  const onSubmit: SubmitHandler<IFormInput> = async (value) => {
+  const handlePaymentSuccess = async (paidAmount) => {
+    await onPaymentSuccess();
+    onContinueAction(paidAmount);
+  };
+
+  const onSubmit: SubmitHandler<IFormInput> = async ({ amount }) => {
     setLoadingPayment(true);
     try {
-      const response = await requestClient({ token: token }).post(
+      const response = await requestClient({ token }).post(
         "/client/repayment",
         {
-          amount: Number(value.amount),
+          amount: Number(amount),
           reference: data?.identifier,
-          paymentType:
-            paymentOption === "custom" ? "partPayment" : "fullPayment",
+          paymentType: paymentOption === "custom" ? "partPayment" : "fullPayment",
           noOfMonths:
             paymentOption === "custom"
               ? selectedPayments.length
@@ -169,19 +159,14 @@ export default function StepTwoPaymentSchedule({
       );
 
       if (response.status === 200) {
-        console.log("response", response?.data?.data?.amount);
-
-        await payFincra(
-          response?.data?.data?.init?.reference,
-          Number(response?.data?.data?.amount)
-        );
+        const { reference: payRef, amount: payAmt } = response.data.data.init;
+        payFincra(payRef, Number(payAmt));
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
-      setLoadingPayment(false);
     } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
+      toast.error(handleServerErrorMessage(error));
+    } finally {
       setLoadingPayment(false);
     }
   };
@@ -195,61 +180,47 @@ export default function StepTwoPaymentSchedule({
     >
       <Text>How much would you like to repay?</Text>
 
-      {/* Main payment type selection */}
       <RadioGroup
         defaultValue="full"
         value={paymentOption}
-        onChange={(value) => setPaymentOption(value as PaymentOption)}
+        onChange={(val) => setPaymentOption(val as PaymentOption)}
       >
         <Stack
           spacing={4}
           direction={{ base: "column", md: "row" }}
-          borderColor="gray.200"
           border="1px solid var(--tenmg-colors-gray-200)"
           borderRadius="md"
           my={6}
           p={2}
         >
-          <Flex
-            flex={1}
-            borderColor="gray.200"
-            border="1px solid var(--tenmg-colors-gray-200)"
-            borderRadius="md"
-            justifyContent="space-between"
-            p={4}
-          >
-            <Box>
-              <Text fontSize="md" color="gray.700">
-                Custom Payment
-              </Text>
-              <Flex>Select from schedule</Flex>
-            </Box>
-            <Radio value="custom" />
-          </Flex>
-          <Flex
-            flex={1}
-            borderColor="gray.200"
-            border="1px solid var(--tenmg-colors-gray-200)"
-            borderRadius="md"
-            justifyContent="space-between"
-            p={4}
-          >
-            <Box>
-              <Text fontSize="md" color="gray.700">
-                Full Payment
-              </Text>
-              <Flex>₦{formatAmountString(fullPaymentAmount)}</Flex>
-            </Box>
-            <Radio value="full" />
-          </Flex>
+          {["custom", "full"].map((opt) => (
+            <Flex
+              key={opt}
+              flex={1}
+              border="1px solid var(--tenmg-colors-gray-200)"
+              borderRadius="md"
+              justifyContent="space-between"
+              p={4}
+            >
+              <Box>
+                <Text fontSize="md" color="gray.700">
+                  {opt === "custom" ? "Custom Payment" : "Full Payment"}
+                </Text>
+                <Flex>
+                  {opt === "custom"
+                    ? "Select from schedule"
+                    : `₦${formatAmountString(fullPaymentAmount)}`}
+                </Flex>
+              </Box>
+              <Radio value={opt} />
+            </Flex>
+          ))}
         </Stack>
       </RadioGroup>
 
-      {/* Payment schedule selection */}
       {paymentOption === "custom" && data?.repaymentSchedule && (
         <Stack
           spacing={3}
-          borderColor="gray.200"
           border="1px solid var(--tenmg-colors-gray-200)"
           borderRadius="md"
           my={6}
@@ -282,19 +253,16 @@ export default function StepTwoPaymentSchedule({
                 </Box>
               </Flex>
               <Badge
-                bg={`${
+                bg={
                   isSuccessStatus(item.paymentStatus)
                     ? "success.50"
                     : "warning.50"
-                } `}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                textColor={`${
+                }
+                color={
                   isSuccessStatus(item.paymentStatus)
                     ? "success.700"
                     : "warning.700"
-                } `}
+                }
                 rounded={16}
                 py={1}
                 px={3}
@@ -308,29 +276,21 @@ export default function StepTwoPaymentSchedule({
 
       <Stack
         spacing={5}
-        borderColor="warning.400"
         border="1px solid var(--tenmg-colors-warning-400)"
         borderRadius="md"
         bg="warning.100"
         my={6}
         py={4}
+        px={4}
       >
-        <Flex
-          justifyContent="space-between"
-          alignItems="center"
-          fontSize="sm"
-          color="gray.800"
-          px={4}
-        >
-          <Text fontSize="md" pb={1}>
-            Total
-          </Text>
-
-          <Text fontSize="md" pb={1}>
-            ₦
-            {paymentOption === "custom"
-              ? formatAmountString(totalSelectedAmount)
-              : formatAmountString(fullPaymentAmount)}
+        <Flex justifyContent="space-between" alignItems="center">
+          <Text fontSize="md">Total</Text>
+          <Text fontSize="md">
+            ₦{formatAmountString(
+              paymentOption === "custom"
+                ? totalSelectedAmount
+                : fullPaymentAmount
+            )}
           </Text>
         </Flex>
       </Stack>
@@ -349,9 +309,11 @@ export default function StepTwoPaymentSchedule({
         }
       >
         Pay Now ₦
-        {paymentOption === "custom"
-          ? formatAmountString(totalSelectedAmount)
-          : formatAmountString(fullPaymentAmount)}
+        {formatAmountString(
+          paymentOption === "custom"
+            ? totalSelectedAmount
+            : fullPaymentAmount
+        )}
       </Button>
     </LoanLayout>
   );

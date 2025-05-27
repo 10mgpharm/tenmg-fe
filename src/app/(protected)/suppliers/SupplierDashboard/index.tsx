@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ApexOptions } from "apexcharts";
-import { CalendarIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
@@ -207,7 +206,7 @@ const Supplier = () => {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
                     <OverviewCardWithoutBG
                         title="Total Income"
-                        value={`₦${data?.analytics?.totalIncome?.count || "0.00"}`}
+                        value={`₦${data?.analytics?.totalIncome || "0.00"}`}
                     />
                     <OverviewCardWithoutBG
                         title="Total Orders"

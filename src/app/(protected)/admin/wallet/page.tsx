@@ -154,11 +154,14 @@ const Page = () => {
             transactions={walletStats}
             setPageCount={setPageCount}
             bankInfo={bankInfo}
+            fetchingWallet={fetchingWallet}
             />
           </TabPanel>
-          <TabPanel className=" !p-0">
+          <TabPanel className="!p-0">
             <LoanWalletTab
             data={loanWallet}
+            bankInfo={bankInfo}
+            fetchingWallet={fetchingLoanWallet}
             adminTransactions={adminTransaction}
             transactions={loanTransaction}
             filterDate={selectedTimeLine}
