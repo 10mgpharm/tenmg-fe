@@ -354,7 +354,9 @@ export default function PaymentPage() {
 
   const [couponCode, setCouponCode] = useState<string | number | null>();
   const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
+  const [discountValue, setDisCountValue] = useState<any>({});
 
+  console.log("discountValue", discountValue);
   const vetCouponCode = async () => {
     setLoadingCoupon(true);
     if (!couponCode) {
@@ -371,6 +373,8 @@ export default function PaymentPage() {
       );
       if (response.status === 200) {
         toast.success("Coupon code applied successfully");
+        console.log("response", response?.data?.data?.orderDetails);
+        setDisCountValue({ grandTotal: response?.data?.data?.grandTotal, orderTotal: response?.data?.data?.orderTotal, discount: response?.data?.data?.discount });
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -570,7 +574,14 @@ export default function PaymentPage() {
                     <div>
                       <div className="flex items-center gap-x-2">
                         <p>Cart Total:</p>
-                        <p className="font-semibold">{cartItems?.orderTotal}</p>
+                        {discountValue ? (
+                          <p className="font-semibold">
+                            <span className="text-gray-400 line-through">{cartItems?.orderTotal}</span>  <span className="text-success-500">{discountValue?.orderTotal}</span>
+                          </p>
+                        ) : (
+                          <p className="font-semibold">{cartItems?.orderTotal}</p>
+                        )}
+                        {/* <p className="font-semibold">{  cartItems?.orderTotal}</p> */}
                       </div>
 
                       <div>
@@ -585,9 +596,17 @@ export default function PaymentPage() {
                     </div>
                     <Divider my={5} />
 
-                    <div className="flex items-center gap-x-2">
+                    <div className="flex flex-col gap-x-2">
+                      {/* <p className="font-semibold">{discountValue ? discountValue?.grandTotal : cartItems?.orderTotal}</p> */}
                       <p>Total:</p>
-                      <p className="font-semibold">{cartItems?.orderTotal}</p>
+                      {discountValue ? (
+                        <p className="font-semibold">
+                          <span className="text-gray-400 line-through">{cartItems?.orderTotal}</span>  <span className="text-success-500">{discountValue?.grandTotal}</span>
+                        </p>
+                      ) : (
+                        <p className="font-semibold">{cartItems?.orderTotal}</p>
+                      )}
+                      {discountValue && <p className="text-[10px] text-success-500 italic">Coupon code applied</p>}
                     </div>
 
                     <Divider my={5} />
