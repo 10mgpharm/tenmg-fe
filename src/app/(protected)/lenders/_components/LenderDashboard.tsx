@@ -26,6 +26,13 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { LenderDashboardData, LoanRequest, NextAuthUserSession } from "@/types";
 import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
@@ -97,6 +104,8 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const [amount, setAmount] = useState<number>(0);
   const [wallet, setWallet] = useState([]);
   const [isWithdraw, setIsWithdraw] = useState(false);
+  const [acceptModalOpen, setAcceptModalOpen] = useState(false);
+  const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -266,6 +275,21 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     fetchLenderData();
   }, [fetchLenderData]);
 
+  const openAcceptModal = (id: string) => {
+    setSelectedLoanId(id);
+    setAcceptModalOpen(true);
+  };
+  const closeAcceptModal = () => {
+    setAcceptModalOpen(false);
+    setSelectedLoanId(null);
+  };
+  const confirmAccept = async () => {
+    if (selectedLoanId) {
+      await handleAccept(selectedLoanId);
+      closeAcceptModal();
+    }
+  };
+
   return (
     <>
       {isPending && !lenderData && <Loader />}
@@ -386,7 +410,7 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
                     <LoanDetails
                       key={request.id}
                       data={request}
-                      handleAccept={handleAccept}
+                      handleAccept={openAcceptModal}
                       handleIgnore={handleIgnore}
                       handleView={handleView}
                     />
@@ -474,6 +498,25 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         amount={amount}
         isWithdraw={isWithdraw}
       />
+
+      <Modal isOpen={acceptModalOpen} onClose={closeAcceptModal} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Approve Loan Application</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Are you sure you want to approve this loan application?</Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="green" mr={3} onClick={confirmAccept}>
+              Yes
+            </Button>
+            <Button variant="ghost" onClick={closeAcceptModal}>
+              No
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

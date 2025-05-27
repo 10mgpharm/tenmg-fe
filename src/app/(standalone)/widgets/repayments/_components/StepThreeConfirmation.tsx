@@ -8,6 +8,7 @@ import { CustomerDto } from "@/types/application";
 import { ApplicationDto } from "@/types/application";
 import { convertDate } from "@/utils/formatDate";
 import { formatAmountString } from "@/utils";
+import { calculatePendingTotal } from "@/utils/repaymentUtils";
 
 interface Props {
   business: BusinessDto;
@@ -16,19 +17,13 @@ interface Props {
   token: string;
   application: ApplicationDto;
   pendingPaymentDate: any;
-  isSuccessStatus: (status: string | undefined) => boolean;
   lastPaidBalance: string | null;
   pendingAmounts: any[];
 }
 
 export default function StepThreeConfirmation({
-  business,
-  customer,
-  data,
-  token,
   application,
   pendingPaymentDate,
-  isSuccessStatus,
   lastPaidBalance,
   pendingAmounts,
 }: Props) {
@@ -57,14 +52,10 @@ export default function StepThreeConfirmation({
           Amount Paid: ₦{formatAmountString(Number(lastPaidBalance))}
         </Text>
         <Text fontSize="md" fontWeight="bold">
-          Amount Remaining: ₦{formatAmountString(
-            pendingAmounts && pendingAmounts.length > 0
-              ? pendingAmounts.reduce((sum, item) => sum + Number(item?.totalAmount), 0)
-              : 0
-          )}
+          Amount Remaining: ₦{formatAmountString(calculatePendingTotal(pendingAmounts))}
         </Text>
         <Text fontSize="md" fontWeight="bold">
-          Next Payment Due: {convertDate(pendingPaymentDate?.dueDate)}
+          Next Payment Due: {pendingPaymentDate?.dueDate ? convertDate(pendingPaymentDate.dueDate) : "All paid!"}
         </Text>
       </Stack>
 
@@ -76,13 +67,12 @@ export default function StepThreeConfirmation({
       <Button
         w="full"
         onClick={() => {
-          const confirmed = confirm(
+          const confirmed = window.confirm(
             "Are you sure you want to close this window?"
           );
           if (confirmed) {
             window.close();
           }
-          return false;
         }}
       >
         Exit Application
