@@ -46,7 +46,6 @@ export default function RepaymentWidget({
   const lastPaidPayment = getLastPaidPayment(repaymentData?.repaymentSchedule);
   const lastPaidBalance = getLastPaidBalance(lastPaidPayment);
 
-  // Refresh repayment data from API
   const refreshRepaymentData = useCallback(async () => {
     const response = await getRepaymentDetails(token, reference);
     if (response.status === "success") {
@@ -54,21 +53,18 @@ export default function RepaymentWidget({
     }
   }, [token, reference]);
 
-  // On step change, optionally refresh data (e.g., when entering confirmation)
   useEffect(() => {
     if (activeStep === 3) {
       refreshRepaymentData();
     }
   }, [activeStep, refreshRepaymentData]);
 
-  // Handle step navigation and URL update
   const updateStepInUrl = (step: number) => {
     const url = new URL(window.location.href);
     url.searchParams.set("step", step.toString());
     window.history.replaceState({}, "", url.toString());
   };
 
-  // Step rendering
   switch (activeStep) {
     case 1:
       return (
