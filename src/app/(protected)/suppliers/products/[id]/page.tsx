@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Flex, HStack, Image, Spinner, Tag, TagLabel, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
-import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
+// import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
 import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
 import { NextAuthUserSession, ProductDataProps } from '@/types';
 import requestClient from '@/lib/requestClient';
 import { convertDate } from '@/utils/formatDate';
 import productImage from '../../../../../../public/assets/images/product.svg';
-import { classNames, formatText } from '@/utils';
+import { classNames } from '@/utils';
 import RatingComponent from '@/app/(protected)/storefront/_components/RatingComponent';
 
 const ProductDetail = ({ params }: { params: { id: string } }) => {
@@ -127,7 +127,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                                 )}>
                                     <span className="text-[1.2rem] rounded-full">•</span>
                                     {" "}
-                                    {products?.status}
+                                    {products?.status === "APPROVED" ? "ACTIVE" : products?.status}
                                 </p>
                             </div>
 
@@ -143,7 +143,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
 
                                 <div className='my-2'>
                                     <RatingComponent
-                                        rating={products?.rating ?? 0}
+                                        rating={products?.rating?.avgRating ?? 0}
                                         // rating={0}
                                         handleRating={() => { }}
                                         readonly={true}

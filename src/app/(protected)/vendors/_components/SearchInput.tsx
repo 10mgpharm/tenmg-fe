@@ -9,7 +9,7 @@ interface Props {
 
 const SearchInput = ({ placeholder, onChange, value }: Props) => {
   return (
-    <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-full max-w-[350px]">
+    <div className="border border-gray-300 rounded-md flex items-center gap-3 px-3 py-2 w-full sm:max-w-[350px]">
       <CiSearch className="w-5 h-5" />
       <input
         type="text"

@@ -103,7 +103,7 @@ const LoanTable = ({type, data, hasPagination, metaData, setPageCount}: LoanTabl
       selectedRow={selectedRow} 
       isOpen={isOpen} 
       onClose={onClose} 
-      type="" 
+      type="loan-wallet" 
       />
     </div>
   );
