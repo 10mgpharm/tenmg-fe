@@ -290,10 +290,8 @@ const Products = () => {
         <div className="p-8">
             <div className="flex justify-between flex-col">
                 <div className="mb-5">
-                    <h3 className="font-semibold text-2xl">
-                        Products
-                    </h3>
-                    <div className="flex items-center justify-between mt-5">
+                   <h3 className="font-semibold text-2xl mb-3 sm:mb-0">Products</h3>
+                    <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
                         <div className="flex items-center gap-3">
                             <SearchInput
                                 placeholder="Search for a Product"
@@ -307,7 +305,7 @@ const Products = () => {
                                 <p className="text-gray-500 font-medium">Filter</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-row-reverse sm:flex-row items-center gap-4">
                             <div
                                 className={
                                     classNames(
@@ -325,13 +323,14 @@ const Products = () => {
                                         " w-5 h-5")}
                                 />
                             </div>
-                            <div className={
+                            <div 
+                            className={
                                 classNames(
                                     currentView === PRODUCTVIEW.GRID ?
                                         "bg-primary-50 rounded-md border border-primary-500"
                                         : "",
                                     "cursor-pointer p-2")
-                            }
+                                }
                                 onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
                                 <RxDashboard
                                     className={classNames(currentView === PRODUCTVIEW.GRID ?
@@ -342,7 +341,7 @@ const Products = () => {
                             </div>
                             <Link
                                 href={'/suppliers/products/add-product'}
-                                className="bg-primary-500 text-white p-2 px-5 rounded-md">
+                                className="bg-primary-500 text-white p-2 px-5 rounded-md flex-1 sm:min-w-max text-center">
                                 Add Product
                             </Link>
                         </div>
@@ -378,7 +377,7 @@ const Products = () => {
                                                 {headerGroup.headers?.map((header) => (
                                                     <Th
                                                         textTransform={"initial"}
-                                                        px="0px"
+                                                        px="10px"
                                                         key={header.id}
                                                     >
                                                         {header.isPlaceholder
@@ -393,23 +392,24 @@ const Products = () => {
                                         ))}
                                     </Thead>
                                     <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                                        {(memoizedData?.length > 0) && table?.getRowModel()?.rows?.map((row) => (
+                                        {(memoizedData?.length > 0) 
+                                        && table?.getRowModel()?.rows?.map((row) => (
                                             <Tr key={row.id}>
                                                 {/* <Td px="0px">
-                            <Checkbox
-                            _checked={{
-                                "& .chakra-checkbox__control": {
-                                background: "#1A70B8",
-                                borderRadius: 5,
-                                },
-                            }}
-                            marginLeft={5}
-                            isChecked={row.getIsSelected()}
-                            onChange={row.getToggleSelectedHandler()}
-                            />
-                        </Td> */}
+                                                    <Checkbox
+                                                    _checked={{
+                                                        "& .chakra-checkbox__control": {
+                                                        background: "#1A70B8",
+                                                        borderRadius: 5,
+                                                        },
+                                                    }}
+                                                    marginLeft={5}
+                                                    isChecked={row.getIsSelected()}
+                                                    onChange={row.getToggleSelectedHandler()}
+                                                    />
+                                                </Td> */}
                                                 {row.getVisibleCells()?.map((cell) => (
-                                                    <Td key={cell.id} px="0px">
+                                                    <Td key={cell.id} px="10px">
                                                         {flexRender(
                                                             cell.column.columnDef.cell,
                                                             cell.getContext()

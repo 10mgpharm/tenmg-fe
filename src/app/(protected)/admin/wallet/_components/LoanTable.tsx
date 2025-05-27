@@ -23,7 +23,7 @@ import {
 import TransactionDetails from "./TransactionDetail";
 import { repaymentColumnFn } from "./columns/repaymentColumn";
 import Pagination from "../../products/_components/Pagination";
-import LoanTransactionDetails from "./loanTransactionDetails";
+// import LoanTransactionDetails from "./loanTransactionDetails";
 
 interface LoanTableProps {
   type: string;
@@ -121,11 +121,11 @@ const LoanTable = ({
           <Spinner size="xl" />
         </Flex>
       )}
-      <LoanTransactionDetails
-        selectedRow={selectedRow}
-        isOpen={isOpen}
-        onClose={onClose}
-        type=""
+      <TransactionDetails 
+      selectedRow={selectedRow} 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      type="loan-wallet" 
       />
     </div>
   );
