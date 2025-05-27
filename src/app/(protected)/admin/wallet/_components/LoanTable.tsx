@@ -2,11 +2,28 @@ import { useMemo, useState } from "react";
 import { LoanTransactionProps } from "@/types";
 import { loanColumnFn } from "./columns/loanColumn";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
-import { Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
-import {  flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  Flex,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+} from "@chakra-ui/react";
+import {
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import TransactionDetails from "./TransactionDetail";
 import { repaymentColumnFn } from "./columns/repaymentColumn";
 import Pagination from "../../products/_components/Pagination";
+// import LoanTransactionDetails from "./loanTransactionDetails";
 
 interface LoanTableProps {
   type: string;
@@ -29,26 +46,31 @@ interface LoanTableProps {
   };
 }
 
-const LoanTable = ({type, data, hasPagination, metaData, setPageCount}: LoanTableProps) => {
-    
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
-    const columns = useMemo(() => {
-      return type === "credit"
-        ? loanColumnFn(onOpen, setSelectedRow)
-        : repaymentColumnFn(onOpen, setSelectedRow);
-    }, [type, onOpen, selectedRow]);
-    const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
+const LoanTable = ({
+  type,
+  data,
+  hasPagination,
+  metaData,
+  setPageCount,
+}: LoanTableProps) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
+  const columns = useMemo(() => {
+    return type === "credit"
+      ? loanColumnFn(onOpen, setSelectedRow)
+      : repaymentColumnFn(onOpen, setSelectedRow);
+  }, [type, onOpen, selectedRow]);
+  const filterTransactions = useMemo(() => data?.slice(0, 6), [data]);
 
-    const table = useReactTable({
-        data: filterTransactions || [],
-        columns: columns,
-        state: {},
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-    });
+  const table = useReactTable({
+    data: filterTransactions || [],
+    columns: columns,
+    state: {},
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
 
-    return (
+  return (
     <div>
       {data?.length === 0 ? (
         <EmptyOrder
@@ -94,7 +116,7 @@ const LoanTable = ({type, data, hasPagination, metaData, setPageCount}: LoanTabl
             <Pagination {...metaData} setPageCount={setPageCount} />
           )}
         </TableContainer>
-      ): (
+      ) : (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
         </Flex>
