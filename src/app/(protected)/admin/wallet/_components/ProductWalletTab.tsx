@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   HStack,
   Text,
@@ -10,7 +10,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { BankAccountProps, WalletProductProps } from "@/types";
+import { BankAccountProps, NextAuthUserSession, WalletProductProps } from "@/types";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
@@ -18,13 +18,26 @@ import TransactionTab from "./TransactionTab";
 import WalletOverview from "./WalletOverview";
 import OTPModal from "@/app/(protected)/suppliers/wallet/_components/OTPModal";
 import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/WithdrawFunds";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
+import { useSession } from "next-auth/react";
 
 interface Props {
+  fetchingWallet: () => void;
   transactions: WalletProductProps;
   bankInfo?: BankAccountProps;
   setPageCount: Dispatch<SetStateAction<number>>;
 }
-const ProductWalletTab = ({ transactions, setPageCount, bankInfo }: Props) => {
+const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet }: Props) => {
+
+  const [otp, setOtp] = useState('');
+  const [amount, setAmount] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
 
   const {
     isOpen: isOpenWithdraw,
@@ -36,6 +49,30 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo }: Props) => {
     onOpen: onOpenOTP,
     onClose: onCloseOTP,
   } = useDisclosure();
+
+  const handleWithdraw = async () => {
+    setLoading(true);
+    const payload = {
+      amount: amount,
+      otp: otp
+    }
+    try {
+      const response = await requestClient({ token }).post(
+        `/admin/withdraw-funds`,
+        payload
+      );
+      if( response.status === 200) {
+        toast.success("Withdrawal successful");
+        fetchingWallet();
+        onCloseOTP();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -140,9 +177,18 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo }: Props) => {
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
         otpOpen={onOpenOTP}
+        amount={amount}
+        setAmount={setAmount}
         bankDetails={bankInfo}
       />
-      <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
+      <OTPModal 
+        isOpen={isOpenOTP}
+        onClose={onCloseOTP}
+        otp={otp}
+        setOtp={setOtp}
+        loading={loading}
+        handleWithdraw={handleWithdraw}
+       />
     </div>
   );
 };

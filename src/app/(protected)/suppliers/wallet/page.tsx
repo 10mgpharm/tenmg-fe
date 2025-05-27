@@ -16,9 +16,9 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { BankDto, NextAuthUserSession, PayoutDataProps, SupplierTransactionDataProps } from "@/types";
 import { getBankList } from "@/app/(standalone)/widgets/applications/actions";
-import { FaPencil } from "react-icons/fa6";
-import EditBank from "./_components/EditBank";
 import { PencilIcon } from "lucide-react";
+import { toast } from "react-toastify";
+import { handleServerErrorMessage } from "@/utils";
 
 export interface BankInfo {
   accountName: string;
@@ -45,6 +45,8 @@ interface SelectOption {
 
 const Wallet = () => {
   const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [amount, setAmount] = useState<number>();
   const [showBalance, setShowBalance] = useState(true);
   const [banks, setBanks] = useState<SelectOption[] | null>(null);
   const [walletBalance, setWalletBalance] = useState<WalletProps>();
@@ -89,11 +91,6 @@ const Wallet = () => {
     isOpen: isOpenOTP,
     onOpen: onOpenOTP,
     onClose: onCloseOTP,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenEditBank,
-    onOpen: onOpenEditBank,
-    onClose: onCloseEditBank,
   } = useDisclosure();
 
   const fetchingWallet = useCallback(async () => {
@@ -153,13 +150,37 @@ const Wallet = () => {
     ? Number(walletBalance?.wallet?.currentBalance).toFixed(2)
     : "0.00";
 
+  const handleWithdraw = async () => {
+    setLoading(true);
+    const payload = {
+      amount: amount,
+      otp: otp
+    }
+    try {
+      const response = await requestClient({ token }).post(
+        `/supplier/withdraw-funds`,
+        payload
+      );
+      if( response.status === 200) {
+        toast.success("Withdrawal successful");
+        fetchingWallet();
+        onCloseOTP();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <h3 className="font-semibold text-xl text-gray-700 mb-4">Wallet</h3>
-      <div className="flex gap-5">
+      <div className="md:flex gap-5">
         {/* Balance section */}
-        <div className="flex-1 bg-primary-50 pt-3 pl-5 rounded-lg flex justify-between">
-          <div className="relative">
+        <div className="relative flex-1 bg-primary-50 pt-3 pb-5 pl-5 rounded-lg lg:flex lg:justify-between mb-3 md:mb-0">
+          <div className="relative z-50">
             <div className="mt-5 flex items-center gap-3">
               <p className="text-xl">Wallet Balance</p>
               <button onClick={() => setShowBalance(!showBalance)}>
@@ -189,21 +210,23 @@ const Wallet = () => {
               </button>
             )}
           </div>
-          <Image src={drugImage} alt="wallet art" className="-ml-10" />
+          <div className="absolute top-1 z-10 md:right-0 md:top-0">
+            <Image src={drugImage} alt="wallet art" className="" />
+          </div>
         </div>
 
         {/* Bank info or Add account */}
         {walletBalance?.wallet?.bankAccount ? (
           <div className="flex-1 bg-[#20232D] p-5 rounded-lg text-white">
-            <div className="flex items-center justify-between">
-              <div className="py-1 px-2 rounded-full bg-white">
-                <p className="text-gray-600 text-sm font-semibold">
+            <div className="sm:flex sm:items-center sm:justify-between">
+              <div className="py-1 px-2 rounded-full mb-2 sm:mb-0 bg-white max-w-max">
+                <p className="text-gray-600 text-xs lg:text-sm font-semibold">
                   {walletBalance?.wallet?.bankAccount?.accountName}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <div onClick={onOpen} className="py-1 flex items-center gap-2 px-2 rounded-full bg-white cursor-pointer">
-                  <p className="text-gray-600 text-sm font-semibold">
+                  <p className="text-gray-600 text-xs lg:text-sm font-semibold">
                     {walletBalance?.wallet?.bankAccount?.bankName}
                   </p>
                   <PencilIcon className="w-4 h-4 text-black"/>
@@ -283,9 +306,18 @@ const Wallet = () => {
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
         otpOpen={onOpenOTP}
+        amount={amount}
+        setAmount={setAmount}
         bankDetails={walletBalance?.wallet?.bankAccount}
       />
-      <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
+      <OTPModal 
+      isOpen={isOpenOTP} 
+      onClose={onCloseOTP}
+      setOtp={setOtp}
+      otp={otp}
+      loading={loading}
+      handleWithdraw={handleWithdraw}
+      />
     </div>
   );
 };

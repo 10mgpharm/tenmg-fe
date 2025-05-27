@@ -162,14 +162,17 @@ const LoanWallet = () => {
         />
       )} */}
 
-      <WithdrawFunds
+      {/* <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
         otpOpen={onOpenOTP}
         bankDetails={accountInfo}
       />
 
-      <OTPModal isOpen={isOpenOTP} onClose={onCloseOTP} />
+      <OTPModal 
+      isOpen={isOpenOTP} 
+      onClose={onCloseOTP} 
+      /> */}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 "Use client";
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import {
     Modal,
     ModalOverlay,
@@ -12,11 +12,13 @@ import {
 } from '@chakra-ui/react'
 import OtpInput from 'react-otp-input';
 
-const OTPModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) => {
+const OTPModal = (
+    {isOpen, onClose, handleWithdraw, setOtp, otp, loading}: 
+    {isOpen: boolean, onClose: () => void; handleWithdraw: () => void; setOtp: Dispatch<SetStateAction<string>>; otp: string; loading: boolean;}
+) => {
 
-    const [otp, setOtp] = useState('');
   return (
-    <Modal isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal isCentered isOpen={isOpen} onClose={onClose} size={"md"}>
         <ModalOverlay />
         <ModalContent>
         <ModalHeader>OTP Verification</ModalHeader>
@@ -28,14 +30,14 @@ const OTPModal = ({isOpen, onClose}: {isOpen: boolean, onClose: () => void;}) =>
             <OtpInput
                 value={otp}
                 onChange={setOtp}
-                numInputs={4}
-                inputType='number'
+                numInputs={6}
+                inputType='text'
                 containerStyle={{display:"flex", gap: "12px", justifyContent: "center"}}
                 // renderSeparator={<span>-</span>}
-                inputStyle={{width: "70px", height: "70px", padding: "5px", border: "1px solid #EAECF0", borderRadius: "5px", fontSize: "24px", fontWeight: "bold"}}
+                inputStyle={{width: "55px", height: "55px", padding: "5px", border: "1px solid #EAECF0", borderRadius: "5px", fontSize: "24px", fontWeight: "bold"}}
                 renderInput={(props) => <input {...props} />}
             />
-            <Button w={"full"} mt={6} colorScheme='blue' py={3} onClick={onClose}>
+            <Button w={"full"} mt={6} colorScheme='blue' py={3} onClick={handleWithdraw} isLoading={loading} loadingText='Verifying OTP'>   
                 Continue
             </Button>
             <Text textAlign={"center"} mt={4} mb={8}>Didn’t get a code? <span className='text-primary-500'>Resend</span> (0:13s)</Text>

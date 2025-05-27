@@ -169,7 +169,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                     </div>
                 </div>
                 <div className="mt-5">
-                    <Statistics />
+                    {/* <Statistics /> */}
                     <ExploreData />
                 </div>
             </div>
@@ -177,23 +177,4 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
     )
 }
 
-export default ProductDetail
-
-//     < p className = { classNames(
-//                                 (products?.inventory === "OUT OF STOCK")
-//         ? "bg-[#FEF3F2] text-[#B42318]"
-//         : products?.inventory === "IN STOCK"
-//             ? "text-[#027A48] bg-[#ECFDF3]"
-//             : products?.inventory === "LOW STOCK"
-//                 ? "bg-orange-50 text-orange-500"
-//                 : "text-gray-500", " px-2 rounded-xl py-0.5 text-xs font-medium flex items-center gap-1"
-//                             )}>
-//     <span className="text-[1.2rem] rounded-full">•</span>
-// { " " }
-// { products?.inventory && formatText(products?.inventory) }
-// { ":" }
-// { " " }
-// { products?.quantity }
-// { " " }
-//                                 Items left
-//                             </ >
+export default ProductDetail;
