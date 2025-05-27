@@ -199,8 +199,14 @@ const UsersTab = ({
         </Stack>
       ) : records.length === 0 ? (
         <EmptyRequest
-          heading={`No New Approval Request Yet`}
-          content={`No recent request yet, all document request would appear here!`}
+          heading={
+            globalFilter ? "No Result Found" : `No New Approval Request Yet`
+          }
+          content={
+            globalFilter
+              ? "We couldn't find any results. Try changing your filters or search keywords."
+              : `No recent request yet, all document request would appear here!`
+          }
         />
       ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>

@@ -47,10 +47,6 @@ const Footer = () => {
                   height={75}
                 />
               </HStack>
-              <Text fontSize="sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore
-              </Text>
             </Stack>
           </SimpleGrid>
           <SimpleGrid columns={{ base: 2, md: 4 }} spacing={8} mb={8}>
