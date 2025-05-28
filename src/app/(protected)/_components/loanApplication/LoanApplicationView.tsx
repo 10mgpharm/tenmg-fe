@@ -180,7 +180,7 @@ export default function LoanApplicationView({
             reference and credit score.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="w-full">
           <Button
             size="sm"
             colorScheme="primary"
@@ -193,7 +193,7 @@ export default function LoanApplicationView({
           {userRole === "lender" &&
             loanData?.status !== "APPROVED" &&
             loanData?.status !== "EXPIRED" && (
-              <>
+              <div className="w-full">
                 <Button
                   size="sm"
                   colorScheme="red"
@@ -208,7 +208,7 @@ export default function LoanApplicationView({
                 >
                   Accept Offer
                 </Button>
-              </>
+              </div>
             )}
         </div>
       </div>
