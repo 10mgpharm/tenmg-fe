@@ -578,18 +578,18 @@ export default function PaymentPage() {
                         <p>Cart Total:</p>
                         {discountValue ? (
                           <p className="font-semibold">
-                            <span className="text-gray-400 line-through">{cartItems?.orderTotal}</span>  <span className="text-success-500">{discountValue?.orderTotal}</span>
+                            <span className="text-gray-400 line-through">₦{Number(cartItems?.orderTotal).toLocaleString()}</span>  <span className="text-success-500">₦{Number(discountValue?.orderTotal)?.toLocaleString()}</span>
                           </p>
                         ) : (
-                          <p className="font-semibold">{cartItems?.orderTotal}</p>
+                          <p className="font-semibold">₦{Number(cartItems?.orderTotal)?.toLocaleString()}</p>
                         )}
                         {/* <p className="font-semibold">{  cartItems?.orderTotal}</p> */}
                       </div>
 
-                      <div>
+                      {/* <div>
                         <p>Shipping fee:</p>
                         <p></p>
-                      </div>
+                      </div> */}
 
                       <div>
                         <p>TenMg Commission:</p>
@@ -603,10 +603,10 @@ export default function PaymentPage() {
                       <p>Total:</p>
                       {discountValue ? (
                         <p className="font-semibold">
-                          <span className="text-gray-400 line-through">{cartItems?.orderTotal}</span>  <span className="text-success-500">{discountValue?.grandTotal}</span>
+                          <span className="text-gray-400 line-through">₦{Number(cartItems?.orderTotal).toLocaleString()}</span>  <span className="text-success-500">₦{Number(discountValue?.grandTotal).toLocaleString()}</span>
                         </p>
                       ) : (
-                        <p className="font-semibold">{cartItems?.orderTotal}</p>
+                        <p className="font-semibold">₦{Number(cartItems?.orderTotal)?.toLocaleString()}</p>
                       )}
                       {discountValue && <p className="text-[10px] text-success-500 italic">Coupon code applied</p>}
                     </div>
