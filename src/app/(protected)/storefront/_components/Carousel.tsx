@@ -62,7 +62,7 @@ const Carousel: React.FC = () => {
       position="relative"
       className={cn(isLoading ? "bg-gray-200  animate-pulse" : "")}
     >
-      <Flex ref={emblaRef} className="embla bg-green-500">
+      <Flex ref={emblaRef} className="embla bg-gray-200">
         <Flex className="embla__container bg-green-200 !flex-1">
           {slides.map(({ id, imageUrl, title, description }) => (
             <Box key={id} flex="0 0 100%" position="relative">

@@ -13,9 +13,9 @@ import {
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import requestClient from '@/lib/requestClient';
-import { classNames, formatText } from '@/utils';
+import { classNames } from '@/utils';
 import { convertDate } from '@/utils/formatDate';
-import Statistics from '../_components/Statistics';
+// import Statistics from '../_components/Statistics';
 import ExploreData from '../_components/ExploreData';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import { NextAuthUserSession, ProductDataProps } from '@/types';
@@ -77,7 +77,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
             </Flex>
             <div className="mt-5">
                 <div className="flex flex-col lg:flex-row  gap-5 mb-3">
-                    <div className="p-4 relative">
+                    <div className="p-5 bg-white rounded-md relative">
                         <Image
                             src={products?.thumbnailFile}
                             fallbackSrc={productImage}
@@ -87,7 +87,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                             className='w-[380px] h-[340px] object-cover rounded-md mx-auto'
                         />
 
-                        <div className='mb-2 absolute top-3 right-3'>
+                        <div className='absolute top-6 right-6'>
                             <Tag
                                 size="sm"
                                 ml="1"
@@ -136,7 +136,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                                 )}>
                                     <span className="text-[1.2rem] rounded-full">•</span>
                                     {" "}
-                                    {products?.status}
+                                    {products?.status === "APPROVED" ? "ACTIVE" : products?.status}
                                 </p>
                             </div>
                         </div>
@@ -150,7 +150,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                                 </h2>
                                 <div className='my-2'>
                                     <RatingComponent
-                                        rating={products?.rating ?? 0}
+                                        rating={products?.rating?.avgRating ?? 0}
                                         // rating={0}
                                         handleRating={() => { }}
                                         readonly={true}
@@ -176,7 +176,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                     </div>
                 </div>
                 <div className="mt-5">
-                    <Statistics />
+                    {/* <Statistics /> */}
                     <ExploreData />
                 </div>
             </div>

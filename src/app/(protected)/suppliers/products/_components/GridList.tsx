@@ -63,7 +63,7 @@ const GridList = (
 
   return (
     <div className="">
-        <div className='grid grid-cols-3 2xl:grid-cols-4 gap-5'>
+        <div className='grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-5'>
             {
                 product?.data?.map((item: ProductDataProps) => (
                     <div key={item.id} className="bg-white p-2 rounded-md relative">
@@ -180,7 +180,7 @@ const GridList = (
                                     "bg-red-50 text-red-500" , 
                                     ' max-w-max px-2 rounded-full')}
                                 >
-                                    <Text fontSize={"12px"}>{item?.status}</Text>
+                                    <Text fontSize={"12px"}>{item?.status === "APPROVED" ? "Active" : item?.status}</Text>
                                 </Box>
                             </div>
                         </div>
