@@ -203,6 +203,41 @@ export default function PaymentPage() {
     }
   };
 
+  const [couponCode, setCouponCode] = useState<string>();
+  const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
+  const [discountValue, setDisCountValue] = useState<any>(null);
+
+  console.log("discountValue", discountValue);
+  const vetCouponCode = async () => {
+    setLoadingCoupon(true);
+    if (!couponCode) {
+      toast.error("Please enter a coupon code");
+      setLoadingCoupon(false);
+      return;
+    }
+
+    try {
+      setLoadingCoupon(true);
+      const response = await requestClient({ token: userToken }).post(
+        "/storefront/orders/coupon/verify",
+        { coupon: couponCode }
+      );
+      if (response.status === 200) {
+        toast.success("Coupon code applied successfully");
+        console.log("response", response?.data?.data?.orderDetails);
+        setDisCountValue({ grandTotal: response?.data?.data?.grandTotal, orderTotal: response?.data?.data?.orderTotal, discount: response?.data?.data?.discount });
+      } else {
+        toast.error(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      setLoadingCoupon(false);
+    }
+  };
+
+
   const payFincra = (
     e: React.FormEvent<HTMLFormElement>,
     ref: string,
@@ -218,7 +253,7 @@ export default function PaymentPage() {
     window.Fincra.initialize({
       key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
       // key: config,
-      amount: totalAmount,
+      amount: discountValue ? discountValue?.grandTotal : totalAmount,
       currency: "NGN",
       reference: ref,
       customer: {
@@ -352,39 +387,6 @@ export default function PaymentPage() {
     setConfirming(false);
   };
 
-  const [couponCode, setCouponCode] = useState<string | number | null>();
-  const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
-  const [discountValue, setDisCountValue] = useState<any>({});
-
-  console.log("discountValue", discountValue);
-  const vetCouponCode = async () => {
-    setLoadingCoupon(true);
-    if (!couponCode) {
-      toast.error("Please enter a coupon code");
-      setLoadingCoupon(false);
-      return;
-    }
-
-    try {
-      setLoadingCoupon(true);
-      const response = await requestClient({ token: userToken }).post(
-        "/storefront/orders/coupon/verify",
-        { coupon: couponCode }
-      );
-      if (response.status === 200) {
-        toast.success("Coupon code applied successfully");
-        console.log("response", response?.data?.data?.orderDetails);
-        setDisCountValue({ grandTotal: response?.data?.data?.grandTotal, orderTotal: response?.data?.data?.orderTotal, discount: response?.data?.data?.discount });
-      } else {
-        toast.error(`Error: ${response.data.message}`);
-      }
-    } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-    } finally {
-      setLoadingCoupon(false);
-    }
-  };
 
   return (
     <>
