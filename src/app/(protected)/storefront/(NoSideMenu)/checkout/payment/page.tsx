@@ -24,7 +24,6 @@ import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { config } from "process";
 import axios from "axios";
-import { ConfirmPaymentModal } from "../_components/confirmPaymentModel";
 
 type OrderDataType = {
   orderId: string;
@@ -58,7 +57,7 @@ export default function PaymentPage() {
     onOpen: openConfirmPayment,
   } = useDisclosure();
   const [checkoutRefId, setCheckoutRefid] = useState("");
-  const [isConfirming, setConfirming] = useState(false);
+  // const [isConfirming, setConfirming] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -225,7 +224,11 @@ export default function PaymentPage() {
       if (response.status === 200) {
         toast.success("Coupon code applied successfully");
         console.log("response", response?.data?.data?.orderDetails);
-        setDisCountValue({ grandTotal: response?.data?.data?.grandTotal, orderTotal: response?.data?.data?.orderTotal, discount: response?.data?.data?.discount });
+        setDisCountValue({
+          grandTotal: response?.data?.data?.grandTotal,
+          orderTotal: response?.data?.data?.orderTotal,
+          discount: response?.data?.data?.discount,
+        });
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -236,7 +239,6 @@ export default function PaymentPage() {
       setLoadingCoupon(false);
     }
   };
-
 
   const payFincra = (
     e: React.FormEvent<HTMLFormElement>,
@@ -367,26 +369,25 @@ export default function PaymentPage() {
     setLoadingPayment(false);
   };
 
-  const handleConfirmPayment = async () => {
-    setConfirming(true);
+  // const handleConfirmPayment = async () => {
+  //   setConfirming(true);
 
-    try {
-      const response = await requestClient({
-        "Public-Key": process.env.NEXT_PUBLIC_TENMG_PUBKEY,
-        "Secret-Key": process.env.TENMG_SECKEY,
-      }).get(`client/applications/payment/verify/${checkoutRefId}`);
+  //   try {
+  //     const response = await requestClient({
+  //       "Public-Key": process.env.NEXT_PUBLIC_TENMG_PUBKEY,
+  //       "Secret-Key": process.env.TENMG_SECKEY,
+  //     }).get(`client/applications/payment/verify/${checkoutRefId}`);
 
-      if (response.status === 200) {
-        toast.success("Payment confirmed");
-        closeConfirmPayment();
-      }
-    } catch (error) {
-      const errorMessage = handleServerErrorMessage(error);
-      toast.error(errorMessage);
-    }
-    setConfirming(false);
-  };
-
+  //     if (response.status === 200) {
+  //       toast.success("Payment confirmed");
+  //       closeConfirmPayment();
+  //     }
+  //   } catch (error) {
+  //     const errorMessage = handleServerErrorMessage(error);
+  //     toast.error(errorMessage);
+  //   }
+  //   setConfirming(false);
+  // };
 
   return (
     <>
@@ -545,10 +546,11 @@ export default function PaymentPage() {
                                 </p>
                               )}
                               <p
-                                className={`font-semibold my-2 text-sm ${item?.discountPrice > 0
-                                  ? "text-gray-400 line-through"
-                                  : "text-gray-900"
-                                  }`}
+                                className={`font-semibold my-2 text-sm ${
+                                  item?.discountPrice > 0
+                                    ? "text-gray-400 line-through"
+                                    : "text-gray-900"
+                                }`}
                               >
                                 ₦{item?.actualPrice}
                               </p>
@@ -561,13 +563,26 @@ export default function PaymentPage() {
                     <div className="">
                       <FormLabel>Coupon Code</FormLabel>
                       <div className="flex items-center gap-2">
-                        <Input type="text" placeholder="" css={{ "--error-color": "primary" }}
+                        <Input
+                          type="text"
+                          placeholder=""
+                          css={{ "--error-color": "primary" }}
                           value={couponCode}
                           onChange={(e) => {
-                            setCouponCode(e.target.value)
-                          }} />
-                        <Button colorScheme={"primary"} size={"sm"} onClick={vetCouponCode} disabled={!couponCode || couponCode?.length < 3}>
-                          {loadingCoupon ? <Loader2 className="animate-spin" /> : <FaCheck className="text-white text-xl" />}
+                            setCouponCode(e.target.value);
+                          }}
+                        />
+                        <Button
+                          colorScheme={"primary"}
+                          size={"sm"}
+                          onClick={vetCouponCode}
+                          disabled={!couponCode || couponCode?.length < 3}
+                        >
+                          {loadingCoupon ? (
+                            <Loader2 className="animate-spin" />
+                          ) : (
+                            <FaCheck className="text-white text-xl" />
+                          )}
                         </Button>
                       </div>
                     </div>
@@ -578,10 +593,20 @@ export default function PaymentPage() {
                         <p>Cart Total:</p>
                         {discountValue ? (
                           <p className="font-semibold">
-                            <span className="text-gray-400 line-through">₦{Number(cartItems?.orderTotal).toLocaleString()}</span>  <span className="text-success-500">₦{Number(discountValue?.orderTotal)?.toLocaleString()}</span>
+                            <span className="text-gray-400 line-through">
+                              ₦{Number(cartItems?.orderTotal).toLocaleString()}
+                            </span>{" "}
+                            <span className="text-success-500">
+                              ₦
+                              {Number(
+                                discountValue?.orderTotal
+                              )?.toLocaleString()}
+                            </span>
                           </p>
                         ) : (
-                          <p className="font-semibold">₦{Number(cartItems?.orderTotal)?.toLocaleString()}</p>
+                          <p className="font-semibold">
+                            ₦{Number(cartItems?.orderTotal)?.toLocaleString()}
+                          </p>
                         )}
                         {/* <p className="font-semibold">{  cartItems?.orderTotal}</p> */}
                       </div>
@@ -603,12 +628,24 @@ export default function PaymentPage() {
                       <p>Total:</p>
                       {discountValue ? (
                         <p className="font-semibold">
-                          <span className="text-gray-400 line-through">₦{Number(cartItems?.orderTotal).toLocaleString()}</span>  <span className="text-success-500">₦{Number(discountValue?.grandTotal).toLocaleString()}</span>
+                          <span className="text-gray-400 line-through">
+                            ₦{Number(cartItems?.orderTotal).toLocaleString()}
+                          </span>{" "}
+                          <span className="text-success-500">
+                            ₦
+                            {Number(discountValue?.grandTotal).toLocaleString()}
+                          </span>
                         </p>
                       ) : (
-                        <p className="font-semibold">₦{Number(cartItems?.orderTotal)?.toLocaleString()}</p>
+                        <p className="font-semibold">
+                          ₦{Number(cartItems?.orderTotal)?.toLocaleString()}
+                        </p>
                       )}
-                      {discountValue && <p className="text-[10px] text-success-500 italic">Coupon code applied</p>}
+                      {discountValue && (
+                        <p className="text-[10px] text-success-500 italic">
+                          Coupon code applied
+                        </p>
+                      )}
                     </div>
 
                     <Divider my={5} />
@@ -626,12 +663,6 @@ export default function PaymentPage() {
           )}
         </>
       )}
-
-      <ConfirmPaymentModal
-        isOpen={isOpen}
-        onConfirm={handleConfirmPayment}
-        isLoading={isConfirming}
-      />
     </>
   );
 }
