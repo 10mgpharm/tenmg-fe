@@ -69,8 +69,19 @@ export const ColumsLogFN = () => [
   }),
   columnHelper.accessor("description", {
     header: "Description",
-    cell: (info) => info.getValue() || "-",
+    cell: (info) => (
+      <div
+        style={{
+          whiteSpace: "normal", // allow wrapping
+          wordBreak: "break-word", // break long words if needed
+          maxWidth: "400px", // limit width so text wraps
+        }}
+      >
+        {info.getValue() || "-"}
+      </div>
+    ),
   }),
+
   columnHelper.accessor("createdAt", {
     header: "Timestamp",
     cell: (info) => {
