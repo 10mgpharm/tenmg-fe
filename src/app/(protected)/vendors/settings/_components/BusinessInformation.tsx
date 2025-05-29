@@ -117,12 +117,14 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="name"
-                isDisabled
                 placeholder="Enter business name"
                 {...register("businessName", {
                   required: "Business Name is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.businessName?.message}
+              </FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={!!errors.contactPerson?.message}>
@@ -131,30 +133,31 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="number"
-                isDisabled
                 placeholder="Enter contact name"
                 {...register("contactPerson", {
                   required: "Contact Person Name is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.contactPerson?.message}
+              </FormErrorMessage>
             </FormControl>
           </HStack>
         </Skeleton>
         <Skeleton isLoaded={!isInfoLoading}>
           <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            ;
             <FormControl isInvalid={!!errors.contactEmail?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Business Email
               </FormLabel>
               <InputGroup>
                 <InputLeftElement pointerEvents="none" fontSize="1.2em">
-                  <MdOutlineEmail color="gray.300" />
+                  <MdOutlineEmail />
                 </InputLeftElement>
                 <Input
                   type="email"
-                  isDisabled
                   placeholder="Enter business email"
+                  isDisabled
                   pl={10}
                   {...register("contactEmail", {
                     required: "Business Email is required",
@@ -165,9 +168,6 @@ const BusinessInformation = ({ user }: { user: User }) => {
                   })}
                 />
               </InputGroup>
-              <FormErrorMessage>
-                {errors.contactEmail?.message}
-              </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.contactPhone?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
@@ -180,6 +180,9 @@ const BusinessInformation = ({ user }: { user: User }) => {
                   required: "Contact Phone is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.contactPhone?.message}
+              </FormErrorMessage>
             </FormControl>
           </HStack>
         </Skeleton>
@@ -191,12 +194,14 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled
                 placeholder="Enter business address"
                 {...register("businessAddress", {
                   required: "Contact Business Address is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.businessAddress?.message}
+              </FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
@@ -205,12 +210,14 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled
                 placeholder="Enter position"
                 {...register("contactPersonPosition", {
                   required: "Contact Person Position is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.contactPersonPosition?.message}
+              </FormErrorMessage>
             </FormControl>
           </HStack>
         </Skeleton>
