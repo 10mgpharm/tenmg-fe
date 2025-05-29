@@ -14,7 +14,8 @@ import {
   Input,
   chakra,
   HStack,
-  Button
+  Button,
+  FormErrorMessage
 } from '@chakra-ui/react'
 import shape from '@public/assets/images/shapes.svg';
 import { useSession } from 'next-auth/react';
@@ -41,6 +42,7 @@ const AddNewDrawer = (
 
   const {
     register,
+    reset,
     formState: { errors, isValid },
     handleSubmit,
   } = useForm<IFormInput>({
@@ -71,10 +73,14 @@ const AddNewDrawer = (
             fetchTeamUser("lender", 1);
           }
         onClose();
+        reset();
+       
       }
     } catch (error) {
-      setIsLoading(false);
       toast.error(handleServerErrorMessage(error));
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 
@@ -106,9 +112,10 @@ const AddNewDrawer = (
                   border: !!errors.businessName ? "red.300" : "border-gray-300",
                 }}
                 {...register("businessName", {
-                  required: true,
+                  required: "Business name is required",
                 })}
                 />
+                <FormErrorMessage>{errors.businessName?.message}</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={!!errors.businessEmail} mb={10}>
                 <FormLabel>
@@ -132,9 +139,13 @@ const AddNewDrawer = (
                 })}
                 placeholder='Enter you business email...' 
                 />
+                <FormErrorMessage>{errors.businessEmail?.message}</FormErrorMessage>
               </FormControl>
               <HStack gap={4} mt={6}>
-                <Button variant={"outline"}>Cancel</Button>
+                <Button variant={"outline"} onClick={() => {
+                  onClose();
+                  reset();
+                }}>Cancel</Button>
                 <Button 
                 type='submit' 
                 isLoading={isLoading} 
