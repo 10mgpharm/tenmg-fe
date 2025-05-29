@@ -240,7 +240,7 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
               color="gray.900"
               fontSize="md"
               fontWeight="medium"
-              h="560px"
+              // h="560px"
               overflowY={"scroll"}
               sx={{
                 "::-webkit-scrollbar": { display: "none" },
