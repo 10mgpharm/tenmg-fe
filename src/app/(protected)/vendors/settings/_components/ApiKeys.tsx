@@ -31,6 +31,7 @@ interface IFormInput {
   environment: string;
   webhookUrl?: string;
   callbackUrl?: string;
+  transactionUrl?: string;
 }
 
 interface IKeyWrapperProps {
@@ -40,6 +41,7 @@ interface IKeyWrapperProps {
   webhkUrl: string;
   keyType: string;
   token: string;
+  transactionUrl?: string;
   copyToClipboard: (value: string) => void;
   onOpen: () => void;
 }
@@ -100,6 +102,7 @@ const ApiKeys = () => {
         sKey={apiKeyInfo?.testSecret}
         callbcUrl={apiKeyInfo?.testCallbackUrl}
         webhkUrl={apiKeyInfo?.testWebhookUrl}
+        transactionUrl={apiKeyInfo?.transactionUrl}
       />
       <KeyWrapper
         keyType={"Live Key"}
@@ -110,6 +113,7 @@ const ApiKeys = () => {
         sKey={apiKeyInfo?.secret}
         callbcUrl={apiKeyInfo?.callbackUrl}
         webhkUrl={apiKeyInfo?.webhookUrl}
+        transactionUrl={apiKeyInfo?.transactionUrl}
       />
       </>}
     </div>
@@ -133,6 +137,7 @@ function KeyWrapper({
 
   const [showWebhookUrl, setShowWebhookUrl] = useState<boolean>(false);
   const [showCallbackUrl, setShowCallbackUrl] = useState<boolean>(false);
+  const [showTransactionUrl, setShowTransactionUrl] = useState<boolean>(false);
 
   const [publicKey, setPublicKey] = useState<string>(pKey);
   const [secretKey, setSecretKey] = useState<string>(sKey);
@@ -181,6 +186,7 @@ function KeyWrapper({
           environment: formData.environment as ApiKeyEnv,
           webhookUrl: formData.webhookUrl,
           callbackUrl: formData.callbackUrl,
+          transactionUrl: formData.transactionUrl,
         });
         if (status === 'success') {
           toast.success(message);
@@ -188,14 +194,17 @@ function KeyWrapper({
           if (environment === 'live') {
             setValue('webhookUrl', data.value.webhookUrl);
             setValue('callbackUrl', data.value.callbackUrl);
+            setValue('callbackUrl', data.value.transactionUrl);
           } else {
             setValue('webhookUrl', data.value.testWebhookUrl);
             setValue('callbackUrl', data.value.testCallbackUrl);
+            setValue('callbackUrl', data.value.transactionUrl);
           }
         } else {
           toast.error(`Error: ${message}`);
         }
       } catch (error) {
+        console.error(error);
         const errorMessage = handleServerErrorMessage(error);
         toast.error(errorMessage);
       }
@@ -432,6 +441,55 @@ function KeyWrapper({
                     color={"gray.500"}
                     px={3}
                     onClick={() => copyToClipboard(getValues("callbackUrl"))}
+                  >
+                    Copy
+                  </Button>
+                </Box>
+                <Box>
+                </Box>
+              </Flex>
+            </FormControl>
+
+            {/* Transaction URL */}
+            <FormControl display={"flex"}>
+              <FormLabel w={"25%"}>Transaction URL</FormLabel>
+              <Flex w={"75%"} gap={6} alignItems={"center"}>
+                <Box flex={1}>
+                  <InputGroup size={"lg"}>
+                    <Input
+                      type={showTransactionUrl ? "text" : "password"}
+                      id="password"
+                      size={"lg"}
+                      color={"gray.500"}
+                      {...register("transactionUrl")}
+                      placeholder="https://10mg.com/api/transaction/fetch"
+                      maxW="3xl"
+                      _focus={{
+                        color: "gray.800",
+                      }}
+                    />
+                    <InputRightElement>
+                      {showTransactionUrl ? (
+                        <FaEye
+                          onClick={() => setShowTransactionUrl(!showTransactionUrl)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      ) : (
+                        <FaEyeSlash
+                          onClick={() => setShowTransactionUrl(!showTransactionUrl)}
+                          className="text-gray-500 w-5 h-5"
+                        />
+                      )}
+                    </InputRightElement>
+                  </InputGroup>
+                </Box>
+                <Box>
+                  <Button
+                    leftIcon={<LuCopy />}
+                    variant="outline"
+                    color={"gray.500"}
+                    px={3}
+                    onClick={() => copyToClipboard(getValues("transactionUrl"))}
                   >
                     Copy
                   </Button>

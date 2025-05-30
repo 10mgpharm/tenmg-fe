@@ -207,6 +207,7 @@ export default function ProfileInformation() {
                 required: "Business Name is required",
               })}
             />
+            <FormErrorMessage>{errors.businessName?.message}</FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={!!errors.contactPerson?.message}>
             <FormLabel>Contact Person Name</FormLabel>
@@ -217,6 +218,7 @@ export default function ProfileInformation() {
                 required: "Contact Person is required",
               })}
             />
+            <FormErrorMessage>{errors.contactPerson?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
         <HStack gap={5} flexWrap={"wrap"}>
@@ -230,6 +232,7 @@ export default function ProfileInformation() {
                 required: "Business Email is required",
               })}
             />
+            <FormErrorMessage>{errors.contactEmail?.message}</FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={!!errors.contactPhone?.message}>
             <FormLabel>Contact Phone Number</FormLabel>
@@ -240,6 +243,7 @@ export default function ProfileInformation() {
                 required: "Contact Person Phone is required",
               })}
             />
+            <FormErrorMessage>{errors.contactPhone?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
         <HStack gap={5} flexWrap={"wrap"}>
@@ -252,6 +256,7 @@ export default function ProfileInformation() {
                 required: "business Address is required",
               })}
             />
+            <FormErrorMessage>{errors.businessAddress?.message}</FormErrorMessage>
           </FormControl>
 
           <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
@@ -263,6 +268,7 @@ export default function ProfileInformation() {
                 required: "Contact Person Position is required",
               })}
             />
+            <FormErrorMessage>{errors.contactPersonPosition?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
         <div className="w-fit mx-auto mt-10">

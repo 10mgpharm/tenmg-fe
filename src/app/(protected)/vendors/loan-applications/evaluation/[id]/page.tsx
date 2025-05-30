@@ -161,8 +161,8 @@ const Evalution = ({ params }: { params: { id: string } }) => {
               </Button>
             </Flex>
           </Flex>
-          <div className="grid grid-cols-6 gap-5 mt-5">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-5 mt-5">
+            <div className="col-span-1 lg:col-span-2">
               <div className="space-y-7">
                 <div className="border rounded-md">
                   <div className="border-t-md p-4 bg-gray-100">
@@ -203,8 +203,8 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             </div>
-            <div className="col-span-4 space-y-5">
-              <div className="flex gap-5">
+            <div className="col-span-1 lg:col-span-4 space-y-5">
+              <div className="flex gap-5 flex-wrap">
                 <div className="flex-1 space-y-2.5">
                   <div className="border rounded-md p-6">
                     <div className="space-y-2">
@@ -305,12 +305,12 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             </div>
-            <div className="col-span-6">
+            <div className="col-span-1 lg:col-span-6">
               {tnxHistoryData && (
                 <TransactionSummary tnxHistoryData={tnxHistoryData} />
               )}
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 lg:col-span-2">
               <div className="p-4 border rounded-md">
                 <h4 className="font-medium mb-2">Result Breakdown</h4>
                 <p className="text-gray-500 mb-4 text-sm">
@@ -324,7 +324,7 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                 </button>
               </div>
             </div>
-            <div className="col-span-4">
+            <div className="col-span-1 lg:col-span-4">
               <Records tnxHistoryData={tnxHistoryData} />
               <BreakdownRecords
                 isOpen={isOpen}

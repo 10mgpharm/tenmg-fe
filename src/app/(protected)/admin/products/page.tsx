@@ -160,10 +160,14 @@ const Page = () => {
 
     useEffect(() => {
         if (!token) return;
-        fetchingBrands();
         fetchProducts();
+    }, [fetchProducts, token]);
+
+    useEffect(() => {
+        if (!token) return;
+        fetchingBrands();
         fetchingCategory();
-    }, [fetchingBrands, fetchingCategory, fetchProducts, token]);
+    }, [fetchingCategory, fetchingBrands, token]);
 
     const memoizedData = useMemo(() => products?.data, [products?.data]);
 
@@ -301,9 +305,9 @@ const Page = () => {
 
     return (
         <div className="p-8">
-            <div className="flex justify-between flex-wrap">
-                <h3 className="font-semibold text-2xl">Products</h3>
-                <div className="mb-4 flex items-center flex-wrap gap-3">
+            <div className="sm:flex sm:justify-between flex-wrap">
+                <h3 className="font-semibold text-2xl mb-3 sm:mb-0">Products</h3>
+                <div className="mb-4 sm:flex sm:items-center gap-3 space-y-3 sm:space-y-0">
                     <SearchInput
                         placeholder="Search for a Product"
                         value={globalFilter}
@@ -315,43 +319,45 @@ const Page = () => {
                         <CiFilter className="w-5 h-5 text-gray-700" />
                         <p className="text-gray-500 font-medium">Filter</p>
                     </div>
-                    <Link
-                        href={'/admin/products/add-product'}
-                        className="bg-primary-500 text-white p-2 px-5 rounded-md">
-                        Add Product
-                    </Link>
-                    <div className="flex items-center gap-2">
-                        <div
-                            className={
+                    <div className="flex items-center gap-3">
+                        <Link
+                            href={'/admin/products/add-product'}
+                            className="bg-primary-500 text-white p-2 px-5 rounded-md text-center flex-1 sm:min-w-max">
+                            Add Product
+                        </Link>
+                        <div className="flex items-center gap-2">
+                            <div
+                                className={
+                                    classNames(
+                                        currentView === PRODUCTVIEW.LIST ?
+                                            "bg-primary-50 rounded-md border border-primary-500"
+                                            : "",
+                                        "cursor-pointer p-2")
+                                }
+                                onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
+                            >
+                                <IoListOutline
+                                    className={classNames(currentView === PRODUCTVIEW.LIST ?
+                                        "text-primary-500" :
+                                        "text-gray-600",
+                                        " w-5 h-5")}
+                                />
+                            </div>
+                            <div className={
                                 classNames(
-                                    currentView === PRODUCTVIEW.LIST ?
+                                    currentView === PRODUCTVIEW.GRID ?
                                         "bg-primary-50 rounded-md border border-primary-500"
                                         : "",
                                     "cursor-pointer p-2")
                             }
-                            onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
-                        >
-                            <IoListOutline
-                                className={classNames(currentView === PRODUCTVIEW.LIST ?
-                                    "text-primary-500" :
-                                    "text-gray-600",
-                                    " w-5 h-5")}
-                            />
-                        </div>
-                        <div className={
-                            classNames(
-                                currentView === PRODUCTVIEW.GRID ?
-                                    "bg-primary-50 rounded-md border border-primary-500"
-                                    : "",
-                                "cursor-pointer p-2")
-                        }
-                            onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
-                            <RxDashboard
-                                className={classNames(currentView === PRODUCTVIEW.GRID ?
-                                    "text-primary-500"
-                                    : "text-gray-600",
-                                    " w-5 h-5")}
-                            />
+                                onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
+                                <RxDashboard
+                                    className={classNames(currentView === PRODUCTVIEW.GRID ?
+                                        "text-primary-500"
+                                        : "text-gray-600",
+                                        " w-5 h-5")}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -365,7 +371,14 @@ const Page = () => {
                         /> :
                         memoizedData?.length > 0 && (
                             currentView === PRODUCTVIEW.LIST ? (
-                                <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                                <TableContainer 
+                                sx={{
+                                    "&::-webkit-scrollbar": {
+                                       display: "none"
+                                    },
+                                }}
+                                border={"1px solid #F9FAFB"} 
+                                borderRadius={"10px"}>
                                     <Table>
                                         <Thead bg={"#F2F4F7"}>
                                             {table?.getHeaderGroups()?.map((headerGroup) => (
@@ -373,7 +386,7 @@ const Page = () => {
                                                     {headerGroup.headers?.map((header) => (
                                                         <Th
                                                             textTransform={"initial"}
-                                                            px="0px"
+                                                            px={3}
                                                             key={header.id}
                                                         >
                                                             {header.isPlaceholder
@@ -391,7 +404,7 @@ const Page = () => {
                                             {products?.data && table?.getRowModel()?.rows?.map((row) => (
                                                 <Tr key={row.id}>
                                                     {row.getVisibleCells()?.map((cell) => (
-                                                        <Td key={cell.id} className="text-ellipsis overflow-hidden">
+                                                        <Td key={cell.id} px={3} className="text-ellipsis overflow-hidden">
                                                             {flexRender(
                                                                 cell.column.columnDef.cell,
                                                                 cell.getContext()

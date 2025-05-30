@@ -49,7 +49,7 @@ const TransactionDetails = ({
                   Details
                 </Text>
                 <div className="border p-2 rounded-md">
-                  <Text>{selectedRow?.name ?? "N/A"}</Text>
+                  <Text>{type === "loan-wallet" ? (selectedRow?.business?.name ?? "N/A") : (selectedRow?.name ?? "N/A")}</Text>
                 </div>
               </Stack>
             )
@@ -59,7 +59,7 @@ const TransactionDetails = ({
               <Text>Status</Text>
               <Tag 
               colorScheme={
-                selectedRow?.txnType === "CREDIT" 
+                (selectedRow?.txnType === "CREDIT" || selectedRow?.status === "success" )
                 ? "green" : 
                 selectedRow?.txnType === "DEBIT" 
                 ? "red" : "orange"} fontWeight={500}
@@ -67,10 +67,10 @@ const TransactionDetails = ({
                 {selectedRow?.status ?? "PENDING"}
               </Tag>
             </Flex>
-            <Flex justify={"space-between"}>
+            {/* <Flex justify={"space-between"}>
               <Text>Wallet debited</Text>
               <Text fontWeight={500}>Admin</Text>
-            </Flex>
+            </Flex> */}
             <Flex justify={"space-between"}>
               <Text>Transaction Type</Text>
               <Text fontWeight={500}>
@@ -78,13 +78,19 @@ const TransactionDetails = ({
                 ? "Order Cancelled" 
                 : selectedRow?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" :
                 selectedRow?.txnGroup === "CREDIT_COMMISSION_ON_ORDER_COMPLETION" ? "Commission On Order Completed" :
+                selectedRow?.txnGroup === "WITHDRAW_TO_BANK" ? "Withdrawal" :
+                selectedRow?.transactionGroup === "payout" ? "Payout" :
+                selectedRow?.transactionGroup === "repayment_interest" ? "Payment Interest" :
+                selectedRow?.transactionGroup === "loan_interest" ? "Loan Interest" :
                 ""
               }
               </Text>
             </Flex>
             <Flex justify={"space-between"}>
               <Text>OrderID</Text>
-              <Text fontWeight={500}>{type === "sup_payout" ? selectedRow?.id : selectedRow?.orderId}</Text>
+              <Text fontWeight={500}>
+                {type === "sup_payout" ? (selectedRow?.id ?? "N/A") : type === "loan-wallet" ? (selectedRow?.identifier ?? "N/A") : (selectedRow?.order?.identifier ?? "N/A")}
+                </Text>
             </Flex>
             <Flex justify={"space-between"}>
               <Text>Tenmg Commission</Text>

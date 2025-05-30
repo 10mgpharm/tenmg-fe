@@ -7,12 +7,12 @@ import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
     data: SupplierTransactionDataProps;
+    globalFilter?: string;
     payoutData?: PayoutDataProps;
     hasPagination: boolean;
     setPageCount?: Dispatch<SetStateAction<number>>;
 }
-const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) => {
-    console.log(payoutData)
+const Transaction = ({ data, payoutData, hasPagination, setPageCount, globalFilter }: Props ) => {
     return (
         <div>
             <Tabs variant={"unstyled"}>
@@ -34,6 +34,7 @@ const Transaction = ({ data, payoutData, hasPagination, setPageCount }: Props ) 
                     <TabPanel px={0}>
                         <TransactionTable 
                         data={data?.data} 
+                        globalFilter={globalFilter}
                         hasPagination={hasPagination} 
                         setPageCount={setPageCount}
                         metaData={{

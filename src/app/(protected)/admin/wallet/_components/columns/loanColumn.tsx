@@ -13,7 +13,7 @@ export function loanColumnFn(
 ) {
   return [
     columnHelper.accessor("identifier", {
-      header: ({ column }) => <p className="pl-6">Loan ID</p>,
+      header: ({ column }) => <p className="pl-6">Transaction ID</p>,
       cell: (info) => (
         <div className="pl-6">
           <p className="font-medium">
@@ -46,7 +46,7 @@ export function loanColumnFn(
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
         <div className="">
-          <p className="font-medium">₦{info.row.original?.amount ?? `0.00`}</p>
+          <p className="font-medium">₦{Number(info.row.original?.amount)?.toLocaleString() ?? `0.00`}</p>
         </div>
       ),
     }),

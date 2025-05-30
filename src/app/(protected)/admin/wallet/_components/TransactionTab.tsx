@@ -94,7 +94,7 @@ const TransactionTab = ({
       {data?.data?.length === 0 ? (
         <EmptyOrder
           heading={emptyStateHeader}
-          content={`All data will appear here.`}
+          content={`No record found for this request.`}
         />
       ) : data?.data?.length > 0 ? (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>

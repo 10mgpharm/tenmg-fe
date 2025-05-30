@@ -11,23 +11,24 @@ import {
   Badge,
   Box,
   Button,
-  Card,
-  CardBody,
-  CloseButton,
-  Divider,
   Flex,
   Grid,
   GridItem,
-  Image as ChakraImage,
   Stack,
   Tab,
   TabList,
   Tabs,
   Text,
-  Tooltip,
   useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
-import { LenderDashboardData, LoanRequest, NextAuthUserSession } from "@/types";
+import { LenderDashboardData, NextAuthUserSession } from "@/types";
 import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
 import ChartComponent from "@/app/(protected)/vendors/_components/ChartComponent";
 import CompleteAccountModal from "@/app/(protected)/vendors/_components/CompleteAccountModal";
@@ -37,13 +38,13 @@ import WithdrawFunds from "./drawers/WithdrawFunds";
 import GenerateStatement from "./drawers/GenerateStatement";
 import requestClient from "@/lib/requestClient";
 import { formatAmountString, handleServerErrorMessage } from "@/utils";
-import NoRequest from "@public/assets/images/no_request.png";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../admin/_components/Loader";
 import { useRouter } from "next/navigation";
 import totalPattern from "@public/assets/images/bgLines.svg";
 import CongratsModal from "./drawers/CongratsModal";
+import LoanRequestCard from "./dashboard/LoanRequestCard";
 
 // Constants for chart time periods
 const BALANCE_TIME_PERIODS = [
@@ -97,6 +98,8 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const [amount, setAmount] = useState<number>(0);
   const [wallet, setWallet] = useState([]);
   const [isWithdraw, setIsWithdraw] = useState(false);
+  const [acceptModalOpen, setAcceptModalOpen] = useState(false);
+  const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -266,6 +269,21 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     fetchLenderData();
   }, [fetchLenderData]);
 
+  const openAcceptModal = (id: string) => {
+    setSelectedLoanId(id);
+    setAcceptModalOpen(true);
+  };
+  const closeAcceptModal = () => {
+    setAcceptModalOpen(false);
+    setSelectedLoanId(null);
+  };
+  const confirmAccept = async () => {
+    if (selectedLoanId) {
+      await handleAccept(selectedLoanId);
+      closeAcceptModal();
+    }
+  };
+
   return (
     <>
       {isPending && !lenderData && <Loader />}
@@ -343,6 +361,15 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
               onOpenGenerateStatement={onOpenGenerate}
             />
 
+            <div className="block md:hidden mb-5">
+              <LoanRequestCard
+                lenderData={lenderData}
+                openAcceptModal={openAcceptModal}
+                handleIgnore={handleIgnore}
+                handleView={handleView}
+              />
+            </div>
+
             <div className="space-y-6">
               <ChartSection
                 title="Balance Allocation"
@@ -362,85 +389,14 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
             </div>
           </div>
 
-          <div className="w-full lg:w-2/5 flex flex-col gap-4 h-full">
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-md font-medium text-gray-700">
-                  Loan Requests
-                </h2>
-                <Button
-                  variant="link"
-                  size="sm"
-                  colorScheme="primary"
-                  onClick={() => router.push("/lenders/loan-application")}
-                >
-                  See All
-                </Button>
-              </div>
-
-              <Stack spacing={4}>
-                {!lenderData?.loanRequest?.length ? (
-                  <EmptyRequestState />
-                ) : (
-                  lenderData?.loanRequest.map((request) => (
-                    <LoanDetails
-                      key={request.id}
-                      data={request}
-                      handleAccept={handleAccept}
-                      handleIgnore={handleIgnore}
-                      handleView={handleView}
-                    />
-                  ))
-                )}
-              </Stack>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg">
-              <Box p={4}>
-                <Grid
-                  templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-                  gap={4}
-                  color="white"
-                >
-                  <GridItem
-                    colSpan={{ base: 1, md: 1 }}
-                    rowSpan={{ base: 1, md: 2 }}
-                    bg="teal.500"
-                    p={6}
-                    borderRadius="lg"
-                    boxShadow="md"
-                  >
-                    <Text fontSize="sm">Loans Approved This Month</Text>
-                    <Flex
-                      alignItems="center"
-                      justifyContent={{ base: "left", md: "center" }}
-                      h={{ base: "100%", md: "100%" }}
-                    >
-                      <Text
-                        fontSize={{ base: "4xl", md: "8xl" }}
-                        lineHeight="short"
-                        pb={6}
-                      >
-                        {lenderData?.loanApprovalThisMonth ?? 0}
-                      </Text>
-                    </Flex>
-                  </GridItem>
-
-                  <StatCard
-                    bg="blue.500"
-                    title="Pending Requests"
-                    value={lenderData?.pendingRequests ?? 0}
-                  />
-
-                  <StatCard
-                    bg="green.500"
-                    title="Interest Earned"
-                    value={`₦${formatAmountString(
-                      lenderData?.interestEarned ?? 0
-                    )}`}
-                  />
-                </Grid>
-              </Box>
+          <div className="w-full lg:w-2/5 h-full">
+            <div className="hidden md:block">
+              <LoanRequestCard
+                lenderData={lenderData}
+                openAcceptModal={openAcceptModal}
+                handleIgnore={handleIgnore}
+                handleView={handleView}
+              />
             </div>
           </div>
         </div>
@@ -474,6 +430,25 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
         amount={amount}
         isWithdraw={isWithdraw}
       />
+
+      <Modal isOpen={acceptModalOpen} onClose={closeAcceptModal} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Approve Loan Application</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Are you sure you want to approve this loan application?</Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="green" mr={3} onClick={confirmAccept}>
+              Yes
+            </Button>
+            <Button variant="ghost" onClick={closeAcceptModal}>
+              No
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
@@ -551,7 +526,7 @@ const ChartSection: React.FC<ChartSectionProps> = ({
           onChange={handleTabChange}
           index={BALANCE_TIME_PERIODS.indexOf(selectedPeriod)}
         >
-          <TabList width="80%">
+          <TabList width="100%" className="overflow-x-scroll">
             {BALANCE_TIME_PERIODS.map((period) => (
               <Tab
                 key={period}
@@ -595,106 +570,6 @@ const ChartSection: React.FC<ChartSectionProps> = ({
         </Flex>
       </Box>
     </Box>
-  );
-};
-
-const EmptyRequestState = () => (
-  <div className="flex flex-col items-center justify-center">
-    <ChakraImage src={NoRequest.src} alt="No Request" />
-    <Text fontSize="md" color="gray.500">
-      No loan request available
-    </Text>
-  </div>
-);
-
-interface StatCardProps {
-  bg: string;
-  title: string;
-  value: string | number;
-}
-
-const StatCard: React.FC<StatCardProps> = ({ bg, title, value }) => (
-  <GridItem bg={bg} p={6} borderRadius="lg" boxShadow="md">
-    <Text fontSize="sm" mb={2}>
-      {title}
-    </Text>
-    <Text fontSize="3xl">{value}</Text>
-  </GridItem>
-);
-
-// This can be moved to a separate file
-interface LoanDetailsProps {
-  data: LoanRequest;
-  handleAccept: (id: string) => void;
-  handleView: (id: string) => void;
-  handleIgnore: (id: string) => void;
-}
-
-const LoanDetails: React.FC<LoanDetailsProps> = ({
-  data,
-  handleAccept,
-  handleView,
-  handleIgnore,
-}) => {
-  return (
-    <Card boxShadow="none">
-      <CardBody p={0}>
-        <Stack
-          divider={<Divider />}
-          border="1px solid"
-          borderColor="gray.200"
-          borderRadius="lg"
-          fontSize="sm"
-        >
-          <Box py={1} fontWeight={500} color="gray.600">
-            <Box display="flex" justifyContent="flex-end" p={0}>
-              <Tooltip label="Ignore" hasArrow>
-                <CloseButton
-                  color="red.600"
-                  size="sm"
-                  onClick={() => handleIgnore(data?.identifier)}
-                />
-              </Tooltip>
-            </Box>
-
-            <Box px={4}>
-              <Flex gap={1} alignItems="center" mb={2}>
-                <Text>Loan Amount:</Text>
-                <Text fontWeight={700} color="gray.900">
-                  ₦{formatAmountString(data?.requestedAmount)}
-                </Text>
-              </Flex>
-
-              <Flex justifyContent="space-between" alignItems="center">
-                <Text color="gray.900">{data?.customer.name}</Text>
-                <Flex gap={1} alignItems="center">
-                  <Text color="gray.500">Credit Score:</Text>
-                  <Text>{data?.customer.score}%</Text>
-                </Flex>
-              </Flex>
-            </Box>
-          </Box>
-          <Flex justifyContent="flex-end" pb={2}>
-            <Button
-              variant="ghost"
-              size="sm"
-              colorScheme="green"
-              onClick={() => handleAccept(data?.identifier)}
-            >
-              Accept
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              colorScheme="gray"
-              onClick={() => handleView(data?.identifier)}
-            >
-              View
-            </Button>
-          </Flex>
-        </Stack>
-      </CardBody>
-    </Card>
   );
 };
 

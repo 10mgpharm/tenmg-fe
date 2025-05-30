@@ -86,7 +86,17 @@ export default function AccoundDetailsCard(
                 }
               </h2>
             </div>
-            <Button size={"xs"} className="px-2 py-1 rounded-full" style={{ backgroundColor: "#000000" }}
+            <Button
+              size={"xs"}
+              className="px-2 py-1 rounded-full"
+              style={{
+                backgroundColor: "#000000",
+                color: "#ffffff",
+                borderRadius: "0.375rem",
+                padding: "0.5rem 1.25rem",
+                fontWeight: "600",
+                boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              }}
               onClick={onOpen}
             >
               Edit Account

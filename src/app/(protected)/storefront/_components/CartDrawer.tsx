@@ -82,7 +82,7 @@ const CartDrawer = ({
         const price =
           parseFloat(item?.product?.discountPrice) > 0
             ? parseFloat(item?.product?.actualPrice) -
-              parseFloat(item?.product?.discountPrice)
+            parseFloat(item?.product?.discountPrice)
             : parseFloat(item?.product?.actualPrice);
         total += price * localQuantities[item.product.id];
       });
@@ -159,13 +159,13 @@ const CartDrawer = ({
           </Text>
         </DrawerHeader>
 
-        <Box mt={2}>
+        <Box mt={2} className="overflow-y-auto">
           {/* Cart Items */}
           {cartItems?.items?.length > 0 ? (
             <VStack
               align="start"
               spacing={4}
-              className="h-screen lg:h-[50vh] px-2 mx-2 my-2  overflow-y-auto  [&::-webkit-scrollbar]:w-2
+              className="h-[50vh] px-2 mx-2 my-2  overflow-y-auto  [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-primary-100
   [&::-webkit-scrollbar-thumb]:rounded-full
@@ -312,11 +312,10 @@ const CartItemComp = ({
               </p>
             )}
             <p
-              className={`font-semibold my-2 text-sm ${
-                item?.product.discountPrice > 0
-                  ? "text-gray-400 line-through"
-                  : "text-gray-900"
-              }`}
+              className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0
+                ? "text-gray-400 line-through"
+                : "text-gray-900"
+                }`}
             >
               ₦{item?.product.actualPrice}
             </p>

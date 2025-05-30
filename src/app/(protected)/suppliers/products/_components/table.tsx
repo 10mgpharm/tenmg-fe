@@ -42,7 +42,7 @@ export function ColumsProductFN(
             className="w-8 h-8 rounded-full"
             />
           }
-          <Link className="capitalize font-medium" href={`/suppliers/products/${info.row.original.id}`}>
+          <Link className="capitalize font-medium truncate" href={`/suppliers/products/${info.row.original.id}`}>
             {info?.row?.original?.name}
           </Link>
         </div>

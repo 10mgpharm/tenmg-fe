@@ -53,7 +53,7 @@ const DeleteModal = ({
             <FormControl isInvalid={!!errors.comment} mb={4}>
               <FormLabel>Enter reason for decline</FormLabel>
               <Textarea
-                {...register("comment", { required: "Comment is required" })}
+                {...register("comment", { required: "Reason is required" })}
               />
               {errors.comment && (
                 <span className="text-red-500 text-sm">
