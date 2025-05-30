@@ -9,22 +9,25 @@ import { Awaiting_column } from "./colunms/awaiting_column";
 import TransactionDetails from "./transactionDetails";
 import AccoundDetailsCard from "./AccoundDetailsCard";
 import OTPModal from "@/app/(protected)/suppliers/wallet/_components/OTPModal";
-import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/WithdrawFunds";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import WithdrawFunds from "./WithdrawFunds";
+import { handleServerErrorMessage } from "@/utils";
+import { toast } from "react-toastify";
 
 const LoanWallet = () => {
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
-  const [openDetails, setOpenDetails] = React.useState(false);
-  const [openPayout, setOpenPayout] = React.useState(false);
-  const [openCompleted, setOpenCompleted] = React.useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
+  const [openPayout, setOpenPayout] = useState(false);
+  const [openCompleted, setOpenCompleted] = useState(false);
   const [selectedTransactionDetails, setSelectedTransactionDetails] =
     useState<any>(null);
+  const [withdrawalAmount, setWithdrawalAmount] = useState();
 
   const {
     isOpen: isOpenWithdraw,
@@ -82,6 +85,31 @@ const LoanWallet = () => {
 
   const [showBalance, setShowBalance] = useState(true);
   const [accountInfo, setAccountInfo] = useState(null);
+  const [otp, setOtp] = useState("");
+
+  const handleWithdraw = async () => {
+    setLoading(true);
+    const payload = {
+      amount: withdrawalAmount,
+      otp: otp
+    }
+    try {
+      const response = await requestClient({ token }).post(
+        `/vendor/withdraw-funds`,
+        payload
+      );
+      if (response.status === 200) {
+        toast.success("Withdrawal successful");
+        // fetchingWallet();
+        onCloseOTP();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -162,17 +190,24 @@ const LoanWallet = () => {
         />
       )} */}
 
-      {/* <WithdrawFunds
+      <WithdrawFunds
         isOpen={isOpenWithdraw}
         onClose={onCloseWithdraw}
         otpOpen={onOpenOTP}
         bankDetails={accountInfo}
+        amount={withdrawalAmount}
+        setAmount={setWithdrawalAmount}
+      // accountId={accountInfo?.id}
       />
 
-      <OTPModal 
-      isOpen={isOpenOTP} 
-      onClose={onCloseOTP} 
-      /> */}
+      <OTPModal
+        isOpen={isOpenOTP}
+        onClose={onCloseOTP}
+        otp={otp}
+        setOtp={setOtp}
+        loading={loading}
+        handleWithdraw={handleWithdraw}
+      />
     </div>
   );
 };
