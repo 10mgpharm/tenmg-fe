@@ -49,8 +49,8 @@ export default function InvitationField() {
   const searchParams = useSearchParams();
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
-  // const decodedUrl = currentUrl.replace(/&amp;/g, "&");
-  const urlObj = currentUrl ? new URL(currentUrl) : null;
+  const decodedUrl = currentUrl.replace(/&amp;/g, "&");
+  const urlObj = decodedUrl ? new URL(decodedUrl) : null;
 
   const inviteId = urlObj?.searchParams.get("inviteId");
   const token = urlObj?.searchParams.get("inviteToken");
@@ -124,6 +124,8 @@ export default function InvitationField() {
 
   useEffect(() => {
     // Fetch invite details on component mount
+
+    console.log("Showing Invited Data " , inviteId, token);
     if (inviteId && token) {
       fetchInvite();
     } else {

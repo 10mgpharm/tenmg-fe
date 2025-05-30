@@ -223,10 +223,15 @@ const SupplierTab = ({
         <Stack mt={"10rem"}>
           <FaSpinner className="animate-spin w-6 h-6 mx-auto" />
         </Stack>
-      ) : records?.length === 0 ? (
+      ) : records?.length === 0 && globalFilter.length === 0 ? (
         <EmptyOrder
           heading={`No User Yet`}
           content={`You currently have no user. All users will appear here.`}
+        />
+      ) : records?.length === 0 && globalFilter.length > 0 ? (
+        <EmptyOrder
+          heading={`No User Found`}
+          content={`No user found matching your search criteria.`}
         />
       ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>

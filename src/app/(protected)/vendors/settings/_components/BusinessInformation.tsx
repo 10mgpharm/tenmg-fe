@@ -55,6 +55,9 @@ const BusinessInformation = ({ user }: { user: User }) => {
     },
   });
 
+  const entityType = sessionData?.user?.entityType;
+  const role = sessionData?.user?.role;
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -117,12 +120,15 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="name"
-                isDisabled
+                isDisabled={entityType !== role}
                 placeholder="Enter business name"
                 {...register("businessName", {
                   required: "Business Name is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.businessName?.message}
+              </FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={!!errors.contactPerson?.message}>
@@ -131,30 +137,32 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="number"
-                isDisabled
+                isDisabled={entityType !== role}
                 placeholder="Enter contact name"
                 {...register("contactPerson", {
                   required: "Contact Person Name is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.contactPerson?.message}
+              </FormErrorMessage>
             </FormControl>
           </HStack>
         </Skeleton>
         <Skeleton isLoaded={!isInfoLoading}>
           <HStack gap={5} flexDirection={{ base: "column", md: "row" }}>
-            ;
             <FormControl isInvalid={!!errors.contactEmail?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
                 Business Email
               </FormLabel>
               <InputGroup>
                 <InputLeftElement pointerEvents="none" fontSize="1.2em">
-                  <MdOutlineEmail color="gray.300" />
+                  <MdOutlineEmail />
                 </InputLeftElement>
                 <Input
                   type="email"
-                  isDisabled
                   placeholder="Enter business email"
+                  isDisabled
                   pl={10}
                   {...register("contactEmail", {
                     required: "Business Email is required",
@@ -165,9 +173,6 @@ const BusinessInformation = ({ user }: { user: User }) => {
                   })}
                 />
               </InputGroup>
-              <FormErrorMessage>
-                {errors.contactEmail?.message}
-              </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.contactPhone?.message}>
               <FormLabel fontSize={"sm"} fontWeight={"medium"}>
@@ -175,11 +180,15 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="number"
+                isDisabled={entityType !== role}
                 placeholder="Enter phone number"
                 {...register("contactPhone", {
                   required: "Contact Phone is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.contactPhone?.message}
+              </FormErrorMessage>
             </FormControl>
           </HStack>
         </Skeleton>
@@ -191,12 +200,15 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled
+                isDisabled={entityType !== role}
                 placeholder="Enter business address"
                 {...register("businessAddress", {
                   required: "Contact Business Address is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.businessAddress?.message}
+              </FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
@@ -205,12 +217,15 @@ const BusinessInformation = ({ user }: { user: User }) => {
               </FormLabel>
               <Input
                 type="text"
-                isDisabled
+                isDisabled={entityType !== role}
                 placeholder="Enter position"
                 {...register("contactPersonPosition", {
                   required: "Contact Person Position is required",
                 })}
               />
+              <FormErrorMessage>
+                {errors.contactPersonPosition?.message}
+              </FormErrorMessage>
             </FormControl>
           </HStack>
         </Skeleton>
@@ -224,14 +239,16 @@ const BusinessInformation = ({ user }: { user: User }) => {
               {/* <Button variant="outline" mr={3}>
                 Cancel
               </Button> */}
-              <Button
-                colorScheme="blue"
-                type="submit"
-                isLoading={isLoading}
-                isDisabled={isLoading || isInfoLoading}
-              >
-                Save Changes
-              </Button>
+              {entityType === role && (
+                <Button
+                  colorScheme="blue"
+                  type="submit"
+                  isLoading={isLoading}
+                  isDisabled={isLoading || isInfoLoading}
+                >
+                  Save Changes
+                </Button>
+              )}
             </Flex>
           </HStack>
         </Skeleton>
