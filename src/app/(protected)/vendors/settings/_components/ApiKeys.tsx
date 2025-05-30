@@ -130,7 +130,8 @@ function KeyWrapper({
   pKey,
   sKey,
   callbcUrl,
-  webhkUrl
+  webhkUrl,
+  transactionUrl,
 }: IKeyWrapperProps) {
   const [showPublicKey, setShowPublicKey] = useState<boolean>(false);
   const [showSecretKey, setShowSecretKey] = useState<boolean>(false);
@@ -157,6 +158,7 @@ function KeyWrapper({
       environment,
       webhookUrl: webhkUrl,
       callbackUrl: callbcUrl,
+      transactionUrl: transactionUrl,
     },
   });
 
