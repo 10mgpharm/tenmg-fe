@@ -12,6 +12,7 @@ export interface ApiKey {
     testCallbackUrl: string;
     testEncryptionKey: string;
     encryptionKey: string;
+    transactionUrl?: string;
     isTest: boolean;
     isActive: boolean;
 }
@@ -33,6 +34,7 @@ export interface UpdateApiKeyUrlsPayload {
     environment: ApiKeyEnv;
     webhookUrl: string;
     callbackUrl: string;
+    transactionUrl?: string;
 }
 
 export interface UpdateApiKeyUrlsResponse {
