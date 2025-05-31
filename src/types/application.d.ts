@@ -50,6 +50,7 @@ export interface ApplicationDto {
   updatedAt?: string;
   length?: string;
   createdAt: string;
+  txnReference?: string; // (optional) reference sent via ecommerce when initializing this application
 }
 
 export interface ApplicationWidgetConfig {
@@ -59,6 +60,8 @@ export interface ApplicationWidgetConfig {
   application: ApplicationDto;
   defaultBank: BankAccountDto;
   token: string;
+  callbackUrl?: string;
+  isDemo?: boolean;
 }
 
 export interface BankDto {
@@ -431,3 +434,13 @@ export interface BankAccountProps {
   active: number
 }
 
+export interface ApplicationStatusResponseDto {
+  message: string;
+  orderStatus: string;
+  repaymentUrl?: string;
+  business: BusinessDto;
+  customer: CustomerDto;
+  application: ApplicationDto;
+  defaultBank: BankAccountDto;
+  isDemo?: boolean;
+}

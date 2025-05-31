@@ -5,9 +5,10 @@ interface InnerProps {
   headerIcon: React.ReactNode;
   heading: string;
   text?: string;
+  callbackUrl?: string;
 }
 
-const LoanInnerWrapper = ({ headerIcon, heading, text }: InnerProps) => {
+const LoanInnerWrapper = ({ headerIcon, heading, text, callbackUrl }: InnerProps) => {
   return (
     <VStack spacing={10} py="50px">
       <Center mb={3}>{headerIcon}</Center>

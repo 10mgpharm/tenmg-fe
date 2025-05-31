@@ -75,7 +75,7 @@ export default function BusinessInformationForm({
       // set this from session if exist
       setValue("businessName", sessionData?.user?.businessName);
       setValue("businessEmail", sessionData?.user?.email);
-      setValue("businessType", sessionData?.user?.entityType.toLowerCase());
+      setValue("businessType", sessionData?.user?.entityType?.toLowerCase());
       if (sessionData?.user?.account?.provider === "google") {
         setValue("businessType", "supplier");
       }
@@ -101,8 +101,6 @@ export default function BusinessInformationForm({
         toast.success(
           `You have successfully completed sign up process. Redirect to Dashboard....`
         );
-
-        console.log(data, "data");
 
         await session.update({
           ...sessionData,

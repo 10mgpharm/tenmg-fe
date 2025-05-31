@@ -9,6 +9,7 @@ import {
   ResponseDto,
 } from "@/types";
 import ApplicationWidget from "../_components/ApplicationWidget";
+import config from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Apply for 10mg Health Credit",
@@ -43,6 +44,7 @@ export default async function Page({ params: { reference } }: PageProps) {
   const customer: CustomerDto = data.customer;
   const application: ApplicationDto = data.application;
   const token = data.token;
+  const callbackBaseUrl = data.isDemo ? `${config.appUrl}/demo/order` : data.callbackUrl;
 
   if (!token) {
     return (
@@ -61,8 +63,8 @@ export default async function Page({ params: { reference } }: PageProps) {
       business={business}
       customer={customer}
       application={application}
-      reference={reference}
       token={token}
+      callbackUrl={callbackBaseUrl}
     />
   );
 }
