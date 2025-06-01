@@ -24,6 +24,7 @@ import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { config } from "process";
 import axios from "axios";
+import CheckPaymentStatusModal from "../_components/CheckPaymentStatusModal";
 
 type OrderDataType = {
   orderId: string;
@@ -51,13 +52,12 @@ export default function PaymentPage() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     "fincra" | "tenmg_credit"
   >("fincra");
-  const {
-    isOpen,
-    onClose: closeConfirmPayment,
-    onOpen: openConfirmPayment,
-  } = useDisclosure();
   const [checkoutRefId, setCheckoutRefid] = useState("");
-  // const [isConfirming, setConfirming] = useState(false);
+  const {
+    isOpen: confirmModal,
+    onClose: closeConfirmModal,
+    onOpen: openConfirmModal,
+  } = useDisclosure();
   const router = useRouter();
 
   useEffect(() => {
@@ -167,16 +167,14 @@ export default function PaymentPage() {
       const response = await requestClient({ token: userToken }).get(
         `/storefront/payment/verify/${ref}`
       );
+
       toast.success("Order placed successfully");
-      // wait 1 second and reload the page
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-      // // console.log("response", response);
       setIsLoading(false);
     } catch (e) {
       toast.error("Oops... Something went wrong...!");
-      // // console.log(e)
       setIsLoading(false);
     } finally {
       setIsLoading(false);
@@ -193,7 +191,6 @@ export default function PaymentPage() {
         toast.success("Order Cancelled Successfully...!");
       }
       setIsLoading(false);
-      // console.log("response", response);
     } catch (e) {
       setIsLoading(false);
       toast.error("Something went wrong, could not cancel order!");
@@ -335,7 +332,6 @@ export default function PaymentPage() {
       );
 
       let popupWindow: Window | null = null;
-      popupWindow = window.open("", "_blank");
 
       setCheckoutRefid(response?.data?.data?.reference);
 
@@ -354,9 +350,10 @@ export default function PaymentPage() {
           response?.data?.data?.reference
         );
 
-        if (url && popupWindow) {
+        if (url) {
+          openConfirmModal();
+          popupWindow = window.open("", "_blank");
           popupWindow.location.href = url;
-          openConfirmPayment();
         } else if (popupWindow) {
           popupWindow.close();
         }
@@ -368,26 +365,6 @@ export default function PaymentPage() {
 
     setLoadingPayment(false);
   };
-
-  // const handleConfirmPayment = async () => {
-  //   setConfirming(true);
-
-  //   try {
-  //     const response = await requestClient({
-  //       "Public-Key": process.env.NEXT_PUBLIC_TENMG_PUBKEY,
-  //       "Secret-Key": process.env.TENMG_SECKEY,
-  //     }).get(`client/applications/payment/verify/${checkoutRefId}`);
-
-  //     if (response.status === 200) {
-  //       toast.success("Payment confirmed");
-  //       closeConfirmPayment();
-  //     }
-  //   } catch (error) {
-  //     const errorMessage = handleServerErrorMessage(error);
-  //     toast.error(errorMessage);
-  //   }
-  //   setConfirming(false);
-  // };
 
   return (
     <>
@@ -663,6 +640,12 @@ export default function PaymentPage() {
           )}
         </>
       )}
+
+      <CheckPaymentStatusModal
+        isOpen={confirmModal}
+        onClose={closeConfirmModal}
+        verifyPayment={() => verifyPayment(checkoutRefId)}
+      />
     </>
   );
 }
