@@ -46,7 +46,7 @@ const NotificationModal = (
     return (
         <MenuItems
             transition
-            className="absolute right-0 z-10 mt-5 pb-5  overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in lg:w-1/3">
+            className="absolute right-0 z-10 mt-5 pb-5  overflow-y-scroll origin-top-right rounded-lg bg-white py-2 shadow-xl ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in lg:w-1/4">
             <div className="flex-1">
                 <MenuItem>
                     <div className="flex items-center justify-between px-5">
