@@ -14,8 +14,8 @@ interface Props {
     business: BusinessDto;
     customer: CustomerDto;
     application: ApplicationDto;
-    reference: string;
     token: string;
+    callbackUrl?: string;
 }
 
 interface IFormInput {
@@ -28,7 +28,7 @@ interface IFormInput {
     mandateStatus: string;
 }
 
-export default function ApplicationWidget({ business, customer, application, reference, token }: Props) {
+export default function ApplicationWidget({ business, customer, application, token, callbackUrl }: Props) {
     const [activeStep, setActiveStep] = useState<number>(1);
     const mandateDetailRef = useRef<BankMandateDto | null>(null);
     const [mandateDetail, setMandateDetail] = useState<BankMandateDto | null>(null);
@@ -147,7 +147,7 @@ export default function ApplicationWidget({ business, customer, application, ref
                         setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
                         setValue('bankDetail.bankName', defaultBankAccount?.bankName);
                         setValue("mandateReference", mandateDetail.reference);
-                        
+
 
                         setActiveStep(activeStep + 1);
                     }}
@@ -157,36 +157,37 @@ export default function ApplicationWidget({ business, customer, application, ref
             return (
                 <StepFiveMandateScreen
                     token={token}
-                        defaultBankDetail={bankDetail}
-                        business={business}
-                        customer={customer}
-                        application={application}
-                        navigateBackAction={() => {
-                            setActiveStep(activeStep - 1);
-                        }}
-                        mandateDetailRef={mandateDetailRef}
-                        mandateDetail={mandateDetail}
-                        onContinueAction={(defaultBankAccount: BankAccountDto) => {
-                            // set bank info for mandate creation
-                            setValue('bankDetail.accountName', defaultBankAccount?.accountName);
-                            setValue('bankDetail.accountNumber', defaultBankAccount?.accountNumber);
-                            setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
-                            setValue('bankDetail.bankName', defaultBankAccount?.bankName);
+                    defaultBankDetail={bankDetail}
+                    business={business}
+                    customer={customer}
+                    application={application}
+                    navigateBackAction={() => {
+                        setActiveStep(activeStep - 1);
+                    }}
+                    mandateDetailRef={mandateDetailRef}
+                    mandateDetail={mandateDetail}
+                    onContinueAction={(defaultBankAccount: BankAccountDto) => {
+                        // set bank info for mandate creation
+                        setValue('bankDetail.accountName', defaultBankAccount?.accountName);
+                        setValue('bankDetail.accountNumber', defaultBankAccount?.accountNumber);
+                        setValue('bankDetail.bankCode', defaultBankAccount?.bankCode);
+                        setValue('bankDetail.bankName', defaultBankAccount?.bankName);
 
-                            setActiveStep(activeStep + 1);
-                         
+                        setActiveStep(activeStep + 1);
+
                     }}
                 />
             );
         case 6:
             return (
-                <SuccessScreen   
-                token={token} 
-                business={business}
-                customer={customer}
-                application={application}  
+                <SuccessScreen
+                    token={token}
+                    business={business}
+                    customer={customer}
+                    application={application}
+                    callbackUrl={callbackUrl}
                 />
             );
-            
+
     }
 }

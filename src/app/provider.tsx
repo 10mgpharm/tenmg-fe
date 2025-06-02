@@ -11,7 +11,6 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
     <SessionProvider>
       <ThemeProvider>
         <TopLoader showSpinner={false} />
-
         {children}
       </ThemeProvider>
       <ToastContainer

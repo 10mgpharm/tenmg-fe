@@ -193,7 +193,7 @@ export default function LoanApplicationView({
           {userRole === "lender" &&
             loanData?.status !== "APPROVED" &&
             loanData?.status !== "EXPIRED" && (
-              <div className="w-full">
+              <div className="w-full mt-5 flex gap-2">
                 <Button
                   size="sm"
                   colorScheme="red"

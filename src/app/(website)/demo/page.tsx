@@ -12,13 +12,21 @@ import {
   Text,
   Badge,
   Flex,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Spinner,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { getDemoCustomers, initializeLoanApplicationUrl } from "./actions";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { formatAmount } from "@/utils/formatAmount";
 import { CustomerDto } from "@/types";
-import StatusBadge from "@/app/(protected)/_components/StatusBadge";
+import CheckPaymentButton from "./_components/CheckPaymentButtton";
 
 const products = [
   { name: "Paracetamol", price: 25000.0, quantity: 1 },
@@ -29,12 +37,16 @@ const products = [
 ];
 
 export default function CheckoutPage() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const [isPendingInit, startTransition] = useTransition();
   const [isProcessing, startPaymentTransition] = useTransition();
 
   const [customers, setCustomers] = useState<CustomerDto[]>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerDto>(null);
-  const [cart, setCart] = useState(products);
+  const [cart,] = useState(products);
+
+  const [txnReference,] = useState<string>(`${new Date().getTime()}`);
 
   const handleCustomerChange = (event) => {
     const customer = customers.find((c) => c.name === event.target.value);
@@ -69,23 +81,16 @@ export default function CheckoutPage() {
       return toast.info("Select customer to proceed", {
         position: "bottom-center",
       });
-    
-    // TODO: call to intialize credit transaction - Need Backend
-    // initializeTransaction -> tell 10mg db -> return txnReference
-    // {
-    //   applicationId: 
-    //   customer: selectedCustomer,
-    //   requestedAmount: grandTotal,
-    // }
 
     startPaymentTransition(async () => {
       try {
         const { data, message, status } = await initializeLoanApplicationUrl({
           customer: selectedCustomer,
           requestedAmount: grandTotal,
-          // txnReference: XXXXX //TODO: use the return reference to call 10mg credit widget
+          txnReference,
         });
         if (status === "success") {
+          onOpen(); // open modal
           window.open(data.url, "_blank");
         } else {
           toast.error(`Error: ${message}`);
@@ -102,108 +107,129 @@ export default function CheckoutPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6 gap-4">
-      <Badge
-        bgColor="error.50"
-        px={8}
-        py={4}
-        rounded="2xl"
-        textTransform="none"
-        fontWeight="medium"
-      >
-        <Flex gap={2} alignItems="center" borderRadius="lg">
-          <Text color="error.600" fontSize="lg">Test Mode</Text>
-        </Flex>
-      </Badge>
-      <div className="max-w-4xl w-full bg-white rounded-lg shadow-lg p-6 grid md:grid-cols-2 gap-6">
-        {/* Customer Information */}
-        <div>
-          <Heading size="lg" mb={4}>
-          Demo Checkout
-          </Heading>
-          <Divider mb={4} />
-          <div className="flex flex-col space-y-4">
-            <Select
-              placeholder="Select Name"
-              size="lg"
-              onChange={handleCustomerChange}
-            >
-              {isPendingInit && <option>Loading...</option>}
-              {!isPendingInit &&
-                customers?.map((customer) => (
-                  <option key={customer.name} value={customer.name}>
-                    {customer.name}
-                  </option>
-                ))}
-            </Select>
-            <Input
-              placeholder="Customer ID"
-              type="tel"
-              size="lg"
-              value={selectedCustomer?.identifier || ""}
-              readOnly
-            />
-            <Input
-              placeholder="Email Address"
-              type="email"
-              size="lg"
-              value={selectedCustomer?.email || ""}
-              readOnly
-            />
-            <Input
-              placeholder="Phone Number"
-              type="tel"
-              size="lg"
-              value={selectedCustomer?.phone || ""}
-              readOnly
-            />
-            <Select size="lg" className="my-5 bg-blue-500">
-              <option value="credit">Pay with 10mg Credit</option>
-            </Select>
-          </div>
-        </div>
-
-        {/* Order Summary */}
-        <Card className="border border-gray-200 shadow-sm">
-          <CardBody>
-            <Heading size="md" mb={4}>
-              Order Summary
+    <>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6 gap-4">
+        <Badge
+          bgColor="error.50"
+          px={8}
+          py={4}
+          rounded="2xl"
+          textTransform="none"
+          fontWeight="medium"
+        >
+          <Flex gap={2} alignItems="center" borderRadius="lg">
+            <Text color="error.600" fontSize="lg">Vendor Ecommerce</Text>
+          </Flex>
+        </Badge>
+        <div className="max-w-4xl w-full bg-white rounded-lg shadow-lg p-6 grid md:grid-cols-2 gap-6">
+          {/* Customer Information */}
+          <div>
+            <Heading size="lg" mb={4}>
+              Demo Checkout
             </Heading>
             <Divider mb={4} />
-            <div className="space-y-2">
-              {cart.map((product, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <Text>{product.name}</Text>
-                  <Text>{formatAmount(product.price * product.quantity)}</Text>
-                </div>
-              ))}
-              <Divider my={2} />
-              <div className="flex justify-between font-bold">
-                <Text>Total</Text>
-                <Text>{formatAmount(total)}</Text>
-              </div>
-              <div className="flex justify-between font-bold text-green-600">
-                <Text>Discount (10%)</Text>
-                <Text>-{formatAmount(discount)}</Text>
-              </div>
-              <div className="flex justify-between font-bold text-lg">
-                <Text>Grand Total</Text>
-                <Text>{formatAmount(grandTotal)}</Text>
-              </div>
+            <div className="flex flex-col space-y-4">
+              <Select
+                placeholder="Select Name"
+                size="lg"
+                onChange={handleCustomerChange}
+              >
+                {isPendingInit && <option>Loading...</option>}
+                {!isPendingInit &&
+                  customers?.map((customer) => (
+                    <option key={customer.name} value={customer.name}>
+                      {customer.name}
+                    </option>
+                  ))}
+              </Select>
+              <Input
+                placeholder="Customer ID"
+                type="tel"
+                size="lg"
+                value={selectedCustomer?.identifier || ""}
+                readOnly
+              />
+              <Input
+                placeholder="Email Address"
+                type="email"
+                size="lg"
+                value={selectedCustomer?.email || ""}
+                readOnly
+              />
+              <Input
+                placeholder="Phone Number"
+                type="tel"
+                size="lg"
+                value={selectedCustomer?.phone || ""}
+                readOnly
+              />
+              <Select size="lg" className="my-5 bg-blue-500">
+                <option value="credit">Pay with 10mg Credit</option>
+              </Select>
             </div>
-            <Button
-              colorScheme="blue"
-              size="lg"
-              width="full"
-              mt={10}
-              isLoading={isProcessing}
-              onClick={handlePayWith10mgCredit}
-            >
-              Place Order
-            </Button>
-          </CardBody>
-        </Card>
+          </div>
+
+          {/* Order Summary */}
+          <Card className="border border-gray-200 shadow-sm">
+            <CardBody>
+              <Heading size="md" mb={4}>
+                Order Summary
+              </Heading>
+              <Divider mb={4} />
+              <div className="space-y-2">
+                {cart.map((product, index) => (
+                  <div key={index} className="flex justify-between items-center">
+                    <Text>{product.name}</Text>
+                    <Text>{formatAmount(product.price * product.quantity)}</Text>
+                  </div>
+                ))}
+                <Divider my={2} />
+                <div className="flex justify-between font-bold">
+                  <Text>Total</Text>
+                  <Text>{formatAmount(total)}</Text>
+                </div>
+                <div className="flex justify-between font-bold text-green-600">
+                  <Text>Discount (10%)</Text>
+                  <Text>-{formatAmount(discount)}</Text>
+                </div>
+                <div className="flex justify-between font-bold text-lg">
+                  <Text>Grand Total</Text>
+                  <Text>{formatAmount(grandTotal)}</Text>
+                </div>
+              </div>
+              <Button
+                colorScheme="blue"
+                size="lg"
+                width="full"
+                mt={10}
+                isLoading={isProcessing}
+                onClick={handlePayWith10mgCredit}
+              >
+                Place Order
+              </Button>
+            </CardBody>
+          </Card>
+        </div>
       </div>
-    </div>
+
+      <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnEsc={false} closeOnOverlayClick={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Pay with 10mg Credit In Progress</ModalHeader>
+          <ModalBody textAlign="center" py={6}>
+            <Spinner size="xl" thickness="4px" color="blue.500" mb={4} />
+            <Text fontSize="lg" mb={4}>
+              Click the button below to check your application and payment status to complete your order.
+            </Text>
+          </ModalBody>
+          <ModalFooter display="flex" justifyContent="space-between">
+            <Button variant="ghost" onClick={onClose}>
+              Close
+            </Button>
+            <CheckPaymentButton txnReference={txnReference} />
+          </ModalFooter>
+        </ModalContent>
+      </Modal >
+    </>
   );
 }

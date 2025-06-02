@@ -1,23 +1,19 @@
 import {
-  VStack,
-  Heading,
   Text,
-  Icon,
-  Circle,
-  Box,
-  Button,
 } from "@chakra-ui/react";
 import LoanLayout from "../../_components/LoanLayout";
 import LoanProfile from "../../_components/LoanProfile";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { ApplicationDto, BusinessDto, CustomerDto } from "@/types";
 import LoanInnerWrapper from "../../_components/LoanInnerWrapper";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   token: string;
   business: BusinessDto;
   customer: CustomerDto;
   application: ApplicationDto;
+  callbackUrl?: string;
   navigateBackAction?: () => void;
 }
 
@@ -26,8 +22,28 @@ const SuccessScreen = ({
   business,
   application,
   customer,
+  callbackUrl,
   navigateBackAction,
 }: Props) => {
+
+  console.log(callbackUrl)
+
+  useEffect(() => {
+    if (callbackUrl && callbackUrl !== "") {
+      toast.info("Redirecting you order confirmation page...", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
+
+      const timeout = setTimeout(() => {
+        const reference = application?.txnReference || application?.identifier;
+        window.location.href = `${callbackUrl}?reference=${reference}`;
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [application?.identifier, application?.txnReference, callbackUrl]);
+  
   return (
     <LoanLayout
       name={business?.name}
@@ -46,24 +62,6 @@ const SuccessScreen = ({
               keep an eye on your email, where you’ll soon receive more
               information, including important details about the next steps."
         />
-
-        {/* <VStack spacing={10} textAlign="center" paddingY="50px">
-          <Circle size="90px" bg="success.100" color="green.500">
-            <Circle size="60px" bg="success.200">
-              <Icon as={LuCheckCircle} w={10} h={10} />
-            </Circle>
-          </Circle>
-          <VStack spacing={4}>
-            <Heading fontSize="xl" fontWeight="medium">
-              Mandate Authentication Successful
-            </Heading>
-            <Text fontSize="sm" w="full">
-              Congratulations! Your Credit Application was submitted. Please
-              keep an eye on your email, where you’ll soon receive more
-              information, including important details about the next steps.
-            </Text>
-          </VStack>
-        </VStack> */}
       </>
     </LoanLayout>
   );
