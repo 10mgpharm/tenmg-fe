@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import TimeLineSelector from "../_components/TimeLineSelector";
+// import TimeLineSelector from "../_components/TimeLineSelector";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -27,8 +27,9 @@ const ProductWallet = () => {
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [data, setData] = useState<WalletProductProps>();
-  const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
+  // const [selectedTimeLine, setSelectedTimeLine] = useState("12 months");
   const [searchValue, setSearchValue] = useState<string>("");
+  const [tabIndex, setTabIndex] = useState(0);
 
   const debouncedSearch = useDebouncedValue(searchValue, 500);
 
@@ -73,7 +74,7 @@ const ProductWallet = () => {
         /> */}
       </div>
 
-      <Tabs variant={"unstyled"} className="mt-7">
+      <Tabs variant={"unstyled"} className="mt-7" onChange={(index) => setTabIndex(index)}>
         <div className="flex items-center justify-between gap-4 max-lg:flex-col-reverse max-lg:items-start">
           {/* Tabs */}
           <TabList className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  max-lg:w-full">
@@ -99,7 +100,7 @@ const ProductWallet = () => {
 
           {/* Search */}
           <SearchInput
-            placeholder="Search by supplier name"
+            placeholder={tabIndex === 0 ? "Search by supplier name" : "Search by description"}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Flex, HStack, Image, Spinner, Tag, TagLabel, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 // import Statistics from '@/app/(protected)/admin/products/_components/Statistics';
-import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
+// import ExploreData from '@/app/(protected)/admin/products/_components/ExploreData';
 import { NextAuthUserSession, ProductDataProps } from '@/types';
 import requestClient from '@/lib/requestClient';
 import { convertDate } from '@/utils/formatDate';
@@ -170,7 +170,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className="mt-5">
                     {/* <Statistics /> */}
-                    <ExploreData />
+                    {/* <ExploreData /> */}
                 </div>
             </div>
         </div>
