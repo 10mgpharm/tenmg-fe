@@ -29,7 +29,7 @@ export function ColumsTransactionFN(
           <p className="font-medium">
           {info.row.original?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ? "Order Cancelled" 
           : info.row.original?.txnGroup === "CREDIT_ON_ORDER_COMPLETION" ? "Order Completed" 
-          : info.row.original?.txnGroup === "WITHDRAW_TO_BANK" ? "Withdrawal" : ""}
+          : info.row.original?.txnGroup === "WITHDRAW_TO_BANK" ? "Withdraw" : ""}
           </p>
         </div>
       ),

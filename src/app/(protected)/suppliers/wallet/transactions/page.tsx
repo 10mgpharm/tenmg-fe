@@ -82,13 +82,13 @@ const TransactionUI = () => {
             </div>
         </div>
         <div className="mt-4">
-            <Transaction 
-            globalFilter={globalFilter}
-            data={transactions} 
-            payoutData={pendingPayouts} 
-            hasPagination={true}
-            setPageCount={setPageCount}
-            />
+          <Transaction 
+          globalFilter={globalFilter}
+          data={transactions} 
+          payoutData={pendingPayouts} 
+          hasPagination={true}
+          setPageCount={setPageCount}
+          />
         </div>
     </div>
   )

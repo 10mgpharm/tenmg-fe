@@ -177,7 +177,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className="mt-5">
                     {/* <Statistics /> */}
-                    <ExploreData />
+                    {/* <ExploreData /> */}
                 </div>
             </div>
         </div>

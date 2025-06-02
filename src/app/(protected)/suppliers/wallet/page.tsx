@@ -164,6 +164,7 @@ const Wallet = () => {
       if( response.status === 200) {
         toast.success("Withdrawal successful");
         fetchingWallet();
+        fetchingTransactions();
         onCloseOTP();
       }
     } catch (error) {
