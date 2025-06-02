@@ -83,15 +83,18 @@ const LoanWallet = () => {
     fetchTransactions();
   }, [token, fetchStat, fetchTransactions]);
 
+
   const [showBalance, setShowBalance] = useState(true);
   const [accountInfo, setAccountInfo] = useState(null);
+  const [ref, setRef] = useState("");
   const [otp, setOtp] = useState("");
 
   const handleWithdraw = async () => {
     setLoading(true);
     const payload = {
       amount: withdrawalAmount,
-      otp: otp
+      otp: otp,
+      ref
     }
     try {
       const response = await requestClient({ token }).post(
@@ -197,6 +200,7 @@ const LoanWallet = () => {
         bankDetails={accountInfo}
         amount={withdrawalAmount}
         setAmount={setWithdrawalAmount}
+        setRef={setRef}
       // accountId={accountInfo?.id}
       />
 
