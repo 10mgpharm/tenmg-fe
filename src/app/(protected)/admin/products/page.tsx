@@ -131,7 +131,7 @@ const Page = () => {
     }, [pageCount, debouncedSearch, inventoryQuery, categoryQuery, status, brandQuery, createdAtStart, createdAtEnd, token]);
 
     const fetchingBrands = useCallback(async () => {
-        if (!brandFilter) return;
+        if (!debouncedBrandSearch) return;
         try {
             const response = await requestClient({ token: token }).get(
                 `/admin/settings/brands?search=${debouncedBrandSearch}`
@@ -142,10 +142,10 @@ const Page = () => {
         } catch (error) {
             console.error(error)
         }
-    }, [token, debouncedBrandSearch, brandFilter]);
+    }, [token, debouncedBrandSearch]);
 
     const fetchingCategory = useCallback(async () => {
-        if (!categoryFilter) return;
+        if (!debouncedCategorySearch) return;
         try {
             const response = await requestClient({ token: token }).get(
                 `/admin/settings/categories?search=${debouncedCategorySearch}`
@@ -156,7 +156,7 @@ const Page = () => {
         } catch (error) {
             console.error(error)
         }
-    }, [token, debouncedCategorySearch, categoryFilter]);
+    }, [token, debouncedCategorySearch]);
 
     useEffect(() => {
         if (!token) return;
