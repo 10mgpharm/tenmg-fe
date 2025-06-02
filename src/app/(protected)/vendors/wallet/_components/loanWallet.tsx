@@ -86,25 +86,28 @@ const LoanWallet = () => {
 
   const [showBalance, setShowBalance] = useState(true);
   const [accountInfo, setAccountInfo] = useState(null);
-  const [ref, setRef] = useState("");
+  const [reference, setRef] = useState("");
   const [otp, setOtp] = useState("");
 
   const handleWithdraw = async () => {
     setLoading(true);
     const payload = {
-      amount: withdrawalAmount,
-      otp: otp,
-      ref
+      // amount: withdrawalAmount,
+      otp,
+      reference
     }
+    // console.log("reference", reference);
+    // console.log("payload", payload);
     try {
       const response = await requestClient({ token }).post(
-        `/vendor/withdraw-funds`,
+        `/vendor/withdrawals/withdraw-funds`,
         payload
       );
       if (response.status === 200) {
         toast.success("Withdrawal successful");
         // fetchingWallet();
         onCloseOTP();
+        window.location.reload();
       }
     } catch (error) {
       console.error(error);
