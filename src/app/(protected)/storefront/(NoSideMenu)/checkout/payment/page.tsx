@@ -168,13 +168,24 @@ export default function PaymentPage() {
         `/storefront/payment/verify/${ref}`
       );
 
-      toast.success("Order placed successfully");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      if (selectedPaymentMethod === "tenmg_credit") {
+        if (response?.status === 200) {
+          if (response?.data?.data?.applicationStatus === "PENDING PAYMENT") {
+            toast.success(
+              "Payment initiated! Please complete your mandate to finalize the transaction."
+            );
+          }
+        }
+      } else {
+        toast.success("Order placed successfully");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
       setIsLoading(false);
     } catch (e) {
-      toast.error("Oops... Something went wrong...!");
+      const errorMessage = handleServerErrorMessage(e);
+      toast.error(errorMessage);
       setIsLoading(false);
     } finally {
       setIsLoading(false);
@@ -291,7 +302,7 @@ export default function PaymentPage() {
         "Secret-Key": process.env.TENMG_SECKEY,
       }).post(`/client/applications/start`, {
         requestedAmount,
-        reference,
+        txnReference: reference,
         customer,
       });
 
@@ -364,6 +375,12 @@ export default function PaymentPage() {
     }
 
     setLoadingPayment(false);
+  };
+
+  // Check endpoint to reflect the status of the payment for 10MG
+  const confirmCancel10MG = async () => {
+    verifyPayment(checkoutRefId);
+    closeConfirmModal();
   };
 
   return (
@@ -643,7 +660,7 @@ export default function PaymentPage() {
 
       <CheckPaymentStatusModal
         isOpen={confirmModal}
-        onClose={closeConfirmModal}
+        onClose={confirmCancel10MG}
         verifyPayment={() => verifyPayment(checkoutRefId)}
       />
     </>
