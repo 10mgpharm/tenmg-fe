@@ -1,7 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Gestarted from "./gestarted";
+
 const Herosection = () => {
+  const handleScrollToUsers = () => {
+    document.getElementById("users")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div>
       <div className="min-h-screen flex flex-col">
@@ -45,18 +53,28 @@ const Herosection = () => {
                   className="sm:w-auto px-6 py-3 bg-white text-[#344054] rounded-lg border border-gray-400"
                 >
                   Demo
-                </Link>{" "}
+                </Link>
                 <div className="items-end space-x-4 sm:flex hidden">
-                  <Link href="/auth/signup">
-                    <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
-                      Sign Up
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => {
+                      document
+                        .getElementById("get-started")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Get started
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </main>
+
+        {/* Users Section */}
+        <div id="get-started">
+          <Gestarted />
+        </div>
       </div>
     </div>
   );

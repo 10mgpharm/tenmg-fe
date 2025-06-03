@@ -30,7 +30,6 @@ const formatRole = (role: string) => {
   return capitalize(lower);
 };
 
-
 export const ColumsLogFN = () => [
   columnHelper.accessor("actor", {
     header: "User",
@@ -70,15 +69,14 @@ export const ColumsLogFN = () => [
   columnHelper.accessor("description", {
     header: "Description",
     cell: (info) => (
-      <div
-        style={{
-          whiteSpace: "normal", // allow wrapping
-          wordBreak: "break-word", // break long words if needed
-          maxWidth: "400px", // limit width so text wraps
-        }}
+      <Box
+        whiteSpace="normal"
+        wordBreak="break-word"
+        maxW="200px"
+        fontSize="sm"
       >
         {info.getValue() || "-"}
-      </div>
+      </Box>
     ),
   }),
 
