@@ -12,7 +12,12 @@ import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
 import Link from "next/link";
-import { BankAccountProps, LoanTransactionProps, LoanWalletProps, NextAuthUserSession } from "@/types";
+import {
+  BankAccountProps,
+  LoanTransactionProps,
+  LoanWalletProps,
+  NextAuthUserSession,
+} from "@/types";
 import WalletOverview from "./WalletOverview";
 import LoanTable from "./LoanTable";
 import { useState } from "react";
@@ -23,23 +28,26 @@ import requestClient from "@/lib/requestClient";
 import WithdrawFunds from "@/app/(protected)/suppliers/wallet/_components/WithdrawFunds";
 import OTPModal from "@/app/(protected)/suppliers/wallet/_components/OTPModal";
 interface Props {
-filterDate: string, 
-data: LoanWalletProps, 
-bankInfo?: BankAccountProps;
-transactions: LoanTransactionProps[], 
-adminTransactions: LoanTransactionProps[], 
-fetchingWallet: () => void
+  filterDate: string;
+  data: LoanWalletProps;
+  bankInfo?: BankAccountProps;
+  transactions: LoanTransactionProps[];
+  adminTransactions: LoanTransactionProps[];
+  fetchingWallet: () => void;
 }
-const LoanWalletTab = (
-  { data, transactions, adminTransactions, fetchingWallet, bankInfo }: Props
-) => {
-
-  const [otp, setOtp] = useState('');
+const LoanWalletTab = ({
+  data,
+  transactions,
+  adminTransactions,
+  fetchingWallet,
+  bankInfo,
+}: Props) => {
+  const [otp, setOtp] = useState("");
   const [amount, setAmount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const session = useSession();
-  const sessionData = session?.data as NextAuthUserSession
+  const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
   const {
@@ -57,14 +65,14 @@ const LoanWalletTab = (
     setLoading(true);
     const payload = {
       amount: amount,
-      otp: otp
-    }
+      otp: otp,
+    };
     try {
       const response = await requestClient({ token }).post(
         `/admin/withdraw-funds`,
         payload
       );
-      if( response.status === 200) {
+      if (response.status === 200) {
         toast.success("Withdrawal successful");
         fetchingWallet();
         onCloseOTP();
@@ -82,7 +90,7 @@ const LoanWalletTab = (
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 ">
         <WalletOverview
           title="Total Amount from Lenders"
-          value={`₦${Number(data?.totalLenders ?? 0.00)?.toLocaleString()}`}
+          value={`₦${Number(data?.totalLenders ?? 0.0)?.toLocaleString()}`}
           fromColor="from-[#53389E]"
           toColor="to-[#7F56D9]"
           image={totalPattern}
@@ -90,7 +98,7 @@ const LoanWalletTab = (
         />
         <WalletOverview
           title=" Total Payout for Vendors"
-          value={`₦${Number(data?.vendorPayouts ?? 0.00)?.toLocaleString()}`}
+          value={`₦${Number(data?.vendorPayouts ?? 0.0)?.toLocaleString()}`}
           fromColor="from-[#DC6803]"
           toColor="to-[#DC6803]"
           image={orderPattern}
@@ -98,7 +106,7 @@ const LoanWalletTab = (
         />
         <WalletOverview
           title="Wallet Balance"
-          value={`₦${Number(data?.walletBalance ?? 0.00)?.toLocaleString()}`}
+          value={`₦${Number(data?.walletBalance ?? 0.0)?.toLocaleString()}`}
           fromColor="from-[#E31B54]"
           toColor="to-[#E31B54]"
           image={productPattern}
@@ -148,18 +156,19 @@ const LoanWalletTab = (
         </TabList>
         <TabPanels>
           <TabPanel px={0}>
-          <LoanTable 
-          type="credit"
-          data={transactions}
-          hasPagination={false}
-          />
+            <LoanTable
+              type="credit"
+              data={transactions}
+              hasPagination={false}
+            />
           </TabPanel>
+
           <TabPanel px={0}>
-          <LoanTable 
-          type="repayment"
-          data={adminTransactions}
-          hasPagination={false}
-          />
+            <LoanTable
+              type="repayment"
+              data={adminTransactions}
+              hasPagination={false}
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -171,14 +180,14 @@ const LoanWalletTab = (
         setAmount={setAmount}
         bankDetails={bankInfo}
       />
-      <OTPModal 
+      <OTPModal
         isOpen={isOpenOTP}
         onClose={onCloseOTP}
         otp={otp}
         setOtp={setOtp}
         loading={loading}
         handleWithdraw={handleWithdraw}
-       />
+      />
     </div>
   );
 };

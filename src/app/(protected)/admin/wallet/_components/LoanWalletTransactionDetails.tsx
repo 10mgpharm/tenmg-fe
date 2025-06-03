@@ -16,17 +16,21 @@ import {
 import shape from "@public/assets/images/Rectangle 43.svg";
 import Image from "next/image";
 
-const TransactionDetails = ({
+const LoanWalletTransactionDetails = ({
   isOpen,
   onClose,
   selectedRow,
   type,
+  detailsType,
 }: {
   isOpen: boolean;
   onClose: () => void;
   type: string;
   selectedRow?: any;
+  detailsType: "credit" | "repayment";
 }) => {
+  console.log(type, selectedRow);
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
       <DrawerOverlay />
@@ -50,9 +54,9 @@ const TransactionDetails = ({
               </Text>
               <div className="border p-2 rounded-md">
                 <Text>
-                  {type === "loan-wallet"
-                    ? selectedRow?.business?.name ?? "N/A"
-                    : selectedRow?.name ?? "N/A"}
+                  {detailsType === "credit"
+                    ? selectedRow?.business?.name
+                    : selectedRow?.description}
                 </Text>
               </div>
             </Stack>
@@ -71,38 +75,27 @@ const TransactionDetails = ({
                 }
                 fontWeight={500}
               >
-                {selectedRow?.status ?? "PENDING"}
+                {selectedRow?.status}
               </Tag>
             </Flex>
-            {/* <Flex justify={"space-between"}>
-              <Text>Wallet debited</Text>
-              <Text fontWeight={500}>Admin</Text>
-            </Flex> */}
+
             <Flex justify={"space-between"}>
               <Text>Transaction Type</Text>
-              <Text fontWeight={500}>
-                {selectedRow?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ||
-                selectedRow?.txnGroup ===
-                  "DEBIT_COMMISSION_ON_ORDER_CANCELLATION"
-                  ? "Order Cancelled"
-                  : selectedRow?.txnGroup === "CREDIT_ON_ORDER_COMPLETION"
-                  ? "Order Completed"
-                  : selectedRow?.txnGroup ===
-                    "CREDIT_COMMISSION_ON_ORDER_COMPLETION"
-                  ? "Commission On Order Completed"
-                  : selectedRow?.txnGroup === "WITHDRAW_TO_BANK"
-                  ? "Withdrawal"
-                  : selectedRow?.transactionGroup === "payout"
-                  ? "Payout"
-                  : selectedRow?.transactionGroup === "repayment_interest"
-                  ? "Payment Interest"
-                  : selectedRow?.transactionGroup === "loan_interest"
-                  ? "Loan Interest"
-                  : ""}
-              </Text>
+              <Tag
+                colorScheme={
+                  selectedRow?.type === "CREDIT"
+                    ? "green"
+                    : selectedRow?.type === "DEBIT"
+                    ? "red"
+                    : "orange"
+                }
+                fontWeight={500}
+              >
+                {selectedRow?.type}
+              </Tag>
             </Flex>
             <Flex justify={"space-between"}>
-              <Text>OrderID</Text>
+              <Text>Transaction ID</Text>
               <Text fontWeight={500}>
                 {type === "sup_payout"
                   ? selectedRow?.id ?? "N/A"
@@ -111,12 +104,14 @@ const TransactionDetails = ({
                   : selectedRow?.order?.identifier ?? "N/A"}
               </Text>
             </Flex>
-            <Flex justify={"space-between"}>
-              <Text>Tenmg Commission</Text>
-              <Text fontWeight={500}>
-                ₦{selectedRow?.tenmgCommission ?? "0.00"}
-              </Text>
-            </Flex>
+            {detailsType === "credit" && (
+              <Flex justify={"space-between"}>
+                <Text>Tenmg Commission</Text>
+                <Text fontWeight={500}>
+                  ₦{selectedRow?.tenmgCommission ?? "0.00"}
+                </Text>
+              </Flex>
+            )}
           </Stack>
         </DrawerBody>
         <DrawerFooter p={0}>
@@ -127,4 +122,4 @@ const TransactionDetails = ({
   );
 };
 
-export default TransactionDetails;
+export default LoanWalletTransactionDetails;

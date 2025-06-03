@@ -197,7 +197,7 @@ const UsersTab = ({
         <Stack mt={"10rem"}>
           <FaSpinner className="animate-spin w-6 h-6 mx-auto" />
         </Stack>
-      ) : records.length === 0 ? (
+      ) : !records ? (
         <EmptyRequest
           heading={
             globalFilter ? "No Result Found" : `No New Approval Request Yet`
