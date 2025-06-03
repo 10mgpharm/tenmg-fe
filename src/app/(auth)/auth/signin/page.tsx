@@ -17,13 +17,16 @@ export default async function LoginPage() {
     <AuthWrapper type="others">
       <section className="md:w-1/2 px-4 md:px-12 lg:px-32 flex items-center min-h-screen">
         <article className="w-full">
-          <Image
-            src="/icons/logo.svg"
-            className="md:mb-8"
-            alt="tenmg"
-            width={75}
-            height={75}
-          />
+          <Link href="/home">
+            <Image
+              src="/icons/logo.svg"
+              className="md:mb-8"
+              alt="tenmg"
+              width={75}
+              height={75}
+              style={{ cursor: "pointer" }}
+            />
+          </Link>
 
           <div className="mb-8">
             <Heading
