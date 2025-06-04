@@ -55,7 +55,7 @@ const NotificationModal = (
                             onClick={() => navigate.push(route)}
                             className='text-sm font-semibold cursor-pointer text-primary-600'
                         >
-                            View all
+                            View All
                         </div>
                     </div>
                 </MenuItem>
