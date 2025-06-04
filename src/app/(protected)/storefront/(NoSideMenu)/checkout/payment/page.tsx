@@ -94,7 +94,8 @@ export default function PaymentPage() {
     },
   ];
 
-  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
+  const isPendingPayment =
+    paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
 
   // fetch addresses
   const fetchAddresses = useCallback(async () => {
@@ -183,10 +184,19 @@ export default function PaymentPage() {
       if (selectedPaymentMethod === "tenmg_credit") {
         if (response?.status === 200) {
           if (response?.data?.data?.applicationStatus === "PENDING PAYMENT") {
-            toast.success(
+            toast.warning(
               "Payment initiated! Please complete your mandate to finalize the transaction."
-            ); 
+            );
             await refreshPaymentStatus(userToken);
+            closeConfirmModal();
+          }
+          if (response?.data?.data?.status === "success") {
+            toast.success("Payment approved! Order placed successfully.");
+            await refreshPaymentStatus(userToken);
+            closeConfirmModal();
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           }
         }
       } else {
@@ -390,7 +400,10 @@ export default function PaymentPage() {
 
   // Check endpoint to reflect the status of the payment for 10MG
   const confirmCancel10MG = async () => {
-    verifyPayment(checkoutRefId);
+    await requestClient({ token: userToken }).get(
+      `/storefront/payment/verify/${checkoutRefId}`
+    );
+    await refreshPaymentStatus(userToken);
     closeConfirmModal();
   };
 
@@ -503,16 +516,20 @@ export default function PaymentPage() {
                                     ? "Pay with 10Mg Credit"
                                     : "Pay with Card"}
                                 </p>
-                                {isPendingPayment && i.slug === "tenmg_credit" && (
-                                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
-                                    Required
-                                  </span>
-                                )}
+                                {isPendingPayment &&
+                                  i.slug === "tenmg_credit" && (
+                                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                                      Required
+                                    </span>
+                                  )}
                               </div>
-                              <Radio 
-                                value={i.slug} 
+                              <Radio
+                                value={i.slug}
                                 className=""
-                                isDisabled={isPendingPayment && i.slug !== "tenmg_credit"}
+                                checked={selectedPaymentMethod === i.slug}
+                                isDisabled={
+                                  isPendingPayment && i.slug !== "tenmg_credit"
+                                }
                               />
                             </Box>
                           ))}
