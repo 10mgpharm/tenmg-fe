@@ -7,6 +7,7 @@ import { NextAuthUserSession } from "@/types";
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { usePaymentStatusStore } from "../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
+import { useCartStore } from "../(NoSideMenu)/storeFrontState/useCartStore";
 
 export default function PaymentStatusBanner() {
   const router = useRouter();
@@ -14,17 +15,22 @@ export default function PaymentStatusBanner() {
   const sessionData = session.data as NextAuthUserSession;
   const userToken = sessionData?.user?.token;
 
-  const {
-    paymentStatus,
-    isLoading,
-    fetchPaymentStatus
-  } = usePaymentStatusStore();
+  const { paymentStatus, isLoading, fetchPaymentStatus } =
+    usePaymentStatusStore();
+
+  const { clearCart } = useCartStore();
 
   useEffect(() => {
     if (userToken) {
       fetchPaymentStatus(userToken);
     }
   }, [fetchPaymentStatus, userToken]);
+
+  useEffect(() => {
+    if (userToken && paymentStatus === "APPROVED") {
+      clearCart(userToken);
+    }
+  }, [userToken, paymentStatus, clearCart]);
 
   if (isLoading) return null;
   if (!paymentStatus) return null;
