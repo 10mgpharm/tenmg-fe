@@ -18,11 +18,13 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { useCartStore } from "../storeFrontState/useCartStore";
+import { usePaymentStatusStore } from "../storeFrontState/usePaymentStatusStore";
 import { FiTrash2 } from "react-icons/fi";
 import DeleteModal from "../../_components/DeleteModal";
 import emptyCart from "@public/assets/images/emptyOrder.png";
 import { redirect, useRouter } from "next/navigation";
 import BreadCrumbBanner from "../../_components/BreadCrumbBanner";
+import { toast } from "react-toastify";
 
 export default function CheckoutPage() {
   const session = useSession();
@@ -35,6 +37,8 @@ export default function CheckoutPage() {
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
   const { cart, addToCart, sycnCart, isLoading, cartSize } = useCartStore();
+  const { paymentStatus } = usePaymentStatusStore();
+  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
   const router = useRouter();
 
   useEffect(() => {
@@ -79,6 +83,11 @@ export default function CheckoutPage() {
 
   // Function to increase quantity
   const increaseQuantity = (itemId: number) => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    
     if (
       localQuantities[itemId] <
       cartItems.items.find((item) => item.product.id === itemId).product
@@ -94,6 +103,11 @@ export default function CheckoutPage() {
 
   // Function to decrease quantity
   const decreaseQuantity = (itemId: number) => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    
     if (localQuantities[itemId] > 1) {
       const newQuantity = localQuantities[itemId] - 1;
       setLocalQuantities((prev) => ({
@@ -106,6 +120,11 @@ export default function CheckoutPage() {
   const [loadingRemoveItem, setLoadingRemoveItem] = useState(false);
 
   const removeItem = (itemId: number) => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    
     setLoadingRemoveItem(true);
     const data = {
       productId: delId,
@@ -263,20 +282,21 @@ export default function CheckoutPage() {
                                 bgColor="#F0F2F5"
                                 color="primary.500"
                                 rounded="lg"
+                                opacity={isPendingPayment ? 0.5 : 1}
                               >
                                 <Icon
                                   as={AiOutlineMinus}
                                   _hover={{
                                     cursor:
                                       //  localQuantities[item.product.id] === 1 ||
-                                      isLoading ? "not-allowed" : "pointer",
+                                      isLoading || isPendingPayment ? "not-allowed" : "pointer",
                                   }}
                                   aria-label="Decrease quantity"
                                   onClick={() =>
                                     decreaseQuantity(item?.product?.id)
                                   }
                                   color={
-                                    localQuantities[item.product.id] === 1
+                                    localQuantities[item.product.id] === 1 || isPendingPayment
                                       ? "gray.300"
                                       : "inherit"
                                   }
@@ -287,7 +307,7 @@ export default function CheckoutPage() {
                                   _hover={{
                                     cursor:
                                       // localQuantities[item.product.id] === item?.product?.quantity ||
-                                      isLoading ? "not-allowed" : "pointer",
+                                      isLoading || isPendingPayment ? "not-allowed" : "pointer",
                                   }}
                                   aria-label="Increase quantity"
                                   onClick={() =>
@@ -295,7 +315,7 @@ export default function CheckoutPage() {
                                   }
                                   color={
                                     localQuantities[item.product.id] ===
-                                      item?.product?.quantity
+                                      item?.product?.quantity || isPendingPayment
                                       ? "gray.300"
                                       : "inherit"
                                   }
@@ -313,8 +333,9 @@ export default function CheckoutPage() {
                                 mb={2}
                                 alignSelf="center"
                                 as={FiTrash2}
-                                _hover={{ cursor: "pointer" }}
-                                color="error.500"
+                                _hover={{ cursor: isPendingPayment ? "not-allowed" : "pointer" }}
+                                color={isPendingPayment ? "gray.300" : "error.500"}
+                                opacity={isPendingPayment ? 0.5 : 1}
                                 onClick={() => {
                                   handleOpenRemove();
                                   setDelId(item?.product?.id);

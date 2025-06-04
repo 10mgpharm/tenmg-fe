@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { usePaymentStatusStore } from "../../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
 
 export type WhishListProductType = {
   active: number;
@@ -52,19 +53,21 @@ const DetailsModal = ({
   onClose,
   productData,
   addToCart,
-  token,
   removeWishlistItem,
   disableButton,
+  token,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  productData: WhishListProductType;
+  productData: WhishListProductType | null;
   addToCart: (productId: number) => void;
-  disableButton: boolean;
   removeWishlistItem: (productId: number, token: string) => void;
+  disableButton: boolean;
   token: string;
 }) => {
   const router = useRouter();
+  const { paymentStatus } = usePaymentStatusStore();
+  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"sm"}>
@@ -142,7 +145,8 @@ const DetailsModal = ({
                 addToCart(productData?.id);
                 router.push("/storefront/checkout");
               }}
-              disabled={disableButton}
+              disabled={disableButton || isPendingPayment}
+            
             >
               Buy Now
             </Button>

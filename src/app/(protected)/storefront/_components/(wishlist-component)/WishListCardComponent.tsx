@@ -8,6 +8,7 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useCartStore } from "../../(NoSideMenu)/storeFrontState/useCartStore";
+import { usePaymentStatusStore } from "../../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
 import { useWishlistStore } from "../../(NoSideMenu)/storeFrontState/useWIshlist";
 import DetailsModal, { WhishListProductType } from "./DetailsModal";
 
@@ -19,6 +20,7 @@ export default function WishListCardComponent({ product, token }) {
   const router = useRouter();
   // when user clicks checkout, the item is added to cart
   const { addToCart, updateLoading } = useCartStore();
+  const { paymentStatus } = usePaymentStatusStore();
   const handleAddToCart = (productId: number) => {
     const data = {
       productId,
@@ -29,6 +31,8 @@ export default function WishListCardComponent({ product, token }) {
   };
 
   const { removeWishlistItem } = useWishlistStore();
+  const isPendingPayment =
+    paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
 
   const handleClick = (e) => {
     // If a button was clicked (or a child of a button), don't open modal
@@ -90,7 +94,7 @@ export default function WishListCardComponent({ product, token }) {
                   handleAddToCart(product?.product?.id);
                   router.push("/storefront/checkout");
                 }}
-                disabled={updateLoading}
+                disabled={updateLoading || isPendingPayment}
               >
                 Buy Now
               </Button>
