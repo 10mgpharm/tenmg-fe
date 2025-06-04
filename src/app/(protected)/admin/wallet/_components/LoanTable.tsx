@@ -129,6 +129,13 @@ const LoanTable = ({
       type="loan-wallet" 
       orderId={selectedRow?.identifier}
       />
+      {/* <LoanWalletTransactionDetails
+        selectedRow={selectedRow}
+        isOpen={isOpen}
+        onClose={onClose}
+        type="loan-wallet"
+        detailsType={type as "credit" | "repayment"}
+      /> */}
     </div>
   );
 };

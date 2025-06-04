@@ -2,7 +2,7 @@ import StoreFrontPharmacy from "../_components/StorefrontPharmacy";
 
 const StoreFront = async () => {
   return (
-    <div>
+    <div>      
       <StoreFrontPharmacy />
     </div>
   );

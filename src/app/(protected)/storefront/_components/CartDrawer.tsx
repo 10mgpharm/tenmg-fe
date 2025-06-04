@@ -28,6 +28,7 @@ import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { useCartStore } from "../(NoSideMenu)/storeFrontState/useCartStore";
+import { usePaymentStatusStore } from "../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -56,6 +57,8 @@ const CartDrawer = ({
 
   const { cart, addToCart, updateLoading, sycnCart, fetchCart, clearCart } =
     useCartStore();
+  const { paymentStatus } = usePaymentStatusStore();
+  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
 
   useEffect(() => {
     if (cart) {
@@ -123,6 +126,11 @@ const CartDrawer = ({
 
   // Function to remove item from cart
   const removeItem = (itemId: number) => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    
     const item = cartItems?.items.find(
       (item) => item?.product?.id == itemId
     ).quantity;
@@ -137,6 +145,11 @@ const CartDrawer = ({
   };
 
   const handleClearCart = async () => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    
     clearCart(userData?.user?.token);
     onClose();
     window.location.reload();
@@ -179,6 +192,7 @@ const CartDrawer = ({
                   item={item}
                   removeItem={removeItem}
                   updateQuantity={updateLocalQuantity}
+                  isPendingPayment={isPendingPayment}
                 />
               ))}
             </VStack>
@@ -225,6 +239,7 @@ const CartDrawer = ({
                     width="full"
                     variant="outline"
                     onClick={handleClearCart}
+                    disabled={isPendingPayment}
                   >
                     Clear Cart
                   </Button>
@@ -244,14 +259,21 @@ const CartItemComp = ({
   item,
   removeItem,
   updateQuantity,
+  isPendingPayment,
 }: {
   item: any;
   removeItem: (itemId: number) => void;
   updateQuantity: (itemId: number, quantity: number) => void;
+  isPendingPayment: boolean;
 }) => {
   const [quantity, setQuantity] = useState(item?.quantity);
 
   const handleIncrease = () => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    
     if (quantity < item?.product?.quantity) {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
@@ -260,11 +282,24 @@ const CartItemComp = ({
   };
 
   const handleDecrease = () => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    
     if (quantity > 1) {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
       updateQuantity(item?.product?.id, newQuantity);
     }
+  };
+
+  const handleRemove = () => {
+    if (isPendingPayment) {
+      toast.error("Complete your pending payment to continue shopping");
+      return;
+    }
+    removeItem(item?.product?.id);
   };
 
   return (
@@ -333,26 +368,27 @@ const CartItemComp = ({
           bgColor="#F0F2F5"
           color="primary.500"
           rounded="lg"
+          opacity={isPendingPayment ? 0.5 : 1}
         >
           <Icon
             as={AiOutlineMinus}
             _hover={{
-              cursor: "pointer",
+              cursor: isPendingPayment ? "not-allowed" : "pointer",
             }}
             aria-label="Decrease quantity"
             onClick={handleDecrease}
-            color={quantity === 1 ? "gray.300" : "inherit"}
+            color={quantity === 1 || isPendingPayment ? "gray.300" : "inherit"}
           />
           <Text>{quantity}</Text>
           <Icon
             as={AiOutlinePlus}
             _hover={{
-              cursor: "pointer",
+              cursor: isPendingPayment ? "not-allowed" : "pointer",
             }}
             aria-label="Increase quantity"
             onClick={handleIncrease}
             color={
-              quantity === item?.product?.quantity ? "gray.300" : "inherit"
+              quantity === item?.product?.quantity || isPendingPayment ? "gray.300" : "inherit"
             }
           />
         </HStack>
@@ -365,9 +401,10 @@ const CartItemComp = ({
         mb={2}
         alignSelf="flex-end"
         as={FiTrash2}
-        _hover={{ cursor: "pointer" }}
-        color="error.500"
-        onClick={() => removeItem(item?.product?.id)}
+        _hover={{ cursor: isPendingPayment ? "not-allowed" : "pointer" }}
+        color={isPendingPayment ? "gray.300" : "error.500"}
+        onClick={handleRemove}
+        opacity={isPendingPayment ? 0.5 : 1}
       />
     </HStack>
   );

@@ -1,3 +1,4 @@
+import { convertDateWithTime } from "@/utils/formatDate";
 import {
   Drawer,
   DrawerBody,
@@ -37,25 +38,28 @@ const TransactionDetails = ({
         <DrawerHeader className="capitalize">Transaction Details</DrawerHeader>
         <DrawerBody>
           <Text color={"gray.900"} fontWeight={600} fontSize={"1.4rem"}>
-            ₦{type === "sup_payout" ? Number(selectedRow?.actualPrice)?.toLocaleString() 
-            : Number(selectedRow?.amount)?.toLocaleString()
-            }
+            ₦
+            {type === "sup_payout"
+              ? Number(selectedRow?.actualPrice)?.toLocaleString()
+              : Number(selectedRow?.amount)?.toLocaleString()}
           </Text>
           <Text fontSize={"13px"} color={"gray.500"}>
-            {selectedRow?.createdAt}
+            {convertDateWithTime(selectedRow?.createdAt)}
           </Text>
-          {
-            type !== "sup_payout" && (
-              <Stack mt={5}>
-                <Text fontSize={"14px"} color={"gray.500"}>
-                  Details
+          {type !== "sup_payout" && (
+            <Stack mt={5}>
+              <Text fontSize={"14px"} color={"gray.500"}>
+                Details
+              </Text>
+              <div className="border p-2 rounded-md">
+                <Text>
+                  {type === "loan-wallet"
+                    ? selectedRow?.business?.name ?? "N/A"
+                    : selectedRow?.name ?? "N/A"}
                 </Text>
-                <div className="border p-2 rounded-md">
-                  <Text>{type === "loan-wallet" ? (selectedRow?.business?.name ?? "N/A") : (selectedRow?.name ?? "N/A")}</Text>
-                </div>
-              </Stack>
-            )
-          }
+              </div>
+            </Stack>
+          )}
           <Stack gap={4} mt={4} px={3} py={5} rounded={"md"} className="border">
             {
               (type === "transaction" || type === "loan-wallet" || type === "supplier-wallet") ? (
@@ -127,7 +131,9 @@ const TransactionDetails = ({
             )}
             <Flex justify={"space-between"}>
               <Text>Tenmg Commission</Text>
-              <Text fontWeight={500}>₦{selectedRow?.tenmgCommission ?? "0.00"}</Text>
+              <Text fontWeight={500}>
+                ₦{selectedRow?.tenmgCommission ?? "0.00"}
+              </Text>
             </Flex>
           </Stack>
         </DrawerBody>

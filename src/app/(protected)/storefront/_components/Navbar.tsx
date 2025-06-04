@@ -40,6 +40,7 @@ import { requestPermission } from "@/lib/requestPermission";
 import { toast } from "react-toastify";
 import { messaging, onMessage } from "@/lib/firebase";
 import { handleServerErrorMessage } from "@/utils";
+import PaymentStatusBanner from "./PaymentStatusBanner";
 
 const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -170,6 +171,7 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
 
   return (
     <Box className="fixed top-0 left-0 right-0 w-full bg-white z-50 border-b-[2px] max-w-screen-2xl mx-auto">
+       <PaymentStatusBanner />
       {/* Desktop View */}
       <Box
         className="flex justify-between shadow-sm items-center container py-[20px]"
