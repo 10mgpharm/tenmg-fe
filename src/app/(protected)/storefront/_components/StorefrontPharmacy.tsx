@@ -40,7 +40,6 @@ const StoreFrontPharmacy = () => {
 
   const [storeFrontData, setStoreFrontData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(true);
-
   const [isEmpty, setIsEmpty] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();

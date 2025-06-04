@@ -12,7 +12,9 @@ import StoreProductReviewComponent from "../../../_components/StoreProductReview
 import StoreProductCardComponent from "../../../_components/StoreProductCardComponent";
 import { Divider, Flex, Image, Spinner, Tag, TagLabel } from "@chakra-ui/react";
 import { useCartStore } from "../../storeFrontState/useCartStore";
+import { usePaymentStatusStore } from "../../storeFrontState/usePaymentStatusStore";
 import { toast } from "react-toastify";
+
 export default function ProductDetailPage() {
   const breadCrumb = [
     {
@@ -41,6 +43,7 @@ export default function ProductDetailPage() {
   const [reviews, setReviews] = useState([]);
 
   const { addToCart, updateLoading } = useCartStore();
+  const { paymentStatus } = usePaymentStatusStore();
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -73,6 +76,8 @@ export default function ProductDetailPage() {
   };
 
   const router = useRouter();
+  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
+  
   const buy = (id) => {
     const data = {
       productId: id,
@@ -137,7 +142,7 @@ export default function ProductDetailPage() {
                           : "green.100"
                     }
                   >
-                    <TagLabel className="">
+                    <TagLabel>
                       {
                         parseInt(productData?.quantity) <= (productData?.outStockLevel ?? 0)
                           ? "Out of Stock"
@@ -226,8 +231,9 @@ export default function ProductDetailPage() {
                 </div>
 
                 <button
-                  className="bg-primary-500 text-white w-fit p-3  rounded-md text-xs font-semibold"
+                  className="bg-primary-500 text-white w-fit p-3 rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => buy(productData?.id)}
+                  disabled={isPendingPayment || parseInt(productData?.quantity) <= (productData?.outStockLevel ?? 0)}
                 >
                   Buy Now
                 </button>
