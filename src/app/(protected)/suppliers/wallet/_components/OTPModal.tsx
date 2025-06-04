@@ -18,10 +18,16 @@ import requestClient from '@/lib/requestClient';
 import { useSession } from 'next-auth/react';
 import { NextAuthUserSession } from '@/types';
 
-const OTPModal = (
-    {isOpen, onClose, handleWithdraw, setOtp, otp, loading}: 
-    {isOpen: boolean, onClose: () => void; handleWithdraw: () => void; setOtp: Dispatch<SetStateAction<string>>; otp: string; loading: boolean;}
-) => {
+const OTPModal = ({
+    isOpen, onClose, handleWithdraw, setOtp, otp, loading
+}: {
+    isOpen: boolean,
+    onClose: () => void;
+    handleWithdraw: () => void;
+    setOtp: Dispatch<SetStateAction<string>>;
+    otp: string;
+    loading: boolean;
+}) => {
     const [countdown, setCountdown] = useState(60); // 1 minute in seconds
     const [isResendDisabled, setIsResendDisabled] = useState(true);
 

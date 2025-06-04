@@ -109,6 +109,7 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
             isOpen={isOpen}
             onClose={onClose}
             selectedRow={selectedRow}
+            orderId={selectedRow?.order?.identifier}
             type='sup_payout'
         />
     </div>

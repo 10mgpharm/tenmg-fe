@@ -34,7 +34,6 @@ const TransactionTab = ({
   hasPagination = false,
   metaData,
   setPageCount,
-  isLoading = false,
   emptyStateHeader,
 }: {
   data: Payouts;
@@ -145,7 +144,8 @@ const TransactionTab = ({
     <TransactionDetails 
     isOpen={isOpen} 
     onClose={onClose} 
-    type="" 
+    type={type} 
+    orderId={selectedRow?.order?.identifier}
     selectedRow={selectedRow}
     />
     <InitiatePayout
