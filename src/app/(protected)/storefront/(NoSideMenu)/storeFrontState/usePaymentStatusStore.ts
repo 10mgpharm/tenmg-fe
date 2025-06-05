@@ -25,7 +25,7 @@ export const usePaymentStatusStore = create<PaymentStatusState>((set, get) => ({
       );
       if (response?.status === 200) {
         const newStatus = response?.data?.data?.application?.status || null;
-        
+
         set({
           paymentStatus: newStatus,
           isLoading: false,
@@ -47,7 +47,6 @@ export const usePaymentStatusStore = create<PaymentStatusState>((set, get) => ({
   },
 }));
 
-// Custom hook to automatically fetch payment status on navigation
 export const usePaymentStatusNavigation = (token: string | undefined) => {
   const pathname = usePathname();
   const { fetchPaymentStatus } = usePaymentStatusStore();

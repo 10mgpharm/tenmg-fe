@@ -21,23 +21,19 @@ export default function PaymentStatusBanner() {
 
   const { clearCart, cartSize } = useCartStore();
 
-  // Auto-fetch payment status on every navigation
   usePaymentStatusNavigation(userToken);
 
-  // Clear cart when payment is completed (APPROVED) - only if cart is not empty
   useEffect(() => {
     if (userToken && paymentStatus === "APPROVED" && Number(cartSize) > 0) {
       clearCart(userToken);
     }
   }, [userToken, paymentStatus, clearCart, cartSize]);
 
-  // Polling every 2 minutes until payment is completed
   useEffect(() => {
     const isCompleted = paymentStatus === "APPROVED";
     const shouldPoll = userToken && paymentStatus && !isCompleted;
     
     if (shouldPoll) {
-      // Clear any existing interval
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -47,14 +43,11 @@ export default function PaymentStatusBanner() {
         fetchPaymentStatus(userToken);
       }, 120000);
     } else {
-      // Clear interval if no token, no status, or payment is completed
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
     }
-
-    // Cleanup interval on unmount or dependency change
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
