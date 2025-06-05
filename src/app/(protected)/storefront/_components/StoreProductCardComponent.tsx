@@ -5,10 +5,10 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useCartStore } from "../(NoSideMenu)/storeFrontState/useCartStore";
+import { usePaymentStatusStore } from "../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
 import { Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { BusinessStatus } from "@/constants";
-import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { useWishlistStore } from "../(NoSideMenu)/storeFrontState/useWIshlist";
 import { LoaderIcon } from "lucide-react";
@@ -30,6 +30,7 @@ export default function StoreProductCardComponent({
   const [cartList, setAddCartlist] = useState(null);
   const [addedTocart, setAddedToCart] = useState(false);
   const { addToCart, updateLoading, cart } = useCartStore();
+  const { paymentStatus } = usePaymentStatusStore();
   const { addToWishlist, wishlist, loading, removeWishlistItem } =
     useWishlistStore();
 
@@ -64,6 +65,8 @@ export default function StoreProductCardComponent({
     BusinessStatus.SUSPENDED,
     BusinessStatus.BANNED,
   ].includes(businessStatus as BusinessStatus);
+
+  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
 
   const [loadingAddToCart, setLoadingAddToCart] = useState(false);
 
@@ -219,9 +222,10 @@ export default function StoreProductCardComponent({
       <button
         disabled={
           !isProductClickable ||
-          product?.quantity <= (product?.outStockLevel ?? 0)
+          product?.quantity <= (product?.outStockLevel ?? 0) ||
+          isPendingPayment
         }
-        className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer disabled:cursor-not-allowed"
+        className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
         onClick={buyNowFunction}
       // onClick={() => {
       //   handleAddToCart(product?.id, "add");
@@ -231,8 +235,8 @@ export default function StoreProductCardComponent({
         {loadingBuynow ? <LoaderIcon className="size-3 mx-auto" /> : "Buy Now"}
       </button>
       <button
-        disabled={!isProductClickable || updateLoading || loadingAdd || loadingBuynow || product?.quantity <= (product?.outStockLevel ?? 0)}
-        className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed"
+        disabled={!isProductClickable || updateLoading || loadingAdd || loadingBuynow || product?.quantity <= (product?.outStockLevel ?? 0) || isPendingPayment}
+        className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
         onClick={addToCartFunction}
       // onClick={() => {
       //   handleAddToCart(product?.id, addedTocart ? "remove" : "add");

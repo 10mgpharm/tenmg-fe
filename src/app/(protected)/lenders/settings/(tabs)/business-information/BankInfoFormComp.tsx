@@ -254,6 +254,10 @@ export default function BankInfoFormComp({
                       trigger("accountNumber");
                     }}
                     inputMode="numeric"
+                    format={(val) => val}
+                    parse={(val) => val}
+                    keepWithinRange={false}
+                    clampValueOnBlur={false}
                   >
                     <NumberInputField placeholder="0000000000" />
                   </NumberInput>

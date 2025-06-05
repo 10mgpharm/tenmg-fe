@@ -25,6 +25,7 @@ import { Loader2 } from "lucide-react";
 import { config } from "process";
 import axios from "axios";
 import CheckPaymentStatusModal from "../_components/CheckPaymentStatusModal";
+import { usePaymentStatusStore } from "../../storeFrontState/usePaymentStatusStore";
 
 type OrderDataType = {
   orderId: string;
@@ -42,6 +43,8 @@ export default function PaymentPage() {
     cartSize,
     isLoading: cartLoading,
   } = useCartStore();
+  const { refreshPaymentStatus } = usePaymentStatusStore();
+  const { paymentStatus } = usePaymentStatusStore();
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
   const userToken = sessionData?.user?.token;
@@ -91,6 +94,9 @@ export default function PaymentPage() {
     },
   ];
 
+  const isPendingPayment =
+    paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
+
   // fetch addresses
   const fetchAddresses = useCallback(async () => {
     setIsLoading(true);
@@ -136,6 +142,13 @@ export default function PaymentPage() {
     fetchPaymentMethods();
   }, [fetchAddresses, fetchPaymentMethods, userToken]);
 
+  // Auto-select 10MG payment method when payment status is PENDING_MANDATE
+  useEffect(() => {
+    if (isPendingPayment) {
+      setSelectedPaymentMethod("tenmg_credit");
+    }
+  }, [isPendingPayment]);
+
   useEffect(() => {
     shippingData &&
       setShippingAddress(
@@ -171,9 +184,19 @@ export default function PaymentPage() {
       if (selectedPaymentMethod === "tenmg_credit") {
         if (response?.status === 200) {
           if (response?.data?.data?.applicationStatus === "PENDING PAYMENT") {
-            toast.success(
+            toast.warning(
               "Payment initiated! Please complete your mandate to finalize the transaction."
             );
+            await refreshPaymentStatus(userToken);
+            closeConfirmModal();
+          }
+          if (response?.data?.data?.status === "success") {
+            toast.success("Payment approved! Order placed successfully.");
+            await refreshPaymentStatus(userToken);
+            closeConfirmModal();
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           }
         }
       } else {
@@ -182,11 +205,9 @@ export default function PaymentPage() {
           window.location.reload();
         }, 1000);
       }
-      setIsLoading(false);
     } catch (e) {
       const errorMessage = handleServerErrorMessage(e);
       toast.error(errorMessage);
-      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
@@ -379,7 +400,10 @@ export default function PaymentPage() {
 
   // Check endpoint to reflect the status of the payment for 10MG
   const confirmCancel10MG = async () => {
-    verifyPayment(checkoutRefId);
+    await requestClient({ token: userToken }).get(
+      `/storefront/payment/verify/${checkoutRefId}`
+    );
+    await refreshPaymentStatus(userToken);
     closeConfirmModal();
   };
 
@@ -476,14 +500,37 @@ export default function PaymentPage() {
                             <Box
                               key={i.id}
                               as="label"
-                              className="flex items-center justify-between w-full cursor-pointer  hover:bg-primary-50 p-3"
+                              className={`flex items-center justify-between w-full p-3 ${
+                                isPendingPayment && i.slug !== "tenmg_credit"
+                                  ? "cursor-not-allowed opacity-50"
+                                  : "cursor-pointer hover:bg-primary-50"
+                              } ${
+                                isPendingPayment && i.slug === "tenmg_credit"
+                                  ? "bg-orange-50 border border-orange-200 rounded-md"
+                                  : ""
+                              }`}
                             >
-                              <p className="font-semibold">
-                                {i.slug === "tenmg_credit"
-                                  ? "Pay with 10Mg Credit"
-                                  : "Pay with Card"}
-                              </p>
-                              <Radio value={i.slug} className="" />
+                              <div className="flex items-center gap-2">
+                                <p className="font-semibold">
+                                  {i.slug === "tenmg_credit"
+                                    ? "Pay with 10Mg Credit"
+                                    : "Pay with Card"}
+                                </p>
+                                {isPendingPayment &&
+                                  i.slug === "tenmg_credit" && (
+                                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                                      Required
+                                    </span>
+                                  )}
+                              </div>
+                              <Radio
+                                value={i.slug}
+                                className=""
+                                checked={selectedPaymentMethod === i.slug}
+                                isDisabled={
+                                  isPendingPayment && i.slug !== "tenmg_credit"
+                                }
+                              />
                             </Box>
                           ))}
                         </Stack>

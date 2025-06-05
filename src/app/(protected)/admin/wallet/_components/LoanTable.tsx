@@ -23,7 +23,6 @@ import {
 import TransactionDetails from "./TransactionDetail";
 import { repaymentColumnFn } from "./columns/repaymentColumn";
 import Pagination from "../../products/_components/Pagination";
-import LoanWalletTransactionDetails from "./LoanWalletTransactionDetails";
 // import LoanTransactionDetails from "./loanTransactionDetails";
 
 interface LoanTableProps {
@@ -54,6 +53,7 @@ const LoanTable = ({
   metaData,
   setPageCount,
 }: LoanTableProps) => {
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
   const columns = useMemo(() => {
@@ -122,13 +122,20 @@ const LoanTable = ({
           <Spinner size="xl" />
         </Flex>
       )}
-      <LoanWalletTransactionDetails
+      <TransactionDetails 
+      selectedRow={selectedRow} 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      type="loan-wallet" 
+      orderId={selectedRow?.identifier}
+      />
+      {/* <LoanWalletTransactionDetails
         selectedRow={selectedRow}
         isOpen={isOpen}
         onClose={onClose}
         type="loan-wallet"
         detailsType={type as "credit" | "repayment"}
-      />
+      /> */}
     </div>
   );
 };

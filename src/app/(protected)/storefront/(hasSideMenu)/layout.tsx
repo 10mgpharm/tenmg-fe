@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
 import Footer from "../_components/Footer";
+import PaymentStatusBanner from "../_components/PaymentStatusBanner";
 
 const appName = config.appName;
 
@@ -24,6 +25,7 @@ export default async function StorefrontLayout({
   return (
     <div className="max-w-screen-2xl mx-auto">
       <main className="pt-[80px] lg:pt-[98px] bg-[#F9FAFB]">
+        <PaymentStatusBanner />
         <div className="min-h-[calc(100vh-150px)]">{children}</div>
         <Footer />
       </main>

@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useCartStore } from "../../(NoSideMenu)/storeFrontState/useCartStore";
+import { usePaymentStatusStore } from "../../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
 import { useRouter } from "next/navigation";
 import { useShoppingList } from "../../(NoSideMenu)/storeFrontState/useShoppingList";
 
@@ -15,10 +16,12 @@ export default function ShoppingListCardComponent({ product }) {
   const router = useRouter();
 
   const { addToCart } = useCartStore();
+  const { paymentStatus } = usePaymentStatusStore();
   const [loadingAdd, setLaodingAdd] = useState(false);
   const [loadingRem, setLaodingRem] = useState(false);
 
   const { removeShoppingListItem } = useShoppingList();
+  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
 
   const handleRemove = async (id) => {
     setLaodingRem(true);
@@ -79,6 +82,8 @@ export default function ShoppingListCardComponent({ product }) {
               colorScheme={"blue"}
               size="sm"
               onClick={() => handleAddToCart(product?.productId, "add")}
+              disabled={isPendingPayment}
+
             >
               {loadingAdd ? <Spinner /> : "Buy Now"}
             </Button>
