@@ -142,12 +142,14 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
   return (
     <>
       <Box px={{ base: 6, md: 12, lg: 20, xl: 32 }}>
-        <Image
-          src={"/icons/logo.svg"}
-          alt="tenmg"
-          mb={{ md: 8 }}
-          boxSize="75px"
-        />
+        <Link href="/home">
+          <Image
+            src={"/icons/logo.svg"}
+            alt="tenmg"
+            mb={{ md: 8 }}
+            boxSize="75px"
+          />
+        </Link>
 
         <Box mb={8}>
           <Heading
