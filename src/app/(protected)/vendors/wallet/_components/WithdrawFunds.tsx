@@ -19,11 +19,11 @@ import { NextAuthUserSession } from '@/types';
 import { BankInfo } from '@/app/(protected)/suppliers/wallet/page';
 
 const WithdrawFunds = (
-    { isOpen, onClose, otpOpen, bankDetails, amount, setAmount }:
-        { isOpen: boolean, onClose: () => void; otpOpen: () => void; bankDetails: BankInfo, amount: number, setAmount: Dispatch<SetStateAction<number>>; }
+    { isOpen, onClose, otpOpen, bankDetails, amount, setAmount, setRef }:
+        { isOpen: boolean, onClose: () => void; otpOpen: () => void; bankDetails: BankInfo, amount: number, setRef: Dispatch<SetStateAction<string>>, setAmount: Dispatch<SetStateAction<number>>; }
 ) => {
 
-    console.log("bankDetails", bankDetails);
+    // console.log("bankDetails", bankDetails);
 
     const [loading, setLoading] = useState(false);
     const session = useSession();
@@ -42,8 +42,9 @@ const WithdrawFunds = (
             const response = await requestClient({ token }).post(
                 `/vendor/withdrawals/init`, data
             );
+            // console.log(response?.data?.data?.identifier)
             if (response.status === 200) {
-                console.log(response)
+                setRef(response?.data?.data?.identifier);
                 onClose();
                 otpOpen();
             }

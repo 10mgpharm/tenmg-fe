@@ -587,11 +587,10 @@ export default function PaymentPage() {
                                 </p>
                               )}
                               <p
-                                className={`font-semibold my-2 text-sm ${
-                                  item?.discountPrice > 0
+                                className={`font-semibold my-2 text-sm ${item?.discountPrice > 0
                                     ? "text-gray-400 line-through"
                                     : "text-gray-900"
-                                }`}
+                                  }`}
                               >
                                 ₦{item?.actualPrice}
                               </p>
@@ -632,24 +631,7 @@ export default function PaymentPage() {
                     <div>
                       <div className="flex items-center gap-x-2">
                         <p>Cart Total:</p>
-                        {discountValue ? (
-                          <p className="font-semibold">
-                            <span className="text-gray-400 line-through">
-                              ₦{Number(cartItems?.orderTotal).toLocaleString()}
-                            </span>{" "}
-                            <span className="text-success-500">
-                              ₦
-                              {Number(
-                                discountValue?.orderTotal
-                              )?.toLocaleString()}
-                            </span>
-                          </p>
-                        ) : (
-                          <p className="font-semibold">
-                            ₦{Number(cartItems?.orderTotal)?.toLocaleString()}
-                          </p>
-                        )}
-                        {/* <p className="font-semibold">{  cartItems?.orderTotal}</p> */}
+                        <p className="font-semibold">{cartItems?.orderTotal}</p>
                       </div>
 
                       {/* <div>
