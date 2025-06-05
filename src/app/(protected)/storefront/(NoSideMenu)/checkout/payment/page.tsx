@@ -43,7 +43,7 @@ export default function PaymentPage() {
     cartSize,
     isLoading: cartLoading,
   } = useCartStore();
-  const { refreshPaymentStatus } = usePaymentStatusStore();
+  const { refreshPaymentStatus, fetchPaymentStatus } = usePaymentStatusStore();
   const { paymentStatus } = usePaymentStatusStore();
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
@@ -66,6 +66,25 @@ export default function PaymentPage() {
   useEffect(() => {
     fetchCart(userToken);
   }, [fetchCart, userToken]);
+
+  // Fetch payment status when page loads
+  useEffect(() => {
+    if (userToken) {
+      fetchPaymentStatus(userToken);
+    }
+  }, [fetchPaymentStatus, userToken]);
+
+  // Clear cart and reload page when payment status becomes APPROVED - only if cart is not empty
+  useEffect(() => {
+    if (paymentStatus === "APPROVED" && Number(cartSize) > 0) {
+      clearCart(userToken);
+    }
+    if (paymentStatus === "APPROVED") {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+  }, [paymentStatus, clearCart, userToken, cartSize]);
 
   useEffect(() => {
     if (cart) {
@@ -187,27 +206,33 @@ export default function PaymentPage() {
             toast.warning(
               "Payment initiated! Please complete your mandate to finalize the transaction."
             );
-            await refreshPaymentStatus(userToken);
-            closeConfirmModal();
+            // if (response?.data?.data?.status === "success") {
+            //   toast.warning(
+            //     "You have completed payment! Please check back with the administrator to confirm your order."
+            //   );
+            //   await refreshPaymentStatus(userToken);
+            //   closeConfirmModal();
+            // }
+            if (response?.data?.data?.status === "success") {
+              toast.success("Payment approved! Order placed successfully.");
+              await refreshPaymentStatus(userToken);
+              closeConfirmModal();
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }
           }
-          if (response?.data?.data?.status === "success") {
-            toast.success("Payment approved! Order placed successfully.");
-            await refreshPaymentStatus(userToken);
-            closeConfirmModal();
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
-          }
+        } else {
+          toast.success("Order placed successfully");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
-      } else {
-        toast.success("Order placed successfully");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
       }
     } catch (e) {
       const errorMessage = handleServerErrorMessage(e);
       toast.error(errorMessage);
+      await refreshPaymentStatus(userToken);
     } finally {
       setIsLoading(false);
     }
@@ -400,11 +425,20 @@ export default function PaymentPage() {
 
   // Check endpoint to reflect the status of the payment for 10MG
   const confirmCancel10MG = async () => {
-    await requestClient({ token: userToken }).get(
-      `/storefront/payment/verify/${checkoutRefId}`
-    );
-    await refreshPaymentStatus(userToken);
-    closeConfirmModal();
+    try {
+      await requestClient({ token: userToken }).get(
+        `/storefront/payment/verify/${checkoutRefId}`
+      );
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      await refreshPaymentStatus(userToken);
+      closeConfirmModal();
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
+    }
   };
 
   return (
@@ -587,10 +621,11 @@ export default function PaymentPage() {
                                 </p>
                               )}
                               <p
-                                className={`font-semibold my-2 text-sm ${item?.discountPrice > 0
+                                className={`font-semibold my-2 text-sm ${
+                                  item?.discountPrice > 0
                                     ? "text-gray-400 line-through"
                                     : "text-gray-900"
-                                  }`}
+                                }`}
                               >
                                 ₦{item?.actualPrice}
                               </p>
