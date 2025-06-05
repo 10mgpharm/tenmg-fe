@@ -109,7 +109,8 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount, globalFi
         <TransactionDetails 
         isOpen={isOpen} 
         onClose={onClose} 
-        type="" 
+        type="supplier-wallet" 
+        orderId={selectedRow?.order?.identifier}
         selectedRow={selectedRow} 
         />
     </div>

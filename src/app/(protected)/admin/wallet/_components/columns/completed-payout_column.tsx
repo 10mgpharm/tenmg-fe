@@ -59,7 +59,7 @@ export function Completed_ColumnFN(
       ),
     }),
     columnHelper.accessor("status", {
-      header: ({ column }) => <p>Status</p>,
+      header: ({ column }) => <p>Transaction Type</p>,
       cell: (info) => {
         return (
           <div>
