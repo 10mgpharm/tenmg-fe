@@ -79,9 +79,9 @@ const Navbar = () => {
           </div>
 
           <div className="items-end space-x-4 lg:flex hidden">
-            <Link href="/auth/signup">
+            <Link href="/auth/signin">
               <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
-                Sign Up
+                Login
               </button>
             </Link>
           </div>
@@ -156,10 +156,10 @@ const Navbar = () => {
                   className="w-full rounded-lg cursor-pointer py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
                   onClick={() => {
                     click();
-                    route.push("/auth/signup");
+                    route.push("/auth/signin");
                   }}
                 >
-                  Sign Up
+                  Login
                 </button>
               </div>
             </div>
