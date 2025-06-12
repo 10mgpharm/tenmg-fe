@@ -53,7 +53,6 @@ const LoanTable = ({
   metaData,
   setPageCount,
 }: LoanTableProps) => {
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
   const columns = useMemo(() => {
@@ -122,20 +121,13 @@ const LoanTable = ({
           <Spinner size="xl" />
         </Flex>
       )}
-      <TransactionDetails 
-      selectedRow={selectedRow} 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      type="loan-wallet" 
-      orderId={selectedRow?.identifier}
-      />
-      {/* <LoanWalletTransactionDetails
+      <TransactionDetails
         selectedRow={selectedRow}
         isOpen={isOpen}
         onClose={onClose}
         type="loan-wallet"
-        detailsType={type as "credit" | "repayment"}
-      /> */}
+        orderId={selectedRow?.identifier}
+      />
     </div>
   );
 };
