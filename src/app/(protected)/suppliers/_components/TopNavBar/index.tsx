@@ -251,8 +251,13 @@ const TopNavBar = ({
                     >
                       {data?.user.name}
                     </span>
-                    <Tag size="sm" variant="solid" bg="green.100" color="green.700">
-                    {renderUserRole(data?.user?.role, data?.user?.entityType)}
+                    <Tag
+                      size="sm"
+                      variant="solid"
+                      bg="green.100"
+                      color="green.700"
+                    >
+                      {renderUserRole(data?.user?.role, data?.user?.entityType)}
                     </Tag>
                   </div>
                   <p className="text-gray-600 text-sm">
@@ -292,6 +297,18 @@ const TopNavBar = ({
                   }}
                 >
                   Log Out
+                </button>
+              </MenuItem>
+
+              <MenuItem>
+                <button
+                  className="block px-3 py-1 text-sm text-gray-900 hover:bg-red-50 w-full text-left"
+                  onClick={async () => {
+                    await signOut();
+                    router.push("/auth/signin");
+                  }}
+                >
+                  Faq
                 </button>
               </MenuItem>
             </MenuItems>
