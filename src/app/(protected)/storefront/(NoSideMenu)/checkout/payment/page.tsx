@@ -41,6 +41,7 @@ export default function PaymentPage() {
     fetchCart,
     clearCart,
     cartSize,
+    sycnCart,
     isLoading: cartLoading,
   } = useCartStore();
   const { refreshPaymentStatus, fetchPaymentStatus } = usePaymentStatusStore();
@@ -260,7 +261,6 @@ export default function PaymentPage() {
   const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
   const [discountValue, setDisCountValue] = useState<any>(null);
 
-  console.log("discountValue", discountValue);
   const vetCouponCode = async () => {
     setLoadingCoupon(true);
     if (!couponCode) {
@@ -547,7 +547,7 @@ export default function PaymentPage() {
                               <div className="flex items-center gap-2">
                                 <p className="font-semibold">
                                   {i.slug === "tenmg_credit"
-                                    ? "Pay with 10Mg Credit"
+                                    ? "Pay with 10mg Credit"
                                     : "Pay with Card"}
                                 </p>
                                 {isPendingPayment &&
@@ -572,6 +572,7 @@ export default function PaymentPage() {
                     </div>
                   </div>
                 </div>
+
                 <div className="col-span-1 lg:col-span-2 border border-r-gray-100 rounded-2xl overflow-hidden">
                   <div className=" flex items-center justify-between p-4">
                     <h3 className="font-semibold text-lg">Order Summary</h3>
@@ -666,23 +667,19 @@ export default function PaymentPage() {
                     <div>
                       <div className="flex items-center gap-x-2">
                         <p>Cart Total:</p>
-                        <p className="font-semibold">{cartItems?.orderTotal}</p>
+                        <p className="font-semibold">
+                          ₦{cartItems?.orderTotal}
+                        </p>
                       </div>
 
                       {/* <div>
                         <p>Shipping fee:</p>
-                        <p></p>
+                        <p>{}</p>
                       </div> */}
-
-                      <div>
-                        <p>TenMg Commission:</p>
-                        <p></p>
-                      </div>
                     </div>
                     <Divider my={5} />
 
                     <div className="flex flex-col gap-x-2">
-                      {/* <p className="font-semibold">{discountValue ? discountValue?.grandTotal : cartItems?.orderTotal}</p> */}
                       <p>Total:</p>
                       {discountValue ? (
                         <p className="font-semibold">

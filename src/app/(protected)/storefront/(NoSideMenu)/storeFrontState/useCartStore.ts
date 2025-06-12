@@ -41,7 +41,6 @@ export const useCartStore = create<CartState>((set, get) => ({
       );
 
       const cartData = resp?.data?.data || [];
-      // console.log("API response:", cartData);
 
       set({
         cart: cartData,
@@ -81,6 +80,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       });
     }
   },
+
   sycnCart: async (data, token) => {
     try {
       set({ updateLoading: true });
@@ -89,13 +89,12 @@ export const useCartStore = create<CartState>((set, get) => ({
         data
       );
 
-      // console.log("resp", resp);
-      // return
+      return resp.data;
     } catch (e) {
-      // console.log(e);
       set({ updateLoading: false });
     }
   },
+
   clearCart: async (token: string) => {
     try {
       // console.log("here ");
