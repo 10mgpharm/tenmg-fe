@@ -1,14 +1,14 @@
 "use client";
 import Image from "next/image";
-import { 
+import {
   Box,
   Button,
-  Center, 
-  Flex, 
-  HStack, 
-  SimpleGrid, 
-  Stack, 
-  Text, 
+  Center,
+  Flex,
+  HStack,
+  SimpleGrid,
+  Stack,
+  Text,
   useDisclosure
 } from "@chakra-ui/react"
 import { TrashIcon } from "lucide-react";
@@ -17,10 +17,10 @@ import ModalComponent from "./ModalComponent";
 import ImgEditor from "./ImgEditor.create.product";
 import FAQList from "./FAQList";
 import { useSession } from "next-auth/react";
-import { 
-  NextAuthUserSession, 
-  StoreFrontImage, 
-  StoreFrontImageResponse 
+import {
+  NextAuthUserSession,
+  StoreFrontImage,
+  StoreFrontImageResponse
 } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
@@ -41,7 +41,7 @@ const SystemConfiguration = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { isOpen: isDeleteOpen, onClose: onDeleteClose, onOpen: onDeleteOpen }= useDisclosure();
+  const { isOpen: isDeleteOpen, onClose: onDeleteClose, onOpen: onDeleteOpen } = useDisclosure();
   const [storeImages, setStoreImages] = useState<StoreFrontImageResponse>()
 
   const session = useSession();
@@ -65,8 +65,8 @@ const SystemConfiguration = () => {
   }, [token]);
 
   useEffect(() => {
-      if (!token) return;
-      fetchingStoreImages();
+    if (!token) return;
+    fetchingStoreImages();
   }, [token, fetchingStoreImages]);
 
   const MAX_IMAGES = 3;
@@ -115,12 +115,12 @@ const SystemConfiguration = () => {
       if (file.size > MAX_FILE_SIZE) {
         toast.warn(
           "A file selected is larger than the maximum 5MB limit, Please select a file smaller than 5MB."
-        );  
+        );
         return false;
       }
       return true;
     });
-  
+
     if (validFiles.length === 0) return;
     const previewsArray = validFiles.map((file) => {
       const reader = new FileReader();
@@ -155,22 +155,23 @@ const SystemConfiguration = () => {
   }
 
   const uploadImages = async () => {
-    if(imageUrl){
+    if (imageUrl) {
       const formdata = new FormData();
       imageUrl.forEach((image) => {
         formdata.append("image", image);
       });
       try {
         setLoading(true);
-        const response = await requestClient({token: token}).post(
+        const response = await requestClient({ token: token }).post(
           "/admin/system-setup/storefront-images",
           formdata
         );
-        if(response.status === 201){
+        if (response.status === 201) {
           toast.success(response?.data?.message);
           fetchingStoreImages();
           setLoading(false);
-          setImageSrcs([])
+          setImageSrcs([]);
+          setImageURL([]);
         }
       } catch (error) {
         setLoading(false);
@@ -181,13 +182,13 @@ const SystemConfiguration = () => {
   }
 
   const handleDelete = async () => {
-    if(selectedId){
+    if (selectedId) {
       setDeleteLoading(true);
       try {
-        const response = await requestClient({token: token}).delete(
+        const response = await requestClient({ token: token }).delete(
           `/admin/system-setup/storefront-images/${selectedId}`
         )
-        if(response.status === 200){
+        if (response.status === 200) {
           toast.success(response.data?.message)
           fetchingStoreImages();
           setDeleteLoading(false);
@@ -205,91 +206,91 @@ const SystemConfiguration = () => {
   return (
     <Stack>
       <Text fontSize={"1rem"} fontWeight={700} color={"gray.700"}>System Configuration</Text>
-        <Stack bg={"white"} p={5} rounded={"lg"} gap={2} shadow={"sm"}>
-          <HStack justifyContent={"space-between"} align={"center"}>
-            <Text fontSize={"13px"} fontWeight={600} color={"gray.600"}>
-              Store Front Image ({storeImages?.data?.length || 0}/3)
-            </Text>
-            <Button 
-            h={"34px"} 
-            bg={"blue.600"} 
-            color={"white"} 
+      <Stack bg={"white"} p={5} rounded={"lg"} gap={2} shadow={"sm"}>
+        <HStack justifyContent={"space-between"} align={"center"}>
+          <Text fontSize={"13px"} fontWeight={600} color={"gray.600"}>
+            Store Front Image ({storeImages?.data?.length || 0}/3)
+          </Text>
+          <Button
+            h={"34px"}
+            bg={"blue.600"}
+            color={"white"}
             onClick={uploadImages}
             isLoading={loading}
-            disabled={(imageSrcs?.length || storeImages?.data?.length) === MAX_IMAGES}
+            disabled={(imageSrcs?.length || storeImages?.data?.length) === MAX_IMAGES || imageUrl?.length === 0}
             loadingText={"Saving..."}
-            >
-              Save Changes
-            </Button>
-          </HStack>
-          <SimpleGrid columns={[2, 3, 6]} spacing="10px" w={"100%"}>
-            <Center
-              as="button"
-              {...dropZoneStyle}
-              flexDir={"column"}
+          >
+            Save Changes
+          </Button>
+        </HStack>
+        <SimpleGrid columns={[2, 3, 6]} spacing="10px" w={"100%"}>
+          <Center
+            as="button"
+            {...dropZoneStyle}
+            flexDir={"column"}
+            pos={"relative"}
+            overflow={"hidden"}
+            onClick={() => {
+              if ((imageSrcs?.length || storeImages?.data?.length) === MAX_IMAGES) {
+                setIsDisabled(true);
+                return toast.warning(`You can upload a maximum of ${MAX_IMAGES} images`)
+              } else {
+                setIsDisabled(false);
+                fileInputRef.current?.click()
+              }
+            }}
+            onDragOver={(e: any) => e.preventDefault()}
+            onDrop={(e: any) => {
+              handleDrop(e);
+            }}
+          >
+            <input
+              type="file"
+              disabled={isDisabled}
+              name="image_uploads"
+              multiple
+              onChange={onLoadImage}
+              accept=".jpg, .jpeg, .png"
+              style={{
+                opacity: "0",
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                cursor: "pointer",
+              }}
+            />
+            <Box opacity={file ? 0 : 1}>
+              <Text fontSize={"13px"}>Drag Image</Text>
+              <p className="text-gray-600">Or</p>
+              <Text className="underline text-primary-600 text-[13px]">Select Images</Text>
+              <p className="text-gray-500 text-center mt-1.5">PNG, JPEG or JPG</p>
+              <p className="text-sm text-gray-500 text-center">(Max size, 5MB)</p>
+            </Box>
+          </Center>
+          {imageSrcs?.map((e, index: number) => (
+            <Flex
+              h={"140px"}
+              w="100%"
+              borderRadius="10px"
               pos={"relative"}
-              overflow={"hidden"}
-              onClick={() => {
-                if((imageSrcs?.length || storeImages?.data?.length) === MAX_IMAGES){
-                  setIsDisabled(true);
-                  return toast.warning(`You can upload a maximum of ${MAX_IMAGES} images`)
-                }else{
-                  setIsDisabled(false);
-                  fileInputRef.current?.click()
-                }
-              }}
-              onDragOver={(e: any) => e.preventDefault()}
-              onDrop={(e: any) => {
-                handleDrop(e);
-              }}
+              key={index}
             >
-              <input
-                type="file"
-                disabled={isDisabled}
-                name="image_uploads"
-                multiple
-                onChange={onLoadImage}
-                accept=".jpg, .jpeg, .png"
-                style={{
-                  opacity: "0",
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  cursor: "pointer",
-                }}
-              />
-              <Box opacity={file ? 0 : 1}>
-                <Text fontSize={"13px"}>Drag Image</Text>
-                <p className="text-gray-600">Or</p>
-                <Text className="underline text-primary-600 text-[13px]">Select Images</Text>
-                <p className="text-gray-500 text-center mt-1.5">PNG, JPEG or JPG</p>
-                <p className="text-sm text-gray-500 text-center">(Max size, 5MB)</p>
-              </Box>
-            </Center>
-            {imageSrcs?.map((e, index: number) => (
-              <Flex
+              <Center
                 h={"140px"}
                 w="100%"
-                borderRadius="10px"
                 pos={"relative"}
-                key={index}
+                alignItems={"center"}
+                border={"1px solid #d7d7d7"}
+                rounded={"md"}
               >
-                <Center
-                  h={"140px"}
-                  w="100%"
-                  pos={"relative"}
-                  alignItems={"center"}
-                  border={"1px solid #d7d7d7"}
-                  rounded={"md"}
-                >
-                  <Image
-                    src={e}
-                    alt=""
-                    width={400}
-                    height={400}
-                    className="object-cover rounded-md h-[140px] w-full mix-blend-darken"
-                  />
-                  <Flex 
+                <Image
+                  src={e}
+                  alt=""
+                  width={400}
+                  height={400}
+                  className="object-cover rounded-md h-[140px] w-full mix-blend-darken"
+                />
+                <Flex
                   gap={2}
                   bg={"white"}
                   p={1}
@@ -297,8 +298,8 @@ const SystemConfiguration = () => {
                   pos={"absolute"}
                   right={3}
                   top={2}
-                  >
-                    {/* <PiNotePencil 
+                >
+                  {/* <PiNotePencil 
                     cursor={"pointer"}
                     onClick={() => {
                       onSelectImgToEdit(e);
@@ -306,7 +307,7 @@ const SystemConfiguration = () => {
                     }}
                     className="w-4 h-auto" 
                     /> */}
-                    <TrashIcon
+                  <TrashIcon
                     cursor={"pointer"}
                     onClick={() => {
                       const removedImage = imageSrcs?.filter((_, i) => i !== index);
@@ -315,14 +316,14 @@ const SystemConfiguration = () => {
                       setImageURL(removedImageUrl);
                     }}
                     className="w-4 h-auto text-red-600"
-                    />
-                  </Flex>
-                </Center>
-              </Flex>
-            ))}
-            {
-              storeImages?.data && storeImages?.data?.map((image: StoreFrontImage) => (
-                <Flex
+                  />
+                </Flex>
+              </Center>
+            </Flex>
+          ))}
+          {
+            storeImages?.data && storeImages?.data?.map((image: StoreFrontImage) => (
+              <Flex
                 h={"140px"}
                 w="100%"
                 borderRadius="10px"
@@ -346,14 +347,14 @@ const SystemConfiguration = () => {
                   />
                   {
                     (storeImages?.data?.length > 1 || imageSrcs?.length > 0) &&
-                    <Flex 
-                    gap={2}
-                    bg={"white"}
-                    p={1}
-                    rounded={"md"}
-                    pos={"absolute"}
-                    right={3}
-                    top={2}
+                    <Flex
+                      gap={2}
+                      bg={"white"}
+                      p={1}
+                      rounded={"md"}
+                      pos={"absolute"}
+                      right={3}
+                      top={2}
                     >
                       {/* <PiNotePencil 
                       cursor={"pointer"}
@@ -362,24 +363,24 @@ const SystemConfiguration = () => {
                       }}
                       className="w-4 h-auto" 
                       /> */}
-                      
-                      <TrashIcon 
-                      cursor={"pointer"}
-                      onClick={() => {
-                        setSelectedId(image.id)
-                        onDeleteOpen();
-                      }}
-                      className="w-4 h-auto text-red-600"
+
+                      <TrashIcon
+                        cursor={"pointer"}
+                        onClick={() => {
+                          setSelectedId(image.id)
+                          onDeleteOpen();
+                        }}
+                        className="w-4 h-auto text-red-600"
                       />
                     </Flex>
                   }
                 </Center>
               </Flex>
-              ))
-            }
-          </SimpleGrid>
-        </Stack>
-        <FAQList />
+            ))
+          }
+        </SimpleGrid>
+      </Stack>
+      <FAQList />
       <ModalComponent
         onClose={() => {
           onClose();
@@ -415,12 +416,12 @@ const SystemConfiguration = () => {
           />
         </Flex>
       </ModalComponent>
-      <DeleteMedication 
-      isOpen={isDeleteOpen}
-      onClose={onDeleteClose}
-      isLoading={deleteLoading}
-      handleDelete={handleDelete}
-      title="Image"
+      <DeleteMedication
+        isOpen={isDeleteOpen}
+        onClose={onDeleteClose}
+        isLoading={deleteLoading}
+        handleDelete={handleDelete}
+        title="Image"
       />
     </Stack>
   )

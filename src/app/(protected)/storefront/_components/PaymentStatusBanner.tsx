@@ -4,9 +4,9 @@ import { Button, IconButton } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FiX } from "react-icons/fi";
-import { usePaymentStatusStore } from "../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
+import { usePaymentStatusStore, usePaymentStatusNavigation } from "../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
 import { useCartStore } from "../(NoSideMenu)/storeFrontState/useCartStore";
 
 export default function PaymentStatusBanner() {
@@ -14,27 +14,53 @@ export default function PaymentStatusBanner() {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
   const userToken = sessionData?.user?.token;
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { paymentStatus, isLoading, fetchPaymentStatus } =
     usePaymentStatusStore();
 
-  const { clearCart } = useCartStore();
+  const { clearCart, cartSize } = useCartStore();
+
+  usePaymentStatusNavigation(userToken);
 
   useEffect(() => {
-    if (userToken) {
-      fetchPaymentStatus(userToken);
-    }
-  }, [fetchPaymentStatus, userToken]);
-
-  useEffect(() => {
-    if (userToken && paymentStatus === "APPROVED") {
+    if (userToken && paymentStatus === "APPROVED" && Number(cartSize) > 0) {
       clearCart(userToken);
     }
-  }, [userToken, paymentStatus, clearCart]);
+  }, [userToken, paymentStatus, clearCart, cartSize]);
+
+  useEffect(() => {
+    const isCompleted = paymentStatus === "APPROVED";
+    const shouldPoll = userToken && paymentStatus && !isCompleted;
+    
+    if (shouldPoll) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      
+      // Set up new interval for polling every 2 minutes (120000ms)
+      intervalRef.current = setInterval(() => {
+        fetchPaymentStatus(userToken);
+      }, 120000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [userToken, paymentStatus, fetchPaymentStatus]);
+
+  // console.log("PaymentStatusBanner - Status:", paymentStatus, "Loading:", isLoading);
 
   if (isLoading) return null;
   if (!paymentStatus) return null;
-  if (!["PENDING_MANDATE", "INITIATED"].includes(paymentStatus)) return null;
+  if (!["PENDING_MANDATE", "INITIATED", "PENDING PAYMENT"].includes(paymentStatus)) return null;
 
   return (
     <div className="bg-orange-50 border-l-4 border-orange-400 p-4">
@@ -55,8 +81,16 @@ export default function PaymentStatusBanner() {
           </div>
           <div className="ml-3">
             <p className="text-sm text-orange-700">
-              <span className="font-medium">Payment Pending:</span> Please
-              complete your order to finalize your transaction.
+              <span className="font-medium">
+                {paymentStatus === "INITIATED" ? "Payment Initiated:" :
+                 paymentStatus === "PENDING_MANDATE" ? "Payment Pending:" :
+                 paymentStatus === "PENDING PAYMENT" ? "Payment Processing:" :
+                 "Payment Pending:"}
+              </span>{" "}
+              {paymentStatus === "INITIATED" ? "You have completed payment! Please check back with the administrator to confirm your order.." :
+               paymentStatus === "PENDING_MANDATE" ? "Please complete your payment to finalize your transaction." :
+               paymentStatus === "PENDING PAYMENT" ? "Your payment is being processed. Please wait." :
+               "Please complete your order to finalize your transaction."}
             </p>
           </div>
         </div>

@@ -8,45 +8,10 @@ import {
   DrawerContent,
   DrawerOverlay,
 } from "@chakra-ui/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { usePaymentStatusStore } from "../../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
-
-export type WhishListProductType = {
-  active: number;
-  actualPrice: string;
-  businessId: number;
-  commission: string;
-  createdAt: string;
-  createdById: number;
-  deletedAt: string;
-  description: string;
-  discountPrice: string;
-  ecommerceBrandId: number;
-  ecommerceCategoryId: number;
-  ecommerceMeasurementId: number;
-  ecommerceMedicationTypeId: number;
-  ecommercePackageId: number;
-  ecommercePresentationId: number;
-  ecommerceVariationId: number;
-  expiredAt: string;
-  id: number;
-  lowStockLevel: number;
-  maxDeliveryDuration: number;
-  minDeliveryDuration: number;
-  name: string;
-  outStockLevel: number;
-  quantity: number;
-  slug: string;
-  status: string;
-  statusComment: string;
-  thumbnailFileId: number;
-  updatedAt: string;
-  updatedById: number;
-  valueStrength: string;
-  weight: string;
-};
+import { WhishListProductType } from "@/types/wishlist";
 
 const DetailsModal = ({
   isOpen,
@@ -67,19 +32,18 @@ const DetailsModal = ({
 }) => {
   const router = useRouter();
   const { paymentStatus } = usePaymentStatusStore();
-  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
+  const isPendingPayment =
+    paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"sm"}>
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent className="pb-[50px]" overflowY={"scroll"}>
         <DrawerCloseButton />
 
         <div className="p-4 mt-5">
           <img
-            src={
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjij8hX5ojM6ydGboLajqWTkB66LEAdwQB5A&s"
-            }
+            src={productData?.thumbnailFile}
             className="w-full h-fit rounded-md bg-gray-200"
             alt="Product image"
           />
@@ -121,14 +85,6 @@ const DetailsModal = ({
 
             <li className="text-[15px] flex items-center gap-3 font-medium">
               {" "}
-              Weight:
-              <span className="text-gray-600 font-normal">
-                {productData?.weight}
-              </span>
-            </li>
-
-            <li className="text-[15px] flex items-center gap-3 font-medium">
-              {" "}
               Quantity Left:
               <span className="text-gray-600 font-normal">
                 {productData?.quantity}
@@ -137,7 +93,6 @@ const DetailsModal = ({
           </div>
 
           {/* Actions */}
-
           <div className="flex gap-2 mt-6 max-[500px]:flex-col ">
             <Button
               className="flex-1 max-[500px]:py-3"
@@ -146,7 +101,6 @@ const DetailsModal = ({
                 router.push("/storefront/checkout");
               }}
               disabled={disableButton || isPendingPayment}
-            
             >
               Buy Now
             </Button>

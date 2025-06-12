@@ -41,9 +41,10 @@ export default function PaymentPage() {
     fetchCart,
     clearCart,
     cartSize,
+    sycnCart,
     isLoading: cartLoading,
   } = useCartStore();
-  const { refreshPaymentStatus } = usePaymentStatusStore();
+  const { refreshPaymentStatus, fetchPaymentStatus } = usePaymentStatusStore();
   const { paymentStatus } = usePaymentStatusStore();
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
@@ -66,6 +67,25 @@ export default function PaymentPage() {
   useEffect(() => {
     fetchCart(userToken);
   }, [fetchCart, userToken]);
+
+  // Fetch payment status when page loads
+  useEffect(() => {
+    if (userToken) {
+      fetchPaymentStatus(userToken);
+    }
+  }, [fetchPaymentStatus, userToken]);
+
+  // Clear cart and reload page when payment status becomes APPROVED - only if cart is not empty
+  useEffect(() => {
+    if (paymentStatus === "APPROVED" && Number(cartSize) > 0) {
+      clearCart(userToken);
+    }
+    if (paymentStatus === "APPROVED") {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+  }, [paymentStatus, clearCart, userToken, cartSize]);
 
   useEffect(() => {
     if (cart) {
@@ -187,27 +207,33 @@ export default function PaymentPage() {
             toast.warning(
               "Payment initiated! Please complete your mandate to finalize the transaction."
             );
-            await refreshPaymentStatus(userToken);
-            closeConfirmModal();
+            // if (response?.data?.data?.status === "success") {
+            //   toast.warning(
+            //     "You have completed payment! Please check back with the administrator to confirm your order."
+            //   );
+            //   await refreshPaymentStatus(userToken);
+            //   closeConfirmModal();
+            // }
+            if (response?.data?.data?.status === "success") {
+              toast.success("Payment approved! Order placed successfully.");
+              await refreshPaymentStatus(userToken);
+              closeConfirmModal();
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }
           }
-          if (response?.data?.data?.status === "success") {
-            toast.success("Payment approved! Order placed successfully.");
-            await refreshPaymentStatus(userToken);
-            closeConfirmModal();
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
-          }
+        } else {
+          toast.success("Order placed successfully");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
-      } else {
-        toast.success("Order placed successfully");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
       }
     } catch (e) {
       const errorMessage = handleServerErrorMessage(e);
       toast.error(errorMessage);
+      await refreshPaymentStatus(userToken);
     } finally {
       setIsLoading(false);
     }
@@ -235,7 +261,6 @@ export default function PaymentPage() {
   const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
   const [discountValue, setDisCountValue] = useState<any>(null);
 
-  console.log("discountValue", discountValue);
   const vetCouponCode = async () => {
     setLoadingCoupon(true);
     if (!couponCode) {
@@ -400,11 +425,20 @@ export default function PaymentPage() {
 
   // Check endpoint to reflect the status of the payment for 10MG
   const confirmCancel10MG = async () => {
-    await requestClient({ token: userToken }).get(
-      `/storefront/payment/verify/${checkoutRefId}`
-    );
-    await refreshPaymentStatus(userToken);
-    closeConfirmModal();
+    try {
+      await requestClient({ token: userToken }).get(
+        `/storefront/payment/verify/${checkoutRefId}`
+      );
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      await refreshPaymentStatus(userToken);
+      closeConfirmModal();
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
+    }
   };
 
   return (
@@ -513,7 +547,7 @@ export default function PaymentPage() {
                               <div className="flex items-center gap-2">
                                 <p className="font-semibold">
                                   {i.slug === "tenmg_credit"
-                                    ? "Pay with 10Mg Credit"
+                                    ? "Pay with 10mg Credit"
                                     : "Pay with Card"}
                                 </p>
                                 {isPendingPayment &&
@@ -538,6 +572,7 @@ export default function PaymentPage() {
                     </div>
                   </div>
                 </div>
+
                 <div className="col-span-1 lg:col-span-2 border border-r-gray-100 rounded-2xl overflow-hidden">
                   <div className=" flex items-center justify-between p-4">
                     <h3 className="font-semibold text-lg">Order Summary</h3>
@@ -632,40 +667,19 @@ export default function PaymentPage() {
                     <div>
                       <div className="flex items-center gap-x-2">
                         <p>Cart Total:</p>
-                        {discountValue ? (
-                          <p className="font-semibold">
-                            <span className="text-gray-400 line-through">
-                              ₦{Number(cartItems?.orderTotal).toLocaleString()}
-                            </span>{" "}
-                            <span className="text-success-500">
-                              ₦
-                              {Number(
-                                discountValue?.orderTotal
-                              )?.toLocaleString()}
-                            </span>
-                          </p>
-                        ) : (
-                          <p className="font-semibold">
-                            ₦{Number(cartItems?.orderTotal)?.toLocaleString()}
-                          </p>
-                        )}
-                        {/* <p className="font-semibold">{  cartItems?.orderTotal}</p> */}
+                        <p className="font-semibold">
+                          ₦{cartItems?.orderTotal}
+                        </p>
                       </div>
 
                       {/* <div>
                         <p>Shipping fee:</p>
-                        <p></p>
+                        <p>{}</p>
                       </div> */}
-
-                      <div>
-                        <p>TenMg Commission:</p>
-                        <p></p>
-                      </div>
                     </div>
                     <Divider my={5} />
 
                     <div className="flex flex-col gap-x-2">
-                      {/* <p className="font-semibold">{discountValue ? discountValue?.grandTotal : cartItems?.orderTotal}</p> */}
                       <p>Total:</p>
                       {discountValue ? (
                         <p className="font-semibold">

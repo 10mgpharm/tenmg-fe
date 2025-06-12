@@ -38,16 +38,17 @@ export default function CheckoutPage() {
 
   const { cart, addToCart, sycnCart, isLoading, cartSize } = useCartStore();
   const { paymentStatus } = usePaymentStatusStore();
-  const isPendingPayment = paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
+  const isPendingPayment =
+    paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
   const router = useRouter();
 
   useEffect(() => {
     if (cart) {
       if (cartSize == 0) {
-        redirect('/storefront')
+        redirect("/storefront");
       }
     }
-  }, [, cart, cartSize])
+  }, [, cart, cartSize]);
 
   useEffect(() => {
     if (cart) {
@@ -68,7 +69,7 @@ export default function CheckoutPage() {
       cartItems.items.forEach((item) => {
         const price =
           item.product?.discountPrice > 0 &&
-            item?.product?.actualPrice !== item?.product?.discountPrice
+          item?.product?.actualPrice !== item?.product?.discountPrice
             ? item?.product?.actualPrice - item.product?.discountPrice
             : item?.product?.actualPrice;
         total += price * localQuantities[item.product.id];
@@ -87,7 +88,7 @@ export default function CheckoutPage() {
       toast.error("Complete your pending payment to continue shopping");
       return;
     }
-    
+
     if (
       localQuantities[itemId] <
       cartItems.items.find((item) => item.product.id === itemId).product
@@ -107,7 +108,7 @@ export default function CheckoutPage() {
       toast.error("Complete your pending payment to continue shopping");
       return;
     }
-    
+
     if (localQuantities[itemId] > 1) {
       const newQuantity = localQuantities[itemId] - 1;
       setLocalQuantities((prev) => ({
@@ -124,7 +125,7 @@ export default function CheckoutPage() {
       toast.error("Complete your pending payment to continue shopping");
       return;
     }
-    
+
     setLoadingRemoveItem(true);
     const data = {
       productId: delId,
@@ -154,6 +155,7 @@ export default function CheckoutPage() {
       cartId: cartItems?.id,
       items: data_array,
     };
+
     sycnCart(data_obj, userData?.user?.token);
     router.push("/storefront/checkout/payment");
     // router.push("/storefront/checkout/payment");
@@ -261,10 +263,11 @@ export default function CheckoutPage() {
                                     </p>
                                   )}
                                   <p
-                                    className={`font-semibold my-2 text-sm ${item?.product.discountPrice > 0
-                                      ? "text-gray-400 line-through"
-                                      : "text-gray-900"
-                                      }`}
+                                    className={`font-semibold my-2 text-sm ${
+                                      item?.product.discountPrice > 0
+                                        ? "text-gray-400 line-through"
+                                        : "text-gray-900"
+                                    }`}
                                   >
                                     ₦{item?.product.actualPrice}
                                   </p>
@@ -289,14 +292,17 @@ export default function CheckoutPage() {
                                   _hover={{
                                     cursor:
                                       //  localQuantities[item.product.id] === 1 ||
-                                      isLoading || isPendingPayment ? "not-allowed" : "pointer",
+                                      isLoading || isPendingPayment
+                                        ? "not-allowed"
+                                        : "pointer",
                                   }}
                                   aria-label="Decrease quantity"
                                   onClick={() =>
                                     decreaseQuantity(item?.product?.id)
                                   }
                                   color={
-                                    localQuantities[item.product.id] === 1 || isPendingPayment
+                                    localQuantities[item.product.id] === 1 ||
+                                    isPendingPayment
                                       ? "gray.300"
                                       : "inherit"
                                   }
@@ -307,7 +313,9 @@ export default function CheckoutPage() {
                                   _hover={{
                                     cursor:
                                       // localQuantities[item.product.id] === item?.product?.quantity ||
-                                      isLoading || isPendingPayment ? "not-allowed" : "pointer",
+                                      isLoading || isPendingPayment
+                                        ? "not-allowed"
+                                        : "pointer",
                                   }}
                                   aria-label="Increase quantity"
                                   onClick={() =>
@@ -315,7 +323,8 @@ export default function CheckoutPage() {
                                   }
                                   color={
                                     localQuantities[item.product.id] ===
-                                      item?.product?.quantity || isPendingPayment
+                                      item?.product?.quantity ||
+                                    isPendingPayment
                                       ? "gray.300"
                                       : "inherit"
                                   }
@@ -333,8 +342,14 @@ export default function CheckoutPage() {
                                 mb={2}
                                 alignSelf="center"
                                 as={FiTrash2}
-                                _hover={{ cursor: isPendingPayment ? "not-allowed" : "pointer" }}
-                                color={isPendingPayment ? "gray.300" : "error.500"}
+                                _hover={{
+                                  cursor: isPendingPayment
+                                    ? "not-allowed"
+                                    : "pointer",
+                                }}
+                                color={
+                                  isPendingPayment ? "gray.300" : "error.500"
+                                }
                                 opacity={isPendingPayment ? 0.5 : 1}
                                 onClick={() => {
                                   handleOpenRemove();

@@ -10,7 +10,8 @@ import React, { useState } from "react";
 import { useCartStore } from "../../(NoSideMenu)/storeFrontState/useCartStore";
 import { usePaymentStatusStore } from "../../(NoSideMenu)/storeFrontState/usePaymentStatusStore";
 import { useWishlistStore } from "../../(NoSideMenu)/storeFrontState/useWIshlist";
-import DetailsModal, { WhishListProductType } from "./DetailsModal";
+import DetailsModal from "./DetailsModal";
+import { WhishListProductType } from "@/types/wishlist";
 
 export default function WishListCardComponent({ product, token }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -52,7 +53,9 @@ export default function WishListCardComponent({ product, token }) {
         <div className="flex items-center gap-4 md:gap-8 max-sm:flex-col max-sm:items-start max-sm:gap-2">
           <div className="flex items-center gap-2 flex-1">
             <div
-              style={{ backgroundImage: "url('/assets/images/pillImage.png')" }}
+              style={{
+                backgroundImage: `url(${product?.product?.thumbnailFile})`,
+              }}
               className="size-16 min-h-16 min-w-16 bg-cover bg-center bg-no-repeat rounded-md"
             />
             <div>

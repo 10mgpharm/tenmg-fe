@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import requestClient from "@/lib/requestClient";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 interface PaymentStatusState {
   paymentStatus: string | null;
@@ -15,16 +17,18 @@ export const usePaymentStatusStore = create<PaymentStatusState>((set, get) => ({
 
   fetchPaymentStatus: async (token: string) => {
     if (!token) return;
-    
+
     set({ isLoading: true });
     try {
       const response = await requestClient({ token }).get(
         "/storefront/payment/last-payment-status"
       );
       if (response?.status === 200) {
-        set({ 
-          paymentStatus: response?.data?.data?.application?.status,
-          isLoading: false 
+        const newStatus = response?.data?.data?.application?.status || null;
+
+        set({
+          paymentStatus: newStatus,
+          isLoading: false,
         });
       }
     } catch (error) {
@@ -41,4 +45,15 @@ export const usePaymentStatusStore = create<PaymentStatusState>((set, get) => ({
   clearPaymentStatus: () => {
     set({ paymentStatus: null, isLoading: false });
   },
-})); 
+}));
+
+export const usePaymentStatusNavigation = (token: string | undefined) => {
+  const pathname = usePathname();
+  const { fetchPaymentStatus } = usePaymentStatusStore();
+
+  useEffect(() => {
+    if (token) {
+      fetchPaymentStatus(token);
+    }
+  }, [pathname, token, fetchPaymentStatus]);
+};
