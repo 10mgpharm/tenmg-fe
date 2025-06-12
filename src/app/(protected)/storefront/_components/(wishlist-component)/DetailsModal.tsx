@@ -85,14 +85,6 @@ const DetailsModal = ({
 
             <li className="text-[15px] flex items-center gap-3 font-medium">
               {" "}
-              Weight:
-              <span className="text-gray-600 font-normal">
-                {productData?.weight}
-              </span>
-            </li>
-
-            <li className="text-[15px] flex items-center gap-3 font-medium">
-              {" "}
               Quantity Left:
               <span className="text-gray-600 font-normal">
                 {productData?.quantity}
@@ -101,7 +93,6 @@ const DetailsModal = ({
           </div>
 
           {/* Actions */}
-
           <div className="flex gap-2 mt-6 max-[500px]:flex-col ">
             <Button
               className="flex-1 max-[500px]:py-3"
