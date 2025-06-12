@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import EmptyOrder from '../../orders/_components/EmptyOrder';
-import { Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
+import { Flex, Spinner, Table,TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from "@chakra-ui/react";
 import { ColumsPayoutFN } from './tablePayout';
 import { PayoutTypeProps } from '@/types';
 import Pagination from '@/app/(protected)/admin/products/_components/Pagination';
@@ -60,9 +60,10 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
       {
             data?.length === 0 
             ? <EmptyOrder
-            heading={`No Transactions Yet`} 
-            content={`You currently have no transaction. All transactions will appear here.`} 
+            heading={`No Record Found`} 
+            content={`No transaction found. All transactions will appear here.`} 
             /> : 
+            data?.length > 0 ? (
             <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
@@ -104,6 +105,11 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
                     <Pagination {...metaData} setPageCount={setPageCount} />
                 )}
             </TableContainer>
+            ) : (
+                <Flex justify="center" align="center" height="200px">
+                    <Spinner size="xl" />
+                </Flex>
+            )
         }  
         <TransactionDetails
             isOpen={isOpen}

@@ -23,7 +23,6 @@ import {
 import TransactionDetails from "./TransactionDetail";
 import { repaymentColumnFn } from "./columns/repaymentColumn";
 import Pagination from "../../products/_components/Pagination";
-// import LoanTransactionDetails from "./loanTransactionDetails";
 
 interface LoanTableProps {
   type: string;
