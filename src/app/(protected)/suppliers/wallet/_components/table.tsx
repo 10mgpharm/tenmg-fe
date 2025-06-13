@@ -34,16 +34,6 @@ export function ColumsTransactionFN(
         </div>
       ),
     }),
-    columnHelper.accessor("orderId", {
-      header: ({ column }) => <p className="">OrderId</p>,
-      cell: (info) => (
-        <div className="">
-          <p className="font-medium">
-            {info.row.original?.order?.identifier}
-          </p>
-        </div>
-      ),
-    }),
     columnHelper.accessor("amount", {
       header: ({ column }) => <p className="">Amount</p>,
       cell: (info) => (
@@ -59,14 +49,6 @@ export function ColumsTransactionFN(
         </div>
       ),
     }),
-    // columnHelper.accessor("balanceAfter", {
-    //   header: ({ column }) => <p className="">Balance</p>,
-    //   cell: (info) => (
-    //     <div className="">
-    //       <p className="font-medium">₦{(info.row.original?.balanceAfter)}</p>
-    //     </div>
-    //   ),
-    // }),
     columnHelper.accessor("status", {
       header: ({ column }) => <p>Type</p>,
       cell: (info) => {
