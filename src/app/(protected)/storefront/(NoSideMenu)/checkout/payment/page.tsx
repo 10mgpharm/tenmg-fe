@@ -22,10 +22,9 @@ import { useCartStore } from "../../storeFrontState/useCartStore";
 import { FaCheck } from "react-icons/fa6";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { config } from "process";
-import axios from "axios";
 import CheckPaymentStatusModal from "../_components/CheckPaymentStatusModal";
 import { usePaymentStatusStore } from "../../storeFrontState/usePaymentStatusStore";
+import { formatAmount } from "@/utils/formatAmount";
 
 type OrderDataType = {
   orderId: string;
@@ -618,17 +617,17 @@ export default function PaymentPage() {
                             <div className="flex items-center gap-x-1">
                               {item?.discountPrice > 0 && (
                                 <p className="text-gray-900 font-semibold my-2 text-sm">
-                                  ₦{parseInt(item?.discountPrice)}
+                                  {formatAmount(item?.discountPrice)}
                                 </p>
                               )}
                               <p
-                                className={`font-semibold my-2 text-sm ${
+                                className={`font-semibold my-2 text-[12px] ${
                                   item?.discountPrice > 0
                                     ? "text-gray-400 line-through"
                                     : "text-gray-900"
                                 }`}
                               >
-                                ₦{item?.actualPrice}
+                                {formatAmount(item?.actualPrice)}
                               </p>
                             </div>
                           </div>
@@ -664,18 +663,20 @@ export default function PaymentPage() {
                     </div>
                     <Divider my={5} />
 
-                    <div>
+                    <div className="space-y-2">
                       <div className="flex items-center gap-x-2">
                         <p>Cart Total:</p>
                         <p className="font-semibold">
-                          ₦{cartItems?.orderTotal}
+                          {formatAmount(cartItems?.orderTotal)}
                         </p>
                       </div>
 
-                      {/* <div>
+                      <div className="flex items-center gap-x-2">
                         <p>Shipping fee:</p>
-                        <p>{}</p>
-                      </div> */}
+                        <p className="font-semibold">
+                          {formatAmount(cartItems?.shippingFee)}
+                        </p>
+                      </div>
                     </div>
                     <Divider my={5} />
 
@@ -684,16 +685,15 @@ export default function PaymentPage() {
                       {discountValue ? (
                         <p className="font-semibold">
                           <span className="text-gray-400 line-through">
-                            ₦{Number(cartItems?.orderTotal).toLocaleString()}
+                            {formatAmount(Number(cartItems?.orderTotal))}
                           </span>{" "}
                           <span className="text-success-500">
-                            ₦
-                            {Number(discountValue?.grandTotal).toLocaleString()}
+                            {formatAmount(Number(discountValue?.grandTotal))}
                           </span>
                         </p>
                       ) : (
                         <p className="font-semibold">
-                          ₦{Number(cartItems?.orderTotal)?.toLocaleString()}
+                          {formatAmount(Number(cartItems?.orderTotal))}
                         </p>
                       )}
                       {discountValue && (
