@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { Radio, RadioGroup } from "@chakra-ui/react";
 import { useCartStore } from "../../storeFrontState/useCartStore";
-import { FaCheck } from "react-icon s/fa6";
+import { FaCheck } from "react-icons/fa6";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import CheckPaymentStatusModal from "../_components/CheckPaymentStatusModal";
@@ -617,17 +617,17 @@ export default function PaymentPage() {
                             <div className="flex items-center gap-x-1">
                               {item?.discountPrice > 0 && (
                                 <p className="text-gray-900 font-semibold my-2 text-sm">
-                                  ₦{parseInt(item?.discountPrice)}
+                                  {formatAmount(item?.discountPrice)}
                                 </p>
                               )}
                               <p
-                                className={`font-semibold my-2 text-sm ${
+                                className={`font-semibold my-2 text-[12px] ${
                                   item?.discountPrice > 0
                                     ? "text-gray-400 line-through"
                                     : "text-gray-900"
                                 }`}
                               >
-                                ₦{item?.actualPrice}
+                                {formatAmount(item?.actualPrice)}
                               </p>
                             </div>
                           </div>
@@ -667,14 +667,14 @@ export default function PaymentPage() {
                       <div className="flex items-center gap-x-2">
                         <p>Cart Total:</p>
                         <p className="font-semibold">
-                          ₦{cartItems?.orderTotal}
+                          {formatAmount(cartItems?.orderTotal)}
                         </p>
                       </div>
 
                       <div className="flex items-center gap-x-2">
                         <p>Shipping fee:</p>
                         <p className="font-semibold">
-                          ₦{formatAmount(cartItems?.shippingFee)}
+                          {formatAmount(cartItems?.shippingFee)}
                         </p>
                       </div>
                     </div>
@@ -685,16 +685,15 @@ export default function PaymentPage() {
                       {discountValue ? (
                         <p className="font-semibold">
                           <span className="text-gray-400 line-through">
-                            ₦{Number(cartItems?.orderTotal).toLocaleString()}
+                            {formatAmount(Number(cartItems?.orderTotal))}
                           </span>{" "}
                           <span className="text-success-500">
-                            ₦
-                            {Number(discountValue?.grandTotal).toLocaleString()}
+                            {formatAmount(Number(discountValue?.grandTotal))}
                           </span>
                         </p>
                       ) : (
                         <p className="font-semibold">
-                          ₦{Number(cartItems?.orderTotal)?.toLocaleString()}
+                          {formatAmount(Number(cartItems?.orderTotal))}
                         </p>
                       )}
                       {discountValue && (
