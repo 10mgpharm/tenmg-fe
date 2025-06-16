@@ -120,7 +120,7 @@ export default function Password() {
                   placeholder={"current password"}
                   className="w-fit"
                   {...register("currentPassword", {
-                    required: "Password is required",
+                    required: "CUrrent Password is required",
                     minLength: {
                       value: 8,
                       message: "Must be at least 8 characters.",
@@ -160,7 +160,7 @@ export default function Password() {
                     placeholder={"new password"}
                     className="w-fit"
                     {...register("newPassword", {
-                      required: "Password is required",
+                      required: "New Password is required",
                       minLength: {
                         value: 8,
                         message: "Must be at least 8 characters.",
