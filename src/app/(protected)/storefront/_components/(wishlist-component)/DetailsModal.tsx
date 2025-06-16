@@ -26,7 +26,7 @@ const DetailsModal = ({
   onClose: () => void;
   productData: WhishListProductType | null;
   addToCart: (productId: number) => void;
-  removeWishlistItem: (productId: number, token: string) => void;
+  removeWishlistItem: () => void;
   disableButton: boolean;
   token: string;
 }) => {
@@ -110,7 +110,7 @@ const DetailsModal = ({
               className="flex-1  max-[500px]:py-3"
               colorScheme={"red"}
               onClick={() => {
-                removeWishlistItem(productData?.id, token);
+                removeWishlistItem();
               }}
               disabled={disableButton}
             >

@@ -45,6 +45,7 @@ import { useRouter } from "next/navigation";
 import totalPattern from "@public/assets/images/bgLines.svg";
 import CongratsModal from "./drawers/CongratsModal";
 import LoanRequestCard from "./dashboard/LoanRequestCard";
+import { useSession } from "next-auth/react";
 
 // Constants for chart time periods
 const BALANCE_TIME_PERIODS = [
@@ -123,8 +124,32 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     onClose: onCloseSuccess,
   } = useDisclosure();
 
+  const session = useSession();
   const sessionToken = sessionData?.user?.token;
   const router = useRouter();
+
+  // Update User Session
+  useEffect(() => {
+    if (!sessionToken) return;
+    const reFetchUseSesssion = async () => {
+      const res = await requestClient({ token: sessionToken }).get(
+        "/account/profile"
+      );
+
+      await session.update({
+        ...session.data,
+        user: {
+          ...sessionData?.user,
+          businessStatus: res?.data?.data?.businessStatus,
+          completeProfile: res?.data?.data?.completeProfile,
+        },
+      });
+
+      console.log(res, "res");
+    };
+
+    reFetchUseSesssion();
+  }, [sessionToken]);
 
   const fetchLenderData = useCallback(() => {
     if (!sessionToken) return;
