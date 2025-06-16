@@ -19,13 +19,12 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import { Radio, RadioGroup } from "@chakra-ui/react";
 import { useCartStore } from "../../storeFrontState/useCartStore";
-import { FaCheck } from "react-icons/fa6";
+import { FaCheck } from "react-icon s/fa6";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { config } from "process";
-import axios from "axios";
 import CheckPaymentStatusModal from "../_components/CheckPaymentStatusModal";
 import { usePaymentStatusStore } from "../../storeFrontState/usePaymentStatusStore";
+import { formatAmount } from "@/utils/formatAmount";
 
 type OrderDataType = {
   orderId: string;
@@ -664,7 +663,7 @@ export default function PaymentPage() {
                     </div>
                     <Divider my={5} />
 
-                    <div>
+                    <div className="space-y-2">
                       <div className="flex items-center gap-x-2">
                         <p>Cart Total:</p>
                         <p className="font-semibold">
@@ -672,10 +671,12 @@ export default function PaymentPage() {
                         </p>
                       </div>
 
-                      {/* <div>
+                      <div className="flex items-center gap-x-2">
                         <p>Shipping fee:</p>
-                        <p>{}</p>
-                      </div> */}
+                        <p className="font-semibold">
+                          ₦{formatAmount(cartItems?.shippingFee)}
+                        </p>
+                      </div>
                     </div>
                     <Divider my={5} />
 

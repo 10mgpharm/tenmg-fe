@@ -142,12 +142,12 @@ const TransactionDetails = ({
                 </Text>
               </Flex>
             )}
-            <Flex justify={"space-between"}>
+            {/* <Flex justify={"space-between"}>
               <Text>Tenmg Commission</Text>
               <Text fontWeight={500}>
                 ₦{selectedRow?.tenmgCommission ?? "0.00"}
               </Text>
-            </Flex>
+            </Flex> */}
           </Stack>
         </DrawerBody>
         <DrawerFooter p={0}>
