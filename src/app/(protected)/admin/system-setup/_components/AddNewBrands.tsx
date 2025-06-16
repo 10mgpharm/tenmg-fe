@@ -44,7 +44,7 @@ const AddNewBrands = (
 
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors },
     handleSubmit,
     control,
     reset
@@ -55,7 +55,13 @@ const AddNewBrands = (
   const onSubmit: SubmitHandler<IFormInput>  = async (data) => {
     setIsLoading(true)
     try {
-      let response;
+      let response: {
+        status: number;
+        data: {
+          message: string;
+          [key: string]: any;
+        };
+      };
       if(type === "Brand"){
         response = await requestClient({token: token}).post(
           "/admin/settings/brands",
@@ -91,8 +97,13 @@ const AddNewBrands = (
     }
   };
 
+  const closeModal = () => {
+    reset();
+    onClose();
+  }
+
   return (
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
+    <Drawer isOpen={isOpen} placement="right" onClose={closeModal} size={"md"}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -142,7 +153,7 @@ const AddNewBrands = (
             </FormControl>
             <HStack mt={5} justify={"end"}>
               <Flex gap={3}>
-                <Button w={"120px"} onClick={onClose} variant={"outline"}>
+                <Button w={"120px"} onClick={closeModal} variant={"outline"}>
                   Cancel
                 </Button>
                 <Button

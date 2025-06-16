@@ -115,16 +115,30 @@ const AddMedicationType = (
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         setIsLoading(true)
+
+        const variations = data.variations.map((item) => {
+            return {
+                ...item,
+                weight: item.weight ? item.weight.toString() : null
+            }
+        })
+
+        const payload = {
+            ...data,
+            variations
+        }
         try {
             const response = await requestClient({ token: token })[!medication ? 'post' : 'patch']
                 (!medication ?
                     "/admin/settings/medication-types" : `/admin/settings/medication-types/${medication?.id}`,
-                    data
+                    payload
                 )
 
             if (response.status === 200) {
                 reset(defaultFormValue);
                 setIsLoading(false);
+                toast.success(response?.data?.message);
+                resetSelectedItem();
                 fetchingMedicationTypes();
                 onClose();
             }
@@ -363,17 +377,15 @@ const AddMedicationType = (
                                                 <Td fontSize={"14px"} width={'20%'} px={2}>
                                                     <div className="flex flex-col">
                                                         <Input
-                                                            {...register(`variations.${index}.package`, {
-                                                                required: "Package is required",
-                                                            })}
+                                                            {...register(`variations.${index}.package`)}
                                                             placeholder="e.g 1*100 Pieces"
                                                             type="text"
                                                         />
-                                                        {errors.variations?.[index]?.package?.message &&
+                                                        {errors.variations?.[index]?.package?.message && (
                                                             <Text as={"span"} className="text-red-500 text-sm">
                                                                 {errors.variations?.[index]?.package?.message}
                                                             </Text>
-                                                        }
+                                                        )}
                                                     </div>
                                                 </Td>
                                                 <Td fontSize={"14px"} width={'20%'} px={2}>
