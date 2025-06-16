@@ -127,12 +127,12 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                         )}
                     />
                 </FormControl> */}
-                    <FormControl display='flex' alignItems='center'>
+                    {/* <FormControl display='flex' alignItems='center'>
                         <Switch id='email-alerts' mr={3} />
                         <FormLabel htmlFor='email-alerts' color={"gray.600"} mb='0'>
                             Save Inventory Settings
                         </FormLabel>
-                    </FormControl>
+                    </FormControl> */}
                     <FormControl display='flex' alignItems='center'>
                         <Controller
                             name="status"
