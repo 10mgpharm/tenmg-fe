@@ -240,7 +240,7 @@ export default function ProfileInformation() {
               type="tel"
               placeholder={"08123456789"}
               {...register("contactPhone", {
-                required: "Contact Person Phone is required",
+                required: "Contact Person Phone Number is required",
               })}
             />
             <FormErrorMessage>{errors.contactPhone?.message}</FormErrorMessage>
@@ -253,7 +253,7 @@ export default function ProfileInformation() {
               type="text"
               placeholder={"Plot 360 Obafemi Awolowo way, Jabi District, Abuja"}
               {...register("businessAddress", {
-                required: "business Address is required",
+                required: "Business Address is required",
               })}
             />
             <FormErrorMessage>{errors.businessAddress?.message}</FormErrorMessage>

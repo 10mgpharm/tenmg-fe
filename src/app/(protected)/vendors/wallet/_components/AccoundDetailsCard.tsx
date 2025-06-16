@@ -88,15 +88,16 @@ export default function AccoundDetailsCard(
             </div>
             <Button
               size={"xs"}
-              className="px-2 py-1 rounded-full"
-              style={{
-                backgroundColor: "#000000",
-                color: "#ffffff",
-                borderRadius: "0.375rem",
-                padding: "0.5rem 1.25rem",
-                fontWeight: "600",
-                boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              }}
+              // className="px-2 py-1 rounded-full"
+              className="relative transition-all duration-200 z-50 cursor-pointer bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-5 text-center"
+              // style={{
+              //   backgroundColor: "#000000",
+              //   color: "#ffffff",
+              //   borderRadius: "0.375rem",
+              //   padding: "0.5rem 1.25rem",
+              //   fontWeight: "600",
+              //   boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              // }}
               onClick={onOpen}
             >
               Edit Account
