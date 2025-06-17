@@ -41,16 +41,17 @@ export const OverviewCard = ({
             {(func && func_btn) &&
               <Button
                 size={"xs"}
-                className="relative top-6 z-20 transition-all duration-200"
+                // className="relative top-6 z-20 transition-all duration-200"
+                className="relative top-3 transition-all duration-200 z-50 cursor-pointer bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-5 text-center"
                 disabled={(func && func_btn) && (parseInt(value) <= 0)}
-                style={{
-                  backgroundColor: "#000000",
-                  color: "#ffffff",
-                  borderRadius: "0.375rem",
-                  padding: "0.5rem 1.25rem",
-                  fontWeight: "600",
-                  boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                }}
+                // style={{
+                //   backgroundColor: "#000000",
+                //   color: "#ffffff",
+                //   borderRadius: "0.375rem",
+                //   padding: "0.5rem 1.25rem",
+                //   fontWeight: "600",
+                //   boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                // }}
                 onClick={func}>
                 Withdraw Funds
               </Button>

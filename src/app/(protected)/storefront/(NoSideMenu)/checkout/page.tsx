@@ -25,6 +25,7 @@ import emptyCart from "@public/assets/images/emptyOrder.png";
 import { redirect, useRouter } from "next/navigation";
 import BreadCrumbBanner from "../../_components/BreadCrumbBanner";
 import { toast } from "react-toastify";
+import { formatAmount } from "@/utils/formatAmount";
 
 export default function CheckoutPage() {
   const session = useSession();
@@ -257,9 +258,10 @@ export default function CheckoutPage() {
                                 <div className="flex items-center gap-x-2 ">
                                   {item?.product.discountPrice > 0 && (
                                     <p className="text-gray-900 font-semibold my-2 text-sm">
-                                      ₦
-                                      {parseInt(item?.product.actualPrice) -
-                                        parseInt(item?.product.discountPrice)}
+                                      {formatAmount(
+                                        parseInt(item?.product.actualPrice) -
+                                          parseInt(item?.product.discountPrice)
+                                      )}
                                     </p>
                                   )}
                                   <p
@@ -269,7 +271,7 @@ export default function CheckoutPage() {
                                         : "text-gray-900"
                                     }`}
                                   >
-                                    ₦{item?.product.actualPrice}
+                                    {formatAmount(item?.product.actualPrice)}
                                   </p>
                                   {/* ₦{item?.product?.discountPrice > 0 ? item?.product?.actualPrice - item.product?.discountPrice : item?.product?.actualPrice} */}
                                 </div>
@@ -411,7 +413,7 @@ export default function CheckoutPage() {
                               Subtotal
                             </Text>
                             <Text fontWeight="medium" fontSize="2xl">
-                              ₦{subtotal.toLocaleString()}
+                              {formatAmount(subtotal)}
                             </Text>
                           </Stack>
                         </Flex>
@@ -425,7 +427,6 @@ export default function CheckoutPage() {
                             colorScheme="blue"
                             onClick={handleCheckout}
                           >
-                            {/* <Button width="full" colorScheme="blue" onClick={() => { router.push('/storefront/checkout/payment') }}> */}
                             Proceed to Payment
                           </Button>
                           <Button

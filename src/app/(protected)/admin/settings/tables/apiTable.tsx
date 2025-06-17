@@ -17,17 +17,17 @@ export function ColumsAPIFN(revokeApi: (id: string) => void) {
         </div>
       ),
     }),
-    columnHelper.accessor("vendors", {
+    columnHelper.accessor("business.name", {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          <p>List of vendors</p>
+          <p>Vendor&apos;s Name</p>
         </div>
       ),
       cell: (info) => (
         <div>
-          <p>{info.row.original?.vendors} </p>
+          <p>{info.row.original?.business?.name} </p>
         </div>
       ),
     }),
@@ -48,8 +48,8 @@ export function ColumsAPIFN(revokeApi: (id: string) => void) {
               info?.row?.original?.status === "Test"
                 ? "bg-[#FEF3F2] text-[#B42318]"
                 : info?.row?.original?.status === "Live"
-                ? "text-[#027A48] bg-[#ECFDF3]"
-                : "text-gray-500",
+                  ? "text-[#027A48] bg-[#ECFDF3]"
+                  : "text-gray-500",
               " max-w-min p-0.5 px-3 rounded-2xl text-sm"
             )}
           >

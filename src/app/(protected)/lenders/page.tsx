@@ -4,9 +4,11 @@ import { authOptions } from "@/lib/auth";
 import { BusinessStatus } from "@/constants";
 import EmptyDashboard from "./_components/EmptyDashboard";
 import LenderDashboard from "./_components/LenderDashboard";
+import { useSession } from "next-auth/react";
 
 const Vendor = async () => {
   const data: NextAuthUserSession | null = await getServerSession(authOptions);
+
   return (
     <div className="p-4 md:p-8">
       {[

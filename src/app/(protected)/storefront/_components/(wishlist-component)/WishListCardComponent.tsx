@@ -119,7 +119,7 @@ export default function WishListCardComponent({ product, token }) {
         onClose={onClose}
         productData={selectedProduct}
         addToCart={handleAddToCart}
-        removeWishlistItem={removeWishlistItem}
+        removeWishlistItem={() => removeWishlistItem(product?.id, token)}
         disableButton={updateLoading}
         token={token}
       />
