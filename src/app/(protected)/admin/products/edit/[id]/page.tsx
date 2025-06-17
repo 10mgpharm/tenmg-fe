@@ -105,7 +105,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     const {
         control,
         register,
-        formState: { errors, isValid },
+        formState: { errors },
         handleSubmit,
         setValue,
         trigger,
@@ -124,6 +124,7 @@ const EditPage = ({params}: {params: {id: string}}) => {
     });
 
     useEffect(() => {
+        const expiredAt = products?.expiredAt ? new Date(products?.expiredAt) : null;
         setValue("productName", products?.name);
         setValue("brandName", products?.brand?.name);
         setValue("categoryName", products?.category?.name);
