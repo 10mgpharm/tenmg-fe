@@ -464,7 +464,7 @@ function KeyWrapper({
                       size={"lg"}
                       color={"gray.500"}
                       {...register("transactionUrl")}
-                      placeholder="https://10mg.com/api/transaction/fetch"
+                      placeholder="e.g. https://10mg.com/api/transaction/fetch"
                       maxW="3xl"
                       _focus={{
                         color: "gray.800",
