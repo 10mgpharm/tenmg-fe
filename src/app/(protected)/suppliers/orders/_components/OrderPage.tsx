@@ -65,7 +65,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
             heading={`No ${type} Order Yet`} 
             content={`You currently have no ${type} orders. All ${type} orders will appear here.`} 
             /> : memoizedData?.length > 0 && (
-                <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                <TableContainer className='no-scrollbar' border={"1px solid #F9FAFB"} borderRadius={"10px"}>
                     <Table>
                         <Thead bg={"#F2F4F7"}>
                         {table?.getHeaderGroups()?.map((headerGroup) => (
@@ -73,7 +73,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
                             {headerGroup.headers?.map((header) => (
                                 <Th
                                 textTransform={"initial"}
-                                px="0px"
+                                px="10px"
                                 key={header.id}
                                 >
                                 {header.isPlaceholder
@@ -91,7 +91,7 @@ const OrderPage = ({orders, type, loading, pageCount, setPageCount, globalFilter
                         {table?.getRowModel()?.rows?.map((row) => (
                             <Tr key={row.id}>
                             {row.getVisibleCells()?.map((cell) => (
-                                <Td key={cell.id} px="0px">
+                                <Td key={cell.id} px="10px">
                                 {flexRender(
                                     cell.column.columnDef.cell,
                                     cell.getContext()

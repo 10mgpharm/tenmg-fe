@@ -64,7 +64,7 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
             content={`No transaction found. All transactions will appear here.`} 
             /> : 
             data?.length > 0 ? (
-            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} className='no-scrollbar'>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
                     {table?.getHeaderGroups()?.map((headerGroup, i) => (
@@ -72,7 +72,7 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
                         {headerGroup.headers?.map((header, idx) => (
                             <Th
                             textTransform={"initial"}
-                            px="0px"
+                            px="10px"
                             key={idx}
                             >
                             {header.isPlaceholder
@@ -90,7 +90,7 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
                     {table?.getRowModel()?.rows?.map((row, index) => (
                         <Tr key={index}>
                         {row.getVisibleCells()?.map((cell, idxs) => (
-                            <Td key={idxs} px="0px">
+                            <Td key={idxs} px="10px">
                             {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()

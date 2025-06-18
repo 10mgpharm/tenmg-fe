@@ -130,7 +130,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
     const actualPrice = Number(watch("actualPrice")) - Number(watch("discountPrice"));
 
     return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-8 sm:my-16">
         <div className="flex items-center justify-between">
             <HStack onClick={() => setSteps("details")} cursor={"pointer"}>
                 <ArrowLeftIcon className='w-5- h-5'/>
@@ -209,20 +209,20 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                         {
                             selectedVariation?.detail && 
                             <Box>
-                                <HStack mt={4}>
-                                    <Stack flex={1}>
+                                <HStack flexDir={["column", "row"]} gap={4} mt={4}>
+                                    <Stack width={"100%"} flex={1}>
                                         <FormLabel color={"gray.600"}>Presentation</FormLabel>
                                         <Box className="border rounded-md p-2">
                                             <Text color={"gray.400"}>{selectedVariation?.detail?.presentation}</Text>
                                         </Box>
                                     </Stack>
-                                    <Stack flex={1}>
+                                    <Stack width={"100%"} flex={1}>
                                         <FormLabel color={"gray.600"}>Strength Value</FormLabel>
                                         <Box className="border rounded-md p-2">
                                             <Text color={"gray.400"}>{selectedVariation?.detail?.strength}</Text>
                                         </Box>
                                     </Stack>
-                                    <Stack flex={1}>
+                                    <Stack width={"100%"} flex={1}>
                                         <FormLabel color={"gray.600"}>Measurement</FormLabel>
                                         <Box className="border rounded-md p-2">
                                             <Text color={"gray.400"}>{selectedVariation?.detail?.measurement}</Text>
@@ -251,7 +251,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                 (!showVariation || newVariation) && !selectedVariation?.detail ?
                 <Stack>
                     <Text color={"gray.700"} mt={5} fontWeight={"semibold"}>Variation</Text>
-                    <HStack>
+                    <HStack flexDir={["column", "row"]} gap={4}>
                         <FormControl isInvalid={!!errors.presentationName}>
                             <FormLabel color={"gray.500"}>Presentation</FormLabel>
                             <Controller
@@ -329,7 +329,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                     </HStack>
                     <Stack mt={4}>
                         <Text color={"gray.700"} fontWeight={"semibold"}>Packaging</Text>
-                        <HStack>
+                        <HStack flexDir={["column", "row"]} gap={4}>
                             <FormControl isInvalid={!!errors.packageName}>
                                 <FormLabel color={"gray.500"}>Package Per Roll</FormLabel>
                                 <Input 
@@ -371,7 +371,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                 } 
                 <Stack mt={4}>
                     <Text color={"gray.700"} fontWeight={"semibold"}>Pricing</Text>
-                    <HStack>
+                    <HStack flexDir={["column", "row"]} gap={4}>
                         <FormControl isInvalid={!!errors.actualPrice}>
                             <FormLabel color={"gray.500"}>Price(₦)</FormLabel>
                             <Input 

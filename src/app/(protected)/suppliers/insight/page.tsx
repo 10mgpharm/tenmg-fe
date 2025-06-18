@@ -78,7 +78,11 @@ const Insight = () => {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <span onClick={() => fetchOverview()} className='text-primary-500 underline cursor-pointer text-sm font-medium'>Refresh Record</span>
+              <span 
+              onClick={() => fetchOverview()} 
+              className='text-primary-500 underline cursor-pointer text-sm font-medium'>
+                Refresh Record
+              </span>
             </div>
         </div>
         {
@@ -90,7 +94,7 @@ const Insight = () => {
           )
           : (
             <div>
-              <div className="flex gap-5 mt-6">
+              <div className="sm:flex gap-5 mt-6">
                 <div className="flex-1 bg-white p-5 rounded-md">
                   <h3 className="text-gray-600 font-semibold text-lg mb-5">Total Product Sold</h3>
                     {
@@ -148,8 +152,8 @@ const Insight = () => {
                     }
                 </div>
               </div>
-              <div className="mt-6 flex gap-5">
-                <div className="flex-1 bg-white p-5 rounded-md">
+              <div className="mt-6 flex-1">
+                <div className="bg-white p-5 rounded-md">
                   <h3 className="text-gray-600 font-semibold text-lg mb-5">Best Selling Products</h3>
                   {
                     (data?.bestSellingProducts?.length > 0) ?
@@ -177,7 +181,6 @@ const Insight = () => {
                     : <EmptyCard/> 
                   }
                 </div>
-                <div className="flex flex-1"></div>
               </div>
             </div>
           )

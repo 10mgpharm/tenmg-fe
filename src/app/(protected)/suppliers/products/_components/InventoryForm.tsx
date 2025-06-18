@@ -44,7 +44,7 @@ const InventoryForm: React.FC<IChildComponentProps> = (
     console.log("data", new Date(data?.expiredAt).toISOString().split("T")[0]);
     const isChecked = watch("status");
     return (
-        <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
+        <div className="max-w-2xl mx-auto bg-white p-6 rounded-md py-8 sm:my-16">
             <div className="flex items-center justify-between">
                 <HStack onClick={() => setSteps("essentials")} cursor={"pointer"}>
                     <ArrowLeftIcon className='w-5- h-5' />

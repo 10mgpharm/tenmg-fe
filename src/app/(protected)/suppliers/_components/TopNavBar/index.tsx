@@ -12,11 +12,10 @@ import {
   FormControl,
   FormLabel,
   Switch,
-  Tag,
-  TagLabel,
+  Tag
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { convertLetterCase, handleServerErrorMessage } from "@/utils";
+import { handleServerErrorMessage } from "@/utils";
 import GreetingComponent from "./GreetingComponent";
 import { useCallback, useEffect, useState } from "react";
 import NotificationModal from "./NotificationModal";
@@ -158,16 +157,16 @@ const TopNavBar = ({
    if (entity === "vendor") {
      switch (normalizedRole) {
        case "vendor":
-         roleDisplay = "Vendor Admin";
-         break;
+        roleDisplay = "Vendor Admin";
+        break;
        case "supporter":
-         roleDisplay = "Vendor Support";
-         break;
+        roleDisplay = "Vendor Support";
+        break;
        case "operator":
-         roleDisplay = "Vendor Operator";
-         break;
+        roleDisplay = "Vendor Operator";
+        break;
        default:
-         roleDisplay = `Vendor ${capitalizeWords(normalizedRole)}`;
+        roleDisplay = `Vendor ${capitalizeWords(normalizedRole)}`;
      }
    } else if (entity === "supplier") {
      roleDisplay = "Supplier";
@@ -183,7 +182,7 @@ const TopNavBar = ({
  };
 
   return (
-    <div className="lg:fixed w-full bg-white z-50">
+    <div className="lg:fixed w-full bg-white pt-4 sm:py-0 z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
         <div className="flex items-center gap-8 md:gap-36">
           <div className="hidden md:flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
@@ -223,7 +222,7 @@ const TopNavBar = ({
               <div className="px-1 rounded-full bg-red-500 absolute top-2 right-2 text-[9px] text-white">
                 {notificationCount}
               </div>
-              <BellIcon className="h-8 w-8" />
+              <BellIcon className="h-5 w-5 sm:h-8 sm:w-8" />
             </MenuButton>
             <NotificationModal
               notificationsMsgs={notifications}
@@ -238,7 +237,7 @@ const TopNavBar = ({
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center p-1.5">
               <Avatar
-                size="md"
+                size={["sm", "md"]}
                 name={data?.user?.name}
                 src={data?.user?.picture}
               />
