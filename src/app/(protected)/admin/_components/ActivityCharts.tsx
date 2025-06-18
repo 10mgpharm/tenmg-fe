@@ -206,7 +206,7 @@ const ActivityCharts = ({data, loading}: any) => {
               <option value="canceled">All Time</option>
             </select>
             <h1 className="text-6xl font-bold mt-6">
-              102.5k  
+              {data?.storeVisitors || 0} 
             </h1>
           </div>
         </div>

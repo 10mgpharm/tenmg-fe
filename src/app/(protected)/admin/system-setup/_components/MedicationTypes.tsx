@@ -108,7 +108,7 @@ const MedicationTypes = (
               <Tr color={"primary.500"} roundedTop={"md"}>
                 <Th>Name</Th>
                 <Th>Active</Th>
-                <Th>Variations</Th>
+                {/* <Th>Variations</Th> */}
                 <Th>Status</Th>
                 <Th>Date Created</Th>
                 <Th>Action</Th>
@@ -119,11 +119,11 @@ const MedicationTypes = (
                 data?.map((item: MedicationData) => (
                   <Tr key={item.id}>
                     
-                    <Td py={1} lineHeight={3} fontSize={"14px"}>{item.name}</Td>
+                    <Td py={1} lineHeight={3} fontSize={"14px"} className="truncate max-w-[140px]">{item.name}</Td>
                     <Td py={1} lineHeight={3} fontSize={"14px"}>{item.active ? "Yes" : "No"}</Td>
-                    <Td py={1} lineHeight={3} fontSize={"14px"}>
+                    {/* <Td py={1} lineHeight={3} fontSize={"14px"}>
                       <Tag colorScheme={"yellow"} size={"sm"}>View Variation</Tag>
-                    </Td>
+                    </Td> */}
                     <Td py={1} lineHeight={3} fontSize={"14px"} className="text-sm">{item.status}</Td>
                     <Td py={1} lineHeight={3} fontSize={"14px"}>{item.createdAt}</Td>
                     <Td py={1} lineHeight={3} fontSize={"14px"}>

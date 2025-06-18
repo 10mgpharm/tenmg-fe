@@ -38,8 +38,10 @@ interface IChildComponentProps {
 }
 
 const InventoryForm: React.FC<IChildComponentProps> = (
-    { setSteps, register, errors, control, isLoading, isEditing, setValue, watch }
+    { setSteps, register, errors, control, isLoading, isEditing, setValue, data, watch }
 ) => {
+
+    console.log("data", new Date(data?.expiredAt).toISOString().split("T")[0]);
     const isChecked = watch("status");
     return (
         <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
@@ -103,8 +105,10 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                     <FormControl >
                         <FormLabel>Expiration Date Proximity</FormLabel>
                         <Input
-                            min={new Date().toISOString().split("T")[0]}
+                            id="expiredAt"
+                            // min={new Date().toISOString().split("T")[0]}
                             type="date"
+                            // defaultValue={data?.expiredAt ? new Date(data?.expiredAt).toISOString().split("T")[0] : ""}
                             placeholder={""}
                             {...register("expiredAt", {
                                 required: "Expiry date is required",
@@ -139,9 +143,9 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                             control={control}
                             render={({ field }) => (
                                 <Switch
-                                    defaultChecked={isChecked === "ACTIVE" ? true : false}
+                                    defaultChecked={isChecked === "APPROVED" ? true : false}
                                     id='acitvate-product'
-                                    checked={isChecked === "ACTIVE" ? true : false}
+                                    checked={isChecked === "APPROVED" ? true : false}
                                     onChange={((e) => {
                                         const isActive = e.target.checked;
                                         if (isActive) {
