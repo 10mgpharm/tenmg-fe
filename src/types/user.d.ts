@@ -398,6 +398,7 @@ export interface ProductDataProps {
   package: MeasurementType;
   presentation: MeasurementType;
   rating: any | null;
+  createdAt: string;
 }
 export interface ProductResponseData {
   data: ProductDataProps[];

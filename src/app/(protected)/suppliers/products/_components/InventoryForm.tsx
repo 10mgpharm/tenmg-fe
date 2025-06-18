@@ -116,23 +116,27 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                         />
                     </FormControl>
                     {/* <FormControl>
-                        <FormLabel color={"gray.600"}>Expiration Date Proximity</FormLabel>
-                        <Controller
-                            name="expiredAt"
-                            control={control}
-                            rules={{ required: "Expiry date is required" }}
-                            render={({ field }) => (
-                            <DateComponent
-                                startDate={field.value}
-                                setStartDate={field.onChange}
-                                // isMinDate
-                                // minDate={getValues("startDate")}
-                            />
-                            )}
+                    <FormLabel color={"gray.600"}>Expiration Date Proximity</FormLabel>
+                    <Controller
+                        name="expiredAt"
+                        control={control}
+                        rules={{ required: "Expiry date is required" }}
+                        render={({ field }) => (
+                        <DateComponent
+                            startDate={field.value}
+                            setStartDate={field.onChange}
+                            // isMinDate
+                            // minDate={getValues("startDate")}
                         />
-                        </FormControl> 
-                    */}
-
+                        )}
+                    />
+                </FormControl> */}
+                    {/* <FormControl display='flex' alignItems='center'>
+                        <Switch id='email-alerts' mr={3} />
+                        <FormLabel htmlFor='email-alerts' color={"gray.600"} mb='0'>
+                            Save Inventory Settings
+                        </FormLabel>
+                    </FormControl> */}
                     <FormControl display='flex' alignItems='center'>
                         <Controller
                             name="status"

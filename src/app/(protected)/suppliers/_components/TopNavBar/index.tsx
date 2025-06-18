@@ -141,46 +141,46 @@ const TopNavBar = ({
   //   }
   // };
 
- const renderUserRole = (role?: string, entityType?: string) => {
-   if (!role || !entityType) return null;
+  const renderUserRole = (role?: string, entityType?: string) => {
+    if (!role || !entityType) return null;
 
-   const entity = entityType.trim().toLowerCase();
-   const normalizedRole = role.trim().toLowerCase();
+    const entity = entityType.trim().toLowerCase();
+    const normalizedRole = role.trim().toLowerCase();
 
-   const capitalizeWords = (text: string) =>
-     text
-       .split(/[_\s]/)
-       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-       .join(" ");
+    const capitalizeWords = (text: string) =>
+      text
+        .split(/[_\s]/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
 
-   let roleDisplay = "";
+    let roleDisplay = "";
 
-   if (entity === "vendor") {
-     switch (normalizedRole) {
-       case "vendor":
-         roleDisplay = "Vendor Admin";
-         break;
-       case "supporter":
-         roleDisplay = "Vendor Support";
-         break;
-       case "operator":
-         roleDisplay = "Vendor Operator";
-         break;
-       default:
-         roleDisplay = `Vendor ${capitalizeWords(normalizedRole)}`;
-     }
-   } else if (entity === "supplier") {
-     roleDisplay = "Supplier";
-   } else if (entity === "lender") {
-     roleDisplay = "Lender";
-   } else if (entity === "admin") {
-     roleDisplay = `10mg ${capitalizeWords(normalizedRole)}`;
-   } else {
-     roleDisplay = capitalizeWords(role);
-   }
+    if (entity === "vendor") {
+      switch (normalizedRole) {
+        case "vendor":
+          roleDisplay = "Vendor Admin";
+          break;
+        case "supporter":
+          roleDisplay = "Vendor Support";
+          break;
+        case "operator":
+          roleDisplay = "Vendor Operator";
+          break;
+        default:
+          roleDisplay = `Vendor ${capitalizeWords(normalizedRole)}`;
+      }
+    } else if (entity === "supplier") {
+      roleDisplay = "Supplier";
+    } else if (entity === "lender") {
+      roleDisplay = "Lender";
+    } else if (entity === "admin") {
+      roleDisplay = `10mg ${capitalizeWords(normalizedRole)}`;
+    } else {
+      roleDisplay = capitalizeWords(role);
+    }
 
-   return roleDisplay;
- };
+    return roleDisplay;
+  };
 
   return (
     <div className="lg:fixed w-full bg-white z-50">
@@ -302,13 +302,19 @@ const TopNavBar = ({
 
               <MenuItem>
                 <button
-                  className="block px-3 py-1 text-sm text-gray-900 hover:bg-red-50 w-full text-left"
-                  onClick={async () => {
-                    await signOut();
-                    router.push("/auth/signin");
+                  className="block px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 w-full text-left"
+                  onClick={() => {
+                    const type = data?.user?.entityType;
+                    const faqRoutes: Record<string, string> = {
+                      SUPPLIER: "/suppliers/faq",
+                      VENDOR: "/vendors/faq",
+                      ADMIN: "/admin/faq",
+                      LENDER: "/lenders/faq",
+                    };
+                    router.push(faqRoutes[type] || "/faq");
                   }}
                 >
-                  Faq
+                  FAQ
                 </button>
               </MenuItem>
             </MenuItems>
