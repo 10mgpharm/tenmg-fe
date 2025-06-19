@@ -12,6 +12,7 @@ import {
   HomeIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import Link from 'next/link';
 import { classNames } from '@/utils'
 import { BsCart2, BsGraphUpArrow } from "react-icons/bs";
 import { FiShoppingBag } from 'react-icons/fi'
@@ -19,7 +20,6 @@ import { CiLogout, CiWallet } from 'react-icons/ci'
 import { BiMessageDetail } from 'react-icons/bi'
 import { redirect, usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
-import Link from 'next/link'
 import { BusinessStatus } from "@/constants";
 import { NextAuthUserSession } from '@/types'
 import requestClient from '@/lib/requestClient'
@@ -51,13 +51,10 @@ const isLinkDisabled = (businessStatus: string, name: string) => {
     : false;
 };
 
-
-
 const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, isOpen: boolean, onClose: () => void }) => {
-  const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const session = useSession();
+  const pathname = usePathname();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
 
@@ -99,8 +96,8 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
               </div>
             </TransitionChild>
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
-              <nav className="flex flex-1 flex-col">
+            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
+              <nav className="flex flex-1 flex-col mt-5">
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
                     <ul role="list" className="-mx-2 space-y-6">
@@ -113,8 +110,8 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
                               href={item.href}
                               className={classNames(
                                 isActive
-                                  ? 'bg-indigo-700 text-white'
-                                  : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
+                                  ? 'bg-primary-600 text-white'
+                                  : 'text-primary-600 hover:bg-primary-700 hover:text-white',
                                 disabled ? "pointer-events-none opacity-50" : "",
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                               )}
@@ -122,7 +119,7 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
                               <item.icon
                                 aria-hidden="true"
                                 className={classNames(
-                                  isActive ? 'text-white' : 'text-indigo-200 group-hover:text-white',
+                                  isActive ? 'text-white' : 'text-primary-600 group-hover:text-white',
                                   'h-6 w-6 shrink-0',
                                 )}
                               />
@@ -142,11 +139,11 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
                   <li className="mt-auto">
                     <a
                       href="#"
-                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-primary-700 hover:text-white"
                     >
                       <Cog6ToothIcon
                         aria-hidden="true"
-                        className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
+                        className="h-6 w-6 shrink-0 text-primary-200 group-hover:text-white"
                       />
                       Settings
                     </a>

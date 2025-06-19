@@ -60,7 +60,7 @@ const TransactionTable = ({data, hasPagination, metaData, setPageCount, globalFi
         content={globalFilter ? "No result found for this search" : `You currently have no transaction. All transactions will appear here.`}
         /> : 
         data?.length > 0 ? (
-            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} className='no-scrollbar'>
                 <Table>
                     <Thead bg={"#F2F4F7"}>
                     {table?.getHeaderGroups()?.map((headerGroup, i) => (

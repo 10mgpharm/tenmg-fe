@@ -45,6 +45,7 @@ const Message = () => {
     const chatEndRef = useRef(null);
     const sessionData = session?.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
+    const [showMobileChat, setShowMobileChat] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [messageLoading, setMessageLoading] = useState(false);
@@ -183,7 +184,7 @@ const Message = () => {
     }
 
     return (
-    <div className="px-8 h-[calc(100vh-150px)]">
+    <div className="px-4 md:px-8 h-[calc(100vh-150px)]">
         {
             loading ?
             (
@@ -193,7 +194,7 @@ const Message = () => {
             )
             :
             messages?.length === 0 ? 
-            <div className="flex flex-col justify-center max-w-md mx-auto text-center">
+            <div className="flex flex-col justify-center max-w-md mx-auto text-center px-4">
                 <Image src={messageIcon} alt="" className="mx-auto"/>
                 <h3 className="font-semibold text-xl mt-5">No Messages Yet</h3>
                 <p className="leading-6 mt-3">
@@ -205,11 +206,11 @@ const Message = () => {
                     Start Message
                 </button>
             </div>: 
-            <div className="">
-                <div className="grid grid-cols-5">
-                    <div className="col-span-2 pr-5 h-[calc(100vh-150px)] no-scrollbar overflow-y-scroll">
+            <div className="h-full">
+                <div className="grid grid-cols-1 md:grid-cols-5 h-full">
+                    <div className={`col-span-1 md:col-span-2 md:pr-5 h-[calc(100vh-150px)] no-scrollbar overflow-y-scroll border-b md:border-b-0 ${showMobileChat ? 'hidden md:block' : 'block'}`}>
                         <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-2xl text-gray-800 my-4">Message</h3>
+                            <h3 className="font-semibold text-xl md:text-2xl text-gray-800 my-4">Message</h3>
                             <Button onClick={onOpen} h={"35px"} px={4} fontSize={"14px"} variant={"outline"}>
                                 New Message
                             </Button>
@@ -226,6 +227,7 @@ const Message = () => {
                                                 fetchConversations(message?.id);
                                                 setCurrentMessage(message);
                                             };
+                                            setShowMobileChat(true);
                                         }}
                                         key={message?.id}
                                         className={cn(
@@ -235,12 +237,12 @@ const Message = () => {
                                             "flex items-center gap-3 py-4 px-4 cursor-pointer"
                                         )}>
                                         <Avatar
-                                            size="md"
+                                            size={["sm","md"]}
                                             name={message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name}
                                             src={message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name}
                                         />
                                         <div className="">
-                                            <p className="font-medium text-lg text-gray-700">
+                                            <p className="font-medium sm:text-lg text-gray-700">
                                                 <span className="capitalize">
                                                     {
                                                     message?.receiver?.id !== Number(sessionData?.user?.id) ? message?.receiver?.name : message?.sender?.name
@@ -259,13 +261,21 @@ const Message = () => {
                             }
                         </ul>
                     </div>
-                    <div className="col-span-3 border-l h-[calc(100vh-150px)] no-scrollbar overflow-y-scroll">
+                    <div className={`col-span-1 md:col-span-3 md:border-l h-[calc(100vh-150px)] no-scrollbar overflow-y-scroll ${!showMobileChat ? 'hidden md:block' : 'block'}`}>
                         {
                             conversation?.length === 0 ?
                             <>
                             </>:
                             <>
-                                <div className="flex items-center gap-3 border-b p-4">
+                                <div className="flex items-center gap-3 border-b p-4 bg-white sticky top-0 z-10">
+                                    <button 
+                                        onClick={() => setShowMobileChat(false)}
+                                        className="md:hidden text-gray-600 hover:text-gray-800"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                    </button>
                                     <Avatar
                                         size="md"
                                         name={currentMessage?.receiver?.id !== Number(sessionData?.user?.id) ? currentMessage?.receiver?.name : currentMessage?.sender?.name}
@@ -292,7 +302,7 @@ const Message = () => {
                                                                 item.sender?.id === Number(sessionData?.user?.id) ? 
                                                                 "bg-[#293056] text-white rounded-bl-2xl rounded-r-2xl" 
                                                                 : "bg-white text-gray-800 rounded-b-2xl rounded-tl-2xl",
-                                                                "shadow-md p-5"
+                                                                "shadow-md p-3 md:p-5"
                                                             )} 
                                                             >
                                                                 <p className="">{item.message}</p>
@@ -310,7 +320,7 @@ const Message = () => {
                                             ))
                                         }
                                     </div>
-                                    <div className="fixed bottom-12 w-[620px] bg-[#F9FAFB] py-6">
+                                    <div className="fixed bottom-12 right-0 left-0 md:left-auto md:w-[60%] lg:w-[620px] bg-[#F9FAFB] py-4 md:py-6 px-4 md:px-6">
                                         <div className="border rounded-full w-full flex items-center bg-white justify-between p-2">
                                             <div className="flex flex-1 items-center gap-2">
                                                 <FaPaperclip className="h-5 w-6 text-gray-600"/>

@@ -287,7 +287,7 @@ const Products = () => {
     }
 
     return (
-        <div className="p-8">
+        <div className="p-5 sm:p-8">
             <div className="flex justify-between flex-col">
                 <div className="mb-5">
                    <h3 className="font-semibold text-2xl mb-3 sm:mb-0">Products</h3>
@@ -356,7 +356,7 @@ const Products = () => {
                             content={globalFilter ? "All products will appear here." : "You currently have no product for this search. All products will appear here."}
                         /> :
                         currentView === PRODUCTVIEW.LIST ?
-                            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+                            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} className="no-scrollbar">
                                 <Table>
                                     <Thead bg={"#F2F4F7"}>
                                         {memoizedData?.length > 0 && table?.getHeaderGroups()?.map((headerGroup) => (

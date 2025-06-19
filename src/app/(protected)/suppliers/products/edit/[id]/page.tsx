@@ -127,8 +127,8 @@ const EditPage = ({params}: {params: {id: string}}) => {
         defaultValues: {
             productName: products?.name,
             productDescription: products?.description,
-            brandName: products?.brand.name,
-            categoryName: products?.category.name,
+            brandName: products?.brand?.name,
+            categoryName: products?.category?.name,
             status: products?.status
         }
     });

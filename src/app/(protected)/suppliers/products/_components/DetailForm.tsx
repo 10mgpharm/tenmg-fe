@@ -80,7 +80,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
     };
 
     return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md py-8 sm:my-16">
         <div className="flex items-center justify-between">
             <HStack onClick={() => router.back()} cursor={"pointer"}>
                 <ArrowLeftIcon className='w-5- h-5'/>
@@ -124,7 +124,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
                 })}
                 />
             </FormControl>
-            <HStack>
+            <HStack flexDir={["column", "row"]} gap={4}>
                 <FormControl isInvalid={!!errors.brandName}>
                     <FormLabel>Brand</FormLabel>
                     <Controller
