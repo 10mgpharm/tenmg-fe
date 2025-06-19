@@ -24,6 +24,7 @@ import { ColumsAPIFN } from "../tables/apiTable";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import requestClient from "@/lib/requestClient";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 const APIManagement = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -36,6 +37,9 @@ const APIManagement = () => {
   const sessionData = session.data as NextAuthUserSession;
   // console.log("sessionData", sessionData);
 
+  const [meta, setMeta] = useState({})
+  const [pageCount, setPageCount] = useState(1);
+
 
   useEffect(() => {
     console.log("use effect");
@@ -43,19 +47,24 @@ const APIManagement = () => {
       try {
         const response = await requestClient({
           token: sessionData?.user?.token,
-        }).get("/admin/settings/api-manage");
+        }).get(`/admin/settings/api-manage?page=${pageCount}&limit=10`);
 
         console.log("res", response?.data?.data?.data);
         setApiData(response?.data?.data?.data);
+        const meta = {
+          links: response.data.data.links,
+          currentPage: response.data.data.currentPage,
+        }
+        setMeta(meta);
       } catch (e) {
         console.log(e)
       }
     }
     if (sessionData) fetchApiManagementData();
-  }, [sessionData])
+  }, [sessionData, pageCount])
 
   // Fn: to revoke api
-  const revokeApi = async (business_id: string) => {
+  const revokeApi = async (business_id: string, environment: "test" | "live") => {
     //     POST <<BASE_URL>>/api/v1/admin/settings/api-manage
     // payload: {
     //   “businessId”: 7,
@@ -67,7 +76,7 @@ const APIManagement = () => {
         token: sessionData?.user?.token,
       }).post("/admin/settings/api-manage", {
         businessId: business_id,
-        // environment: "live", // or "test" based on your requirement
+        environment
       });
       console.log("resp", resp);
     } catch (error) {
@@ -150,6 +159,7 @@ const APIManagement = () => {
           </HStack> */}
         </TableContainer>
       )}
+      <Pagination meta={meta} setPageCount={setPageCount} />
     </div>
   );
 };
