@@ -19,7 +19,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { APIData } from "@/data/mockdata";
+// import { APIData } from "@/data/mockdata";
 import { ColumsAPIFN } from "../tables/apiTable";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
@@ -55,7 +55,25 @@ const APIManagement = () => {
   }, [sessionData])
 
   // Fn: to revoke api
-  const revokeApi = (apiId: string) => { };
+  const revokeApi = async (business_id: string) => {
+    //     POST <<BASE_URL>>/api/v1/admin/settings/api-manage
+    // payload: {
+    //   “businessId”: 7,
+    //   “environment”:“live” // either test or live
+    // } this endpoint is to revoke an api key.
+    console.log("business_id", business_id);
+    try {
+      const resp = await requestClient({
+        token: sessionData?.user?.token,
+      }).post("/admin/settings/api-manage", {
+        businessId: business_id,
+        // environment: "live", // or "test" based on your requirement
+      });
+      console.log("resp", resp);
+    } catch (error) {
+
+    };
+  };
 
   const table = useReactTable({
     data: apiData,

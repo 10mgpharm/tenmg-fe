@@ -31,33 +31,33 @@ export function ColumsAPIFN(revokeApi: (id: string) => void) {
         </div>
       ),
     }),
-    columnHelper.accessor("user", {
-      header: ({ column }) => <p>Reference ID</p>,
-      cell: (info) => (
-        <div>
-          <p>{info.row.original?.reference_id}</p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("user", {
-      header: ({ column }) => <p>Status</p>,
-      cell: (info) => (
-        <div>
-          <p
-            className={classNames(
-              info?.row?.original?.status === "Test"
-                ? "bg-[#FEF3F2] text-[#B42318]"
-                : info?.row?.original?.status === "Live"
-                  ? "text-[#027A48] bg-[#ECFDF3]"
-                  : "text-gray-500",
-              " max-w-min p-0.5 px-3 rounded-2xl text-sm"
-            )}
-          >
-            {info?.row?.original?.status}
-          </p>
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("user", {
+    //   header: ({ column }) => <p>Reference ID</p>,
+    //   cell: (info) => (
+    //     <div>
+    //       <p>{info.row.original?.reference_id}</p>
+    //     </div>
+    //   ),
+    // }),
+    // columnHelper.accessor("user", {
+    //   header: ({ column }) => <p>Status</p>,
+    //   cell: (info) => (
+    //     <div>
+    //       <p
+    //         className={classNames(
+    //           info?.row?.original?.status === "Test"
+    //             ? "bg-[#FEF3F2] text-[#B42318]"
+    //             : info?.row?.original?.status === "Live"
+    //               ? "text-[#027A48] bg-[#ECFDF3]"
+    //               : "text-gray-500",
+    //           " max-w-min p-0.5 px-3 rounded-2xl text-sm"
+    //         )}
+    //       >
+    //         {info?.row?.original?.status}
+    //       </p>
+    //     </div>
+    //   ),
+    // }),
     columnHelper.accessor("action", {
       header: ({ column }) => <p>Actions</p>,
       cell: (info) => {
@@ -65,7 +65,7 @@ export function ColumsAPIFN(revokeApi: (id: string) => void) {
           <div>
             <p
               onClick={() => {
-                revokeApi("");
+                revokeApi(info.row.original?.business?.id);
               }}
               className="text-red-500 cursor-pointer font-medium"
             >

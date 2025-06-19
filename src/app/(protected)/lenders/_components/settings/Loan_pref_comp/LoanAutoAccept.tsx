@@ -39,7 +39,7 @@ export default function LoanAutoAccept({
     try {
       await requestClient({
         token: sessionData?.user?.token,
-      }).patch("/lender/settings/update-auto-accept-status", {status: false});
+      }).patch("/lender/settings/update-auto-accept-status", { status: false });
 
       toast.success("Loan preferences updated successfully!");
     } catch (error: any) {
@@ -52,7 +52,7 @@ export default function LoanAutoAccept({
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5 w-full flex justify-between py-5">
+        <div className="space-y-5 w-full flex flex-wrap justify-between py-5">
           <div>
             <h3 className="font-semibold text-lg">Loan Preference</h3>
             <Text fontSize={"14px"} color={"gray.500"}>
