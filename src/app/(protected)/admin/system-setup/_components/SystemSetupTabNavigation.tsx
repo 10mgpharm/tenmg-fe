@@ -5,18 +5,25 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const tabs = [
-  { label: "Medication Setup", href: "/admin/system-setup/medication_setup" },
+  {
+    label: "Medication Setup",
+    href: "/admin/system-setup/medication_setup"
+  },
+  {
+    label: "Storefront",
+    href: "/admin/system-setup/storefront",
+  },
+  {
+    label: "Shipping Fee",
+    href: "/admin/system-setup/shipping-fee",
+  },
   {
     label: "Interest and Loan Config",
     href: "/admin/system-setup/loan_config",
   },
   {
-    label: "System Configuration",
-    href: "/admin/system-setup/system_configuration",
-  },
-  {
-    label: "Shipping Fee",
-    href: "/admin/system-setup/shipping-fee",
+    label: "Credit Parameters",
+    href: "/admin/system-setup/business_rules",
   },
 ];
 
