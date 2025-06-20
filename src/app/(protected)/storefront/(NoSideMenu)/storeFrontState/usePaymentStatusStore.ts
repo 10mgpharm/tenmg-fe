@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 interface PaymentStatusState {
   paymentStatus: string | null;
+  orderId: number | null;
   isLoading: boolean;
   fetchPaymentStatus: (token: string) => Promise<void>;
   refreshPaymentStatus: (token: string) => Promise<void>;
@@ -14,7 +15,7 @@ interface PaymentStatusState {
 export const usePaymentStatusStore = create<PaymentStatusState>((set, get) => ({
   paymentStatus: null,
   isLoading: false,
-
+  orderId: null,
   fetchPaymentStatus: async (token: string) => {
     if (!token) return;
 
@@ -25,9 +26,11 @@ export const usePaymentStatusStore = create<PaymentStatusState>((set, get) => ({
       );
       if (response?.status === 200) {
         const newStatus = response?.data?.data?.application?.status || null;
+        const orderId = response?.data?.data?.transaction?.orderId || null;
 
         set({
           paymentStatus: newStatus,
+          orderId,
           isLoading: false,
         });
       }

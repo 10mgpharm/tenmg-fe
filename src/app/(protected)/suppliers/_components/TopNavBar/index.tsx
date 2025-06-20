@@ -52,7 +52,7 @@ const TopNavBar = ({
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
         .then((swReg) => {
-          console.log("Service Worker is registered", swReg);
+          // console.log("Service Worker is registered", swReg);
         })
         .catch((error) => {
           console.error("Service Worker registration failed:", error);

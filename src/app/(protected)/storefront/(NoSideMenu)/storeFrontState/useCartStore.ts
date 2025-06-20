@@ -14,6 +14,7 @@ type CartItem = {
 };
 
 type CartState = {
+  cartId: number | null;
   cart: CartItem[];
   isLoading: boolean;
   error: string | null;
@@ -26,6 +27,7 @@ type CartState = {
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
+  cartId: null,
   cart: [],
   isLoading: false,
   error: null,
@@ -41,9 +43,11 @@ export const useCartStore = create<CartState>((set, get) => ({
       );
 
       const cartData = resp?.data?.data || [];
+      const currentCartId = cartData?.id || null
 
       set({
         cart: cartData,
+        cartId: currentCartId,
         isLoading: false,
         cartSize: cartData?.items.length,
       });

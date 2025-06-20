@@ -112,7 +112,7 @@ const Navbar = ({ OpenMenu }: { OpenMenu?: (value: boolean) => void }) => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.register('/firebase-messaging-sw.js')
         .then(function (swReg) {
-          console.log('Service Worker is registered', swReg);
+          // console.log('Service Worker is registered', swReg);
         })
         .catch(function (error) {
           console.error('Service Worker registration failed:', error);
