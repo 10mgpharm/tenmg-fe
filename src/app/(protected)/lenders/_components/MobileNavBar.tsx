@@ -20,7 +20,7 @@ export default function MobileNavBar() {
     ];
 
   return (
-    <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 md:hidden">
+    <nav className="fixed bottom-[-2px] w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 md:hidden">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (
