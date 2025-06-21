@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import BusinessRuleForm from "./_components/BusinessRuleForm";
 import { BusinessRuleSkeleton } from "./_components/BusinessRuleSkeleton";
-import { getBusinessRules } from "./actions";
+import { getCreditBusinessRules } from "./actions";
 import { toast } from "react-toastify";
 import { CreditSetting } from "./rules";
 
@@ -20,7 +20,7 @@ const BusinessRulePage = () => {
     const getData = (async (token: string) => {
       setIsLoading(true);
       try {
-        const { data, message, status } = await getBusinessRules(token);
+        const { data, message, status } = await getCreditBusinessRules(token);
         if (status === "success") {
           setData(data);
         } else {
@@ -42,7 +42,11 @@ const BusinessRulePage = () => {
     return <BusinessRuleSkeleton />;
   }
 
-  return <BusinessRuleForm initialData={data?.rules} baseScore={data?.baseScore} />
+  return <BusinessRuleForm
+    token={sessionData?.user?.token}
+    initialData={data?.rules}
+    baseScore={data?.baseScore}
+  />
 };
 
 export default BusinessRulePage;

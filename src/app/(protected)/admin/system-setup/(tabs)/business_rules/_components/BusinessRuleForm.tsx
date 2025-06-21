@@ -21,8 +21,10 @@ import {
 import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
-import { BusinessRuleItem } from "../rules";
+import { BusinessRuleItem, CreditSetting } from "../rules";
 import { RuleCondition, RuleOperator } from "../enums";
+import { updateCreditBusinessRules } from "../actions";
+import { toast } from "react-toastify";
 
 const RuleSchema = z.object({
   id: z.number().optional(),
@@ -54,11 +56,12 @@ const columnHeaders = [
 ];
 
 interface Props {
+  token: string;
   initialData: BusinessRuleItem[];
   baseScore: number;
 }
 
-export default function BusinessRuleForm({ initialData: rules, baseScore }: Props) {
+export default function BusinessRuleForm({ token: jwtToken, initialData: rules, baseScore }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isRecalculatingWeights, setIsRecalculatingWeights] = useState(false);
@@ -69,7 +72,8 @@ export default function BusinessRuleForm({ initialData: rules, baseScore }: Prop
     control,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
+    trigger,
     handleSubmit,
   } = useForm<FormValues>({
     defaultValues: {
@@ -141,25 +145,39 @@ export default function BusinessRuleForm({ initialData: rules, baseScore }: Prop
     return newWeights;
   };
 
-  const autoSave = debounce((rules) => {
+  const autoSave = debounce(async (token: string, data: FormValues) => {
     setIsSaving(true);
-    console.log("Saving", rules);
-
-    // Simulate async save (e.g. replace with your real fetch/axios POST)
-    setTimeout(() => {
-      setIsSaving(false);
-    }, 500); // simulate 500ms save delay
+    const response = await updateCreditBusinessRules(token, data as CreditSetting);
+    if (response.status === "error") {
+      toast.error(response.message);
+    }
+    setIsSaving(false);
   }, 1000);
 
+  // TODO: background auto save sync - optional
   // useEffect(() => {
-  //   const subscription = watch((value) => {
-  //     autoSave(value.rules);
+  //   const subscription = watch((value, { name }) => {
+  //     if (name === "baseScore") {
+  //       autoSave(jwtToken, value as FormValues);
+  //     }
   //   });
-  //   return () => subscription.unsubscribe();
-  // }, [autoSave, watch]);
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
+  //   return () => subscription.unsubscribe();
+  // }, [autoSave, jwtToken, watch]);
+
+  const onSubmit = async (data: FormValues) => {
+    // validate form firss
+    if (!isValid) trigger()
+
+    setIsLoading(true);
+
+    const response = await updateCreditBusinessRules(jwtToken, data as CreditSetting);
+    if (response.status === "error") {
+      toast.error(response.message);
+    }
+
+    setIsLoading(false);
+    toast.success(response.message);
   }
 
   return (
@@ -336,15 +354,17 @@ export default function BusinessRuleForm({ initialData: rules, baseScore }: Prop
                             ? rawTotalScoreWeight
                             : parseFloat(rawTotalScoreWeight.toFixed(1));
 
-                          if (totalWeight != watchedBaseScore) {
-                            setScoreWeightErrors((prev) => ({
-                              ...prev,
-                              [index]: `Total active score weight (${totalWeight}) must equal baseScore (${watchedBaseScore})`,
-                            }));
+                          if (totalWeight == watchedBaseScore) {
+                            // ✅ Clear all errors if weights are correct
+                            setScoreWeightErrors({});
                           } else {
+                            // ❌ Total mismatch — clear this input's error (if any), keep others
                             setScoreWeightErrors((prev) => {
                               const { [index]: _, ...rest } = prev;
-                              return rest;
+                              return {
+                                ...rest,
+                                [index]: `Total active score weight (${totalWeight}) must equal baseScore (${watchedBaseScore})`,
+                              };
                             });
                           }
                         }
