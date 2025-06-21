@@ -21,47 +21,19 @@ import {
 import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
-
-export enum RuleCondition {
-  GreaterThan = 'GreaterThan',
-  GreaterThanOrEqual = 'GreaterThanOrEqual',
-  LessThan = 'LessThan',
-  LessThanOrEqual = 'LessThanOrEqual',
-  Equals = 'Equals',
-  None = 'None'
-}
-
-export enum RuleOperator {
-  GreaterThan = '>',
-  GreaterThanOrEqual = '>=',
-  LessThan = '<',
-  LessThanOrEqual = '<=',
-  Equals = '==',
-  None = ''
-}
-
-export type BusinessRuleItem = {
-  id?: number;
-  name: string;
-  active: boolean;
-  condition: RuleCondition;
-  category_id: number;
-  description: string;
-  score_weight: number;
-  compare_value: number;
-  logical_operator: RuleOperator;
-}
+import { BusinessRuleItem } from "../rules";
+import { RuleCondition, RuleOperator } from "../enums";
 
 const RuleSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
   condition: z.string().min(1, "Condition is required"),
-  score_weight: z.number().nonnegative(),
-  compare_value: z.number().nonnegative(),
-  logical_operator: z.string().min(1),
+  scoreWeight: z.number().nonnegative(),
+  compareValue: z.number().nonnegative(),
+  logicalOperator: z.string().min(1),
   active: z.boolean().optional(),
-  category_id: z.number().nonnegative()
+  categoryId: z.number().nonnegative()
 });
 
 const FormSchema = z.object({
@@ -75,16 +47,21 @@ const columnHeaders = [
   "name",
   "description",
   "condition",
-  "score_weight",
-  "compare_value",
+  "scoreWeight",
+  "compareValue",
   "active",
-  "category_id",
+  "categoryId",
 ];
 
-export default function BusinessRuleForm({ initialData }: { initialData: BusinessRuleItem[] }) {
+interface Props {
+  initialData: BusinessRuleItem[];
+  baseScore: number;
+}
+
+export default function BusinessRuleForm({ initialData: rules, baseScore }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
+  const [isRecalculatingWeights, setIsRecalculatingWeights] = useState(false);
   const [scoreWeightErrors, setScoreWeightErrors] = useState<Record<number, string>>({});
 
   const {
@@ -92,11 +69,12 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
     control,
     watch,
     setValue,
-    formState: { errors }
+    formState: { errors },
+    handleSubmit,
   } = useForm<FormValues>({
     defaultValues: {
-      baseScore: 0,
-      rules: initialData,
+      baseScore,
+      rules,
     },
   });
   const { fields } = useFieldArray({ control, name: "rules" });
@@ -104,11 +82,21 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
   const watchedRules = watch("rules");
   const watchedBaseScore = watch("baseScore");
 
+  const totalParams = watchedRules.length;
+  const totalEnabled = watchedRules.filter((r) => r.active).length;
+  const rawTotalScoreWeight = watchedRules
+    .filter((r) => r.active)
+    .reduce((sum, r) => sum + (r.scoreWeight || 0), 0);
+  const totalScoreWeight = Number.isInteger(rawTotalScoreWeight)
+    ? rawTotalScoreWeight
+    : parseFloat(rawTotalScoreWeight.toFixed(1));
+  const scoreMatches = totalScoreWeight == watchedBaseScore;
+
   useEffect(() => {
     watchedRules.forEach((rule, index) => {
       const operator = RuleOperator[rule.condition as keyof typeof RuleOperator];
-      if (operator && rule.logical_operator !== operator) {
-        setValue(`rules.${index}.logical_operator`, operator);
+      if (operator && rule.logicalOperator !== operator) {
+        setValue(`rules.${index}.logicalOperator`, operator);
       }
     });
   }, [watchedRules, setValue]);
@@ -119,22 +107,31 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
     const activeRules = watchedRules.filter(r => r.active);
     if (activeRules.length === 0) return;
 
-    const equalWeight = Math.floor(watchedBaseScore / activeRules.length);
+    setIsRecalculatingWeights(true);
 
-    watchedRules.forEach((rule, index) => {
-      if (rule.active) {
-        setValue(`rules.${index}.score_weight`, equalWeight, {
+    const newWeights = recalculateWeights(watchedRules as BusinessRuleItem[], watchedBaseScore);
+
+    setTimeout(() => {
+      Object.entries(newWeights).forEach(([index, weight]) => {
+        setValue(`rules.${Number(index)}.scoreWeight`, weight, {
           shouldValidate: true,
         });
-      }
-    });
+      });
+
+      setIsRecalculatingWeights(false);
+    }, 300); // Optional delay for smooth UI
   }, [watchedBaseScore, watchedRules, setValue]);
 
   const recalculateWeights = (rules: BusinessRuleItem[], baseScore: number) => {
     const activeRules = rules.filter(r => r.active);
     if (activeRules.length === 0) return {};
 
-    const weightPerRule = Math.floor(baseScore / activeRules.length);
+    const rawWeight = baseScore / activeRules.length;
+
+    const weightPerRule = Number.isInteger(rawWeight)
+      ? rawWeight
+      : parseFloat(rawWeight.toFixed(1));
+
     const newWeights: Record<number, number> = {};
 
     rules.forEach((rule, idx) => {
@@ -144,15 +141,15 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
     return newWeights;
   };
 
-  // const autoSave = debounce((rules) => {
-  //   setIsSaving(true);
-  //   console.log("Saving", rules);
+  const autoSave = debounce((rules) => {
+    setIsSaving(true);
+    console.log("Saving", rules);
 
-  //   // Simulate async save (e.g. replace with your real fetch/axios POST)
-  //   setTimeout(() => {
-  //     setIsSaving(false);
-  //   }, 500); // simulate 500ms save delay
-  // }, 1000);
+    // Simulate async save (e.g. replace with your real fetch/axios POST)
+    setTimeout(() => {
+      setIsSaving(false);
+    }, 500); // simulate 500ms save delay
+  }, 1000);
 
   // useEffect(() => {
   //   const subscription = watch((value) => {
@@ -160,6 +157,10 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
   //   });
   //   return () => subscription.unsubscribe();
   // }, [autoSave, watch]);
+
+  const onSubmit = (data: FormValues) => {
+    console.log(data);
+  }
 
   return (
     <div>
@@ -171,9 +172,34 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
               Set maximum base score for business rules parameters
             </p>
           </div>
-          <Button isLoading={isLoading}>
+          <Button isLoading={isLoading} onClick={handleSubmit(onSubmit)}>
             Save Changes
           </Button>
+        </div>
+
+        <div className="mt-6 mb-4 p-4 bg-white shadow-sm rounded-md flex flex-wrap gap-4 items-center justify-between">
+          {isRecalculatingWeights ? (
+            <div className="w-full animate-pulse gap-5 flex items-center flex-wrap lg:flex-nowrap">
+              <Text fontSize="sm" color="gray.700">
+                <strong>Total Parameters:</strong> {totalParams}
+              </Text>
+              <div className="h-4 w-1/3 bg-gray-200 rounded" />
+              <div className="h-4 w-1/5 bg-gray-200 rounded" />
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center gap-6">
+              <Text fontSize="sm" color="gray.700">
+                <strong>Total Parameters:</strong> {totalParams}
+              </Text>
+              <Text fontSize="sm" color="gray.700">
+                <strong>Enabled:</strong> {totalEnabled}
+              </Text>
+              <Text fontSize="sm" color={scoreMatches ? "green.600" : "red.500"}>
+                <strong>Score Weights:</strong> {totalScoreWeight} / {watchedBaseScore}
+                {!scoreMatches && " (Mismatch)"}
+              </Text>
+            </div>
+          )}
         </div>
 
         <div className="shadow-sm bg-white p-4 rounded-md space-y-4 mt-5 flex flex-row flex-wrap md:flex-nowrap items-center justify-between gap-5">
@@ -197,6 +223,11 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
             )}
           </FormControl>
           <div className="flex items-center space-x-2">
+            {Object.keys(scoreWeightErrors).length > 0 && (
+              <Text as={"span"} className="text-red-500 text-sm">
+                {Object.values(scoreWeightErrors)[0]}
+              </Text>
+            )}
             {isSaving && (
               <>
                 <Text fontSize="sm" color="gray.500">
@@ -241,7 +272,7 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
                   className={
                     cn(
                       "border-r-2 border-gray bg-black",
-                      watchedRules[index].category_id === 1 ? "bg-red-50" : "bg-green-50"
+                      watchedRules[index].categoryId === 1 ? "bg-red-50" : "bg-green-50"
                     )
                   }
                 >
@@ -271,46 +302,61 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
                   </Select>
                 </Td>
                 <Td minW="200px">
-                  <Input
-                    type="number"
-                    size="sm"
-                    {...register(`rules.${index}.score_weight`, {
-                      valueAsNumber: true,
-                      onChange: (e) => {
-                        const newValue = Number(e.target.value);
-
-                        const activeRules = watchedRules.map((r, i) =>
-                          i === index ? { ...r, score_weight: newValue } : r
-                        ).filter(r => r.active);
-
-                        const totalWeight = activeRules.reduce((sum, r) => sum + (r.score_weight || 0), 0);
-
-                        if (totalWeight != watchedBaseScore) {
-                          setScoreWeightErrors((prev) => ({
-                            ...prev,
-                            [index]: `Total active score weight (${totalWeight}) must equal baseScore (${watchedBaseScore})`,
-                          }));
-                        } else {
-                          setScoreWeightErrors((prev) => {
-                            const { [index]: _, ...rest } = prev;
-                            return rest;
-                          });
-                        }
+                  {isRecalculatingWeights ? (
+                    <Box height="32px" className="rounded bg-gray-200 animate-pulse" />
+                  ) : (
+                    <Input
+                      type="number"
+                      size="sm"
+                      isInvalid={!!scoreWeightErrors[index]}
+                      sx={
+                        scoreWeightErrors[index]
+                          ? {
+                            backgroundColor: "red.50",
+                            borderColor: "red.500",
+                            _focus: {
+                              backgroundColor: "red.100",
+                              borderColor: "red.600",
+                              boxShadow: "0 0 0 1px red.500",
+                            },
+                          }
+                          : {}
                       }
-                      
-                    })}
-                  />
-                  {scoreWeightErrors[index] && (
-                    <Text fontSize="xs" color="red.500">
-                      {scoreWeightErrors[index]}
-                    </Text>
+                      {...register(`rules.${index}.scoreWeight`, {
+                        valueAsNumber: true,
+                        onChange: (e) => {
+                          const newValue = Number(e.target.value);
+
+                          const activeRules = watchedRules.map((r, i) =>
+                            i === index ? { ...r, scoreWeight: newValue } : r
+                          ).filter(r => r.active);
+
+                          const rawTotalScoreWeight = activeRules.reduce((sum, r) => sum + (r.scoreWeight || 0), 0);
+                          const totalWeight = Number.isInteger(rawTotalScoreWeight)
+                            ? rawTotalScoreWeight
+                            : parseFloat(rawTotalScoreWeight.toFixed(1));
+
+                          if (totalWeight != watchedBaseScore) {
+                            setScoreWeightErrors((prev) => ({
+                              ...prev,
+                              [index]: `Total active score weight (${totalWeight}) must equal baseScore (${watchedBaseScore})`,
+                            }));
+                          } else {
+                            setScoreWeightErrors((prev) => {
+                              const { [index]: _, ...rest } = prev;
+                              return rest;
+                            });
+                          }
+                        }
+                      })}
+                    />
                   )}
                 </Td>
                 <Td minW="200px">
                   <Input
                     type="number"
                     size="sm"
-                    {...register(`rules.${index}.compare_value`, {
+                    {...register(`rules.${index}.compareValue`, {
                       valueAsNumber: true,
                     })}
                   />
@@ -319,26 +365,33 @@ export default function BusinessRuleForm({ initialData }: { initialData: Busines
                   <Switch size="sm"
                     isChecked={watchedRules[index].active}
                     onChange={(e) => {
+                      setIsRecalculatingWeights(true);
+
                       const updatedRules = [...watchedRules];
                       updatedRules[index].active = e.target.checked;
 
                       const newWeights = recalculateWeights(updatedRules as BusinessRuleItem[], watchedBaseScore);
 
-                      Object.entries(newWeights).forEach(([i, weight]) => {
-                        const index = Number(i);
-                        setValue(`rules.${index}.score_weight`, weight, {
-                          shouldValidate: true,
+                      setTimeout(() => {
+                        Object.entries(newWeights).forEach(([i, weight]) => {
+                          const index = Number(i);
+                          setValue(`rules.${index}.scoreWeight`, weight, {
+                            shouldValidate: true,
+                          });
                         });
-                      });
 
-                      setValue(`rules.${index}.active`, e.target.checked);
+                        setValue(`rules.${index}.active`, e.target.checked);
+
+                        setIsRecalculatingWeights(false);
+                      }, 300);
+
                     }}
                   />
                 </Td>
                 <Td minW="200px">
                   <Select
                     size="sm"
-                    {...register(`rules.${index}.category_id`, {
+                    {...register(`rules.${index}.categoryId`, {
                       valueAsNumber: true,
                     })}
                   >
