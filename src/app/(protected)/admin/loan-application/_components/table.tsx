@@ -108,10 +108,6 @@ const DataTable = () => {
     }
   }, [token, pageCount, debouncedSearch, status, createdAtStart, createdAtEnd]);
 
-  const tableLinks = useMemo(
-    () => loanApplication?.links,
-    [loanApplication?.links]
-  );
   const tableData = useMemo(
     () => loanApplication?.data,
     [loanApplication?.data]
@@ -144,7 +140,7 @@ const DataTable = () => {
 
   const table = useReactTable({
     data: tableData ?? [],
-    columns: ColumsApplicationFN(),
+    columns: ColumsApplicationFN(pageCount),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -225,7 +221,7 @@ const DataTable = () => {
                 ))}
               </Tbody>
             </Table>
-            <Pagination meta={tableLinks} setPageCount={setPageCount} />
+            <Pagination meta={loanApplication?.meta} setPageCount={setPageCount} />
           </TableContainer>
         )}
       </div>

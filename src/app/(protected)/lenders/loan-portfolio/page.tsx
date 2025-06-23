@@ -130,7 +130,7 @@ export default function TransactionWalletPage() {
 
   const table = useReactTable({
     data: tableData ?? [],
-    columns: ColumnsLoanApplicationFN(),
+    columns: ColumnsLoanApplicationFN(pageCount),
     state: {
       globalFilter,
     },

@@ -7,12 +7,12 @@ import Link from "next/link";
 
 const columnHelper = createColumnHelper<LoanData>();
 
-export function ColumnsLoanApplicationFN() {
+export function ColumnsLoanApplicationFN(pageNumber: number) {
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
       cell: (info) => {
-        const serialNumber = info?.row?.index + 1;
+        const serialNumber = (pageNumber - 1) * 10 + info?.row?.index + 1;
         return (
           <div className="pl-6">
             <p>{serialNumber}</p>

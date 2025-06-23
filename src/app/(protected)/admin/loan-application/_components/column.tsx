@@ -7,12 +7,12 @@ import Link from "next/link";
 
 const columnHelper = createColumnHelper<ApplicationDto>();
 
-export function ColumsApplicationFN() {
+export function ColumsApplicationFN(pageNumber: number) {
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-4">S/N</p>,
       cell: (info) => {
-        const serialNumber = info?.row?.index + 1;
+        const serialNumber = (pageNumber - 1) * 10 + info?.row?.index + 1;
         return (
           <div className="pl-4">
             <p>{serialNumber}</p>

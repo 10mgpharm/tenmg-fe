@@ -98,7 +98,6 @@ const LoanManagement = () => {
       );
       if (response.status === 200) {
         setLoanStats(response?.data?.data);
-        setPageCount(response?.data?.data?.currentPage);
       }
       setLoading(false);
     } catch (error) {
@@ -135,7 +134,7 @@ const LoanManagement = () => {
 
   const table = useReactTable({
     data: tableData || [],
-    columns: ColumsLoanFN(onOpen, sendRepaymentLink),
+    columns: ColumsLoanFN(onOpen, sendRepaymentLink, pageCount),
     state: {
       columnVisibility,
       columnOrder,
