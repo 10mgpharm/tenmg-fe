@@ -141,10 +141,10 @@ const Page = () => {
           </TabList>
 
           {/* Date filter */}
-          <TimeLineSelector
+          {/* <TimeLineSelector
             selectedTimeLine={selectedTimeLine}
             setSelectedTimeLine={setSelectedTimeLine}
-          />
+          /> */}
         </div>
 
         {/* panels */}
