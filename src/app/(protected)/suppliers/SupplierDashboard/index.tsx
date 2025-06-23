@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ApexOptions } from "apexcharts";
 import { useSession } from "next-auth/react";
 import { useDisclosure } from "@chakra-ui/react";
@@ -17,15 +17,12 @@ import RevenuePerProduct from "../_components/RevenuePerProduct";
 import requestClient from "@/lib/requestClient";
 
 export const options = [
-    // { label: "This week", value: "This week" },
-    // { label: "This month", value: "This month" },
     { label: "This year", value: "This year" },
 ]
 
 const Supplier = () => {
 
     const session = useSession();
-    const chartRef = useRef<any>(null);
     const sessionData = session.data as NextAuthUserSession;
     const token = sessionData?.user?.token;
     const [data, setData] = useState(null);
@@ -207,6 +204,7 @@ const Supplier = () => {
                     <OverviewCardWithoutBG
                         title="Total Income"
                         value={`₦${data?.analytics?.totalIncome || "0.00"}`}
+                        icon={order}
                     />
                     <OverviewCardWithoutBG
                         title="Total Orders"
@@ -224,7 +222,7 @@ const Supplier = () => {
                         icon={totalProducts}
                     />
                 </div>
-                <div className="flex gap-5 mt-4">
+                <div className="sm:flex gap-5 mt-4">
                     <div className="flex-1 bg-white p-5 rounded-md">
                         <div className="flex items-center justify-between">
                             <h3 className="text-gray-600 font-semibold text-lg">Revenue Analytics</h3>

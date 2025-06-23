@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from 'next-auth/react';
-import { Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Text, Flex, Button } from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Text, Flex } from '@chakra-ui/react'
 import { NextAuthUserSession, OrderResponseData } from '@/types'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebouncedValue } from '@/utils/debounce'
@@ -68,21 +68,22 @@ const OrderUI = () => {
     }, [fetchOrders, fetchOrderCount, token]);
 
     return (
-        <div className='p-8 min-h-[calc(100vh-155px)]'>
-            <Text fontWeight={"semibold"} fontSize={"2xl"}>Orders</Text>
-            <HStack justify={"space-between"} mb={4}>
-                <Flex gap={2} wrap={"wrap"}>
+        <div className='p-4 md:p-8 min-h-[calc(100vh-155px)]'>
+            <Text fontWeight={"semibold"} fontSize={{base: "xl", md: "2xl"}}>Orders</Text>
+            <HStack justify={"space-between"} mb={4} mt={4}>
+                <Flex gap={2} wrap={"wrap"} w="full">
                     <SearchInput
-                        placeholder="Search with customer&apos;s name"
+                        placeholder="Search with customer's name"
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                     />
                 </Flex>
             </HStack>
             <Tabs variant={"unstyled"}>
-                <TabList>
-                    <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                        <div className='flex items-center gap-3'>
+                <TabList 
+                className="flex flex-nowrap gap-2 overflow-x-auto pb-2 no-scrollbar">
+                    <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }} className="whitespace-nowrap">
+                        <div className='flex items-center gap-2 text-sm md:text-base'>
                             <Text>All Orders</Text>
                             <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
                                 {allCount}
@@ -95,9 +96,10 @@ const OrderUI = () => {
                                 onClick={() => setStatus(count.status)}
                                 _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}
                                 key={count.status}
+                                className="whitespace-nowrap"
                             >
-                                <div className='flex items-center gap-3'>
-                                    <p className='text-base lowercase first-letter:uppercase'>{count?.status}</p>
+                                <div className='flex items-center gap-2'>
+                                    <p className='text-sm md:text-base lowercase first-letter:uppercase'>{count?.status}</p>
                                     <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
                                         {count.total}
                                     </p>
@@ -106,7 +108,7 @@ const OrderUI = () => {
                         ))
                     }
                 </TabList>
-                <TabPanels>
+                <TabPanels className="no-scrollbar">
                     <TabPanel px={0}>
                         <OrderPage
                             orders={orders}

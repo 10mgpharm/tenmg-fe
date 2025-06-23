@@ -20,14 +20,15 @@ export default function TabsNavigation() {
   const activeIndex = tabs.findIndex((tab) => pathname.startsWith(tab.href));
 
   return (
-    <Tabs index={activeIndex} variant="unstyled">
-      <TabList>
+    <Tabs index={activeIndex} variant="unstyled" width="100%">
+      <TabList className="flex flex-wrap md:flex-nowrap gap-2 overflow-x-auto no-scrollbar">
         {tabs.map((tab, index) => (
           <Tab
             key={index}
             as={Link}
             href={tab.href}
             _selected={{ color: "white", bg: "#1A70B8", borderRadius: "10px" }}
+            className="whitespace-nowrap text-sm md:text-base p-2 md:p-3"
           >
             {tab.label}
           </Tab>

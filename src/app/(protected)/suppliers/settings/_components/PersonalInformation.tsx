@@ -202,9 +202,9 @@ const PersonalInformation = () => {
         fileError={fileError}
       />
       <form className="space-y-5 mt-5 mb-8" onSubmit={handleSubmit(onSubmit)}>
-        <HStack gap={5}>
-          <FormControl isInvalid={!!errors.contactPerson?.message}>
-            <FormLabel>Contact Person&apos;s Name</FormLabel>
+        <div className="flex flex-col md:flex-row gap-5">
+          <FormControl isInvalid={!!errors.contactPerson?.message} className="w-full">
+            <FormLabel className="text-sm md:text-base">Contact Person&apos;s Name</FormLabel>
             <Input
               placeholder="Enter contact name"
               {...register("contactPerson", {
@@ -213,8 +213,8 @@ const PersonalInformation = () => {
             />
             <FormErrorMessage>{errors?.contactPerson?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors?.businessName?.message}>
-            <FormLabel>Business Name</FormLabel>
+          <FormControl isInvalid={!!errors?.businessName?.message} className="w-full">
+            <FormLabel className="text-sm md:text-base">Business Name</FormLabel>
             <Input
               placeholder="Enter business name"
               {...register("businessName", {
@@ -223,10 +223,10 @@ const PersonalInformation = () => {
             />
             <FormErrorMessage>{errors?.businessName?.message}</FormErrorMessage>
           </FormControl>
-        </HStack>
-        <HStack gap={5}>
-          <FormControl isInvalid={!!errors?.contactEmail?.message}>
-            <FormLabel>Business email</FormLabel>
+        </div>
+        <div className="flex flex-col md:flex-row gap-5">
+          <FormControl isInvalid={!!errors?.contactEmail?.message} className="w-full">
+            <FormLabel className="text-sm md:text-base">Business email</FormLabel>
             <Input
               type="email"
               isDisabled
@@ -237,8 +237,8 @@ const PersonalInformation = () => {
             />
             <FormErrorMessage>{errors?.contactEmail?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors?.contactPhone?.message}>
-            <FormLabel>Contact Phone Number</FormLabel>
+          <FormControl isInvalid={!!errors?.contactPhone?.message} className="w-full">
+            <FormLabel className="text-sm md:text-base">Contact Phone Number</FormLabel>
             <Input
               type="number"
               placeholder="Enter phone number"
@@ -248,10 +248,10 @@ const PersonalInformation = () => {
             />
             <FormErrorMessage>{errors?.contactPhone?.message}</FormErrorMessage>
           </FormControl>
-        </HStack>
-        <HStack gap={5}>
-          <FormControl isInvalid={!!errors.businessAddress?.message}>
-            <FormLabel>Business Address</FormLabel>
+        </div>
+        <div className="flex flex-col md:flex-row gap-5">
+          <FormControl isInvalid={!!errors.businessAddress?.message} className="w-full">
+            <FormLabel className="text-sm md:text-base">Business Address</FormLabel>
             <Input
               type="text"
               placeholder={"Enter business address"}
@@ -264,8 +264,8 @@ const PersonalInformation = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={!!errors.contactPersonPosition?.message}>
-            <FormLabel>Contact Person Position</FormLabel>
+          <FormControl isInvalid={!!errors.contactPersonPosition?.message} className="w-full">
+            <FormLabel className="text-sm md:text-base">Contact Person Position</FormLabel>
             <Input
               type="tel"
               placeholder={"Managing Director"}
@@ -277,20 +277,19 @@ const PersonalInformation = () => {
               {errors.contactPersonPosition?.message}
             </FormErrorMessage>
           </FormControl>
-        </HStack>
+        </div>
 
-        <HStack justify={"end"}>
-          <Flex>
-            <Button
-              colorScheme="blue"
-              type="submit"
-              isLoading={isLoading}
-              isDisabled={isLoading || isUserInfo}
-            >
-              Save Changes
-            </Button>
-          </Flex>
-        </HStack>
+        <div className="flex justify-end">
+          <Button
+            colorScheme="blue"
+            type="submit"
+            isLoading={isLoading}
+            isDisabled={isLoading || isUserInfo}
+            className="w-full md:w-auto"
+          >
+            Save Changes
+          </Button>
+        </div>
       </form>
     </div>
   );
