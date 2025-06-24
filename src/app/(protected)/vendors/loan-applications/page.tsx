@@ -155,7 +155,7 @@ const LoanApplication = () => {
 
   const table = useReactTable({
     data: tableData ?? [],
-    columns: ColumnsLoanApplicationFN(),
+    columns: ColumnsLoanApplicationFN(pageCount),
     state: {
       globalFilter,
     },

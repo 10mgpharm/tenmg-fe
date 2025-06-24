@@ -244,7 +244,7 @@ export default function LoanApplicationPage() {
         <div className="mt-5">
           <LoanTable
             data={Array.isArray(loanData?.data) ? loanData.data : []}
-            columns={ColumnsLoanFN({ handleApprove, handleDecline })}
+            columns={ColumnsLoanFN(handleApprove, handleDecline, pageCount )}
             loading={loading || isPending}
             metaData={loanData?.meta}
             setPageCount={setPageCount}
