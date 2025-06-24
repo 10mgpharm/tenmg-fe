@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { Box, Image, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
 import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
@@ -12,6 +12,9 @@ import EmptyCard from "../../suppliers/_components/EmptyCard";
 import SetupAccount from "./SetupAccount";
 import NoticeCard from "../../suppliers/_components/NoticeCard";
 import CompleteAccountModal from "./CompleteAccountModal";
+import { useSession } from "next-auth/react";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
 
 interface ILenderDashboardProps {
   sessionData: NextAuthUserSession | null;
@@ -48,6 +51,32 @@ const completeSetupData: CompleteSetupProps[] = [
 
 const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const session = useSession();
+
+  const reFetchUserSession = async () => {
+    try {
+      const response = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
+
+      if (response.status === 200) {
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            completeProfile: response?.data?.data?.completeProfile,
+            businessStatus: response?.data?.data?.businessStatus,
+          },
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    reFetchUserSession();
+  }, []);
 
   return (
     <>

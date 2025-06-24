@@ -235,6 +235,34 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
     }
   };
 
+  const reFetchUserSession = async () => {
+    try {
+      const response = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
+
+      if (response.status === 200) {
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            completeProfile: response?.data?.data?.completeProfile,
+            businessStatus: response?.data?.data?.businessStatus,
+          },
+        });
+
+        console.log(sessionData.user, response?.data?.data, "response");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (!sessionData?.user?.token) return;
+    reFetchUserSession();
+  }, [sessionData?.user?.token]);
+
   useEffect(() => {
     const fetchLicense = async () => {
       setIsLicenseLoading(true);

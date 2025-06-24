@@ -53,8 +53,8 @@ const TransactionDetails = ({
               <div className="border p-2 rounded-md">
                 <Text>
                   {type === "loan-wallet"
-                    ? selectedRow?.business?.name ?? "N/A"
-                    : selectedRow?.name ?? "N/A"}
+                    ? selectedRow?.business?.name ?? selectedRow?.description
+                    : selectedRow?.name ?? selectedRow?.description}
                 </Text>
               </div>
             </Stack>
@@ -135,7 +135,7 @@ const TransactionDetails = ({
             )}
             {orderId && (
               <Flex justify={"space-between"}>
-                <Text>OrderID</Text>
+                <Text>Transaction ID</Text>
                 <Text fontWeight={500}>
                   {/* {type === "sup_payout" ? (selectedRow?.id ?? "N/A") : type === "loan-wallet" ? (selectedRow?.identifier ?? "N/A") : (selectedRow?.order?.identifier ?? "N/A")} */}
                   {orderId}
