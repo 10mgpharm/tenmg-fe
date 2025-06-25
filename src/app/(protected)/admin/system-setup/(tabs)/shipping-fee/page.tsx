@@ -2,7 +2,6 @@
 
 import { Button, Input, Spinner, useDisclosure } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
-import ShippingFeeTable from "./_components/ShippingFeeTable";
 import SelectFeeModel from "./_components/SelectFeeModel";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
@@ -105,13 +104,6 @@ const ShippingFee = () => {
           </div>
         )}
       </div>
-
-      {/* {shippingFeeData.type === "CUSTOM" && (
-        <ShippingFeeTable
-          shippingFeeData={shippingFeeData}
-          setShippingFeeData={setShippingFeeData}
-        />
-      )} */}
 
       {openConfigModel && (
         <SelectFeeModel
