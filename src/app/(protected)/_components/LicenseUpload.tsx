@@ -83,6 +83,28 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
     mode: "onChange",
   });
 
+  // To always refetch and update user session incase if business status has changed
+  useEffect(() => {
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
+
+      if (status === 200) {
+        await session.update({
+          ...session.data,
+          user: {
+            ...sessionData.user,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
+          },
+        });
+      }
+    };
+
+    updateSession();
+  }, []);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
     if (selectedFile) {

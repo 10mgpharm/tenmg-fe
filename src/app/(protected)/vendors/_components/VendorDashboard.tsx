@@ -85,6 +85,28 @@ const VendorDashboard = () => {
 
   const router = useRouter();
 
+  // To always refetch and update user session incase if business status has changed
+  useEffect(() => {
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
+
+      if (status === 200) {
+        await session.update({
+          ...session.data,
+          user: {
+            ...sessionData.user,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
+          },
+        });
+      }
+    };
+
+    updateSession();
+  }, []);
+
   const fetchDashboard = useCallback(async () => {
     if (!token) return;
     setLoading(true);
@@ -299,7 +321,12 @@ const VendorDashboard = () => {
 
             {/* Balance Card */}
             <Box borderRadius="lg" p={2} borderWidth="1px" bg={"white"}>
-              <Flex justifyContent="space-between" alignItems="center" pb={5} flexWrap={"wrap"}>
+              <Flex
+                justifyContent="space-between"
+                alignItems="center"
+                pb={5}
+                flexWrap={"wrap"}
+              >
                 <Stack gap={3} flex={1} mt={2}>
                   <Text color="gray.500">Your Balance</Text>
                   <Text fontSize="3xl" fontWeight="semibold">
@@ -371,9 +398,16 @@ const VendorDashboard = () => {
               value={data.txnHistoryEval.toLocaleString()}
               color="primary.50"
               footer={
-                <Button rounded="lg" w="full" fontSize="sm" py={2} px={6} onClick={() => {
-                  router.push("/vendors/transactions-history");
-                }}>
+                <Button
+                  rounded="lg"
+                  w="full"
+                  fontSize="sm"
+                  py={2}
+                  px={6}
+                  onClick={() => {
+                    router.push("/vendors/transactions-history");
+                  }}
+                >
                   View All Evaluations
                 </Button>
               }

@@ -128,28 +128,27 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const sessionToken = sessionData?.user?.token;
   const router = useRouter();
 
-  // Update User Session
+  // To always refetch and update user session incase if business status has changed
   useEffect(() => {
-    if (!sessionToken) return;
-    const reFetchUseSesssion = async () => {
-      const res = await requestClient({ token: sessionToken }).get(
-        "/account/profile"
-      );
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
 
-      await session.update({
-        ...session.data,
-        user: {
-          ...sessionData?.user,
-          businessStatus: res?.data?.data?.businessStatus,
-          completeProfile: res?.data?.data?.completeProfile,
-        },
-      });
-
-      console.log(res, "res");
+      if (status === 200) {
+        await session.update({
+          ...session.data,
+          user: {
+            ...sessionData.user,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
+          },
+        });
+      }
     };
 
-    reFetchUseSesssion();
-  }, [sessionToken]);
+    updateSession();
+  }, []);
 
   const fetchLenderData = useCallback(() => {
     if (!sessionToken) return;
