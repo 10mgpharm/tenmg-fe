@@ -1,6 +1,15 @@
 "use client";
 
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+} from "@chakra-ui/react";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -9,6 +18,10 @@ import WalletTable from "../../_components/WalletTable";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import { cn } from "@/lib/utils";
 import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
+import UserWallet from "../../_components/WalletTable";
+import { SupplierWalletTransactionColumn } from "../_component/TransactionColumn";
+import { SupplierWallet_PendingPayout_Column } from "../_component/PendingPayoutColumn";
+import SupplierWalletTransactionDetails from "../_component/transactionDetails";
 
 const Wallet = ({
   params,
@@ -22,7 +35,8 @@ const Wallet = ({
   const [searchValue, setSearchValue] = useState<string>("");
   const [pagecount, setPageCount] = useState(1);
   const [status, setStatus] = useState<string>("pending");
-  const [adminCommisionFilter, setAdminCommissionFilter] = useState("");
+  const [openDetails, setOpenDetails] = useState(false);
+  const [rowData, setRowData] = useState<any>(null);
 
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
   const completed = transactionData.filter((item) => item.type === "Completed");
@@ -36,6 +50,11 @@ const Wallet = ({
     currentPage: 1,
     firstPageUrl: "",
     lastPageUrl: "",
+  };
+
+  const openRowDetails = (data: any) => {
+    setOpenDetails(true);
+    setRowData(data);
   };
 
   return (
@@ -89,80 +108,73 @@ const Wallet = ({
               />
             </div>
 
-            <div className="flex items-center justify-between gap-3 pt-6 pb-4">
-              <h3 className="font-semibold text-[18px]">Transactions</h3>
+            <Tabs variant={"unstyled"} className="w-full">
+              {/* Tabs */}
+              <div className="mt-8 flex items-center justify-between max-md:flex-col max-md:items-start max-md:gap-4">
+                <TabList className="flex items-center gap-4">
+                  <Tab
+                    _selected={{
+                      color: "white",
+                      bg: "#1A70B8",
+                    }}
+                    className="text-[16px] font-medium text-gray-700 bg-gray-100 rounded-lg"
+                  >
+                    Pending Payout
+                  </Tab>
 
-              <SearchInput
-                placeholder="Search"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </div>
+                  <Tab
+                    _selected={{
+                      color: "white",
+                      bg: "#1A70B8",
+                    }}
+                    className="text-[16px] font-medium text-gray-600 bg-gray-100 rounded-lg"
+                  >
+                    Transactions
+                  </Tab>
+                </TabList>
 
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
-                <div
-                  className={cn(
-                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
-                    status === "pending" && " text-white bg-[#1A70B8]"
-                  )}
-                  onClick={() => setStatus("pending")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Awaiting Payout</Text>
-                    <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                      {awaiting?.length}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className={cn(
-                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
-                    status === "completed" && "text-white bg-[#1A70B8]"
-                  )}
-                  onClick={() => setStatus("completed")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Completed Payout</Text>
-                    <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                      {completed?.length}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className={cn(
-                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
-                    status === "" && "text-white bg-[#1A70B8]"
-                  )}
-                  onClick={() => setStatus("")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Transaction History</Text>
-                    <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                      {history?.length}
-                    </p>
-                  </div>
-                </div>
+                <SearchInput
+                  placeholder="Search"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
               </div>
-              <WalletTable
-                data={
-                  status === "pending"
-                    ? awaiting
-                    : status === "completed"
-                    ? completed
-                    : history
-                }
-                hasPagination
-                metaData={metaData}
-                setPageCount={setPageCount}
-                isLoading={isLoading}
-              />
-            </div>
+
+              {/* panels */}
+              <TabPanels className="mt-10 max-sm:mt-8">
+                <TabPanel className="!p-0">
+                  <UserWallet
+                    data={awaiting}
+                    hasPagination
+                    metaData={metaData}
+                    setPageCount={setPageCount}
+                    isLoading={isLoading}
+                    column={SupplierWallet_PendingPayout_Column(openRowDetails)}
+                  />
+                </TabPanel>
+                <TabPanel className="!p-0">
+                  <UserWallet
+                    data={history}
+                    hasPagination
+                    metaData={metaData}
+                    setPageCount={setPageCount}
+                    isLoading={isLoading}
+                    column={SupplierWalletTransactionColumn(openRowDetails)}
+                  />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </div>
         )}
       </div>
+
+      {openDetails && (
+        <SupplierWalletTransactionDetails
+          isOpen={openDetails}
+          onClose={() => setOpenDetails(false)}
+          data={rowData}
+        />
+      )}
     </div>
   );
 };
