@@ -81,7 +81,7 @@ const Admin = () => {
     {
       id: 1,
       title: "Today's Sales",
-      amount: `${data?.todaySales || 0}`,
+      amount: `₦${data?.todaySales || 0}`,
       changeType: "INCREASE",
       timeStamp: " vs. last week",
       percentage: "2.35%",
@@ -106,9 +106,9 @@ const Admin = () => {
       id: 4,
       title: "Ongoing Loan",
       amount: `${data?.onGoingLoans || 0}`,
-      changeType: "INCREASE",
-      timeStamp: " vs. last week",
-      percentage: "2.35%",
+      changeType: "",
+      timeStamp: "",
+      percentage: "",
     },
   ]
 
@@ -118,7 +118,7 @@ const Admin = () => {
         <Text fontWeight={"semibold"} fontSize={"2xl"}>
           Dashboard
         </Text>
-        <SimpleGrid columns={[2, 4]} gap={3}>
+        <SimpleGrid columns={[1, 2, 4]} gap={3}>
           {overviewData?.map((item) => (
             <DashboardCard
               key={item.id}

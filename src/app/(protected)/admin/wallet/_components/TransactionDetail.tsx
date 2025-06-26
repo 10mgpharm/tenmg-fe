@@ -109,7 +109,7 @@ const TransactionDetails = ({
             {type !== "sup_payout" && (
               <Flex justify={"space-between"}>
                 <Text>Transaction Description</Text>
-                <Text fontWeight={500}>
+                <Text fontSize={["14px", "1rem"]} fontWeight={500}>
                   {selectedRow?.txnGroup === "DEBIT_ON_ORDER_CANCELLATION" ||
                   selectedRow?.txnGroup ===
                     "DEBIT_COMMISSION_ON_ORDER_CANCELLATION"
@@ -136,7 +136,7 @@ const TransactionDetails = ({
             {orderId && (
               <Flex justify={"space-between"}>
                 <Text>OrderID</Text>
-                <Text fontWeight={500}>
+                <Text fontSize={["14px", "1rem"]} fontWeight={500}>
                   {/* {type === "sup_payout" ? (selectedRow?.id ?? "N/A") : type === "loan-wallet" ? (selectedRow?.identifier ?? "N/A") : (selectedRow?.order?.identifier ?? "N/A")} */}
                   {orderId}
                 </Text>

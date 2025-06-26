@@ -33,7 +33,7 @@ const ShippingFee = () => {
   return (
     <div>
       {/* header */}
-      <div className="flex items-center justify-between ">
+      <div className="flex flex-col gap-2 sm:flex-row items-center justify-between ">
         <div>
           <h2 className="text-[17px] font-semibold">
             Shipping Fee Configuration
@@ -43,7 +43,7 @@ const ShippingFee = () => {
           </p>
         </div>
 
-        <Button onClick={() => setOpenConfigModel()}>Configure</Button>
+        <Button width={["full", "auto"]} onClick={() => setOpenConfigModel()}>Configure</Button>
       </div>
 
       <div className="bg-white mt-5 p-5 rounded-md flex flex-col gap-5 ">

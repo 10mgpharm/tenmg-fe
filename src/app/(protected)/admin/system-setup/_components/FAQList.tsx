@@ -79,12 +79,12 @@ const FAQList = () => {
 
   return (
     <div className="bg-white p-5 rounded-md shadow-sm">
-        <HStack justify={"space-between"}>
+        <Flex flexDir={["column", "row"]} gap={2} justify={"space-between"}>
             <Text fontWeight={700} fontSize={"1rem"} color={"gray.700"}>Set FAQs</Text>
             <Button onClick={onOpen} h={"34px"} variant={"outline"} px={2} fontSize={"14px"} color={"gray.600"}>
             Add Questions & Answers
             </Button>
-        </HStack>
+        </Flex>
         {
             loading ? 
             <Loader /> :
@@ -94,7 +94,7 @@ const FAQList = () => {
               content={`You currently have no FAQ. All FAQs will appear here.`}
             /> : 
             <TableContainer mt={5}>
-                <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"}>
+                <Table variant='simple' border={"1px solid #EAECF0"} rounded={"md"} className="no-scrollbar">
                     <Thead bg={"#E8F1F8"}>
                     <Tr color={"primary.500"} roundedTop={"md"}>
                         <Th width="300px">Question</Th>
@@ -106,10 +106,10 @@ const FAQList = () => {
                     {
                         faqs?.data?.map((item: faqProps) => (
                         <Tr key={item.id}>
-                            <Td width="300px" fontSize={"14px"} className="break-words text-wrap">
+                            <Td width={["100%", "300px"]} fontSize={"14px"} className="sm:break-words sm:text-wrap">
                                 {item.question}
                             </Td>
-                            <Td width="300px" fontSize={"14px"} className="break-words text-wrap">
+                            <Td width={["100%", "300px"]} fontSize={"14px"} className="sm:break-words sm:text-wrap">
                                {item.answer}
                             </Td>
                             <Td fontSize={"14px"}>

@@ -44,9 +44,9 @@ const WalletOverview = ({
           </p>
           {
             hasPendingBalance &&
-            <div className="absolute bottom-0 left-6">
-              <div className="flex gap-6 items-center">
-                <div className={classNames(`${pendingBg} rounded-md p-1 w-100 pl-2.5`)}>
+            <div className="absolute -bottom-6 md:bottom-0 left-6">
+              <div className="flex gap-3 items-center">
+                <div className={classNames(`${pendingBg} rounded-md p-1 w-100 px-2.5`)}>
                   <p className={classNames(`${pendingText} font-medium text-xs`)}>Pending Balance</p>
                   <p className={classNames(`${pendingText} text-xs font-medium`)}>₦{pendingBalance}</p>
                 </div>
@@ -62,7 +62,7 @@ const WalletOverview = ({
           }
         </div>
       </div>
-      <div className="absolute top-3 inset-x-0 mx-auto">
+      <div className="absolute top-0 md:top-3 inset-x-0 mx-auto">
         <Image src={image} alt="" className="mx-auto" />
       </div>
     </div>

@@ -152,12 +152,12 @@ const CreateDiscount = () => {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
-        <h2 className='font-semibold text-lg text-gray-700'>Create Discount</h2>
+    <div className="max-w-2xl mx-auto bg-white p-4 sm:p-6 rounded-md my-6 sm:my-10 md:my-16">
+        <h2 className='font-semibold text-lg md:text-xl text-gray-700'>Create Discount</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack mt={5}>
+            <Stack mt={4}>
                 <FormControl>
-                    <FormLabel className='font-medium text-lg'>Method</FormLabel>
+                    <FormLabel className='font-medium text-base md:text-lg'>Method</FormLabel>
                     <Controller 
                     control={control}
                     name='applicationMethod'
@@ -165,7 +165,7 @@ const CreateDiscount = () => {
                     render={({ field: { onChange, value } }) => {
                         return(
                             <RadioGroup onChange={onChange} value={value}>
-                                <Stack gap={4}>
+                                <Stack gap={3}>
                                     <Radio value='COUPON'>Coupon Code</Radio>
                                     <Radio value='AUTOMATIC'>Automatic Discount</Radio>
                                 </Stack>
@@ -177,16 +177,16 @@ const CreateDiscount = () => {
             </Stack>
             {
                 methodType === "COUPON" &&
-                <Stack mt={5}>
+                <Stack mt={4}>
                     <FormControl>
-                        <FormLabel className='font-medium text-lg'>Coupon Code</FormLabel>
-                        <Flex gap={3}>
+                        <FormLabel className='font-medium text-base md:text-lg'>Coupon Code</FormLabel>
+                        <Flex gap={2} direction={{base: "column", sm: "row"}}>
                             <Input 
                                 id="couponCode"
                                 name="couponCode"
                                 placeholder="e.g 10mg code" 
                                 type="text"
-                                height={"48px"}
+                                height={"40px"}
                                 isInvalid={!!errors.couponCode}
                                 _focus={{
                                     border: !!errors.couponCode ? "red.300" : "border-gray-300",
@@ -198,30 +198,32 @@ const CreateDiscount = () => {
                             <button 
                             type='button'
                             onClick={handleRandomCoupon} 
-                            className='text-medium bg-black p-3 text-white rounded-md w-36'>
+                            className='text-sm md:text-medium bg-black p-2 md:p-3 text-white rounded-md w-full sm:w-36'>
                                 Generate
                             </button>
                         </Flex>
-                        <p className='text-sm text-gray-600 mt-1'>
+                        <p className='text-xs sm:text-sm text-gray-600 mt-1'>
                             Customer must enter this code at checkout.
                         </p>
                     </FormControl>
                 </Stack>
             }
-            <Stack mt={5}>
+            <Stack mt={4}>
                 <FormControl isInvalid={!!errors.discountAmount}>
-                    <FormLabel className='font-medium text-lg'>Value</FormLabel>
-                    <Flex gap={3}>
-                        <p 
-                        onClick={() => setValue("discountType", "PERCENTAGE")} 
-                        className={cn('py-3 px-5 rounded-md cursor-pointer w-[150px]', discountType === "PERCENTAGE" ? "border" : "border-0")}>
-                            Percentage
-                        </p>
-                        <p 
-                        onClick={() => setValue("discountType", "FIXED")} 
-                        className={cn('py-3 px-5 rounded-md cursor-pointer w-[150px]', discountType === "FIXED" ? "border" : "border-0")}>
-                            Fixed Amount
-                        </p>
+                    <FormLabel className='font-medium text-base md:text-lg'>Value</FormLabel>
+                    <Flex gap={2} direction={{base: "column", md: "row"}}>
+                        <Flex gap={2} width={{base: "full", md: "auto"}}>
+                            <p 
+                            onClick={() => setValue("discountType", "PERCENTAGE")} 
+                            className={cn('py-2 md:py-3 px-3 md:px-5 text-sm md:text-base rounded-md cursor-pointer flex-1 md:w-[150px] text-center', discountType === "PERCENTAGE" ? "border border-gray-300" : "border-0 bg-gray-100")}>
+                                Percentage
+                            </p>
+                            <p 
+                            onClick={() => setValue("discountType", "FIXED")} 
+                            className={cn('py-2 md:py-3 px-3 md:px-5 text-sm md:text-base rounded-md cursor-pointer flex-1 md:w-[150px] text-center', discountType === "FIXED" ? "border border-gray-300" : "border-0 bg-gray-100")}>
+                                Fixed Amount
+                            </p>
+                        </Flex>
                         <Input 
                             id="discountAmount"
                             name="discountAmount"
@@ -240,66 +242,78 @@ const CreateDiscount = () => {
                     </Flex>
                 </FormControl>
             </Stack>
-            <Stack mt={5}>
+            <Stack mt={4}>
                 <FormControl>
-                    <FormLabel className='font-medium text-lg'>Applies to</FormLabel>
+                    <FormLabel className='font-medium text-base md:text-lg'>Applies to</FormLabel>
                     <Controller 
                     control={control}
                     name='applicableProducts'
                     rules={{ required: 'Applied to product is required' }}
                     render={({ field }) => {
                         return(
-                            <Select
-                                isClearable={true}
-                                isSearchable={true}
-                                isMulti
-                                options={updatedOptions}
-                                placeholder={"Select Products"}
-                                closeMenuOnSelect={false}
-                                onChange={(selectedOption: OptionType[]) => {
-                                    setSelectedOption([]);
-                                    const productIds = selectedOption.flatMap((item: OptionType) => {
-                                        if(item.label === "All Products"){
-                                            setSelectedOption([item]);
-                                            setValue("allProduct", true);
-                                            return [item.value] ;
-                                        } else {
-                                            setValue("allProduct", false);
-                                            return [item.value];
-                                        }
-                                    });
-                                    setValue("applicableProducts", productIds);
-                                }}
-                                onInputChange={(inputValue) => setGlobalFilter(inputValue) }
-                            />
+                            <div className="text-sm md:text-base">
+                                <Select
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    isMulti
+                                    options={updatedOptions}
+                                    placeholder={"Select Products"}
+                                    closeMenuOnSelect={false}
+                                    onChange={(selectedOption: OptionType[]) => {
+                                        setSelectedOption([]);
+                                        const productIds = selectedOption.flatMap((item: OptionType) => {
+                                            if(item.label === "All Products"){
+                                                setSelectedOption([item]);
+                                                setValue("allProduct", true);
+                                                return [item.value] ;
+                                            } else {
+                                                setValue("allProduct", false);
+                                                return [item.value];
+                                            }
+                                        });
+                                        setValue("applicableProducts", productIds);
+                                    }}
+                                    onInputChange={(inputValue) => setGlobalFilter(inputValue) }
+                                    styles={{
+                                        control: (base) => ({
+                                            ...base,
+                                            minHeight: '40px',
+                                            '@media (min-width: 768px)': {
+                                                minHeight: '48px',
+                                            },
+                                        }),
+                                    }}
+                                    className="text-sm md:text-base"
+                                />
+                            </div>
                         )
                     }}
                     />
                 </FormControl>
             </Stack>
-            <Stack mt={5}>
+            <Stack mt={4} mb={5}>
                 <FormControl>
-                    <FormLabel className='font-medium text-lg'>Customer Limit</FormLabel>
+                    <FormLabel className='font-medium text-base md:text-lg'>Customer Limit</FormLabel>
                     <Controller 
                     control={control}
                     name='customerLimit'
                     rules={{ required: 'Customer limit is required' }}
                     render={({ field: { onChange, value } }) => {
                         return(
-                            <RadioGroup mt={4} onChange={onChange} value={value}>
-                                <Stack gap={4}>
+                            <RadioGroup mt={3} onChange={onChange} value={value}>
+                                <Stack gap={3}>
                                     <Radio value='LIMITED'>
                                         <Stack gap={0.5}>
-                                            <Text fontWeight={600}>Limit one per customer</Text>
-                                            <Text fontSize={"14px"} color={"gray.500"}>
+                                            <Text fontWeight={600} fontSize={{base: "sm", md: "md"}}>Limit one per customer</Text>
+                                            <Text fontSize={{base: "xs", md: "14px"}} color={"gray.500"}>
                                                 Discount can be used once per email address
                                             </Text>
                                         </Stack>
                                     </Radio>
                                     <Radio value='UNLIMITED'>
                                         <Stack gap={0.5}>
-                                            <Text fontWeight={600}>Unlimited offer</Text>
-                                            <Text fontSize={"14px"} color={"gray.500"}>
+                                            <Text fontWeight={600} fontSize={{base: "sm", md: "md"}}>Unlimited offer</Text>
+                                            <Text fontSize={{base: "xs", md: "14px"}} color={"gray.500"}>
                                                 Discount can be used once per email address
                                             </Text>
                                         </Stack>
@@ -311,9 +325,9 @@ const CreateDiscount = () => {
                     />
                 </FormControl>
             </Stack>
-            <Stack mt={5}>
+            <Stack mt={4}>
                 <FormControl>
-                    <FormLabel className='font-medium text-lg'></FormLabel>
+                    <FormLabel className='font-medium text-base md:text-lg'></FormLabel>
                     <Controller 
                     control={control}
                     name='startDate'
@@ -322,19 +336,21 @@ const CreateDiscount = () => {
                         return(
                             <Stack>
                                 <Stack gap={0.5}>
-                                    <Text fontWeight={600}>Discount Start Date</Text>
+                                    <Text fontWeight={600} fontSize={{base: "sm", md: "md"}}>Discount Start Date</Text>
                                     {/* <Text fontSize={"14px"} color={"gray.500"}>
                                         Schedule the discount to activate in the future
                                     </Text> */}
                                 </Stack>
-                                <DateComponent
-                                startDate={field.value}
-                                setStartDate={field.onChange}
-                                isMinDate
-                                minDate={tomorrow}
-                                />
+                                <div className="text-xs md:text-sm">
+                                    <DateComponent
+                                    startDate={field.value}
+                                    setStartDate={field.onChange}
+                                    isMinDate
+                                    minDate={tomorrow}
+                                    />
+                                </div>
                                 {errors.startDate?.message &&
-                                    <Text as={"span"} className="text-red-500 text-sm">
+                                    <Text as={"span"} className="text-red-500 text-xs sm:text-sm">
                                         {errors?.startDate?.message}
                                     </Text>
                                 }
@@ -343,8 +359,8 @@ const CreateDiscount = () => {
                     }}
                     />
                 </FormControl>
-                <FormControl>
-                    <FormLabel className='font-medium text-lg'></FormLabel>
+                <FormControl mt={3}>
+                    <FormLabel className='font-medium text-base md:text-lg'></FormLabel>
                     <Controller 
                     control={control}
                     name='endDate'
@@ -353,20 +369,22 @@ const CreateDiscount = () => {
                         return(
                             <Stack>
                                 <Stack gap={0.5}>
-                                    <Text fontWeight={600}>Discount Expiry Date</Text>
+                                    <Text fontWeight={600} fontSize={{base: "sm", md: "md"}}>Discount Expiry Date</Text>
                                     {/* <Text fontSize={"14px"} color={"gray.500"}>
                                         Schedule the discount to deactivate in the future
                                     </Text> */}
                                 </Stack>
-                                <DateComponent
-                                    startDate={field.value}
-                                    setStartDate={field.onChange}
-                                    minDate={watch("startDate")}
-                                    isMinDate
-                                    isDisabled={watch("startDate") ? false : true}
-                                />
+                                <div className="text-xs md:text-sm">
+                                    <DateComponent
+                                        startDate={field.value}
+                                        setStartDate={field.onChange}
+                                        minDate={watch("startDate")}
+                                        isMinDate
+                                        isDisabled={watch("startDate") ? false : true}
+                                    />
+                                </div>
                                 {errors.endDate?.message &&
-                                    <Text as={"span"} className="text-red-500 text-sm">
+                                    <Text as={"span"} className="text-red-500 text-xs sm:text-sm">
                                         {errors?.endDate?.message}
                                     </Text>
                                 }
@@ -376,11 +394,14 @@ const CreateDiscount = () => {
                     />
                 </FormControl>
             </Stack>
-            <Flex mt={8} gap={3} justify={"end"}>
+            <Flex mt={6} gap={2} direction={{base: "column", sm: "row"}} justify={{base: "stretch", sm: "end"}}>
                 <Button 
                 type="button" 
                 variant={"outline"}
                 onClick={() => navigate.back()}
+                width={{base: "100%", sm: "auto"}}
+                height={"40px"}
+                fontSize={{base: "sm", md: "md"}}
                 >
                     Cancel
                 </Button>
@@ -389,7 +410,9 @@ const CreateDiscount = () => {
                 type='submit'
                 loadingText={"Submitting..."} 
                 bg={"primary.500"}
-                width={"158px"}
+                width={{base: "100%", sm: "158px"}}
+                height={"40px"}
+                fontSize={{base: "sm", md: "md"}}
                 >
                     Publish Code
                 </Button>

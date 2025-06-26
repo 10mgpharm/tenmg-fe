@@ -45,12 +45,12 @@ const ShoppingList = () => {
   }, [fetchOrderCount, token, debounceValue]);
 
   return (
-    <div className="p-8">
-      <HStack justify={"space-between"} mb={4}>
-        <Text fontWeight={"semibold"} fontSize={"2xl"}>
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <Text fontWeight={"semibold"} fontSize={{base: "xl", md: "2xl"}}>
           Shopping list
         </Text>
-        <Flex gap={2}>
+        <div className="w-full md:w-auto">
           <SearchInput
             placeholder="Search by product name"
             value={searchValue}
@@ -59,15 +59,17 @@ const ShoppingList = () => {
               setPageCount(1);
             }}
           />
-        </Flex>
-      </HStack>
+        </div>
+      </div>
 
-      <ShoppingListTable
-        data={shoppingListData}
-        loading={isLoading}
-        pageCount={pageCount}
-        setPageCount={setPageCount}
-      />
+      <div className="overflow-x-auto">
+        <ShoppingListTable
+          data={shoppingListData}
+          loading={isLoading}
+          pageCount={pageCount}
+          setPageCount={setPageCount}
+        />
+      </div>
     </div>
   );
 };

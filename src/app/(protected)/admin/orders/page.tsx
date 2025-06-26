@@ -84,36 +84,38 @@ const Orders = () => {
   }, [fetchOrders, fetchOrderCount, token]);
 
   return (
-    <div className="p-8">
-      <HStack justify={"space-between"} mb={4}>
-        <Text fontWeight={"semibold"} fontSize={"2xl"}>
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <Text fontWeight={"semibold"} fontSize={{base: "xl", md: "2xl"}}>
           Orders
         </Text>
-        <Flex gap={2}>
+        <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-auto">
           <SearchInput
             placeholder="Search with customer's name"
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
+            // className="w-full"
           />
           <Button
-            px={10}
+            px={{base: 4, md: 10}}
             variant={"outline"}
-            className="border-primary-500 text-primary-600 bg-white"
+            className="border-primary-500 text-primary-600 bg-white w-full md:w-auto"
             onClick={() => {
               route.push("/admin/orders/shopping-list");
             }}
           >
             View shopping list
           </Button>
-        </Flex>
-      </HStack>
+        </div>
+      </div>
       <Tabs variant={"unstyled"}>
-        <TabList>
+        <TabList className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
           <Tab
             onClick={() => setStatus("")}
             _selected={{ color: "white", bg: "#1A70B8", borderRadius: "10px" }}
+            className="whitespace-nowrap"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 text-sm md:text-base">
               <Text>All Orders</Text>
               <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
                 {allCount}
@@ -131,9 +133,10 @@ const Orders = () => {
                   borderRadius: "10px",
                 }}
                 key={count.status}
+                className="whitespace-nowrap"
               >
-                <div className="flex items-center gap-3">
-                  <p className="text-base lowercase first-letter:uppercase">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm md:text-base lowercase first-letter:uppercase">
                     {count?.status}
                   </p>
                   <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
@@ -145,7 +148,7 @@ const Orders = () => {
         </TabList>
 
         <TabPanels>
-          <TabPanel px={0}>
+          <TabPanel px={0} className="mt-4">
             <OrderPage
               orders={orders}
               loading={loading}

@@ -41,7 +41,6 @@ const InventoryForm: React.FC<IChildComponentProps> = (
     { setSteps, register, errors, control, isLoading, isEditing, setValue, data, watch }
 ) => {
 
-    console.log("data", new Date(data?.expiredAt).toISOString().split("T")[0]);
     const isChecked = watch("status");
     return (
         <div className="max-w-2xl mx-auto bg-white p-6 rounded-md py-8 sm:my-16">
@@ -102,40 +101,40 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                             })}
                         />
                     </FormControl>
-                    <FormControl >
-                        <FormLabel>Expiration Date Proximity</FormLabel>
-                        <Input
-                            id="expiredAt"
-                            // min={new Date().toISOString().split("T")[0]}
-                            type="date"
-                            // defaultValue={data?.expiredAt ? new Date(data?.expiredAt).toISOString().split("T")[0] : ""}
-                            placeholder={""}
-                            {...register("expiredAt", {
-                                required: "Expiry date is required",
-                            })}
-                        />
-                    </FormControl>
-                    {/* <FormControl>
+                    <FormControl>
                     <FormLabel color={"gray.600"}>Expiration Date Proximity</FormLabel>
                     <Controller
                         name="expiredAt"
                         control={control}
                         rules={{ required: "Expiry date is required" }}
-                        render={({ field }) => (
-                        <DateComponent
-                            startDate={field.value}
-                            setStartDate={field.onChange}
-                            // isMinDate
-                            // minDate={getValues("startDate")}
-                        />
-                        )}
+                        render={({ field }) => {
+                            // Parse the date without timezone adjustment
+                            const fieldDate = field.value ? new Date(field.value) : null;
+                            
+                            // Apply any needed adjustments to remove timezone offset
+                            if (fieldDate) {
+                                // Adjust for local timezone to show the exact date as entered
+                                fieldDate.setMinutes(fieldDate.getMinutes() + fieldDate.getTimezoneOffset());
+                            }
+                            
+                            return (
+                                <DateComponent
+                                    startDate={fieldDate}
+                                    setStartDate={field.onChange}
+                                    minDate={new Date()}
+                                    isMinDate={true}
+                                />
+                            )
+                        }}
                     />
-                </FormControl> */}
+                </FormControl>
                     {/* <FormControl display='flex' alignItems='center'>
                         <Switch id='email-alerts' mr={3} />
                         <FormLabel htmlFor='email-alerts' color={"gray.600"} mb='0'>
                             Save Inventory Settings
                         </FormLabel>
+                        // isMinDate
+                            // minDate={getValues("startDate")}
                     </FormControl> */}
                     <FormControl display='flex' alignItems='center'>
                         <Controller
