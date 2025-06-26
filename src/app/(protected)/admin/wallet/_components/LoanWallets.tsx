@@ -125,7 +125,7 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
           className="py-2 px-4 rounded-md border text-sm font-medium text-gray-600 border-gray-300"
           href={"/admin/wallet/loan-wallet"}
         >
-          View all
+          View All
         </Link>
       </HStack>
 
@@ -163,9 +163,9 @@ const LoanWallets = ({ filterDate }: { filterDate: string }) => {
             <TabPanel px={0}>
               <AdminWalletTable
                 data={null}
-                // type="payout"
-                // walletType="loan_wallet"
-                // emptyStateHeader="No payout yet"
+              // type="payout"
+              // walletType="loan_wallet"
+              // emptyStateHeader="No payout yet"
               />
             </TabPanel>
             <TabPanel px={0}>

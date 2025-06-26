@@ -23,7 +23,7 @@ const NotificationDropDown = ({
             onClick={() => router.push("/storefront/notifications")}
             className="text-sm font-semibold cursor-pointer text-primary-600"
           >
-            View all
+            View All
           </div>
         </div>
         {loading ? (
