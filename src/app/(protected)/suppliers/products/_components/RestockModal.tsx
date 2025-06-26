@@ -1,6 +1,3 @@
-import requestClient from '@/lib/requestClient';
-import { NextAuthUserSession, ProductDataProps } from '@/types'
-import { handleServerErrorMessage } from '@/utils';
 import { 
     Button,
     FormControl, 
@@ -12,7 +9,13 @@ import {
     ModalContent, 
     ModalHeader, 
     ModalOverlay,  
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
+import { 
+    NextAuthUserSession, 
+    ProductDataProps 
+} from '@/types';
+import requestClient from '@/lib/requestClient';
+import { handleServerErrorMessage } from '@/utils';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -35,7 +38,7 @@ const RestockModal = (
 
     const {
         register,
-        formState: { errors, isValid },
+        formState: { errors },
         handleSubmit,
         setValue,
         reset,
@@ -132,9 +135,14 @@ const RestockModal = (
                                 border: !!errors.quantity ? "red.300" : "border-gray-300",
                             }}
                             {...register("quantity", {
-                                required: true,
+                                required: "Quantity is required",
+                                validate: value => value > 0 || "Quantity must be greater than zero",
+                                valueAsNumber: true,
                             })}
                         />
+                        {errors.quantity && (
+                            <p className="text-red-500 text-left text-sm mt-1">{errors.quantity.message}</p>
+                        )}
                     </FormControl>
                     <div className="flex flex-col gap-1.5 pt-4">
                         <Button 
