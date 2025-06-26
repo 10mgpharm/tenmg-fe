@@ -3,8 +3,7 @@ export function formatAmount(
   locale: string = "en-NG"
 ): string {
   const value = Number(amount);
-  const roundedValue = Math.round(value);
-  return `₦${roundedValue.toLocaleString(locale, {
+  return `₦${value.toLocaleString(locale, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;

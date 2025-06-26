@@ -202,7 +202,7 @@ const LoanManagement = () => {
       <div className="mt-5">
         <LoanTable
           data={tableData ?? []}
-          columns={ColumnsLoanFN(sendRepaymentLink)}
+          columns={ColumnsLoanFN(sendRepaymentLink, pageCount)}
           globalFilter={globalFilter}
           onGlobalFilterChange={setGlobalFilter}
           loading={loading}

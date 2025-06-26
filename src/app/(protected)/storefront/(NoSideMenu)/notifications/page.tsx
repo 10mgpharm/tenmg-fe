@@ -12,6 +12,7 @@ import { IoIosNotifications, IoMdNotificationsOutline } from "react-icons/io";
 import { NotificationProps } from "../../../suppliers/_components/TopNavBar/NotificationModal";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
 
 const Notifications = () => {
   const router = useRouter();
@@ -24,6 +25,9 @@ const Notifications = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [meta, setMeta] = useState({});
+  const [pageCount, setPageCount] = useState(1);
+
   const session = useSession();
   const sessionData = session?.data as NextAuthUserSession;
   const token = sessionData?.user?.token;
@@ -32,10 +36,16 @@ const Notifications = () => {
     setLoading(true);
     try {
       const response = await requestClient({ token: token }).get(
-        `/account/notifications`
+        `/account/notifications?page=${pageCount}&perPage=${10}`
       );
       if (response.status === 200) {
         setData(response.data.data.data || []);
+
+        const meta = {
+          links: response.data.data.links,
+          currentPage: response.data.data.currentPage
+        }
+        setMeta(meta);
       }
     } catch (err: any) {
       console.error(err);
@@ -43,7 +53,7 @@ const Notifications = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, pageCount]);
 
   const fetchingDataById = useCallback(async () => {
     // setIsLoading(true);
@@ -136,7 +146,7 @@ const Notifications = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-150px)] rounded-sm m-4 bg-white">
+    <div className="rounded-sm m-4 bg-white">
       {loading ? (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
@@ -269,7 +279,9 @@ const Notifications = () => {
           </p>
         </div>
       ) : null}
+      <Pagination meta={meta} setPageCount={setPageCount} />
     </div>
+
   );
 };
 

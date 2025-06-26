@@ -18,6 +18,7 @@ import {
   Flex,
   Spinner,
   useToast,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import AddStoreAddressForm from "./AddStoreAddress";
 import { useEffect, useState } from "react";
@@ -53,48 +54,6 @@ export default function StoreAddressPage() {
     fetchAddresses();
   }, [token]);
 
-  const handleAddAddress = (newItem: any) => {
-    setStoreAddressList((prev) => [...prev, newItem]);
-  };
-
-  const handleUpdateAddress = (updatedItem: any) => {
-    setStoreAddressList((prev) =>
-      prev.map((item) => (item.id === updatedItem.id ? updatedItem : item))
-    );
-    setEditItem(null);
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await requestClient({ token }).delete(`/supplier/store-addresses/${id}`);
-      setStoreAddressList((prev) => prev.filter((item) => item.id !== id));
-      toast({
-        title: "Deleted successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      console.error("Delete failed", error);
-      toast({
-        title: "Failed to delete address",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const openEdit = (item: any) => {
-    setEditItem(item);
-    onOpen();
-  };
-
-  const closeModal = () => {
-    setEditItem(null);
-    onClose();
-  };
-
   return (
     <Box p={4}>
       <Heading size="md" mb={6}>
@@ -122,7 +81,7 @@ export default function StoreAddressPage() {
         </Center>
       ) : (
         <>
-          <Stack spacing={4}>
+          {/* <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
             {storeAddressList.map((item) => (
               <Box
                 key={item.id}
@@ -132,7 +91,7 @@ export default function StoreAddressPage() {
                 p={4}
               >
                 <Flex justify="space-between" mb={2}>
-                  <Tag colorScheme="green">Default</Tag>
+                  {item.isDefault && <Tag colorScheme="green">Default</Tag>}
                 </Flex>
                 <Text fontWeight="bold">{item.name || "Store Address"}</Text>
                 <Text>{item.phoneNumber || "09098009911"}</Text>
@@ -140,27 +99,21 @@ export default function StoreAddressPage() {
                   {item.streetAddress}, {item.city}, {item.state},{" "}
                   {item.country}
                 </Text>
-                <Stack direction="row" spacing={4} mt={4}>
-                  <Button
-                    colorScheme="blue"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEdit(item)}
-                  >
-                    Edit Address
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete Address
-                  </Button>
+                <Stack direction="row" spacing={4} mt={4} flexWrap="wrap">
+                  {!item.isDefault && (
+                    <Button
+                      colorScheme="green"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSetPreferred(item.id)}
+                    >
+                      Set as Preferred
+                    </Button>
+                  )}
                 </Stack>
               </Box>
             ))}
-          </Stack>
+          </SimpleGrid> */}
           <Center mt={6}>
             <Button
               colorScheme="blue"
@@ -169,29 +122,28 @@ export default function StoreAddressPage() {
                 onOpen();
               }}
             >
-              Add Shipping Address
+              {storeAddressList.length > 0
+                ? "Add Shipping Address"
+                : "Add Store Address"}
             </Button>
           </Center>
         </>
       )}
 
-      <Modal isOpen={isOpen} onClose={closeModal} size="lg">
+      {/* <Modal isOpen={isOpen} onClose={closeModal} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {editItem ? "Edit Store Address" : "Add Store Address"}
-          </ModalHeader>
+          <ModalHeader>Add Store Address</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <AddStoreAddressForm
               onClose={closeModal}
               onAdd={handleAddAddress}
-              onUpdate={handleUpdateAddress}
               initialData={editItem}
             />
           </ModalBody>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </Box>
   );
 }

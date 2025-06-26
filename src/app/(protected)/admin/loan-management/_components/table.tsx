@@ -10,14 +10,15 @@ const columnHelper = createColumnHelper<LoanData>();
 
 export function ColumsLoanFN(
   onOpen: () => void,
-  sendRepaymentLink: (id: string) => void
+  sendRepaymentLink: (id: string) => void,
+  pageNumber: number
 ) {
   const router = useRouter();
   return [
     columnHelper.accessor("id", {
       header: ({ column }) => <p className="pl-6"> S/N</p>,
       cell: (info) => {
-        const serialNumber = info?.row?.index + 1;
+        const serialNumber = (pageNumber - 1) * 10 + info?.row?.index + 1;
         return (
           <div className="pl-6">
             <p>{serialNumber}</p>

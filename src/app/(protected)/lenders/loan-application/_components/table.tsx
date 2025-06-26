@@ -10,22 +10,31 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 const columnHelper = createColumnHelper<ApplicationDto>();
 
-export function ColumnsLoanFN({
-  handleApprove,
-  handleDecline,
-}: {
-  handleApprove: (id: string) => void;
-  handleDecline: (id: string) => void;
-}) {
+export function ColumnsLoanFN(
+  handleApprove: (id: string) => void,
+  handleDecline: (id: string) => void,
+  pageNumber: number
+) {
   return [
+    columnHelper.accessor("id", {
+      header: ({ column }) => <p className="pl-4">S/N</p>,
+      cell: (info) => {
+        const serialNumber = (pageNumber - 1) * 10 + info?.row?.index + 1;
+        return (
+          <div className="pl-4">
+            <p>{serialNumber}</p>
+          </div>
+        );
+      },
+    }),
     columnHelper.accessor("identifier", {
       header: () => (
-        <div className="pl-6">
+        <div className="">
           <p>Application ID</p>
         </div>
       ),
       cell: (info) => (
-        <div className="pl-6">
+        <div className="">
           <p className="text-gray-500">{info.row.original?.identifier}</p>
           <p className="text-gray-700 text-xs">
             {convertDate(info.row.original?.createdAt)}

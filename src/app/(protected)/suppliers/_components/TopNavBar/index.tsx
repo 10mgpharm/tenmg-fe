@@ -52,7 +52,7 @@ const TopNavBar = ({
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
         .then((swReg) => {
-          console.log("Service Worker is registered", swReg);
+          // console.log("Service Worker is registered", swReg);
         })
         .catch((error) => {
           console.error("Service Worker registration failed:", error);
@@ -287,17 +287,6 @@ const TopNavBar = ({
                   View Profile
                 </button>
               </MenuItem>
-              <MenuItem>
-                <button
-                  className="block px-3 py-1 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                  onClick={async () => {
-                    await signOut();
-                    router.push("/auth/signin");
-                  }}
-                >
-                  Log Out
-                </button>
-              </MenuItem>
 
               <MenuItem>
                 <button
@@ -314,6 +303,18 @@ const TopNavBar = ({
                   }}
                 >
                   FAQ
+                </button>
+              </MenuItem>
+              
+              <MenuItem>
+                <button
+                  className="block px-3 py-1 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                  onClick={async () => {
+                    await signOut();
+                    router.push("/auth/signin");
+                  }}
+                >
+                  Log Out
                 </button>
               </MenuItem>
             </MenuItems>

@@ -83,6 +83,28 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
     mode: "onChange",
   });
 
+  // To always refetch and update user session incase if business status has changed
+  useEffect(() => {
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
+
+      if (status === 200) {
+        await session.update({
+          ...session.data,
+          user: {
+            ...sessionData.user,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
+          },
+        });
+      }
+    };
+
+    updateSession();
+  }, []);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
     if (selectedFile) {
@@ -234,6 +256,34 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
       toast.error(`License upload failed: ${errorMessage}`);
     }
   };
+
+  const reFetchUserSession = async () => {
+    try {
+      const response = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
+
+      if (response.status === 200) {
+        await session.update({
+          ...sessionData,
+          user: {
+            ...sessionData.user,
+            completeProfile: response?.data?.data?.completeProfile,
+            businessStatus: response?.data?.data?.businessStatus,
+          },
+        });
+
+        console.log(sessionData.user, response?.data?.data, "response");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (!sessionData?.user?.token) return;
+    reFetchUserSession();
+  }, [sessionData?.user?.token]);
 
   useEffect(() => {
     const fetchLicense = async () => {

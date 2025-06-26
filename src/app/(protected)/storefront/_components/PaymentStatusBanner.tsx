@@ -16,18 +16,22 @@ export default function PaymentStatusBanner() {
   const userToken = sessionData?.user?.token;
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { paymentStatus, isLoading, fetchPaymentStatus } =
+  const { paymentStatus, orderId: lastPayWith10mgOrderId, isLoading, fetchPaymentStatus } =
     usePaymentStatusStore();
 
-  const { clearCart, cartSize } = useCartStore();
+  const { clearCart, cartSize, cartId: currentCartId } = useCartStore();
 
   usePaymentStatusNavigation(userToken);
 
   useEffect(() => {
-    if (userToken && paymentStatus === "APPROVED" && Number(cartSize) > 0) {
+    if (userToken &&
+      paymentStatus === "APPROVED" &&
+      lastPayWith10mgOrderId === currentCartId &&
+      Number(cartSize) > 0
+    ) {
       clearCart(userToken);
     }
-  }, [userToken, paymentStatus, clearCart, cartSize]);
+  }, [userToken, paymentStatus, lastPayWith10mgOrderId, currentCartId, clearCart, cartSize]);
 
   useEffect(() => {
     const isCompleted = paymentStatus === "APPROVED";

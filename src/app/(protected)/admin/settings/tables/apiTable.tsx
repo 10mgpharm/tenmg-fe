@@ -1,9 +1,10 @@
 import { classNames } from "@/utils";
 import { createColumnHelper } from "@tanstack/react-table";
-
+import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsAPIFN(revokeApi: (id: string) => void) {
+export function ColumsAPIFN(revokeApi: (id: string, environment: "test" | "live") => void) {
   return [
     columnHelper.accessor("id", {
       header: () => (
@@ -31,47 +32,26 @@ export function ColumsAPIFN(revokeApi: (id: string) => void) {
         </div>
       ),
     }),
-    columnHelper.accessor("user", {
-      header: ({ column }) => <p>Reference ID</p>,
-      cell: (info) => (
-        <div>
-          <p>{info.row.original?.reference_id}</p>
-        </div>
-      ),
-    }),
-    columnHelper.accessor("user", {
-      header: ({ column }) => <p>Status</p>,
-      cell: (info) => (
-        <div>
-          <p
-            className={classNames(
-              info?.row?.original?.status === "Test"
-                ? "bg-[#FEF3F2] text-[#B42318]"
-                : info?.row?.original?.status === "Live"
-                  ? "text-[#027A48] bg-[#ECFDF3]"
-                  : "text-gray-500",
-              " max-w-min p-0.5 px-3 rounded-2xl text-sm"
-            )}
-          >
-            {info?.row?.original?.status}
-          </p>
-        </div>
-      ),
-    }),
+
     columnHelper.accessor("action", {
-      header: ({ column }) => <p>Actions</p>,
+      header: ({ column }) => <p>Action</p>,
       cell: (info) => {
         return (
-          <div>
-            <p
-              onClick={() => {
-                revokeApi("");
-              }}
-              className="text-red-500 cursor-pointer font-medium"
-            >
-              {"Revoke API Keys"}
-            </p>
-          </div>
+          <Flex justify={"flex-start"}>
+            <Menu placement="bottom-start">
+              <MenuButton>
+                <BsThreeDotsVertical className="" />
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => revokeApi(info.row.original.id, "test")} className="font-semibold">
+                  Revoke Test Key
+                </MenuItem>
+                <MenuItem onClick={() => revokeApi(info.row.original.id, "live")} className="font-semibold">
+                  Revoke Live Key
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
         );
       },
     }),

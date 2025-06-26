@@ -27,7 +27,7 @@ import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
 import DeleteMedication from "./DeleteMedication";
 
-const SystemConfiguration = () => {
+const StoreFrontSettings = () => {
 
   const { dropZoneStyle } = useStyles();
   const [file, setFile] = useState("");
@@ -427,7 +427,7 @@ const SystemConfiguration = () => {
   )
 }
 
-export default SystemConfiguration
+export default StoreFrontSettings
 
 export const useStyles = () => {
   return {
