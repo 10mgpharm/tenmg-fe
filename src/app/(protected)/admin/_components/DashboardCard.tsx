@@ -10,8 +10,8 @@ const DashboardCard = (
     <div className="border rounded-md px-5 py-8 bg-white space-y-2 relative">
         <div className="flex items-center justify-between">
             <p className="text-gray-600 font-medium">{title}</p>
-            <div className="md:hidden bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-full shadow-md">
-                <MdInsights className="w-4 h-4 text-white" />
+            <div className="md:hidden p-2 rounded-full shadow-md">
+                <MdInsights className="w-6 h-6 text-primary-500" />
             </div>
         </div>
         <div className="flex items-center justify-between">

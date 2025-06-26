@@ -113,9 +113,9 @@ const Admin = () => {
   ]
 
   return (
-    <div className="p-8">
+    <div className="p-6 sm:p-8">
       <Stack gap={4}>
-        <Text fontWeight={"semibold"} fontSize={"2xl"}>
+        <Text fontWeight={"semibold"} fontSize={["xl", "2xl"]}>
           Dashboard
         </Text>
         <SimpleGrid columns={[1, 2, 4]} gap={3}>
@@ -136,7 +136,7 @@ const Admin = () => {
       </Stack>
       <Stack mt={6}>
         <HStack justify={"space-between"} mb={3}>
-          <Text fontSize={"xl"} fontWeight={"500"}>
+          <Text fontSize={["lg", "xl"]} fontWeight={"500"}>
             Loan Managment
           </Text>
           <Link
@@ -154,7 +154,7 @@ const Admin = () => {
             )
             : loanData?.length > 0 ? (
               <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-                <Table>
+                <Table className="no-scrollbar">
                   <Thead bg={"#F2F4F7"}>
                     {table?.getHeaderGroups()?.map((headerGroup, i) => (
                       <Tr key={i}>
