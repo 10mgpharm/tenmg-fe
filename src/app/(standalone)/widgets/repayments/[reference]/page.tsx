@@ -43,6 +43,8 @@ export default async function Page({
       const message =
         response?.message === "Unauthenticated."
           ? "Invalid Link"
+          : response?.message === "Loan is already paid"
+          ? "You have successfully paid your loan. You can exit now."
           : response?.message || "Something went wrong. Please try again.";
 
       return (
