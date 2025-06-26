@@ -31,6 +31,7 @@ const TopNavBar = ({
   route: string;
   onMenuClick?: () => void;
 }) => {
+  
   const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;

@@ -290,9 +290,9 @@ const Products = () => {
         <div className="p-5 sm:p-8">
             <div className="flex justify-between flex-col">
                 <div className="mb-5">
-                   <h3 className="font-semibold text-2xl mb-3 sm:mb-0">Products</h3>
+                   <h3 className="font-semibold text-xl sm:text-2xl mb-3">Products</h3>
                     <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-center gap-3">
                             <SearchInput
                                 placeholder="Search for a Product"
                                 value={globalFilter}
@@ -300,7 +300,7 @@ const Products = () => {
                             />
                             <div
                                 onClick={onOpenFilter}
-                                className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2">
+                                className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex justify-center items-center gap-2 w-full sm:w-auto">
                                 <CiFilter className="w-5 h-5" />
                                 <p className="text-gray-500 font-medium">Filter</p>
                             </div>

@@ -52,7 +52,7 @@ const NoticeCard = ({
   }, [status]);
 
   return (
-    <div className="rounded-lg p-5 bg-[#082552]">
+    <div className="rounded-lg p-5 bg-[#082552] mb-3 sm:mb-5">
       <h2 className="text-3xl font-semibold text-white">
         {noticeInfo?.title}
       </h2>

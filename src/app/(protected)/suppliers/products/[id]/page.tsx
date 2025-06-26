@@ -55,7 +55,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
     const productPrice = Number(products?.actualPrice) - Number(products?.discountPrice);
 
     return (
-        <div className='p-8'>
+        <div className='p-6 sm:p-8'>
             <Flex justifyContent={"space-between"} align={"center"}>
                 <HStack onClick={() => router.back()} cursor={"pointer"}>
                     <ArrowLeftIcon className='w-5- h-5' />
@@ -130,9 +130,8 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                                     {products?.status === "APPROVED" ? "ACTIVE" : products?.status}
                                 </p>
                             </div>
-
                         </div>
-                        <div className="flex justify-between">
+                        <div className="md:flex md:justify-between">
                             <div className="">
                                 <h2 className='text-lg font-semibold capitalize'>
                                     {`${products?.brand?.name} 
@@ -149,7 +148,6 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
                                         readonly={true}
                                     />
                                 </div>
-
                                 <p className='max-w-sm text-gray-500 text-sm'>{products?.description}</p>
                             </div>
                             <div className="">

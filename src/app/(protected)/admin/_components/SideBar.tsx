@@ -28,6 +28,8 @@ import { MdMonitor, MdOutlineSwapHorizontalCircle } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession } from "@/types";
+import Link from "next/link";
+import { LogOut } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: HomeIcon, current: true },
@@ -157,7 +159,7 @@ const SideBar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
                 </button>
               </div>
             </TransitionChild>
-            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pt-5 pb-4">
               <nav className="flex flex-1 flex-col">
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
@@ -169,12 +171,13 @@ const SideBar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
                         };
                         return (
                           <li key={i}>
-                            <a
+                            <Link
                               href={item.href}
+                              onClick={() => onClose()}
                               className={classNames(
                                 isActive(item.href)
-                                  ? "bg-indigo-700 text-white"
-                                  : "text-indigo-200 hover:bg-indigo-700 hover:text-white",
+                                  ? "bg-primary-600 text-white"
+                                  : "text-primary-500 hover:bg-primary-700 hover:text-white",
                                 "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
                               )}
                             >
@@ -183,7 +186,7 @@ const SideBar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
                                 className={classNames(
                                   isActive(item.href)
                                     ? "text-white"
-                                    : "text-indigo-200 group-hover:text-white",
+                                    : "text-primary-500 group-hover:text-primary-600",
                                   "h-6 w-6 shrink-0"
                                 )}
                               />
@@ -193,23 +196,26 @@ const SideBar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
                                   {count}
                                 </div>
                               )}
-                            </a>
+                            </Link>
                           </li>
                         );
                       })}
                     </ul>
                   </li>
                   <li className="mt-auto">
-                    <a
-                      href="#"
-                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                    <button
+                     onClick={async () => {
+                      await signOut();
+                      redirect("/");
+                    }}
+                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:text-red-600"
                     >
-                      <Cog6ToothIcon
+                      <LogOut
                         aria-hidden="true"
-                        className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
+                        className="h-6 w-6 shrink-0 text-red-500 group-hover:text-red-600"
                       />
-                      Settings
-                    </a>
+                      Logout
+                    </button>
                   </li>
                 </ul>
               </nav>
