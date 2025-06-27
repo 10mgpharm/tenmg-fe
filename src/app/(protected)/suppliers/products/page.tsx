@@ -1,30 +1,30 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CiFilter } from "react-icons/ci"
+import { CiFilter } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import EmptyOrder from "../orders/_components/EmptyOrder";
 import {
-    Button,
-    Flex,
-    Spinner,
-    Table,
-    TableContainer,
-    Tbody,
-    Td,
-    Th,
-    Thead,
-    Tr,
-    useDisclosure
+  Button,
+  Flex,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
-    SortingState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getSortedRowModel,
-    useReactTable
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 
 import Link from "next/link";
@@ -38,10 +38,10 @@ import ModalWrapper from "../_components/ModalWrapper";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import {
-    MedicationResponseData,
-    NextAuthUserSession,
-    ProductDataProps,
-    ProductResponseData
+  MedicationResponseData,
+  NextAuthUserSession,
+  ProductDataProps,
+  ProductResponseData,
 } from "@/types";
 import { useDebouncedValue } from "@/utils/debounce";
 import FilterDrawer from "./_components/FilterDrawer";
@@ -51,494 +51,517 @@ import Pagination from "../../admin/products/_components/Pagination";
 import { useForm } from "react-hook-form";
 
 interface IFilterInput {
-    toDate?: Date | null;
-    fromDate?: Date | null;
-    status?: string[];
-    inventory?: string[];
-    category?: string[];
-    brand?: string[];
+  toDate?: Date | null;
+  fromDate?: Date | null;
+  status?: string[];
+  inventory?: string[];
+  category?: string[];
+  brand?: string[];
 }
 
 const Products = () => {
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
 
-    const session = useSession();
-    const sessionData = session?.data as NextAuthUserSession;
-    const token = sessionData?.user?.token;
+  const [status, setStatus] = useState<string[]>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [pageCount, setPageCount] = useState<number>(1);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [brandQuery, setBrandQuery] = useState<string[]>();
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [brandFilter, setBrandFilter] = useState<string>("");
+  const [brands, setBrands] = useState<MedicationResponseData>();
+  const [category, setCategory] = useState<MedicationResponseData>();
+  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [categoryQuery, setCategoryQuery] = useState<string[]>([]);
+  const [inventoryQuery, setInventoryQuery] = useState<string[]>();
+  const [products, setProducts] = useState<ProductResponseData>();
+  const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
+  const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
+  const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
+  const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [status, setStatus] = useState<string[]>();
-    const [loading, setLoading] = useState<boolean>(false);
-    const [pageCount, setPageCount] = useState<number>(1);
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [brandQuery, setBrandQuery] = useState<string[]>();
-    const [globalFilter, setGlobalFilter] = useState<string>("");
-    const [brandFilter, setBrandFilter] = useState<string>("");
-    const [brands, setBrands] = useState<MedicationResponseData>();
-    const [category, setCategory] = useState<MedicationResponseData>();
-    const [categoryFilter, setCategoryFilter] = useState<string>("");
-    const [categoryQuery, setCategoryQuery] = useState<string[]>([]);
-    const [inventoryQuery, setInventoryQuery] = useState<string[]>();
-    const [products, setProducts] = useState<ProductResponseData>();
-    const [createdAtStart, setCreatedAtStart] = useState<Date | null>(null);
-    const [createdAtEnd, setCreatedAtEnd] = useState<Date | null>(null);
-    const [currentView, setCurrentView] = useState<PRODUCTVIEW>(PRODUCTVIEW.LIST);
-    const [selectedProduct, setSelectedProduct] = useState<ProductDataProps>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+  const debouncedSearch = useDebouncedValue(globalFilter, 500);
+  const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
+  const debouncedCategorySearch = useDebouncedValue(categoryFilter, 500);
 
-    const debouncedSearch = useDebouncedValue(globalFilter, 500);
-    const debouncedBrandSearch = useDebouncedValue(brandFilter, 500);
-    const debouncedCategorySearch = useDebouncedValue(categoryFilter, 500)
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const {
+    isOpen: isOpenRestock,
+    onClose: onCloseRestock,
+    onOpen: onOpenRestock,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenActivate,
+    onClose: onCloseActivate,
+    onOpen: onOpenActivate,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenDeactivate,
+    onClose: onCloseDeactivate,
+    onOpen: onOpenDeactivate,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenFilter,
+    onClose: onCloseFilter,
+    onOpen: onOpenFilter,
+  } = useDisclosure();
 
-    const { isOpen, onClose, onOpen } = useDisclosure();
-    const { isOpen: isOpenRestock, onClose: onCloseRestock, onOpen: onOpenRestock } = useDisclosure();
-    const { isOpen: isOpenActivate, onClose: onCloseActivate, onOpen: onOpenActivate } = useDisclosure();
-    const { isOpen: isOpenDeactivate, onClose: onCloseDeactivate, onOpen: onOpenDeactivate } = useDisclosure();
-    const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure();
-
-    const fetchProducts = useCallback(async () => {
-        setLoading(true);
-        let query = `/supplier/products/search?page=${pageCount}`;
-        const params = {
-            search: debouncedSearch ?? "",
-            inventory: inventoryQuery ?? [""],
-            status: status ?? [""],
-            category: categoryQuery ?? [],
-            brand: brandQuery ?? [],
-            variation: "",
-            medicationType: [],
-            fromDate: createdAtStart ? new Date(createdAtStart).toLocaleDateString('en-CA') : "",
-            toDate: createdAtEnd ? new Date(createdAtEnd).toLocaleDateString('en-CA') : "",
-        };
-        const queryString = toQueryString(params);
-        try {
-            const response = await requestClient({ token: token }).get(`${query}&${queryString}`);
-            if (response.status === 200) {
-                if (response.data.data?.currentPage > response.data.data?.lastPage) {
-                    setPageCount(products?.currentPage - 1)
-                }
-                setProducts(response.data.data);
-            }
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-            setLoading(false);
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    let query = `/supplier/products/search?page=${pageCount}`;
+    const params = {
+      search: debouncedSearch ?? "",
+      inventory: inventoryQuery ?? [""],
+      status: status ?? [""],
+      category: categoryQuery ?? [],
+      brand: brandQuery ?? [],
+      variation: "",
+      medicationType: [],
+      fromDate: createdAtStart
+        ? new Date(createdAtStart).toLocaleDateString("en-CA")
+        : "",
+      toDate: createdAtEnd
+        ? new Date(createdAtEnd).toLocaleDateString("en-CA")
+        : "",
+    };
+    const queryString = toQueryString(params);
+    try {
+      const response = await requestClient({ token: token }).get(
+        `${query}&${queryString}`
+      );
+      if (response.status === 200) {
+        if (response.data.data?.currentPage > response.data.data?.lastPage) {
+          setPageCount(products?.currentPage - 1);
         }
-    }, [pageCount, debouncedSearch, inventoryQuery, status, categoryQuery, brandQuery, createdAtStart, createdAtEnd, token]);
+        setProducts(response.data.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [
+    pageCount,
+    debouncedSearch,
+    inventoryQuery,
+    status,
+    categoryQuery,
+    brandQuery,
+    createdAtStart,
+    createdAtEnd,
+    token,
+  ]);
 
-    const fetchingBrands = useCallback(async () => {
-        if (!debouncedBrandSearch) return;
-        try {
-            const response = await requestClient({ token: token }).get(
-                `/supplier/brands?search=${debouncedBrandSearch}`
-            );
-            if (response.status === 200) {
-                setBrands(response.data.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }, [token, debouncedBrandSearch]);
+  const fetchingBrands = useCallback(async () => {
+    if (!debouncedBrandSearch) return;
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/supplier/brands?search=${debouncedBrandSearch}`
+      );
+      if (response.status === 200) {
+        setBrands(response.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [token, debouncedBrandSearch]);
 
-    const fetchingCategory = useCallback(async () => {
-        if (!debouncedCategorySearch) return;
-        try {
-            const response = await requestClient({ token: token }).get(
-                `/supplier/categories?search=${debouncedCategorySearch}`
-            );
-            if (response.status === 200) {
-                setCategory(response.data.data);
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    }, [token, debouncedCategorySearch]);
+  const fetchingCategory = useCallback(async () => {
+    if (!debouncedCategorySearch) return;
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/supplier/categories?search=${debouncedCategorySearch}`
+      );
+      if (response.status === 200) {
+        setCategory(response.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [token, debouncedCategorySearch]);
 
-    useEffect(() => {
-        if (!token) return;
+  useEffect(() => {
+    if (!token) return;
+    fetchProducts();
+  }, [fetchProducts, token]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetchingBrands();
+    fetchingCategory();
+  }, [fetchingBrands, fetchingCategory, token]);
+
+  const memoizedData = useMemo(() => products?.data, [products?.data]);
+
+  const table = useReactTable({
+    data: memoizedData || [],
+    columns: ColumsProductFN(
+      onOpen,
+      onOpenRestock,
+      onOpenDeactivate,
+      onOpenActivate,
+      setSelectedProduct
+    ),
+    onSortingChange: setSorting,
+    state: {
+      globalFilter,
+    },
+    manualFiltering: true,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
+
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+    reset,
+    setValue,
+    getValues,
+    trigger,
+    watch,
+  } = useForm<IFilterInput>({
+    mode: "onChange",
+    defaultValues: {
+      inventory: [],
+      status: [],
+      brand: [],
+      toDate: null,
+      fromDate: null,
+    },
+  });
+
+  const applyFilters = (filters: IFilterInput) => {
+    setPageCount(1);
+    setCreatedAtStart(filters.fromDate);
+    setCreatedAtEnd(filters.toDate);
+    setStatus(filters.status);
+    setBrandQuery(filters.brand);
+    setCategoryQuery(filters.category);
+    setInventoryQuery(filters.inventory);
+  };
+
+  const clearFilters = () => {
+    setCreatedAtStart(null);
+    setCreatedAtEnd(null);
+    setStatus([]);
+    setBrandQuery([]);
+    setBrandFilter("");
+    setCategoryQuery([]);
+    setCategoryFilter("");
+    setInventoryQuery([]);
+    setGlobalFilter("");
+  };
+
+  const filterOptions = [
+    { option: "Active", value: "active" },
+    { option: "Suspended", value: "inactive" },
+  ];
+
+  const handleProductDeactivate = async (type: string) => {
+    if (!selectedProduct) return;
+    setIsLoading(true);
+    const formdata = new FormData();
+    if (type === "deactivate") {
+      formdata.append("status", "INACTIVE");
+    } else {
+      formdata.append("status", "ACTIVE");
+    }
+    try {
+      const response = await requestClient({ token: token }).post(
+        `/supplier/products/${selectedProduct?.id}`,
+        formdata
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message);
         fetchProducts();
-    }, [fetchProducts, token]);
-
-    useEffect(() => {
-        if (!token) return;
-        fetchingBrands();
-        fetchingCategory();
-    }, [fetchingBrands, fetchingCategory, token])
-
-    const memoizedData = useMemo(() => products?.data, [products?.data]);
-
-    const table = useReactTable({
-        data: memoizedData || [],
-        columns: ColumsProductFN(
-            onOpen,
-            onOpenRestock,
-            onOpenDeactivate,
-            onOpenActivate,
-            setSelectedProduct
-        ),
-        onSortingChange: setSorting,
-        state: {
-            globalFilter,
-        },
-        manualFiltering: true,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-    });
-
-    const {
-        handleSubmit,
-        formState: { errors },
-        control,
-        reset,
-        setValue,
-        getValues,
-        trigger,
-        watch
-    } = useForm<IFilterInput>({
-        mode: "onChange",
-        defaultValues: {
-            inventory: [],
-            status: [],
-            brand: [],
-            toDate: null,
-            fromDate: null
-        }
-    });
-
-    const applyFilters = (filters: IFilterInput) => {
-        setPageCount(1);
-        setCreatedAtStart(filters.fromDate);
-        setCreatedAtEnd(filters.toDate);
-        setStatus(filters.status);
-        setBrandQuery(filters.brand);
-        setCategoryQuery(filters.category);
-        setInventoryQuery(filters.inventory);
-    };
-
-    const clearFilters = () => {
-        setCreatedAtStart(null);
-        setCreatedAtEnd(null);
-        setStatus([]);
-        setBrandQuery([])
-        setBrandFilter("");
-        setCategoryQuery([]);
-        setCategoryFilter("");
-        setInventoryQuery([])
-        setGlobalFilter("");
-    };
-
-    const filterOptions = [
-        { option: "Active", value: "active" },
-        { option: "Suspended", value: "inactive" },
-    ];
-
-    const handleProductDeactivate = async (type: string) => {
-        if (!selectedProduct) return;
-        setIsLoading(true);
-        const formdata = new FormData();
-        if (type === "deactivate") {
-            formdata.append("status", "INACTIVE");
-        } else {
-            formdata.append("status", "ACTIVE");
-        }
-        try {
-            const response = await requestClient({ token: token }).post(
-                `/supplier/products/${selectedProduct?.id}`,
-                formdata
-            )
-            if (response.status === 200) {
-                toast.success(response.data.message);
-                fetchProducts();
-                setIsLoading(false);
-                onCloseDeactivate();
-                onCloseActivate();
-            }
-        } catch (error) {
-            setIsLoading(false);
-            console.error(error);
-            toast.error(handleServerErrorMessage(error));
-        }
+        setIsLoading(false);
+        onCloseDeactivate();
+        onCloseActivate();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
     }
-    const handleProductDelete = async () => {
-        if (!selectedProduct) return;
-        setIsLoading(true);
-        try {
-            const response = await requestClient({ token: token }).delete(
-                `/supplier/products/${selectedProduct?.id}`,
-            )
-            if (response.status === 200) {
-                toast.success(response.data.message);
-                await fetchProducts();
-                setIsLoading(false);
-                onClose();
-            }
-        } catch (error) {
-            setIsLoading(false);
-            console.error(error);
-            toast.error(handleServerErrorMessage(error));
-        }
+  };
+  const handleProductDelete = async () => {
+    if (!selectedProduct) return;
+    setIsLoading(true);
+    try {
+      const response = await requestClient({ token: token }).delete(
+        `/supplier/products/${selectedProduct?.id}`
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        await fetchProducts();
+        setIsLoading(false);
+        onClose();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
     }
+  };
 
-    if (loading) {
-        return (
-            <Flex justify="center" align="center" height="200px">
-                <Spinner size="xl" />
-            </Flex>
-        )
-    }
-
+  if (loading) {
     return (
-        <div className="p-5 sm:p-8">
-            <div className="flex justify-between flex-col">
-                <div className="mb-5">
-                   <h3 className="font-semibold text-2xl mb-3 sm:mb-0">Products</h3>
-                    <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
-                        <div className="flex items-center gap-3">
-                            <SearchInput
-                                placeholder="Search for a Product"
-                                value={globalFilter}
-                                onChange={(e) => setGlobalFilter(e.target.value)}
-                            />
-                            <div
-                                onClick={onOpenFilter}
-                                className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2">
-                                <CiFilter className="w-5 h-5" />
-                                <p className="text-gray-500 font-medium">Filter</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-row-reverse sm:flex-row items-center gap-4">
-                            <div
-                                className={
-                                    classNames(
-                                        currentView === PRODUCTVIEW.LIST ?
-                                            "bg-primary-50 rounded-md border border-primary-500"
-                                            : "",
-                                        "cursor-pointer p-2")
-                                }
-                                onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
-                            >
-                                <IoListOutline
-                                    className={classNames(currentView === PRODUCTVIEW.LIST ?
-                                        "text-primary-500" :
-                                        "text-gray-600",
-                                        " w-5 h-5")}
-                                />
-                            </div>
-                            <div 
-                            className={
-                                classNames(
-                                    currentView === PRODUCTVIEW.GRID ?
-                                        "bg-primary-50 rounded-md border border-primary-500"
-                                        : "",
-                                    "cursor-pointer p-2")
-                                }
-                                onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
-                                <RxDashboard
-                                    className={classNames(currentView === PRODUCTVIEW.GRID ?
-                                        "text-primary-500"
-                                        : "text-gray-600",
-                                        " w-5 h-5")}
-                                />
-                            </div>
-                            <Link
-                                href={'/suppliers/products/add-product'}
-                                className="bg-primary-500 text-white p-2 px-5 rounded-md flex-1 sm:min-w-max text-center">
-                                Add Product
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="">
-                {
-                    memoizedData?.length === 0
-                        ? <EmptyOrder
-                            heading={`No Product Found`}
-                            content={globalFilter ? "All products will appear here." : "You currently have no product for this search. All products will appear here."}
-                        /> :
-                        currentView === PRODUCTVIEW.LIST ?
-                            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} className="no-scrollbar">
-                                <Table>
-                                    <Thead bg={"#F2F4F7"}>
-                                        {memoizedData?.length > 0 && table?.getHeaderGroups()?.map((headerGroup) => (
-                                            <Tr key={headerGroup.id}>
-                                                {/* <Th textTransform={"initial"} px="0px">
-                                                    <Checkbox
-                                                    _checked={{
-                                                        "& .chakra-checkbox__control": {
-                                                        background: "#1A70B8",
-                                                        borderRadius: 5,
-                                                        },
-                                                    }}
-                                                    marginLeft={5}
-                                                    isChecked={table.getIsAllRowsSelected()}
-                                                    onChange={table.getToggleAllRowsSelectedHandler()}
-                                                        />
-                                                    </Th> */}
-                                                {headerGroup.headers?.map((header) => (
-                                                    <Th
-                                                        textTransform={"initial"}
-                                                        px="10px"
-                                                        key={header.id}
-                                                    >
-                                                        {header.isPlaceholder
-                                                            ? null
-                                                            : flexRender(
-                                                                header.column.columnDef.header,
-                                                                header.getContext()
-                                                            )}
-                                                    </Th>
-                                                ))}
-                                            </Tr>
-                                        ))}
-                                    </Thead>
-                                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                                        {(memoizedData?.length > 0) 
-                                        && table?.getRowModel()?.rows?.map((row) => (
-                                            <Tr key={row.id}>
-                                                {/* <Td px="0px">
-                                                    <Checkbox
-                                                    _checked={{
-                                                        "& .chakra-checkbox__control": {
-                                                        background: "#1A70B8",
-                                                        borderRadius: 5,
-                                                        },
-                                                    }}
-                                                    marginLeft={5}
-                                                    isChecked={row.getIsSelected()}
-                                                    onChange={row.getToggleSelectedHandler()}
-                                                    />
-                                                </Td> */}
-                                                {row.getVisibleCells()?.map((cell) => (
-                                                    <Td key={cell.id} px="10px">
-                                                        {flexRender(
-                                                            cell.column.columnDef.cell,
-                                                            cell.getContext()
-                                                        )}
-                                                    </Td>
-                                                ))}
-                                            </Tr>
-                                        ))}
-                                    </Tbody>
-                                </Table>
-                                <Pagination
-                                    links={products?.links}
-                                    prevPageUrl={products?.prevPageUrl}
-                                    nextPageUrl={products?.nextPageUrl}
-                                    firstPageUrl={products?.firstPageUrl}
-                                    lastPageUrl={products?.lastPageUrl}
-                                    setPageCount={setPageCount}
-                                    currentPage={products?.currentPage}
-                                />
-                            </TableContainer>
-                            : <GridList
-                                product={products}
-                                routing="/suppliers/products"
-                                selectedProduct={selectedProduct}
-                                setSelectedProduct={setSelectedProduct}
-                                fetchProducts={fetchProducts}
-                                type="supplier"
-                                isLoading={isLoading}
-                                deleteFn={handleProductDelete}
-                                onOpen={onOpen}
-                                setPageCount={setPageCount}
-                                onOpenActivate={onOpenActivate}
-                                onOpenDeactivate={onOpenDeactivate}
-                            />
-                }
-            </div>
-            <DeleteModal
-                isOpen={isOpen}
-                onClose={onClose}
-                isLoading={isLoading}
-                deleteFn={handleProductDelete}
-            />
-            <RestockModal
-                isOpen={isOpenRestock}
-                onClose={onCloseRestock}
-                product={selectedProduct}
-                fetchProducts={fetchProducts}
-                type="supplier"
-            />
-            <ModalWrapper
-                isOpen={isOpenDeactivate}
-                onClose={onCloseDeactivate}
-                title="Deactivate Product"
-            >
-                <div className="mb-8">
-                    <p className='leading-6 text-gray-500 mt-2'>
-                        You are about to deactivate
-                        <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
-                        , once deactivated, this product will not appear in your public shop.
-                        There is no fee for deactivating a product.
-                    </p>
-                    <div className="flex flex-col gap-3 mt-8">
-                        <Button
-                            isLoading={isLoading}
-                            loadingText={"Submitting..."}
-                            onClick={() => handleProductDeactivate("deactivate")}
-                            className='bg-primary-600 text-white p-3 rounded-md'>
-                            Deactivate
-                        </Button>
-                        <Button
-                            variant={"outline"}
-                            className='cursor-pointer mt-2'
-                            onClick={onCloseDeactivate}>
-                            Cancel
-                        </Button>
-                    </div>
-                </div>
-            </ModalWrapper>
-            <ModalWrapper
-                isOpen={isOpenActivate}
-                onClose={onCloseActivate}
-                title="Activate Product"
-            >
-                <div className="mb-8">
-                    <p className='leading-6 text-gray-500 mt-2'>
-                        You are about to activate
-                        <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
-                        , this product will appear in your public shop.
-                        There is no fee for activating a product.
-                    </p>
-                    <div className="flex flex-col gap-3 mt-8">
-                        <Button
-                            isLoading={isLoading}
-                            loadingText={"Submitting..."}
-                            onClick={() => handleProductDeactivate("activate")}
-                            className='bg-primary-600 text-white p-3 rounded-md'>
-                            Activate
-                        </Button>
-                        <Button
-                            variant={"outline"}
-                            className='cursor-pointer mt-2'
-                            onClick={onCloseActivate}>
-                            Cancel
-                        </Button>
-                    </div>
-                </div>
-            </ModalWrapper>
-            <FilterDrawer
-                brands={brands}
-                category={category}
-                isOpen={isOpenFilter}
-                onClose={onCloseFilter}
-                applyFilters={applyFilters}
-                clearFilters={clearFilters}
-                filterOptions={filterOptions}
-                brandFilter={brandFilter}
-                categoryFilter={categoryFilter}
-                setCategoryFilter={setCategoryFilter}
-                setBrandFilter={setBrandFilter}
-                handleSubmit={handleSubmit}
-                control={control}
-                reset={reset}
-                setValue={setValue}
-                getValues={getValues}
-                trigger={trigger}
-                watch={watch}
-            />
-        </div>
-    )
-}
+      <Flex justify="center" align="center" height="200px">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
 
-export default Products
+  return (
+    <div className="p-5 sm:p-8">
+      <div className="flex justify-between flex-col">
+        <div className="mb-5">
+          <h3 className="font-semibold text-2xl mb-3 sm:mb-0">Products</h3>
+          <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
+            <div className="flex items-center gap-3">
+              <SearchInput
+                placeholder="Search for a Product"
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+              />
+              <div
+                onClick={onOpenFilter}
+                className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex items-center gap-2"
+              >
+                <CiFilter className="w-5 h-5" />
+                <p className="text-gray-500 font-medium">Filter</p>
+              </div>
+            </div>
+            <div className="flex flex-row-reverse sm:flex-row items-center gap-4">
+              <div
+                className={classNames(
+                  currentView === PRODUCTVIEW.LIST
+                    ? "bg-primary-50 rounded-md border border-primary-500"
+                    : "",
+                  "cursor-pointer p-2"
+                )}
+                onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
+              >
+                <IoListOutline
+                  className={classNames(
+                    currentView === PRODUCTVIEW.LIST
+                      ? "text-primary-500"
+                      : "text-gray-600",
+                    " w-5 h-5"
+                  )}
+                />
+              </div>
+              <div
+                className={classNames(
+                  currentView === PRODUCTVIEW.GRID
+                    ? "bg-primary-50 rounded-md border border-primary-500"
+                    : "",
+                  "cursor-pointer p-2"
+                )}
+                onClick={() => setCurrentView(PRODUCTVIEW.GRID)}
+              >
+                <RxDashboard
+                  className={classNames(
+                    currentView === PRODUCTVIEW.GRID
+                      ? "text-primary-500"
+                      : "text-gray-600",
+                    " w-5 h-5"
+                  )}
+                />
+              </div>
+              <Link
+                href={"/suppliers/products/add-product"}
+                className="bg-primary-500 text-white p-2 px-5 rounded-md flex-1 sm:min-w-max text-center"
+              >
+                Add Product
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="">
+        {memoizedData?.length === 0 ? (
+          <EmptyOrder
+            heading={`No Product Found`}
+            content={
+              globalFilter
+                ? "All products will appear here."
+                : "You currently have no product for this search. All products will appear here."
+            }
+          />
+        ) : currentView === PRODUCTVIEW.LIST ? (
+          <TableContainer
+            border={"1px solid #F9FAFB"}
+            borderRadius={"10px"}
+            className="no-scrollbar"
+          >
+            <Table>
+              <Thead bg={"#F2F4F7"}>
+                {memoizedData?.length > 0 &&
+                  table?.getHeaderGroups()?.map((headerGroup) => (
+                    <Tr key={headerGroup.id}>
+                      {headerGroup.headers?.map((header) => (
+                        <Th textTransform={"initial"} px="10px" key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </Th>
+                      ))}
+                    </Tr>
+                  ))}
+              </Thead>
+              <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                {memoizedData?.length > 0 &&
+                  table?.getRowModel()?.rows?.map((row) => (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells()?.map((cell) => (
+                        <Td key={cell.id} px="10px">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Td>
+                      ))}
+                    </Tr>
+                  ))}
+              </Tbody>
+            </Table>
+            <Pagination
+              links={products?.links}
+              prevPageUrl={products?.prevPageUrl}
+              nextPageUrl={products?.nextPageUrl}
+              firstPageUrl={products?.firstPageUrl}
+              lastPageUrl={products?.lastPageUrl}
+              setPageCount={setPageCount}
+              currentPage={products?.currentPage}
+            />
+          </TableContainer>
+        ) : (
+          <GridList
+            product={products}
+            routing="/suppliers/products"
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
+            fetchProducts={fetchProducts}
+            type="supplier"
+            isLoading={isLoading}
+            deleteFn={handleProductDelete}
+            onOpen={onOpen}
+            setPageCount={setPageCount}
+            onOpenActivate={onOpenActivate}
+            onOpenDeactivate={onOpenDeactivate}
+          />
+        )}
+      </div>
+      <DeleteModal
+        isOpen={isOpen}
+        onClose={onClose}
+        isLoading={isLoading}
+        deleteFn={handleProductDelete}
+      />
+      <RestockModal
+        isOpen={isOpenRestock}
+        onClose={onCloseRestock}
+        product={selectedProduct}
+        fetchProducts={fetchProducts}
+        type="supplier"
+      />
+      <ModalWrapper
+        isOpen={isOpenDeactivate}
+        onClose={onCloseDeactivate}
+        title="Deactivate Product"
+      >
+        <div className="mb-8">
+          <p className="leading-6 text-gray-500 mt-2">
+            You are about to deactivate
+            <span className="font-semibold text-gray-700 ml-1 capitalize">
+              {selectedProduct?.name}
+            </span>
+            , once deactivated, this product will not appear in your public
+            shop. There is no fee for deactivating a product.
+          </p>
+          <div className="flex flex-col gap-3 mt-8">
+            <Button
+              isLoading={isLoading}
+              loadingText={"Submitting..."}
+              onClick={() => handleProductDeactivate("deactivate")}
+              className="bg-primary-600 text-white p-3 rounded-md"
+            >
+              Deactivate
+            </Button>
+            <Button
+              variant={"outline"}
+              className="cursor-pointer mt-2"
+              onClick={onCloseDeactivate}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </ModalWrapper>
+      <ModalWrapper
+        isOpen={isOpenActivate}
+        onClose={onCloseActivate}
+        title="Activate Product"
+      >
+        <div className="mb-8">
+          <p className="leading-6 text-gray-500 mt-2">
+            You are about to activate
+            <span className="font-semibold text-gray-700 ml-1 capitalize">
+              {selectedProduct?.name}
+            </span>
+            , this product will appear in your public shop. There is no fee for
+            activating a product.
+          </p>
+          <div className="flex flex-col gap-3 mt-8">
+            <Button
+              isLoading={isLoading}
+              loadingText={"Submitting..."}
+              onClick={() => handleProductDeactivate("activate")}
+              className="bg-primary-600 text-white p-3 rounded-md"
+            >
+              Activate
+            </Button>
+            <Button
+              variant={"outline"}
+              className="cursor-pointer mt-2"
+              onClick={onCloseActivate}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </ModalWrapper>
+      <FilterDrawer
+        brands={brands}
+        category={category}
+        isOpen={isOpenFilter}
+        onClose={onCloseFilter}
+        applyFilters={applyFilters}
+        clearFilters={clearFilters}
+        filterOptions={filterOptions}
+        brandFilter={brandFilter}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={setCategoryFilter}
+        setBrandFilter={setBrandFilter}
+        handleSubmit={handleSubmit}
+        control={control}
+        reset={reset}
+        setValue={setValue}
+        getValues={getValues}
+        trigger={trigger}
+        watch={watch}
+      />
+    </div>
+  );
+};
+
+export default Products;
