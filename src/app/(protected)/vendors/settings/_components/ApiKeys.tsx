@@ -49,7 +49,6 @@ interface IKeyWrapperProps {
 const ApiKeys = () => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
-  const [token, setToken] = useState<string>(sessionData?.user?.token);
 
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [isPending, startTransition] = useTransition();
@@ -66,15 +65,16 @@ const ApiKeys = () => {
       });
   };
 
-  const handleGetApiKeyInfo = async () => {
+  const handleGetApiKeyInfo = async (token: string) => {
     startTransition(async () => {
       try {
-        const { data, message, status } = await getApiKeyInfo(token);
+        const { data, message, status } = await getApiKeyInfo(token || "");
         if (status === 'success') {
           console.log(data);
           setApiKeyInfo(data);
         } else {
           toast.error(`Error: ${message}`);
+
         }
       } catch (error) {
         const errorMessage = handleServerErrorMessage(error);
@@ -84,31 +84,30 @@ const ApiKeys = () => {
   }
 
   useEffect(() => {
-    if (sessionData?.user && !apiKeyInfo) {
-      setToken(sessionData.user.token)
-      handleGetApiKeyInfo();
+    if (sessionData?.user?.token && !apiKeyInfo) {
+      handleGetApiKeyInfo(sessionData?.user?.token);
     }
-  }, [sessionData]);
+  }, [sessionData?.user?.token]);
 
   return (
     <div className="max-w-5xl md:p-5 space-y-8">
       {isPending ? <>Loading...</> : <>
-      <KeyWrapper
+      {/* <KeyWrapper
         keyType={"Test Key"}
         copyToClipboard={copyToClipboard}
         onOpen={onOpen}
-        token={token}
+        token={sessionData?.user?.token}
         pKey={apiKeyInfo?.testKey}
         sKey={apiKeyInfo?.testSecret}
         callbcUrl={apiKeyInfo?.testCallbackUrl}
         webhkUrl={apiKeyInfo?.testWebhookUrl}
         transactionUrl={apiKeyInfo?.transactionUrl}
-      />
+      /> */}
       <KeyWrapper
-        keyType={"Live Key"}
+        keyType={"API Credentials"}
         copyToClipboard={copyToClipboard}
         onOpen={onOpen}
-        token={token}
+        token={sessionData?.user?.token}
         pKey={apiKeyInfo?.key}
         sKey={apiKeyInfo?.secret}
         callbcUrl={apiKeyInfo?.callbackUrl}
