@@ -131,7 +131,7 @@ const LoanWalletTab = ({
           className="py-2 px-4 rounded-md border text-sm font-medium text-gray-600 border-gray-300"
           href={"/admin/wallet/loan-wallet"}
         >
-          View all
+          View All
         </Link>
       </HStack>
 

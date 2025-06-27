@@ -11,29 +11,17 @@ import {
   Th,
   Thead,
   Tr,
-  useDisclosure,
 } from "@chakra-ui/react";
 import {
-  ColumnOrderState,
-  RowSelectionState,
-  SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import Pagination from "../../products/_components/Pagination";
-import { WalletColumn_FN } from "./columns/WalletColumn";
-import TransactionDetails from "../../wallet/_components/TransactionDetail";
 
-const WalletTable = ({
-  data,
-  hasPagination = false,
-  metaData,
-  setPageCount,
-  isLoading = false,
-}: {
+type props = {
   data: any;
   hasPagination?: boolean;
   metaData?: {
@@ -46,87 +34,82 @@ const WalletTable = ({
   };
   setPageCount?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
-}) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  column: any;
+};
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+const UserWallet = ({
+  data,
+  hasPagination = false,
+  metaData,
+  setPageCount,
+  isLoading = false,
+  column,
+}: props) => {
   // table
   const table = useReactTable({
     data: data,
-    columns: WalletColumn_FN(onOpen),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-      columnVisibility,
-      columnOrder,
-      rowSelection,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
+    columns: column,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
   return (
     <div>
-      {data?.length === 0 ? (
-        <EmptyOrder
-          heading={`No Wallet Yet`}
-          content={`You currently have no wallet. All wallets will appear here.`}
-        />
-      ) : data?.length > 0 ? (
-        <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-          <Table>
-            <Thead bg={"#F2F4F7"}>
-              {table?.getHeaderGroups()?.map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers?.map((header) => (
-                    <Th textTransform={"initial"} px="6px" key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </Th>
-                  ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-              {table?.getRowModel()?.rows?.map((row) => (
-                <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="6px">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-
-          {hasPagination && metaData && setPageCount && (
-            <Pagination {...metaData} setPageCount={setPageCount} />
-          )}
-        </TableContainer>
-      ): (
+      {isLoading ? (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
         </Flex>
+      ) : (
+        <>
+          {data?.length === 0 ? (
+            <EmptyOrder
+              heading={`No Wallet Yet`}
+              content={`You currently have no wallet. All wallets will appear here.`}
+            />
+          ) : (
+            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
+              <Table>
+                <Thead bg={"#F2F4F7"}>
+                  {table?.getHeaderGroups()?.map((headerGroup, index) => (
+                    <Tr key={index}>
+                      {headerGroup.headers?.map((header, idx) => (
+                        <Th textTransform={"initial"} px="6px" key={idx}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </Th>
+                      ))}
+                    </Tr>
+                  ))}
+                </Thead>
+                <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                  {table?.getRowModel()?.rows?.map((row, i) => (
+                    <Tr key={i}>
+                      {row.getVisibleCells()?.map((cell, ix) => (
+                        <Td key={ix} px="6px">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Td>
+                      ))}
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+
+              {hasPagination && metaData && setPageCount && (
+                <Pagination {...metaData} setPageCount={setPageCount} />
+              )}
+            </TableContainer>
+          )}
+        </>
       )}
-      <TransactionDetails isOpen={isOpen} onClose={onClose} type="" />
     </div>
   );
 };
 
-export default WalletTable;
+export default UserWallet;

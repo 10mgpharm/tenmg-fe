@@ -2,36 +2,17 @@
 
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import {
-  AvatarBadge,
-  Badge,
-  Box,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Flex,
-  Grid,
-  Icon,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import NoticeCard from "../NoticeCard";
-import { ArrowDown } from "lucide-react";
 import EmptyCard from "../EmptyCard";
 import CompleteAccountModal from "../CompleteAccountModal";
-import { ApexOptions } from "apexcharts";
 import { CalendarIcon } from "lucide-react";
-
-import { BusinessStatus } from "@/constants";
-
 import order from "@public/assets/images/totalorder.svg";
 import completedOrder from "@public/assets/images/target.svg";
 import totalProducts from "@public/assets/images/products.svg";
 import OverviewCard from "../OverviewCard/OverviewCard";
-import RevenuePerProduct from "../RevenuePerProduct";
+import requestClient from "@/lib/requestClient";
+import { useEffect } from "react";
 
 export const options = [
   { label: "This week", value: "This week" },
@@ -42,9 +23,31 @@ export const options = [
 const EmptySupplierDashboard = () => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const isVisible =
-    sessionData?.user?.businessStatus !== BusinessStatus.VERIFIED;
+
+  // To always refetch and update user session incase if business status has changed
+  useEffect(() => {
+    if (!token) return;
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token,
+      }).get("/account/profile");
+
+      if (status === 200) {
+        await session.update({
+          ...session.data,
+          user: {
+            ...sessionData.user,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
+          },
+        });
+      }
+    };
+
+    updateSession();
+  }, [token]);
 
   return (
     <div>

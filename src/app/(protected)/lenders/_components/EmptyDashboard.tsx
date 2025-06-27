@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Box, Image, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { NextAuthUserSession } from "@/types";
 import OverviewCard from "../../suppliers/_components/OverviewCard/OverviewCard";
@@ -52,31 +52,31 @@ const completeSetupData: CompleteSetupProps[] = [
 const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const session = useSession();
+  const userSession = session.data as NextAuthUserSession;
+  const token = userSession?.user?.token;
 
-  const reFetchUserSession = async () => {
-    try {
-      const response = await requestClient({
-        token: sessionData?.user?.token,
+  // To always refetch and update user session incase if business status has changed
+  useEffect(() => {
+    if (!token) return;
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token,
       }).get("/account/profile");
 
-      if (response.status === 200) {
+      if (status === 200) {
         await session.update({
-          ...sessionData,
+          ...session.data,
           user: {
             ...sessionData.user,
-            completeProfile: response?.data?.data?.completeProfile,
-            businessStatus: response?.data?.data?.businessStatus,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
           },
         });
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    };
 
-  useEffect(() => {
-    reFetchUserSession();
-  }, []);
+    updateSession();
+  }, [token]);
 
   return (
     <>

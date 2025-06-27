@@ -70,7 +70,7 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
-
+  const token = sessionData?.user?.token;
   const fileExtension = file?.name?.split(".").pop()?.toLowerCase();
 
   const {
@@ -82,6 +82,29 @@ const LicenseUpload = ({ endpoint }: LicenseUploadProps) => {
   } = useForm<IFormInput>({
     mode: "onChange",
   });
+
+  // To always refetch and update user session incase if business status has changed
+  useEffect(() => {
+    if (!token) return;
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token,
+      }).get("/account/profile");
+
+      if (status === 200) {
+        await session.update({
+          ...session.data,
+          user: {
+            ...sessionData.user,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
+          },
+        });
+      }
+    };
+
+    updateSession();
+  }, [token]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;

@@ -9,6 +9,9 @@ import WalletTable from "../../_components/WalletTable";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 import { cn } from "@/lib/utils";
 import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/OverviewCard";
+import UserWallet from "../../_components/WalletTable";
+import { VendorWalletColumn } from "../_component/column";
+import VendorWalletTransactionDetails from "../_component/transactionDetails";
 
 const VendorWallet = ({
   params,
@@ -23,6 +26,8 @@ const VendorWallet = ({
   const [pagecount, setPageCount] = useState(1);
   const [status, setStatus] = useState<string>("pending");
   const [adminCommisionFilter, setAdminCommissionFilter] = useState("");
+  const [rowDetails, setRowDetails] = useState<any>(null);
+  const [openDetails, setOpenDetails] = useState(false);
 
   const awaiting = transactionData.filter((item) => item.type === "Awaiting");
   const completed = transactionData.filter((item) => item.type === "Completed");
@@ -36,6 +41,11 @@ const VendorWallet = ({
     currentPage: 1,
     firstPageUrl: "",
     lastPageUrl: "",
+  };
+
+  const openTransactionDetails = (data: any) => {
+    setRowDetails(data);
+    setOpenDetails(true);
   };
 
   return (
@@ -98,69 +108,26 @@ const VendorWallet = ({
             </div>
 
             <div className="flex flex-col gap-3">
-              <div className="flex flex-nowrap gap-4 overflow-x-scroll no-scrollbar  ">
-                <div
-                  className={cn(
-                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
-                    status === "pending" && " text-white bg-[#1A70B8]"
-                  )}
-                  onClick={() => setStatus("pending")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Awaiting Payout</Text>
-                    <p className="bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm">
-                      {awaiting?.length}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className={cn(
-                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
-                    status === "completed" && "text-white bg-[#1A70B8]"
-                  )}
-                  onClick={() => setStatus("completed")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Completed Payout</Text>
-                    <p className="bg-green-50 text-green-500 py-0.5 px-1.5 rounded-full text-sm">
-                      {completed?.length}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className={cn(
-                    "rounded-lg text-gray-700 cursor-pointer bg-gray-100 px-4 py-2",
-                    status === "" && "text-white bg-[#1A70B8]"
-                  )}
-                  onClick={() => setStatus("")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Text className="text-nowrap">Transaction History</Text>
-                    <p className="bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm">
-                      {history?.length}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <WalletTable
-                data={
-                  status === "pending"
-                    ? awaiting
-                    : status === "completed"
-                    ? completed
-                    : history
-                }
+              <UserWallet
+                data={history}
                 hasPagination
                 metaData={metaData}
                 setPageCount={setPageCount}
                 isLoading={isLoading}
+                column={VendorWalletColumn(openTransactionDetails)}
               />
             </div>
           </div>
         )}
       </div>
+
+      {openDetails && (
+        <VendorWalletTransactionDetails
+          isOpen={openDetails}
+          onClose={() => setOpenDetails(false)}
+          data={rowDetails}
+        />
+      )}
     </div>
   );
 };

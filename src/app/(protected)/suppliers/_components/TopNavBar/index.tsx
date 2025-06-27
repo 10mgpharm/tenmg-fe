@@ -197,7 +197,7 @@ const TopNavBar = ({
           <GreetingComponent />
         </div>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
-          {data?.user?.entityType === "VENDOR" && (
+          {/* {data?.user?.entityType === "VENDOR" && (
             <FormControl display="flex" alignItems="center" w="auto" gap={2}>
               <Switch id="test-mode" />
               <FormLabel
@@ -209,7 +209,7 @@ const TopNavBar = ({
                 Test Mode
               </FormLabel>
             </FormControl>
-          )}
+          )} */}
 
           {/* Notification bell */}
           <Menu as="div">

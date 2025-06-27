@@ -35,16 +35,6 @@ type OrderDataType = {
 
 export default function PaymentPage() {
   const [cartItems, setCartItems] = useState<any>({});
-  const {
-    cart,
-    fetchCart,
-    clearCart,
-    cartSize,
-    sycnCart,
-    isLoading: cartLoading,
-  } = useCartStore();
-  const { refreshPaymentStatus, fetchPaymentStatus } = usePaymentStatusStore();
-  const { paymentStatus } = usePaymentStatusStore();
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
   const userToken = sessionData?.user?.token;
@@ -63,6 +53,22 @@ export default function PaymentPage() {
   } = useDisclosure();
   const router = useRouter();
 
+  const {
+    cart,
+    fetchCart,
+    clearCart,
+    cartSize,
+    sycnCart,
+    isLoading: cartLoading,
+  } = useCartStore();
+  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus } = usePaymentStatusStore();
+  
+
+
+  const { orderId: lastPayWith10mgOrderId } =
+  usePaymentStatusStore();
+  const { cartId: currentCartId } = useCartStore();
+
   useEffect(() => {
     fetchCart(userToken);
   }, [fetchCart, userToken]);
@@ -76,15 +82,13 @@ export default function PaymentPage() {
 
   // Clear cart and reload page when payment status becomes APPROVED - only if cart is not empty
   useEffect(() => {
-    if (paymentStatus === "APPROVED" && Number(cartSize) > 0) {
+    if (paymentStatus === "APPROVED" && lastPayWith10mgOrderId === currentCartId) {
       clearCart(userToken);
-    }
-    if (paymentStatus === "APPROVED") {
       setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+            window.location.reload();
+          }, 1000);
     }
-  }, [paymentStatus, clearCart, userToken, cartSize]);
+  }, [paymentStatus, clearCart, userToken, lastPayWith10mgOrderId, currentCartId]);
 
   useEffect(() => {
     if (cart) {
