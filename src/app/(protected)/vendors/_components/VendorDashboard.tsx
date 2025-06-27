@@ -87,9 +87,10 @@ const VendorDashboard = () => {
 
   // To always refetch and update user session incase if business status has changed
   useEffect(() => {
+    if (!token) return;
     const updateSession = async () => {
       const { data, status } = await requestClient({
-        token: sessionData?.user?.token,
+        token,
       }).get("/account/profile");
 
       if (status === 200) {
@@ -105,7 +106,7 @@ const VendorDashboard = () => {
     };
 
     updateSession();
-  }, []);
+  }, [token]);
 
   const fetchDashboard = useCallback(async () => {
     if (!token) return;
