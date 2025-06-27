@@ -275,7 +275,7 @@ export default function AddShoppingList() {
                 </div>
               </div>
 
-              <div className="w-full flex items-center gap-4">
+              <div className="w-full flex items-center gap-4">  
                 <Button
                   colorScheme="blue"
                   size={"sm"}
