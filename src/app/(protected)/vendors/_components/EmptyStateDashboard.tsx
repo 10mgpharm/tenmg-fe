@@ -24,6 +24,8 @@ import SideCard from "./SideCard";
 import { ArrowDown } from "lucide-react";
 import EmptyCard from "../../suppliers/_components/EmptyCard";
 import CompleteAccountModal from "./CompleteAccountModal";
+import { useEffect } from "react";
+import requestClient from "@/lib/requestClient";
 
 interface IVendorDashboard {
   totalCustomers: number;
@@ -46,6 +48,28 @@ const EmptyStateDashboard = () => {
     apiCalls: 0,
     balance: 0,
   };
+
+  // To always refetch and update user session incase if business status has changed
+  useEffect(() => {
+    const updateSession = async () => {
+      const { data, status } = await requestClient({
+        token: sessionData?.user?.token,
+      }).get("/account/profile");
+
+      if (status === 200) {
+        await session.update({
+          ...session.data,
+          user: {
+            ...sessionData.user,
+            completeProfile: data?.data?.completeProfile,
+            businessStatus: data?.data?.businessStatus,
+          },
+        });
+      }
+    };
+
+    updateSession();
+  }, []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 

@@ -1,34 +1,61 @@
 "use client";
 
-import { Button, Input, useDisclosure } from "@chakra-ui/react";
-import React, { useState } from "react";
-import ShippingFeeTable from "./_components/ShippingFeeTable";
+import { Button, Input, Spinner, useDisclosure } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useState } from "react";
 import SelectFeeModel from "./_components/SelectFeeModel";
+import requestClient from "@/lib/requestClient";
+import { useSession } from "next-auth/react";
+import { NextAuthUserSession } from "@/types";
+import { formatAmount } from "@/utils/formatAmount";
 
 export type ShippingFeeDataType = {
-  type: "FLAT" | "CUSTOM";
-  amount?: number;
-  locations?: {
-    country: string;
-    state: string;
-    city: string;
-    address: string;
-    amount: number;
-  }[];
+  id: number;
+  type: "FIXED";
+  fee: string;
 };
 
 const ShippingFee = () => {
-  const [shippingFeeData, setShippingFeeData] = useState<ShippingFeeDataType>({
-    type: "FLAT",
-    amount: 0,
-    locations: [],
-  });
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
+  const [shippingFeeData, setShippingFeeData] =
+    useState<ShippingFeeDataType>(null);
+  const [loadingShippingFee, setLoadingShippingFee] = useState(false);
 
   const {
     isOpen: openConfigModel,
     onOpen: setOpenConfigModel,
     onClose,
   } = useDisclosure();
+
+  const fetchShippingFee = useCallback(async () => {
+    setLoadingShippingFee(true);
+    try {
+      const response = await requestClient({ token: token }).get(
+        `/admin/settings/shipping-fee`
+      );
+      if (response.status === 200) {
+        setShippingFeeData(response.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    setLoadingShippingFee(false);
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetchShippingFee();
+  }, [token, fetchShippingFee]);
+
+  if (loadingShippingFee) {
+    return (
+      <div className="flex items-center justify-center min-h-32 h-full">
+        <Spinner size={"md"} className="" />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -43,45 +70,40 @@ const ShippingFee = () => {
           </p>
         </div>
 
-        <Button onClick={() => setOpenConfigModel()}>Configure</Button>
+        <Button onClick={() => setOpenConfigModel()} disabled>
+          Configure
+        </Button>
       </div>
 
       <div className="bg-white mt-5 p-5 rounded-md flex flex-col gap-5 ">
         <div className="flex flex-col ">
-          <label className="text-[15px] font-semibold">Selected fee type</label>
+          <label className="text-[15px] font-semibold"> Fee Type</label>
           <Input
             className="!bg-gray-100 mt-1 uppercase mb-2 w-full max-w-[500px]  pointer-events-none"
-            value={shippingFeeData.type + " FEE"}
+            value={shippingFeeData?.type}
           />
           <small className="text-primary-600 w-fit text-[13px] bg-primary-600/5 rounded-full px-2 py-1 ">
-            {shippingFeeData.type === "FLAT"
+            {shippingFeeData?.type === "FIXED"
               ? "One price for all locations"
               : "Different location, Different price"}
           </small>
         </div>
 
-        {shippingFeeData.type === "FLAT" && (
+        {shippingFeeData?.type === "FIXED" && (
           <div className="flex flex-col">
             <label className="text-[15px] font-semibold">Amount</label>
             <Input
               className="!bg-gray-100 mt-1 uppercase mb-2 w-full max-w-[500px] pointer-events-none"
-              value={shippingFeeData.amount}
+              value={formatAmount(shippingFeeData?.fee)}
             />
             <small className="text-primary-600 w-fit text-[13px] bg-primary-600/5 rounded-full px-2 py-1 ">
-              {shippingFeeData.type === "FLAT"
+              {shippingFeeData?.type === "FIXED"
                 ? "This amount serves as a uniform shipping fee for all regions."
                 : "Set specific shipping fees based on location."}
             </small>
           </div>
         )}
       </div>
-
-      {shippingFeeData.type === "CUSTOM" && (
-        <ShippingFeeTable
-          shippingFeeData={shippingFeeData}
-          setShippingFeeData={setShippingFeeData}
-        />
-      )}
 
       {openConfigModel && (
         <SelectFeeModel
