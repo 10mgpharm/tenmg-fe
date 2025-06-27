@@ -52,12 +52,15 @@ const completeSetupData: CompleteSetupProps[] = [
 const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const session = useSession();
+  const userSession = session.data as NextAuthUserSession;
+  const token = userSession?.user?.token;
 
   // To always refetch and update user session incase if business status has changed
   useEffect(() => {
+    if (!token) return;
     const updateSession = async () => {
       const { data, status } = await requestClient({
-        token: sessionData?.user?.token,
+        token,
       }).get("/account/profile");
 
       if (status === 200) {
@@ -73,7 +76,7 @@ const EmptyDashboard = ({ sessionData }: ILenderDashboardProps) => {
     };
 
     updateSession();
-  }, []);
+  }, [token]);
 
   return (
     <>
