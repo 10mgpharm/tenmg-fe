@@ -2,11 +2,11 @@
 
 import { Button, Input, Spinner, useDisclosure } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
-import SelectFeeModel from "./_components/SelectFeeModel";
 import requestClient from "@/lib/requestClient";
 import { useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
 import { formatAmount } from "@/utils/formatAmount";
+import ConfigureShippingFee from "./_components/configureShippingFee";
 
 export type ShippingFeeDataType = {
   id: number;
@@ -104,12 +104,12 @@ const ShippingFee = () => {
       </div>
 
       {openConfigModel && (
-        <SelectFeeModel
+        <ConfigureShippingFee
           open={openConfigModel}
-          setIsOpen={setOpenConfigModel}
-          setShippingFeeData={setShippingFeeData}
-          shippingFeeData={shippingFeeData}
+          refetchData={fetchShippingFee}
           onClose={onClose}
+          defaultValue={Number(formatAmount(shippingFeeData?.fee))}
+          data={shippingFeeData}
         />
       )}
     </div>

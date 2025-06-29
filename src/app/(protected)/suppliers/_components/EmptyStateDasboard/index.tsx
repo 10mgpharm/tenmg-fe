@@ -23,13 +23,15 @@ export const options = [
 const EmptySupplierDashboard = () => {
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // To always refetch and update user session incase if business status has changed
   useEffect(() => {
+    if (!token) return;
     const updateSession = async () => {
       const { data, status } = await requestClient({
-        token: sessionData?.user?.token,
+        token,
       }).get("/account/profile");
 
       if (status === 200) {
@@ -45,7 +47,7 @@ const EmptySupplierDashboard = () => {
     };
 
     updateSession();
-  }, []);
+  }, [token]);
 
   return (
     <div>

@@ -90,11 +90,12 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
   const [lenderData, setLenderData] = useState<LenderDashboardData | null>(
     null
   );
+  const [chartData, setChartData] = useState<any>(null);
   const [isTotalBalanceHidden, setIsTotalBalanceHidden] = useState(false);
   const [isInvestmentBalanceHidden, setIsInvestmentBalanceHidden] =
     useState(false);
   const [selectedTimePeriod, setSelectedTimePeriod] =
-    useState<BalanceTimePeriod>("7 days");
+    useState<BalanceTimePeriod>("12 months");
   const [isPending, startTransition] = useTransition();
   const [amount, setAmount] = useState<number>(0);
   const [wallet, setWallet] = useState([]);
@@ -126,13 +127,15 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
 
   const session = useSession();
   const sessionToken = sessionData?.user?.token;
+
   const router = useRouter();
 
   // To always refetch and update user session incase if business status has changed
   useEffect(() => {
+    if (!sessionToken) return;
     const updateSession = async () => {
       const { data, status } = await requestClient({
-        token: sessionData?.user?.token,
+        token: sessionToken,
       }).get("/account/profile");
 
       if (status === 200) {
@@ -148,20 +151,30 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     };
 
     updateSession();
-  }, []);
+  }, [sessionToken]);
 
   const fetchLenderData = useCallback(() => {
     if (!sessionToken) return;
 
     startTransition(async () => {
       try {
-        const response = await requestClient({ token: sessionToken }).get(
-          "/lender/dashboard"
-        );
-        if (response.status === 200) {
-          setLenderData(response.data.data);
+        const [dashboardResponse, chartResponse] = await Promise.all([
+          requestClient({ token: sessionToken }).get("/lender/dashboard"),
+          requestClient({ token: sessionToken }).get(
+            "/lender/dashboard/chart-stats"
+          ),
+        ]);
+
+        if (dashboardResponse.status === 200) {
+          setLenderData(dashboardResponse.data.data);
         } else {
           toast.error("Error fetching dashboard data");
+        }
+
+        if (chartResponse.status === 200) {
+          setChartData(chartResponse.data.data);
+        } else {
+          toast.error("Error fetching chart data");
         }
       } catch (error: any) {
         toast.error(
@@ -308,6 +321,66 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     }
   };
 
+  const processChartData = useMemo(() => {
+    if (!chartData || !Array.isArray(chartData))
+      return { categories: [], series: [] };
+
+    const sortedData = chartData.sort((a, b) => {
+      if (a.year !== b.year) return a.year - b.year;
+      return a.month - b.month;
+    });
+
+    let filteredData = sortedData;
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+
+    switch (selectedTimePeriod) {
+      case "24 hours":
+      case "7 days":
+        filteredData = sortedData.slice(-1);
+        break;
+      case "30 days":
+        filteredData = sortedData.slice(-1);
+        break;
+      case "3 months":
+        filteredData = sortedData.slice(-3);
+        break;
+      case "12 months":
+        filteredData = sortedData.slice(-12);
+        break;
+      default:
+        filteredData = sortedData.slice(-3);
+    }
+
+    const categories = filteredData.map((item) =>
+      item.monthName.substring(0, 3)
+    );
+    const interestData = filteredData.map((item) => item.totalInterest);
+
+    return {
+      categories,
+      series: [
+        {
+          name: "Interest Growth",
+          data: interestData,
+        },
+      ],
+    };
+  }, [chartData, selectedTimePeriod]);
+
+  const interestChartOptions = {
+    chart: {
+      toolbar: { show: false },
+    },
+    dataLabels: { enabled: false },
+    yaxis: { show: true },
+    xaxis: { categories: processChartData.categories },
+    colors: ["#1A70B8"],
+    legend: { show: false },
+    plotOptions: { bar: { borderRadius: 4 } },
+  };
+
   return (
     <>
       {isPending && !lenderData && <Loader />}
@@ -395,20 +468,20 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
             </div>
 
             <div className="space-y-6">
-              <ChartSection
+              {/* <ChartSection
                 title="Balance Allocation"
                 selectedPeriod={selectedTimePeriod}
                 onPeriodChange={setSelectedTimePeriod}
                 options={chartOptions}
                 series={chartSeries}
-              />
+              /> */}
 
               <ChartSection
                 title="Interest Growth Over Time"
                 selectedPeriod={selectedTimePeriod}
                 onPeriodChange={setSelectedTimePeriod}
-                options={chartOptions}
-                series={chartSeries}
+                options={interestChartOptions}
+                series={processChartData.series}
               />
             </div>
           </div>
@@ -538,6 +611,8 @@ const ChartSection: React.FC<ChartSectionProps> = ({
     onPeriodChange(BALANCE_TIME_PERIODS[index]);
   };
 
+  const showLegend = title === "Balance Allocation";
+
   return (
     <Box borderRadius="lg" p={5} borderWidth="1px" bg="white">
       <Stack gap={3} flex={1} mt={2}>
@@ -582,16 +657,18 @@ const ChartSection: React.FC<ChartSectionProps> = ({
           height={320}
         />
 
-        <Flex justifyContent="center" alignItems="center" gap={4}>
-          <Flex gap={2} alignItems="center">
-            <Badge bgColor="warning.600" p={1} rounded="lg" />
-            <Text>Available Balance</Text>
+        {showLegend && (
+          <Flex justifyContent="center" alignItems="center" gap={4}>
+            <Flex gap={2} alignItems="center">
+              <Badge bgColor="warning.600" p={1} rounded="lg" />
+              <Text>Available Balance</Text>
+            </Flex>
+            <Flex gap={2} alignItems="center">
+              <Badge bgColor="#1A70B8" p={1} rounded="lg" />
+              <Text>Out on Loan</Text>
+            </Flex>
           </Flex>
-          <Flex gap={2} alignItems="center">
-            <Badge bgColor="#1A70B8" p={1} rounded="lg" />
-            <Text>Out on Loan</Text>
-          </Flex>
-        </Flex>
+        )}
       </Box>
     </Box>
   );

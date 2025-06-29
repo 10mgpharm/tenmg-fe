@@ -1,40 +1,40 @@
 "use client";
 
 import {
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    Stack,
-    Switch,
-    Text,
-} from "@chakra-ui/react"
+  Button,
+  FormControl,
+  FormLabel,
+  HStack,
+  Input,
+  Stack,
+  Switch,
+  Text,
+} from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction } from "react";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid"
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import "react-datepicker/dist/react-datepicker.css";
 import DateComponent from "./DateComponent";
 import {
-    Control,
-    Controller,
-    FieldErrors,
-    FieldValues,
-    UseFormRegister,
-    UseFormSetValue,
+  Control,
+  Controller,
+  FieldErrors,
+  FieldValues,
+  UseFormRegister,
+  UseFormSetValue,
 } from "react-hook-form";
 import { IFormInput } from "@/app/(protected)/admin/products/add-product/page";
 import { ProductDataProps } from "@/types";
 
 interface IChildComponentProps {
-    register: UseFormRegister<IFormInput>;
-    control: Control<IFormInput>;
-    errors: FieldErrors<FieldValues>;
-    setSteps: Dispatch<SetStateAction<'details' | 'essentials' | 'inventory'>>;
-    isLoading: boolean;
-    data?: ProductDataProps;
-    isEditing: boolean
-    setValue: UseFormSetValue<IFormInput>;
-    watch: any;
+  register: UseFormRegister<IFormInput>;
+  control: Control<IFormInput>;
+  errors: FieldErrors<FieldValues>;
+  setSteps: Dispatch<SetStateAction<"details" | "essentials" | "inventory">>;
+  isLoading: boolean;
+  data?: ProductDataProps;
+  isEditing: boolean;
+  setValue: UseFormSetValue<IFormInput>;
+  watch: any;
 }
 
 const InventoryForm: React.FC<IChildComponentProps> = (
@@ -136,51 +136,53 @@ const InventoryForm: React.FC<IChildComponentProps> = (
                         // isMinDate
                             // minDate={getValues("startDate")}
                     </FormControl> */}
-                    <FormControl display='flex' alignItems='center'>
-                        <Controller
-                            name="status"
-                            control={control}
-                            render={({ field }) => (
-                                <Switch
-                                    defaultChecked={isChecked === "APPROVED" ? true : false}
-                                    id='acitvate-product'
-                                    checked={isChecked === "APPROVED" ? true : false}
-                                    onChange={((e) => {
-                                        const isActive = e.target.checked;
-                                        if (isActive) {
-                                            setValue("status", "ACTIVE");
-                                        } else {
-                                            setValue("status", "INACTIVE")
-                                        }
-                                    })}
-                                    mr={3} />
-                            )}
-                        />
-                        <FormLabel htmlFor='activate-product' color={"gray.600"} mb='0'>
-                            Activate Product
-                        </FormLabel>
-                    </FormControl>
-                </Stack>
-            </div>
-            <div className="flex gap-4 justify-end mt-10 mb-6">
-                <button
-                    type="button"
-                    className="p-3 w-32 rounded-md border text-gray-600"
-                    onClick={() => setSteps("essentials")}>
-                    Previous
-                </button>
-                <Button
-                    type="submit"
-                    isLoading={isLoading}
-                    loadingText={"Submitting..."}
-                    disabled={isLoading}
-                    className="w-[280px] p-3 rounded-md bg-primary-500 text-white"
-                >
-                    {isEditing ? "Save Changes" : "Add Product"}
-                </Button>
-            </div>
-        </div>
-    )
-}
+          <FormControl display="flex" alignItems="center">
+            <Controller
+              name="status"
+              control={control}
+              render={({ field }) => (
+                <Switch
+                  defaultChecked={isChecked === "APPROVED" ? true : false}
+                  id="acitvate-product"
+                  checked={isChecked === "APPROVED" ? true : false}
+                  onChange={(e) => {
+                    const isActive = e.target.checked;
+                    if (isActive) {
+                      setValue("status", "ACTIVE");
+                    } else {
+                      setValue("status", "INACTIVE");
+                    }
+                  }}
+                  mr={3}
+                />
+              )}
+            />
+            <FormLabel htmlFor="activate-product" color={"gray.600"} mb="0">
+              Activate Product
+            </FormLabel>
+          </FormControl>
+        </Stack>
+      </div>
+      <div className="flex gap-4 justify-end mt-10 mb-6">
+        <button
+          type="button"
+          className="p-3 w-32 rounded-md border text-gray-600"
+          onClick={() => setSteps("essentials")}
+        >
+          Previous
+        </button>
+        <Button
+          type="submit"
+          isLoading={isLoading}
+          loadingText={"Submitting..."}
+          disabled={isLoading}
+          className="w-[280px] p-3 rounded-md bg-primary-500 text-white"
+        >
+          {isEditing ? "Save Changes" : "Add Product"}
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export default InventoryForm;

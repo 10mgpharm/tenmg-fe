@@ -57,69 +57,67 @@ const PayoutTable = ({data, hasPagination, metaData, setPageCount}: PayoutTableP
 
   return (
     <div>
-      {
-            data?.length === 0 
-            ? <EmptyOrder
-            heading={`No Record Found`} 
-            content={`No transaction found. All transactions will appear here.`} 
-            /> : 
-            data?.length > 0 ? (
-            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} className='no-scrollbar'>
-                <Table>
-                    <Thead bg={"#F2F4F7"}>
-                    {table?.getHeaderGroups()?.map((headerGroup, i) => (
-                        <Tr key={i}>
-                        {headerGroup.headers?.map((header, idx) => (
-                            <Th
-                            textTransform={"initial"}
-                            px="10px"
-                            key={idx}
-                            >
-                            {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                )}
-                            </Th>
-                        ))}
-                        </Tr>
-                    ))}
-                    </Thead>
-                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                    {table?.getRowModel()?.rows?.map((row, index) => (
-                        <Tr key={index}>
-                        {row.getVisibleCells()?.map((cell, idxs) => (
-                            <Td key={idxs} px="10px">
-                            {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                            )}
-                            </Td>
-                        ))}
-                        </Tr>
-                    ))}
-                    </Tbody>
-                </Table>
-                {hasPagination && metaData && (
-                    <Pagination {...metaData} setPageCount={setPageCount} />
-                )}
-            </TableContainer>
-            ) : (
-                <Flex justify="center" align="center" height="200px">
-                    <Spinner size="xl" />
-                </Flex>
-            )
-        }  
-        <TransactionDetails
-            isOpen={isOpen}
-            onClose={onClose}
-            selectedRow={selectedRow}
-            orderId={selectedRow?.order?.identifier}
-            type='sup_payout'
+      {data?.length === 0 ? (
+        <EmptyOrder
+          heading={`No Record Found`}
+          content={`No result found for this search`}
         />
+      ) : data?.length > 0 ? (
+        <TableContainer
+          border={"1px solid #F9FAFB"}
+          borderRadius={"10px"}
+          className="no-scrollbar"
+        >
+          <Table>
+            <Thead bg={"#F2F4F7"}>
+              {table?.getHeaderGroups()?.map((headerGroup, i) => (
+                <Tr key={i}>
+                  {headerGroup.headers?.map((header, idx) => (
+                    <Th textTransform={"initial"} px="10px" key={idx}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </Th>
+                  ))}
+                </Tr>
+              ))}
+            </Thead>
+            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+              {table?.getRowModel()?.rows?.map((row, index) => (
+                <Tr key={index}>
+                  {row.getVisibleCells()?.map((cell, idxs) => (
+                    <Td key={idxs} px="10px">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </Td>
+                  ))}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+          {hasPagination && metaData && (
+            <Pagination {...metaData} setPageCount={setPageCount} />
+          )}
+        </TableContainer>
+      ) : (
+        <Flex justify="center" align="center" height="200px">
+          <Spinner size="xl" />
+        </Flex>
+      )}
+      <TransactionDetails
+        isOpen={isOpen}
+        onClose={onClose}
+        selectedRow={selectedRow}
+        orderId={selectedRow?.order?.identifier}
+        type="sup_payout"
+      />
     </div>
-  )
+  );
 }
 
 export default PayoutTable
