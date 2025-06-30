@@ -15,6 +15,17 @@ const NewPagination = ({
   compact?: boolean;
 }) => {
   const isArrayFormat = Array.isArray(meta?.links);
+  console.log("meta: ", meta);
+  const paginateList = isArrayFormat
+    ? meta?.links?.slice(1, -1)
+    : Array.from(
+      { length: meta?.last?.match(/page=(\d+)/)?.[1] || 1 },
+      (_, i) => ({
+        label: (i + 1).toString(),
+        url: meta?.first?.replace(/page=\d+/, `page=${i + 1}`),
+        active: meta?.currentPage === i + 1,
+      })
+    );
 
   // const paginateList = isArrayFormat
   //   ? meta?.links?.slice(1, -1)
@@ -27,65 +38,59 @@ const NewPagination = ({
   //     })
   //   );
 
-  const paginateList = isArrayFormat
-    ? meta?.links?.slice(1, -1)
-    : Array.from(
-      { length: meta?.last?.match(/page=(\d+)/)?.[1] || 1 },
-      (_, i) => ({
-        label: (i + 1).toString(),
-        url: meta?.first?.replace(/page=\d+/, `page=${i + 1}`),
-        active: meta?.currentPage === i + 1,
-      })
-    );
+  // // Apply compact logic if `compact` is true
+  // if (compact && !isArrayFormat && paginateList?.length > 5) {
+  //   const firstTwo = paginateList.slice(0, 2);
+  //   const lastTwo = paginateList.slice(-2);
+  //   const ellipsisItem = { url: null, label: "...", active: false };
+  //   return [...firstTwo, ellipsisItem, ...lastTwo];
+  // }
 
-  // Apply compact logic if `compact` is true
-  if (compact && !isArrayFormat && paginateList?.length > 5) {
-    const firstTwo = paginateList.slice(0, 2);
-    const lastTwo = paginateList.slice(-2);
-    const ellipsisItem = { url: null, label: "...", active: false };
-    return [...firstTwo, ellipsisItem, ...lastTwo];
-  }
+  // // return paginateList;
 
-  // return paginateList;
+  // // console.log("paginationList, ", paginateList);
 
-  // console.log("paginationList, ", paginateList);
+  // const cpfunc = (paginationList) => {
+  //   const d = [];
+  //   // console.log("paginationList, ", paginationList);
+  //   // console.log("compact, ", compact);
+  //   // console.log("isArrayFormat, ", isArrayFormat);
 
-  const cpfunc = (paginationList) => {
-    const d = [];
-    // console.log("paginationList, ", paginationList);
-    // console.log("compact, ", compact);
-    // console.log("isArrayFormat, ", isArrayFormat);
+  //   if (paginationList?.length >= 5) {
+  //     if (compact) {
+  //       const firstTwo = paginationList.slice(0, 1);
+  //       const lastTwo = paginationList.slice(-4);
+  //       const ellipsisItem = { url: null, label: "...", active: false };
+  //       lastTwo.splice(2, 1);
+  //       // d.push(...firstTwo, ...lastTwo);
+  //       d.push(...firstTwo, ellipsisItem, ...lastTwo);
 
-    if (paginationList?.length >= 5) {
-      if (compact) {
-        const firstTwo = paginationList.slice(0, 1);
-        const lastTwo = paginationList.slice(-4);
-        const ellipsisItem = { url: null, label: "...", active: false };
-        lastTwo.splice(2, 1);
-        // d.push(...firstTwo, ...lastTwo);
-        d.push(...firstTwo, ellipsisItem, ...lastTwo);
+  //       console.log("paginationList, ", paginationList);
+  //       console.log("firstTwo, ", firstTwo);
+  //       console.log("lastTwo, ", lastTwo);
+  //     }
+  //     // if (compact && !isArrayFormat && paginationList?.length > 5) {
+  //     //   const firstTwo = paginationList.slice(0, 2);
+  //     //   const lastTwo = paginationList.slice(-2);
+  //     //   const ellipsisItem = { url: null, label: "...", active: false };
+  //     //   d.push(...firstTwo, ellipsisItem, ...lastTwo);
+  //     //   // return [...firstTwo, ellipsisItem, ...lastTwo];
+  //     // }
 
-        console.log("paginationList, ", paginationList);
-        console.log("firstTwo, ", firstTwo);
-        console.log("lastTwo, ", lastTwo);
-      }
-      // if (compact && !isArrayFormat && paginationList?.length > 5) {
-      //   const firstTwo = paginationList.slice(0, 2);
-      //   const lastTwo = paginationList.slice(-2);
-      //   const ellipsisItem = { url: null, label: "...", active: false };
-      //   d.push(...firstTwo, ellipsisItem, ...lastTwo);
-      //   // return [...firstTwo, ellipsisItem, ...lastTwo];
-      // }
-
-    } else {
-      d.push(...paginationList);
-    }
-    return d;
-  }
+  //   } else {
+  //     d.push(...paginationList);
+  //   }
+  //   return d;
+  // }
 
 
-  const cPL = cpfunc(paginateList);
-  console.log("cPL, ", cPL);
+  // const cPL = cpfunc(paginateList);
+  // console.log("cPL, ", cPL);
+
+  // const handleSelectChange = (e: any) => {
+  //   const selectedPage = Number(e.target.value);
+  //   handlePageChange(selectedPage);
+  // };
 
   const firstItem = isArrayFormat
     ? meta?.links?.[0]
@@ -102,7 +107,7 @@ const NewPagination = ({
   return (
     <Flex
       mt={5}
-      wrap="wrap"
+      // wrap="wrap"
       justify="space-between"
       align="center"
       gap={3}
@@ -129,8 +134,26 @@ const NewPagination = ({
           Previous
         </Text> */}
       </Button>
+      <Select
+        placeholder={meta?.currentPage}
+        defaultValue={meta?.currentPage}
+        onChange={(e) => handlePageChange(Number(e.target.value))}
+        className="text-center" >{paginateList?.map((item: any, index: number) => (
+          <option
+            key={index}
+            value={item.label}
+            className={classNames(
+              item.active
+                ? "text-primary-600 bg-primary-50"
+                : "text-gray-500",
+              "py-1.5 px-3 rounded-md cursor-pointer text-sm text-center"
+            )}
+          >
+            {item.label}
+          </option>))}
+      </Select>
 
-      <Box
+      {/* <Box
         as="ul"
         display="flex"
         gap={2}
@@ -163,7 +186,8 @@ const NewPagination = ({
             1
           </Box>
         )}
-      </Box>
+      </Box> */}
+
 
       <Button
         h="30px"
