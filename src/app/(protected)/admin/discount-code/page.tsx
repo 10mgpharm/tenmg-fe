@@ -79,50 +79,55 @@ const Page = () => {
     }, [token, fetchDiscounts]);
 
     return (
-        <div className='p-8'>
-            <Text fontWeight={"semibold"} fontSize={"2xl"}>Discount</Text>
-            <HStack justify={"space-between"} mb={4}  >
-                <Flex gap={2} wrap={"wrap"}>
-                    <SearchInput
-                        placeholder="Search with discount code"
-                        value={globalFilter}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                    />
-                    <Link href={'/admin/discount-code/create'} className="border-primary-500 text-primary-600 border p-3 font-medium rounded-md bg-white">
+        <div className='p-4 md:p-8'>
+            <Text fontWeight={"semibold"} fontSize={{base: "xl", md: "2xl"}}>Discount</Text>
+            <div className="flex flex-col gap-4 mb-4 md:mb-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
+                    <div className="w-full sm:max-w-[350px]">
+                        <SearchInput
+                            placeholder="Search with discount code"
+                            value={globalFilter}
+                            onChange={(e) => setGlobalFilter(e.target.value)}
+                        />
+                    </div>
+                    <Link 
+                        href={'/admin/discount-code/create'} 
+                        className="border-primary-500 text-primary-600 border py-2 px-3 font-medium rounded-md bg-white text-center whitespace-nowrap w-full sm:w-auto"
+                    >
                         Create Discount
                     </Link>
-                </Flex>
-            </HStack>
+                </div>
+            </div>
             <Tabs variant={"unstyled"}>
-                <TabList>
-                    <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                        <div className='flex items-center gap-3'>
+                <TabList className="flex flex-nowrap gap-2 overflow-x-auto pb-2 no-scrollbar mb-2">
+                    <Tab onClick={() => setStatus("")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }} className="whitespace-nowrap">
+                        <div className='flex items-center gap-2 text-sm md:text-base'>
                             <Text>All Discount</Text>
-                            <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            <p className='bg-purple-50 text-purple-500 py-0.5 px-1.5 rounded-full text-xs md:text-sm'>
                                 {counts?.total}
                             </p>
                         </div>
                     </Tab>
-                    <Tab onClick={() => setStatus("ACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                        <div className='flex items-center gap-3'>
+                    <Tab onClick={() => setStatus("ACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }} className="whitespace-nowrap">
+                        <div className='flex items-center gap-2 text-sm md:text-base'>
                             <Text>Active</Text>
-                            <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            <p className='bg-orange-50 text-orange-500 py-0.5 px-1.5 rounded-full text-xs md:text-sm'>
                                 {counts?.active}
                             </p>
                         </div>
                     </Tab>
-                    <Tab onClick={() => setStatus("INACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                        <div className='flex items-center gap-3'>
+                    <Tab onClick={() => setStatus("INACTIVE")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }} className="whitespace-nowrap">
+                        <div className='flex items-center gap-2 text-sm md:text-base'>
                             <Text>Inactive</Text>
-                            <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-xs md:text-sm'>
                                 {counts?.inactive}
                             </p>
                         </div>
                     </Tab>
-                    <Tab onClick={() => setStatus("EXPIRED")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }}>
-                        <div className='flex items-center gap-3'>
+                    <Tab onClick={() => setStatus("EXPIRED")} _selected={{ color: 'white', bg: '#1A70B8', borderRadius: "10px" }} className="whitespace-nowrap">
+                        <div className='flex items-center gap-2 text-sm md:text-base'>
                             <Text>Expired</Text>
-                            <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-sm'>
+                            <p className='bg-red-50 text-red-500 py-0.5 px-1.5 rounded-full text-xs md:text-sm'>
                                 {counts?.expired}
                             </p>
                         </div>

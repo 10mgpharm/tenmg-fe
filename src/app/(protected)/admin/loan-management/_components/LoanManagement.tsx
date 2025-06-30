@@ -166,7 +166,7 @@ const LoanManagement = () => {
   return (
     <>
       <div className="">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-5 ">
           <WalletOverview
             title="Total Loan Amount"
             value={
@@ -213,7 +213,7 @@ const LoanManagement = () => {
             hasPendingBalance={false}
           />
         </div>
-        <Flex mt={4} gap={2}>
+        <Flex flexDir={["column", "row"]} mt={4} gap={2}>
           <SearchInput
             placeholder="Search for a loan"
             value={globalFilter}
@@ -247,7 +247,7 @@ const LoanManagement = () => {
                   {table?.getHeaderGroups()?.map((headerGroup) => (
                     <Tr key={headerGroup.id}>
                       {headerGroup.headers?.map((header) => (
-                        <Th textTransform={"initial"} px="0px" key={header.id}>
+                        <Th textTransform={"initial"} px="10px" key={header.id}>
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -263,7 +263,7 @@ const LoanManagement = () => {
                   {table?.getRowModel()?.rows?.map((row) => (
                     <Tr key={row.id}>
                       {row.getVisibleCells()?.map((cell) => (
-                        <Td key={cell.id} px="0px">
+                        <Td key={cell.id} px="10px">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

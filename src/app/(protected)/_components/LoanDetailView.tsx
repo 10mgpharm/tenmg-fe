@@ -197,98 +197,103 @@ const LoanDetailView = ({
   const repaymentAmount = calculateRepayment();
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <Flex cursor={"pointer"} gap={2} onClick={handleBack}>
-        <ArrowLeft className="w-5 h-auto text-gray-600" />
-        <Text>Back</Text>
+        <ArrowLeft className="w-4 md:w-5 h-auto text-gray-600" />
+        <Text fontSize={{base: "sm", md: "md"}}>Back</Text>
       </Flex>
       {loading && <Loader />}
 
       {!loading && (
         <>
-          <Stack mt={4} gap={0.5}>
-            <Text fontSize={"1.2rem"} fontWeight={600}>
+          <Stack mt={3} gap={0.5}>
+            <Text fontSize={{base: "lg", md: "xl", lg: "1.2rem"}} fontWeight={600}>
               {data?.customer?.name
                 ? `${data.customer.name}'s ${title}`
                 : title}
             </Text>
-            <Text fontSize={"15px"} color={"gray.600"}>
+            <Text fontSize={{base: "xs", md: "sm", lg: "15px"}} color={"gray.600"}>
               {data?.customer?.name
                 ? subtitle.replace("the loan", `${data.customer.name}'s Loan`)
                 : subtitle}
             </Text>
           </Stack>
-          <Stack mt={4} className="p-5 rounded-md border bg-white">
-            <Flex justify={"space-between"} mb={3}>
-              <Stack>
-                <Text fontSize={"15px"} color={"gray.500"}>
+          <Stack mt={3} className="p-3 md:p-4 lg:p-5 rounded-md border bg-white">
+            <Flex 
+              direction={{base: "column", md: "row"}} 
+              flexWrap="wrap" 
+              gap={{base: 4, md: 2, lg: 0}}
+              justify={"space-between"} 
+              mb={{base: 2, md: 3}}
+            >
+              <Stack minW={{base: "full", sm: "45%", md: "auto"}}>
+                <Text fontSize={{base: "xs", md: "sm", lg: "15px"}} color={"gray.500"}>
                   Loan Amount
                 </Text>
-                <Text fontWeight={500} fontSize={"1.2rem"}>
+                <Text fontWeight={500} fontSize={{base: "md", md: "lg", lg: "1.2rem"}}>
                   ₦
                   {data?.capitalAmount
                     ? formatAmountString(data?.capitalAmount)
                     : "0.00"}
                 </Text>
               </Stack>
-              <Stack>
-                <Text fontSize={"15px"} color={"gray.500"}>
+              <Stack minW={{base: "full", sm: "45%", md: "auto"}}>
+                <Text fontSize={{base: "xs", md: "sm", lg: "15px"}} color={"gray.500"}>
                   Loan Interest
                 </Text>
-                <Text fontWeight={500} fontSize={"1.2rem"}>
+                <Text fontWeight={500} fontSize={{base: "md", md: "lg", lg: "1.2rem"}}>
                   ₦
                   {data?.interestAmount
                     ? formatAmountString(data?.interestAmount)
                     : "0.00"}
-                    <Text fontWeight={400} color="success.600" fontSize="0.8rem">
+                    <Text fontWeight={400} color="success.600" fontSize={{base: "xs", md: "0.8rem"}}>
                   Interest Rate: {data?.application?.interestRate}%
                 </Text>
                 </Text>
-            
               </Stack>
-              <Stack>
-                <Text fontSize={"15px"} color={"gray.500"}>
+              <Stack minW={{base: "full", sm: "45%", md: "auto"}}>
+                <Text fontSize={{base: "xs", md: "sm", lg: "15px"}} color={"gray.500"}>
                   Total Repayment
                 </Text>
-                <Text fontWeight={500} fontSize={"1.2rem"}>
+                <Text fontWeight={500} fontSize={{base: "md", md: "lg", lg: "1.2rem"}}>
                   ₦{formatAmountString(data?.totalAmount) || "0.00"}
                 </Text>
               </Stack>
-              <Stack>
-                <Text fontSize={"15px"} color={"gray.500"}>
+              <Stack minW={{base: "full", sm: "45%", md: "auto"}}>
+                <Text fontSize={{base: "xs", md: "sm", lg: "15px"}} color={"gray.500"}>
                   Duration
                 </Text>
-                <Text fontWeight={500} fontSize={"1.2rem"}>
+                <Text fontWeight={500} fontSize={{base: "md", md: "lg", lg: "1.2rem"}}>
                   {data?.application?.durationInMonths || "N/A"} months
                 </Text>
               </Stack>
-              <Stack>
-                <Text fontSize={"15px"} color={"gray.500"}>
+              <Stack minW={{base: "full", sm: "45%", md: "auto"}}>
+                <Text fontSize={{base: "xs", md: "sm", lg: "15px"}} color={"gray.500"}>
                   Start Date
                 </Text>
-                <Text fontWeight={500} fontSize={"1.2rem"}>
+                <Text fontWeight={500} fontSize={{base: "md", md: "lg", lg: "1.2rem"}}>
                   {startDate && startDate !== "N/A"
                     ? convertDate(startDate)
                     : "N/A"}
                 </Text>
               </Stack>
-              <Stack>
-                <Text fontSize={"15px"} color={"gray.500"}>
+              <Stack minW={{base: "full", sm: "45%", md: "auto"}}>
+                <Text fontSize={{base: "xs", md: "sm", lg: "15px"}} color={"gray.500"}>
                   End Date
                 </Text>
-                <Text fontWeight={500} fontSize={"1.2rem"}>
+                <Text fontWeight={500} fontSize={{base: "md", md: "lg", lg: "1.2rem"}}>
                   {endDate && endDate !== "N/A" ? convertDate(endDate) : "N/A"}
                 </Text>
               </Stack>
             </Flex>
             <Divider />
-            <Stack mt={3} maxW={"60%"}>
-              <Text fontWeight={600} fontSize={"1rem"} mb={2}>
+            <Stack mt={3} maxW={{base: "100%", md: "80%", lg: "60%"}}>
+              <Text fontWeight={600} fontSize={{base: "sm", md: "md", lg: "1rem"}} mb={{base: 1, md: 2}}>
                 Status
               </Text>
               <ThemeProvider theme={theme}>
-                <Progress h={"34px"} value={progressValue} pos={"relative"}>
-                  <chakra.span className="text-black text-center text-sm absolute top-2 inset-x-0">
+                <Progress h={{base: "24px", md: "30px", lg: "34px"}} value={progressValue} pos={"relative"}>
+                  <chakra.span className="text-black text-center text-xs md:text-sm absolute top-1 md:top-2 inset-x-0">
                     {progressValue === 100
                       ? "Loan Fully Repaid"
                       : progressValue === 0
@@ -299,11 +304,11 @@ const LoanDetailView = ({
               </ThemeProvider>
             </Stack>
           </Stack>
-          <Stack mt={6}>
-            <Text fontWeight={600} fontSize={"1.2rem"} mb={2}>
+          <Stack mt={{base: 4, md: 5, lg: 6}}>
+            <Text fontWeight={600} fontSize={{base: "lg", md: "xl", lg: "1.2rem"}} mb={{base: 1, md: 2}}>
               Repayment History
             </Text>
-            <div className="">
+            <div className="w-full">
               {!data?.repaymentSchedule ||
               data.repaymentSchedule.length === 0 ? (
                 <EmptyOrder
@@ -311,47 +316,51 @@ const LoanDetailView = ({
                   content={emptyStateContent}
                 />
               ) : (
-                <TableContainer
-                  border={"1px solid #F9FAFB"}
-                  borderRadius={"10px"}
-                >
-                  <Table>
-                    <Thead bg={"#F2F4F7"}>
-                      {table?.getHeaderGroups()?.map((headerGroup) => (
-                        <Tr key={headerGroup.id}>
-                          {headerGroup.headers?.map((header) => (
-                            <Th
-                              textTransform={"initial"}
-                              px="0px"
-                              key={header.id}
-                            >
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </Th>
-                          ))}
-                        </Tr>
-                      ))}
-                    </Thead>
-                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                      {table?.getRowModel()?.rows?.map((row) => (
-                        <Tr key={row.id}>
-                          {row.getVisibleCells()?.map((cell) => (
-                            <Td key={cell.id} px="0px">
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </Td>
-                          ))}
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+                <div className="overflow-x-auto">
+                  <TableContainer
+                    border={"1px solid #F9FAFB"}
+                    borderRadius={"10px"}
+                    className="min-w-full"
+                  >
+                    <Table className="min-w-[800px]">
+                      <Thead bg={"#F2F4F7"}>
+                        {table?.getHeaderGroups()?.map((headerGroup) => (
+                          <Tr key={headerGroup.id}>
+                            {headerGroup.headers?.map((header) => (
+                              <Th
+                                textTransform={"initial"}
+                                px="0px"
+                                key={header.id}
+                                className="whitespace-nowrap text-xs md:text-sm"
+                              >
+                                {header.isPlaceholder
+                                  ? null
+                                  : flexRender(
+                                      header.column.columnDef.header,
+                                      header.getContext()
+                                    )}
+                              </Th>
+                            ))}
+                          </Tr>
+                        ))}
+                      </Thead>
+                      <Tbody bg={"white"} color="#606060" fontSize={{base: "12px", md: "14px"}}>
+                        {table?.getRowModel()?.rows?.map((row) => (
+                          <Tr key={row.id}>
+                            {row.getVisibleCells()?.map((cell) => (
+                              <Td key={cell.id} px="0px" className="whitespace-nowrap">
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext()
+                                )}
+                              </Td>
+                            ))}
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                </div>
               )}
             </div>
           </Stack>

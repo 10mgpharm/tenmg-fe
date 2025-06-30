@@ -149,48 +149,52 @@ const DiscountTable = (
         heading={`Nothing to show here`} 
         content={`All ${type} results would appear hear.`} 
         /> : 
-        <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-            <Table>
-                <Thead bg={"#F2F4F7"}>
-                {table?.getHeaderGroups()?.map((headerGroup) => (
-                    <Tr key={headerGroup.id}>
-                    {headerGroup.headers?.map((header) => (
-                        <Th
-                        textTransform={"initial"}
-                        px="0px"
-                        key={header.id}
-                        >
-                        {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
+        <div className="overflow-x-auto">
+            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} className="min-w-full">
+                <Table className="min-w-[800px]">
+                    <Thead bg={"#F2F4F7"}>
+                    {table?.getHeaderGroups()?.map((headerGroup) => (
+                        <Tr key={headerGroup.id}>
+                        {headerGroup.headers?.map((header) => (
+                            <Th
+                            textTransform={"initial"}
+                            px="0px"
+                            key={header.id}
+                            className="whitespace-nowrap text-xs md:text-sm"
+                            >
+                            {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                )}
+                            </Th>
+                        ))}
+                        </Tr>
+                    ))}
+                    </Thead>
+                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                    {table?.getRowModel()?.rows?.map((row) => (
+                        <Tr key={row.id}>
+                        {row.getVisibleCells()?.map((cell) => (
+                            <Td key={cell.id} px="0px" className="whitespace-nowrap text-xs md:text-sm">
+                            {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
                             )}
-                        </Th>
+                            </Td>
+                        ))}
+                        </Tr>
                     ))}
-                    </Tr>
-                ))}
-                </Thead>
-                <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
-                {table?.getRowModel()?.rows?.map((row) => (
-                    <Tr key={row.id}>
-                    {row.getVisibleCells()?.map((cell) => (
-                        <Td key={cell.id} px="0px">
-                        {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                        )}
-                        </Td>
-                    ))}
-                    </Tr>
-                ))}
-                </Tbody>
-            </Table>
-            <Pagination
-                meta={metaData}
-                setPageCount={setPageCount}
-            />
-        </TableContainer>
+                    </Tbody>
+                </Table>
+                <Pagination
+                    meta={metaData}
+                    setPageCount={setPageCount}
+                    // className="w-full"
+                />
+            </TableContainer>
+        </div>
     }
     <DeleteModal 
         title="Discount"
@@ -204,24 +208,24 @@ const DiscountTable = (
         onClose={onCloseDeactivate}
         title="Deactivate Discount"
         >
-            <div className="mb-8">
-                <p className='leading-6 text-gray-500 mt-2'>
+            <div className="mb-6 md:mb-8">
+                <p className='leading-6 text-gray-500 mt-2 text-sm md:text-base'>
                 You are about to deactivate the discount
                 <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedDiscount?.couponCode}</span>
                 , once deactivated, this discount will not reflect in applied products.
                 There is no fee for deactivating a discount.
                 </p>
-                <div className="flex flex-col gap-3 mt-8">
+                <div className="flex flex-col gap-3 mt-6 md:mt-8">
                     <Button 
                     isLoading={isLoading}
                     loadingText={"Submitting..."}
                     onClick={() => changeDiscountStatus("deactivate")} 
-                    className='bg-primary-600 text-white p-3 rounded-md'>
+                    className='bg-primary-600 text-white p-2 md:p-3 rounded-md text-sm md:text-base'>
                         Deactivate
                     </Button>
                     <Button 
                     variant={"outline"} 
-                    className='cursor-pointer mt-2' 
+                    className='cursor-pointer mt-2 text-sm md:text-base' 
                     onClick={onCloseDeactivate}>
                         Cancel
                     </Button>
@@ -233,24 +237,24 @@ const DiscountTable = (
         onClose={onCloseActivate}
         title="Activate Discount"
         >
-            <div className="mb-8">
-                <p className='leading-6 text-gray-500 mt-2'>
+            <div className="mb-6 md:mb-8">
+                <p className='leading-6 text-gray-500 mt-2 text-sm md:text-base'>
                 You are about to activate the discount
                 <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedDiscount?.couponCode}</span>
-                , once deactivated, this discount will reflect in applied products.
+                , once activated, this discount will reflect in applied products.
                 There is no fee for activating a discount.
                 </p>
-                <div className="flex flex-col gap-3 mt-8">
+                <div className="flex flex-col gap-3 mt-6 md:mt-8">
                     <Button 
                     isLoading={isLoading}
                     loadingText={"Submitting..."}
                     onClick={() => changeDiscountStatus("activate")} 
-                    className='bg-primary-600 text-white p-3 rounded-md'>
+                    className='bg-primary-600 text-white p-2 md:p-3 rounded-md text-sm md:text-base'>
                         Activate
                     </Button>
                     <Button 
                     variant={"outline"} 
-                    className='cursor-pointer mt-2' 
+                    className='cursor-pointer mt-2 text-sm md:text-base' 
                     onClick={onCloseActivate}>
                         Cancel
                     </Button>

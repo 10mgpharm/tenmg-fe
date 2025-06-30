@@ -251,14 +251,19 @@ const GeneralSettings = () => {
   };
 
   return (
-    <div>
+    <div className="w-full px-2 md:px-4 max-w-[1200px] mx-auto">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <HStack justify={"space-between"}>
+        <HStack
+          justify={"space-between"}
+          direction={{ base: "column", md: "row" }}
+          align={{ base: "start", md: "center" }}
+          spacing={{ base: 2, md: 4 }}
+        >
           <Stack>
-            <Text fontWeight={600} fontSize={"1rem"}>
+            <Text fontWeight={600} fontSize={{ base: "lg", md: "1rem" }}>
               Personal Details
             </Text>
-            <Text fontSize={"14px"} color={"gray.500"}>
+            <Text fontSize={{ base: "12px", md: "14px" }} color={"gray.500"}>
               Update your personal details.
             </Text>
           </Stack>
@@ -271,11 +276,13 @@ const GeneralSettings = () => {
             isDisabled={isLoading}
             isLoading={isLoading}
             loadingText="Submitting..."
+            w={{ base: "full", md: "auto" }}
+            mt={{ base: 2, md: 0 }}
           >
             Save Changes
           </Button>
         </HStack>
-        <Box className="bg-white p-4 rounded-md border mt-5">
+        <Box className="bg-white p-3 md:p-4 lg:p-5 rounded-md border mt-5">
           <ProfileImageUploader
             filePreview={filePreview}
             sessionData={sessionData}
@@ -285,11 +292,14 @@ const GeneralSettings = () => {
             isShowUpload={isShowUpload}
             fileError={fileError}
           />
-          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-            <GridItem colSpan={1}>
+          <Grid
+            templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
+            gap={{ base: 2, md: 4 }}
+          >
+            <GridItem colSpan={{ base: 1, md: 1 }}>
               <Text>Name</Text>
             </GridItem>
-            <GridItem colSpan={1}>
+            <GridItem colSpan={{ base: 1, md: 1 }}>
               <Input
                 type="text"
                 {...register("name", {
@@ -303,15 +313,19 @@ const GeneralSettings = () => {
               )}
             </GridItem>
           </Grid>
-          <Divider my={3} />
-          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-            <GridItem colSpan={1}>
+          <Divider my={{ base: 2, md: 3 }} />
+
+          <Grid
+            templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
+            gap={{ base: 2, md: 4 }}
+          >
+            <GridItem colSpan={{ base: 1, md: 1 }}>
               <Text fontWeight={500}>Email Address</Text>
-              <Text fontSize={"15px"} h={"38px"} color={"gray.500"}>
+              <Text fontSize={{ base: "13px", md: "15px" }} h={"auto"} color={"gray.500"}>
                 Your associated email address
               </Text>
             </GridItem>
-            <GridItem colSpan={1}>
+            <GridItem colSpan={{ base: 1, md: 1 }}>
               <Input
                 type="email"
                 disabled
@@ -330,22 +344,25 @@ const GeneralSettings = () => {
               )}
             </GridItem>
           </Grid>
-          <Divider my={3} />
-          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-            <GridItem colSpan={1}>
+          <Divider my={{ base: 2, md: 3 }} />
+          <Grid
+            templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
+            gap={{ base: 2, md: 4 }}
+          >
+            <GridItem colSpan={{ base: 1, md: 1 }}>
               <Text fontWeight={500}>Role</Text>
               <Text fontSize={"14px"} color={"gray.500"}>
                 Your associated role and permissions level
               </Text>
             </GridItem>
-            <GridItem colSpan={1}>
+            <GridItem colSpan={{ base: 1, md: 1 }}>
               <Input disabled type="text" {...register("role")} />
             </GridItem>
           </Grid>
         </Box>
       </form>
       <Divider my={3} />
-      <HStack justify={"space-between"}>
+      <HStack justify={"space-between"} align={"center"}>
         <Stack>
           <Text fontWeight={600} fontSize={"1rem"}>
             Security
@@ -355,13 +372,18 @@ const GeneralSettings = () => {
           </Text>
         </Stack>
       </HStack>
-      <Box className="bg-white p-4 rounded-md border mt-5">
-        <HStack justify={"space-between"}>
+      <Box className="bg-white p-3 md:p-4 lg:p-5 rounded-md border mt-5">
+        <HStack
+          justify={"space-between"}
+          direction={{ base: "column", md: "row" }}
+          align={{ base: "start", md: "center" }}
+          spacing={{ base: 3, md: 4 }}
+        >
           <Stack>
             <Text fontWeight={600} fontSize={"1rem"}>
               Password
             </Text>
-            <Text fontSize={"14p"} color={"gray.500"}>
+            <Text fontSize={{ base: "13px", md: "14px" }} color={"gray.500"}>
               Change your current password
             </Text>
           </Stack>
@@ -371,17 +393,23 @@ const GeneralSettings = () => {
             fontSize={"15px"}
             h={"38px"}
             px={3}
+            w={{ base: "full", md: "auto" }}
           >
             Change password
           </Button>
         </HStack>
         <Divider my={3} />
-        <HStack justify={"space-between"}>
-          <Stack>
+        <HStack
+          justify={"space-between"}
+          direction={{ base: "column", md: "row" }}
+          align={{ base: "start", md: "center" }}
+          spacing={{ base: 3, md: 4 }}
+        >
+          <Stack maxW={{ base: "100%", md: "70%" }}>
             <Text fontWeight={600} fontSize={"1rem"}>
               Enable Two-Factor Authentication
             </Text>
-            <Text fontSize={"14px"} color={"gray.500"}>
+            <Text fontSize={{ base: "13px", md: "14px" }} color={"gray.500"}>
               Two-Factor authentication adds another layer of security to your
               account.
             </Text>
@@ -395,6 +423,7 @@ const GeneralSettings = () => {
             h={"38px"}
             isDisabled={isLoading2FA}
             px={3}
+            w={{ base: "full", md: "auto" }}
           >
             Setup 2FA
           </Button>

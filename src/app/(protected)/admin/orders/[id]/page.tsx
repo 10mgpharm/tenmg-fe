@@ -49,18 +49,18 @@ const OrderDetails = ({ params }: { params: any }) => {
   }
 
   return (
-    <div className=" p-8">
+    <div className="p-4 md:p-8">
       <div className="flex items-center mb-5">
-        <ArrowLeft className="w-6 h-6" onClick={() => navigate.back()} />
-        <span className="ml-3 text-xl font-bold">
+        <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 cursor-pointer" onClick={() => navigate.back()} />
+        <span className="ml-3 text-lg md:text-xl font-bold truncate">
           Order - {order?.identifier}
         </span>
       </div>
-      <div className="flex justify-between gap-10">
-        <div className="w-full space-y-5">
-          <div className="w-full border rounded-lg shadow-sm p-4">
-            <div className="flex justify-between">
-              <div className="">
+      <div className="flex flex-col lg:flex-row justify-between gap-5 lg:gap-10">
+        <div className="w-full space-y-4 md:space-y-5">
+          <div className="w-full border rounded-lg shadow-sm p-3 md:p-4">
+            <div className="flex flex-wrap justify-between">
+              <div className="mb-2 md:mb-0">
                 <h2 className='text-base font-semibold'>{order?.id}</h2>
                 <p className="text-xs text-gray-400 py12">{convertDate(order?.createdAt)}</p>
               </div>  
@@ -76,7 +76,7 @@ const OrderDetails = ({ params }: { params: any }) => {
               <p className="text-sm ml-3 text-black">{order?.customer?.name}</p>
             </div>
           </div>
-          <div className="w-full border rounded-lg shadow-sm p-4">
+          <div className="w-full border rounded-lg shadow-sm p-3 md:p-4">
             <h2 className="text-base font-semibold">
               Order Items: {order?.items?.length}
             </h2>
@@ -88,24 +88,25 @@ const OrderDetails = ({ params }: { params: any }) => {
                 </p>
               </div>
             )}
-            <table className="min-w-full divide-y table-auto px-3">
-              <tbody>
-                {order?.items?.map((item: any) => (
-                  <tr key={item.id}>
-                    <td className="">
-                      <div className="">
-                        <div className="flex items-center gap-2">
-                          <Image
-                            src={item?.product?.thumbnailFile}
-                            width={"60"}
-                            height={"60"}
-                            alt="img"
-                            className="h-[30px] w-[30px] object-cover rounded-full"
-                          />
-                          <p className="text-sm font-medium py-3">
-                            {item?.product?.name}
-                          </p>
-                        </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y table-auto px-3">
+                <tbody>
+                  {order?.items?.map((item: any) => (
+                    <tr key={item.id}>
+                      <td className="">
+                        <div className="">
+                          <div className="flex items-center gap-2">
+                            <Image
+                              src={item?.product?.thumbnailFile}
+                              width={"60"}
+                              height={"60"}
+                              alt="img"
+                              className="h-[30px] w-[30px] object-cover rounded-full"
+                            />
+                            <p className="text-sm font-medium py-3 line-clamp-2">
+                              {item?.product?.name}
+                            </p>
+                          </div>
                         <p className="text-xs font-medium">
                           <span className="bg-green-100 px-0.5 rounded-sm max-w-max mr-1">
                             Commission:
@@ -128,7 +129,7 @@ const OrderDetails = ({ params }: { params: any }) => {
               </tbody>
             </table>
           </div>
-          <div className="w-full border rounded-lg shadow-sm p-4">
+          <div className="mt-5 md:mt-0 w-full border rounded-lg shadow-sm p-3 md:p-4">
             <h2 className="text-base font-semibold">Payments</h2>
             <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
             <div className="py-1">
@@ -165,14 +166,15 @@ const OrderDetails = ({ params }: { params: any }) => {
             </div>
           </div>
         </div>
-        <div className="w-full border h-fit rounded-lg shadow-sm p-4">
+        <div className="w-full lg:max-w-xs border h-fit rounded-lg shadow-sm p-3 md:p-4">
           <h2 className="text-base font-semibold">Customer</h2>
           <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
           <p className="text-sm font-medium">{order?.customer?.name}</p>
-          <p className="text-xs text-gray-600">{order?.customer?.email}</p>
+          <p className="text-xs text-gray-600 break-words">{order?.customer?.email}</p>
         </div>
       </div>
     </div>
+  </div>
   )
 }
 

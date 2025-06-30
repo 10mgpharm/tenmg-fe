@@ -105,8 +105,8 @@ const BrandSetup = (
 
   return (
     <Stack flex={1}>
-      <Flex justify={"space-between"}>
-        <InputGroup size="md" width={"20rem"} shadow={"sm"}>
+      <Flex flexDir={{ base: "column", md: "row" }} gap={2} justify={"space-between"}>
+        <InputGroup size="md" width={{ base: "100%", md: "20rem" }} shadow={"sm"}>
           <InputLeftElement pl={1}>
             <Icon as={Search} className="w-5 h-5" />
           </InputLeftElement>

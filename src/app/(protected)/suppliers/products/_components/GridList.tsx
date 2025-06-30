@@ -157,7 +157,7 @@ const GridList = (
                             <img 
                             src={item.thumbnailFile}
                             alt=''  
-                            className='rounded-md w-full h-[200px]'
+                            className='rounded-md w-full h-[200px] object-cover'
                             />
                         }
                         <div className="mt-3 mb-6 px-2">

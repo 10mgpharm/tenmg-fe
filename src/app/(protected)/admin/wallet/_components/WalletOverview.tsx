@@ -79,7 +79,7 @@ const WalletOverview = ({
           )}
         </div>
       </div>
-      <div className="absolute top-3 inset-x-0 mx-auto">
+      <div className="absolute top-0 md:top-3 inset-x-0 mx-auto">
         <Image src={image} alt="" className="mx-auto" />
       </div>
     </div>

@@ -170,7 +170,6 @@ const ActivityCharts = ({data, loading}: any) => {
   };
 
   const pieSeries = [data?.users?.supplier, data?.users?.customer, data?.users?.vendor, data?.users?.lender];
-  console.log(data?.loanRequests)
 
   return (
     <div className=''>

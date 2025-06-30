@@ -27,7 +27,7 @@ export function ColumsDiscountFN(
         const serialNumber = pageIndex > 1 ? (pageIndex - 1) * pageSize + info?.row.index + 1 : info?.row.index + 1;
         return(
           <div>
-            <p className="pl-6 font-semibold">
+            <p className="pl-3 md:pl-6 font-semibold">
               {serialNumber}
             </p>
           </div>
@@ -44,7 +44,7 @@ export function ColumsDiscountFN(
       ),
       cell: (info) => (
         <div>
-            <p className="font-medium">{info.row.original?.type} </p>
+            <p className="font-medium text-xs md:text-sm">{info.row.original?.type} </p>
         </div>
       ),
     }),
@@ -83,9 +83,9 @@ export function ColumsDiscountFN(
             : info?.row?.original?.status === "ACTIVE"
             ? "text-[#027A48] bg-[#ECFDF3]"
             : "text-gray-500", 
-            " max-w-min p-1 px-2 rounded-2xl text-xs font-semibold"
+            " max-w-min p-0.5 md:p-1 px-1.5 md:px-2 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-semibold whitespace-nowrap"
             )}>
-                <span className="w-3 h-3 rounded-full">•</span>
+                <span className="w-2 md:w-3 h-2 md:h-3 rounded-full">•</span>
                 {" "}
                {info?.row?.original?.status}
             </p>
