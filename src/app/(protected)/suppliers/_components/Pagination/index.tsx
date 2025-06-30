@@ -15,13 +15,13 @@ const Pagination = ({
   const paginateList = isArrayFormat
     ? meta?.links?.slice(1, -1)
     : Array.from(
-        { length: meta?.last?.match(/page=(\d+)/)?.[1] || 1 },
-        (_, i) => ({
-          label: (i + 1).toString(),
-          url: meta?.first?.replace(/page=\d+/, `page=${i + 1}`),
-          active: meta?.currentPage === i + 1,
-        })
-      );
+      { length: meta?.last?.match(/page=(\d+)/)?.[1] || 1 },
+      (_, i) => ({
+        label: (i + 1).toString(),
+        url: meta?.first?.replace(/page=\d+/, `page=${i + 1}`),
+        active: meta?.currentPage === i + 1,
+      })
+    );
 
   const firstItem = isArrayFormat
     ? meta?.links?.[0]
