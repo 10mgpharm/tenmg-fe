@@ -81,7 +81,7 @@ const Admin = () => {
     {
       id: 1,
       title: "Today's Sales",
-      amount: `${data?.todaySales || 0}`,
+      amount: `₦${data?.todaySales || 0}`,
       changeType: "INCREASE",
       timeStamp: " vs. last week",
       percentage: "2.35%",
@@ -106,19 +106,19 @@ const Admin = () => {
       id: 4,
       title: "Ongoing Loan",
       amount: `${data?.onGoingLoans || 0}`,
-      changeType: "INCREASE",
-      timeStamp: " vs. last week",
-      percentage: "2.35%",
+      changeType: "",
+      timeStamp: "",
+      percentage: "",
     },
   ]
 
   return (
-    <div className="p-8">
+    <div className="p-6 sm:p-8">
       <Stack gap={4}>
-        <Text fontWeight={"semibold"} fontSize={"2xl"}>
+        <Text fontWeight={"semibold"} fontSize={["xl", "2xl"]}>
           Dashboard
         </Text>
-        <SimpleGrid columns={[2, 4]} gap={3}>
+        <SimpleGrid columns={[1, 2, 4]} gap={3}>
           {overviewData?.map((item) => (
             <DashboardCard
               key={item.id}
@@ -136,7 +136,7 @@ const Admin = () => {
       </Stack>
       <Stack mt={6}>
         <HStack justify={"space-between"} mb={3}>
-          <Text fontSize={"xl"} fontWeight={"500"}>
+          <Text fontSize={["lg", "xl"]} fontWeight={"500"}>
             Loan Managment
           </Text>
           <Link
@@ -154,7 +154,7 @@ const Admin = () => {
             )
             : loanData?.length > 0 ? (
               <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-                <Table>
+                <Table className="no-scrollbar">
                   <Thead bg={"#F2F4F7"}>
                     {table?.getHeaderGroups()?.map((headerGroup, i) => (
                       <Tr key={i}>

@@ -311,11 +311,259 @@ const Products = () => {
 
   if (loading) {
     return (
-      <Flex justify="center" align="center" height="200px">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
+        <div className="p-5 sm:p-8">
+            <div className="flex justify-between flex-col">
+                <div className="mb-5">
+                   <h3 className="font-semibold text-xl sm:text-2xl mb-3">Products</h3>
+                    <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
+                        <div className="flex flex-col sm:flex-row items-center gap-3">
+                            <SearchInput
+                                placeholder="Search for a Product"
+                                value={globalFilter}
+                                onChange={(e) => setGlobalFilter(e.target.value)}
+                            />
+                            <div
+                                onClick={onOpenFilter}
+                                className="border cursor-pointer border-gray-300 px-3 py-2 rounded-md flex justify-center items-center gap-2 w-full sm:w-auto">
+                                <CiFilter className="w-5 h-5" />
+                                <p className="text-gray-500 font-medium">Filter</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-row-reverse sm:flex-row items-center gap-4">
+                            <div
+                                className={
+                                    classNames(
+                                        currentView === PRODUCTVIEW.LIST ?
+                                            "bg-primary-50 rounded-md border border-primary-500"
+                                            : "",
+                                        "cursor-pointer p-2")
+                                }
+                                onClick={() => setCurrentView(PRODUCTVIEW.LIST)}
+                            >
+                                <IoListOutline
+                                    className={classNames(currentView === PRODUCTVIEW.LIST ?
+                                        "text-primary-500" :
+                                        "text-gray-600",
+                                        " w-5 h-5")}
+                                />
+                            </div>
+                            <div 
+                            className={
+                                classNames(
+                                    currentView === PRODUCTVIEW.GRID ?
+                                        "bg-primary-50 rounded-md border border-primary-500"
+                                        : "",
+                                    "cursor-pointer p-2")
+                                }
+                                onClick={() => setCurrentView(PRODUCTVIEW.GRID)}>
+                                <RxDashboard
+                                    className={classNames(currentView === PRODUCTVIEW.GRID ?
+                                        "text-primary-500"
+                                        : "text-gray-600",
+                                        " w-5 h-5")}
+                                />
+                            </div>
+                            <Link
+                                href={'/suppliers/products/add-product'}
+                                className="bg-primary-500 text-white p-2 px-5 rounded-md flex-1 sm:min-w-max text-center">
+                                Add Product
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="">
+                {
+                    memoizedData?.length === 0
+                        ? <EmptyOrder
+                            heading={`No Product Found`}
+                            content={globalFilter ? "All products will appear here." : "You currently have no product for this search. All products will appear here."}
+                        /> :
+                        currentView === PRODUCTVIEW.LIST ?
+                            <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"} className="no-scrollbar">
+                                <Table>
+                                    <Thead bg={"#F2F4F7"}>
+                                        {memoizedData?.length > 0 && table?.getHeaderGroups()?.map((headerGroup) => (
+                                            <Tr key={headerGroup.id}>
+                                                {/* <Th textTransform={"initial"} px="0px">
+                                                    <Checkbox
+                                                    _checked={{
+                                                        "& .chakra-checkbox__control": {
+                                                        background: "#1A70B8",
+                                                        borderRadius: 5,
+                                                        },
+                                                    }}
+                                                    marginLeft={5}
+                                                    isChecked={table.getIsAllRowsSelected()}
+                                                    onChange={table.getToggleAllRowsSelectedHandler()}
+                                                        />
+                                                    </Th> */}
+                                                {headerGroup.headers?.map((header) => (
+                                                    <Th
+                                                        textTransform={"initial"}
+                                                        px="10px"
+                                                        key={header.id}
+                                                    >
+                                                        {header.isPlaceholder
+                                                            ? null
+                                                            : flexRender(
+                                                                header.column.columnDef.header,
+                                                                header.getContext()
+                                                            )}
+                                                    </Th>
+                                                ))}
+                                            </Tr>
+                                        ))}
+                                    </Thead>
+                                    <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+                                        {(memoizedData?.length > 0) 
+                                        && table?.getRowModel()?.rows?.map((row) => (
+                                            <Tr key={row.id}>
+                                                {/* <Td px="0px">
+                                                    <Checkbox
+                                                    _checked={{
+                                                        "& .chakra-checkbox__control": {
+                                                        background: "#1A70B8",
+                                                        borderRadius: 5,
+                                                        },
+                                                    }}
+                                                    marginLeft={5}
+                                                    isChecked={row.getIsSelected()}
+                                                    onChange={row.getToggleSelectedHandler()}
+                                                    />
+                                                </Td> */}
+                                                {row.getVisibleCells()?.map((cell) => (
+                                                    <Td key={cell.id} px="10px">
+                                                        {flexRender(
+                                                            cell.column.columnDef.cell,
+                                                            cell.getContext()
+                                                        )}
+                                                    </Td>
+                                                ))}
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                                <Pagination
+                                    links={products?.links}
+                                    prevPageUrl={products?.prevPageUrl}
+                                    nextPageUrl={products?.nextPageUrl}
+                                    firstPageUrl={products?.firstPageUrl}
+                                    lastPageUrl={products?.lastPageUrl}
+                                    setPageCount={setPageCount}
+                                    currentPage={products?.currentPage}
+                                />
+                            </TableContainer>
+                            : <GridList
+                                product={products}
+                                routing="/suppliers/products"
+                                selectedProduct={selectedProduct}
+                                setSelectedProduct={setSelectedProduct}
+                                fetchProducts={fetchProducts}
+                                type="supplier"
+                                isLoading={isLoading}
+                                deleteFn={handleProductDelete}
+                                onOpen={onOpen}
+                                setPageCount={setPageCount}
+                                onOpenActivate={onOpenActivate}
+                                onOpenDeactivate={onOpenDeactivate}
+                            />
+                }
+            </div>
+            <DeleteModal
+                isOpen={isOpen}
+                onClose={onClose}
+                isLoading={isLoading}
+                deleteFn={handleProductDelete}
+            />
+            <RestockModal
+                isOpen={isOpenRestock}
+                onClose={onCloseRestock}
+                product={selectedProduct}
+                fetchProducts={fetchProducts}
+                type="supplier"
+            />
+            <ModalWrapper
+                isOpen={isOpenDeactivate}
+                onClose={onCloseDeactivate}
+                title="Deactivate Product"
+            >
+                <div className="mb-8">
+                    <p className='leading-6 text-gray-500 mt-2'>
+                        You are about to deactivate
+                        <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                        , once deactivated, this product will not appear in your public shop.
+                        There is no fee for deactivating a product.
+                    </p>
+                    <div className="flex flex-col gap-3 mt-8">
+                        <Button
+                            isLoading={isLoading}
+                            loadingText={"Submitting..."}
+                            onClick={() => handleProductDeactivate("deactivate")}
+                            className='bg-primary-600 text-white p-3 rounded-md'>
+                            Deactivate
+                        </Button>
+                        <Button
+                            variant={"outline"}
+                            className='cursor-pointer mt-2'
+                            onClick={onCloseDeactivate}>
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
+            </ModalWrapper>
+            <ModalWrapper
+                isOpen={isOpenActivate}
+                onClose={onCloseActivate}
+                title="Activate Product"
+            >
+                <div className="mb-8">
+                    <p className='leading-6 text-gray-500 mt-2'>
+                        You are about to activate
+                        <span className="font-semibold text-gray-700 ml-1 capitalize">{selectedProduct?.name}</span>
+                        , this product will appear in your public shop.
+                        There is no fee for activating a product.
+                    </p>
+                    <div className="flex flex-col gap-3 mt-8">
+                        <Button
+                            isLoading={isLoading}
+                            loadingText={"Submitting..."}
+                            onClick={() => handleProductDeactivate("activate")}
+                            className='bg-primary-600 text-white p-3 rounded-md'>
+                            Activate
+                        </Button>
+                        <Button
+                            variant={"outline"}
+                            className='cursor-pointer mt-2'
+                            onClick={onCloseActivate}>
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
+            </ModalWrapper>
+            <FilterDrawer
+                brands={brands}
+                category={category}
+                isOpen={isOpenFilter}
+                onClose={onCloseFilter}
+                applyFilters={applyFilters}
+                clearFilters={clearFilters}
+                filterOptions={filterOptions}
+                brandFilter={brandFilter}
+                categoryFilter={categoryFilter}
+                setCategoryFilter={setCategoryFilter}
+                setBrandFilter={setBrandFilter}
+                handleSubmit={handleSubmit}
+                control={control}
+                reset={reset}
+                setValue={setValue}
+                getValues={getValues}
+                trigger={trigger}
+                watch={watch}
+            />
+        </div>
+    )
+}
 
   return (
     <div className="p-5 sm:p-8">

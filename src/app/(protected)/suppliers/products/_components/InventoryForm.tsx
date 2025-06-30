@@ -37,113 +37,104 @@ interface IChildComponentProps {
   watch: any;
 }
 
-const InventoryForm: React.FC<IChildComponentProps> = ({
-  setSteps,
-  register,
-  errors,
-  control,
-  isLoading,
-  isEditing,
-  setValue,
-  data,
-  watch,
-}) => {
-  const isChecked = watch("status");
-  return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md py-8 sm:my-16">
-      <div className="flex items-center justify-between">
-        <HStack onClick={() => setSteps("essentials")} cursor={"pointer"}>
-          <ArrowLeftIcon className="w-5- h-5" />
-          <Text>Go to Products Essentials</Text>
-        </HStack>
-        <div className="">
-          <p className="font-semibold">Steps 3/3</p>
-        </div>
-      </div>
-      <h3 className="font-semibold text-xl text-gray-700 my-5">
-        Product Inventory
-      </h3>
-      <div className="space-y-5">
-        <Stack gap={5}>
-          <FormControl isInvalid={!!errors.quantity}>
-            <FormLabel color={"gray.600"}>Quantity</FormLabel>
-            <Input
-              type="text"
-              id="quantity"
-              placeholder="e.g 500"
-              isInvalid={!!errors.quantity}
-              _focus={{
-                border: !!errors.quantity ? "red.300" : "border-gray-300",
-              }}
-              {...register("quantity", {
-                required: true,
-              })}
-            />
-          </FormControl>
-          <FormControl isInvalid={!!errors.lowStockLevel}>
-            <FormLabel color={"gray.600"}>Low Stock Level</FormLabel>
-            <Input
-              id="lowStockLevel"
-              placeholder="e.g 10"
-              type="text"
-              isInvalid={!!errors.lowStockLevel}
-              _focus={{
-                border: !!errors.lowStockLevel ? "red.300" : "border-gray-300",
-              }}
-              {...register("lowStockLevel", {
-                required: true,
-              })}
-            />
-          </FormControl>
-          <FormControl isInvalid={!!errors.outStockLevel}>
-            <FormLabel color={"gray.600"}>Out of Stock Level</FormLabel>
-            <Input
-              id="outStockLevel"
-              placeholder="0"
-              type="text"
-              isInvalid={!!errors.outStockLevel}
-              _focus={{
-                border: !!errors.outStockLevel ? "red.300" : "border-gray-300",
-              }}
-              {...register("outStockLevel", {
-                required: true,
-              })}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Expiration Date Proximity</FormLabel>
-            <Input
-              id="expiredAt"
-              // min={new Date().toISOString().split("T")[0]}
-              type="date"
-              // defaultValue={data?.expiredAt ? new Date(data?.expiredAt).toISOString().split("T")[0] : ""}
-              placeholder={""}
-              {...register("expiredAt", {
-                required: "Expiry date is required",
-              })}
-            />
-          </FormControl>
-          {/* <FormControl>
+const InventoryForm: React.FC<IChildComponentProps> = (
+    { setSteps, register, errors, control, isLoading, isEditing, setValue, data, watch }
+) => {
+
+    const isChecked = watch("status");
+    return (
+        <div className="max-w-2xl mx-auto bg-white p-6 rounded-md py-8 sm:my-16">
+            <div className="flex items-center justify-between">
+                <HStack onClick={() => setSteps("essentials")} cursor={"pointer"}>
+                    <ArrowLeftIcon className='w-5- h-5' />
+                    <Text>Go to Products Essentials</Text>
+                </HStack>
+                <div className="">
+                    <p className="font-semibold">Steps 3/3</p>
+                </div>
+            </div>
+            <h3 className="font-semibold text-xl text-gray-700 my-5">Product Inventory</h3>
+            <div className="space-y-5">
+                <Stack gap={5}>
+                    <FormControl isInvalid={!!errors.quantity}>
+                        <FormLabel color={"gray.600"}>Quantity</FormLabel>
+                        <Input
+                            type="text"
+                            id="quantity"
+                            placeholder="e.g 500"
+                            isInvalid={!!errors.quantity}
+                            _focus={{
+                                border: !!errors.quantity ? "red.300" : "border-gray-300",
+                            }}
+                            {...register("quantity", {
+                                required: true,
+                            })}
+                        />
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.lowStockLevel}>
+                        <FormLabel color={"gray.600"}>Low Stock Level</FormLabel>
+                        <Input
+                            id="lowStockLevel"
+                            placeholder="e.g 10"
+                            type="text"
+                            isInvalid={!!errors.lowStockLevel}
+                            _focus={{
+                                border: !!errors.lowStockLevel ? "red.300" : "border-gray-300",
+                            }}
+                            {...register("lowStockLevel", {
+                                required: true,
+                            })}
+                        />
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.outStockLevel}>
+                        <FormLabel color={"gray.600"}>Out of Stock Level</FormLabel>
+                        <Input
+                            id="outStockLevel"
+                            placeholder="0"
+                            type="text"
+                            isInvalid={!!errors.outStockLevel}
+                            _focus={{
+                                border: !!errors.outStockLevel ? "red.300" : "border-gray-300",
+                            }}
+                            {...register("outStockLevel", {
+                                required: true,
+                            })}
+                        />
+                    </FormControl>
+                    <FormControl>
                     <FormLabel color={"gray.600"}>Expiration Date Proximity</FormLabel>
                     <Controller
                         name="expiredAt"
                         control={control}
                         rules={{ required: "Expiry date is required" }}
-                        render={({ field }) => (
-                        <DateComponent
-                            startDate={field.value}
-                            setStartDate={field.onChange}
-                            // isMinDate
-                            // minDate={getValues("startDate")}
-                        />
-                        )}
+                        render={({ field }) => {
+                            // Parse the date without timezone adjustment
+                            const fieldDate = field.value ? new Date(field.value) : null;
+                            
+                            // Apply any needed adjustments to remove timezone offset
+                            if (fieldDate) {
+                                // Adjust for local timezone to show the exact date as entered
+                                fieldDate.setMinutes(fieldDate.getMinutes() + fieldDate.getTimezoneOffset());
+                            }
+                            
+                            return (
+                                <DateComponent
+                                    startDate={fieldDate}
+                                    setStartDate={field.onChange}
+                                    minDate={new Date()}
+                                    isMinDate={true}
+                                />
+                            )
+                        }}
                     />
-                </FormControl> */}
-          {/* <FormControl display='flex' alignItems='center'>
+                </FormControl>
+                    {/* <FormControl display='flex' alignItems='center'>
                         <Switch id='email-alerts' mr={3} />
                         <FormLabel htmlFor='email-alerts' color={"gray.600"} mb='0'>
                             Save Inventory Settings
                         </FormLabel>
+                        // isMinDate
+                            // minDate={getValues("startDate")}
                     </FormControl> */}
           <FormControl display="flex" alignItems="center">
             <Controller

@@ -80,8 +80,8 @@ const MedicationTypes = (
 
   return (
     <Stack flex={1}>
-      <Flex justify={"space-between"}>
-        <InputGroup size='md' width={"20rem"} shadow={"sm"}>
+      <Flex flexDir={["column", "row"]} gap={2} justify={"space-between"}>
+        <InputGroup size='md' width={["100%", "20rem"]} shadow={"sm"}>
           <InputLeftElement pl={1}>
             <Icon as={Search} className="w-5 h-5"/>
           </InputLeftElement>

@@ -54,16 +54,16 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
 
     if (loading) {
         return (
-            <Flex justify="center" align="center" height="200px">
-                <Spinner size="xl" />
-            </Flex>
+          <Flex justify="center" align="center" height="200px">
+            <Spinner size="xl" />
+          </Flex>
         )
     }
 
     const productPrice = Number(products?.actualPrice) - Number(products?.discountPrice);
 
     return (
-      <div className="p-8">
+      <div className="p-6 sm:p-8">
         <Flex justify={"space-between"} align={"center"}>
           <HStack onClick={() => router.back()} cursor={"pointer"}>
             <ArrowLeftIcon className="w-5 h-5" />
@@ -78,7 +78,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
         </Flex>
         <div className="mt-5">
           <div className="flex flex-col lg:flex-row  gap-5 mb-3">
-            <div className="p-5 bg-white rounded-md relative">
+            <div className="sm:p-5 bg-white rounded-md relative">
               <Image
                 src={products?.thumbnailFile}
                 fallbackSrc={productImage}

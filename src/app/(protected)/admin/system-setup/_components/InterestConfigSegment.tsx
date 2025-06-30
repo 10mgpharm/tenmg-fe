@@ -72,14 +72,14 @@ const InterestConfigSegment = ({
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-between items-center">
         <div>
           <h2 className="text-[17px] font-semibold">Product Configuration</h2>
           <p className="text-[15px] text-gray-700 pt-1">
             Set 10mg commission on each product
           </p>
         </div>
-        <Button onClick={handleSubmit(onSubmit)} isLoading={isLoading}>
+        <Button w={["full", "auto"]} onClick={handleSubmit(onSubmit)} isLoading={isLoading}>
           Save Changes
         </Button>
       </div>

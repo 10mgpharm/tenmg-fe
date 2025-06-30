@@ -67,7 +67,7 @@ const Insight = () => {
 
   return (
     <div className='p-8 min-h-[calc(100vh-108px)]'>
-        <h2 className='text-2xl font-semibold text-gray-700'>Insight</h2>
+        <h2 className='text-xl sm:text-2xl font-semibold text-gray-700'>Insight</h2>
         <div className="flex items-center justify-between mt-4">
             <div className="">
               <select onChange={(e) => setFilterQuery(e.target.value)} className='p-2 shadow-sm rounded-sm focus:outline-none'>
@@ -94,7 +94,7 @@ const Insight = () => {
           )
           : (
             <div>
-              <div className="sm:flex gap-5 mt-6">
+              <div className="flex flex-col sm:flex-row gap-5 mt-6">
                 <div className="flex-1 bg-white p-5 rounded-md">
                   <h3 className="text-gray-600 font-semibold text-lg mb-5">Total Product Sold</h3>
                     {

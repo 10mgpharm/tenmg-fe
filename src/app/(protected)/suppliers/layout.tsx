@@ -1,11 +1,8 @@
-import type { Metadata } from "next";
-import TopNavBar from "./_components/TopNavBar";
-import SideBar from "./_components/SideBar";
-import Footer from "./_components/Footer";
 import config from "@/lib/config";
+import type { Metadata } from "next";
+import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/auth";
 import { NextAuthUserSession } from "@/types";
 import SupplierClientsideLayout from "./_components/SupplierClientsideLayout";
 
@@ -27,14 +24,4 @@ export default async function SupplierLayout({
   return (
     <SupplierClientsideLayout session={session} >{children} </SupplierClientsideLayout>
   );
-  // <>
-  //   <TopNavBar route="/suppliers/notifications" />
-  //   <SideBar businessStatus={session?.user?.businessStatus} />
-  //   <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
-  //     <div className="min-h-[calc(100vh-150px)]">
-  //       {children}
-  //     </div>
-  //     <Footer />
-  //   </main>
-  // </>
 }

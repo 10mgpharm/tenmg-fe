@@ -58,7 +58,6 @@ const LoanConfig = () => {
   return (
     <div className="space-y-10">
       <InterestConfigSegment data={data?.general} refetch={() => getData()} />
-
       <LoanConfigSegment data={data?.loan} refetch={() => getData()} />
     </div>
   );

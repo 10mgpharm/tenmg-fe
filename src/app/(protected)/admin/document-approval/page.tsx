@@ -171,7 +171,7 @@ const DocumentApproval = () => {
         </div>
       </div>
       <Tabs onChange={handleTabsChange} variant={"unstyled"}>
-        <TabList>
+        <TabList className="no-scrollbar overflow-x-scroll">
           <Tab
             _selected={{ color: "white", bg: "#1A70B8", borderRadius: "10px" }}
           >
