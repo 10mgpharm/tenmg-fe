@@ -34,6 +34,7 @@ interface Props {
   transactions: LoanTransactionProps[];
   adminTransactions: LoanTransactionProps[];
   fetchingWallet: () => void;
+  isLoading: boolean;
 }
 const LoanWalletTab = ({
   data,
@@ -41,6 +42,7 @@ const LoanWalletTab = ({
   adminTransactions,
   fetchingWallet,
   bankInfo,
+  isLoading,
 }: Props) => {
   const [otp, setOtp] = useState("");
   const [amount, setAmount] = useState<number>();
@@ -160,6 +162,7 @@ const LoanWalletTab = ({
               type="credit"
               data={transactions}
               hasPagination={false}
+              isLoading={isLoading}
             />
           </TabPanel>
 
@@ -168,6 +171,7 @@ const LoanWalletTab = ({
               type="repayment"
               data={adminTransactions}
               hasPagination={false}
+              isLoading={isLoading}
             />
           </TabPanel>
         </TabPanels>

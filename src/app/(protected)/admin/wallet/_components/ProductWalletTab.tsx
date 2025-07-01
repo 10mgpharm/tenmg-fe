@@ -10,7 +10,11 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { BankAccountProps, NextAuthUserSession, WalletProductProps } from "@/types";
+import {
+  BankAccountProps,
+  NextAuthUserSession,
+  WalletProductProps,
+} from "@/types";
 import totalPattern from "@public/assets/images/bgPattern.svg";
 import orderPattern from "@public/assets/images/orderPattern.svg";
 import productPattern from "@public/assets/images/productpatterns.svg";
@@ -28,10 +32,16 @@ interface Props {
   transactions: WalletProductProps;
   bankInfo?: BankAccountProps;
   setPageCount: Dispatch<SetStateAction<number>>;
+  isLoading: boolean;
 }
-const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet }: Props) => {
-
-  const [otp, setOtp] = useState('');
+const ProductWalletTab = ({
+  transactions,
+  setPageCount,
+  bankInfo,
+  fetchingWallet,
+  isLoading,
+}: Props) => {
+  const [otp, setOtp] = useState("");
   const [amount, setAmount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -54,14 +64,14 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet
     setLoading(true);
     const payload = {
       amount: amount,
-      otp: otp
-    }
+      otp: otp,
+    };
     try {
       const response = await requestClient({ token }).post(
         `/admin/withdraw-funds`,
         payload
       );
-      if( response.status === 200) {
+      if (response.status === 200) {
         toast.success("Withdrawal successful");
         fetchingWallet();
         onCloseOTP();
@@ -79,7 +89,9 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px] md:gap-4 mt-5 c">
         <WalletOverview
           title="Total Commission Earned"
-          value={`₦${Number(transactions?.totalCommissionsEarned ?? 0.00)?.toLocaleString()}`}
+          value={`₦${Number(
+            transactions?.totalCommissionsEarned ?? 0.0
+          )?.toLocaleString()}`}
           fromColor="from-[#53389E]"
           toColor="to-[#7F56D9]"
           image={totalPattern}
@@ -87,11 +99,15 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet
           hasWidthdrawButton={false}
           pendingBg="bg-[#c5b4f5]"
           pendingText="text-[#7F56D9]"
-          pendingBalance={`${Number(transactions?.totalPendingCommissions ?? 0.00)?.toLocaleString()}`}
+          pendingBalance={`${Number(
+            transactions?.totalPendingCommissions ?? 0.0
+          )?.toLocaleString()}`}
         />
         <WalletOverview
           title="Total Payouts to Suppliers"
-          value={`₦${Number(transactions?.totalSupplierPayout ?? 0.00)?.toLocaleString()}`}
+          value={`₦${Number(
+            transactions?.totalSupplierPayout ?? 0.0
+          )?.toLocaleString()}`}
           fromColor="from-[#DC6803]"
           toColor="to-[#DC6803]"
           image={orderPattern}
@@ -99,11 +115,15 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet
           hasWidthdrawButton={false}
           pendingBg="bg-[#FFF4E5]"
           pendingText="text-[#DC6803]"
-          pendingBalance={`${Number(transactions?.totalPendingSupplierPayout ?? 0.00)?.toLocaleString()}`}
+          pendingBalance={`${Number(
+            transactions?.totalPendingSupplierPayout ?? 0.0
+          )?.toLocaleString()}`}
         />
         <WalletOverview
           title="Wallet Balance"
-          value={`₦${Number(transactions?.wallet?.currentBalance ?? 0.00)?.toLocaleString()}`}
+          value={`₦${Number(
+            transactions?.wallet?.currentBalance ?? 0.0
+          )?.toLocaleString()}`}
           fromColor="from-[#E31B54]"
           toColor="to-[#E31B54]"
           image={productPattern}
@@ -160,6 +180,7 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet
               data={transactions?.payouts}
               hasPagination={false}
               emptyStateHeader="No Payouts"
+              isLoading={isLoading}
             />
           </TabPanel>
           <TabPanel px={0}>
@@ -169,6 +190,7 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet
               data={transactions?.transactions}
               hasPagination={false}
               emptyStateHeader={"No Transactions"}
+              isLoading={isLoading}
             />
           </TabPanel>
         </TabPanels>
@@ -181,14 +203,14 @@ const ProductWalletTab = ({ transactions, setPageCount, bankInfo, fetchingWallet
         setAmount={setAmount}
         bankDetails={bankInfo}
       />
-      <OTPModal 
+      <OTPModal
         isOpen={isOpenOTP}
         onClose={onCloseOTP}
         otp={otp}
         setOtp={setOtp}
         loading={loading}
         handleWithdraw={handleWithdraw}
-       />
+      />
     </div>
   );
 };

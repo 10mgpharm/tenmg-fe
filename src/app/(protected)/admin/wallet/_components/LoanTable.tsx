@@ -30,6 +30,7 @@ interface LoanTableProps {
   pageCount?: number;
   setPageCount?: (pageCount: number) => void;
   data: LoanTransactionProps[];
+  isLoading?: boolean;
   metaData?: {
     links: any;
     prevPageUrl: string | null;
@@ -51,6 +52,7 @@ const LoanTable = ({
   hasPagination,
   metaData,
   setPageCount,
+  isLoading,
 }: LoanTableProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<LoanTransactionProps>();
@@ -71,12 +73,16 @@ const LoanTable = ({
 
   return (
     <div>
-      {data?.length === 0 ? (
+      {isLoading ? (
+        <Flex justify="center" align="center" height="200px">
+          <Spinner size="xl" />
+        </Flex>
+      ) : !isLoading && data?.length === 0 ? (
         <EmptyOrder
           heading={`No Result Found`}
           content={`No record found for this request`}
         />
-      ) : data?.length > 0 ? (
+      ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
             <Thead bg={"#F2F4F7"}>
@@ -115,10 +121,6 @@ const LoanTable = ({
             <Pagination {...metaData} setPageCount={setPageCount} />
           )}
         </TableContainer>
-      ) : (
-        <Flex justify="center" align="center" height="200px">
-          <Spinner size="xl" />
-        </Flex>
       )}
       <TransactionDetails
         selectedRow={selectedRow}
