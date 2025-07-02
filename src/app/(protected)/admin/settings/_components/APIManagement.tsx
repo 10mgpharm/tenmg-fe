@@ -35,36 +35,35 @@ const APIManagement = () => {
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
-  // console.log("sessionData", sessionData);
 
-  const [meta, setMeta] = useState({})
+  const [meta, setMeta] = useState({});
   const [pageCount, setPageCount] = useState(1);
 
-
   useEffect(() => {
-    console.log("use effect");
     const fetchApiManagementData = async () => {
       try {
         const response = await requestClient({
           token: sessionData?.user?.token,
         }).get(`/admin/settings/api-manage?page=${pageCount}&limit=10`);
 
-        console.log("res", response?.data?.data?.data);
         setApiData(response?.data?.data?.data);
         const meta = {
           links: response.data.data.links,
           currentPage: response.data.data.currentPage,
-        }
+        };
         setMeta(meta);
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
-    }
+    };
     if (sessionData) fetchApiManagementData();
-  }, [sessionData, pageCount])
+  }, [sessionData, pageCount]);
 
   // Fn: to revoke api
-  const revokeApi = async (business_id: string, environment: "test" | "live") => {
+  const revokeApi = async (
+    business_id: string,
+    environment: "test" | "live"
+  ) => {
     //     POST <<BASE_URL>>/api/v1/admin/settings/api-manage
     // payload: {
     //   “businessId”: 7,
@@ -76,12 +75,10 @@ const APIManagement = () => {
         token: sessionData?.user?.token,
       }).post("/admin/settings/api-manage", {
         businessId: business_id,
-        environment
+        environment,
       });
       console.log("resp", resp);
-    } catch (error) {
-
-    };
+    } catch (error) {}
   };
 
   const table = useReactTable({
@@ -120,9 +117,9 @@ const APIManagement = () => {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </Th>
                   ))}
                 </Tr>
@@ -143,20 +140,6 @@ const APIManagement = () => {
               ))}
             </Tbody>
           </Table>
-          {/* <HStack mt={5} justify={"space-between"}>
-              <Flex alignItems={"center"} gap={2}>
-                  <FaChevronLeft className='text-gray-500' />
-                  <Text className='text-gray-500'>Prev</Text>
-              </Flex>
-              {
-                  data?.length > 10 ? <Pagination />
-                  :  <span className="bg-primary-50 py-2 px-4 rounded-md text-primary-600 cursor-pointer">1</span>
-              }
-              <Flex alignItems={"center"} gap={2}>
-                  <Text className='text-gray-500'>Next</Text>
-                  <FaChevronRight className='text-gray-500' />
-              </Flex>
-          </HStack> */}
         </TableContainer>
       )}
       <Pagination meta={meta} setPageCount={setPageCount} />
@@ -165,4 +148,3 @@ const APIManagement = () => {
 };
 
 export default APIManagement;
-
