@@ -35,6 +35,7 @@ const TransactionTab = ({
   metaData,
   setPageCount,
   emptyStateHeader,
+  isLoading,
 }: {
   data: Payouts;
   type: string;
@@ -57,7 +58,6 @@ const TransactionTab = ({
   isLoading?: boolean;
   emptyStateHeader: string;
 }) => {
- 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenPayout,
@@ -90,12 +90,16 @@ const TransactionTab = ({
 
   return (
     <div>
-      {data?.data?.length === 0 ? (
+      {isLoading ? (
+        <Flex justify="center" align="center" height="200px">
+          <Spinner size="xl" />
+        </Flex>
+      ) : !isLoading && data?.data?.length === 0 ? (
         <EmptyOrder
           heading={emptyStateHeader}
           content={`No record found for this request.`}
         />
-      ) : data?.data?.length > 0 ? (
+      ) : (
         <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
           <Table>
             <Thead bg={"#F2F4F7"}>
@@ -135,25 +139,20 @@ const TransactionTab = ({
             <Pagination {...metaData} setPageCount={setPageCount} />
           )}
         </TableContainer>
-      ) : (
-        <Flex justify="center" align="center" height="200px">
-          <Spinner size="xl" />
-        </Flex>
-      )
-    }
-    <TransactionDetails 
-    isOpen={isOpen} 
-    onClose={onClose} 
-    type={type} 
-    orderId={selectedRow?.order?.identifier}
-    selectedRow={selectedRow}
-    />
-    <InitiatePayout
-      isOpen={isOpenPayout}
-      onClose={onClosePayout}
-      walletType={walletType}
-    />
-  </div>
+      )}
+      <TransactionDetails
+        isOpen={isOpen}
+        onClose={onClose}
+        type={type}
+        orderId={selectedRow?.order?.identifier}
+        selectedRow={selectedRow}
+      />
+      <InitiatePayout
+        isOpen={isOpenPayout}
+        onClose={onClosePayout}
+        walletType={walletType}
+      />
+    </div>
   );
 };
 
