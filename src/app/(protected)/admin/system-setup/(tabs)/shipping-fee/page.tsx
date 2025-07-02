@@ -66,11 +66,13 @@ const ShippingFee = () => {
             Shipping Fee Configuration
           </h2>
           <p className="text-[15px] text-gray-700 pt-1">
-            Customize how much you charge for shipping — by location
+            Set how much you charge for shipping
           </p>
         </div>
 
-        <Button width={["full", "auto"]} onClick={() => setOpenConfigModel()}>Configure</Button>
+        <Button width={["full", "auto"]} onClick={() => setOpenConfigModel()}>
+          Configure
+        </Button>
       </div>
 
       <div className="bg-white mt-5 p-5 rounded-md flex flex-col gap-5 ">
@@ -81,9 +83,7 @@ const ShippingFee = () => {
             value={shippingFeeData?.type}
           />
           <small className="text-primary-600 w-fit text-[13px] bg-primary-600/5 rounded-full px-2 py-1 ">
-            {shippingFeeData?.type === "FIXED"
-              ? "One price for all locations"
-              : "Different location, Different price"}
+            {"One price for all locations"}
           </small>
         </div>
 
@@ -95,9 +95,7 @@ const ShippingFee = () => {
               value={formatAmount(shippingFeeData?.fee)}
             />
             <small className="text-primary-600 w-fit text-[13px] bg-primary-600/5 rounded-full px-2 py-1 ">
-              {shippingFeeData?.type === "FIXED"
-                ? "This amount serves as a uniform shipping fee for all regions."
-                : "Set specific shipping fees based on location."}
+              {"This amount serves as a uniform shipping fee for all regions."}
             </small>
           </div>
         )}
