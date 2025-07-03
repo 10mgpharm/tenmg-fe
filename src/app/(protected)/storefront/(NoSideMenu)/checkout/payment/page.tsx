@@ -61,12 +61,10 @@ export default function PaymentPage() {
     sycnCart,
     isLoading: cartLoading,
   } = useCartStore();
-  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus } = usePaymentStatusStore();
-  
+  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus } =
+    usePaymentStatusStore();
 
-
-  const { orderId: lastPayWith10mgOrderId } =
-  usePaymentStatusStore();
+  const { orderId: lastPayWith10mgOrderId } = usePaymentStatusStore();
   const { cartId: currentCartId } = useCartStore();
 
   useEffect(() => {
@@ -82,13 +80,22 @@ export default function PaymentPage() {
 
   // Clear cart and reload page when payment status becomes APPROVED - only if cart is not empty
   useEffect(() => {
-    if (paymentStatus === "APPROVED" && lastPayWith10mgOrderId === currentCartId) {
+    if (
+      paymentStatus === "APPROVED" &&
+      lastPayWith10mgOrderId === currentCartId
+    ) {
       clearCart(userToken);
       setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+        window.location.reload();
+      }, 1000);
     }
-  }, [paymentStatus, clearCart, userToken, lastPayWith10mgOrderId, currentCartId]);
+  }, [
+    paymentStatus,
+    clearCart,
+    userToken,
+    lastPayWith10mgOrderId,
+    currentCartId,
+  ]);
 
   useEffect(() => {
     if (cart) {
@@ -689,7 +696,7 @@ export default function PaymentPage() {
                       {discountValue ? (
                         <p className="font-semibold">
                           <span className="text-gray-400 line-through">
-                            {formatAmount(Number(cartItems?.orderTotal))}
+                            {formatAmount(Number(cartItems?.grandTotal))}
                           </span>{" "}
                           <span className="text-success-500">
                             {formatAmount(Number(discountValue?.grandTotal))}
@@ -697,7 +704,7 @@ export default function PaymentPage() {
                         </p>
                       ) : (
                         <p className="font-semibold">
-                          {formatAmount(Number(cartItems?.orderTotal))}
+                          {formatAmount(Number(cartItems?.grandTotal))}
                         </p>
                       )}
                       {discountValue && (

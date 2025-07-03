@@ -13,6 +13,7 @@ import { NotificationProps } from "../../suppliers/_components/TopNavBar/Notific
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Pagination from "../../suppliers/_components/Pagination";
+import NewPagination from "../../suppliers/_components/ResponsivePagination";
 
 const Notifications = () => {
 
@@ -216,6 +217,7 @@ const Notifications = () => {
                                                 </div>
                                             </div>
                                         ))}
+                                    <NewPagination meta={meta} setPageCount={setPageCount} />
                                 </div>
                             </div>
                             <div className="flex-1 p-6 hidden lg:block">
@@ -257,7 +259,7 @@ const Notifications = () => {
                         </div>
                             : null
             }
-            <Pagination meta={meta} setPageCount={setPageCount} />
+            {/* <Pagination meta={meta} setPageCount={setPageCount} /> */}
         </div>
     )
 }
