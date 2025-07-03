@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-table";
 import EmptyOrder from "@/app/(protected)/suppliers/orders/_components/EmptyOrder";
 import {
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -19,12 +20,13 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-// import { APIData } from "@/data/mockdata";
 import { ColumsAPIFN } from "../tables/apiTable";
 import { NextAuthUserSession } from "@/types";
 import { useSession } from "next-auth/react";
 import requestClient from "@/lib/requestClient";
 import Pagination from "@/app/(protected)/suppliers/_components/Pagination";
+import ConfirmActionModal from "./ConfirmActionModal";
+import { toast } from "react-toastify";
 
 const APIManagement = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -32,58 +34,71 @@ const APIManagement = () => {
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [apiData, setApiData] = useState<any>({});
+  const [confirmAction, setConfirmAction] = useState(false);
+  const [businessData, setBusinessData] = useState<{
+    businessId: number;
+    secret: string;
+    key: string;
+  }>();
+  const [revokingApi, setRevokingApi] = useState(false);
 
   const session = useSession();
   const sessionData = session.data as NextAuthUserSession;
 
   const [meta, setMeta] = useState({});
   const [pageCount, setPageCount] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchApiManagementData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await requestClient({
+        token: sessionData?.user?.token,
+      }).get(`/admin/settings/api-manage?page=${pageCount}&limit=10`);
+
+      setApiData(response?.data?.data?.data);
+      const meta = {
+        links: response.data.data.links,
+        currentPage: response.data.data.currentPage,
+      };
+      setMeta(meta);
+    } catch (e) {
+      console.log(e);
+    }
+
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const fetchApiManagementData = async () => {
-      try {
-        const response = await requestClient({
-          token: sessionData?.user?.token,
-        }).get(`/admin/settings/api-manage?page=${pageCount}&limit=10`);
-
-        setApiData(response?.data?.data?.data);
-        const meta = {
-          links: response.data.data.links,
-          currentPage: response.data.data.currentPage,
-        };
-        setMeta(meta);
-      } catch (e) {
-        console.log(e);
-      }
-    };
     if (sessionData) fetchApiManagementData();
   }, [sessionData, pageCount]);
 
   // Fn: to revoke api
-  const revokeApi = async (
-    business_id: string,
-    environment: "test" | "live"
-  ) => {
-    //     POST <<BASE_URL>>/api/v1/admin/settings/api-manage
-    // payload: {
-    //   “businessId”: 7,
-    //   “environment”:“live” // either test or live
-    // } this endpoint is to revoke an api key.
-    console.log("business_id", business_id);
+  const revokeApi = async () => {
+    setRevokingApi(true);
     try {
-      const resp = await requestClient({
+      const { status } = await requestClient({
         token: sessionData?.user?.token,
       }).post("/admin/settings/api-manage", {
-        businessId: business_id,
-        environment,
+        ...businessData,
+        environment: "live",
       });
-      console.log("resp", resp);
-    } catch (error) {}
+      if (status === 200) {
+        toast.success("Api revoked successfully");
+        fetchApiManagementData();
+        setBusinessData(null);
+        setConfirmAction(false);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    }
+
+    setRevokingApi(false);
   };
 
   const table = useReactTable({
     data: apiData,
-    columns: ColumsAPIFN(revokeApi),
+    columns: ColumsAPIFN(setBusinessData, setConfirmAction, pageCount),
     onSortingChange: setSorting,
     state: {
       sorting,
@@ -101,19 +116,34 @@ const APIManagement = () => {
 
   return (
     <div>
-      {apiData?.length === 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center min-h-[300px]">
+          <Spinner size={"sm"} />
+        </div>
+      ) : !isLoading && apiData?.length === 0 ? (
         <EmptyOrder
           heading={`No API Yet`}
           content={`You currently have no API yet. All APIs will appear here.`}
         />
       ) : (
-        <TableContainer border={"1px solid #F9FAFB"} borderRadius={"10px"}>
-          <Table>
-            <Thead bg={"#F2F4F7"}>
+        <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
+          <Table
+            sx={{
+              tableLayout: "fixed",
+            }}
+            width="100%"
+          >
+            <Thead bg="#F2F4F7">
               {table?.getHeaderGroups()?.map((headerGroup) => (
                 <Tr key={headerGroup.id}>
                   {headerGroup.headers?.map((header) => (
-                    <Th textTransform={"initial"} px="0px" key={header.id}>
+                    <Th
+                      textTransform="initial"
+                      pl="20px"
+                      key={header.id}
+                      // distribute columns equally
+                      width={`${100 / headerGroup.headers.length}%`}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -125,11 +155,11 @@ const APIManagement = () => {
                 </Tr>
               ))}
             </Thead>
-            <Tbody bg={"white"} color="#606060" fontSize={"14px"}>
+            <Tbody bg="white" color="#606060" fontSize="14px">
               {table?.getRowModel()?.rows?.map((row) => (
                 <Tr key={row.id}>
                   {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} px="0px">
+                    <Td key={cell.id} pl="20px">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -140,9 +170,21 @@ const APIManagement = () => {
               ))}
             </Tbody>
           </Table>
+          <Pagination meta={meta} setPageCount={setPageCount} />
         </TableContainer>
       )}
-      <Pagination meta={meta} setPageCount={setPageCount} />
+
+      {confirmAction && (
+        <ConfirmActionModal
+          open={confirmAction}
+          close={() => {
+            setConfirmAction(false);
+            setBusinessData(null);
+          }}
+          continueAction={revokeApi}
+          isLoading={revokingApi}
+        />
+      )}
     </div>
   );
 };
