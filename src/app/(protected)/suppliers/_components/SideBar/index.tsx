@@ -23,6 +23,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { BusinessStatus } from "@/constants";
 import { NextAuthUserSession } from '@/types'
 import requestClient from '@/lib/requestClient'
+import { LogOutIcon } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/suppliers', icon: HomeIcon, current: true },
@@ -138,6 +139,21 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
                         )
                       })}
                     </ul>
+                  </li>
+                  <li className="mt-auto">
+                    <button
+                      onClick={async () => {
+                      await signOut();
+                      redirect("/");
+                    }}
+                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:text-red-600"
+                    >
+                      <LogOutIcon
+                        aria-hidden="true"
+                        className="h-6 w-6 shrink-0 text-red-500 group-hover:text-red-600"
+                      />
+                      Logout
+                    </button>
                   </li>
                 </ul>
               </nav>

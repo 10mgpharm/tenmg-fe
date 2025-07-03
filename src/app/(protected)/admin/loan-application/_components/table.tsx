@@ -159,7 +159,7 @@ const DataTable = () => {
   return (
     <div>
       <HStack justify={"space-between"}>
-        <Flex mt={4} gap={2} wrap={"wrap"}>
+        <Flex mt={4} gap={2} wrap={["wrap", "nowrap"]}>
           <SearchInput
             placeholder="Search for a loan"
             value={globalFilter}
@@ -168,6 +168,7 @@ const DataTable = () => {
           <Button
             h={"40px"}
             px={4}
+            w={["100%", "auto"]}
             variant={"outline"}
             className="border text-gray-600 bg-white"
             onClick={onOpenFilter}
