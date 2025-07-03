@@ -81,7 +81,7 @@ const Evalution = ({ params }: { params: { id: string } }) => {
     fetchCustomerTnx();
   }, [fetchCustomerTnx, token]);
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       {loading ? (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
@@ -121,10 +121,10 @@ const Evalution = ({ params }: { params: { id: string } }) => {
             align={"center"}
             mt={4}
             flexWrap="wrap"
-            gap={2}
+            gap={[4,2]}
           >
             <Box maxW="lg">
-              <h3 className="font-semibold text-xl">
+              <h3 className="font-semibold text-lg sm:text-xl">
                 Reference No: {tnxHistoryData?.identifier}{" "}
               </h3>
               <p className="text-sm text-gray-500 mt-1">
@@ -161,8 +161,8 @@ const Evalution = ({ params }: { params: { id: string } }) => {
               </Button>
             </Flex>
           </Flex>
-          <div className="grid grid-cols-6 gap-5 mt-5">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-5 mt-5">
+            <div className="col-span-1 md:col-span-2">
               <div className="space-y-7">
                 <div className="border rounded-md">
                   <div className="border-t-md p-4 bg-gray-100">
@@ -203,8 +203,8 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             </div>
-            <div className="col-span-4 space-y-5">
-              <div className="flex gap-5">
+            <div className="col-span-1 md:col-span-4 space-y-5">
+              <div className="flex flex-col sm:flex-row gap-5">
                 <div className="flex-1 space-y-2.5">
                   <div className="border rounded-md p-6">
                     <div className="space-y-2">
@@ -244,23 +244,23 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                   </div>
                 </div>
                 <div className="flex-1 space-y-2.5">
-                  <div className="border flex items-center gap-5 py-8 px-6 rounded-md">
-                    <div className="space-y-3 w-1/3">
-                      <h3 className="font-semibold">Credit Score</h3>
+                  <div className="border flex flex-col sm:flex-row items-center gap-5 py-8 px-6 rounded-md">
+                    <div className="space-y-3 w-full sm:w-1/3 mb-4 sm:mb-0">
+                      <h3 className="font-semibold text-center sm:text-left">Credit Score</h3>
                       <div className="space-y-1.5">
-                        <p className="text-sm text-gray-500">Score Category</p>
-                        <p className="text-xl font-semibold text-gray-800">
+                        <p className="text-sm text-gray-500 text-center sm:text-left">Score Category</p>
+                        <p className="text-xl font-semibold text-gray-800 text-center sm:text-left">
                           {tnxHistoryData?.affordability?.category ?? "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1.5">
-                        <p className="text-sm text-gray-500">Score Value</p>
-                        <p className="text-xl font-semibold text-gray-800">
+                        <p className="text-sm text-gray-500 text-center sm:text-left">Score Value</p>
+                        <p className="text-xl font-semibold text-gray-800 text-center sm:text-left">
                           {`${tnxHistoryData?.creditScoreResult?.scoreValue}/${tnxHistoryData?.creditScoreResult?.scoreTotal}`}
                         </p>
                       </div>
                     </div>
-                    <div style={{ width: 140, height: 140 }}>
+                    <div className="mx-auto sm:mx-0" style={{ width: 140, height: 140 }}>
                       <CircularProgressbar
                         value={Math.round(
                           tnxHistoryData?.creditScoreResult?.scorePercent
@@ -280,9 +280,9 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                     </div>
                   </div>
                   <div className="border rounded-md p-5">
-                    <h3 className="font-semibold mb-3">Affordability Amount</h3>
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
+                    <h3 className="font-semibold mb-3 text-center sm:text-left">Affordability Amount</h3>
+                    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-0">
+                      <div className="space-y-1 text-center sm:text-left">
                         <p className="text-sm text-gray-400">Min Amount</p>
                         <h3 className="text-lg font-semibold text-gray-700">
                           ₦
@@ -291,7 +291,7 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                           )}
                         </h3>
                       </div>
-                      <div className="space-y-1">
+                      <div className="space-y-1 text-center sm:text-left">
                         <p className="text-sm text-gray-400">Max Amount</p>
                         <h3 className="text-lg font-semibold text-gray-700">
                           ₦
@@ -305,15 +305,15 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             </div>
-            <div className="col-span-6">
+            <div className="col-span-1 md:col-span-6">
               {tnxHistoryData && (
                 <TransactionSummary tnxHistoryData={tnxHistoryData} />
               )}
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 md:col-span-2">
               <div className="p-4 border rounded-md">
-                <h4 className="font-medium mb-2">Result Breakdown</h4>
-                <p className="text-gray-500 mb-4 text-sm">
+                <h4 className="font-medium mb-2 text-center md:text-left">Result Breakdown</h4>
+                <p className="text-gray-500 mb-4 text-sm text-center md:text-left">
                   This outlines the breakdown of how the user score was computed
                 </p>
                 <button
@@ -324,7 +324,7 @@ const Evalution = ({ params }: { params: { id: string } }) => {
                 </button>
               </div>
             </div>
-            <div className="col-span-4">
+            <div className="col-span-1 md:col-span-4">
               <Records tnxHistoryData={tnxHistoryData} />
               <BreakdownRecords
                 isOpen={isOpen}
