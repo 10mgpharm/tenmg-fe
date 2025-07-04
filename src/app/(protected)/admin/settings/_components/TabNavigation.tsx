@@ -62,10 +62,9 @@ export default function TabsNavigation() {
 
   return (
     <Tabs index={activeIndex} variant="unstyled">
-      <TabList overflow={"auto"}>
+      <TabList overflow={"auto"} className="no-scrollbar flex gap-2">
         {tabs.map((tab, index) => {
           const isDisabled = isTabDisabled(tab.label);
-
           return (
             <Tooltip
               key={index}
@@ -77,6 +76,7 @@ export default function TabsNavigation() {
                 {...(!isDisabled ? { href: tab.href } : {})}
                 cursor={isDisabled ? "not-allowed" : "pointer"}
                 opacity={isDisabled ? 0.5 : 1}
+                flexShrink={0}
                 _selected={{
                   color: isDisabled ? "gray.400" : "primary.500",
                   bg: isDisabled ? "gray.100" : "primary.50",

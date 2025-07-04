@@ -30,9 +30,10 @@ const DateComponent = ({
       showIcon
       showYearDropdown
       yearDropdownItemNumber={15}
-      icon={<FiCalendar className="w-5 h-5 text-gray-600" />}
+      icon={<FiCalendar className="w-4 h-4 md:w-5 md:h-5 text-gray-600" />}
       onChange={(date: Date | null) => setStartDate(date)}
-      className="text-sm outline-none placeholder:text-gray-500"
+      className="text-xs md:text-sm outline-none placeholder:text-gray-500 w-full"
+      wrapperClassName="w-full"
     />
   );
 };

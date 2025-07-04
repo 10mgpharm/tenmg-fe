@@ -69,7 +69,7 @@ const WalletOverview = ({
                 {hasWidthdrawButton && (
                   <button
                     onClick={onOpenWithdraw}
-                    className=" cursor-pointer bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center z-10"
+                    className=" cursor-pointer bg-white  hover:bg-white/90 text-black focus:outline-none focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 text-center z-10"
                   >
                     Withdraw Funds
                   </button>
@@ -79,7 +79,7 @@ const WalletOverview = ({
           )}
         </div>
       </div>
-      <div className="absolute top-3 inset-x-0 mx-auto">
+      <div className="absolute top-0 md:top-3 inset-x-0 mx-auto">
         <Image src={image} alt="" className="mx-auto" />
       </div>
     </div>

@@ -1,15 +1,22 @@
 "use client";
 
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import TimeLineSelector from "./_components/TimeLineSelector";
 import { useSession } from "next-auth/react";
-import { 
+import {
   BankAccountProps,
-  LoanTransactionProps, 
-  LoanWalletProps, 
-  NextAuthUserSession, 
-  WalletProductProps 
+  LoanTransactionProps,
+  LoanWalletProps,
+  NextAuthUserSession,
+  WalletProductProps,
 } from "@/types";
 import requestClient from "@/lib/requestClient";
 import ProductWalletTab from "./_components/ProductWalletTab";
@@ -25,8 +32,12 @@ const Page = () => {
   const [bankInfo, setBankInfo] = useState<BankAccountProps>();
   const [walletStats, setWalletStats] = useState<WalletProductProps>();
   const [loanWallet, setLoanWallet] = useState<LoanWalletProps>();
-  const [loanTransaction, setLoanTransaction] = useState<LoanTransactionProps[]>([]);
-  const [adminTransaction, setAdminTransaction] = useState<LoanTransactionProps[]>([]);
+  const [loanTransaction, setLoanTransaction] = useState<
+    LoanTransactionProps[]
+  >([]);
+  const [adminTransaction, setAdminTransaction] = useState<
+    LoanTransactionProps[]
+  >([]);
 
   const fetchingWallet = useCallback(async () => {
     setLoading(true);
@@ -139,32 +150,28 @@ const Page = () => {
               Loan Wallet
             </Tab>
           </TabList>
-
-          {/* Date filter */}
-          {/* <TimeLineSelector
-            selectedTimeLine={selectedTimeLine}
-            setSelectedTimeLine={setSelectedTimeLine}
-          /> */}
         </div>
 
         {/* panels */}
         <TabPanels className="mt-10 max-sm:mt-8">
           <TabPanel className="!p-0">
-            <ProductWalletTab 
-            transactions={walletStats}
-            setPageCount={setPageCount}
-            bankInfo={bankInfo}
-            fetchingWallet={fetchingWallet}
+            <ProductWalletTab
+              transactions={walletStats}
+              setPageCount={setPageCount}
+              bankInfo={bankInfo}
+              fetchingWallet={fetchingWallet}
+              isLoading={loading}
             />
           </TabPanel>
           <TabPanel className="!p-0">
             <LoanWalletTab
-            data={loanWallet}
-            bankInfo={bankInfo}
-            fetchingWallet={fetchingLoanWallet}
-            adminTransactions={adminTransaction}
-            transactions={loanTransaction}
-            filterDate={selectedTimeLine}
+              data={loanWallet}
+              bankInfo={bankInfo}
+              fetchingWallet={fetchingLoanWallet}
+              adminTransactions={adminTransaction}
+              transactions={loanTransaction}
+              filterDate={selectedTimeLine}
+              isLoading={loading}
             />
           </TabPanel>
         </TabPanels>

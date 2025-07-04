@@ -31,16 +31,18 @@ export const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   };
 
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-5">
       <Box
         position="relative"
         role="group"
         w="fit-content"
         cursor="pointer"
         onClick={handleButtonClick}
+        mx={{ base: "auto", sm: "0" }}
+        mb={{ base: "3", sm: "0" }}
       >
         <Avatar
-          size="2xl"
+          size={{ base: "xl", sm: "2xl" }}
           name={sessionData?.user?.name}
           src={filePreview ?? sessionData?.user?.picture}
         />
@@ -68,7 +70,7 @@ export const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
         />
       </Box>
 
-      <div className="flex flex-col justify-between gap-3">
+      <div className="flex flex-col justify-between gap-3 w-full sm:w-auto text-center sm:text-left">
         <Text fontSize={"1rem"} fontWeight={600} color="gray.700">
           Profile Image
         </Text>
@@ -76,7 +78,7 @@ export const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
           Min 400x400px, PNG or JPEG
         </Text>
 
-        <div>
+        <div className="mx-auto sm:mx-0">
           <Button
             variant="outline"
             size="sm"
@@ -84,6 +86,7 @@ export const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
             isLoading={isUploading}
             loadingText="Uploading..."
             isDisabled={!isShowUpload || isUploading}
+            w={{ base: "full", sm: "auto" }}
           >
             Upload
           </Button>

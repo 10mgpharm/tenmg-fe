@@ -31,6 +31,7 @@ const TopNavBar = ({
   route: string;
   onMenuClick?: () => void;
 }) => {
+  
   const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;
@@ -53,7 +54,7 @@ const TopNavBar = ({
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
         .then((swReg) => {
-          // console.log("Service Worker is registered", swReg);
+          console.log("Service Worker is registered", swReg);
         })
         .catch((error) => {
           console.error("Service Worker registration failed:", error);
@@ -106,41 +107,6 @@ const TopNavBar = ({
     }
   }, [token]);
 
-  // const renderBusinessType = (businessType: string) => {
-  //   switch (businessType) {
-  //     case "VENDOR":
-  //       return (
-  //         <Tag size="sm" borderRadius="full" color="green.500" bg="green.50">
-  //           <TagLabel>{convertLetterCase(businessType)}</TagLabel>
-  //         </Tag>
-  //       );
-  //     case "SUPPLIER":
-  //       return (
-  //         <Tag size="sm" variant="solid" bg={"#E8F1F8"} textColor={"blue.700"}>
-  //           {convertLetterCase(businessType)}
-  //         </Tag>
-  //       );
-  //     case "ADMIN":
-  //       return (
-  //         <Tag size="sm" variant="solid" bg="#0000" color="red.700">
-  //           {convertLetterCase(businessType)}
-  //         </Tag>
-  //       );
-  //     case "LENDER":
-  //       return (
-  //         <Tag size="sm" variant="solid" bg="blue.50" color="blue.700">
-  //           {convertLetterCase(businessType)}1
-  //         </Tag>
-  //       );
-  //     default:
-  //       return (
-  //         <Tag size="sm" variant="solid" colorScheme="red">
-  //           {businessType?.toLowerCase()}
-  //         </Tag>
-  //       );
-  //   }
-  // };
-
   const renderUserRole = (role?: string, entityType?: string) => {
     if (!role || !entityType) return null;
 
@@ -186,7 +152,7 @@ const TopNavBar = ({
     <div className="lg:fixed w-full bg-white pt-4 sm:py-0 z-50">
       <div className="flex justify-between shadow-sm lg:pr-8">
         <div className="flex items-center gap-8 md:gap-36">
-          <div className="hidden md:flex h-16 shrink-0 items-center my-4 ml-6 md:ml-12">
+          <div className="flex h-16 shrink-0 items-center ml-5 md:my-4 md:ml-12">
             <Image
               src={Logo}
               alt="Logo"
@@ -195,7 +161,9 @@ const TopNavBar = ({
               height={75}
             />
           </div>
-          <GreetingComponent />
+          <div className="hidden sm:block">
+            <GreetingComponent />
+          </div>
         </div>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
           {/* {data?.user?.entityType === "VENDOR" && (
@@ -325,10 +293,10 @@ const TopNavBar = ({
             data?.user?.entityType === "SUPPLIER" ||
             data?.user?.entityType === "VENDOR") && (
             <div
-              className="lg:hidden p-2 text-gray-700 w-fit"
+              className="lg:hidden -ml-1 pr-3 text-gray-700 w-fit"
               onClick={onMenuClick}
             >
-              <Bars3Icon className="w-6" />
+              <Bars3Icon className="w-8" />
               <span className="sr-only">Open sidebar</span>
             </div>
           )}

@@ -208,7 +208,7 @@ const OrderPage = ({
                 {table?.getHeaderGroups()?.map((headerGroup) => (
                   <Tr key={headerGroup.id}>
                     {headerGroup.headers?.map((header) => (
-                      <Th textTransform={"initial"} px="0px" key={header.id}>
+                      <Th textTransform={"initial"} px="10px" key={header.id}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -224,7 +224,7 @@ const OrderPage = ({
                 {table?.getRowModel()?.rows?.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells()?.map((cell) => (
-                      <Td key={cell.id} px="0px">
+                      <Td key={cell.id} px="10px">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

@@ -170,7 +170,7 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md my-16">
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md sm:my-16">
         <h2 className='font-semibold text-lg text-gray-700'>Edit Discount</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack mt={5}>
@@ -226,32 +226,35 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
             <Stack mt={5}>
                 <FormControl isInvalid={!!errors.discountAmount}>
                     <FormLabel className='font-medium text-lg'>Value</FormLabel>
-                    <Flex gap={3}>
+                    <Flex flexDir={["column", "row"]} gap={3}>
+                      <Flex gap={3}>
                         <p 
                         onClick={() => setValue("discountType", "PERCENTAGE")} 
                         className={cn('py-3 px-5 rounded-md cursor-pointer w-[150px]', discountType === "PERCENTAGE" ? "border" : "border-0")}>
-                            Percentage
+                          Percentage
                         </p>
                         <p 
                         onClick={() => setValue("discountType", "FIXED")} 
                         className={cn('py-3 px-5 rounded-md cursor-pointer w-[150px]', discountType === "FIXED" ? "border" : "border-0")}>
-                            Fixed Amount
+                          Fixed Amount
                         </p>
-                        <Input 
-                          id="discountAmount"
-                          name="discountAmount"
-                          placeholder="e.g 10mg code" 
-                          type="text"
-                          height={"48px"}
-                          flex={1}
-                          isInvalid={!!errors.discountAmount}
-                          _focus={{
-                              border: !!errors.discountAmount ? "red.300" : "border-gray-300",
-                          }}
-                          {...register("discountAmount", {
-                              required: true,
-                          })}
-                        />
+                      </Flex>
+                      <Input 
+                        id="discountAmount"
+                        name="discountAmount"
+                        placeholder="e.g 10mg code" 
+                        type="text"
+                        py={"12px"}
+                        height={"48px"}
+                        flex={1}
+                        isInvalid={!!errors.discountAmount}
+                        _focus={{
+                          border: !!errors.discountAmount ? "red.300" : "border-gray-300",
+                        }}
+                        {...register("discountAmount", {
+                            required: true,
+                        })}
+                      />
                     </Flex>
                 </FormControl>
             </Stack>

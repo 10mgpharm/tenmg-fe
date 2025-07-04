@@ -63,19 +63,11 @@ export default function PaymentPage() {
     cartId: currentCartId,
     clearCartAndRedirect,
   } = useCartStore();
-  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus } =
-    usePaymentStatusStore();
+  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus, orderId: lastPayWith10mgOrderId } = usePaymentStatusStore();
 
-  const { orderId: lastPayWith10mgOrderId } = usePaymentStatusStore();
-
-  console.log(
-    "cartSize",
-    cartSize,
-    "cart",
-    cart,
-    "currentCartId",
-    currentCartId
-  );
+  useEffect(() => {
+    fetchCart(userToken);
+  }, [fetchCart, userToken]);
 
   // Fetch payment status when page loads
   useEffect(() => {
@@ -712,7 +704,7 @@ export default function PaymentPage() {
                       {discountValue ? (
                         <p className="font-semibold">
                           <span className="text-gray-400 line-through">
-                            {formatAmount(Number(cartItems?.orderTotal))}
+                            {formatAmount(Number(cartItems?.grandTotal))}
                           </span>{" "}
                           <span className="text-success-500">
                             {formatAmount(Number(discountValue?.grandTotal))}
@@ -720,7 +712,7 @@ export default function PaymentPage() {
                         </p>
                       ) : (
                         <p className="font-semibold">
-                          {formatAmount(Number(cartItems?.orderTotal))}
+                          {formatAmount(Number(cartItems?.grandTotal))}
                         </p>
                       )}
                       {discountValue && (

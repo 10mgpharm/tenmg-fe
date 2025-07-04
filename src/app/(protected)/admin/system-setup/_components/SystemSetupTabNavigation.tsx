@@ -33,11 +33,12 @@ export default function SystemSetupTabNavigation() {
 
   return (
     <Tabs index={activeIndex} variant="unstyled">
-      <TabList overflow={"auto"}>
+      <TabList overflow={"auto"} className="no-scrollbar">
         {tabs.map((tab, index) => (
           <Tab
             key={index}
             as={Link}
+            flexShrink={0}
             href={tab.href}
             _selected={{
               color: "primary.500",

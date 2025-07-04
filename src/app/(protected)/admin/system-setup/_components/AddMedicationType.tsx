@@ -433,13 +433,13 @@ const AddMedicationType = (
                                 </Button>
                             </div>
                         </TableContainer>
-                        <HStack mt={5} justify={"end"}>
-                            <Flex gap={3}>
-                                <Button w={"120px"} onClick={resetForm} variant={"outline"}>
+                        <HStack mt={5} justify={["start", "end"]}>
+                            <Flex flexDir={["column-reverse", "row"]} gap={3}>
+                                <Button w={["100%", "120px"]} onClick={resetForm} variant={"outline"}>
                                     Cancel
                                 </Button>
                                 <Button
-                                    w={"260px"}
+                                    w={["100%", "260px"]}
                                     type="submit"
                                     isDisabled={isLoading}
                                     isLoading={isLoading}

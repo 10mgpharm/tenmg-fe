@@ -77,14 +77,14 @@ const Notifications = () => {
           notifications?.data?.map((item) => (
             <div
               key={item.id}
-              className="border p-4 rounded-md flex items-center justify-between mb-5"
+              className="border p-4 rounded-md flex items-center justify-between gap-5 sm:gap-0 mb-5"
             >
               <div className="max-w-xl">
                 <h3 className="font-medium text-gray-700">{item.name}</h3>
                 <p className="text-sm text-gray-500">{item.description}</p>
               </div>
               <Switch
-                size={"lg"}
+                size={["md", "lg"]}
                 onChange={() => subscribeToNotification(item.id)}
                 defaultChecked={item?.isSubscribed}
               />

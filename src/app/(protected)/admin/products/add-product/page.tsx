@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DetailForm from "@/app/(protected)/suppliers/products/_components/DetailForm";
 import EssentialForm from "@/app/(protected)/suppliers/products/_components/EssentialForm";
 import InventoryForm from "@/app/(protected)/suppliers/products/_components/InventoryForm";
 import { useSession } from "next-auth/react";
-import { MedicationResponseData, NextAuthUserSession } from "@/types";
+import { NextAuthUserSession } from "@/types";
 import requestClient from "@/lib/requestClient";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -14,239 +14,189 @@ import SuccessModal from "@/app/(protected)/suppliers/products/_components/Succe
 import { useDisclosure } from "@chakra-ui/react";
 
 export interface IFormInput {
-    productName: string;
-    productDescription: string;
-    medicationTypeName: string;
-    categoryName: string;
-    brandName: string;
-    measurementName: string;
-    presentationName: string;
-    packageName: string;
-    strengthValue: string;
-    actualPrice: string;
-    discountPrice: string;
-    lowStockLevel: string;
-    outStockLevel: string;
-    weight: string | null;
-    quantity: string;
-    expiredAt: any;
-    thumbnailFile: string;
-    status: string;
+  productName: string;
+  productDescription: string;
+  medicationTypeName: string;
+  categoryName: string;
+  brandName: string;
+  measurementName: string;
+  presentationName: string;
+  packageName: string;
+  strengthValue: string;
+  actualPrice: string;
+  discountPrice: string;
+  lowStockLevel: string;
+  outStockLevel: string;
+  weight: string | null;
+  quantity: string;
+  expiredAt: any;
+  thumbnailFile: string;
+  status: string;
 }
 
 const AddProducts = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [steps, setSteps] = useState<"details" | "essentials" | "inventory">(
+    null
+  );
 
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [steps, setSteps] = useState<'details' | 'essentials' | 'inventory'>(null);
+  useEffect(() => {
+    setSteps("details");
+  }, []);
 
-    useEffect(() => {
-        setSteps("details");
-    },[])
+  const session = useSession();
+  const sessionToken = session?.data as NextAuthUserSession;
+  const token = sessionToken?.user?.token;
 
-    const session = useSession();
-    const sessionToken = session?.data as NextAuthUserSession;
-    const token = sessionToken?.user?.token;
+  const {
+    control,
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    trigger,
+    getValues,
+    watch,
+    reset,
+  } = useForm<IFormInput>({
+    mode: "onChange",
+    defaultValues: {
+      status: "INACTIVE",
+      thumbnailFile: "",
+      discountPrice: "0",
+    },
+  });
 
-    const [brandData, setBrandData] = useState<MedicationResponseData>();
-    const [categoryData, setCategoryData] = useState<MedicationResponseData>();
-    const [medicationData, setMedicationData] = useState<MedicationResponseData>();
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setIsLoading(true);
+    const expiryDate = new Date(data?.expiredAt).toLocaleDateString("en-CA");
+    const formdata = new FormData();
+    formdata.append("productName", data.productName);
+    formdata.append("productDescription", data.productDescription);
+    formdata.append("medicationTypeName", data.medicationTypeName);
+    formdata.append("categoryName", data?.categoryName);
+    formdata.append("brandName", data?.brandName);
+    formdata.append("weight", data.weight);
+    formdata.append("packagePerRoll", data?.packageName);
+    formdata.append("presentationName", data?.presentationName);
+    formdata.append("strengthValue", data.strengthValue);
+    formdata.append("measurementName", data?.measurementName);
+    formdata.append("lowStockLevel", data?.lowStockLevel);
+    formdata.append("outStockLevel", data?.outStockLevel);
+    formdata.append("expiredAt", expiryDate);
+    formdata.append("thumbnailFile", data?.thumbnailFile);
+    formdata.append("actualPrice", data?.actualPrice);
+    formdata.append("discountPrice", data?.discountPrice);
+    formdata.append("quantity", data?.quantity);
+    formdata.append("status", data.status);
 
-    const fetchingMedicationTypes = useCallback(async() => {
-        try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/medication-types?active=active&status=approved`
-            );
-        if(response.status === 200){
-            setMedicationData(response.data.data);
-        }
-        } catch (error) {
-            console.error(error)
-        }
-    },[token]);
-
-    const fetchingBrandTypes = useCallback(async() => {
-        try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/brands?active=active&status=approved`
-            );
-        if(response.status === 200){
-            setBrandData(response.data.data);
-        }
-        } catch (error) {
-            console.error(error)
-        }
-    },[token]);
-
-    const fetchingCategoriesTypes = useCallback(async() => {
-        try {
-            const response = await requestClient({ token: token }).get(
-                `/admin/settings/categories?active=active&status=approved`
-            );
-        if(response.status === 200){
-            setCategoryData(response.data.data);
-        }
-        } catch (error) {
-            console.error(error)
-        }
-    },[token]);
-
-    useEffect(() => {
-        if(!token) return;
-        fetchingBrandTypes();
-        fetchingCategoriesTypes();
-        fetchingMedicationTypes();
-    }, [fetchingBrandTypes, fetchingCategoriesTypes, fetchingMedicationTypes, token]);
-
-    const {
-        control,
-        register,
-        formState: { errors },
-        handleSubmit,
-        setValue,
-        trigger,
-        getValues,
-        watch,
-        reset
-    } = useForm<IFormInput>({
-        mode: "onChange",
-        defaultValues: {
-            status: "INACTIVE",
-            thumbnailFile: "",
-            discountPrice: '0'
-        }
-    });
-
-    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        setIsLoading(true);
-        const expiryDate = new Date(data?.expiredAt).toLocaleDateString('en-CA');
-        const formdata = new FormData();
-        formdata.append("productName", data.productName);
-        formdata.append("productDescription", data.productDescription);
-        formdata.append("medicationTypeName", data.medicationTypeName)
-        formdata.append("categoryName", data?.categoryName);
-        formdata.append("brandName", data?.brandName);
-        formdata.append("weight", data.weight);
-        formdata.append("packagePerRoll", data?.packageName);
-        formdata.append("presentationName", data?.presentationName);
-        formdata.append("strengthValue", data.strengthValue);
-        formdata.append("measurementName", data?.measurementName);
-        formdata.append("lowStockLevel", data?.lowStockLevel);
-        formdata.append("outStockLevel", data?.outStockLevel);
-        formdata.append("expiredAt", expiryDate);
-        formdata.append("thumbnailFile", data?.thumbnailFile);
-        formdata.append("actualPrice", data?.actualPrice);
-        formdata.append("discountPrice", data?.discountPrice);
-        formdata.append("quantity", data?.quantity);
-        formdata.append("status", data.status);
-
-        try {
-            const response = await requestClient({token: token}).post(
-                "/admin/settings/products",
-                formdata
-            )
-            if(response.status === 200){
-                setIsLoading(false);
-                onOpen();
-            }
-        } catch (error) {
-            setIsLoading(false);
-            console.error(error);
-            toast.error(handleServerErrorMessage(error));
-        }
+    try {
+      const response = await requestClient({ token: token }).post(
+        "/admin/settings/products",
+        formdata
+      );
+      if (response.status === 200) {
+        setIsLoading(false);
+        onOpen();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+      toast.error(handleServerErrorMessage(error));
     }
+  };
 
-    if (steps === null) {
-        // Render a loading state or placeholder until the state is initialized
-        return <div>Loading...</div>;
-    }
+  if (steps === null) {
+    // Render a loading state or placeholder until the state is initialized
+    return <div>Loading...</div>;
+  }
 
-    const handleStepValidation = async (fieldsToValidate: any) => {
-        const isValid = await trigger(fieldsToValidate);
-        return isValid;
-    };  
-    
-    return (
+  const handleStepValidation = async (fieldsToValidate: any) => {
+    const isValid = await trigger(fieldsToValidate);
+    return isValid;
+  };
+
+  return (
     <div className="p-8">
-        <form onSubmit={handleSubmit(onSubmit)}>
-            {(() => {
-                    switch (steps) {
-                        case 'details':
-                            return <DetailForm 
-                                    title="Add Product"
-                                    isEditing={false}
-                                    handleStepValidation={
-                                        async () => {
-                                        const isValid = await handleStepValidation([
-                                            "productName", 
-                                            "productDescription", 
-                                            "categoryName", 
-                                            "brandName", 
-                                            "thumbnailFile"
-                                        ]);
-                                        if (isValid) setSteps("essentials");
-                                    }}
-                                    brands={brandData?.data} 
-                                    categories={categoryData?.data} 
-                                    control={control}
-                                    register={register}
-                                    errors={errors}
-                                    setValue={setValue}
-                                    getValue={getValues}
-                                />
-                        case 'essentials':
-                            return <EssentialForm 
-                                    isEditing={false}
-                                    type="admin"
-                                    handleStepValidation={
-                                        async () => {
-                                        const isValid = await handleStepValidation([
-                                            "medicationTypeName", 
-                                            "measurementName", 
-                                            "presentationName", 
-                                            "strengthValue", 
-                                            "weight", 
-                                            "actualPrice", 
-                                        ]);
-                                        if (isValid) setSteps("inventory");
-                                    }}
-                                    setSteps={setSteps}
-                                    register={register}
-                                    setValue={setValue}
-                                    medications={medicationData?.data}
-                                    control={control}
-                                    errors={errors}
-                                    watch={watch}
-                                />
-                        case 'inventory':
-                            return <InventoryForm 
-                                    isEditing={false}
-                                    setSteps={setSteps}
-                                    register={register}
-                                    control={control}
-                                    errors={errors}
-                                    setValue={setValue}
-                                    isLoading={isLoading}
-                                    watch={watch}
-                                />
-                        default:
-                            break;
-                    }
-                }
-            )()
-            }
-        </form>
-        <SuccessModal
-            isOpen={isOpen} 
-            onClose={onClose}
-            routeUrl="/admin/products"
-            isEditing={false}
-            routeUrl2="/admin/products/add-product"
-            reset={reset}
-            setSteps={setSteps}
-        />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {(() => {
+          switch (steps) {
+            case "details":
+              return (
+                <DetailForm
+                  title="Add Product"
+                  isEditing={false}
+                  handleStepValidation={async () => {
+                    const isValid = await handleStepValidation([
+                      "productName",
+                      "productDescription",
+                      "categoryName",
+                      "brandName",
+                      "thumbnailFile",
+                    ]);
+                    if (isValid) setSteps("essentials");
+                  }}
+                  control={control}
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  getValue={getValues}
+                />
+              );
+            case "essentials":
+              return (
+                <EssentialForm
+                  isEditing={false}
+                  type="admin"
+                  handleStepValidation={async () => {
+                    const isValid = await handleStepValidation([
+                      "medicationTypeName",
+                      "measurementName",
+                      "presentationName",
+                      "strengthValue",
+                      "weight",
+                      "actualPrice",
+                    ]);
+                    if (isValid) setSteps("inventory");
+                  }}
+                  setSteps={setSteps}
+                  register={register}
+                  setValue={setValue}
+                  control={control}
+                  errors={errors}
+                  watch={watch}
+                />
+              );
+            case "inventory":
+              return (
+                <InventoryForm
+                  isEditing={false}
+                  setSteps={setSteps}
+                  register={register}
+                  control={control}
+                  errors={errors}
+                  setValue={setValue}
+                  isLoading={isLoading}
+                  watch={watch}
+                />
+              );
+            default:
+              break;
+          }
+        })()}
+      </form>
+      <SuccessModal
+        isOpen={isOpen}
+        onClose={onClose}
+        routeUrl="/admin/products"
+        isEditing={false}
+        routeUrl2="/admin/products/add-product"
+        reset={reset}
+        setSteps={setSteps}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default AddProducts
+export default AddProducts;

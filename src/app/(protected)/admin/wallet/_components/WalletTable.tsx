@@ -23,9 +23,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useState } from "react";
-// import Pagination from "../../products/_components/Pagination";
-// import { WalletColumn_FN } from "./columns/WalletColumn";
-// import TransactionDetails from "../../wallet/_components/TransactionDetail";
 import { WalletColumn_FN } from "../../users/_components/columns/WalletColumn";
 import Pagination from "../../products/_components/Pagination";
 import TransactionDetails from "./TransactionDetail";
@@ -50,7 +47,6 @@ const AdminWalletTable = ({
   setPageCount?: Dispatch<SetStateAction<number>>;
   isLoading?: boolean;
 }) => {
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // table
@@ -108,7 +104,7 @@ const AdminWalletTable = ({
             <Pagination {...metaData} setPageCount={setPageCount} />
           )}
         </TableContainer>
-      ): (
+      ) : (
         <Flex justify="center" align="center" height="200px">
           <Spinner size="xl" />
         </Flex>

@@ -181,38 +181,38 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
   }
 
   return (
-    <div>
+    <div className="sm:px-4">
       <div>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
           <div>
             <h2 className="text-[17px] font-semibold">Business Rules</h2>
             <p className="text-[15px] text-gray-700 pt-1">
               Set maximum base score for business rules parameters
             </p>
           </div>
-          <Button isLoading={isLoading} onClick={handleSubmit(onSubmit)}>
+          <Button isLoading={isLoading} onClick={handleSubmit(onSubmit)} className="w-full sm:w-auto">
             Save Changes
           </Button>
         </div>
 
-        <div className="mt-6 mb-4 p-4 bg-white shadow-sm rounded-md flex flex-wrap gap-4 items-center justify-between">
+        <div className="mt-6 mb-4 p-4 bg-white shadow-sm rounded-md">
           {isRecalculatingWeights ? (
-            <div className="w-full animate-pulse gap-5 flex items-center flex-wrap lg:flex-nowrap">
-              <Text fontSize="sm" color="gray.700">
+            <div className="w-full animate-pulse gap-3 sm:gap-5 flex items-center flex-col sm:flex-row">
+              <Text fontSize="sm" color="gray.700" className="text-center sm:text-left">
                 <strong>Total Parameters:</strong> {totalParams}
               </Text>
-              <div className="h-4 w-1/3 bg-gray-200 rounded" />
-              <div className="h-4 w-1/5 bg-gray-200 rounded" />
+              <div className="h-4 w-full sm:w-1/3 bg-gray-200 rounded" />
+              <div className="h-4 w-2/3 sm:w-1/5 bg-gray-200 rounded" />
             </div>
           ) : (
-            <div className="flex flex-wrap items-center gap-6">
-              <Text fontSize="sm" color="gray.700">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-6 w-full">
+              <Text fontSize="sm" color="gray.700" className="text-center sm:text-left">
                 <strong>Total Parameters:</strong> {totalParams}
               </Text>
-              <Text fontSize="sm" color="gray.700">
+              <Text fontSize="sm" color="gray.700" className="text-center sm:text-left">
                 <strong>Enabled:</strong> {totalEnabled}
               </Text>
-              <Text fontSize="sm" color={scoreMatches ? "green.600" : "red.500"}>
+              <Text fontSize="sm" color={scoreMatches ? "green.600" : "red.500"} className="text-center sm:text-left">
                 <strong>Score Weights:</strong> {totalScoreWeight} / {watchedBaseScore}
                 {!scoreMatches && " (Mismatch)"}
               </Text>
@@ -220,10 +220,10 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
           )}
         </div>
 
-        <div className="shadow-sm bg-white p-4 rounded-md space-y-4 mt-5 flex flex-row flex-wrap md:flex-nowrap items-center justify-between gap-5">
+        <div className="shadow-sm bg-white p-4 rounded-md mt-5 flex flex-col md:flex-row items-start md:items-center gap-5">
           <FormControl
             isInvalid={!!errors.baseScore?.message}
-            className="w-full max-w-[400px]"
+            className="w-full md:max-w-[400px]"
           >
             <FormLabel>Max Base Credit Score</FormLabel>
             <Input
@@ -240,40 +240,52 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
               </Text>
             )}
           </FormControl>
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             {Object.keys(scoreWeightErrors).length > 0 && (
-              <Text as={"span"} className="text-red-500 text-sm">
+              <Text as={"span"} className="text-red-500 text-sm w-full md:w-auto">
                 {Object.values(scoreWeightErrors)[0]}
               </Text>
             )}
             {isSaving && (
-              <>
+              <div className="flex items-center gap-2 w-full md:w-auto">
                 <Text fontSize="sm" color="gray.500">
                   Saving...
                 </Text>
                 <Box boxSize="3" className="animate-spin border-t-2 border-r-2 border-gray-500 rounded-full" />
-              </>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <Box overflowX="auto">
-        <Table variant="unstyled" size="sm">
+      <Box overflowX="auto" className="mt-6 sm:mx-0 shadow-sm rounded-md border border-gray-200">
+        <Table variant="unstyled" size="sm" className="w-full min-w-[800px]">
           <Thead position="sticky" top={0} zIndex={1} backgroundColor="white">
             <Tr>
               {columnHeaders.map((header, idx) => (
                 <Th
                   key={header}
-                  position={idx === 0 ? "sticky" : "static"}
+                  position={["static", idx === 0 ? "sticky" : "static"]}
                   left={idx === 0 ? 0 : undefined}
                   zIndex={idx === 0 ? 3 : 1}
                   minW="20px"
                   maxW="20px"
                   h={50}
-                  className={cn("bg-primary/50", idx === 0 && "bg-primary-800 text-white font-bold border-r-2 border-gray")}
+                  className={cn(
+                    "bg-primary/50", 
+                    idx === 0 && "bg-primary-800 text-white font-bold border-r-2 border-gray",
+                    "text-[10px] sm:text-xs whitespace-nowrap py-3"
+                  )}
                 >
-                  {header === "name" ? "Parameter" : header.replace("_", " ")}
+                  {header === "name" 
+                    ? "Parameter" 
+                    : header === "scoreWeight" 
+                      ? "Score" 
+                      : header === "compareValue" 
+                        ? "Value" 
+                        : header === "categoryId" 
+                          ? "Category" 
+                          : header.replace("_", " ")}
                 </Th>
               ))}
             </Tr>
@@ -282,11 +294,11 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
             {fields.map((field, index) => (
               <Tr key={field.id || index}>
                 <Td
-                  position="sticky"
+                  position={["static", "sticky"]}
                   left={0}
                   zIndex={2}
-                  minW="250px"
-                  maxW="250px"
+                  minW={{ base: "180px", sm: "250px" }}
+                  maxW={{ base: "180px", sm: "250px" }}
                   className={
                     cn(
                       "border-r-2 border-gray bg-black",
@@ -297,19 +309,22 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
                   <Input
                     variant="flushed"
                     size="sm"
+                    className="text-xs sm:text-sm"
                     {...register(`rules.${index}.name`)}
                   />
                 </Td>
-                <Td minW="350px">
+                <Td minW={{ base: "250px", sm: "350px" }}>
                   <Input
                     variant="flushed"
                     size="sm"
+                    className="text-xs sm:text-sm"
                     {...register(`rules.${index}.description`)}
                   />
                 </Td>
                 <Td minW="220px">
                   <Select
                     size="sm"
+                    className="text-xs sm:text-sm"
                     {...register(`rules.${index}.condition`)}
                   >
                     {Object.values(RuleCondition).map((cond) => (
@@ -319,13 +334,14 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
                     ))}
                   </Select>
                 </Td>
-                <Td minW="200px">
+                <Td minW={{ base: "150px", sm: "200px" }}>
                   {isRecalculatingWeights ? (
                     <Box height="32px" className="rounded bg-gray-200 animate-pulse" />
                   ) : (
                     <Input
                       type="number"
                       size="sm"
+                      className="text-xs sm:text-sm"
                       isInvalid={!!scoreWeightErrors[index]}
                       sx={
                         scoreWeightErrors[index]
@@ -372,16 +388,17 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
                     />
                   )}
                 </Td>
-                <Td minW="200px">
+                <Td minW={{ base: "150px", sm: "200px" }}>
                   <Input
                     type="number"
                     size="sm"
+                    className="text-xs sm:text-sm"
                     {...register(`rules.${index}.compareValue`, {
                       valueAsNumber: true,
                     })}
                   />
                 </Td>
-                <Td maxW="100px" minW="100px">
+                <Td maxW={{ base: "80px", sm: "100px" }} minW={{ base: "80px", sm: "100px" }}>
                   <Switch size="sm"
                     isChecked={watchedRules[index].active}
                     onChange={(e) => {
@@ -408,9 +425,10 @@ export default function BusinessRuleForm({ token: jwtToken, initialData: rules, 
                     }}
                   />
                 </Td>
-                <Td minW="200px">
+                <Td minW={{ base: "150px", sm: "200px" }}>
                   <Select
                     size="sm"
+                    className="text-xs sm:text-sm"
                     {...register(`rules.${index}.categoryId`, {
                       valueAsNumber: true,
                     })}

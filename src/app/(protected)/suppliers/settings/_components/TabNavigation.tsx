@@ -21,7 +21,7 @@ export default function TabsNavigation() {
 
   return (
     <Tabs index={activeIndex} variant="unstyled" width="100%">
-      <TabList className="flex flex-wrap md:flex-nowrap gap-2 overflow-x-auto no-scrollbar">
+      <TabList className="flex gap-2 overflow-x-auto no-scrollbar">
         {tabs.map((tab, index) => (
           <Tab
             key={index}

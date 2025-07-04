@@ -304,9 +304,9 @@ const Page = () => {
     }
 
     return (
-        <div className="p-8">
+        <div className="p-6 sm:p-8">
             <div className="sm:flex sm:justify-between flex-wrap">
-                <h3 className="font-semibold text-2xl mb-3 sm:mb-0">Products</h3>
+                <h3 className="font-semibold text-xl md:text-2xl mb-3 sm:mb-0">Products</h3>
                 <div className="mb-4 sm:flex sm:items-center gap-3 space-y-3 sm:space-y-0">
                     <SearchInput
                         placeholder="Search for a Product"

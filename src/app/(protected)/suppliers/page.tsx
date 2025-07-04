@@ -8,7 +8,7 @@ import { BusinessStatus } from "@/constants";
 const SupplierPage = async () => {
   const data: NextAuthUserSession | null = await getServerSession(authOptions);
   return (
-    <div className="p-8">
+    <div className="p-6 sm:p-8">
       {[
         BusinessStatus.PENDING_VERIFICATION,
         BusinessStatus.PENDING_APPROVAL,

@@ -90,7 +90,7 @@ const Insight = () => {
           )
           : (
             <div>
-              <div className="flex gap-5 mt-6">
+              <div className="md:flex gap-5 mt-6">
                 <div className="flex-1 bg-white p-5 rounded-md">
                   <h3 className="text-gray-600 font-semibold text-lg mb-5">Total Product Sold</h3>
                     {
@@ -119,7 +119,7 @@ const Insight = () => {
                       : <EmptyCard/> 
                     }
                 </div>
-                <div className="flex-1 bg-white p-5 rounded-md">
+                <div className="flex-1 bg-white mt-5 md:mt-0 p-5 rounded-md">
                   <h3 className="text-gray-600 font-semibold text-lg mb-5">Total Revenue</h3>
                     {
                       (data?.totalRevenue?.midnightToSixAm && data?.totalRevenue?.sixAmToTwelvePm) ?
@@ -148,7 +148,7 @@ const Insight = () => {
                     }
                 </div>
               </div>
-              <div className="mt-6 flex gap-5">
+              <div className="mt-6 md:flex gap-5">
                 <div className="flex-1 bg-white p-5 rounded-md">
                   <h3 className="text-gray-600 font-semibold text-lg mb-5">Best Selling Products</h3>
                   {

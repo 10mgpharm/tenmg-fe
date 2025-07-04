@@ -13,7 +13,7 @@ export default function AdminSettingsLayout({
             <Tabs>
                 <TabsNavigation />
                 <TabPanels>
-                    <TabPanel>
+                    <TabPanel px={0}>
                         {children}
                     </TabPanel>
                 </TabPanels>

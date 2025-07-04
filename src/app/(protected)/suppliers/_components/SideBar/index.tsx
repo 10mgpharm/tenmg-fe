@@ -23,6 +23,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { BusinessStatus } from "@/constants";
 import { NextAuthUserSession } from '@/types'
 import requestClient from '@/lib/requestClient'
+import { LogOutIcon } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/suppliers', icon: HomeIcon, current: true },
@@ -102,12 +103,15 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
                   <li>
                     <ul role="list" className="-mx-2 space-y-6">
                       {navigation.map((item) => {
-                        const isActive = pathname.includes(item.href);
+                        // Use exact path matching for mobile menu
+                        const isActive = item.href === pathname || 
+                                        (item.href !== '/suppliers' && pathname.startsWith(item.href));
                         const disabled = isLinkDisabled(businessStatus, item.name);
                         return (
                           <li key={item.name}>
                             <Link
                               href={item.href}
+                              onClick={() => onClose()}
                               className={classNames(
                                 isActive
                                   ? 'bg-primary-600 text-white'
@@ -137,16 +141,19 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
                     </ul>
                   </li>
                   <li className="mt-auto">
-                    <a
-                      href="#"
-                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-primary-700 hover:text-white"
+                    <button
+                      onClick={async () => {
+                      await signOut();
+                      redirect("/");
+                    }}
+                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-red-500 hover:text-red-600"
                     >
-                      <Cog6ToothIcon
+                      <LogOutIcon
                         aria-hidden="true"
-                        className="h-6 w-6 shrink-0 text-primary-200 group-hover:text-white"
+                        className="h-6 w-6 shrink-0 text-red-500 group-hover:text-red-600"
                       />
-                      Settings
-                    </a>
+                      Logout
+                    </button>
                   </li>
                 </ul>
               </nav>
@@ -162,10 +169,11 @@ const SideBar = ({ businessStatus, isOpen, onClose }: { businessStatus: string, 
               <li>
                 <ul role="list" className="-mx-2 space-y-8">
                   {navigation.map((item) => {
-                    const isActive = pathname === item.href;
+                    // Use exact path matching with special handling for sub-routes
+                    const isActive = item.href === pathname || 
+                                    (item.href !== '/suppliers' && pathname.startsWith(item.href));
                     const disabled = isLinkDisabled(businessStatus, item.name);
-                    // const isActive = pathname.includes(item.href);
-                    // let isActive = new RegExp(`^${item.href.replace(/\d+/g, '\\d+')}.*$`).test(pathname);
+                    // Removed commented out code that used includes or regex
 
                     return (
                       <li key={item.name}>
