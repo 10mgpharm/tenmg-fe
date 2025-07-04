@@ -37,19 +37,28 @@ export default function CheckoutPage() {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
-  const { cart, addToCart, sycnCart, isLoading, cartSize } = useCartStore();
+  const { cart, addToCart, sycnCart, isLoading, cartSize, fetchCart } = useCartStore();
   const { paymentStatus } = usePaymentStatusStore();
   const isPendingPayment =
     paymentStatus === "PENDING_MANDATE" || paymentStatus === "INITIATED";
   const router = useRouter();
 
-  useEffect(() => {
-    if (cart) {
-      if (cartSize == 0) {
-        redirect("/storefront");
+  const redirectCart = async () => {
+    try {
+      const response = await fetchCart(userData?.user?.token);
+      if (!response || !response.items || response.items.length === 0) {
+        router.push("/storefront");
       }
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      router.push("/storefront");
     }
-  }, [, cart, cartSize]);
+  };
+
+  useEffect(() => {
+    if (!userData?.user?.token) return;
+    redirectCart();
+  }, [userData?.user?.token]);
 
   useEffect(() => {
     if (cart) {
@@ -135,6 +144,7 @@ export default function CheckoutPage() {
     };
     addToCart(data, userData?.user?.token);
     setLoadingRemoveItem(false);
+    redirectCart();
     setDelId(null);
   };
 

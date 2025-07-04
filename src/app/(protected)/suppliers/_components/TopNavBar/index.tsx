@@ -42,6 +42,7 @@ const TopNavBar = ({
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchingCounts = useCallback(async () => {
+    if (!token) return;
     const res = await requestClient({ token }).get(
       `/account/count-unread-notifications`
     );
