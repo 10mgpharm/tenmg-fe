@@ -33,6 +33,7 @@ import { BusinessStatus } from "@/constants";
 import { toast } from "react-toastify";
 import NoticeCard from "./NoticeCard";
 import { useWishlistStore } from "../(NoSideMenu)/storeFrontState/useWIshlist";
+import { useCartStore } from "../(NoSideMenu)/storeFrontState/useCartStore";
 
 const StoreFrontPharmacy = () => {
   const session = useSession();
@@ -71,10 +72,14 @@ const StoreFrontPharmacy = () => {
   }, [userData?.user?.token]);
 
   const { fetchWishlist } = useWishlistStore();
-
+  const { fetchCart } = useCartStore();
+  
   useEffect(() => {
-    if (userData?.user?.token) fetchWishlist(userData?.user?.token);
-  }, [fetchWishlist, userData?.user?.token]);
+    if (userData?.user?.token) {
+      fetchWishlist(userData?.user?.token);
+      fetchCart(userData?.user?.token);
+    }
+  }, [fetchWishlist, fetchCart, userData?.user?.token]);
 
   return (
     <div className="">

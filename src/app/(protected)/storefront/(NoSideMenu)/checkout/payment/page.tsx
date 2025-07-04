@@ -60,18 +60,22 @@ export default function PaymentPage() {
     cartSize,
     sycnCart,
     isLoading: cartLoading,
+    cartId: currentCartId,
+    clearCartAndRedirect,
   } = useCartStore();
-  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus } = usePaymentStatusStore();
-  
+  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus } =
+    usePaymentStatusStore();
 
+  const { orderId: lastPayWith10mgOrderId } = usePaymentStatusStore();
 
-  const { orderId: lastPayWith10mgOrderId } =
-  usePaymentStatusStore();
-  const { cartId: currentCartId } = useCartStore();
-
-  useEffect(() => {
-    fetchCart(userToken);
-  }, [fetchCart, userToken]);
+  console.log(
+    "cartSize",
+    cartSize,
+    "cart",
+    cart,
+    "currentCartId",
+    currentCartId
+  );
 
   // Fetch payment status when page loads
   useEffect(() => {
@@ -82,13 +86,22 @@ export default function PaymentPage() {
 
   // Clear cart and reload page when payment status becomes APPROVED - only if cart is not empty
   useEffect(() => {
-    if (paymentStatus === "APPROVED" && lastPayWith10mgOrderId === currentCartId) {
+    if (
+      paymentStatus === "APPROVED" &&
+      lastPayWith10mgOrderId === currentCartId
+    ) {
       clearCart(userToken);
       setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+        window.location.reload();
+      }, 1000);
     }
-  }, [paymentStatus, clearCart, userToken, lastPayWith10mgOrderId, currentCartId]);
+  }, [
+    paymentStatus,
+    clearCart,
+    userToken,
+    lastPayWith10mgOrderId,
+    currentCartId,
+  ]);
 
   useEffect(() => {
     if (cart) {
@@ -96,11 +109,16 @@ export default function PaymentPage() {
     }
   }, [cart]);
 
+  const redirectCart = async () => {
+    const response = await fetchCart(userToken);
+    console.log("response", response);
+    if (response?.length === 0 || !response) router.push("/storefront");
+  };
+
   useEffect(() => {
-    if (cartSize == 0) {
-      redirect("/storefront");
-    }
-  }, [cartSize]);
+    if (!userToken) return;
+    redirectCart();
+  }, [userToken]);
 
   const breadCrumb = [
     {
@@ -149,7 +167,11 @@ export default function PaymentPage() {
       );
       if (response.status === 200) {
         setPaymentMethods(response.data.data);
-        setSelectedPaymentMethod(response?.data?.data[0].slug);
+        setSelectedPaymentMethod(
+          isPendingPayment
+            ? response?.data?.data[1].slug
+            : response?.data?.data[0].slug
+        );
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -180,8 +202,6 @@ export default function PaymentPage() {
   }, [shippingData]);
 
   const [loadingPayment, setLoadingPayment] = useState(false);
-
-  const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {
     // Dynamically load Fincra's SDK
@@ -226,18 +246,21 @@ export default function PaymentPage() {
               }, 1000);
             }
           }
-        } else {
-          toast.success("Order placed successfully");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
         }
+      } else {
+        toast.success("Order placed successfully");
+        clearCartAndRedirect();
       }
     } catch (e) {
       const errorMessage = handleServerErrorMessage(e);
       toast.error(errorMessage);
       await refreshPaymentStatus(userToken);
     } finally {
+      const response = await fetchCart(userToken);
+      if (response?.length === 0 || !response) {
+        router.push("/storefront");
+        window.location.reload();
+      }
       setIsLoading(false);
     }
   };
@@ -711,6 +734,8 @@ export default function PaymentPage() {
                     <Button colorScheme={"primary"} onClick={submiOrder}>
                       {loadingPayment ? (
                         <Loader2 className="animate-spin" />
+                      ) : isPendingPayment ? (
+                        "Check Payment Status"
                       ) : (
                         "Pay Now"
                       )}
