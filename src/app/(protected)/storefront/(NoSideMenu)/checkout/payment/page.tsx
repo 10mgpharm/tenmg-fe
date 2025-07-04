@@ -319,7 +319,7 @@ export default function PaymentPage() {
     window.Fincra.initialize({
       key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
       // key: config,
-      amount: discountValue ? discountValue?.grandTotal : totalAmount,
+      amount: discountValue ? Number(discountValue?.grandTotal) : totalAmount,
       currency: "NGN",
       reference: ref,
       customer: {
