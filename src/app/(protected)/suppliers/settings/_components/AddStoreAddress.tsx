@@ -8,21 +8,54 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface Props {
-  onClose: () => void;
-  onAdd: (newItem: any) => void;
-  onUpdate?: (updatedItem: any) => void; // optional for editing
-  initialData?: any; // optional prefill data for editing
+  handleprocess: (updatedItem: any, id?: string) => void; // optional for editing
+  initialData?: {
+    closestLandmark: string;
+    streetAddress: string;
+    country: string;
+    state: string;
+    city: string;
+    id?: string;
+  };
+  isLoading: boolean;
 }
 
 export default function AddStoreAddressForm({
-  onClose,
-  onAdd,
-  onUpdate,
+  handleprocess,
+  isLoading,
   initialData,
 }: Props) {
-  const { register, handleSubmit, reset, watch } = useForm();
+  const schema = z.object({
+    closestLandmark: z.string().min(1, "this field is required"),
+    streetAddress: z.string().min(1, "this field is required"),
+    country: z.string().min(1, "this field is required"),
+    state: z.string().min(1, "this field is required"),
+    city: z.string().min(1, "this field is required"),
+  });
+
+  const { register, handleSubmit, watch, setValue } = useForm({
+    defaultValues: {
+      closestLandmark: "",
+      streetAddress: "",
+      country: "",
+      state: "",
+      city: "",
+    },
+    resolver: zodResolver(schema),
+  });
+
+  useEffect(() => {
+    setValue("city", initialData?.city ?? "");
+    setValue("closestLandmark", initialData?.closestLandmark ?? "");
+    setValue("streetAddress", initialData?.streetAddress ?? "");
+    setValue("country", initialData?.country ?? "");
+    setValue("state", initialData?.state ?? "");
+  }, [initialData]);
+
   const [states, setStates] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
 
@@ -65,9 +98,8 @@ export default function AddStoreAddressForm({
   }, [state]);
 
   const onSubmit = (data: any) => {
-    onAdd(data);
-    reset();
-    onClose();
+    console.log("calling");
+    handleprocess(data, initialData?.id);
   };
 
   return (
@@ -122,7 +154,7 @@ export default function AddStoreAddressForm({
           />
         </FormControl>
 
-        <Button colorScheme="blue" type="submit">
+        <Button colorScheme="blue" type="submit" isLoading={isLoading}>
           Save
         </Button>
       </VStack>
