@@ -145,6 +145,7 @@ function KeyWrapper({
   const [isPublicKeyLoading, setIsPublicKeyLoading] = useState<boolean>(false);
   const [isSecretKeyLoading, setIsSecretKeyLoading] = useState<boolean>(false);
 
+  const [isPending, startTransition] = useTransition();
   const environment: ApiKeyEnv = keyType === "Test Key" ? "test" : "live";
 
   const {
