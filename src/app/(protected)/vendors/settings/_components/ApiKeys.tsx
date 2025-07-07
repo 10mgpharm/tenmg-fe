@@ -142,7 +142,9 @@ function KeyWrapper({
   const [publicKey, setPublicKey] = useState<string>(pKey);
   const [secretKey, setSecretKey] = useState<string>(sKey);
 
-  const [isPending, startTransition] = useTransition();
+  const [isPublicKeyLoading, setIsPublicKeyLoading] = useState<boolean>(false);
+  const [isSecretKeyLoading, setIsSecretKeyLoading] = useState<boolean>(false);
+
   const environment: ApiKeyEnv = keyType === "Test Key" ? "test" : "live";
 
   const {
@@ -161,22 +163,30 @@ function KeyWrapper({
     },
   });
 
-  const handleKeyGeneration = (type: 'public' | 'secret', environment: 'test' | 'live') => {
-    startTransition(async () => {
-      try {
-        const { data, message, status } = await reGenerateApiKey({ token, type, environment });
-        if (status === 'success') {
-          toast.success(message);
-          // update local state
-          type === 'public' ? setPublicKey(data.value) : setSecretKey(data.value);
-        } else {
-          toast.error(`Error: ${message}`);
-        }
-      } catch (error) {
-        const errorMessage = handleServerErrorMessage(error);
-        toast.error(errorMessage);
+  const handleKeyGeneration = async (type: 'public' | 'secret', environment: 'test' | 'live') => {
+    if (type === 'public') {
+      setIsPublicKeyLoading(true);
+      setIsSecretKeyLoading(false);
+    } else {
+      setIsSecretKeyLoading(true);
+      setIsPublicKeyLoading(false);
+    }
+
+    try {
+      const { data, message, status } = await reGenerateApiKey({ token, type, environment });
+      if (status === 'success') {
+        toast.success(message);
+        type === 'public' ? setPublicKey(data.value) : setSecretKey(data.value);
+      } else {
+        toast.error(`Error: ${message}`);
       }
-    })
+    } catch (error) {
+      const errorMessage = handleServerErrorMessage(error);
+      toast.error(errorMessage);
+    } finally {
+      setIsPublicKeyLoading(false);
+      setIsSecretKeyLoading(false);
+    }
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
@@ -281,7 +291,7 @@ function KeyWrapper({
                     bg={"green.500"}
                     _hover={{ bg: "green.300" }}
                     px={3}
-                    isLoading={isPending}
+                    isLoading={isPublicKeyLoading}
                     onClick={() => {
                       handleKeyGeneration('public', environment);
                     }}
@@ -342,7 +352,7 @@ function KeyWrapper({
                     bg={"green.500"}
                     _hover={{ bg: "green.300" }}
                     px={3}
-                    isLoading={isPending}
+                    isLoading={isSecretKeyLoading}
                     onClick={() => {
                       handleKeyGeneration('secret', environment);
                     }}
