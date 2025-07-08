@@ -10,6 +10,9 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import requestClient from "@/lib/requestClient";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 interface Props {
   handleprocess: (updatedItem: any, id?: string) => void; // optional for editing
@@ -56,49 +59,93 @@ export default function AddStoreAddressForm({
     setValue("state", initialData?.state ?? "");
   }, [initialData]);
 
-  const [states, setStates] = useState<string[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
+  const [countries, setCountries] = useState<{ name: string }[]>([]);
+  const [states, setStates] = useState<{ name: string }[]>([]);
+  const [cities, setCities] = useState<{ name: string }[]>([]);
+  const [addressList, setAddressList] = useState<{ name: string }[]>([]);
+
+  // loading states
+  const [fetchingCountries, setFetchingCountries] = useState(false);
+  const [fetchingStates, setFetchingStates] = useState(false);
+  const [fetchingCities, setFetchingCities] = useState(false);
 
   const country = watch("country");
   const state = watch("state");
 
-  // Mock options – you can replace this with real API or dynamic values
-  const countries = ["Nigeria", "Ghana", "Kenya"];
-  const stateOptions = {
-    Nigeria: ["Lagos", "Kogi", "Abuja"],
-    Ghana: ["Accra", "Kumasi"],
-    Kenya: ["Nairobi", "Mombasa"],
-  };
-  const cityOptions = {
-    Lagos: ["Ikeja", "Mushin", "Yaba"],
-    Kogi: ["Lokoja", "Anyigba"],
-    Abuja: ["Garki", "Wuse"],
-    Accra: ["East Legon", "Osu"],
-    Kumasi: ["Adum", "Asokwa"],
-    Nairobi: ["Westlands", "Kibera"],
-    Mombasa: ["Nyali", "Likoni"],
-  };
-
-  // Update states and cities when country/state changes
   useEffect(() => {
-    if (country) {
-      setStates(stateOptions[country] || []);
-    } else {
-      setStates([]);
-    }
-    setCities([]);
+    const getCountries = async () => {
+      setFetchingCountries(true);
+      try {
+        const response = await axios.get(
+          "https://countriesnow.space/api/v0.1/countries/positions"
+        );
+
+        setCountries(response.data.data.map((i) => ({ name: i.name })));
+
+        setValue("city", "");
+        setValue("state", "");
+        setValue("streetAddress", "");
+        setValue("closestLandmark", "");
+      } catch (error) {
+        console.error("Error fetching list of countries");
+      }
+      setFetchingCountries(false);
+    };
+
+    getCountries();
+  }, []);
+
+  useEffect(() => {
+    const getCountries = async () => {
+      setFetchingStates(true);
+      try {
+        const response = await axios.post(
+          "https://countriesnow.space/api/v0.1/countries/states",
+          { country: country }
+        );
+
+        setStates(response.data.data.states.map((i) => ({ name: i.name })));
+
+        setValue("city", "");
+        setValue("streetAddress", "");
+        setValue("closestLandmark", "");
+      } catch (error) {
+        console.error("Error fetching states");
+      }
+      setFetchingStates(false);
+    };
+
+    if (!country) return;
+    getCountries();
   }, [country]);
 
   useEffect(() => {
-    if (state) {
-      setCities(cityOptions[state] || []);
-    } else {
-      setCities([]);
-    }
-  }, [state]);
+    const getCountries = async () => {
+      setFetchingCities(true);
+      try {
+        const response = await axios.post(
+          "https://countriesnow.space/api/v0.1/countries/state/cities",
+          {
+            country: country,
+            state: state,
+          }
+        );
+
+        setCities(response.data.data.map((i) => ({ name: i })));
+
+        setValue("streetAddress", "");
+        setValue("closestLandmark", "");
+      } catch (error) {
+        console.error("Error fetching cities");
+      }
+      setFetchingCities(false);
+    };
+
+    if (!state || !country) return;
+    getCountries();
+  }, [state, country]);
 
   const onSubmit = (data: any) => {
-    console.log("calling");
     handleprocess(data, initialData?.id);
   };
 
@@ -108,33 +155,53 @@ export default function AddStoreAddressForm({
         <FormControl isRequired>
           <FormLabel>Country</FormLabel>
           <Select placeholder="Select country" {...register("country")}>
-            {countries.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
+            {fetchingCountries ? (
+              <option value={""}>Loading...</option>
+            ) : (
+              countries.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {c.name}
+                </option>
+              ))
+            )}
           </Select>
         </FormControl>
 
         <FormControl isRequired>
           <FormLabel>State</FormLabel>
-          <Select placeholder="Select state" {...register("state")}>
-            {states.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
+          <Select
+            placeholder="Select state"
+            {...register("state")}
+            disabled={!country}
+          >
+            {fetchingStates ? (
+              <option value={""}>Loading...</option>
+            ) : (
+              states.map((s) => (
+                <option key={s.name} value={s.name}>
+                  {s.name}
+                </option>
+              ))
+            )}
           </Select>
         </FormControl>
 
         <FormControl isRequired>
           <FormLabel>City</FormLabel>
-          <Select placeholder="Select city" {...register("city")}>
-            {cities.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
+          <Select
+            placeholder="Select city"
+            {...register("city")}
+            disabled={!state || !country}
+          >
+            {fetchingCities ? (
+              <option value={""}>Loading...</option>
+            ) : (
+              cities.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {c.name}
+                </option>
+              ))
+            )}
           </Select>
         </FormControl>
 

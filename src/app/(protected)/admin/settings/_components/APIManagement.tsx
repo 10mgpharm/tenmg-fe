@@ -126,13 +126,13 @@ const APIManagement = () => {
           content={`You currently have no API yet. All APIs will appear here.`}
         />
       ) : (
-        <TableContainer border="1px solid #F9FAFB" borderRadius="10px">
-          <Table
-            sx={{
-              tableLayout: "fixed",
-            }}
-            width="100%"
-          >
+        <TableContainer
+          border="1px solid #F9FAFB"
+          borderRadius="10px"
+          overflowX="auto"
+          maxWidth="100%"
+        >
+          <Table>
             <Thead bg="#F2F4F7">
               {table?.getHeaderGroups()?.map((headerGroup) => (
                 <Tr key={headerGroup.id}>
@@ -141,7 +141,7 @@ const APIManagement = () => {
                       textTransform="initial"
                       pl="20px"
                       key={header.id}
-                      // distribute columns equally
+                      minWidth="120px"
                       width={`${100 / headerGroup.headers.length}%`}
                     >
                       {header.isPlaceholder
@@ -159,7 +159,7 @@ const APIManagement = () => {
               {table?.getRowModel()?.rows?.map((row) => (
                 <Tr key={row.id}>
                   {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} pl="20px">
+                    <Td key={cell.id} className="w-full !min-w-[120px]">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
