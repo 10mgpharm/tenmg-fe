@@ -44,12 +44,25 @@ export default async function Page({
         response?.message === "Unauthenticated."
           ? "Invalid Link"
           : response?.message === "Loan is already paid"
-          ? "You have successfully paid your loan. You can exit now."
+          ? "🎉 Congratulations! You have successfully paid your loan in full. You can now close this window."
           : response?.message || "Something went wrong. Please try again.";
 
       return (
-        <div className="flex flex-col items-center justify-center h-screen">
-          <h1 className="text-2xl font-bold">{message}</h1>
+        <div className="flex flex-col items-center justify-center h-screen bg-green-50">
+          <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+            {response?.message === "Loan is already paid" && (
+              <div className="text-6xl mb-4">🎉</div>
+            )}
+            <h1 className="text-2xl font-bold mb-4 text-gray-800">{message}</h1>
+            {response?.message === "Loan is already paid" && (
+              <button
+                onClick={() => window.close()}
+                className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Close Window
+              </button>
+            )}
+          </div>
         </div>
       );
     }

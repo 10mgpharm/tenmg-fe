@@ -52,8 +52,6 @@ const BALANCE_TIME_PERIODS = [
   "12 months",
   "3 months",
   "30 days",
-  "7 days",
-  "24 hours",
 ] as const;
 
 type BalanceTimePeriod = (typeof BALANCE_TIME_PERIODS)[number];
@@ -336,10 +334,6 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     const currentMonth = currentDate.getMonth() + 1;
 
     switch (selectedTimePeriod) {
-      case "24 hours":
-      case "7 days":
-        filteredData = sortedData.slice(-1);
-        break;
       case "30 days":
         filteredData = sortedData.slice(-1);
         break;

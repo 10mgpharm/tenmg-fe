@@ -92,8 +92,7 @@ export default function RepaymentWidget({
           data={repaymentData}
           token={token}
           application={application}
-          onContinueAction={async (paidAmount) => {
-            await refreshRepaymentData();
+          onContinueAction={(paidAmount) => {
             setCurrentPaidAmount(paidAmount);
             const nextStep = activeStep + 1;
             setActiveStep(nextStep);
