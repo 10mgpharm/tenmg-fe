@@ -153,7 +153,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
             </div>
             <div className="md:flex md:justify-between">
               <div className="">
-                <h2 className="text-lg font-semibold capitalize">
+                <h2 className="text-lg font-semibold capitalize text-primary-700">
                   {`${products?.brand?.name} 
                                 ${products?.name} 
                                 ${products?.variation?.strengthValue}${

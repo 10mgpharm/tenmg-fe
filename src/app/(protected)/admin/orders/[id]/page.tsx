@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import requestClient from "@/lib/requestClient";
 import { NextAuthUserSession, OrderData } from "@/types";
-import { convertDate } from "@/utils/formatDate";
+import { convertDate, convertDateWithTime } from "@/utils/formatDate";
 import { Avatar, Flex, Spinner } from "@chakra-ui/react";
 import { formatAmountString } from "@/utils";
 
@@ -51,7 +51,10 @@ const OrderDetails = ({ params }: { params: any }) => {
   return (
     <div className="p-4 md:p-8">
       <div className="flex items-center mb-5">
-        <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 cursor-pointer" onClick={() => navigate.back()} />
+        <ArrowLeft
+          className="w-5 h-5 md:w-6 md:h-6 cursor-pointer"
+          onClick={() => navigate.back()}
+        />
         <span className="ml-3 text-lg md:text-xl font-bold truncate">
           Order - {order?.identifier}
         </span>
@@ -61,9 +64,11 @@ const OrderDetails = ({ params }: { params: any }) => {
           <div className="w-full border rounded-lg shadow-sm p-3 md:p-4">
             <div className="flex flex-wrap justify-between">
               <div className="mb-2 md:mb-0">
-                <h2 className='text-base font-semibold'>{order?.id}</h2>
-                <p className="text-xs text-gray-400 py12">{convertDate(order?.createdAt)}</p>
-              </div>  
+                <h2 className="text-base font-semibold">{order?.id}</h2>
+                <p className="text-xs text-gray-400 py12">
+                  {convertDate(order?.createdAt)}
+                </p>
+              </div>
               <div className="flex items-center">
                 <div className="border px-2 py-1 rounded-md text-xs">
                   {order?.status}
@@ -107,75 +112,83 @@ const OrderDetails = ({ params }: { params: any }) => {
                               {item?.product?.name}
                             </p>
                           </div>
-                        <p className="text-xs font-medium">
-                          <span className="bg-green-100 px-0.5 rounded-sm max-w-max mr-1">
-                            Commission:
-                          </span>
-                          <span className="font-semibold">
-                            ₦{formatAmountString(item?.tenmgCommission)}
-                          </span>
-                        </p>
-                      </div>
-                    </td>
-                    <td className="text-sm font-medium">
-                      ₦{item?.discountPrice / item?.quantity}
-                    </td>
-                    <td className="text-sm font-medium">x{item?.quantity}</td>
-                    <td className="text-sm font-medium text-right">
-                      ₦{item.discountPrice}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          <p className="text-xs font-medium">
+                            <span className="bg-green-100 px-0.5 rounded-sm max-w-max mr-1">
+                              Commission:
+                            </span>
+                            <span className="font-semibold">
+                              ₦{formatAmountString(item?.tenmgCommission)}
+                            </span>
+                          </p>
+                        </div>
+                      </td>
+                      <td className="text-sm font-medium">
+                        ₦{item?.discountPrice / item?.quantity}
+                      </td>
+                      <td className="text-sm font-medium">x{item?.quantity}</td>
+                      <td className="text-sm font-medium text-right">
+                        ₦{item.discountPrice}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-5 md:mt-0 w-full border rounded-lg shadow-sm p-3 md:p-4">
+              <h2 className="text-base font-semibold">Payments</h2>
+              <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
+              <div className="py-1">
+                <p className="text-sm font-semibold">
+                  {order?.payment?.channel === "tenmg_credit"
+                    ? "Paid via 10MG credit"
+                    : "Paid via debit card"}
+                </p>
+                <p className="text-xs text-gray-400 pt-1">
+                  {convertDateWithTime(order?.payment?.paidAt)}
+                </p>
+              </div>
+              <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
+              <div className="flex items-center justify-between py-1">
+                <p className="text-sm text-gray-400">Total Order</p>
+                <p className="text-sm text-gray-400">
+                  ₦{formatAmountString(order?.orderTotal)}
+                </p>
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <p className="text-sm text-gray-400">10mg Commission</p>
+                <p className="text-sm text-gray-400">
+                  ₦{formatAmountString(order?.totalTenmgComission)}
+                </p>
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <p className="text-sm text-gray-400">Shipping Fee</p>
+                <p className="text-sm text-gray-400">
+                  ₦{formatAmountString(order?.shippingFee)}
+                </p>
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <p className="font-semibold text-sm">Total for Supplier</p>
+                <p className="font-semibold text-sm">
+                  ₦
+                  {formatAmountString(
+                    Number(order?.orderTotal) - order?.totalTenmgComission
+                  )}
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="mt-5 md:mt-0 w-full border rounded-lg shadow-sm p-3 md:p-4">
-            <h2 className="text-base font-semibold">Payments</h2>
+          <div className="w-full lg:max-w-xs border h-fit rounded-lg shadow-sm p-3 md:p-4">
+            <h2 className="text-base font-semibold">Customer</h2>
             <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
-            <div className="py-1">
-              <p className="text-sm font-semibold">Paid via debit card</p>
-              <p className="text-xs text-gray-400 pt-1">16 Dec 2024, 5:40 pm</p>
-            </div>
-            <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
-            <div className="flex items-center justify-between py-1">
-              <p className="text-sm text-gray-400">Total Order</p>
-              <p className="text-sm text-gray-400">
-                ₦{formatAmountString(order?.orderTotal)}
-              </p>
-            </div>
-            <div className="flex items-center justify-between py-1">
-              <p className="text-sm text-gray-400">10mg Commission</p>
-              <p className="text-sm text-gray-400">
-                ₦{formatAmountString(order?.totalTenmgComission)}
-              </p>
-            </div>
-            <div className="flex items-center justify-between py-1">
-              <p className="text-sm text-gray-400">Shipping Fee</p>
-              <p className="text-sm text-gray-400">
-                ₦{formatAmountString(order?.logisticTotal)}
-              </p>
-            </div>
-            <div className="flex items-center justify-between py-1">
-              <p className="font-semibold text-sm">Total for Supplier</p>
-              <p className="font-semibold text-sm">
-                ₦
-                {formatAmountString(
-                  Number(order?.orderTotal) - order?.totalTenmgComission
-                )}
-              </p>
-            </div>
+            <p className="text-sm font-medium">{order?.customer?.name}</p>
+            <p className="text-xs text-gray-600 break-words">
+              {order?.customer?.email}
+            </p>
           </div>
-        </div>
-        <div className="w-full lg:max-w-xs border h-fit rounded-lg shadow-sm p-3 md:p-4">
-          <h2 className="text-base font-semibold">Customer</h2>
-          <div className="h-[1px] w-full border-0 bg-[#ebe8e8] my-2" />
-          <p className="text-sm font-medium">{order?.customer?.name}</p>
-          <p className="text-xs text-gray-600 break-words">{order?.customer?.email}</p>
         </div>
       </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
 export default OrderDetails;
