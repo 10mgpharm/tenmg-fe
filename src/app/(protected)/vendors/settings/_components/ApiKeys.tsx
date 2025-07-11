@@ -18,7 +18,6 @@ import {
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { LuCopy } from "react-icons/lu";
-import { IoTrashOutline } from "react-icons/io5";
 import { FaEye, FaEyeSlash, FaKey } from "react-icons/fa6";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "react-toastify";
@@ -70,11 +69,9 @@ const ApiKeys = () => {
       try {
         const { data, message, status } = await getApiKeyInfo(token || "");
         if (status === 'success') {
-          console.log(data);
           setApiKeyInfo(data);
         } else {
           toast.error(`Error: ${message}`);
-
         }
       } catch (error) {
         const errorMessage = handleServerErrorMessage(error);
@@ -87,7 +84,7 @@ const ApiKeys = () => {
     if (sessionData?.user?.token && !apiKeyInfo) {
       handleGetApiKeyInfo(sessionData?.user?.token);
     }
-  }, [sessionData?.user?.token]);
+  }, [apiKeyInfo, sessionData?.user?.token]);
 
   return (
     <div className="max-w-5xl md:p-5 space-y-8">

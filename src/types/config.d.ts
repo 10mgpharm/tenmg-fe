@@ -18,6 +18,7 @@ export interface IConfig {
     appName: string;
     appUrl: string;
     apiBaseUrl: string;
+    apiDocUrl: string;
     nextAuthSecret: string;
     fincraPublicKey: string;
     fincraSdkUrl: string;
