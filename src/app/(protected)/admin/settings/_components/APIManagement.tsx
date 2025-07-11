@@ -132,7 +132,7 @@ const APIManagement = () => {
           overflowX="auto"
           maxWidth="100%"
         >
-          <Table tableLayout="fixed">
+          <Table __css={{ tableLayout: "fixed" }}>
             <Thead bg="#F2F4F7">
               {table?.getHeaderGroups()?.map((headerGroup) => (
                 <Tr key={headerGroup.id}>
