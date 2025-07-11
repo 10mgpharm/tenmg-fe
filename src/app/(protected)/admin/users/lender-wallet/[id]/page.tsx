@@ -3,7 +3,7 @@
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { transactionData } from "@/data/mockdata";
 import SearchInput from "@/app/(protected)/vendors/_components/SearchInput";
 
@@ -11,6 +11,10 @@ import OverviewCard from "@/app/(protected)/suppliers/_components/OverviewCard/O
 import UserWallet from "../../_components/WalletTable";
 import { LendersWalletColumn } from "../_component/column";
 import LenderWalletTransactionDetails from "../_component/transactionDetails";
+import { NextAuthUserSession } from "@/types";
+import { useSession } from "next-auth/react";
+import requestClient from "@/lib/requestClient";
+import { toast } from "react-toastify";
 
 const LenderWallet = ({
   params,
@@ -43,6 +47,52 @@ const LenderWallet = ({
     setRowDetails(data);
     setOpenDetails(true);
   };
+
+  const session = useSession();
+  const sessionData = session?.data as NextAuthUserSession;
+  const token = sessionData?.user?.token;
+
+  const [userStat, setUserStat] = useState<{
+    totalPendingOrder: string;
+    walletBalance: string;
+  }>();
+  const [walletHistory, setWalletHistory] = useState("");
+
+  const getUseStats = async () => {
+    try {
+      const response = await requestClient({ token }).get(
+        `/admin/wallet/user/${params.id}`
+      );
+
+      setUserStat(response.data.data);
+    } catch (error) {
+      toast.error(error?.response?.data.message);
+    }
+  };
+
+  const getWalletHistory = async () => {
+    setIsloading(true);
+    try {
+      const response = await requestClient({ token }).get(
+        `/admin/wallet/user/lender/transactions`,
+        {
+          params: {
+            businessId: params?.id,
+          },
+        }
+      );
+      setWalletHistory(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsloading(false);
+  };
+
+  useEffect(() => {
+    if (!token) return;
+    getUseStats();
+    getWalletHistory();
+  }, [token]);
 
   return (
     <div>

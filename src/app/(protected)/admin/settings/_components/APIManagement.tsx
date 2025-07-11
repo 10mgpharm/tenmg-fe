@@ -132,17 +132,17 @@ const APIManagement = () => {
           overflowX="auto"
           maxWidth="100%"
         >
-          <Table>
+          <Table tableLayout="fixed">
             <Thead bg="#F2F4F7">
               {table?.getHeaderGroups()?.map((headerGroup) => (
                 <Tr key={headerGroup.id}>
                   {headerGroup.headers?.map((header) => (
                     <Th
+                      key={header.id}
                       textTransform="initial"
                       pl="20px"
-                      key={header.id}
                       minWidth="120px"
-                      width={`${100 / headerGroup.headers.length}%`}
+                      width={`${100 / headerGroup.headers.length}%`} // ✅ Safe, defined inline
                     >
                       {header.isPlaceholder
                         ? null
@@ -158,8 +158,12 @@ const APIManagement = () => {
             <Tbody bg="white" color="#606060" fontSize="14px">
               {table?.getRowModel()?.rows?.map((row) => (
                 <Tr key={row.id}>
-                  {row.getVisibleCells()?.map((cell) => (
-                    <Td key={cell.id} className="w-full !min-w-[120px]">
+                  {row.getVisibleCells()?.map((cell, idx, cells) => (
+                    <Td
+                      key={cell.id}
+                      minWidth="120px"
+                      width={`${100 / cells.length}%`} // ✅ Use cells.length here
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
