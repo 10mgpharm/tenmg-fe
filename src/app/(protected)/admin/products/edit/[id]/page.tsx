@@ -87,12 +87,11 @@ const EditPage = ({ params }: { params: { id: string } }) => {
     setValue("medicationTypeName", products?.medicationType?.name);
     setValue("presentationName", products?.presentation?.name);
     setValue("measurementName", products?.measurement?.name);
-    setValue("packageName", products?.package?.name);
     setValue("strengthValue", products?.variation?.strengthValue);
-    setValue("packageName", products?.variation?.packagePerRoll);
+    setValue("packageName", products?.variation?.packagePerRoll === "null" ? "" : products?.variation?.packagePerRoll); 
     setValue("weight", products?.variation?.weight?.toString());
     setValue("actualPrice", products?.actualPrice);
-    setValue("discountPrice", products?.discountPrice);
+    setValue("discountPrice", products?.discountPrice ?? '0');
     setValue("quantity", products?.quantity);
     setValue("lowStockLevel", products?.lowStockLevel?.toString());
     setValue("outStockLevel", products?.outStockLevel?.toString());
@@ -155,6 +154,8 @@ const EditPage = ({ params }: { params: { id: string } }) => {
     const isValid = await trigger(fieldsToValidate);
     return isValid;
   };
+
+  console.log(products, "products");
 
   return (
     <div>
