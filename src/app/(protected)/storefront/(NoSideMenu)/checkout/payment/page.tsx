@@ -60,12 +60,10 @@ export default function PaymentPage() {
     cartSize,
     sycnCart,
     isLoading: cartLoading,
+    cartId: currentCartId,
+    clearCartAndRedirect,
   } = useCartStore();
-  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus } =
-    usePaymentStatusStore();
-
-  const { orderId: lastPayWith10mgOrderId } = usePaymentStatusStore();
-  const { cartId: currentCartId } = useCartStore();
+  const { refreshPaymentStatus, fetchPaymentStatus, paymentStatus, orderId: lastPayWith10mgOrderId } = usePaymentStatusStore();
 
   useEffect(() => {
     fetchCart(userToken);
@@ -103,11 +101,16 @@ export default function PaymentPage() {
     }
   }, [cart]);
 
+  const redirectCart = async () => {
+    const response = await fetchCart(userToken);
+    console.log("response", response);
+    if (response?.length === 0 || !response) router.push("/storefront");
+  };
+
   useEffect(() => {
-    if (cartSize == 0) {
-      redirect("/storefront");
-    }
-  }, [cartSize]);
+    if (!userToken) return;
+    redirectCart();
+  }, [userToken]);
 
   const breadCrumb = [
     {
@@ -156,7 +159,11 @@ export default function PaymentPage() {
       );
       if (response.status === 200) {
         setPaymentMethods(response.data.data);
-        setSelectedPaymentMethod(response?.data?.data[0].slug);
+        setSelectedPaymentMethod(
+          isPendingPayment
+            ? response?.data?.data[1].slug
+            : response?.data?.data[0].slug
+        );
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -187,8 +194,6 @@ export default function PaymentPage() {
   }, [shippingData]);
 
   const [loadingPayment, setLoadingPayment] = useState(false);
-
-  const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {
     // Dynamically load Fincra's SDK
@@ -233,18 +238,21 @@ export default function PaymentPage() {
               }, 1000);
             }
           }
-        } else {
-          toast.success("Order placed successfully");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
         }
+      } else {
+        toast.success("Order placed successfully");
+        clearCartAndRedirect();
       }
     } catch (e) {
       const errorMessage = handleServerErrorMessage(e);
       toast.error(errorMessage);
       await refreshPaymentStatus(userToken);
     } finally {
+      const response = await fetchCart(userToken);
+      if (response?.length === 0 || !response) {
+        router.push("/storefront");
+        window.location.reload();
+      }
       setIsLoading(false);
     }
   };
@@ -319,7 +327,7 @@ export default function PaymentPage() {
     window.Fincra.initialize({
       key: process.env.NEXT_PUBLIC_FINCRA_PUBKEY,
       // key: config,
-      amount: discountValue ? discountValue?.grandTotal : totalAmount,
+      amount: discountValue ? Number(discountValue?.grandTotal) : totalAmount,
       currency: "NGN",
       reference: ref,
       customer: {
@@ -718,6 +726,8 @@ export default function PaymentPage() {
                     <Button colorScheme={"primary"} onClick={submiOrder}>
                       {loadingPayment ? (
                         <Loader2 className="animate-spin" />
+                      ) : isPendingPayment ? (
+                        "Check Payment Status"
                       ) : (
                         "Pay Now"
                       )}

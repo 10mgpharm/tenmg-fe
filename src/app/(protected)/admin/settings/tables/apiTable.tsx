@@ -2,21 +2,33 @@ import { classNames } from "@/utils";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { cn } from "@/lib/utils";
 const columnHelper = createColumnHelper<any>();
 
-export function ColumsAPIFN(revokeApi: (id: string, environment: "test" | "live") => void) {
+export function ColumsAPIFN(
+  revokeApi: (value: {
+    businessId: number;
+    secret: string;
+    key: string;
+  }) => void,
+  setConfirmAction: (value: boolean) => void,
+  pageNumber: number
+) {
   return [
     columnHelper.accessor("id", {
       header: () => (
-        <div className="pl-6">
+        <div>
           <p>S/N</p>
         </div>
       ),
-      cell: (info) => (
-        <div>
-          <p className="pl-6">{info.row.original?.id}</p>
-        </div>
-      ),
+      cell: (info) => {
+        const serialNumber = (pageNumber - 1) * 10 + info?.row?.index + 1;
+        return (
+          <div>
+            <p>{serialNumber}</p>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("business.name", {
       header: ({ column }) => (
@@ -36,22 +48,27 @@ export function ColumsAPIFN(revokeApi: (id: string, environment: "test" | "live"
     columnHelper.accessor("action", {
       header: ({ column }) => <p>Action</p>,
       cell: (info) => {
+        const key = info.row.original?.key;
+        const secret = info.row.original?.secret;
+        const businessId = info.row.original?.business?.id;
         return (
-          <Flex justify={"flex-start"}>
-            <Menu placement="bottom-start">
-              <MenuButton>
-                <BsThreeDotsVertical className="" />
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => revokeApi(info.row.original.id, "test")} className="font-semibold">
-                  Revoke Test Key
-                </MenuItem>
-                <MenuItem onClick={() => revokeApi(info.row.original.id, "live")} className="font-semibold">
-                  Revoke Live Key
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
+          <p
+            className={cn(
+              "text-red-500 text-[15px] font-semibold cursor-pointer",
+              !key && !secret && "!text-red-500/50 cursor-not-allowed"
+            )}
+            onClick={() => {
+              if (!key && !secret) return;
+              setConfirmAction(true);
+              revokeApi({
+                key,
+                secret,
+                businessId,
+              });
+            }}
+          >
+            {!key && !secret ? "Revoked" : "Revoke"}
+          </p>
         );
       },
     }),

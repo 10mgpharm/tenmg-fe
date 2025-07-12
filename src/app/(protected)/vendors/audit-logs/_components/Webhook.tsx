@@ -187,8 +187,14 @@ const Webhook = () => {
             </TableContainer>
           ) : (
             <EmptyResult
-              heading={`No Results Found`}
-              content={`We couldn’t find anything that matches "${debouncedSearch}". Try different keywords or check your spelling.`}
+              heading={
+                debouncedSearch ? `No Results Found` : "No Webhook Logs Yet"
+              }
+              content={
+                debouncedSearch
+                  ? `We couldn’t find anything that matches "${debouncedSearch}". Try different keywords or check your spelling.`
+                  : "Once your webhooks are triggered, you’ll see their logs here."
+              }
             />
           )
         ) : (

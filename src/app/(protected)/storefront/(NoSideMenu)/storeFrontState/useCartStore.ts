@@ -18,12 +18,13 @@ type CartState = {
   cart: CartItem[];
   isLoading: boolean;
   error: string | null;
-  fetchCart: (token: string) => Promise<void>;
+  fetchCart: (token: string) => Promise<any>;
   updateLoading: boolean;
   addToCart: (item, token: string) => Promise<void>;
   cartSize: string | number | null;
   sycnCart: (data, token) => Promise<void>;
   clearCart: (token: string) => Promise<void>;
+  clearCartAndRedirect: () => void;
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -43,21 +44,34 @@ export const useCartStore = create<CartState>((set, get) => ({
       );
 
       const cartData = resp?.data?.data || [];
-      const currentCartId = cartData?.id || null
+      const currentCartId = cartData?.id || null;
 
-      set({
-        cart: cartData,
-        cartId: currentCartId,
-        isLoading: false,
-        cartSize: cartData?.items.length,
-      });
+      if (cartData && cartData.items) {
+        set({
+          cart: cartData,
+          cartId: currentCartId,
+          isLoading: false,
+          cartSize: cartData?.items.length,
+        });
+      } else {
+        set({
+          cart: [],
+          cartId: null,
+          isLoading: false,
+          cartSize: 0,
+        });
+      }
 
       return cartData;
     } catch (err: any) {
       set({
         error: err.response?.data?.message || "Failed to fetch cart items",
         isLoading: false,
+        cart: [],
+        cartId: null,
+        cartSize: 0,
       });
+      return null;
     }
   },
 
@@ -101,18 +115,37 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   clearCart: async (token: string) => {
     try {
-      // console.log("here ");
       const resp = await requestClient({ token }).post(
         "/storefront/clear-cart"
       );
-      // console.log("resp", resp);
+      
       if (resp?.data?.status === "success") {
+        // Immediately update the store state
+        set({ 
+          cart: [], 
+          cartId: null, 
+          cartSize: 0 
+        });
+        
         toast.success("Cart cleared successfully");
+        
+        // Fetch fresh cart data to ensure consistency
         await get().fetchCart(token);
-        set({ cartSize: 0 });
       }
     } catch (e) {
       toast.error("Could not clear cart, please try again");
+    }
+  },
+
+  clearCartAndRedirect: () => {
+    try {
+      set({ 
+        cart: [], 
+        cartId: null, 
+        cartSize: 0 
+      });
+    } catch (e) {
+      console.error("Error clearing cart:", e);
     }
   },
 }));

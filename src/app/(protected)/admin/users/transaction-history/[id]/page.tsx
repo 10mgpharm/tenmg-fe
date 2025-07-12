@@ -52,33 +52,6 @@ const TransactionHistory = () => {
     lastPageUrl: "",
   };
 
-  const card_info = [
-    {
-      title: "Total Deposits",
-      value: "₦150,000,000",
-      bgColor: "#53389E",
-      bgImg: "/assets/images/disb_bg.png",
-    },
-    {
-      title: "Total Withdrawals",
-      value: "₦50,000,000",
-      bgColor: "#DC6803",
-      bgImg: "/assets/images/app_bg.png",
-    },
-    {
-      title: "Net Wallet Balance",
-      value: "₦2,500,000",
-      bgColor: "#3E4784",
-      bgImg: "/assets/images/pend_bg.png",
-    },
-    {
-      title: "Last Transaction Date",
-      value: "2024-12-7",
-      bgColor: "#E31B54",
-      bgImg: "/assets/images/tot_bg.png",
-    },
-  ];
-
   const applyFilters = (filters: IFilterInput) => {
     console.log(
       filters,
@@ -120,34 +93,6 @@ const TransactionHistory = () => {
                   Back
                 </Text>
               </Flex>
-              <h3 className="font-bold pt-3 text-[20px] ">
-                Transaction History
-              </h3>
-              <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 mt-4">
-                {card_info.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative h-32 bg-cover bg-center bg-no-repeat rounded-lg p-4 flex items-center"
-                    style={{
-                      // backgroundColor: item.bgColor, // Apply solid color
-                      backgroundImage: `url(${item.bgImg})`, // Apply background image
-                      // backgroundBlendMode: "overlay", // Ensures color and image blend well
-                    }}
-                  >
-                    {/* Dark Overlay to Fade Background */}
-                    <div
-                      className="absolute inset-0  bg-opacity-10 rounded-md"
-                      style={{ backgroundColor: item.bgColor }}
-                    ></div>
-
-                    {/* Card Content */}
-                    <div className="relative z-10 text-white">
-                      <h4 className="text-sm font-medium">{item.title}</h4>
-                      <p className="text-base font-semibold">{item.value}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
 
               <div className="flex items-center justify-between gap-3 pt-6 pb-4">
                 <h3 className="font-semibold text-[20px]">Transactions</h3>

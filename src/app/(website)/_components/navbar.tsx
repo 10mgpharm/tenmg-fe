@@ -1,4 +1,5 @@
 "use client";
+import config from "@/lib/config";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -64,7 +65,7 @@ const Navbar = () => {
             <Link href="/home" className="text-black hover:text-blue-700">
               Home
             </Link>
-            <Link href="/api" className="text-black hover:text-blue-700">
+            <Link href={config.apiDocUrl} target="_blank" className="text-black hover:text-blue-700">
               API
             </Link>
             <Link href="/faq" className="text-black hover:text-blue-700">

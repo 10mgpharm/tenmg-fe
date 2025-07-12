@@ -13,6 +13,7 @@ import { generateRandomCoupon, handleServerErrorMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
 import DateComponent from '@/app/(protected)/suppliers/products/_components/DateComponent';
 import { useDebouncedValue } from '@/utils/debounce';
+import { ArrowLeft } from 'lucide-react';
 
 interface OptionType {
   label: string;
@@ -170,7 +171,20 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-md sm:my-16">
+    <div className="max-w-2xl mx-auto">
+      <Flex
+            cursor={"pointer"}
+            onClick={() => navigate.back()}
+            align={"center"}
+            gap={2}
+            pt={6}
+          >
+            <ArrowLeft className="w-5 h-auto text-gray-500" />
+            <Text fontSize={"14px"} color={"gray.600"}>
+              Back
+            </Text>
+        </Flex>
+      <div className="bg-white p-6 rounded-md sm:my-10">
         <h2 className='font-semibold text-lg text-gray-700'>Edit Discount</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack mt={5}>
@@ -411,6 +425,7 @@ const EditDiscount = ({params}: {params: {id: string}}) => {
                 </Button>
             </Flex>
         </form>
+      </div>
     </div>
   )
 }

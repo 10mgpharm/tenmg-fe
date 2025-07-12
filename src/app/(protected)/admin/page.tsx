@@ -85,6 +85,7 @@ const Admin = () => {
       changeType: "INCREASE",
       timeStamp: " vs. last week",
       percentage: "2.35%",
+      type: "SALES"
     },
     {
       id: 2,
@@ -93,6 +94,7 @@ const Admin = () => {
       changeType: "INCREASE",
       timeStamp: " vs. last week",
       percentage: "2.35%",
+      type: "REVENUE"
     },
     {
       id: 3,
@@ -101,6 +103,7 @@ const Admin = () => {
       changeType: "INCREASE",
       timeStamp: " vs. last week",
       percentage: "2.35%",
+      type: "ORDER"
     },
     {
       id: 4,
@@ -109,6 +112,7 @@ const Admin = () => {
       changeType: "",
       timeStamp: "",
       percentage: "",
+      type: "LOAN"
     },
   ]
 
@@ -127,6 +131,7 @@ const Admin = () => {
               changeType={item.changeType}
               percentage={item.percentage}
               timeStamp={item.timeStamp}
+              type={item.type}
             />
           ))}
         </SimpleGrid>
