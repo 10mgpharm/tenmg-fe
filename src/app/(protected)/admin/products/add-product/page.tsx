@@ -142,6 +142,7 @@ const AddProducts = () => {
                   errors={errors}
                   setValue={setValue}
                   getValue={getValues}
+                  type="admin"
                 />
               );
             case "essentials":
