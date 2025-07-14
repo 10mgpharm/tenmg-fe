@@ -90,7 +90,7 @@ export function ColumsOrderFN(
       header: () => <p>Date</p>,
       cell: (info) => (
         <div>
-          <p>{convertDate(info?.row?.original?.createdAt)}</p>
+          <p>{convertDate(info?.row?.original?.payment?.paidAt)}</p>
         </div>
       ),
     }),
