@@ -339,7 +339,7 @@ const EssentialForm: React.FC<IChildComponentProps> = ({
                       <FormLabel color={"gray.600"}>Package per roll</FormLabel>
                       <Box className="border rounded-md p-2">
                         <Text color={"gray.400"}>
-                          {selectedVariation?.detail?.packagePerRoll || "None"}
+                          {selectedVariation?.detail?.packagePerRoll}
                         </Text>
                       </Box>
                     </Stack>
