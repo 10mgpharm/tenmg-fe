@@ -238,28 +238,15 @@ export default function LoanPreferenceComp() {
                 className="col-span-2"
                 isInvalid={!!errors.loanTenure}
               >
-                <Controller
-                  control={control}
-                  name="loanTenure"
-                  rules={{ required: "Loan Tenure is required" }}
-                  render={({ field: { onChange, value } }) => (
-                    <ReactSelect
-                      isClearable
-                      isSearchable
-                      isMulti
-                      options={loanTenureOptions}
-                      placeholder="Select Loan Tenure"
-                      closeMenuOnSelect={false}
-                      onChange={(selectedOptions: OptionType[]) =>
-                        onChange(selectedOptions)
-                      }
-                      value={value}
-                    />
-                  )}
+                <Input
+                  value={
+                    loanTenureOptions && Array.isArray(control._formValues.loanTenure)
+                      ? control._formValues.loanTenure.map((option: OptionType) => option.label).join(", ")
+                      : ""
+                  }
+                  isReadOnly
+                  placeholder="Loan Tenure"
                 />
-                {errors.loanTenure && (
-                  <p className="text-red-500">{errors.loanTenure.message}</p>
-                )}
               </FormControl>
             </Skeleton>
           </div>
@@ -327,7 +314,7 @@ export default function LoanPreferenceComp() {
                   type="text"
                   placeholder="Interest Rate"
                   value={watch("loanInterest")}
-                  disabled
+                  isReadOnly
                 />
                 {errors.loanInterest && (
                   <p className="text-red-500">{errors.loanInterest.message}</p>
