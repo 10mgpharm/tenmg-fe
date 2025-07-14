@@ -115,7 +115,7 @@ const APIManagement = () => {
   });
 
   return (
-    <div>
+    <div className="w-full">
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[300px]">
           <Spinner size={"sm"} />
@@ -131,8 +131,9 @@ const APIManagement = () => {
           borderRadius="10px"
           overflowX="auto"
           maxWidth="100%"
+          width={"100%"}
         >
-          <Table __css={{ tableLayout: "fixed" }}>
+          <Table className="w-full">
             <Thead bg="#F2F4F7">
               {table?.getHeaderGroups()?.map((headerGroup) => (
                 <Tr key={headerGroup.id}>
