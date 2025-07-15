@@ -88,10 +88,15 @@ const EditPage = ({ params }: { params: { id: string } }) => {
     setValue("presentationName", products?.presentation?.name);
     setValue("measurementName", products?.measurement?.name);
     setValue("strengthValue", products?.variation?.strengthValue);
-    setValue("packageName", products?.variation?.packagePerRoll === "null" ? "" : products?.variation?.packagePerRoll); 
+    setValue(
+      "packageName",
+      products?.variation?.packagePerRoll === "null"
+        ? ""
+        : products?.variation?.packagePerRoll
+    );
     setValue("weight", products?.variation?.weight?.toString());
     setValue("actualPrice", products?.actualPrice);
-    setValue("discountPrice", products?.discountPrice ?? '0');
+    setValue("discountPrice", products?.discountPrice ?? "0");
     setValue("quantity", products?.quantity);
     setValue("lowStockLevel", products?.lowStockLevel?.toString());
     setValue("outStockLevel", products?.outStockLevel?.toString());
@@ -182,6 +187,7 @@ const EditPage = ({ params }: { params: { id: string } }) => {
                   errors={errors}
                   setValue={setValue}
                   getValue={getValues}
+                  type="admin"
                 />
               );
             case "essentials":
