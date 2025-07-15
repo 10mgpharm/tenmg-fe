@@ -10,7 +10,7 @@ export default function AuthWrapper({
 }: AuthWrapperProps) {
   return (
     <>
-      <div className="min-h-screen md:flex w-full items-stretch">
+      <div className="min-h-screen md:flex w-full items-stretch ">
         <div
           style={{
             background:

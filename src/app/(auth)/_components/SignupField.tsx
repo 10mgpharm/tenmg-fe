@@ -28,10 +28,11 @@ import { useRouter } from "next/navigation";
 import ErrorMessage from "./ErrorMessage";
 import { toast } from "react-toastify";
 import { handleServerErrorMessage } from "@/utils";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 interface SignUpFieldProps {
-  title: "supplier" | "pharmacy" | "vendor" | "lender";
-  tabIndex?: number;
+  title: "SUPPLIER" | "LENDER" | "VENDOR" | "PHARMACY";
+  setFormStep?: (value: number) => void;
 }
 
 interface IFormInput {
@@ -42,8 +43,9 @@ interface IFormInput {
   passwordConfirmation: string;
 }
 
-export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
+export default function SignUpField({ title, setFormStep }: SignUpFieldProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState<boolean>(false);
@@ -55,7 +57,6 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
 
-  const router = useRouter();
   const nameParams = searchParams.get("name");
   const mail = searchParams.get("email");
   const emailParams = mail ? mail.replace(/ /g, "+") : null;
@@ -77,19 +78,10 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
     mode: "onChange",
   });
 
-  const titleTabs =
-    tabIndex === 0
-      ? "supplier"
-      : tabIndex === 1
-      ? "pharmacy"
-      : tabIndex === 2
-      ? "vendor"
-      : "lender";
-
   useEffect(() => {
     if (nameParams && emailParams && businessNameParams) {
       // set this from session if exist
-      if (tab === titleTabs) {
+      if (tab.toLowerCase() === title.toLowerCase()) {
         setValue("fullname", nameParams);
         setValue("name", businessNameParams);
         setValue("email", emailParams);
@@ -99,7 +91,7 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
         setValue("email", "");
       }
     }
-  }, [nameParams, emailParams, businessNameParams, setValue, tab, titleTabs]);
+  }, [nameParams, emailParams, businessNameParams, setValue, tab, title]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
@@ -108,7 +100,8 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
       const response = await requestClient().post("/auth/signup", {
         ...data,
         termsAndConditions: true,
-        businessType: title === "pharmacy" ? "customer_pharmacy" : title,
+        businessType:
+          title === "PHARMACY" ? "customer_pharmacy" : title.toLowerCase(),
       });
       const { status, message }: ResponseDto<User> = response.data;
 
@@ -139,41 +132,54 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
     }
   };
 
+  if (!title) {
+    toast.error("No user type");
+    router.back();
+    return;
+  }
+
   return (
     <>
-      <Box px={{ base: 6, md: 12, lg: 20, xl: 32 }}>
-        <Link href="/home">
-          <Image
-            src={"/icons/logo.svg"}
-            alt="tenmg"
-            mb={{ md: 8 }}
-            boxSize="75px"
-          />
-        </Link>
+      <Box>
+        <div className="flex items-center justify-between mb-2">
+          <Link href="/home">
+            <Image src={"/icons/logo.svg"} alt="tenmg" boxSize="50px" />
+          </Link>
 
+          <div
+            onClick={() => router.back()}
+            className="size-[45px] bg-primary-50 rounded-full flex items-center justify-center group hover:w-[60px] transition-all"
+          >
+            <ArrowBackIcon
+              fontSize={"20px"}
+              className="group-hover:text-primary  transition-all cursor-pointer"
+            />
+          </div>
+        </div>
         <Box mb={8}>
           <Heading
             as="h3"
             size="xl"
             fontWeight="medium"
-            mb={3}
             lineHeight="44px"
             color="gray.900"
           >
             Sign Up as a
-            {title === "supplier"
+            {title === "SUPPLIER"
               ? " Supplier"
-              : title === "pharmacy"
+              : title === "PHARMACY"
               ? " Pharmacy or Hospital"
-              : title === "vendor"
+              : title === "VENDOR"
               ? " Vendor"
               : " Lender"}
           </Heading>
-          <Text fontSize="lg" color="gray.500">
-            Create an account for free.
+          <Text className="text-18px mt-1" color="gray.500">
+            Create an account for free. Already have one?{" "}
+            <Link href="/auth/signin" className="!text-primary hover:underline">
+              Login
+            </Link>
           </Text>
         </Box>
-
         <form onSubmit={handleSubmit(onSubmit)}>
           {errorMessage && (
             <ErrorMessage
@@ -361,7 +367,7 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
               Create Account
             </Button>
 
-            {title !== "vendor" && (
+            {title !== "VENDOR" && (
               <Button
                 leftIcon={<FcGoogle />}
                 variant="outline"
@@ -381,35 +387,6 @@ export default function SignUpField({ title, tabIndex }: SignUpFieldProps) {
             )}
           </Box>
         </form>
-
-        <Box textAlign="center">
-          <Text color="gray.500">
-            Already have an account?{" "}
-            <Link href="/auth/signin" color="primary.500">
-              Log In
-            </Link>{" "}
-            or{" "}
-            <Link
-              href={`${
-                title !== "vendor" ? "/auth/signup/vendor" : "/auth/signup"
-              }`}
-              color="primary.500"
-            >
-              Sign Up as a
-              {title === "vendor" ? "Supplier or Pharmacy" : " Vendor"}
-            </Link>
-          </Text>
-        </Box>
-
-        {title !== "lender" && (
-          <Box textAlign="center" mt={2}>
-            <Text color="gray.500">
-              <Link href={`/auth/signup/lender`} color="primary.500">
-                Sign Up as a Lender
-              </Link>
-            </Text>
-          </Box>
-        )}
       </Box>
     </>
   );

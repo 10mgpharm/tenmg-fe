@@ -92,7 +92,7 @@ const Financepage = () => {
             </p>
             <div className="flex items-center gap-2">
               <a
-                href="/auth/signin"
+                href="/auth/signin/pharmacy"
                 className="text-[#2467E3] font-semibold hover:underline pt-6"
               >
                 Go To Storefront
@@ -171,7 +171,7 @@ const Financepage = () => {
             </p>
             <div className="flex items-center gap-2">
               <a
-                href="/auth/signup"
+                href="/auth/signup/supplier"
                 className="text-[#2467E3] font-semibold hover:underline pt-6"
               >
                 Sign Up As a Supplier
