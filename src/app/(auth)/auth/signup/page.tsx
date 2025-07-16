@@ -12,7 +12,7 @@ const SignUpPharmacy = async () => {
 
   return (
     <AuthWrapper type="others">
-      <div className="w-full md:w-1/2  mt-10 mb-10 px-5 md:px-10 lg:px-16">
+      <div className="w-full md:w-1/2  mt-10 mb-10 px-5 sm:px-10 lg:px-16">
         <div className="w-full ">
           <SignUp_Select_form />
         </div>

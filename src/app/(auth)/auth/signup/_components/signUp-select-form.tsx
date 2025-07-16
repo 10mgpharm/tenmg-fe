@@ -9,14 +9,24 @@ import {
   Text,
   useRadioGroup,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CustomRadio } from "./custom-radio-select";
 import Link from "next/link";
-import SignUpField from "@/app/(auth)/_components/SignupField";
 import { toast } from "react-toastify";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 const options = [
+  {
+    value: "LENDER",
+    header: "Lender",
+    sub: "You offer financial support tailored for pharmacies and healthcare services.",
+  },
+  {
+    value: "VENDOR",
+    header: "Vendor",
+    sub: "You supply medical and pharmaceutical equipment to healthcare businesses.",
+  },
+
   {
     value: "SUPPLIER",
     header: "Supplier",
@@ -26,16 +36,6 @@ const options = [
     value: "PHARMACY",
     header: "Pharmacy",
     sub: "You operate a licensed pharmacy providing medications and care.",
-  },
-  {
-    value: "VENDOR",
-    header: "Vendor",
-    sub: "You supply medical and pharmaceutical equipment to healthcare businesses.",
-  },
-  {
-    value: "LENDER",
-    header: "Lender",
-    sub: "You offer financial support tailored for pharmacies and healthcare services.",
   },
 ];
 type SelectedValueType = "SUPPLIER" | "PHARMACY" | "VENDOR" | "LENDER" | null;
@@ -85,7 +85,7 @@ const SignUp_Select_form = () => {
 
           <Heading
             as="h3"
-            size="xl"
+            size="lg"
             fontWeight="medium"
             color="gray.900"
             className="mt-3"
