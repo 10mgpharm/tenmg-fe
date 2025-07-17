@@ -159,7 +159,7 @@ export default function SignUpField({ title, setFormStep }: SignUpFieldProps) {
         <Box mb={8}>
           <Heading
             as="h3"
-            size="xl"
+            size="lg"
             fontWeight="medium"
             lineHeight="44px"
             color="gray.900"

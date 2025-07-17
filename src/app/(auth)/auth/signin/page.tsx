@@ -38,23 +38,21 @@ export default async function LoginPage() {
             >
               Welcome Back
             </Heading>
-            <Text fontSize="lg" color="gray.500">
-              Please enter your details.
-            </Text>
+            <p className="text-gray-500 text-[17px] mt-2">
+              Please enter your details to continue, or{" "}
+              <Link
+                href="/auth/signup"
+                className="text-blue-500  hover:underline"
+              >
+                sign up
+              </Link>
+              .
+            </p>
           </div>
 
           <Suspense fallback={<div>Loading...</div>}>
             <LoginForm />
           </Suspense>
-
-          <div className="text-center">
-            <p className="text-gray-500 text-base font-normal leading-6 flex justify-center gap-1">
-              Don&apos;t have an account?
-              <Link href="/auth/signup" className="text-primary-500">
-                Sign up
-              </Link>
-            </p>
-          </div>
         </article>
       </section>
     </AuthWrapper>

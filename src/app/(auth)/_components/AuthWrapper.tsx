@@ -16,7 +16,7 @@ export default function AuthWrapper({
             background:
               "linear-gradient(151.09deg, rgba(255, 57, 83, 0.1) 0.44%, rgba(24, 73, 169, 0.05) 67.54%)",
           }}
-          className="hidden md:w-1/2 md:flex justify-center items-center"
+          className="hidden md:w-1/2 md:flex justify-center items-center sticky top-0 h-screen"
         >
           {type === "reset-password" ? (
             <Image
