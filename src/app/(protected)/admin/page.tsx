@@ -81,7 +81,7 @@ const Admin = () => {
     {
       id: 1,
       title: "Today's Sales",
-      amount: `₦${data?.todaySales || 0}`,
+      amount: `${data?.todaySales || 0}`,
       changeType: "INCREASE",
       timeStamp: " vs. last week",
       percentage: "2.35%",
