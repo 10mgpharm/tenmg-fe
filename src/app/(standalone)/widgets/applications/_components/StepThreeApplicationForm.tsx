@@ -20,6 +20,7 @@ import {
     NumberInput,
     NumberInputField,
     Stack,
+    Input,
 } from "@chakra-ui/react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useState } from "react";
@@ -49,9 +50,9 @@ interface SelectOption {
 }
 
 const schema = z.object({
-    durationInMonth: z.enum(["3", "6", "7", "9", "12"], {
+    durationInMonth: z.number({
         errorMap: () => ({ message: "Invalid duration selected" }),
-    }).transform(Number), // Convert string to number
+    }),
 });
 
 type FormInput = z.infer<typeof schema>;
@@ -64,11 +65,11 @@ export default function StepThreeApplicationForm({ token, business, application,
         watch,
         formState: { errors },
         handleSubmit,
-
+        setValue,
     } = useForm<FormInput>({
         resolver: zodResolver(schema),
         defaultValues: {
-            durationInMonth: undefined, // Ensures the user selects a value
+            durationInMonth: 3, // Default to 3 months
         },
         mode: "onChange",
     });
@@ -79,16 +80,12 @@ export default function StepThreeApplicationForm({ token, business, application,
     const [monthlyCapitalAmount, setMonthlyCapitalAmount] = useState<number>(0);
     const [monthlyRepaymentAmount, setMonthlyCapitalRepayment] = useState<number>(0);
     const [totalRepayment, setTotalRepayment] = useState<number>(0);
-
-    const durations: SelectOption[] = [
-        { label: '3 Months', value: 3 },
-        { label: '6 Months', value: 6 },
-        { label: '9 Months', value: 9 },
-        { label: '12 Months', value: 12 }
-    ];
-
-
     const [isPending, startTransition] = useTransition();
+
+    // Set initial value for duration
+    useEffect(() => {
+        setValue("durationInMonth", 3);
+    }, [setValue]);
 
     const handleGetDefaultBankAccount = (durationInMonth: number) => {
         startTransition(async () => {
@@ -178,15 +175,15 @@ export default function StepThreeApplicationForm({ token, business, application,
                 <Box mb={10}>
                     <FormControl isInvalid={!!errors.durationInMonth?.message} mb={5}>
                         <FormLabel htmlFor="loanRepayment">Loan Repayment</FormLabel>
-                        <Select
+                        <Input
                             id="durationInMonth"
-                            placeholder="Choose Repayment Period"
-                            {...register("durationInMonth")}
-                        >
-                            {durations?.map((duration) =>
-                                <option key={duration.value} value={duration.value}>{duration.label} Repayment Plan</option>
-                            )}
-                        </Select>
+                            value="3 Months"
+                            isReadOnly
+                        />
+                        <input
+                            type="hidden"
+                            {...register("durationInMonth", { valueAsNumber: true })}
+                        />
 
                         <FormErrorMessage>
                             {errors.durationInMonth?.message}

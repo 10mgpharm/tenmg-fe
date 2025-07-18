@@ -9,7 +9,7 @@ const   DashboardCard = (
   return (
     <div className="border rounded-md px-5 py-8 bg-white space-y-2 relative">
         <div className="flex items-center justify-between">
-            <p className="text-gray-600 font-medium">{title}</p>
+            <p className="text-gray-600 font-bold">{title}</p>
             <div className="md:hidden p-2 rounded-full shadow-md">
                 <MdInsights className="w-6 h-6 text-primary-500" />
             </div>
@@ -24,7 +24,7 @@ const   DashboardCard = (
                   ? "text-blue-600"
                   : type === "ORDER"
                   ? "text-gray-600"
-                  : "text-red-600")
+                  : "text-[#F59E0B]")
               }
             >
               {amount}
