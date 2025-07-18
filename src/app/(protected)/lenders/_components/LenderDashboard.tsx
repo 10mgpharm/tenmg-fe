@@ -48,11 +48,7 @@ import LoanRequestCard from "./dashboard/LoanRequestCard";
 import { useSession } from "next-auth/react";
 
 // Constants for chart time periods
-const BALANCE_TIME_PERIODS = [
-  "12 months",
-  "3 months",
-  "30 days",
-] as const;
+const BALANCE_TIME_PERIODS = ["3 months", "6 months", "12 months"] as const;
 
 type BalanceTimePeriod = (typeof BALANCE_TIME_PERIODS)[number];
 
@@ -334,11 +330,11 @@ const LenderDashboard = ({ sessionData }: ILenderDashboardProps) => {
     const currentMonth = currentDate.getMonth() + 1;
 
     switch (selectedTimePeriod) {
-      case "30 days":
-        filteredData = sortedData.slice(-1);
-        break;
       case "3 months":
         filteredData = sortedData.slice(-3);
+        break;
+      case "6 months":
+        filteredData = sortedData.slice(-6);
         break;
       case "12 months":
         filteredData = sortedData.slice(-12);
