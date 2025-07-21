@@ -3,8 +3,17 @@ export const isPendingStatus = (status: string | undefined): boolean => {
 };
 
 export const isSuccessStatus = (status: string | undefined): boolean => {
-  const upper = status?.toUpperCase();
+  if (!status) return false;
+  const upper = status.toUpperCase();
   return upper === "SUCCESS" || upper === "PAID";
+};
+
+export const isOverdueStatus = (status: string | undefined): boolean => {
+  return status?.toUpperCase() === "OVERDUE";
+};
+
+export const isPartialStatus = (status: string | undefined): boolean => {
+  return status?.toUpperCase() === "PARTIAL";
 };
 
 export const calculatePendingTotal = (pendingAmounts: any[]): number => {
@@ -29,4 +38,11 @@ export const getLastPaidPayment = (repaymentSchedule: any[]): any => {
 
 export const getLastPaidBalance = (lastPaidPayment: any): string => {
   return lastPaidPayment?.balance !== "0.00" ? lastPaidPayment?.totalAmount : "0";
+};
+
+export const getTotalPaidAmount = (repaymentSchedule: any[]): number => {
+  if (!repaymentSchedule) return 0;
+  return repaymentSchedule
+    .filter((item) => isSuccessStatus(item.paymentStatus))
+    .reduce((sum, item) => sum + Number(item?.totalAmount), 0);
 };

@@ -31,7 +31,7 @@ import DeleteAddressModal from "./deleteStoreAddressModal";
 export default function StoreAddressPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [storeAddressList, setStoreAddressList] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [editItem, setEditItem] = useState<any | null>(null);
   const [isPosting, setIsPosting] = useState(false);
   const [actionType, setActionType] = useState<"EDIT" | "ADD">("ADD");
@@ -58,6 +58,7 @@ export default function StoreAddressPage() {
 
   const fetchAddresses = async () => {
     try {
+      setLoading(true);
       const response = await requestClient({ token }).get(
         "/supplier/store-addresses"
       );
@@ -70,6 +71,7 @@ export default function StoreAddressPage() {
   };
 
   useEffect(() => {
+    if (!token) return;
     fetchAddresses();
   }, [token]);
 
@@ -160,7 +162,6 @@ export default function StoreAddressPage() {
                   {item.isDefault && <Tag colorScheme="green">Default</Tag>}
                 </Flex>
                 <Text fontWeight="bold">{item.name || "Store Address"}</Text>
-                <Text>{item.phoneNumber || "09098009911"}</Text>
                 <Text>
                   {item.streetAddress}, {item.city}, {item.state},{" "}
                   {item.country}

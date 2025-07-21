@@ -245,6 +245,7 @@ const CreateDiscount = () => {
                             placeholder="e.g 10mg code" 
                             type="text"
                             height={"48px"}
+                            py={3}
                             flex={1}
                             isInvalid={!!errors.discountAmount}
                             _focus={{

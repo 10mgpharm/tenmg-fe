@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import Gestarted from "./gestarted";
+import { Button } from "@chakra-ui/react";
 
 const Herosection = () => {
   const handleScrollToUsers = () => {
@@ -55,16 +56,9 @@ const Herosection = () => {
                   Demo
                 </Link>
                 <div className="items-end space-x-4 sm:flex hidden">
-                  <button
-                    onClick={() => {
-                      document
-                        .getElementById("get-started")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                    className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-                  >
-                    Get Started
-                  </button>
+                  <Link href="/auth/signup">
+                    <Button className="!bg-blue-600">Get Started</Button>
+                  </Link>
                 </div>
               </div>
             </div>

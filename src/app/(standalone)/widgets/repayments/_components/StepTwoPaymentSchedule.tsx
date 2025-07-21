@@ -22,6 +22,7 @@ import { convertDate } from "@/utils/formatDate";
 import requestClient from "@/lib/requestClient";
 import { toast } from "react-toastify";
 import { SubmitHandler } from "react-hook-form";
+import { isPendingStatus, isSuccessStatus } from "@/utils/repaymentUtils";
 
 interface Props {
   business: BusinessDto;
@@ -41,11 +42,6 @@ type PaymentOption = "custom" | "full";
 interface IFormInput {
   amount: number;
 }
-
-const isSuccessStatus = (status: string | undefined) => {
-  const upper = status?.toUpperCase();
-  return upper === "SUCCESS" || upper === "PAID";
-};
 
 export default function StepTwoPaymentSchedule({
   business,
@@ -96,7 +92,10 @@ export default function StepTwoPaymentSchedule({
       );
       toast.success("Fund Repayment is successful");
       if (onContinueAction) {
-        await handlePaymentSuccess(amount);
+        onContinueAction(amount);
+        if (onPaymentSuccess) {
+          await onPaymentSuccess();
+        }
       }
     } catch (error) {
       toast.error(`Repayment Error: ${handleServerErrorMessage(error)}`);
@@ -135,11 +134,6 @@ export default function StepTwoPaymentSchedule({
       onClose: () => cancelRepayment(ref),
       onSuccess: () => verifyPayment(ref, amount),
     });
-  };
-
-  const handlePaymentSuccess = async (paidAmount) => {
-    await onPaymentSuccess();
-    onContinueAction(paidAmount);
   };
 
   const onSubmit: SubmitHandler<IFormInput> = async ({ amount }) => {

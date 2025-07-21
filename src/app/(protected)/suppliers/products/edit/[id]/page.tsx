@@ -176,6 +176,7 @@ const EditPage = ({ params }: { params: { id: string } }) => {
                   errors={errors}
                   setValue={setValue}
                   getValue={getValues}
+                  type="supplier"
                 />
               );
             case "essentials":
