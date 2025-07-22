@@ -1,9 +1,5 @@
-import { redirect } from 'next/navigation'
-import React from 'react'
+import { redirect } from "next/navigation";
 
 export default function Page() {
-    redirect('/auth/signup');
-  return (
-    <div></div>
-  )
+  redirect("/auth/signup");
 }

@@ -429,6 +429,29 @@ export interface OrderData {
   totalTenmgComission: number;
   updatedAt: string;
   items: any;
+  shippingFee: string;
+  payment: {
+    amount: string;
+    businessId: string;
+    channel: string;
+    comment: string;
+    createdAt: string;
+    currency: string;
+    customerId: number;
+    ecommerceTransactionId: string;
+    externalReference: string;
+    fee: string;
+    id: number;
+    meta: string;
+    orderId: number;
+    paidAt: string;
+    reference: string;
+    status: string;
+    totalAmount: string;
+    updatedAt: string;
+    walletId: string;
+    walletType: string;
+  };
 }
 export interface OrderResponseData {
   data: OrderData[];

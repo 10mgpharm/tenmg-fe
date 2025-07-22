@@ -180,7 +180,7 @@ export const DataTable = ({
                       {headerGroup.headers?.map((header) => (
                         <Th
                           textTransform={"initial"}
-                          px="0px"
+                          px="10px"
                           key={header.id}
                           color={"primary.500"}
                           fontWeight={"500"}
@@ -200,7 +200,7 @@ export const DataTable = ({
                   {table?.getRowModel()?.rows?.map((row) => (
                     <Tr key={row.id}>
                       {row.getVisibleCells()?.map((cell) => (
-                        <Td key={cell.id} px="0px">
+                        <Td key={cell.id} px="10px">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

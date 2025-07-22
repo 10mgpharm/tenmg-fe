@@ -30,6 +30,7 @@ import { IoCloudDoneOutline } from "react-icons/io5";
 import { IFormInput } from "../add-product/page";
 import { useSession } from "next-auth/react";
 import requestClient from "@/lib/requestClient";
+import { toQueryString } from "@/utils";
 
 interface IChildComponentProps {
   title: string;
@@ -40,6 +41,7 @@ interface IChildComponentProps {
   handleStepValidation: () => void;
   setValue: UseFormSetValue<IFormInput>;
   getValue: UseFormGetValues<IFormInput>;
+  type: string;
 }
 
 const DetailForm: React.FC<IChildComponentProps> = ({
@@ -51,6 +53,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
   setValue,
   getValue,
   handleStepValidation,
+  type,
 }) => {
   const toast = useToast();
   const router = useRouter();
@@ -72,8 +75,11 @@ const DetailForm: React.FC<IChildComponentProps> = ({
     };
     setIsLoadingBrands(true);
     try {
+      const baseUrl =
+        type === "admin" ? `/admin/settings/brands` : `/supplier/brands`;
+
       const response = await requestClient({ token: token }).get(
-        `/supplier/brands?${params}`
+        `${baseUrl}?${toQueryString(params)}`
       );
       if (response.status === 200) {
         setBrandData(response.data.data);
@@ -82,7 +88,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
       console.error(error);
     }
     setIsLoadingBrands(false);
-  }, [token]);
+  }, [token, type]);
 
   const fetchingCategoriesTypes = useCallback(async () => {
     const params = {
@@ -91,8 +97,12 @@ const DetailForm: React.FC<IChildComponentProps> = ({
     };
     setIsLoadingCategory(true);
     try {
+      const baseUrl =
+        type === "admin"
+          ? `/admin/settings/categories`
+          : `/supplier/categories`;
       const response = await requestClient({ token: token }).get(
-        `/supplier/categories?${params}`
+        `${baseUrl}?${toQueryString(params)}`
       );
       if (response.status === 200) {
         setCategoryData(response.data.data);
@@ -101,7 +111,7 @@ const DetailForm: React.FC<IChildComponentProps> = ({
       console.error(error);
     }
     setIsLoadingCategory(false);
-  }, [token]);
+  }, [token, type]);
 
   useEffect(() => {
     if (!token) return;

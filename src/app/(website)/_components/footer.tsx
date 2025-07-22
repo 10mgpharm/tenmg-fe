@@ -54,7 +54,7 @@ const Footer = () => {
               <ul className="space-y-1">
                 <li>
                   <a
-                    href="/auth/signup?tab=supplier"
+                    href="/auth/signup/supplier"
                     className="hover:text-gray-300"
                   >
                     Suppliers
@@ -62,7 +62,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    href="/auth/signup?tab=pharmacy"
+                    href="/auth/signup/pharmacy"
                     className="hover:text-gray-300"
                   >
                     Pharmacies
