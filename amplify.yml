@@ -4,10 +4,13 @@ frontend:
     preBuild:
       commands:
         - nvm use 20
+        - export NODE_OPTIONS="--max-old-space-size=4096"
         - npm ci --ignore-scripts --cache .npm --prefer-offline
+        - npm install sharp@^0.33.5
         - npx next telemetry disable
     build:
       commands:
+        - export NODE_OPTIONS="--max-old-space-size=4096"
         - npm run build
   artifacts:
     baseDirectory: .next
