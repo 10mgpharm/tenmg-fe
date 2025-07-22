@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import { StylesConfig } from "react-select/dist/declarations/src/styles";
+import { StylesConfig } from "react-select";
 
 export interface CreatableSelectOption {
   value: string;
