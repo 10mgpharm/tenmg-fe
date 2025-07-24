@@ -152,15 +152,6 @@ export function ColumsOrderFN(
                   >
                     Process Order
                   </MenuItem>
-                  <MenuItem
-                    color={"red.500"}
-                    onClick={() => {
-                      setSelectedOrder(info.row.original);
-                      onOpenCancelled();
-                    }}
-                  >
-                    Cancel Order
-                  </MenuItem>
                 </>
               )}
               {info.row.original.status === "PROCESSING" && (
@@ -172,15 +163,6 @@ export function ColumsOrderFN(
                     }}
                   >
                     Ship Order
-                  </MenuItem>
-                  <MenuItem
-                    color={"red.500"}
-                    onClick={() => {
-                      setSelectedOrder(info.row.original);
-                      onOpenCancelled();
-                    }}
-                  >
-                    Cancel Order
                   </MenuItem>
                 </>
               )}
