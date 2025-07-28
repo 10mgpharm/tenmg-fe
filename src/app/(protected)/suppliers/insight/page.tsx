@@ -46,51 +46,52 @@ const Insight = () => {
   }, [token, fetchOverview]);
 
   // Dynamic data normalization based on filter type
-  const normalizeChartData = useCallback(
-    (dataObject: any, filterType: string) => {
-      if (!dataObject) return [];
+     const normalizeChartData = useCallback(
+     (dataObject: any, filterType: string) => {
+       const labelMappings: { [key: string]: { [key: string]: string } } = {
+         today: {
+           midnightToSixAm: "12:00am",
+           sixAmToTwelvePm: "6:00am",
+           twelvePmToSixPm: "12:00pm",
+           sixPmToMidnight: "6:00pm",
+         },
+         one_week: {
+           monday: "Mon",
+           tuesday: "Tue",
+           wednesday: "Wed",
+           thursday: "Thu",
+           friday: "Fri",
+           saturday: "Sat",
+           sunday: "Sun",
+         },
+         one_month: {
+           weekOne: "Week 1",
+           weekTwo: "Week 2",
+           weekThree: "Week 3",
+           weekFour: "Week 4",
+         },
+         six_months: {
+           currentMonth: "Current",
+           twoMonthsAgo: "Month 2",
+           threeMonthsAgo: "Month 3",
+           fourMonthsAgo: "Month 4",
+           fiveMonthsAgo: "Month 5",
+           lastMonth: "Month 6",
+         },
+       };
 
-      const labelMappings: { [key: string]: { [key: string]: string } } = {
-        today: {
-          midnightToSixAm: "12:00am",
-          sixAmToTwelvePm: "6:00am",
-          twelvePmToSixPm: "12:00pm",
-          sixPmToMidnight: "6:00pm",
-        },
-        one_week: {
-          monday: "Mon",
-          tuesday: "Tue",
-          wednesday: "Wed",
-          thursday: "Thu",
-          friday: "Fri",
-          saturday: "Sat",
-          sunday: "Sun",
-        },
-        one_month: {
-          weekOne: "Week 1",
-          weekTwo: "Week 2",
-          weekThree: "Week 3",
-          weekFour: "Week 4",
-        },
-        six_months: {
-          currentMonth: "Current",
-          lastMonth: "Last Month",
-          twoMonthsAgo: "2 Months Ago",
-          threeMonthsAgo: "3 Months Ago",
-          fourMonthsAgo: "4 Months Ago",
-          fiveMonthsAgo: "5 Months Ago",
-        },
-      };
-
-      const mapping = labelMappings[filterType] || {};
-
-      return Object.entries(dataObject).map(([key, value]) => ({
-        name: mapping[key] || key,
-        uv: Number(value) || 0,
-      }));
-    },
-    []
-  );
+       const mapping = labelMappings[filterType] || {};
+       
+       // Create a complete dataset with all expected keys, filling missing data with 0
+       const expectedKeys = Object.keys(mapping);
+       
+       return expectedKeys.map((key) => ({
+         name: mapping[key] || key,
+         uv: Number(dataObject?.[key]) || 0,
+       }));
+     },
+     []
+   );
 
   // Get chart data for totalProductsSold
   const productsSoldChartData = normalizeChartData(
@@ -105,10 +106,12 @@ const Insight = () => {
   );
 
   const formatYAxisTick = (tickItem: any) => {
-    if (tickItem >= 1000) {
-      return `${tickItem.toLocaleString()}`;
+    if (tickItem >= 1000000) {
+      return `${(tickItem / 1000000).toFixed(1)}M`;
+    } else if (tickItem >= 1000) {
+      return `${(tickItem / 1000).toFixed(0)}K`;
     }
-    return tickItem;
+    return tickItem.toString();
   };
 
   // Custom tooltip for revenue charts
@@ -197,7 +200,7 @@ const Insight = () => {
                       margin={{
                         top: 10,
                         right: 10,
-                        left: -30,
+                        left: 10,
                         bottom: 0,
                       }}
                     >
@@ -218,6 +221,7 @@ const Insight = () => {
                         axisLine={false}
                         fontSize={"14px"}
                         tickFormatter={formatYAxisTick}
+                        width={60}
                       />
                       <Tooltip content={<CustomProductTooltip />} />
                       <Area
@@ -248,7 +252,7 @@ const Insight = () => {
                       margin={{
                         top: 10,
                         right: 10,
-                        left: -30,
+                        left: 10,
                         bottom: 0,
                       }}
                     >
@@ -269,6 +273,7 @@ const Insight = () => {
                         axisLine={false}
                         fontSize={"14px"}
                         tickFormatter={formatYAxisTick}
+                        width={60}
                       />
                       <Tooltip content={<CustomRevenueTooltip />} />
                       <Area
@@ -301,7 +306,7 @@ const Insight = () => {
                       margin={{
                         top: 10,
                         right: 10,
-                        left: -10,
+                        left: 10,
                         bottom: 0,
                       }}
                     >
@@ -322,6 +327,7 @@ const Insight = () => {
                         axisLine={false}
                         fontSize={"14px"}
                         tickFormatter={formatYAxisTick}
+                        width={60}
                       />
                       <Tooltip />
                       <Area
