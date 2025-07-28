@@ -7,14 +7,8 @@ import { BellIcon } from "@heroicons/react/24/outline";
 import Logo from "@public/assets/images/10mg logo.svg";
 import { signOut, useSession } from "next-auth/react";
 import { NextAuthUserSession } from "@/types";
-import {
-  Avatar,
-  FormControl,
-  FormLabel,
-  Switch,
-  Tag
-} from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { Avatar, Tag } from "@chakra-ui/react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { handleServerErrorMessage } from "@/utils";
 import GreetingComponent from "./GreetingComponent";
 import { useCallback, useEffect, useState } from "react";
@@ -31,15 +25,17 @@ const TopNavBar = ({
   route: string;
   onMenuClick?: () => void;
 }) => {
-  
   const router = useRouter();
   const session = useSession();
   const data = session.data as NextAuthUserSession;
   const token = data?.user?.token;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [notifications, setNotifications] = useState<any[]>([]);
   const [notificationCount, setNotificationCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPageUrl, setCurrentPageUrl] = useState("");
 
   const fetchingCounts = useCallback(async () => {
     if (!token) return;
@@ -48,6 +44,16 @@ const TopNavBar = ({
     );
     setNotificationCount(res.data?.data?.count);
   }, [token]);
+
+  // to dictect change in notification page
+  useEffect(() => {
+    const id = searchParams.get("id");
+    setCurrentPageUrl(id ?? "");
+
+    if (id !== currentPageUrl) fetchingCounts();
+
+    fetchingCounts();
+  }, [pathname, searchParams]);
 
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -274,7 +280,7 @@ const TopNavBar = ({
                   FAQ
                 </button>
               </MenuItem>
-              
+
               <MenuItem>
                 <button
                   className="block px-3 py-1 text-sm text-red-600 hover:bg-red-50 w-full text-left"

@@ -69,7 +69,7 @@ export default function StoreAddressPage() {
       setLoading(false);
     }
   };
-
+     
   useEffect(() => {
     if (!token) return;
     fetchAddresses();

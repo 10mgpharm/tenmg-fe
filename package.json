@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -70,11 +70,15 @@
     "reflect-metadata": "^0.2.2",
     "rooks": "^7.14.1",
     "sass": "^1.79.5",
+    "sharp": "^0.33.5",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "typeorm": "^0.3.20",
     "typeorm-naming-strategies": "^4.1.0",
+    "typescript": "^5.5.4",
     "typewriter-effect": "^2.21.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.6",
     "xlsx": "^0.18.5",
     "yup": "^1.4.0",
     "zod": "^3.24.2",
@@ -91,12 +95,9 @@
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^18",
     "@types/react-slick": "^0.23.13",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.6",
     "husky": "^9.1.5",
     "lint-staged": "^15.2.9",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.5.4"
+    "tailwindcss": "^3.4.1"
   }
 }
