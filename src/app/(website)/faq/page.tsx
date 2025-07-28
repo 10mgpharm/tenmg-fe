@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -8,41 +8,39 @@ import {
   AccordionPanel,
   Box,
   Input,
+  Skeleton,
+  SkeletonText,
+  VStack,
+  Text,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
+import requestClient from "@/lib/requestClient";
 import Navbar from "../_components/navbar";
 import Footer from "../_components/footer";
 
-const faqs = [
-  {
-    question: "Is there a free trial available?",
-    answer:
-      "Yes, you can try us for free for 30 days. If you want, we'll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.",
-  },
-  {
-    question: "Can I change my plan later?",
-    answer: "Yes, you can upgrade or downgrade anytime.",
-  },
-  {
-    question: "What is your cancellation policy?",
-    answer: "You can cancel anytime before the next billing cycle.",
-  },
-  {
-    question: "Can other info be added to an invoice?",
-    answer: "Yes, you can add details like company name and address.",
-  },
-  {
-    question: "How does billing work?",
-    answer: "Billing is done on a monthly basis.",
-  },
-  {
-    question: "How do I change my account email?",
-    answer: "You can update your email in account settings.",
-  },
-];
-
 export default function FAQ() {
   const [search, setSearch] = useState("");
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      setLoading(true);
+      try {
+        const response = await requestClient().get(
+          "/storefront/faqs"
+        );
+        setFaqs(response?.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch FAQs:", error);
+        setFaqs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFaqs();
+  }, []);
 
   const filteredFaqs = faqs.filter((faq) =>
     faq.question.toLowerCase().includes(search.toLowerCase())
@@ -80,25 +78,50 @@ export default function FAQ() {
           />
         </Box>
 
-        {/* FAQ Accordion */}
-        <Accordion allowToggle>
-          {filteredFaqs.map((faq, index) => (
-            <AccordionItem key={index}>
-              <h2>
-                <AccordionButton
-                  _expanded={{ bg: "gray.100", fontWeight: "bold" }}
-                >
-                  <Box flex="1" textAlign="left">
-                    {faq.question}
-                  </Box>
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>{faq.answer}</AccordionPanel>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        {/* Loading State with Shimmer */}
+        {loading ? (
+          <VStack spacing={4}>
+            {[...Array(6)].map((_, index) => (
+              <Box key={index} w="full" p={4} borderWidth={1} borderRadius="md">
+                <Skeleton height="20px" mb={3} />
+                <SkeletonText mt="4" noOfLines={2} spacing="4" skeletonHeight="2" />
+              </Box>
+            ))}
+          </VStack>
+        ) : (
+          <>
+            {/* FAQ Accordion */}
+            {filteredFaqs.length > 0 ? (
+              <Accordion allowToggle>
+                {filteredFaqs.map((faq, index) => (
+                  <AccordionItem key={index}>
+                    <h2>
+                      <AccordionButton
+                        _expanded={{ bg: "gray.100", fontWeight: "bold" }}
+                      >
+                        <Box flex="1" textAlign="left">
+                          {faq.question.charAt(0).toUpperCase() + faq.question.slice(1)}
+                        </Box>
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>{faq.answer}</AccordionPanel>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            ) : (
+              <Box textAlign="center" py={8}>
+                <Text fontSize="lg" color="gray.500">
+                  {search 
+                    ? "No FAQs found matching your search."
+                    : "No FAQs available at the moment. Check back later."
+                  }
+                </Text>
+              </Box>
+            )}
+          </>
+        )}
       </Box>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
