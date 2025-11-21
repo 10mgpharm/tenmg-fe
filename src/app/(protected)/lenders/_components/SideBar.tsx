@@ -23,6 +23,8 @@ import { BusinessStatus } from "@/constants";
 import { LuFileText } from "react-icons/lu";
 import { BiMessageDetail } from "react-icons/bi";
 import { PiMoneyWavyBold } from "react-icons/pi";
+import Image from "next/image";
+import Logo from "@public/assets/images/10mg logo.svg";
 
 const navigation = [
   { name: "Dashboard", href: "/lenders", icon: HomeIcon, current: true },
@@ -176,9 +178,16 @@ const SideBar = ({ businessStatus }: { businessStatus: string }) => {
           </DialogPanel>
         </div>
       </Dialog>
-      <div className="hidden lg:mt-[98px] lg:fixed lg:z-50 lg:flex lg:w-72 lg:flex-col h-[calc(100vh-98px)]">
+      <div className="hidden h-[100vh] lg:fixed lg:z-50 lg:flex lg:w-72 lg:flex-col ">
         {/* Sidebar component, swap this element with another sidebar if you like */}
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 pt-8">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 pt-6">
+           <Image
+              src={Logo}
+              alt="Logo"
+              className="w-24 h-10 md:w-[160px] md:h-auto mb-10"
+              width={75}
+              height={75}
+            />
           <nav className="flex flex-1 flex-col">
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>

@@ -35,6 +35,8 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import requestClient from "@/lib/requestClient";
+import Image from "next/image";
+import Logo from '@public/assets/images/10mg logo.svg'
 
 const navSections = [
   {
@@ -154,7 +156,7 @@ const SideBar = ({
         <DialogBackdrop className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0" />
         <div className="fixed inset-0 flex">
           <DialogPanel className="relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-[closed]:-translate-x-full">
-            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 pt-8">
+            <div className="flex grow flex-col gap-y-5 overflow-y-auto  bg-white px-6 pb-4 pt-8">
               <nav className="flex flex-1 flex-col">
                 {navSections.map((section) => (
                   <Box key={section.title} mb={6}>
@@ -242,13 +244,20 @@ const SideBar = ({
       {/* Desktop Sidebar */}
       <Box
         display={{ base: "none", lg: "flex" }}
-        mt={{ lg: "98px" }}
+      
         position="fixed"
         zIndex={50}
         w="72"
-        h="calc(100vh - 98px)"
+        h="100vh"
       >
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 pt-8 border-r border-gray-200 w-full">
+          <Image
+                        src={Logo}
+                        alt="Logo"
+                        className="w-24 h-10 md:w-[160px] md:h-auto mb-6"
+                        width={75}
+                        height={75}
+                      />
           <nav className="flex flex-1 flex-col">
             {navSections.map((section) => (
               <Box key={section.title} mb={6}>

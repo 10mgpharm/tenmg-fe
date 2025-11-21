@@ -5,7 +5,7 @@ const config: IConfig = {
     nodeEnv: process.env.NODE_ENV as 'dev' | 'prod' | 'test',
     appName: process.env.NEXT_PUBLIC_APP_NAME ?? '10MG Health',
     appUrl: process.env.NEXT_PUBLIC_APP_URL ?? '',
-    apiBaseUrl: process.env.NEXT_PUBLIC_API_URL ?? '',
+    apiBaseUrl: 'https://staging-api.10mg.ai',
     apiDocUrl: process.env.NEXT_PUBLIC_API_DOC_URL ?? '',
 
     nextAuthSecret: process.env.NEXTAUTH_SECRET ?? '',

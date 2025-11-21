@@ -30,21 +30,21 @@ const Footer = () => {
             <div>
               <h3 className="font-bold mb-2">Our Company</h3>
               <ul className="space-y-1">
-                <li>
+                {/* <li>
                   <a href="#" className="hover:text-gray-300">
                     Founder&apos;s Desk
                   </a>
-                </li>
+                </li> */}
                 <li>
-                  <a href="#" className="hover:text-gray-300">
+                  <a href="https://www.10mg.ai/about" className="hover:text-gray-300">
                     Our Story
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a href="#" className="hover:text-gray-300">
                     Challenges
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
 
@@ -84,20 +84,20 @@ const Footer = () => {
               <h3 className="font-bold mb-2">Developers</h3>
               <ul className="space-y-1">
                 <li>
-                  <a href="#" className="hover:text-gray-300">
+                  <a href="https://documenter.getpostman.com/view/50127322/2sB3WyJbak" className="hover:text-gray-300">
                     API Documentation
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-gray-300">
+                  <a href="https://documenter.getpostman.com/view/50127322/2sB3WyJbak" className="hover:text-gray-300">
                     API Reference
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a href="#" className="hover:text-gray-300">
                     API Status
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
 

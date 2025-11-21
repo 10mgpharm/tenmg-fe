@@ -15,6 +15,9 @@ import { LoaderIcon } from "lucide-react";
 import RatingComponent from "./RatingComponent";
 import { cn } from "@/lib/utils";
 
+// Fallback image from Cloudinary
+const FALLBACK_IMAGE = "https://res.cloudinary.com/henrybee558/image/upload/v1763596873/Group_1_kkhjaq.webp";
+
 export default function StoreProductCardComponent({
   product,
   flexible,
@@ -29,6 +32,7 @@ export default function StoreProductCardComponent({
   const [addedToWishlist, setAddedToWishlist] = useState(false);
   const [cartList, setAddCartlist] = useState(null);
   const [addedTocart, setAddedToCart] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { addToCart, updateLoading, cart } = useCartStore();
   const { paymentStatus } = usePaymentStatusStore();
   const { addToWishlist, wishlist, loading, removeWishlistItem } =
@@ -55,6 +59,11 @@ export default function StoreProductCardComponent({
       );
     }
   }, [cartList, product]);
+
+  // Reset image error state when product changes
+  useEffect(() => {
+    setImageError(false);
+  }, [product?.thumbnailFile]);
 
   const businessStatus = userData?.user?.businessStatus;
 
@@ -99,19 +108,34 @@ export default function StoreProductCardComponent({
     }
   };
 
+  // Get the image URL with fallback
+  const getImageUrl = () => {
+    if (imageError || !product?.thumbnailFile) {
+      return FALLBACK_IMAGE;
+    }
+    // return product.thumbnailFile;
+     return FALLBACK_IMAGE;
+  };
+
   const renderProductImage = () => (
     <div
-      style={{ backgroundImage: `url(${product?.thumbnailFile})` }}
+      style={{ backgroundImage: `url(${getImageUrl()})` }}
       className={cn(
-        " bg-gray-50 bg-cover bg-center bg-no-repeat rounded-lg shadow-sm overflow-hidden",
+        "bg-gray-50 bg-cover bg-center bg-no-repeat rounded-lg shadow-sm overflow-hidden",
         flexible ? "aspect-[4/3] w-full" : "w-[279px] h-[186px]"
       )}
-    />
+    >
+      {/* Hidden image to detect loading errors */}
+      <img
+        src={product?.thumbnailFile || FALLBACK_IMAGE}
+        alt=""
+        className="hidden"
+        onError={() => setImageError(true)}
+      />
+    </div>
   );
 
-
   const renderProductDetails = () => (
-
     <div className="w-full">
       <div className="flex items-center justify-between my-2">
         <p className="text-gray-950 font-semibold text-sm capitalize">
@@ -183,7 +207,7 @@ export default function StoreProductCardComponent({
           </TagLabel>
         </Tag>
       </div>
-    </div >
+    </div>
   );
 
   const [loadingBuynow, setLoadingBuynow] = useState(false);
@@ -195,7 +219,6 @@ export default function StoreProductCardComponent({
       return;
     }
     try {
-
       handleAddToCart(product?.id, "add");
       router.push("/storefront/checkout");
       setLoadingBuynow(false);
@@ -205,16 +228,16 @@ export default function StoreProductCardComponent({
     }
   }
 
-  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [loadingAdd, setAddingToCart] = useState(false);
   const addToCartFunction = () => {
-    setLoadingAdd(true);
+    setAddingToCart(true);
     if (product?.quantity <= (product?.outStockLevel ?? 0)) {
       toast.error("Product is out of stock");
-      setLoadingAdd(false);
+      setAddingToCart(false);
       return;
     }
     handleAddToCart(product?.id, addedTocart ? "remove" : "add");
-    setLoadingAdd(false);
+    setAddingToCart(false);
   }
 
   const renderButtons = () => (
@@ -227,10 +250,6 @@ export default function StoreProductCardComponent({
         }
         className="bg-primary-500 text-white w-full py-2 rounded-md text-xs mt-3 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
         onClick={buyNowFunction}
-      // onClick={() => {
-      //   handleAddToCart(product?.id, "add");
-      //   router.push("/storefront/checkout");
-      // }}
       >
         {loadingBuynow ? <LoaderIcon className="size-3 mx-auto" /> : "Buy Now"}
       </button>
@@ -238,9 +257,6 @@ export default function StoreProductCardComponent({
         disabled={!isProductClickable || updateLoading || loadingAdd || loadingBuynow || product?.quantity <= (product?.outStockLevel ?? 0) || isPendingPayment}
         className="border border-primary-500 text-primary-500 w-full py-2 rounded-md cursor-pointer text-xs mt-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
         onClick={addToCartFunction}
-      // onClick={() => {
-      //   handleAddToCart(product?.id, addedTocart ? "remove" : "add");
-      // }}
       >
         {loadingAdd ? (
           <LoaderIcon className="size-3 mx-auto" />
@@ -256,7 +272,7 @@ export default function StoreProductCardComponent({
   return (
     <div
       className={cn(
-        " px-3 py-3 mx-4 flex flex-col items-center justify-center shadow-lg rounded-md",
+        "px-3 py-3 mx-4 flex flex-col items-center justify-center shadow-lg rounded-md",
         flexible ? "w-full" : "w-fit max-w-[311px]"
       )}
     >
