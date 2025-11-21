@@ -117,7 +117,8 @@ export default function ProductDetailPage() {
                   style={{ backgroundImage: `url(${productData?.thumbnailFile})` }}
                 /> */}
                 <Image
-                  src={productData?.thumbnailFile}
+                  // src={productData?.thumbnailFile }
+                  src={'https://res.cloudinary.com/henrybee558/image/upload/v1763596873/Group_1_kkhjaq.webp'}
                   alt={productData?.name}
                   boxSize={{ base: "400px", md: "500px" }}
                   borderRadius="xl"

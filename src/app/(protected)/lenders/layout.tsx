@@ -29,10 +29,12 @@ export default async function VendorLayout({
 
   return (
     <>
-      <TopNavBar route="/lenders/notifications" />
+     
       <SideBar businessStatus={session?.user?.businessStatus} />
-      <main className="lg:pl-72 lg:pt-[98px] bg-[#F9FAFB]">
-        <div className="min-h-[calc(100vh-150px)]">
+      <main className="lg:pl-72   bg-[#F9FAFB]">
+           <TopNavBar route="/lenders/notifications" />
+        <div className="min-h-[calc(100vh-150px)] lg:pt-28 pt-4">
+        
           {children}
         </div>
         <Footer />

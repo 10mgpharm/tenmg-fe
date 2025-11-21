@@ -17,11 +17,33 @@ type SlideType = {
   description: string;
 };
 
+// Fallback images from Cloudinary
+const FALLBACK_SLIDES: SlideType[] = [
+  {
+    id: 1,
+    imageUrl: "https://res.cloudinary.com/henrybee558/image/upload/v1763595426/finance-new-image-3_nqtou0.webp",
+    title: "Welcome to Our Store",
+    description: "Discover amazing products"
+  },
+  {
+    id: 2,
+    imageUrl: "https://res.cloudinary.com/henrybee558/image/upload/v1763595426/eef49871-6f9a-4b26-93fa-edbc20f445d3_qsmntt.webp",
+    title: "Special Offers",
+    description: "Limited time deals"
+  },
+  {
+    id: 3,
+    imageUrl: "https://res.cloudinary.com/henrybee558/image/upload/v1763595428/Dewatermark_1763243565104_veqbzf.webp",
+    title: "Quality Products",
+    description: "Trusted by thousands"
+  }
+];
+
 const Carousel: React.FC = () => {
   const session = useSession();
   const userData = session.data as NextAuthUserSession;
   const [isLoading, setIsLoading] = useState(false);
-  const [slides, setSlides] = useState<SlideType[]>([]);
+  const [slides, setSlides] = useState<SlideType[]>(FALLBACK_SLIDES);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   const handleScroll = useCallback(
@@ -32,25 +54,32 @@ const Carousel: React.FC = () => {
     [emblaApi]
   );
 
-  const fetchStoreFrontCarouselImages = async () => {
-    setIsLoading(true);
-    try {
-      const response = await requestClient({
-        token: userData?.user?.token,
-      }).get("/storefront/images");
+  // const fetchStoreFrontCarouselImages = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await requestClient({
+  //       token: userData?.user?.token,
+  //     }).get("/storefront/images");
 
-      setSlides(response?.data?.data.data);
-    } catch (error) {
-      toast.error("Unable to fetch carousel images");
-      console.error("Unable to fetch carousel images", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     const fetchedSlides = response?.data?.data?.data;
+      
+  //     // Only update slides if we got valid data
+  //     if (fetchedSlides && Array.isArray(fetchedSlides) && fetchedSlides.length > 0) {
+  //       setSlides(fetchedSlides);
+  //     }
+  //     // Otherwise keep using the fallback slides
+  //   } catch (error) {
+  //     toast.error("Unable to fetch carousel images, using default images");
+  //     console.error("Unable to fetch carousel images", error);
+  //     // Keep using fallback slides on error
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchStoreFrontCarouselImages();
-  }, []);
+  // useEffect(() => {
+  //   fetchStoreFrontCarouselImages();
+  // }, []);
 
   return (
     <Box

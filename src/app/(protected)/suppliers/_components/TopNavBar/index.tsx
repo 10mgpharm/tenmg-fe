@@ -155,10 +155,10 @@ const TopNavBar = ({
   };
 
   return (
-    <div className="lg:fixed w-full bg-white pt-4 sm:py-0 z-50">
-      <div className="flex justify-between shadow-sm lg:pr-8">
+    <div className="lg:fixed lg:w-[80%] w-full bg-white lg:py-8 py-4 sm:py-0 z-50 lg:px-10 px-0">
+      <div className="flex justify-between shadow-sm ">
         <div className="flex items-center gap-8 md:gap-36">
-          <div className="flex h-16 shrink-0 items-center ml-5 md:my-4 md:ml-12">
+          {/* <div className="flex h-16 shrink-0 items-center ml-5 md:my-4 md:ml-12">
             <Image
               src={Logo}
               alt="Logo"
@@ -166,8 +166,8 @@ const TopNavBar = ({
               width={75}
               height={75}
             />
-          </div>
-          <div className="hidden sm:block">
+          </div> */}
+          <div className="">
             <GreetingComponent />
           </div>
         </div>
