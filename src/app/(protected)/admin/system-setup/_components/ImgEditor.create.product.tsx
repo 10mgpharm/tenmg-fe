@@ -64,7 +64,7 @@ const ImgEditor = ({ UPLOAD_IMAGES, inputRef, onUpload, onLoadImage, setImage, i
       uint8Array[i] = byteCharacters.charCodeAt(i);
     }
     // Create Blob from ArrayBuffer
-    const blob: Blob = new Blob([uint8Array], { type: mimeType });
+    const blob: Blob = new Blob([uint8Array as BlobPart], { type: mimeType });
     // Create File from Blob
     const file: File = new File([blob], filename, { type: mimeType });
     return file;
